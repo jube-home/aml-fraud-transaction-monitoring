@@ -45,6 +45,7 @@ namespace Jube.Test.Cryptography
             aes.Padding = PaddingMode.PKCS7;
 
             using var ms = new MemoryStream();
+
             using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
             {
                 cs.Write(plainText, 0, plainText.Length);

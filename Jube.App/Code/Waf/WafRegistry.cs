@@ -18,7 +18,6 @@ namespace Jube.App.Code.Waf
     public sealed class WafRegistry
     {
         private volatile WafRuleSet ruleSet = WafRuleSet.Empty;
-
         public WafRuleSet Current => ruleSet;
 
         public void Update(WafRuleSet updated)

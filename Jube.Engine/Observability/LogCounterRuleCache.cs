@@ -26,12 +26,6 @@ namespace Jube.Engine.Observability
 {
     public sealed class LogCounterRuleCache(string connectionString, ILog log)
     {
-        private const int PollIntervalMilliseconds = 60000;
-        private const int RetryDelayMilliseconds = 5000;
-        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
-        private readonly ConcurrentDictionary<string, Counter<long>> counters = new(StringComparer.Ordinal);
-        private volatile (string Name, Regex Regex)[] rules = [];
-
         public OpenTelemetryExcludeCache ExcludeCache { private get; set; }
 
         public void CheckAndIncrement(string text)
@@ -42,6 +36,7 @@ namespace Jube.Engine.Observability
             }
 
             var snapshot = rules;
+
             if (snapshot.Length == 0)
             {
                 return;
@@ -50,6 +45,7 @@ namespace Jube.Engine.Observability
             foreach (var rule in snapshot)
             {
                 bool isMatch;
+
                 try
                 {
                     isMatch = rule.Regex.IsMatch(text);
@@ -104,15 +100,23 @@ namespace Jube.Engine.Observability
             }
         }
 
+        private const int PollIntervalMilliseconds = 60000;
+        private const int RetryDelayMilliseconds = 5000;
+        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
+        private readonly ConcurrentDictionary<string, Counter<long>> counters = new(StringComparer.Ordinal);
+        private volatile (string Name, Regex Regex)[] rules = [];
+
         private async Task RefreshAsync(CancellationToken token)
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
+
             var repository = new OpenTelemetryLogCounterRepository(dbContext);
 
             var rows = await repository.GetAllActiveAsync(token).ConfigureAwait(false);
 
             var refreshed = new List<(string Name, Regex Regex)>(rows.Count);
+
             foreach (var row in rows)
             {
                 if (string.IsNullOrEmpty(row.Name) || string.IsNullOrEmpty(row.Regex))
@@ -131,7 +135,7 @@ namespace Jube.Engine.Observability
                 }
             }
 
-            rules = refreshed.ToArray();
+            rules = [.. refreshed];
         }
     }
 }

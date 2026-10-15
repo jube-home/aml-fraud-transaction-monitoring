@@ -256,10 +256,12 @@ namespace Jube.Test.Service.DotNetRuntimeMetric
 
             var ascending = await service.ListAsync(search: instance, sortField: "heapSizeBytes",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.HeapSizeBytes).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: instance, sortField: "heapSizeBytes",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.HeapSizeBytes).Should().Equal(3000, 2000, 1000);
         }
 
@@ -275,6 +277,7 @@ namespace Jube.Test.Service.DotNetRuntimeMetric
             await CreateSampleAsync(dbContext, instance, 4, heapSizeBytes: 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "heapSizeBytes",
                 sortDirection: ascendingKeyword);
 
@@ -290,6 +293,7 @@ namespace Jube.Test.Service.DotNetRuntimeMetric
             await CreateSampleAsync(dbContext, instance, 4, heapSizeBytes: 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "heapSizeBytes",
                 sortDirection: "banana");
 
@@ -317,6 +321,7 @@ namespace Jube.Test.Service.DotNetRuntimeMetric
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateSampleAsync(dbContext, instance, 4);

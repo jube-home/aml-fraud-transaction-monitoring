@@ -11,19 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Security;
+using LinqToDB;
+using LinqToDB.Data;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Context;
-    using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Poco;
-
     public class UserRegistryRepository
     {
         private readonly DbContext dbContext;
@@ -34,6 +36,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -112,6 +115,13 @@ namespace Jube.Data.Repository
             return dbContext.UserRegistry.FirstOrDefaultAsync(w =>
                 (w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<UserRegistry> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.UserRegistry.FirstOrDefaultAsync(w =>
+                (w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
         public Task<UserRegistry> GetByUserNameAsync(string userNameInTenant, CancellationToken token = default)
@@ -242,11 +252,11 @@ namespace Jube.Data.Repository
 
         public async Task<int?> ReserveLoginAttemptAsync(int id, CancellationToken token = default)
         {
-            var counts = await LinqToDB.Data.DataConnectionExtensions.QueryToListAsync<int>(dbContext,
+            var counts = await DataConnectionExtensions.QueryToListAsync<int>(dbContext,
                 "UPDATE \"UserRegistry\" SET \"FailedPasswordCount\" = COALESCE(\"FailedPasswordCount\", 0) + 1 " +
                 "WHERE \"Id\" = @id AND (\"Deleted\" = 0 OR \"Deleted\" IS NULL) " +
                 "AND COALESCE(\"PasswordLocked\", 0) <> 1 RETURNING \"FailedPasswordCount\"",
-                new LinqToDB.Data.DataParameter("id", id));
+                new DataParameter("id", id));
 
             return counts.Count == 0 ? null : counts[0];
         }
@@ -274,6 +284,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             var expiredBefore = DateTime.UtcNow - lockoutWindow;
+
             var records = await dbContext.UserRegistry
                 .Where(d => d.Id == id && (d.Deleted == 0 || d.Deleted == null)
                                        && d.PasswordLocked == 1
@@ -317,7 +328,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
-            await Security.TokenValidity.RevokeUserBeforeAsync(dbContext, name, cutoff, token);
+            await TokenValidity.RevokeUserBeforeAsync(dbContext, name, cutoff, token);
+
             return name;
         }
 
@@ -335,62 +347,6 @@ namespace Jube.Data.Repository
             if (records == 0)
             {
                 throw new KeyNotFoundException();
-            }
-        }
-
-        public async Task RecoverOrphanedUsersAsync(CancellationToken token = default)
-        {
-            if (!tenantRegistryId.HasValue)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            var namesInTenant = await dbContext.UserInTenant
-                .Where(w => w.TenantRegistryId == tenantRegistryId)
-                .Select(s => s.User)
-                .ToListAsync(token);
-
-            var orphanedUsers = await dbContext.UserRegistry
-                .Where(w => namesInTenant.Contains(w.Name)
-                            && (w.Deleted == 0 || w.Deleted == null)
-                            && !dbContext.RoleRegistry.Any(r =>
-                                r.Guid == w.RoleRegistryGuid && (r.Deleted == 0 || r.Deleted == null)))
-                .ToListAsync(token);
-
-            if (orphanedUsers.Count == 0)
-            {
-                return;
-            }
-
-            var roleRegistryRepository = new RoleRegistryRepository(dbContext, userName);
-            var roleRegistry = await roleRegistryRepository.InsertAsync(new RoleRegistry
-            {
-                Name = "Orphaned Preservation Import",
-                Active = 1
-            }, token);
-
-            var permissionSpecifications = await new PermissionSpecificationRepository(dbContext).GetAsync(token);
-
-            var roleRegistryPermissionRepository = new RoleRegistryPermissionRepository(dbContext, userName);
-            foreach (var permissionSpecification in permissionSpecifications)
-            {
-                await roleRegistryPermissionRepository.InsertAsync(new RoleRegistryPermission
-                {
-                    RoleRegistryId = roleRegistry.Id,
-                    PermissionSpecificationId = permissionSpecification.Id,
-                    Active = 1
-                }, token);
-            }
-
-            foreach (var orphanedUser in orphanedUsers)
-            {
-                orphanedUser.RoleRegistryGuid = roleRegistry.Guid;
-
-                orphanedUser.Active = orphanedUser.Name == userName
-                    ? (byte)1
-                    : (byte)0;
-
-                await UpdateAsync(orphanedUser, token);
             }
         }
     }

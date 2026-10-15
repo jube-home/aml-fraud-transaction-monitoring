@@ -52,6 +52,7 @@ namespace Jube.Validations.Repository.CaseWorkflowMacro
                 {
                     var existing = await repository
                         .GetByNameCaseWorkflowIdAsync(name, dto.CaseWorkflowId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[CaseWorkflowMacroResources.NameAlreadyExists])
@@ -101,6 +102,7 @@ namespace Jube.Validations.Repository.CaseWorkflowMacro
                 .When(w => w.EnableNotification)
                 .WithMessage(_ => localiser[CaseWorkflowMacroResources.NotificationDestinationRequired])
                 .WithErrorCode("NotificationDestinationNotEmpty");
+
             RuleFor(p => p.ImageLocation)
                 .Matches(ImageLocationPattern)
                 .When(w => !string.IsNullOrEmpty(w.ImageLocation))

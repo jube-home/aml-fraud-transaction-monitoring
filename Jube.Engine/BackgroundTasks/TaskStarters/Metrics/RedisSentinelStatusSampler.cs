@@ -11,12 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using StackExchange.Redis;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
@@ -35,6 +35,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
 
             var server = sentinelMultiplexer.GetServers().FirstOrDefault(s => s.IsConnected);
+
             if (server == null)
             {
                 return results;
@@ -82,6 +83,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             for (var i = 0; i + 1 < flat.Length; i += 2)
             {
                 var key = (string)flat[i];
+
                 if (key != null)
                 {
                     fields[key] = (string)flat[i + 1];
@@ -120,6 +122,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var port = ParseInt("port");
 
             double? replicationLagSeconds = null;
+
             if (entityType == RedisSentinelEntityType.Slave && ip != null && port.HasValue &&
                 replicationLagByEndpoint.TryGetValue($"{ip}:{port}", out var lag))
             {

@@ -20,7 +20,7 @@ namespace Jube.App.Code
     public sealed class HttpAuthenticationCookieIssuer(
         HttpResponse response,
         DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
-        TimeProvider timeProvider = null) : Service.Authentication.IAuthenticationCookieIssuer
+        TimeProvider timeProvider = null) : Service.Authentication.Interfaces.IAuthenticationCookieIssuer
     {
         public AuthenticationResponseDto Issue(string userName)
         {

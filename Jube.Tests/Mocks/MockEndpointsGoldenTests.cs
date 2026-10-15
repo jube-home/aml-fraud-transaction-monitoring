@@ -118,6 +118,7 @@ namespace Jube.Test.Mocks
             using var app = builder.Build();
             app.MapMockHttpAdaptationEndpoints();
             app.MapMockRsaMfaEndpoints();
+
             return
             [
                 .. ((IEndpointRouteBuilder)app).DataSources.SelectMany(d => d.Endpoints).OfType<RouteEndpoint>()

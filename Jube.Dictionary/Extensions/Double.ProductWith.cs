@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static double ProductWith(this double @this, params double[]? others)
         {
             var product = @this;
+
             foreach (var other in others ?? [])
             {
                 product *= other;

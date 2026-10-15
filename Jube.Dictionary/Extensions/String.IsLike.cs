@@ -18,7 +18,7 @@ namespace Jube.Dictionary.Extensions
                 .Replace(@"\*", ".*")
                 .Replace(@"\#", @"\d");
 
-            return Regex.IsMatch(@this, regexPattern, RegexOptions.None, RegexSupport.MatchTimeout);
+            return Regex.IsMatch(@this, regexPattern, RegexOptions.None, RegexSupport.matchTimeout);
         }
     }
 }

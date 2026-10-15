@@ -43,7 +43,6 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     private readonly List<int> workflowIds = [];
     private readonly List<int> xpathIds = [];
     private readonly List<int> syncEntryIds = [];
-
     public static string Unique(string label) => $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}"[..32];
 
     public Task<Guid> RoleOfAsync(DbContext dbContext, string userName) =>
@@ -52,6 +51,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task<int> TenantOfAsync(string userName)
     {
         await using var dbContext = fx.GetDbContext();
+
         return await dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId)
             .FirstAsync();
     }
@@ -59,6 +59,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task<int> CountEventsAsync(int caseId)
     {
         await using var dbContext = fx.GetDbContext();
+
         return await dbContext.GetTable<CaseEvent>().CountAsync(w => w.CaseId == caseId);
     }
 
@@ -83,6 +84,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         var modelGuid = model.Guid;
 
         var workflowGuid = Guid.NewGuid();
+
         var workflowId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflow
         {
             Name = Unique("Workflow"), Guid = workflowGuid, EntityAnalysisModelId = model.Id,
@@ -90,6 +92,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             Deleted = (byte)(workflowDeleted ? 1 : 0), CreatedUser = owner, CreatedDate = DateTime.UtcNow
         });
         workflowIds.Add(workflowId);
+
         foreach (var roleUser in workflowRoles)
         {
             await dbContext.InsertAsync(new CaseWorkflowRole
@@ -101,6 +104,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         }
 
         var statusGuid = Guid.NewGuid();
+
         var statusId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowStatus
         {
             Name = Unique("Status"), Guid = statusGuid, CaseWorkflowId = workflowId, ForeColor = "#112233",
@@ -108,6 +112,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             EnableNotification = 0, EnableHttpEndpoint = 0, CreatedUser = owner, CreatedDate = DateTime.UtcNow
         });
         statusIds.Add(statusId);
+
         foreach (var roleUser in statusRoles)
         {
             await dbContext.InsertAsync(new CaseWorkflowStatusRole
@@ -135,12 +140,14 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     {
         await using var dbContext = fx.GetDbContext();
         var actionGuid = Guid.NewGuid();
+
         var actionId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowAction
         {
             Name = Unique("Action"), Guid = actionGuid, CaseWorkflowId = graph.WorkflowId, Active = 1, Locked = 0,
             Deleted = 0, CreatedUser = graph.Owner, CreatedDate = DateTime.UtcNow
         });
         actionIds.Add(actionId);
+
         foreach (var roleUser in actionRoles ?? [graph.Owner])
         {
             await dbContext.InsertAsync(new CaseWorkflowActionRole
@@ -157,12 +164,14 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             CreatedUser = graph.Owner, CaseId = graph.CaseId, CaseKey = graph.Key, CaseKeyValue = graph.Value
         });
         noteIds.Add(id);
+
         return id;
     }
 
     public async Task EventAsync(CaseGraph graph, string? before, string? after, int typeId = 8)
     {
         await using var dbContext = fx.GetDbContext();
+
         await dbContext.InsertAsync(new CaseEvent
         {
             CaseId = graph.CaseId, CaseEventTypeId = (byte)typeId, Before = before, After = after,
@@ -174,18 +183,21 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task<int> FormEntryAsync(CaseGraph graph)
     {
         await using var dbContext = fx.GetDbContext();
+
         var formId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowForm
         {
             Name = Unique("Form"), Guid = Guid.NewGuid(), CaseWorkflowId = graph.WorkflowId, Active = 1, Locked = 0,
             Deleted = 0, Html = "<div></div>", CreatedUser = graph.Owner, CreatedDate = DateTime.UtcNow
         });
         formIds.Add(formId);
+
         var id = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowFormEntry
         {
             CaseId = graph.CaseId, CaseWorkflowFormId = formId, CaseKey = graph.Key, CaseKeyValue = graph.Value,
             CreatedUser = graph.Owner, CreatedDate = DateTime.UtcNow
         });
         entryIds.Add(id);
+
         return id;
     }
 
@@ -193,6 +205,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     {
         await using var dbContext = fx.GetDbContext();
         var guid = Guid.NewGuid();
+
         var id = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowDisplay
         {
             Name = Unique("Display"), Guid = guid, CaseWorkflowId = graph.WorkflowId, Html = html,
@@ -200,6 +213,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             CreatedDate = DateTime.UtcNow
         });
         displayIds.Add(id);
+
         foreach (var roleUser in roles ?? [graph.Owner])
         {
             await dbContext.InsertAsync(new CaseWorkflowDisplayRole
@@ -218,6 +232,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     {
         await using var dbContext = fx.GetDbContext();
         var guid = Guid.NewGuid();
+
         var id = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowMacro
         {
             Name = Unique("Macro"), Guid = guid, CaseWorkflowId = graph.WorkflowId,
@@ -227,6 +242,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             CreatedDate = DateTime.UtcNow
         });
         macroIds.Add(id);
+
         foreach (var roleUser in roles ?? [graph.Owner])
         {
             await dbContext.InsertAsync(new CaseWorkflowMacroRole
@@ -243,11 +259,13 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task<(int Id, Guid Guid)> ModelAsync(string owner, bool deleted = false)
     {
         await using var dbContext = fx.GetDbContext();
+
         var model = await new EntityAnalysisModelRepository(dbContext, owner).InsertAsync(new EntityAnalysisModel
         {
             Name = Unique("Model"), Guid = Guid.NewGuid(), Active = 1, Locked = 0, Deleted = (byte)(deleted ? 1 : 0)
         });
         modelIds.Add(model.Id);
+
         return (model.Id, model.Guid);
     }
 
@@ -255,6 +273,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         byte deleted = 0)
     {
         await using var dbContext = fx.GetDbContext();
+
         var id = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
         {
             EntityAnalysisModelId = modelId, Name = name, XPath = "$.a", DataTypeId = (byte)dataTypeId, Active = 1,
@@ -262,12 +281,14 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             CreatedUser = DatabaseFixture.Prefix, EnableOverride = (byte)(overrideEnabled ? 1 : 0)
         });
         xpathIds.Add(id);
+
         return id;
     }
 
     public async Task InlineFunctionAsync(int modelId, string name, int returnDataTypeId = 1)
     {
         await using var dbContext = fx.GetDbContext();
+
         inlineFunctionIds.Add(await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelInlineFunction
         {
             EntityAnalysisModelId = modelId, Name = name, ReturnDataTypeId = (byte)returnDataTypeId,
@@ -279,6 +300,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task<int> ActivationRuleAsync(string owner, int modelId, string name, bool enableOverride = true)
     {
         await using var dbContext = fx.GetDbContext();
+
         var rule = await new EntityAnalysisModelActivationRuleRepository(dbContext, owner).InsertAsync(
             new EntityAnalysisModelActivationRule
             {
@@ -286,6 +308,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
                 EnableOverride = (byte)(enableOverride ? 1 : 0)
             });
         activationRuleIds.Add(rule.Id);
+
         return rule.Id;
     }
 
@@ -293,6 +316,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         bool deleted = false)
     {
         await using var dbContext = fx.GetDbContext();
+
         overrideIds.Add(await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelOverride
         {
             EntityAnalysisModelGuid = modelGuid, OverrideKey = key, OverrideKeyValue = value,
@@ -305,6 +329,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         DateTime? expiry = null, bool deleted = false)
     {
         await using var dbContext = fx.GetDbContext();
+
         activationRuleOverrideIds.Add(await dbContext.InsertWithInt32IdentityAsync(
             new EntityAnalysisModelActivationRuleOverride
             {
@@ -318,6 +343,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     public async Task ScheduleAsync(int tenantRegistryId, DateTime scheduleDate)
     {
         await using var dbContext = fx.GetDbContext();
+
         scheduleIds.Add(await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelSynchronisationSchedule
         {
             CreatedDate = DateTime.UtcNow, ScheduleDate = scheduleDate, TenantRegistryId = tenantRegistryId,
@@ -329,6 +355,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         DateTime? synchronised)
     {
         await using var dbContext = fx.GetDbContext();
+
         syncEntryIds.Add(await dbContext.InsertWithInt32IdentityAsync(
             new EntityAnalysisModelSynchronisationNodeStatusEntry
             {
@@ -348,33 +375,44 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
 
         await dbContext.GetTable<CaseEvent>()
             .Where(w => w.CaseId != null && caseIds.Contains(w.CaseId.Value)).DeleteAsync();
+
         await dbContext.CaseNote.Where(w => noteIds.Contains(w.Id)).DeleteAsync();
         await dbContext.CaseWorkflowFormEntry.Where(w => entryIds.Contains(w.Id)).DeleteAsync();
         await dbContext.Case.Where(w => caseIds.Contains(w.Id)).DeleteAsync();
 
         var macroGuids = dbContext.CaseWorkflowMacro.Where(w => macroIds.Contains(w.Id)).Select(w => w.Guid);
+
         await dbContext.GetTable<CaseWorkflowMacroRole>().Where(w => macroGuids.Contains(w.CaseWorkflowMacroGuid))
             .DeleteAsync();
+
         await dbContext.CaseWorkflowMacro.Where(w => macroIds.Contains(w.Id)).DeleteAsync();
 
         var displayGuids = dbContext.CaseWorkflowDisplay.Where(w => displayIds.Contains(w.Id)).Select(w => w.Guid);
+
         await dbContext.GetTable<CaseWorkflowDisplayRole>()
             .Where(w => displayGuids.Contains(w.CaseWorkflowDisplayGuid)).DeleteAsync();
+
         await dbContext.CaseWorkflowDisplay.Where(w => displayIds.Contains(w.Id)).DeleteAsync();
 
         await dbContext.CaseWorkflowForm.Where(w => formIds.Contains(w.Id)).DeleteAsync();
 
         var actionGuids = dbContext.CaseWorkflowAction.Where(w => actionIds.Contains(w.Id)).Select(w => w.Guid);
+
         await dbContext.GetTable<CaseWorkflowActionRole>().Where(w => actionGuids.Contains(w.CaseWorkflowActionGuid))
             .DeleteAsync();
+
         await dbContext.CaseWorkflowAction.Where(w => actionIds.Contains(w.Id)).DeleteAsync();
 
         var statusGuids = dbContext.CaseWorkflowStatus.Where(w => statusIds.Contains(w.Id)).Select(w => w.Guid);
+
         await dbContext.GetTable<CaseWorkflowStatusRole>().Where(w => statusGuids.Contains(w.CaseWorkflowStatusGuid))
             .DeleteAsync();
+
         var workflowGuids = dbContext.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).Select(w => w.Guid);
+
         await dbContext.GetTable<CaseWorkflowRole>().Where(w => workflowGuids.Contains(w.CaseWorkflowGuid))
             .DeleteAsync();
+
         await dbContext.CaseWorkflowStatus.Where(w => statusIds.Contains(w.Id)).DeleteAsync();
         await dbContext.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).DeleteAsync();
 
@@ -386,6 +424,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             .Where(w => inlineFunctionIds.Contains(w.Id)).DeleteAsync();
         await dbContext.GetTable<EntityAnalysisModelRequestXpath>().Where(w => xpathIds.Contains(w.Id))
             .DeleteAsync();
+
         foreach (var id in activationRuleIds)
         {
             await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
@@ -395,6 +434,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
 
         await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => modelIds.Contains(w.EntityAnalysisModelId))
             .DeleteAsync();
+
         await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
     }
 }

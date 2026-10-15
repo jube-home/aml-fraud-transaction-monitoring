@@ -51,6 +51,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
     private async Task<string> UserWithOnlyAsync(params int[] specs)
     {
         await gate.WaitAsync();
+
         try
         {
             if (!ReferenceEquals(owner, Fx))
@@ -60,6 +61,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
             }
 
             var key = string.Join(",", specs.OrderBy(s => s));
+
             if (users.TryGetValue(key, out var existing))
             {
                 return existing;
@@ -67,15 +69,19 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
 
             await using var db = Fx.GetDbContext();
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var tenantId = await db.UserInTenant.Where(w => w.User == Fx.Seed.UserWithPermission)
                 .Select(s => s.TenantRegistryId).FirstAsync();
+
             var roleGuid = Guid.NewGuid();
             var name = $"{DatabaseFixture.Prefix}Par{key.Replace(",", "_")}{suffix}";
+
             var roleId = await db.InsertWithInt32IdentityAsync(new RoleRegistry
             {
                 Guid = roleGuid, Name = name, Active = 1, Locked = 0, Deleted = 0, TenantRegistryId = tenantId,
                 Version = 1, CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             foreach (var spec in specs)
             {
                 await db.InsertAsync(new RoleRegistryPermission
@@ -92,8 +98,10 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
                 Password = "not-used-by-permission-checks", Active = 1, PasswordLocked = 0, Deleted = 0, Version = 1,
                 CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             await db.InsertAsync(new UserInTenant { User = name, TenantRegistryId = tenantId });
             users[key] = name;
+
             return name;
         }
         finally
@@ -129,6 +137,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
 
         await AssertAllowedAsync(client, "GET", page, $"page {page} with only {spec}");
         await AssertAllowedAsync(client, "GET", "/api/RoleRegistry", $"role list for {page} with only {spec}");
+
         await AssertDeniedAsync(client, "DELETE", "/api/RoleRegistry/2147480001",
             $"role delete must stay with 34 ({page})");
         await AssertDeniedAsync(client, "GET", "/api/UserRegistry", $"unrelated user list ({page})");
@@ -185,8 +194,10 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
         {
             var client = await ClientForOnlyAsync(spec);
             await AssertDeniedAsync(client, "GET", "/Administration/Frame/ChangePassword", $"frame with only {spec}");
+
             var response = await client.SendAsync("POST", "/api/UserRegistry/SetPassword",
                 [.. "{\"id\":2147480001}"u8], "application/json");
+
             (response.Status is 401 or 403).Should().BeTrue($"set password with only {spec} => {response}");
         }
     }
@@ -220,8 +231,10 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
         var client = await ClientForOnlyAsync(16);
 
         await AssertAllowedAsync(client, "GET", "/Model/Frame/Exhaustive", "exhaustive frame with only 16");
+
         var response = await client.SendAsync("PUT", "/api/ExhaustiveSearchInstancePromotedTrialInstance",
             [.. "{\"id\":2147480001}"u8], "application/json");
+
         (response.Status is 401 or 403).Should().BeTrue($"promote with only 16 => {response}");
     }
 
@@ -230,6 +243,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
     {
         var reader = await ClientForOnlyAsync(9);
         await AssertAllowedAsync(reader, "GET", "/api/EntityAnalysisInlineScript", "read with only 9");
+
         await AssertDeniedAsync(await ClientForOnlyAsync(1), "GET", "/api/EntityAnalysisInlineScript",
             "read without 9");
 
@@ -239,6 +253,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
             {
                 var response = await client.SendAsync(method, "/api/EntityAnalysisInlineScript/2147480001",
                     [.. "{}"u8], "application/json");
+
                 response.Status.Should().BeOneOf([404, 405, 401, 403],
                     $"{method} on the global inline script library must not exist => {response}");
             }

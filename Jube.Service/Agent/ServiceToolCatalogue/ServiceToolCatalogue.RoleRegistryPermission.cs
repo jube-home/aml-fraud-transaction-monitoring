@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,39 +11,58 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.RoleRegistryPermission;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddRoleRegistryPermission(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists Role Registry Permission grants visible to the caller's tenant, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionFilterFields", OperationKind.Read, true, false,
-                "Lists the fields a query builder JSON filter over Role Registry Permissions may use."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionFilter", OperationKind.Read, true, false,
-                "Returns the Role Registry Permissions matching query builder JSON, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionCount", OperationKind.Read, true, false,
-                "Counts the Role Registry Permissions matching query builder JSON, optionally grouped by a field."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns a single Role Registry Permission grant by Id."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionCreate", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Grants a Permission Specification to a Role Registry; calling twice creates two grants."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionValidate", OperationKind.Read, true, false,
-                "Validates a Role Registry Permission without saving it and returns every failure."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Updates a Role Registry Permission grant; writes a version-audit row."),
-            new ServiceToolDescriptor(
-                "RoleRegistryPermissionDelete", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Soft-deletes a Role Registry Permission grant; reversible only by direct database action.")
-        ]);
+        static partial void AddRoleRegistryPermission(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionList", OperationKind.Read, true, false,
+                    "Lists Role Registry Permission grants visible to the caller's tenant, keyset-paged and capped.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Role Registry Permissions may use.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionFilter", OperationKind.Read, true, false,
+                    "Returns the Role Registry Permissions matching query builder JSON, keyset-paged and capped.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionCount", OperationKind.Read, true, false,
+                    "Counts the Role Registry Permissions matching query builder JSON, optionally grouped by a field.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionGet", OperationKind.Read, true, false,
+                    "Returns a single Role Registry Permission grant by Id.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionGetByGuid", OperationKind.Read, true, false,
+                    "Returns a single Role Registry Permission grant by Id.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionCreate", OperationKind.Write, false, false,
+                    "Grants a Permission Specification to a Role Registry; calling twice creates two grants.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionValidate", OperationKind.Read, true, false,
+                    "Validates a Role Registry Permission without saving it and returns every failure.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionUpdate", OperationKind.Write, true, false,
+                    "Updates a Role Registry Permission grant; writes a version-audit row.",
+                    RoleRegistryPermissionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RoleRegistryPermissionDelete", OperationKind.Delete, true, true,
+                    "Soft-deletes a Role Registry Permission grant; reversible only by direct database action.",
+                    RoleRegistryPermissionService.RequiredPermissions)
+            ]);
+        }
     }
 }

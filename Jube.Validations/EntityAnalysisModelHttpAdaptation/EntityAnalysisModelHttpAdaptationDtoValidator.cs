@@ -53,6 +53,7 @@ namespace Jube.Validations.EntityAnalysisModelHttpAdaptation
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.NameAlreadyExists])
@@ -95,6 +96,7 @@ namespace Jube.Validations.EntityAnalysisModelHttpAdaptation
 
             var path = endpoint.Split('?', '#')[0];
             var decoded = Uri.UnescapeDataString(path);
+
             if (decoded.Any(c => char.IsControl(c) || c == '\\'))
             {
                 return false;

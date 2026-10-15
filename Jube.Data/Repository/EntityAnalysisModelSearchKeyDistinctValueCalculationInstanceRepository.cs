@@ -27,6 +27,7 @@ namespace Jube.Data.Repository
             EntityAnalysisModelSearchKeyDistinctValueCalculationInstance model, CancellationToken token)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -44,6 +45,15 @@ namespace Jube.Data.Repository
         {
             return dbContext.EntityAnalysisModelSearchKeyDistinctValueCalculationInstance
                 .Where(d => d.Id == id)
+                .Set(s => s.AbstractionRulesMatchesUpdatedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public Task UpdateAbstractionRuleMatchesByCalculationInstanceIdAsync(int calculationInstanceId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelSearchKeyDistinctValueCalculationInstance
+                .Where(d => d.EntityAnalysisModelSearchKeyCalculationInstanceId == calculationInstanceId)
                 .Set(s => s.AbstractionRulesMatchesUpdatedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
         }

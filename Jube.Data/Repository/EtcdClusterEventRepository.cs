@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public async Task<EtcdClusterEvent> InsertAsync(EtcdClusterEvent model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -78,6 +79,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Endpoint != null && w.Endpoint.ToLower().Contains(lowerSearch)) ||
                     (w.Name != null && w.Name.ToLower().Contains(lowerSearch)) ||
@@ -97,6 +99,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "endpoint" => query.OrderByField(o => o.Endpoint, descending),

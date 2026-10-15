@@ -44,6 +44,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 Name = name,
                 DataName = dataName
             };
+
             foreach (var (key, value) in entries)
             {
                 dictionary.KvPs[key] = value;
@@ -56,8 +57,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ResolvesTheConfiguredValueFromThePayloadIntoTheDictionaryCache()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10), ("GB", 1));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "AE");
 
@@ -70,8 +73,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void FieldNamesAreMatchedAgainstDataNameNotTheDictionarysOwnName()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "AE");
 
@@ -84,8 +89,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AKeyNotPresentInTheLookupTableResolvesToZero()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "ZZ");
 
@@ -98,8 +105,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AFieldMissingFromThePayloadResolvesToZero()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
+
             var payload = NewPayload();
 
             entityAnalysisModel.ResolveDictionaryValueForField(payload, TestLog.NoOp, "Country");
@@ -111,8 +120,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void DoesNotOverwriteAnAlreadyResolvedValueForTheSameDictionaryName()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "AE");
             payload.Dictionary.Add("CountryRisk", 999);
@@ -126,10 +137,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void MultipleDictionariesMappedToTheSameFieldAreAllResolvedIndependently()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
             entityAnalysisModel.Snapshot.KvpDictionaries[2] =
                 NewKvpDictionary("CountryRegion", "Country", ("AE", 2));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "AE");
 
@@ -143,8 +156,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ADictionaryMappedToADifferentFieldIsUnaffectedByAnUnrelatedFieldResolution()
         {
             var entityAnalysisModel = new EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.KvpDictionaries[1] =
                 NewKvpDictionary("CountryRisk", "Country", ("AE", 10));
+
             var payload = NewPayload();
             payload.Payload.Add("Country", "AE");
 

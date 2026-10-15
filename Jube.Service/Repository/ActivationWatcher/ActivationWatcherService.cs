@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.ActivationWatcher;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.ActivationWatcher;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -52,6 +52,8 @@ namespace Jube.Service.Repository.ActivationWatcher
             this.permissionValidation = permissionValidation;
             repository = new ActivationWatcherRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ActivationWatcherService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +112,7 @@ namespace Jube.Service.Repository.ActivationWatcher
         {
             using var op = OperationScope.Start("ActivationWatcher", "Replay", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"ActivationWatcher.Replay: entry user={userName}");
@@ -125,6 +128,7 @@ namespace Jube.Service.Repository.ActivationWatcher
                 var dtos = rows.Select(ActivationWatcherMapper.ToDto).ToList();
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ActivationWatcher.Replay: {dtos.Count} rows user={userName}");
@@ -140,6 +144,7 @@ namespace Jube.Service.Repository.ActivationWatcher
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ActivationWatcher.Replay: cancelled user={userName}");

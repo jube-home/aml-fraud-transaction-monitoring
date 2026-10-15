@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.Exceptions.RedisSentinelStatus;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
@@ -88,6 +88,7 @@ namespace Jube.Test.Service.RedisSentinelStatus
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -184,6 +185,7 @@ namespace Jube.Test.Service.RedisSentinelStatus
 
             await CreateEntryAsync(dbContext, slaveName, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 2.5);
+
             await CreateEntryAsync(dbContext, masterName, entityType: RedisSentinelEntityType.Master,
                 flags: "master");
 
@@ -280,6 +282,7 @@ namespace Jube.Test.Service.RedisSentinelStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Slave{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 3);
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
@@ -291,10 +294,12 @@ namespace Jube.Test.Service.RedisSentinelStatus
 
             var ascending = await service.ListAsync(search: name, sortField: "replicationLagSeconds",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ReplicationLagSeconds).Should().Equal(1, 2, 3);
 
             var descending = await service.ListAsync(search: name, sortField: "replicationLagSeconds",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ReplicationLagSeconds).Should().Equal(3, 2, 1);
         }
 
@@ -306,12 +311,14 @@ namespace Jube.Test.Service.RedisSentinelStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Slave{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 2);
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: name, sortField: "replicationLagSeconds",
                 sortDirection: ascendingKeyword);
 
@@ -323,12 +330,14 @@ namespace Jube.Test.Service.RedisSentinelStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Slave{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 1);
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 2);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: name, sortField: "replicationLagSeconds",
                 sortDirection: "banana");
 
@@ -356,6 +365,7 @@ namespace Jube.Test.Service.RedisSentinelStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Master{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, name);
@@ -397,6 +407,7 @@ namespace Jube.Test.Service.RedisSentinelStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Slave{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, name, entityType: RedisSentinelEntityType.Slave, flags: "slave",
                 replicationLagSeconds: 1);
 

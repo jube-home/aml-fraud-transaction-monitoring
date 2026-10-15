@@ -13,6 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Filter
 {
     [Description("A field that query builder JSON filters may use: its id, its builder type, the operators allowed " +

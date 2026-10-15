@@ -21,8 +21,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
         private const int InsufficientFields = 1;
         private const int NoReferenceIndexConfigured = 2;
         private const int ParseError = 3;
-
         private const string InsufficientFieldsMessage = "Row contains insufficient fields.";
+
         private const string NoReferenceIndexConfiguredMessage =
             "Sanction Entry Source has no Reference Index configured.";
 

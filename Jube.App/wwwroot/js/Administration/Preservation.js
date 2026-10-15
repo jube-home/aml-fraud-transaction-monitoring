@@ -12,11 +12,13 @@
  */
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("Preservation", "readonly", null);
     const exhaustiveSwitch = $("#Exhaustive").kendoSwitch({checked: true}).data("kendoSwitch");
     const listsSwitch = $("#Lists").kendoSwitch({checked: true}).data("kendoSwitch");
     const dictionariesSwitch = $("#Dictionaries").kendoSwitch({checked: true}).data("kendoSwitch");
     const visualisationsSwitch = $("#Visualisations").kendoSwitch({checked: true}).data("kendoSwitch");
     const rolesSwitch = $("#Roles").kendoSwitch({checked: true}).data("kendoSwitch");
+    const advancedAnalyticsSwitch = $("#AdvancedAnalytics").kendoSwitch({checked: true}).data("kendoSwitch");
 
     $("#Download").kendoButton({
         click: async function () {
@@ -27,6 +29,7 @@ $(document).ready(function () {
                 Dictionaries: dictionariesSwitch.check(),
                 Visualisations: visualisationsSwitch.check(),
                 Roles: rolesSwitch.check(),
+                AdvancedAnalytics: advancedAnalyticsSwitch.check(),
             };
 
             const resp = await fetch("/api/Preservation/Export", {
@@ -58,7 +61,8 @@ $(document).ready(function () {
             Lists: listsSwitch.check(),
             Dictionaries: dictionariesSwitch.check(),
             Visualisations: visualisationsSwitch.check(),
-            Roles: rolesSwitch.check()
+            Roles: rolesSwitch.check(),
+            AdvancedAnalytics: advancedAnalyticsSwitch.check()
         });
 
         window.open("/api/Preservation/ExportPeek?" + params.toString());

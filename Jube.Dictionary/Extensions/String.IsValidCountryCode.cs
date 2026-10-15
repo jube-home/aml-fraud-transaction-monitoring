@@ -17,7 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static bool IsValidCountryCode(this string? @this)
         {
-            return IsoReferenceData.CountriesByAlpha2.ContainsKey((@this ?? "").Trim());
+            return IsoReferenceData.countriesByAlpha2.ContainsKey((@this ?? "").Trim());
         }
     }
 }

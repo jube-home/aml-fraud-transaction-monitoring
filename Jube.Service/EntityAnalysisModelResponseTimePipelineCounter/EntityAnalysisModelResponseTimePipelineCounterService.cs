@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,11 +13,13 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelResponseTimePipelineCounterListQuery;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelResponseTimePipelineCounter;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelResponseTimePipelineCounter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,12 +32,11 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
     public sealed class EntityAnalysisModelResponseTimePipelineCounterService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly EntityAnalysisModelResponseTimePipelineCounterRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -47,13 +48,16 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            repository = new EntityAnalysisModelResponseTimePipelineCounterRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<EntityAnalysisModelResponseTimePipelineCounterService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -142,12 +146,16 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelResponseTimePipelineCounter", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -158,12 +166,13 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
             {
                 EnsurePermitted("EntityAnalysisModelResponseTimePipelineCounter.List");
 
-                var rows = await repository
-                    .GetLastAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
-                        clampedSamplePercentage, sortField, sortDirection, token)
+                var result = await new GetEntityAnalysisModelResponseTimePipelineCounterListQuery(dbContext,
+                        tenantRegistryId)
+                    .ExecuteAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
+                        clampedSamplePercentage, MaxListTake, sortField, sortDirection, token)
                     .ConfigureAwait(false);
 
-                var dtos = rows.Select(r => new EntityAnalysisModelResponseTimePipelineCounterDto(
+                var dtos = result.Rows.Select(r => new EntityAnalysisModelResponseTimePipelineCounterDto(
                     r.Id, r.EntityAnalysisModelGuid, r.EntityAnalysisModelName, r.StageId.GetValueOrDefault(),
                     ((InvokeStage)r.StageId.GetValueOrDefault()).ToString(),
                     r.SequenceNumber.GetValueOrDefault(), r.TotalMicroseconds.GetValueOrDefault(),
@@ -172,16 +181,12 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
                     r.MaxAllocatedBytes.GetValueOrDefault(), r.InvokeCount.GetValueOrDefault(),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
-                var total = await repository
-                    .CountAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage, token)
-                    .ConfigureAwait(false);
+                var total = result.Total;
 
-                var statistics = await repository
-                    .GetStatisticsAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage,
-                        MaxListTake, token)
-                    .ConfigureAwait(false);
+                var statistics = result.Statistics;
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -198,6 +203,7 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelResponseTimePipelineCounter.List: cancelled user={userName}");
@@ -208,8 +214,10 @@ namespace Jube.Service.EntityAnalysisModelResponseTimePipelineCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelResponseTimePipelineCounter.List: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }

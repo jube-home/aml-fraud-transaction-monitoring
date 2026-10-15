@@ -18,6 +18,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using Context.Extensions;
     using Context.Extensions.AbstractionRulesWithSearchKeys;
     using Microsoft.VisualBasic;
+    using Models;
 
     public sealed record TimeWindowResult(
         TimeWindowKind Kind,
@@ -80,6 +81,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var from = AbstractionWindow.FromDate(ruleInterval, ruleValue, searchKeyTtlInterval, searchKeyTtlValue,
                 referenceDate);
+
             return new TimeWindowResult(TimeWindowKind.AbstractionRule, ruleInterval, ruleValue, from, referenceDate,
                 referenceDate - from);
         }

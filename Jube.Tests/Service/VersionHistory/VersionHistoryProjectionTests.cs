@@ -30,10 +30,12 @@ namespace Jube.Test.Service.VersionHistory
         public void TheProbeShapesCarryTheValuesTheyAreGivenAsTheyAreRead()
         {
             var dto = new ProbeDto { Name = "n", Items = [2] };
+
             var version = new ProbeVersion
             {
                 Id = 1, Name = "v", Items = [3], Secret = "s", Version = 4, CreatedUser = "u"
             };
+
             var parent = new ProbeParentVersion { Id = 5, ProbeParentId = 6, Name = "p" };
 
             using var scope = new AssertionScope();
@@ -123,6 +125,7 @@ namespace Jube.Test.Service.VersionHistory
         public void ChangesOutsideTheExposedFieldsAreDropped()
         {
             var fields = VersionHistoryProjection.ExposedFields(typeof(ProbeDto), typeof(ProbeVersion));
+
             var changes = new List<VersionFieldChange>
             {
                 new("Name", "a", "b"),
@@ -139,6 +142,7 @@ namespace Jube.Test.Service.VersionHistory
         {
             var fields = VersionHistoryProjection.ExposedFields(typeof(ProbeDto), typeof(ProbeVersion));
             var oversized = new string('x', 250);
+
             var changes = new List<VersionFieldChange>
             {
                 new("Name", oversized, "short")

@@ -20,7 +20,7 @@ using Jube.Cache.Redis.Models;
 using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.TtlCounterAdministration;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 using EntityAnalysisModelDomain = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
@@ -38,6 +38,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             out FakeHybridResilientRedisDatabase redis)
         {
             var cacheService = TestCacheService.Create(out redis);
+
             var model = new EntityAnalysisModelDomain
             {
                 Instance =
@@ -51,6 +52,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                     CacheService = cacheService
                 }
             };
+
             return model;
         }
 
@@ -93,6 +95,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 Value = 4,
                 ReferenceDate = referenceDate
             };
+
             var ttlCounterAdministrationCacheService = new TtlCounterAdministrationCacheService(model);
             var batch = new CacheTtlCounterEntryRemovalBatch { Id = 1 };
             var entries = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
@@ -121,6 +124,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 Value = 4,
                 ReferenceDate = referenceDate
             };
+
             var ttlCounterAdministrationCacheService = new TtlCounterAdministrationCacheService(model);
             var batch = new CacheTtlCounterEntryRemovalBatch { Id = 1 };
             var entries = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
@@ -149,6 +153,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 Value = 4,
                 ReferenceDate = referenceDate
             };
+
             var ttlCounterAdministrationCacheService = new TtlCounterAdministrationCacheService(model);
             var batch = new CacheTtlCounterEntryRemovalBatch { Id = 42 };
             var entries = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
@@ -159,8 +164,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             entries.Should().ContainSingle();
             var entry = entries.Single();
             entry.CacheTtlCounterEntryRemovalBatchId.Should().Be(42);
+
             entry.Value.Should().Be("555000111",
                 "the audit Value column must be the per-record DataValue, not DataName");
+
             entry.DecrementCount.Should().Be(4);
             entry.RevisedCount.Should().Be(6);
             entry.ReferenceDate.Should().Be(referenceDate);
@@ -181,6 +188,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 Value = 4,
                 ReferenceDate = referenceDate
             };
+
             var ttlCounterAdministrationCacheService = new TtlCounterAdministrationCacheService(model);
             var batch = new CacheTtlCounterEntryRemovalBatch { Id = 1 };
             var entries = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
@@ -229,6 +237,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 entries, batch);
 
             entries.Should().HaveCount(2);
+
             entries.Should().Contain(e =>
                 e.Value == "account-a" && Math.Abs(e.DecrementCount - 3) < Tolerance &&
                 Math.Abs(e.RevisedCount - 7) < 0.001);

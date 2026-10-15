@@ -17,8 +17,8 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Parser;
 using Jube.Parser.Compiler;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -72,6 +72,7 @@ namespace Jube.Test.RuleParser
         {
             var dictionary = new PooledDictionary<string, double>();
             dictionary.TryAdd(name, value);
+
             return dictionary;
         }
 
@@ -79,6 +80,7 @@ namespace Jube.Test.RuleParser
         {
             values ??= new Values();
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -88,6 +90,7 @@ namespace Jube.Test.RuleParser
             rule.ErrorSpans.Should().BeEmpty();
             rule = parser.Parse(rule);
             rule.ErrorSpans.Should().BeEmpty();
+
             rule = context switch
             {
                 Context.Gateway => parser.WrapGatewayRule(rule, true),
@@ -134,6 +137,7 @@ namespace Jube.Test.RuleParser
                     counters.TryAdd("DeclinedSpend", 300);
                     counters.TryAdd("TotalSpend", 1000);
                     counters.TryAdd("ApprovedSpend", 700);
+
                     return counters;
                 }
                 case "Abstraction":
@@ -148,6 +152,7 @@ namespace Jube.Test.RuleParser
                 {
                     var instance = Activator.CreateInstance(parameter.ParameterType)!;
                     ((IDictionary<string, List<string>>)instance).Add("HighRiskTerms", ["John Smith"]);
+
                     return instance;
                 }
                 default:
@@ -207,6 +212,7 @@ namespace Jube.Test.RuleParser
             Evaluate(context, "Matched = Payload.Flag.MatchIsTrue()").Should().BeTrue();
             Evaluate(context, "Matched = Payload.Flag.MatchIsFalse()").Should().BeFalse();
             Evaluate(context, "Matched = Payload.Flag.RequireIsTrue().OtherwiseMatch()").Should().BeTrue();
+
             Evaluate(context, "Matched = Payload.Flag.RequireIsTrue().OtherwiseMatch()", new Values { Flag = false })
                 .Should().BeFalse();
         }
@@ -230,6 +236,7 @@ namespace Jube.Test.RuleParser
         public void TheBarePropertyNameLengthIsRefusedAtParseTimeSoItCannotBypassTheAllowList()
         {
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -244,6 +251,7 @@ namespace Jube.Test.RuleParser
         public void TheBareMethodNameTrimIsRefusedAtParseTimeSoItCannotBypassTheAllowList()
         {
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -301,7 +309,8 @@ namespace Jube.Test.RuleParser
         [MemberData(nameof(AllContexts))]
         public void AgainstSwitchesFieldAfterAnImplicitStart(Context context)
         {
-            const string rule = "Matched = Payload.Amount.RequireGreater(100).Against(Payload.Narrative).MatchContains(\"Smith\")";
+            const string rule =
+                "Matched = Payload.Amount.RequireGreater(100).Against(Payload.Narrative).MatchContains(\"Smith\")";
 
             Evaluate(context, rule).Should().BeTrue();
             Evaluate(context, rule, new Values { Amount = 50 }).Should().BeFalse();
@@ -321,6 +330,7 @@ namespace Jube.Test.RuleParser
         public void AListTokenCanBeAnArgumentOfAnImplicitStart(Context context)
         {
             Evaluate(context, "Matched = Payload.Narrative.MatchSomehowInList(List.HighRiskTerms)").Should().BeTrue();
+
             Evaluate(context, "Matched = Payload.Narrative.MatchSomehowInList(List.HighRiskTerms)",
                 new Values { Narrative = "Bob Marley" }).Should().BeFalse();
         }
@@ -365,19 +375,21 @@ namespace Jube.Test.RuleParser
         public void ADeclineRatioIsARatioOfTwoCountersComparedInTheSameChain()
         {
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).MatchGreater(0.25)").Should().BeTrue();
+                    "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).MatchGreater(0.25)").Should()
+                .BeTrue();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).MatchGreater(0.35)").Should().BeFalse();
+                    "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).MatchGreater(0.35)").Should()
+                .BeFalse();
         }
 
         [Fact]
         public void AShareOfSumIsTheDeclineRatioOverDeclinedPlusApproved()
         {
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.ShareOfSumWith(TTLCounter.ApprovedSpend).MatchInRange(0.29, 0.31)")
+                    "Matched = TTLCounter.DeclinedSpend.ShareOfSumWith(TTLCounter.ApprovedSpend).MatchInRange(0.29, 0.31)")
                 .Should().BeTrue();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchShareOfSumWithAbove(TTLCounter.ApprovedSpend, 0.25)")
+                    "Matched = TTLCounter.DeclinedSpend.MatchShareOfSumWithAbove(TTLCounter.ApprovedSpend, 0.25)")
                 .Should().BeTrue();
         }
 
@@ -385,10 +397,10 @@ namespace Jube.Test.RuleParser
         public void ACalculationCanBeChainedIntoAnother()
         {
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).Complement().MatchLess(0.8)")
+                    "Matched = TTLCounter.DeclinedSpend.RatioOf(TTLCounter.TotalSpend).Complement().MatchLess(0.8)")
                 .Should().BeTrue();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.PercentOf(TTLCounter.TotalSpend).MatchGreaterOrEqual(30)")
+                    "Matched = TTLCounter.DeclinedSpend.PercentOf(TTLCounter.TotalSpend).MatchGreaterOrEqual(30)")
                 .Should().BeTrue();
         }
 
@@ -396,10 +408,10 @@ namespace Jube.Test.RuleParser
         public void APredicateOnACalculationTakesTheBoundsAfterTheOtherValues()
         {
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchRatioOfInRange(TTLCounter.TotalSpend, 0.2, 0.4)")
+                    "Matched = TTLCounter.DeclinedSpend.MatchRatioOfInRange(TTLCounter.TotalSpend, 0.2, 0.4)")
                 .Should().BeTrue();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchRatioOfOutsideRange(TTLCounter.TotalSpend, 0.2, 0.4)")
+                    "Matched = TTLCounter.DeclinedSpend.MatchRatioOfOutsideRange(TTLCounter.TotalSpend, 0.2, 0.4)")
                 .Should().BeFalse();
         }
 
@@ -407,11 +419,13 @@ namespace Jube.Test.RuleParser
         public void AParamsCalculationTakesTheBoundFirst()
         {
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchSumWithAbove(900, TTLCounter.ApprovedSpend)").Should().BeTrue();
+                    "Matched = TTLCounter.DeclinedSpend.MatchSumWithAbove(900, TTLCounter.ApprovedSpend)").Should()
+                .BeTrue();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchSumWithAbove(1100, TTLCounter.ApprovedSpend)").Should().BeFalse();
+                    "Matched = TTLCounter.DeclinedSpend.MatchSumWithAbove(1100, TTLCounter.ApprovedSpend)").Should()
+                .BeFalse();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MaxWith(TTLCounter.ApprovedSpend, TTLCounter.TotalSpend).MatchEqual(1000)")
+                    "Matched = TTLCounter.DeclinedSpend.MaxWith(TTLCounter.ApprovedSpend, TTLCounter.TotalSpend).MatchEqual(1000)")
                 .Should().BeTrue();
         }
 
@@ -422,12 +436,13 @@ namespace Jube.Test.RuleParser
 
             Evaluate(Context.Activation, "Matched = TTLCounter.DeclinedSpend.RatioOf(Payload.Amount).MatchGreater(0)",
                 zero).Should().BeFalse();
-            Evaluate(Context.Activation, "Matched = TTLCounter.DeclinedSpend.RatioOf(Payload.Amount).MatchLess(1000000)",
+            Evaluate(Context.Activation,
+                "Matched = TTLCounter.DeclinedSpend.RatioOf(Payload.Amount).MatchLess(1000000)",
                 zero).Should().BeFalse();
             Evaluate(Context.Activation, "Matched = TTLCounter.DeclinedSpend.MatchRatioOfAbove(Payload.Amount, 0.1)",
                 zero).Should().BeFalse();
             Evaluate(Context.Activation,
-                "Matched = TTLCounter.DeclinedSpend.MatchRatioOfOutsideRange(Payload.Amount, 0, 1)", zero)
+                    "Matched = TTLCounter.DeclinedSpend.MatchRatioOfOutsideRange(Payload.Amount, 0, 1)", zero)
                 .Should().BeFalse();
         }
 
@@ -465,7 +480,8 @@ namespace Jube.Test.RuleParser
         [MemberData(nameof(AllContexts))]
         public void OrAndAndBetweenPipelinesOfDifferentTypesCompile(Context context)
         {
-            Evaluate(context, "Matched = Payload.Amount.MatchGreater(1000) Or Payload.Narrative.MatchContains(\"Smith\")")
+            Evaluate(context,
+                    "Matched = Payload.Amount.MatchGreater(1000) Or Payload.Narrative.MatchContains(\"Smith\")")
                 .Should().BeTrue();
             Evaluate(context, "Matched = Payload.Amount.MatchGreater(100) And Payload.Count.MatchGreater(5)")
                 .Should().BeTrue();
@@ -485,7 +501,8 @@ namespace Jube.Test.RuleParser
         [Fact]
         public void APlainBooleanOnTheLeftOfAPipelineDoesNotCompileSoThePipelineGoesFirst()
         {
-            var act = () => Evaluate(Context.Gateway, "Matched = Payload.Count > 5 And Payload.Amount.MatchGreater(100)");
+            var act = () =>
+                Evaluate(Context.Gateway, "Matched = Payload.Count > 5 And Payload.Amount.MatchGreater(100)");
 
             act.Should().Throw<Exception>();
         }
@@ -515,7 +532,8 @@ namespace Jube.Test.RuleParser
         [MemberData(nameof(AllContexts))]
         public void APipelineCanBeUsedDirectlyInAnIfWithOr(Context context)
         {
-            const string rule = "If Payload.Amount.MatchGreater(1000) Or Payload.Count.MatchGreater(5) Then\r\nMatched = True\r\nEnd If";
+            const string rule =
+                "If Payload.Amount.MatchGreater(1000) Or Payload.Count.MatchGreater(5) Then\r\nMatched = True\r\nEnd If";
 
             Evaluate(context, rule).Should().BeTrue();
         }
@@ -556,19 +574,24 @@ namespace Jube.Test.RuleParser
         public void ATerminalAloneOnAFieldIsNotAnEntryPoint(Context context)
         {
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
                 OriginalRuleText = "Matched = Payload.Amount.Match()",
                 ParsedRuleText = "Matched = Payload.Amount.Match()"
             });
+
             rule = parser.Parse(rule);
-            rule = context == Context.Gateway ? parser.WrapGatewayRule(rule, true) : parser.WrapActivationRule(rule, true);
+            rule = context == Context.Gateway
+                ? parser.WrapGatewayRule(rule, true)
+                : parser.WrapActivationRule(rule, true);
 
             var references = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
                 .Select(a => a.Location)
                 .ToArray();
+
             var compile = new Compile();
             compile.CompileCode(rule.ParsedRuleText, TestLog.NoOp, references, Compile.Language.Vb);
 

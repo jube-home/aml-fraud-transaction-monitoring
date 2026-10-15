@@ -34,7 +34,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             context.ActivationRuleFinishResponseElevation(context.EntityAnalysisModelInstanceEntryPayload
                 .ResponseElevation.Value);
+
             context.ActivationRuleResponseElevationAddToCounters();
+
             context.UpdateContextStateWithActivationRulesOutcome(activationRuleCount, prevailingActivationRuleId,
                 createCase);
 

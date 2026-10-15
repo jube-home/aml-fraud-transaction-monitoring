@@ -13,6 +13,11 @@
 
 using System;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery.Models
 {
     internal sealed record Seeded(Guid ModelGuid, string Key, string KeyValue, string RuleName, int RuleId);

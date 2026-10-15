@@ -18,7 +18,6 @@ using Jube.Dictionary.Extensions;
 using Xunit;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Jube.Test.Dictionary.Extensions
 {
     [Trait("Category", "Unit")]

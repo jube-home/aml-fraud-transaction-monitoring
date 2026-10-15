@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-22f2be7c-t jc-22f2be7c-d">
+    <title id="jc-22f2be7c-t">Outcome mix by segment</title>
+    <desc id="jc-22f2be7c-d">100% stacked bar chart with 3 series: Confirmed, False positive, Pending. 3 categories,
+        vertical bars. Values range from 0 to 100.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Outcome mix by segment</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="73.32" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Confirmed</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="105.32" y="44" width="94.8" height="18"/>
+        <rect class="sw" x="107.32" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="125.32" y="57">False positive</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="218.12" y="44" width="61.68" height="18"/>
+        <rect class="sw" x="220.12" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="238.12" y="57">Pending</text>
+    </g>
+    <line class="gl" x1="52.38" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="44.38" y="364">0%</text>
+    <line class="gl" x1="52.38" y1="305.6" x2="624" y2="305.6"/>
+    <text class="tk end mid" x="44.38" y="305.6">20%</text>
+    <line class="gl" x1="52.38" y1="247.2" x2="624" y2="247.2"/>
+    <text class="tk end mid" x="44.38" y="247.2">40%</text>
+    <line class="gl" x1="52.38" y1="188.8" x2="624" y2="188.8"/>
+    <text class="tk end mid" x="44.38" y="188.8">60%</text>
+    <line class="gl" x1="52.38" y1="130.4" x2="624" y2="130.4"/>
+    <text class="tk end mid" x="44.38" y="130.4">80%</text>
+    <line class="gl" x1="52.38" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="44.38" y="72">100%</text>
+    <line class="ax" x1="52.38" y1="364" x2="624" y2="364"/>
+    <text class="tk ctr" x="147.65" y="380">Retail</text>
+    <text class="tk ctr" x="338.19" y="380">Business</text>
+    <text class="tk ctr" x="528.73" y="380">Private</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Retail, Confirmed: 12, Total: 100, Share: 12%">
+            <title>Retail, Confirmed: 12, Total: 100, Share: 12%</title>
+            <path class="bar m" d="M76.2 328.96L219.1 328.96L219.1 364L76.2 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="93.03" y="242.96" width="109.24" height="78" rx="6"/>
+                <text class="tx b" x="103.03" y="260.96">Retail</text>
+                <rect class="tsw s0" x="103.03" y="268.96" width="9" height="9" rx="2"/>
+                <text class="tx" x="117.03" y="277.96">Confirmed: 12</text>
+                <text class="tx" x="103.03" y="294.96">Total: 100</text>
+                <text class="tx" x="103.03" y="311.96">Share: 12%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Business, Confirmed: 30, Total: 100, Share: 30%">
+            <title>Business, Confirmed: 30, Total: 100, Share: 30%</title>
+            <path class="bar m" d="M266.74 276.4L409.64 276.4L409.64 364L266.74 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="283.57" y="190.4" width="109.24" height="78" rx="6"/>
+                <text class="tx b" x="293.57" y="208.4">Business</text>
+                <rect class="tsw s0" x="293.57" y="216.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="307.57" y="225.4">Confirmed: 30</text>
+                <text class="tx" x="293.57" y="242.4">Total: 100</text>
+                <text class="tx" x="293.57" y="259.4">Share: 30%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Private, Confirmed: 5, Total: 25, Share: 20%">
+            <title>Private, Confirmed: 5, Total: 25, Share: 20%</title>
+            <path class="bar m" d="M457.28 305.6L600.18 305.6L600.18 364L457.28 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="477.47" y="219.6" width="102.52" height="78" rx="6"/>
+                <text class="tx b" x="487.47" y="237.6">Private</text>
+                <rect class="tsw s0" x="487.47" y="245.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="501.47" y="254.6">Confirmed: 5</text>
+                <text class="tx" x="487.47" y="271.6">Total: 25</text>
+                <text class="tx" x="487.47" y="288.6">Share: 20%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Retail, False positive: 80, Total: 100, Share: 80%">
+            <title>Retail, False positive: 80, Total: 100, Share: 80%</title>
+            <path class="bar m" d="M76.2 95.36L219.1 95.36L219.1 328.96L76.2 328.96Z"/>
+            <g class="tt">
+                <rect class="tb" x="82.29" y="103.36" width="130.72" height="78" rx="6"/>
+                <text class="tx b" x="92.29" y="121.36">Retail</text>
+                <rect class="tsw s1" x="92.29" y="129.36" width="9" height="9" rx="2"/>
+                <text class="tx" x="106.29" y="138.36">False positive: 80</text>
+                <text class="tx" x="92.29" y="155.36">Total: 100</text>
+                <text class="tx" x="92.29" y="172.36">Share: 80%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Business, False positive: 50, Total: 100, Share: 50%">
+            <title>Business, False positive: 50, Total: 100, Share: 50%</title>
+            <path class="bar m" d="M266.74 130.4L409.64 130.4L409.64 276.4L266.74 276.4Z"/>
+            <g class="tt">
+                <rect class="tb" x="272.83" y="138.4" width="130.72" height="78" rx="6"/>
+                <text class="tx b" x="282.83" y="156.4">Business</text>
+                <rect class="tsw s1" x="282.83" y="164.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="296.83" y="173.4">False positive: 50</text>
+                <text class="tx" x="282.83" y="190.4">Total: 100</text>
+                <text class="tx" x="282.83" y="207.4">Share: 50%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Private, False positive: 15, Total: 25, Share: 60%">
+            <title>Private, False positive: 15, Total: 25, Share: 60%</title>
+            <path class="bar m" d="M457.28 130.4L600.18 130.4L600.18 305.6L457.28 305.6Z"/>
+            <g class="tt">
+                <rect class="tb" x="463.37" y="138.4" width="130.72" height="78" rx="6"/>
+                <text class="tx b" x="473.37" y="156.4">Private</text>
+                <rect class="tsw s1" x="473.37" y="164.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="487.37" y="173.4">False positive: 15</text>
+                <text class="tx" x="473.37" y="190.4">Total: 25</text>
+                <text class="tx" x="473.37" y="207.4">Share: 60%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Retail, Pending: 8, Total: 100, Share: 8%">
+            <title>Retail, Pending: 8, Total: 100, Share: 8%</title>
+            <path class="bar m" d="M76.2 72L219.1 72L219.1 95.36L76.2 95.36Z"/>
+            <g class="tt">
+                <rect class="tb" x="102.21" y="80" width="90.88" height="78" rx="6"/>
+                <text class="tx b" x="112.21" y="98">Retail</text>
+                <rect class="tsw s2" x="112.21" y="106" width="9" height="9" rx="2"/>
+                <text class="tx" x="126.21" y="115">Pending: 8</text>
+                <text class="tx" x="112.21" y="132">Total: 100</text>
+                <text class="tx" x="112.21" y="149">Share: 8%</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Business, Pending: 20, Total: 100, Share: 20%">
+            <title>Business, Pending: 20, Total: 100, Share: 20%</title>
+            <path class="bar m" d="M266.74 72L409.64 72L409.64 130.4L266.74 130.4Z"/>
+            <g class="tt">
+                <rect class="tb" x="289.39" y="80" width="97.6" height="78" rx="6"/>
+                <text class="tx b" x="299.39" y="98">Business</text>
+                <rect class="tsw s2" x="299.39" y="106" width="9" height="9" rx="2"/>
+                <text class="tx" x="313.39" y="115">Pending: 20</text>
+                <text class="tx" x="299.39" y="132">Total: 100</text>
+                <text class="tx" x="299.39" y="149">Share: 20%</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Private, Pending: 5, Total: 25, Share: 20%">
+            <title>Private, Pending: 5, Total: 25, Share: 20%</title>
+            <path class="bar m" d="M457.28 72L600.18 72L600.18 130.4L457.28 130.4Z"/>
+            <g class="tt">
+                <rect class="tb" x="483.29" y="80" width="90.88" height="78" rx="6"/>
+                <text class="tx b" x="493.29" y="98">Private</text>
+                <rect class="tsw s2" x="493.29" y="106" width="9" height="9" rx="2"/>
+                <text class="tx" x="507.29" y="115">Pending: 5</text>
+                <text class="tx" x="493.29" y="132">Total: 25</text>
+                <text class="tx" x="493.29" y="149">Share: 20%</text>
+            </g>
+        </g>
+    </g>
+</svg>

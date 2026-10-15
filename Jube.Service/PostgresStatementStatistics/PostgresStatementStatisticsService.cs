@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,11 +14,12 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Helpers;
+using Jube.Data.Query.GetPostgresStatementStatisticsQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.PostgresStatementStatistics;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.PostgresStatementStatistics;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -53,6 +54,9 @@ namespace Jube.Service.PostgresStatementStatistics
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<PostgresStatementStatisticsService> CreateAsync(DbContext dbContext,
             string connectionString, string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -123,6 +127,7 @@ namespace Jube.Service.PostgresStatementStatistics
         {
             using var op = OperationScope.Start("PostgresStatementStatistics", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PostgresStatementStatistics.List: entry user={userName}");
@@ -132,12 +137,13 @@ namespace Jube.Service.PostgresStatementStatistics
             {
                 EnsurePermitted("PostgresStatementStatistics.List");
 
-                await using var repository = new PostgresStatementStatisticsRepository(connectionString);
-                var rows = await repository.GetStatementStatisticsAsync(token).ConfigureAwait(false);
+                await using var query = new GetPostgresStatementStatisticsQuery(connectionString);
+                var rows = await query.ExecuteAsync(token).ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     var lowerSearch = search.ToLower();
+
                     rows = rows.Where(r =>
                         (r.UserName != null && r.UserName.ToLower().Contains(lowerSearch)) ||
                         (r.DatabaseName != null && r.DatabaseName.ToLower().Contains(lowerSearch)) ||
@@ -170,6 +176,7 @@ namespace Jube.Service.PostgresStatementStatistics
                 });
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresStatementStatistics.List: {dtos.Count} rows user={userName}");
@@ -185,6 +192,7 @@ namespace Jube.Service.PostgresStatementStatistics
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresStatementStatistics.List: cancelled user={userName}");
@@ -209,6 +217,7 @@ namespace Jube.Service.PostgresStatementStatistics
             }
 
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             IEnumerable<PostgresStatementStatisticsDto> sorted = sortField switch
             {
                 "queryId" => OrderBy(dtos, d => d.QueryId, descending),

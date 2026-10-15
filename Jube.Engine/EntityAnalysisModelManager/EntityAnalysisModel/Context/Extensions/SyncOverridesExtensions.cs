@@ -38,6 +38,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     var shadow = new Dictionary<string, Dictionary<string, EntityAnalysisModelOverride>>();
 
                     await AddModelOverridesAsync(context, key, shadow).ConfigureAwait(false);
+
                     await AddActivationRuleOverrideAsync(context, key, value.Instance.Guid, shadow)
                         .ConfigureAwait(false);
 

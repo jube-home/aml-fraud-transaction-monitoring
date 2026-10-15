@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,10 +17,11 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.UserRegistryApiKey;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.UserRegistryApiKey;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Repository.UserRegistryApiKey.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.Repository.UserRegistryApiKey;
 using log4net;
@@ -32,7 +33,6 @@ namespace Jube.Service.Repository.UserRegistryApiKey
     public sealed class UserRegistryApiKeyService
     {
         private static readonly int[] permissions = [35];
-
         private readonly ILog auditLog;
         private readonly IUserRegistryApiKeyCacheInvalidator cacheInvalidator;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
@@ -42,8 +42,8 @@ namespace Jube.Service.Repository.UserRegistryApiKey
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
-        private readonly UserRegistryRepository userRegistryRepository;
         private readonly string userName;
+        private readonly UserRegistryRepository userRegistryRepository;
         private readonly UserRegistryApiKeyDtoValidator validator;
 
         private UserRegistryApiKeyService(DbContext dbContext, string userName, int tenantRegistryId,
@@ -64,6 +64,8 @@ namespace Jube.Service.Repository.UserRegistryApiKey
             userRegistryRepository = new UserRegistryRepository(dbContext, userName);
             validator = new UserRegistryApiKeyDtoValidator(userRegistryRepository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<UserRegistryApiKeyService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -122,6 +124,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
         {
             using var op = OperationScope.Start("UserRegistryApiKey", "ListByUserRegistryId", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistryApiKey.ListByUserRegistryId: entry userRegistryId={userRegistryId} " +
@@ -131,6 +134,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
             try
             {
                 EnsurePermitted("UserRegistryApiKey.ListByUserRegistryId");
+
                 var dtos = UserRegistryApiKeyMapper.ToDto(
                     await repository.GetByUserRegistryIdAsync(userRegistryId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
@@ -156,8 +160,10 @@ namespace Jube.Service.Repository.UserRegistryApiKey
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"UserRegistryApiKey.ListByUserRegistryId: unexpected failure " +
                           $"userRegistryId={userRegistryId} user={userName}", ex);
+
                 throw;
             }
         }
@@ -174,6 +180,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
         {
             using var op = OperationScope.Start("UserRegistryApiKey", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistryApiKey.Insert: entry user={userName} " +
@@ -186,6 +193,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                 EnsurePermitted("UserRegistryApiKey.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -199,6 +207,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
 
                 var userRegistry = await userRegistryRepository.GetByIdAsync(model.UserRegistryId, token)
                     .ConfigureAwait(false);
+
                 if (userRegistry is null)
                 {
                     if (log.IsWarnEnabled)
@@ -243,6 +252,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
 
                 var dto = UserRegistryApiKeyMapper.ToDto(saved);
                 dto.ApiKeyDisplay = generated.ApiKey;
+
                 return dto;
             }
             catch (ForbiddenException)
@@ -289,6 +299,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
         {
             using var op = OperationScope.Start("UserRegistryApiKey", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistryApiKey.Delete: entry id={id} user={userName}");
@@ -299,9 +310,11 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                 EnsurePermitted("UserRegistryApiKey.Delete");
 
                 var existingAnyTenant = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (existingAnyTenant is null)
                 {
                     op.Outcome("noop_already_gone");
+
                     if (log.IsInfoEnabled)
                     {
                         log.Info($"UserRegistryApiKey.Delete: id={id} already absent, no-op user={userName}");
@@ -317,6 +330,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                 catch (KeyNotFoundException)
                 {
                     op.Outcome("noop_already_gone");
+
                     if (log.IsWarnEnabled)
                     {
                         log.Warn($"UserRegistryApiKey.Delete: id={id} exists but not visible to tenant, " +

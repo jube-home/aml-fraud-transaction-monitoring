@@ -11,13 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Service.EntityApproval
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Data.Query.Models;
-    using Data.Repository;
 
     public static class EntityApprovalPipelineOrder
     {
@@ -37,6 +38,7 @@ namespace Jube.Service.EntityApproval
             EntityApprovalKind.EntityAnalysisModelAbstractionRule,
             EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
             EntityApprovalKind.ExhaustiveSearchInstance,
+            EntityApprovalKind.AdvancedAnalyticsInstance,
             EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
             EntityApprovalKind.EntityAnalysisModelActivationRule,
             EntityApprovalKind.EntityAnalysisModelTag
@@ -45,6 +47,7 @@ namespace Jube.Service.EntityApproval
         public static int Rank(EntityApprovalKind kind)
         {
             var index = Array.IndexOf(stages, kind);
+
             return index < 0 ? int.MaxValue : index;
         }
 

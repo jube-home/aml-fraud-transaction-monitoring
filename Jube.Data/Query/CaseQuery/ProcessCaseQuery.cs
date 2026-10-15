@@ -33,12 +33,14 @@ namespace Jube.Data.Query.CaseQuery
             }
 
             var caseWorkflowXPathByCaseWorkflowIdQuery =
-                new GetCaseWorkflowXPathByCaseWorkflowIdQuery(dbContext, userName);
+                new GetCaseWorkflowXPathByCaseWorkflowIdQuery.GetCaseWorkflowXPathByCaseWorkflowIdQuery(dbContext,
+                    userName);
 
             var xPaths = await caseWorkflowXPathByCaseWorkflowIdQuery
                 .ExecuteAsync(getCaseByIdDto.CaseWorkflowGuid, token);
 
             JObject json;
+
             try
             {
                 json = JObject.Parse(getCaseByIdDto.Json ?? "{}");
@@ -54,9 +56,11 @@ namespace Jube.Data.Query.CaseQuery
             {
                 var getCaseByIdFieldEntryDto = new GetCaseByIdFieldEntryDto();
                 var missing = false;
+
                 try
                 {
                     var jToken = json.SelectToken(xPath.XPath);
+
                     if (jToken != null)
                     {
                         getCaseByIdFieldEntryDto.Value = jToken.Value<string>();
@@ -109,9 +113,10 @@ namespace Jube.Data.Query.CaseQuery
 
             getCaseByIdDto.Activation = [];
             IEnumerable<JToken> jTokensActivation;
+
             try
             {
-                jTokensActivation = json.SelectTokens("$.activation").ToList();
+                jTokensActivation = [.. json.SelectTokens("$.activation")];
             }
             catch (Newtonsoft.Json.JsonException)
             {

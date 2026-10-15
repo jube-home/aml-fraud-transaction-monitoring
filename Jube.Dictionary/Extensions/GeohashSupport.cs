@@ -21,6 +21,7 @@ namespace Jube.Dictionary.Extensions
             latitude = double.NaN;
             longitude = double.NaN;
             var value = (geohash ?? "").Trim().ToLowerInvariant();
+
             if (value.Length is 0 or > 12)
             {
                 return false;
@@ -28,9 +29,11 @@ namespace Jube.Dictionary.Extensions
 
             double latitudeLow = -90, latitudeHigh = 90, longitudeLow = -180, longitudeHigh = 180;
             var even = true;
+
             foreach (var c in value)
             {
                 var index = alphabet.IndexOf(c);
+
                 if (index < 0)
                 {
                     return false;
@@ -39,9 +42,11 @@ namespace Jube.Dictionary.Extensions
                 for (var mask = 16; mask > 0; mask >>= 1)
                 {
                     var set = (index & mask) != 0;
+
                     if (even)
                     {
                         var middle = (longitudeLow + longitudeHigh) / 2;
+
                         if (set)
                         {
                             longitudeLow = middle;
@@ -54,6 +59,7 @@ namespace Jube.Dictionary.Extensions
                     else
                     {
                         var middle = (latitudeLow + latitudeHigh) / 2;
+
                         if (set)
                         {
                             latitudeLow = middle;
@@ -70,6 +76,7 @@ namespace Jube.Dictionary.Extensions
 
             latitude = (latitudeLow + latitudeHigh) / 2;
             longitude = (longitudeLow + longitudeHigh) / 2;
+
             return true;
         }
     }

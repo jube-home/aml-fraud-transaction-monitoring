@@ -1,108 +1,103 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using Accord.Math;
+using Accord.Statistics;
 
 namespace Accord.MachineLearning.DecisionTrees.Pruning
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Collections;
-    using Accord.Math.Optimization.Losses;
-
     /// <summary>
-    ///   Reduced error pruning.
+    ///     Reduced error pruning.
     /// </summary>
-    /// 
     public class ReducedErrorPruning
     {
+        private readonly int[] actual;
 
-        DecisionTree tree;
+        private readonly Dictionary<DecisionNode, NodeInfo> info;
 
-        double[][] inputs;
-        int[] outputs;
-        int[] actual;
-
-        Dictionary<DecisionNode, NodeInfo> info;
-
-        private class NodeInfo
-        {
-            public List<int> subset;
-            public double error;
-            public double gain;
-
-            public NodeInfo()
-            {
-                subset = new List<int>();
-            }
-        }
-        
+        private readonly double[][] inputs;
+        private readonly int[] outputs;
+        private readonly DecisionTree tree;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="ReducedErrorPruning"/> class.
+        ///     Initializes a new instance of the <see cref="ReducedErrorPruning" /> class.
         /// </summary>
-        /// 
         /// <param name="tree">The tree to be pruned.</param>
         /// <param name="inputs">The pruning set inputs.</param>
         /// <param name="outputs">The pruning set outputs.</param>
-        /// 
         public ReducedErrorPruning(DecisionTree tree, double[][] inputs, int[] outputs)
         {
             this.tree = tree;
             this.inputs = inputs;
             this.outputs = outputs;
-            this.info = new Dictionary<DecisionNode, NodeInfo>();
-            this.actual = new int[outputs.Length];
+            info = new Dictionary<DecisionNode, NodeInfo>();
+            actual = new int[outputs.Length];
 
             foreach (var node in tree)
+            {
                 info[node] = new NodeInfo();
+            }
 
-            for (int i = 0; i < inputs.Length; i++)
+            for (var i = 0; i < inputs.Length; i++)
+            {
                 trackDecisions(tree.Root, inputs[i], i);
+            }
         }
 
-
         /// <summary>
-        ///   Computes one pass of the pruning algorithm.
+        ///     Computes one pass of the pruning algorithm.
         /// </summary>
-        /// 
         public double Run()
         {
             // Compute misclassifications at each node
             foreach (var node in tree)
+            {
                 info[node].error = computeError(node);
+            }
 
             // Compute the gain at each node
             foreach (var node in tree)
+            {
                 info[node].gain = computeGain(node);
+            }
 
             // Get maximum violating node
-            double maxGain = Double.NegativeInfinity;
+            var maxGain = double.NegativeInfinity;
             DecisionNode maxNode = null;
             foreach (var node in tree)
             {
-                double gain = info[node].gain;
+                var gain = info[node].gain;
 
                 if (gain > maxGain)
                 {
@@ -113,10 +108,10 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
 
             if (maxGain >= 0 && maxNode != null)
             {
-                int[] o = outputs.Get(info[maxNode].subset.ToArray());
+                var o = outputs.Get(info[maxNode].subset.ToArray());
 
                 // prune the maximum gain node
-                int common = Measures.Mode(o);
+                var common = o.Mode();
 
                 maxNode.Branches = null;
                 maxNode.Output = common;
@@ -125,29 +120,38 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
             return computeError();
         }
 
-
-
         private double computeError(DecisionNode node)
         {
-            List<int> indices = info[node].subset;
+            var indices = info[node].subset;
 
-            int error = 0;
-            foreach (int i in indices)
-                if (outputs[i] != actual[i]) error++;
+            var error = 0;
+            foreach (var i in indices)
+            {
+                if (outputs[i] != actual[i])
+                {
+                    error++;
+                }
+            }
+
             return error / (double)indices.Count;
         }
 
         private double computeGain(DecisionNode node)
         {
-            if (node.IsLeaf) return Double.NegativeInfinity;
+            if (node.IsLeaf)
+            {
+                return double.NegativeInfinity;
+            }
 
             // Compute the sum of misclassifications at the children
             double sum = 0;
             foreach (var child in node.Branches)
+            {
                 sum += info[child].error;
+            }
 
             // Get the misclassifications at the current node
-            double current = info[node].error;
+            var current = info[node].error;
 
             // Compute the expected gain at the current node:
             return sum - current;
@@ -155,22 +159,23 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
 
         private double computeError()
         {
-            int error = 0;
-            for (int i = 0; i < inputs.Length; i++)
+            var error = 0;
+            for (var i = 0; i < inputs.Length; i++)
             {
-                int actual = tree.Decide(inputs[i]);
-                int expected = outputs[i];
-                if (actual != expected) error++;
+                var actual = tree.Decide(inputs[i]);
+                var expected = outputs[i];
+                if (actual != expected)
+                {
+                    error++;
+                }
             }
 
             return error / (double)inputs.Length;
         }
 
-
-
         private void trackDecisions(DecisionNode root, double[] input, int index)
         {
-            DecisionNode current = root;
+            var current = root;
 
             while (current != null)
             {
@@ -182,15 +187,16 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
                     return;
                 }
 
-                int attribute = current.Branches.AttributeIndex;
+                var attribute = current.Branches.AttributeIndex;
 
                 DecisionNode nextNode = null;
 
-                foreach (DecisionNode branch in current.Branches)
+                foreach (var branch in current.Branches)
                 {
                     if (branch.Compute(input[attribute]))
                     {
-                        nextNode = branch; break;
+                        nextNode = branch;
+                        break;
                     }
                 }
 
@@ -199,6 +205,18 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
 
             // Normal execution should not reach here.
             throw new InvalidOperationException("The tree is degenerated.");
+        }
+
+        private class NodeInfo
+        {
+            public readonly List<int> subset;
+            public double error;
+            public double gain;
+
+            public NodeInfo()
+            {
+                subset = new List<int>();
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidIsin(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();
+
             if (value.Length != 12 || !char.IsAsciiLetterUpper(value[0]) || !char.IsAsciiLetterUpper(value[1]) ||
                 !char.IsAsciiDigit(value[11]) || !value.All(char.IsAsciiLetterOrDigit))
             {
@@ -25,6 +26,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var expanded = new System.Text.StringBuilder();
+
             foreach (var c in value)
             {
                 expanded.Append(char.IsAsciiDigit(c) ? (c - '0').ToString() : (c - 'A' + 10).ToString());

@@ -51,7 +51,6 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -59,18 +58,25 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
             await using var dbContext = fx.GetDbContext();
 
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -102,6 +108,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
             createdModelIds.Add(saved.Id);
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -130,6 +137,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
 
             var statusName = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40];
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = statusName,
@@ -161,6 +169,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
 
             var key = caseKey ?? "account";
             var value = caseKeyValue ?? $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.Case
             {
                 EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
@@ -239,9 +248,11 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task ForbiddenUserCannotSeeExistingMatchingCaseAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission,
                 [fx.Seed.UserWithPermission, fx.Seed.UserWithoutPermission],
                 [fx.Seed.UserWithPermission, fx.Seed.UserWithoutPermission]);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync(c.CaseKey, c.CaseKeyValue));
@@ -251,8 +262,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task GetAsyncMapsEveryFieldOfTheSeededCaseAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission]);
+
             var poco = await dbContext.Case.FirstAsync(w => w.Id == c.CaseId);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
@@ -287,14 +300,17 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task GetAsyncMapsNullableColumnsToLegacyDefaultsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission]);
+
             await dbContext.Case.Where(w => w.Id == c.CaseId)
                 .Set(w => w.Locked, (byte?)null).Set(w => w.LockedUser, (string?)null)
                 .Set(w => w.Diary, (byte?)null).Set(w => w.DiaryUser, (string?)null)
                 .Set(w => w.ClosedUser, (string?)null).Set(w => w.ClosedStatusId, (byte?)null)
                 .Set(w => w.Rating, (byte?)null).Set(w => w.DiaryDate, (DateTime?)null)
                 .UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().ContainSingle().Subject;
@@ -314,10 +330,12 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var value = $"multi-{Guid.NewGuid():N}"[..20];
+
             var first = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], caseKeyValue: value);
             var second = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], caseKeyValue: value);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync("account", value);
@@ -340,8 +358,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task GetAsyncRequiresBothKeyAndValueToMatchAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], caseKey: "account");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync("otherkey", c.CaseKeyValue)).Should().BeEmpty();
@@ -354,10 +374,12 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var value = $"tenant-{Guid.NewGuid():N}"[..20];
+
             var caseA = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], caseKeyValue: value);
             var caseB = await CreateCaseAsync(dbContext, fx.Seed.UserTenantB, [fx.Seed.UserTenantB],
                 [fx.Seed.UserTenantB], caseKeyValue: value);
+
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
@@ -369,9 +391,11 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task TenantBCaseIsInvisibleToTenantAEvenWhenTenantARoleIsGrantedOnTheWorkflowAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserTenantB,
                 [fx.Seed.UserTenantB, fx.Seed.UserWithPermission],
                 [fx.Seed.UserTenantB, fx.Seed.UserWithPermission]);
+
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
@@ -383,8 +407,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenCallersRoleHasNoWorkflowRoleAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission,
                 [fx.Seed.UserWithPermissionNoApproval], [fx.Seed.UserWithPermission]);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -394,8 +420,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenCallersRoleHasNoStatusRoleAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermissionNoApproval]);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -405,9 +433,11 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsVisibleToEachRoleGrantedOnBothWorkflowAndStatusAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission,
                 [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproval],
                 [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproval]);
+
             var serviceOne = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var serviceTwo = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
@@ -419,8 +449,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenWorkflowIsSoftDeletedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], workflowDeleted: 1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -430,8 +462,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenStatusIsSoftDeletedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], statusDeleted: 1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -441,8 +475,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenWorkflowRoleIsSoftDeletedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], workflowRoleDeleted: 1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -452,8 +488,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task CaseIsHiddenWhenStatusRoleIsSoftDeletedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
                 [fx.Seed.UserWithPermission], statusRoleDeleted: 1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -516,6 +554,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
@@ -541,6 +580,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

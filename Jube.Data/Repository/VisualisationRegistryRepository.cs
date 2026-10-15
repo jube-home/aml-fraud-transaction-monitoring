@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -104,7 +105,6 @@ namespace Jube.Data.Repository
                 token);
         }
 
-
         public async Task<IEnumerable<VisualisationRegistry>> GetByShowInDirectoryActiveOrderByIdDescAsync(
             CancellationToken token = default)
         {
@@ -126,7 +126,6 @@ namespace Jube.Data.Repository
                                                                     && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
-
 
         public async Task<VisualisationRegistry> InsertAsync(VisualisationRegistry model,
             CancellationToken token = default)

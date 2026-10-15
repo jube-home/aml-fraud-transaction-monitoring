@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeGet", OperationKind.Read,
-                Idempotent: true, Destructive: false,
-                "Lists the String and Float fields of an Entity Analysis Model usable as search keys.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeGet", OperationKind.Read,
+                    true, false,
+                    "Lists the String and Float fields of an Entity Analysis Model usable as search keys.",
+                    EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeService.RequiredPermissions)
+            ]);
+        }
     }
 }

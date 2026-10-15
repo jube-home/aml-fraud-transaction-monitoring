@@ -21,7 +21,6 @@ namespace Jube.DynamicEnvironment.Container
     public static class ContainerResourceLimitReader
     {
         private const string CgroupRoot = "/sys/fs/cgroup";
-
         private static readonly ContainerResourceLimits empty = new(null, null, null, null, null, null);
 
         public static ContainerResourceLimits Read()
@@ -29,6 +28,7 @@ namespace Jube.DynamicEnvironment.Container
             try
             {
                 var v2 = ReadCgroupV2();
+
                 if (v2 != null)
                 {
                     return v2;
@@ -62,9 +62,11 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             double? cpuLimitCores = null;
+
             if (File.Exists(cpuMaxPath))
             {
                 var parts = File.ReadAllText(cpuMaxPath).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
                 if (parts.Length == 2 && parts[0] != "max" &&
                     double.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var quota) &&
                     double.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var period) &&
@@ -77,11 +79,13 @@ namespace Jube.DynamicEnvironment.Container
             long? cpuUsageMicroseconds = null;
             long? cpuThrottledPeriods = null;
             long? cpuThrottledMicroseconds = null;
+
             if (File.Exists(cpuStatPath))
             {
                 foreach (var line in File.ReadAllLines(cpuStatPath))
                 {
                     var fields = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
                     if (fields.Length != 2 || !long.TryParse(fields[1], NumberStyles.Integer,
                             CultureInfo.InvariantCulture, out var value))
                     {
@@ -104,9 +108,11 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             long? memoryLimitBytes = null;
+
             if (File.Exists(memoryMaxPath))
             {
                 var raw = File.ReadAllText(memoryMaxPath).Trim();
+
                 if (raw != "max" &&
                     long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var limit))
                 {
@@ -115,6 +121,7 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             long? memoryUsageBytes = null;
+
             if (File.Exists(memoryCurrentPath) &&
                 long.TryParse(File.ReadAllText(memoryCurrentPath).Trim(), NumberStyles.Integer,
                     CultureInfo.InvariantCulture, out var usage))
@@ -141,6 +148,7 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             double? cpuLimitCores = null;
+
             if (File.Exists(quotaPath) && File.Exists(periodPath) &&
                 long.TryParse(File.ReadAllText(quotaPath).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture,
                     out var quota) && quota > 0 &&
@@ -151,6 +159,7 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             long? cpuUsageMicroseconds = null;
+
             if (File.Exists(cpuUsagePath) &&
                 long.TryParse(File.ReadAllText(cpuUsagePath).Trim(), NumberStyles.Integer,
                     CultureInfo.InvariantCulture, out var usageNanoseconds))
@@ -160,11 +169,13 @@ namespace Jube.DynamicEnvironment.Container
 
             long? cpuThrottledPeriods = null;
             long? cpuThrottledMicroseconds = null;
+
             if (File.Exists(cpuStatPath))
             {
                 foreach (var line in File.ReadAllLines(cpuStatPath))
                 {
                     var fields = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
                     if (fields.Length != 2 || !long.TryParse(fields[1], NumberStyles.Integer,
                             CultureInfo.InvariantCulture, out var value))
                     {
@@ -184,6 +195,7 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             long? memoryLimitBytes = null;
+
             if (File.Exists(memoryLimitPath) &&
                 long.TryParse(File.ReadAllText(memoryLimitPath).Trim(), NumberStyles.Integer,
                     CultureInfo.InvariantCulture, out var limit) && limit < long.MaxValue / 2)
@@ -192,6 +204,7 @@ namespace Jube.DynamicEnvironment.Container
             }
 
             long? memoryUsageBytes = null;
+
             if (File.Exists(memoryUsagePath) &&
                 long.TryParse(File.ReadAllText(memoryUsagePath).Trim(), NumberStyles.Integer,
                     CultureInfo.InvariantCulture, out var usage))

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,26 +11,35 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.VisualisationRegistryDatasourceRole;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddVisualisationRegistryDatasourceRole(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "VisualisationRegistryDatasourceRoleListByVisualisationRegistryDatasourceGuid", OperationKind.Read,
-                Idempotent: true, Destructive: false,
-                "Lists the Role grants for a Visualisation Registry Datasource."),
-            new ServiceToolDescriptor(
-                "VisualisationRegistryDatasourceRoleCreate", OperationKind.Write, Idempotent: false,
-                Destructive: false,
-                "Grants a Role access to a Visualisation Registry Datasource; calling twice creates two grants."),
-            new ServiceToolDescriptor(
-                "VisualisationRegistryDatasourceRoleDelete", OperationKind.Delete, Idempotent: false,
-                Destructive: true,
-                "Removes a Role's grant on a Visualisation Registry Datasource; reversible only by direct " +
-                "database action. A repeat call on an already-removed grant throws rather than succeeding as a " +
-                "no-op, so retries are not safe to assume succeeded.")
-        ]);
+        static partial void AddVisualisationRegistryDatasourceRole(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceRoleListByVisualisationRegistryDatasourceGuid", OperationKind.Read,
+                    true, false,
+                    "Lists the Role grants for a Visualisation Registry Datasource.",
+                    VisualisationRegistryDatasourceRoleService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceRoleCreate", OperationKind.Write, false,
+                    false,
+                    "Grants a Role access to a Visualisation Registry Datasource; calling twice creates two grants.",
+                    VisualisationRegistryDatasourceRoleService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceRoleDelete", OperationKind.Delete, false,
+                    true,
+                    "Removes a Role's grant on a Visualisation Registry Datasource; reversible only by direct " +
+                    "database action. A repeat call on an already-removed grant throws rather than succeeding as a " +
+                    "no-op, so retries are not safe to assume succeeded.",
+                    VisualisationRegistryDatasourceRoleService.RequiredPermissions)
+            ]);
+        }
     }
 }

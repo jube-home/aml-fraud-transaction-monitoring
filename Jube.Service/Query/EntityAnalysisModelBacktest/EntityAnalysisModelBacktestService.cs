@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,14 +13,18 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Data.QueryBuilder;
+using Jube.Data.QueryBuilder.Models;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.Filter;
 using Jube.Dto.Query.EntityAnalysisModelBacktest;
 using Jube.Dto.Validation;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelBacktest;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -34,7 +38,6 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
     public sealed class EntityAnalysisModelBacktestService
     {
         private static readonly int[] permissions = [61];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -59,6 +62,8 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelBacktestService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -128,6 +133,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             return RunAsync("Fields", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 return new BacktestFieldsDto
                 {
                     FilterFields = ToFieldDtos(BuilderTarget.RuleText, await BacktestExecutor.FilterFieldsAsync(
@@ -159,6 +165,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                 ArgumentNullException.ThrowIfNull(request);
                 var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
                 var onlineMax = Setting("BacktestOnlineMaxRows", 10_000);
+
                 if (request.Limit > onlineMax)
                 {
                     return new BacktestResultDto
@@ -173,9 +180,11 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                 }
 
                 await using var archive = ReportDbContext();
+
                 var execution = await BacktestExecutor.ExecuteAsync(dbContext, tenantRegistryId,
                     ToSpecification(request, model.Id, request.Limit), (int)Setting("BacktestPageSize", 5000), null,
                     token, archive).ConfigureAwait(false);
+
                 return execution.Valid
                     ? ToDto(execution.Result)
                     : new BacktestResultDto { Errors = execution.Errors.Select(ToDto).ToList() };
@@ -198,10 +207,13 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             {
                 ArgumentNullException.ThrowIfNull(request);
                 var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
+
                 var specification = ToSpecification(request, model.Id,
                     Math.Min(request.Limit, Setting("BacktestMaxRows", 1_000_000)));
+
                 var (plan, errors) = await BacktestExecutor.PrepareAsync(dbContext, tenantRegistryId, specification,
                     token).ConfigureAwait(false);
+
                 if (plan == null)
                 {
                     return new BacktestSubmitResultDto { Errors = errors.Select(ToDto).ToList() };
@@ -209,7 +221,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
 
                 var instance = await new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId)
                     .InsertAsync(
-                        new Data.Poco.EntityAnalysisModelBacktestInstance
+                        new EntityAnalysisModelBacktestInstance
                         {
                             EntityAnalysisModelId = model.Id,
                             RuleType = specification.RuleType,
@@ -218,6 +230,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                             Status = (short)BacktestInstanceStatus.Pending,
                             CreatedUser = userName
                         }, token).ConfigureAwait(false);
+
                 return new BacktestSubmitResultDto { Valid = true, Instance = ToDto(instance, request.RuleId) };
             }, token);
         }
@@ -249,6 +262,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             return RunAsync("List", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 return (await new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId)
                         .GetByRuleAsync(model.Id, ruleType, ruleId, Math.Clamp(take, 1, 100), token)
                         .ConfigureAwait(false))
@@ -267,6 +281,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             return RunAsync("Result", async () =>
             {
                 var instance = await RequireInstanceAsync(id, token).ConfigureAwait(false);
+
                 if (instance.Result == null)
                 {
                     return new BacktestResultDto
@@ -294,9 +309,11 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             return RunAsync("Stop", async () =>
             {
                 await RequireInstanceAsync(id, token).ConfigureAwait(false);
+
                 await new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId)
                     .StopAsync(id, token)
                     .ConfigureAwait(false);
+
                 return ToDto(await RequireInstanceAsync(id, token).ConfigureAwait(false));
             }, token);
         }
@@ -317,9 +334,11 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                 ArgumentNullException.ThrowIfNull(request);
                 var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
                 await using var archive = ReportDbContext();
+
                 var (explanation, errors) = await BacktestExecutor.ExplainAsync(dbContext, tenantRegistryId,
                         ToSpecification(request, model.Id, 1), entityAnalysisModelInstanceEntryGuid, token, archive)
                     .ConfigureAwait(false);
+
                 if (explanation == null)
                 {
                     return new BacktestExplanationDto { Errors = errors.Select(ToDto).ToList() };
@@ -343,7 +362,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             }, token);
         }
 
-        private async Task<Data.Poco.EntityAnalysisModelBacktestInstance> RequireInstanceAsync(int id,
+        private async Task<EntityAnalysisModelBacktestInstance> RequireInstanceAsync(int id,
             CancellationToken token)
         {
             return await new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId)
@@ -370,13 +389,15 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             };
         }
 
-        private static BacktestInstanceDto ToDto(Data.Poco.EntityAnalysisModelBacktestInstance instance,
+        private static BacktestInstanceDto ToDto(EntityAnalysisModelBacktestInstance instance,
             int? ruleId = null)
         {
             var specification = JsonConvert.DeserializeObject<BacktestSpecification>(instance.Request)!;
+
             var result = instance.Result == null
                 ? null
                 : JsonConvert.DeserializeObject<BacktestResult>(instance.Result);
+
             return new BacktestInstanceDto
             {
                 Id = instance.Id, Guid = instance.Guid, EntityAnalysisModelId = instance.EntityAnalysisModelId,
@@ -481,6 +502,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             using var op = OperationScope.Start("EntityAnalysisModelBacktest", operation, userName, tenantRegistryId,
                 auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelBacktest.{operation}: entry user={userName}");
@@ -490,6 +512,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             {
                 token.ThrowIfCancellationRequested();
                 EnsurePermitted($"EntityAnalysisModelBacktest.{operation}");
+
                 return await body().ConfigureAwait(false);
             }
             catch (ForbiddenException)

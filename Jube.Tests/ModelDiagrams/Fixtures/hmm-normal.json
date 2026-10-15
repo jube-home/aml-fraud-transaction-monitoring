@@ -1,0 +1,75 @@
+{
+  "dimension": 1,
+  "emissions": [
+    {
+      "mean": 0.0,
+      "median": 0.0,
+      "variance": 1.0,
+      "standardDeviation": 1.0,
+      "mode": 0.0,
+      "skewness": 0.0,
+      "kurtosis": 0.0,
+      "support": {
+        "min": "-Infinity",
+        "max": "Infinity",
+        "length": "Infinity"
+      },
+      "entropy": 1.4189385332046727,
+      "quartiles": {
+        "min": -0.6744897501960816,
+        "max": 0.6744897501960816,
+        "length": 1.3489795003921632
+      }
+    },
+    {
+      "mean": 3.0,
+      "median": 3.0,
+      "variance": 4.0,
+      "standardDeviation": 2.0,
+      "mode": 3.0,
+      "skewness": 0.0,
+      "kurtosis": 0.0,
+      "support": {
+        "min": "-Infinity",
+        "max": "Infinity",
+        "length": "Infinity"
+      },
+      "entropy": 2.112085713764618,
+      "quartiles": {
+        "min": 1.6510204996078368,
+        "max": 4.348979500392163,
+        "length": 2.6979590007843264
+      }
+    }
+  ],
+  "states": 2,
+  "probabilities": [
+    -0.5108256237659907,
+    -0.916290731874155
+  ],
+  "logInitial": [
+    -0.5108256237659907,
+    -0.916290731874155
+  ],
+  "transitions": [
+    [
+      -0.35667494393873245,
+      -1.2039728043259361
+    ],
+    [
+      -0.916290731874155,
+      -0.5108256237659907
+    ]
+  ],
+  "logTransitions": [
+    [
+      -0.35667494393873245,
+      -1.2039728043259361
+    ],
+    [
+      -0.916290731874155,
+      -0.5108256237659907
+    ]
+  ],
+  "tag": null
+}

@@ -28,6 +28,7 @@ using Jube.Service.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Exceptions.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModelDictionaryKvp.Models;
@@ -66,6 +67,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             {
                 var kvpIds = await dbContext.GetTable<KvpPoco>()
                     .Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId).Select(s => s.Id).ToListAsync();
+
                 foreach (var kvpId in kvpIds)
                 {
                     await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
@@ -78,6 +80,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
                     .Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId).DeleteAsync();
                 await dbContext.GetTable<EntityAnalysisModelDictionaryVersion>()
                     .Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionary>().Where(w => w.Id == dictionaryId)
                     .DeleteAsync();
             }
@@ -86,6 +89,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -102,6 +106,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private async Task<int> CreateParentDictionaryAsync(DbContext dbContext, string createdUser)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -113,6 +118,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             createdModelIds.Add(model.Id);
 
             var dictionaryRepository = new EntityAnalysisModelDictionaryRepository(dbContext, createdUser);
+
             var dictionary = await dictionaryRepository.InsertAsync(new Data.Poco.EntityAnalysisModelDictionary
             {
                 EntityAnalysisModelGuid = model.Guid,
@@ -129,6 +135,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private static EntityAnalysisModelDictionaryKvpCsvUploadFileDto File(string name, string content)
         {
             var bytes = Encoding.UTF8.GetBytes(content);
+
             return new EntityAnalysisModelDictionaryKvpCsvUploadFileDto
             {
                 FileName = name, Length = bytes.Length, Content = new MemoryStream(bytes)
@@ -138,12 +145,14 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private static string Key(string label)
         {
             var key = $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}";
+
             return key.Length > 40 ? key[..40] : key;
         }
 
         private async Task<List<KvpPoco>> KvpsAsync(int dictionaryId)
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.GetTable<KvpPoco>().Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId)
                 .OrderBy(o => o.Id).ToListAsync();
         }
@@ -151,6 +160,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private async Task<List<UploadPoco>> UploadsAsync(int dictionaryId)
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.GetTable<UploadPoco>()
                 .Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId).OrderBy(o => o.Id).ToListAsync();
         }
@@ -178,8 +188,10 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             kvps.Single(s => s.KvpKey == k1).KvpValue.Should().Be(10.5);
             kvps.Single(s => s.KvpKey == k1).DeleteExpiryDate.Should().BeNull();
             kvps.Single(s => s.KvpKey == k2).KvpValue.Should().Be(7);
+
             kvps.Single(s => s.KvpKey == k2).DeleteExpiryDate.Should().NotBeNull()
                 .And.BeCloseTo(expiry, TimeSpan.FromSeconds(1));
+
             kvps.Should().OnlyContain(o => o.CreatedUser == fx.Seed.UserWithPermission);
 
             var uploads = await UploadsAsync(dictionaryId);
@@ -375,6 +387,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             await using var ownerDb = fx.GetDbContext();
             var dictionaryId = await CreateParentDictionaryAsync(ownerDb, fx.Seed.UserWithPermission);
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, log,
                 serviceChangeBus: bus);
 

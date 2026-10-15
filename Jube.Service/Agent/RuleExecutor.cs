@@ -12,7 +12,8 @@
  */
 
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetModelListsQuery;
+using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Dto.RuleExecution;
 using Jube.Dto.Validation;
@@ -26,7 +27,6 @@ namespace Jube.Service.Agent
     internal static class RuleExecutor
     {
         internal const string ContextModelMismatch = "ContextModelMismatch";
-
         private static readonly ILog log = LogManager.GetLogger(typeof(RuleExecutor));
 
         internal static async Task<RuleExecutionResultDto> ExecuteAsync(DbContext dbContext, int tenantRegistryId,
@@ -66,11 +66,14 @@ namespace Jube.Service.Agent
 
             var lists = await new GetModelListsQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
             var invocationContext = EntityAnalysisModelInvocationContextMapper.ToContext(context);
+
             var run = await RuleRunner.RunAsync(parsed, ruleParseType, reprocessing,
                 RuleRunner.ToInputs(invocationContext, lists), token).ConfigureAwait(false);
 
             var namesRead = parsed.References.Select(r => r.CompletionName).ToList();
+
             return new RuleExecutionResultDto
             {
                 Compiled = true,
@@ -108,6 +111,7 @@ namespace Jube.Service.Agent
                 RuleParse.AbstractionCalculation => "0",
                 _ => "False, so the rule is treated as not matched"
             };
+
             return $"The engine catches this error, logs it and returns {fallback}.";
         }
 

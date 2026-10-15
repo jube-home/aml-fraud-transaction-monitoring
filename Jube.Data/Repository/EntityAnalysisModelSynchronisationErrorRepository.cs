@@ -11,15 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class EntityAnalysisModelSynchronisationErrorRepository(DbContext dbContext)
     {
         public enum EntityAnalysisModelSynchronisationErrorStepEnum
@@ -42,7 +42,8 @@ namespace Jube.Data.Repository
             Tags = 16,
             Override = 17,
             ActivationRuleOverride = 18,
-            ApiUsers = 19
+            ApiUsers = 19,
+            AdvancedAnalyticsInstances = 20
         }
 
         public Task InsertAsync(EntityAnalysisModelSynchronisationErrorStepEnum synchronisationStepId,

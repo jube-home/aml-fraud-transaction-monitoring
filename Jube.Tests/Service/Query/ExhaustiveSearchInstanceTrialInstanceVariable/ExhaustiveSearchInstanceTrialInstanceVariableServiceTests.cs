@@ -37,6 +37,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
 using log4net;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery;
 
 namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
 {
@@ -55,7 +56,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         private readonly List<int> createdTrialInstanceIds = [];
         private readonly List<int> createdTrialVariableIds = [];
         private readonly List<int> createdVariableIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -70,10 +70,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
                 .Where(w => createdTrialInstanceIds.Contains(w.Id)).DeleteAsync();
             await dbContext.ExhaustiveSearchInstanceVariable
                 .Where(w => createdVariableIds.Contains(w.Id)).DeleteAsync();
+
             foreach (var id in createdSearchInstanceIds)
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -82,6 +84,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
@@ -125,6 +128,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
                     StatusId = 0
                 });
             createdSearchInstanceIds.Add(searchInstance.Id);
+
             return searchInstance.Id;
         }
 
@@ -137,6 +141,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
                     CreatedDate = DateTime.UtcNow
                 });
             createdTrialInstanceIds.Add(trialInstance.Id);
+
             return trialInstance.Id;
         }
 
@@ -190,6 +195,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             var trialInstanceId = await InsertTrialInstanceAsync(dbContext, searchInstanceId);
             await PromoteAsync(dbContext, trialInstanceId);
             await AddVariablesAsync(dbContext, searchInstanceId, trialInstanceId, variables);
+
             return searchInstanceId;
         }
 
@@ -217,6 +223,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -225,6 +232,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -247,15 +255,19 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         {
             await using var dbContext = fx.GetDbContext();
             var name = Nm("Full");
+
             var searchInstanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(name, 1.5, 2.5, 30.5, -4.5, 3, 4, 77, 5));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(searchInstanceId);
 
             var dto = result.Should().ContainSingle().Subject;
+
             var expectedId = await dbContext.ExhaustiveSearchInstanceVariable.Where(w => w.Name == name)
                 .Select(s => s.Id).SingleAsync();
+
             dto.Id.Should().Be(expectedId);
             dto.Name.Should().Be(name);
             dto.Mean.Should().Be(1.5);
@@ -272,8 +284,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         public async Task EmptyRangeIsTrueWhenMaximumPlusMinimumIsZeroAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var searchInstanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("Empty"), 1, 1, 5, -5, 1, 1, 1, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(searchInstanceId)).Should().ContainSingle().Which.EmptyRange.Should().BeTrue();
@@ -283,8 +297,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         public async Task NullStatisticsAndTypesMapToZeroAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var searchInstanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("Nulls"), null, null, null, null, null, null, null, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = (await service.GetAsync(searchInstanceId)).Should().ContainSingle().Subject;
@@ -305,8 +321,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             var third = Nm("Third");
             var first = Nm("First");
             var second = Nm("Second");
+
             var searchInstanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 Spec(third, 3), Spec(first, 1), Spec(second, 2));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(searchInstanceId)).Select(r => r.Name).Should().Equal(first, second, third);
@@ -318,8 +336,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             await using var dbContext = fx.GetDbContext();
             var kept = Nm("Kept");
             var nullRemoved = Nm("NullRemoved");
+
             var searchInstanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 Spec(kept, 1), Spec(nullRemoved, 2, null), Spec(Nm("Gone"), 3, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(searchInstanceId)).Select(r => r.Name).Should().Equal(kept, nullRemoved);
@@ -432,9 +452,11 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         {
             await using var dbContext = fx.GetDbContext();
             var search = await SeedAsync(dbContext, fx.Seed.UserWithPermission, Spec(Nm("A"), 1));
+
             var trialId = await dbContext.ExhaustiveSearchInstanceTrialInstance
                 .Where(w => w.ExhaustiveSearchInstanceId == search).Select(s => s.Id).SingleAsync();
-            var query = new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
+
+            var query = new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
                 dbContext, fx.Seed.UserNoTenant);
 
             (await query.ExecuteByExhaustiveSearchInstanceIdAsync(search)).Should().BeEmpty();
@@ -447,17 +469,20 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             await using var dbContext = fx.GetDbContext();
             var name = Nm("Mine");
             var search = await SeedAsync(dbContext, fx.Seed.UserWithPermission, Spec(name, 1));
+
             var trialId = await dbContext.ExhaustiveSearchInstanceTrialInstance
                 .Where(w => w.ExhaustiveSearchInstanceId == search).Select(s => s.Id).SingleAsync();
 
-            (await new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
+            (await new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
                         dbContext, fx.Seed.UserWithPermission)
                     .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(trialId))
                 .Select(r => r.Name).Should().Equal(name);
-            (await new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
+
+            (await new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
                     dbContext, fx.Seed.UserTenantB).ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(trialId))
                 .Should().BeEmpty();
-            (await new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(dbContext)
+
+            (await new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(dbContext)
                 .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(trialId)).Should().ContainSingle();
         }
 

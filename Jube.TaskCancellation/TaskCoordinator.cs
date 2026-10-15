@@ -41,6 +41,7 @@ namespace Jube.TaskCancellation
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
                     var message = $"Task '{name}' threw an exception and will not be restarted: {ex}";
+
                     if (log != null)
                     {
                         log.Error(message);

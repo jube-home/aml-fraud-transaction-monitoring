@@ -52,6 +52,7 @@ namespace Jube.Test.Cache.Redis
 
             var payloadBatchIds = await dbContext.GetTable<CachePayloadRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuidForCleanup).Select(s => s.Id).ToListAsync();
+
             if (payloadBatchIds.Count > 0)
             {
                 await dbContext.GetTable<CachePayloadRemovalBatchEntry>()
@@ -64,6 +65,7 @@ namespace Jube.Test.Cache.Redis
 
             var latestBatchIds = await dbContext.GetTable<CachePayloadLatestRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuidForCleanup).Select(s => s.Id).ToListAsync();
+
             if (latestBatchIds.Count > 0)
             {
                 await dbContext.GetTable<CachePayloadLatestRemovalBatchEntry>()
@@ -101,20 +103,25 @@ namespace Jube.Test.Cache.Redis
 
             await cacheService.CachePayloadRepository.InsertAsync(tenant, modelGuid, expiredPayload, expiredAt,
                 expiredEntryGuid);
+
             await cacheService.CachePayloadRepository.InsertPayloadJournalAndLedgerAsync(tenant, modelGuid,
                 searchKey, searchKeyValue, expiredAt, expiredEntryGuid);
+
             await cacheService.CachePayloadRepository.InsertAsync(tenant, modelGuid, survivingPayload, survivingAt,
                 survivingEntryGuid);
+
             await cacheService.CachePayloadRepository.InsertPayloadJournalAndLedgerAsync(tenant, modelGuid,
                 searchKey, searchKeyValue, survivingAt, survivingEntryGuid);
 
             var keysBefore = await cacheService.CachePayloadRepository.GetSortedSetKeysAsync(tenant, modelGuid,
                 searchKey, searchKeyValue, 100, Guid.NewGuid());
+
             keysBefore.Select(k => k.ToString()).Should()
                 .Contain(expiredEntryGuid.ToString("N")).And.Contain(survivingEntryGuid.ToString("N"));
 
             var batchBefore = await cacheService.CachePayloadRepository.GetPayloadBatchAsync(tenant, modelGuid,
                 keysBefore, Guid.NewGuid());
+
             batchBefore.Should().ContainKey(expiredEntryGuid.ToString("N"));
             batchBefore.Should().ContainKey(survivingEntryGuid.ToString("N"));
 
@@ -126,6 +133,7 @@ namespace Jube.Test.Cache.Redis
                 Instance = { TenantRegistryId = tenant, Guid = modelGuid },
                 Cache = { CacheTtlInterval = 'd', CacheTtlIntervalValue = 30 }
             };
+
             var context = new BackgroundContext
             {
                 Services =
@@ -136,17 +144,20 @@ namespace Jube.Test.Cache.Redis
                     TaskCoordinator = new TaskCoordinator(new CancellationTokenProvider())
                 }
             };
+
             var starter = new CachePruneTaskStarter(context);
             await starter.PruneModelAsync(model, 1000);
 
             var keysAfter = await cacheService.CachePayloadRepository.GetSortedSetKeysAsync(tenant, modelGuid,
                 searchKey, searchKeyValue, 100, Guid.NewGuid());
+
             keysAfter.Select(k => k.ToString()).Should()
                 .NotContain(expiredEntryGuid.ToString("N"))
                 .And.Contain(survivingEntryGuid.ToString("N"));
 
             var batchAfter = await cacheService.CachePayloadRepository.GetPayloadBatchAsync(tenant, modelGuid,
                 keysAfter, Guid.NewGuid());
+
             batchAfter.Should().NotContainKey(expiredEntryGuid.ToString("N"),
                 "the abstraction rule fetch path must no longer be able to retrieve the pruned payload document");
             batchAfter.Should().ContainKey(survivingEntryGuid.ToString("N"),
@@ -158,6 +169,7 @@ namespace Jube.Test.Cache.Redis
             var batch = await dbContext.GetTable<CachePayloadRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).SingleOrDefaultAsync();
             batch.Should().NotBeNull();
+
             batch!.ExpiredSortedSetCount.Should().Be(1,
                 "only the expired entry should have been picked up for deletion, not the surviving one");
 
@@ -208,11 +220,13 @@ namespace Jube.Test.Cache.Redis
                     TaskCoordinator = new TaskCoordinator(new CancellationTokenProvider())
                 }
             };
+
             var starter = new CachePruneTaskStarter(context);
             await starter.PruneModelAsync(model, 1000);
 
             var latestReferenceDateSortedSetKey = $"ReferenceDateLatest:{tenant}:{modelGuid:N}:{searchKey}";
             var remaining = await redis.SortedSetRangeByScoreWithScoresAsync(latestReferenceDateSortedSetKey);
+
             remaining.Select(s => s.Element.ToString()).Should()
                 .NotContain(expiredValue)
                 .And.Contain(survivingValue);

@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.CaseByCaseKeyValue
 {
     [Description("A Case matched by its Case Key and Case Key Value, restricted to Cases whose Case Workflow and " +

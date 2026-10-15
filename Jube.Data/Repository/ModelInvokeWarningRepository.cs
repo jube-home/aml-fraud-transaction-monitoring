@@ -32,68 +32,6 @@ namespace Jube.Data.Repository
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        private IQueryable<ModelInvokeWarning> BuildFilteredQuery(DateTime? from, DateTime? to,
-            Guid? entityAnalysisModelGuid, string search, double? samplePercentage,
-            int? restrictToTenantRegistryId = null)
-        {
-            var query = dbContext.ModelInvokeWarning.AsQueryable();
-
-            if (restrictToTenantRegistryId.HasValue)
-            {
-                var tenantRegistryId = restrictToTenantRegistryId.Value;
-                query = query.Where(w => !dbContext.EntityAnalysisModel.Any(m =>
-                    m.Guid == w.EntityAnalysisModelGuid && m.TenantRegistryId != tenantRegistryId));
-            }
-
-            if (from.HasValue)
-            {
-                query = query.Where(w => w.OccurredDate >= from.Value);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(w => w.OccurredDate <= to.Value);
-            }
-
-            if (entityAnalysisModelGuid.HasValue)
-            {
-                query = query.Where(w => w.EntityAnalysisModelGuid == entityAnalysisModelGuid.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var lowerSearch = search.ToLower();
-                query = query.Where(w =>
-                    (w.EntityAnalysisModelName != null && w.EntityAnalysisModelName.ToLower().Contains(lowerSearch)) ||
-                    (w.Message != null && w.Message.ToLower().Contains(lowerSearch)));
-            }
-
-            if (samplePercentage.HasValue)
-            {
-                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
-            }
-
-            return query;
-        }
-
-        private static IOrderedQueryable<ModelInvokeWarning> ApplySort(
-            IQueryable<ModelInvokeWarning> query, string sortField, string sortDirection)
-        {
-            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
-            return sortField switch
-            {
-                "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
-                "entityAnalysisModelName" => query.OrderByField(o => o.EntityAnalysisModelName, descending),
-                "message" => query.OrderByField(o => o.Message, descending),
-                "elapsedMicroseconds" => query.OrderByField(o => o.ElapsedMicroseconds, descending),
-                "sinceLastEntryMicroseconds" => query.OrderByField(o => o.SinceLastEntryMicroseconds, descending),
-                "threadId" => query.OrderByField(o => o.ThreadId, descending),
-                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
-                "instance" => query.OrderByField(o => o.Instance, descending),
-                _ => query.OrderByField(o => o.Id, true)
-            };
-        }
-
         public async Task<IEnumerable<ModelInvokeWarning>> GetLastAsync(int take, DateTime? from, DateTime? to,
             Guid? entityAnalysisModelGuid, string search, double? samplePercentage, string sortField,
             string sortDirection, int? restrictToTenantRegistryId = null, CancellationToken token = default)
@@ -137,6 +75,71 @@ namespace Jube.Data.Repository
                 ["elapsedMicroseconds"] = elapsedMicroseconds,
                 ["sinceLastEntryMicroseconds"] = sinceLastEntryMicroseconds
             });
+        }
+
+        private IQueryable<ModelInvokeWarning> BuildFilteredQuery(DateTime? from, DateTime? to,
+            Guid? entityAnalysisModelGuid, string search, double? samplePercentage,
+            int? restrictToTenantRegistryId = null)
+        {
+            var query = dbContext.ModelInvokeWarning.AsQueryable();
+
+            if (restrictToTenantRegistryId.HasValue)
+            {
+                var tenantRegistryId = restrictToTenantRegistryId.Value;
+
+                query = query.Where(w => !dbContext.EntityAnalysisModel.Any(m =>
+                    m.Guid == w.EntityAnalysisModelGuid && m.TenantRegistryId != tenantRegistryId));
+            }
+
+            if (from.HasValue)
+            {
+                query = query.Where(w => w.OccurredDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(w => w.OccurredDate <= to.Value);
+            }
+
+            if (entityAnalysisModelGuid.HasValue)
+            {
+                query = query.Where(w => w.EntityAnalysisModelGuid == entityAnalysisModelGuid.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.ToLower();
+
+                query = query.Where(w =>
+                    (w.EntityAnalysisModelName != null && w.EntityAnalysisModelName.ToLower().Contains(lowerSearch)) ||
+                    (w.Message != null && w.Message.ToLower().Contains(lowerSearch)));
+            }
+
+            if (samplePercentage.HasValue)
+            {
+                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
+            }
+
+            return query;
+        }
+
+        private static IOrderedQueryable<ModelInvokeWarning> ApplySort(
+            IQueryable<ModelInvokeWarning> query, string sortField, string sortDirection)
+        {
+            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+            return sortField switch
+            {
+                "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
+                "entityAnalysisModelName" => query.OrderByField(o => o.EntityAnalysisModelName, descending),
+                "message" => query.OrderByField(o => o.Message, descending),
+                "elapsedMicroseconds" => query.OrderByField(o => o.ElapsedMicroseconds, descending),
+                "sinceLastEntryMicroseconds" => query.OrderByField(o => o.SinceLastEntryMicroseconds, descending),
+                "threadId" => query.OrderByField(o => o.ThreadId, descending),
+                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
+                "instance" => query.OrderByField(o => o.Instance, descending),
+                _ => query.OrderByField(o => o.Id, true)
+            };
         }
     }
 }

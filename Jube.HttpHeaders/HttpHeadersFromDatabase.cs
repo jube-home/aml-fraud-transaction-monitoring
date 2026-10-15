@@ -25,6 +25,7 @@ namespace Jube.HttpHeaders
         {
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
             var httpHeaderRepository = new HttpHeaderRepository(dbContext);
+
             HeaderValues = httpHeaderRepository.GetAsync(token)
                 .GetAwaiter().GetResult()
                 .ToDictionary(x => x.Header, x => x.Value);

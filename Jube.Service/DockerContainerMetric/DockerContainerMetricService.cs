@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,11 +13,12 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetDockerContainerMetricStatisticsQuery;
 using Jube.Data.Repository;
 using Jube.Dto.DockerContainerMetric;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.DockerContainerMetric;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,9 +31,9 @@ namespace Jube.Service.DockerContainerMetric
     public sealed class DockerContainerMetricService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly DockerContainerMetricRepository repository;
@@ -47,6 +48,7 @@ namespace Jube.Service.DockerContainerMetric
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
@@ -54,6 +56,9 @@ namespace Jube.Service.DockerContainerMetric
             this.permissionValidation = permissionValidation;
             repository = new DockerContainerMetricRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<DockerContainerMetricService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -139,12 +144,16 @@ namespace Jube.Service.DockerContainerMetric
         {
             using var op = OperationScope.Start("DockerContainerMetric", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"DockerContainerMetric.List: entry take={clampedTake} user={userName}");
@@ -168,11 +177,12 @@ namespace Jube.Service.DockerContainerMetric
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
                     .ConfigureAwait(false);
 
-                var statistics = await repository
-                    .GetStatisticsAsync(from, to, search, clampedSamplePercentage, MaxListTake, token)
+                var statistics = await new GetDockerContainerMetricStatisticsQuery(dbContext)
+                    .ExecuteAsync(from, to, search, clampedSamplePercentage, MaxListTake, token)
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"DockerContainerMetric.List: {dtos.Count} rows user={userName}");
@@ -188,6 +198,7 @@ namespace Jube.Service.DockerContainerMetric
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"DockerContainerMetric.List: cancelled user={userName}");

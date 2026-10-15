@@ -56,6 +56,7 @@ public static class SurfaceMutators
     private static string CaseMix(string value)
     {
         var builder = new StringBuilder(value.Length);
+
         for (var i = 0; i < value.Length; i++)
         {
             builder.Append(i % 2 == 0 ? char.ToUpperInvariant(value[i]) : char.ToLowerInvariant(value[i]));

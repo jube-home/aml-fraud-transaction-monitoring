@@ -19,7 +19,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     using System.Threading.Tasks;
     using log4net;
     using Newtonsoft.Json;
-    using EntityAnalysisModelInstanceEntryPayload=EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryPayload;
+    using EntityAnalysisModelInstanceEntryPayload =
+        EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.
+        EntityAnalysisModelInstanceEntryPayload;
 
     public class EntityAnalysisModelHttpAdaptation
     {
@@ -29,6 +31,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public EntityAnalysisModelHttpAdaptation(int maxConnections, bool validateSsl, int timeout)
         {
             var httpClientHandler = new HttpClientHandler();
+
             if (!validateSsl)
             {
                 httpClientHandler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
@@ -48,17 +51,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
 
         public string HttpEndpoint
         {
-            get
-            {
-                return uri.ToString();
-            }
-            set
-            {
-                uri = new Uri(value);
-            }
+            get { return uri.ToString(); }
+            set { uri = new Uri(value); }
         }
 
-        public async Task<string> PostAsync(EntityAnalysisModelInstanceEntryPayload payload, JsonSerializerSettings jsonSerializerSettings, ILog log)
+        public async Task<string> PostAsync(EntityAnalysisModelInstanceEntryPayload payload,
+            JsonSerializerSettings jsonSerializerSettings, ILog log)
         {
             if (log.IsInfoEnabled)
             {
@@ -77,7 +75,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
                 Content = stringContent
             };
 
-            var task = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+            var task = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead)
+                .ConfigureAwait(false);
 
             if (log.IsInfoEnabled)
             {

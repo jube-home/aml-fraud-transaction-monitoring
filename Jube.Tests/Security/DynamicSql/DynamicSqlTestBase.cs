@@ -47,7 +47,6 @@ public abstract class DynamicSqlTestBase(DatabaseFixture fx, ITestOutputHelper o
     }
 
     protected static string Unique(string label = "Ds") => $"{DatabaseFixture.Prefix}W12{label}{Guid.NewGuid():N}";
-
     protected static string Json(object value) => JsonSerializer.Serialize(value, jsonOptions);
 
     protected static Dictionary<string, object?> DatasourceBody(int registryId, string command, string? name = null,
@@ -73,6 +72,7 @@ public abstract class DynamicSqlTestBase(DatabaseFixture fx, ITestOutputHelper o
     protected async Task<int> CountExecutionLogsAsync(IReadOnlyCollection<int> datasourceIds, bool withError)
     {
         await using var db = Fx.GetDbContext();
+
         return await db.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
             .CountAsync(w => datasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0) &&
                              (withError ? w.Error != null : w.Error == null));

@@ -1,145 +1,134 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics.Analysis;
 
 namespace Accord.Statistics.Testing
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Analysis;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Bhapkar test of homogeneity for contingency tables.
+    ///     Bhapkar test of homogeneity for contingency tables.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   The Bhapkar test is a more powerful alternative to the
-    ///   <see cref="StuartMaxwellTest">Stuart-Maxwell test</see>.
-    ///   
-    /// <para>
-    ///   This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///      Bhapkar, V.P. (1966). A note on the equivalence of two test criteria
-    ///      for hypotheses in categorical data. Journal of the American Statistical
-    ///      Association, 61, 228-235.</description></item>
-    ///    </list></para>
+    ///     The Bhapkar test is a more powerful alternative to the
+    ///     <see cref="StuartMaxwellTest">Stuart-Maxwell test</see>.
+    ///     <para>
+    ///         This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     Bhapkar, V.P. (1966). A note on the equivalence of two test criteria
+    ///                     for hypotheses in categorical data. Journal of the American Statistical
+    ///                     Association, 61, 228-235.
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="ChiSquareTest"/>
-    ///
+    /// <seealso cref="ChiSquareTest" />
     [Serializable]
     public class BhapkarTest : ChiSquareTest
     {
-
-        double[] d;
-        double[,] S;
-        double[,] invS;
-
         /// <summary>
-        ///   Gets the delta vector <c>d</c> used
-        ///   in the test calculations.
+        ///     Creates a new Bhapkar test.
         /// </summary>
-        /// 
-        public double[] Delta
-        {
-            get { return d; }
-        }
-
-        /// <summary>
-        ///   Gets the covariance matrix <c>S</c>
-        ///   used in the test calculations.
-        /// </summary>
-        /// 
-        public double[,] Covariance
-        {
-            get { return S; }
-        }
-
-        /// <summary>
-        ///   Gets the inverse covariance matrix
-        ///   <c>S^-1</c> used in the calculations.
-        /// </summary>
-        /// 
-        public double[,] Precision
-        {
-            get { return invS; }
-        }
-
-
-        /// <summary>
-        ///   Creates a new Bhapkar test.
-        /// </summary>
-        /// 
         /// <param name="matrix">The contingency table to test.</param>
-        /// 
         public BhapkarTest(GeneralConfusionMatrix matrix)
         {
-            int classes = matrix.NumberOfClasses;
-            int samples = matrix.NumberOfSamples;
+            var classes = matrix.NumberOfClasses;
+            var samples = matrix.NumberOfSamples;
 
-            int df = classes - 1;
+            var df = classes - 1;
 
-            int[] rowMarginals = matrix.RowTotals;
-            int[] colMarginals = matrix.ColumnTotals;
+            var rowMarginals = matrix.RowTotals;
+            var colMarginals = matrix.ColumnTotals;
 
-            d = new double[df];
-            for (int i = 0; i < d.Length; i++)
-                d[i] = rowMarginals[i] - colMarginals[i];
-
-            S = new double[df, df];
-
-            for (int i = 0; i < df; i++)
+            Delta = new double[df];
+            for (var i = 0; i < Delta.Length; i++)
             {
-                for (int j = 0; j < df; j++)
+                Delta[i] = rowMarginals[i] - colMarginals[i];
+            }
+
+            Covariance = new double[df, df];
+
+            for (var i = 0; i < df; i++)
+            {
+                for (var j = 0; j < df; j++)
                 {
                     if (i == j)
                     {
-                        double u = (rowMarginals[i] - colMarginals[i]);
+                        double u = rowMarginals[i] - colMarginals[i];
                         double pii = matrix.Matrix[i, i];
 
-                        S[i, i] = rowMarginals[i] + colMarginals[i] - 2.0 * pii - u * u / (double)samples;
+                        Covariance[i, i] = rowMarginals[i] + colMarginals[i] - 2.0 * pii - u * u / samples;
                     }
                     else
                     {
                         double pij = matrix.Matrix[i, j];
                         double pji = matrix.Matrix[j, i];
 
-                        S[i, j] = -(pij + pji) - (rowMarginals[i] - colMarginals[i]) * (rowMarginals[j] - colMarginals[j]) / (double)samples;
+                        Covariance[i, j] = -(pij + pji) - (rowMarginals[i] - colMarginals[i]) *
+                            (rowMarginals[j] - colMarginals[j]) / (double)samples;
                     }
                 }
             }
 
-            invS = S.PseudoInverse();
+            Precision = Covariance.PseudoInverse();
 
-            double chiSquare = d.DotAndDot(invS, d);
-            
+            var chiSquare = Delta.DotAndDot(Precision, Delta);
+
             Compute(chiSquare, df);
         }
 
-      
+        /// <summary>
+        ///     Gets the delta vector <c>d</c> used
+        ///     in the test calculations.
+        /// </summary>
+        public double[] Delta { get; }
 
+        /// <summary>
+        ///     Gets the covariance matrix <c>S</c>
+        ///     used in the test calculations.
+        /// </summary>
+        public double[,] Covariance { get; }
+
+        /// <summary>
+        ///     Gets the inverse covariance matrix
+        ///     <c>S^-1</c> used in the calculations.
+        /// </summary>
+        public double[,] Precision { get; }
     }
 }

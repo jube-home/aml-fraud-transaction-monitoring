@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -19,7 +19,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.PostgresIndexStatistics;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.PostgresIndexStatistics;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -54,6 +54,9 @@ namespace Jube.Service.PostgresIndexStatistics
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<PostgresIndexStatisticsService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -117,6 +120,7 @@ namespace Jube.Service.PostgresIndexStatistics
         {
             using var op = OperationScope.Start("PostgresIndexStatistics", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PostgresIndexStatistics.List: entry user={userName}");
@@ -146,6 +150,7 @@ namespace Jube.Service.PostgresIndexStatistics
                 });
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresIndexStatistics.List: {dtos.Count} rows user={userName}");
@@ -161,6 +166,7 @@ namespace Jube.Service.PostgresIndexStatistics
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresIndexStatistics.List: cancelled user={userName}");
@@ -185,6 +191,7 @@ namespace Jube.Service.PostgresIndexStatistics
             }
 
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             IEnumerable<PostgresIndexStatisticsDto> sorted = sortField switch
             {
                 "schemaName" => OrderBy(dtos, d => d.SchemaName, descending),

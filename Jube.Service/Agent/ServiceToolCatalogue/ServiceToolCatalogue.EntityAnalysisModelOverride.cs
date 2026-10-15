@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelOverride;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,37 +24,48 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideList", OperationKind.Read, true, false,
-                    "Lists Overrides for the caller's tenant, keyset-paged and capped."),
+                    "Lists Overrides for the caller's tenant, keyset-paged and capped.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Overrides may use."),
+                    "Lists the fields a query builder JSON filter over Overrides may use.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideFilter", OperationKind.Read, true, false,
-                    "Returns the Overrides matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Overrides matching query builder JSON, keyset-paged and capped.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideCount", OperationKind.Read, true, false,
-                    "Counts the Overrides matching query builder JSON, optionally grouped by a field."),
+                    "Counts the Overrides matching query builder JSON, optionally grouped by a field.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideGet", OperationKind.Read, true, false,
-                    "Returns one Override by id, scoped to the caller's tenant."),
+                    "Returns one Override by id, scoped to the caller's tenant.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideGetByEntityAnalysisModelId", OperationKind.Read, true, false,
-                    "Lists Overrides belonging to a given Model, scoped to the caller's tenant."),
+                    "Lists Overrides belonging to a given Model, scoped to the caller's tenant.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideCreate", OperationKind.Write, false, false,
-                    "Registers a Override against a Model in the caller's tenant; calling twice creates two."),
+                    "Registers a Override against a Model in the caller's tenant; calling twice creates two.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideValidate", OperationKind.Read, true, false,
-                    "Validates a Override without saving it and returns every failure."),
+                    "Validates a Override without saving it and returns every failure.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideUpdate", OperationKind.Write, false, false,
-                    "Toggles a Override on or off by row existence; NOT idempotent -- repeat calls flip state."),
+                    "Toggles a Override on or off by row existence; NOT idempotent -- repeat calls flip state.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideUpdateDeleteExpiryDate", OperationKind.Write, true, false,
-                    "Updates the Delete Expiry Date of an existing active Override in the caller's tenant."),
+                    "Updates the Delete Expiry Date of an existing active Override in the caller's tenant.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelOverrideDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Override in the caller's tenant by id.")
+                    "Soft-deletes a Override in the caller's tenant by id.",
+                    EntityAnalysisModelOverrideService.RequiredPermissions)
             ]);
         }
     }

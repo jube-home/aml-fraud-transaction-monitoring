@@ -59,8 +59,11 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["connectMicroseconds"] = rows.Where(w => w.ConnectMicroseconds.HasValue)
-                    .Select(s => (double)s.ConnectMicroseconds!.Value).ToArray()
+                ["connectMicroseconds"] =
+                [
+                    .. rows.Where(w => w.ConnectMicroseconds.HasValue)
+                        .Select(s => (double)s.ConnectMicroseconds!.Value)
+                ]
             });
         }
 
@@ -82,6 +85,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Target != null && w.Target.ToLower().Contains(lowerSearch)) ||
                     (w.HaProxyAddress != null && w.HaProxyAddress.ToLower().Contains(lowerSearch)));
@@ -99,6 +103,7 @@ namespace Jube.Data.Repository
             IQueryable<HaProxyReachabilityProbe> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "target" => query.OrderByField(o => o.Target, descending),

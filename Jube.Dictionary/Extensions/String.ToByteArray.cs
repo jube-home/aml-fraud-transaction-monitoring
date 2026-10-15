@@ -10,6 +10,7 @@ namespace Jube.Dictionary.Extensions
         public static byte[] ToByteArray(this string @this)
         {
             var encoding = Encoding.ASCII;
+
             return encoding.GetBytes(@this);
         }
     }

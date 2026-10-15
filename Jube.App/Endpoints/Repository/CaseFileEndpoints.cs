@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Repository.CaseFile.Models;
 
 namespace Jube.App.Endpoints.Repository
 {
@@ -78,6 +79,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/Upload: entry caseId={caseId} user={user}");
@@ -85,13 +87,17 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 var uploaded = files.Select(file =>
                     new UploadedFileContent(file.OpenReadStream(), file.FileName, file.ContentType, file.Length));
+
                 var result = await service.UploadAsync(uploaded, caseKey, caseKeyValue, caseId, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -142,6 +148,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}/Upload: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -152,6 +159,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/Remove: entry id={id} user={user}");
@@ -159,11 +167,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 await service.RemoveAsync(id, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -205,6 +216,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}/Remove: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -215,6 +227,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry id={id} user={user}");
@@ -222,14 +235,17 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 var content = await service.GenerateAsync(id, token);
                 var mediaType = (content.ContentType ?? string.Empty).Split(';')[0].Trim().ToLowerInvariant();
                 httpContext.Response.Headers["X-Content-Type-Options"] = "nosniff";
                 httpContext.Response.Headers["Content-Security-Policy"] = "sandbox; default-src 'none'";
+
                 return inlineSafeMediaTypes.Contains(mediaType)
                     ? TypedResults.File(content.Content, mediaType)
                     : TypedResults.File(content.Content, "application/octet-stream",
@@ -274,6 +290,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -284,6 +301,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByCaseKeyValue: entry key={key} user={user}");
@@ -291,11 +309,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 var result = await service.GetByCaseKeyValueAsync(key, value, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -328,6 +349,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByCaseKeyValue: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
     using System;
@@ -20,20 +22,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
     using System.Threading.Tasks;
     using Context;
     using Data.Context;
-    using Data.Query;
     using Data.Repository;
     using EntityAnalysisModelInvoke.Simulation;
     using Newtonsoft.Json;
+    using Jube.Data.Query.GetNextEntityAnalysisModelBacktestInstanceQuery;
 
     public class BacktestTaskStarter(Context context, int thread)
     {
         private const string EngineShutdownError = "The engine was shutting down and the backtest was cancelled.";
         private const string TimeoutError = "The backtest exceeded the maximum run duration and was stopped.";
         private const string UnexpectedError = "The backtest failed unexpectedly.";
-
         private static readonly TimeSpan pollDelay = TimeSpan.FromSeconds(2);
         private static readonly TimeSpan recoveryInterval = TimeSpan.FromSeconds(30);
-
         private readonly string claimedBy = $"{Dns.GetHostName()}:{thread}";
 
         public async Task StartAsync()
@@ -71,9 +71,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
         public async Task<bool> RunNextAsync(CancellationToken token)
         {
             await using var dbContext = NewDbContext();
+
             var instanceId = await new GetNextEntityAnalysisModelBacktestInstanceQuery(dbContext, claimedBy,
                     Setting("BacktestMaxConcurrentRunsPerTenant", 1))
                 .ExecuteAsync(token).ConfigureAwait(false);
+
             if (instanceId == null)
             {
                 return false;
@@ -86,6 +88,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
 
             await RunAsync(dbContext, instanceId.Value, token).ConfigureAwait(false);
+
             return true;
         }
 
@@ -94,7 +97,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             var instance = await EntityAnalysisModelBacktestInstanceRepository
                 .GetClaimedAsync(dbContext, instanceId, shutdown)
                 .ConfigureAwait(false);
+
             var specification = JsonConvert.DeserializeObject<BacktestSpecification>(instance.Request);
+
             specification = specification with
             {
                 Limit = Math.Min(specification.Limit, Setting("BacktestMaxRows", 1_000_000))
@@ -102,14 +107,17 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
             using var timeout = new CancellationTokenSource(
                 SettingWindow("BacktestMaxRunInterval", "BacktestMaxRunIntervalValue", 3600));
+
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(shutdown, timeout.Token);
             var runToken = linked.Token;
 
             await using var archive = NewReportDbContext();
+
             await using var heartbeat = new BacktestHeartbeat(NewDbContext, instanceId,
                 BacktestHeartbeat.IntervalFor(SettingWindow("BacktestStaleInterval", "BacktestStaleIntervalValue",
                     120)),
                 context.Services.Log);
+
             try
             {
                 var execution = await BacktestExecutor.ExecuteAsync(dbContext, instance.TenantRegistryId, specification,
@@ -121,13 +129,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             heartbeat.Evaluated, null,
                             string.Join(" ", execution.Errors.Select(e => $"{e.Property}: {e.Message}")))
                         .ConfigureAwait(false);
+
                     return;
                 }
 
                 var result = JsonConvert.SerializeObject(execution.Result);
+
                 var status = heartbeat.Stopped ? BacktestInstanceStatus.Cancelled
                     : execution.Result.Aborted ? BacktestInstanceStatus.Failed
                     : BacktestInstanceStatus.Succeeded;
+
                 await CompleteAsync(instanceId, status, execution.Result.Scanned, execution.Result.Evaluated, result,
                         status == BacktestInstanceStatus.Failed ? execution.Result.AbortReason : null)
                     .ConfigureAwait(false);
@@ -144,12 +155,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 await CompleteAsync(instanceId, BacktestInstanceStatus.Cancelled, heartbeat.Scanned,
                     heartbeat.Evaluated, null,
                     EngineShutdownError).ConfigureAwait(false);
+
                 throw;
             }
             catch (Exception ex)
             {
                 context.Services.Log.Error(
                     $"Entity Backtest: backtest instance {instanceId} has produced an error {ex}");
+
                 await CompleteAsync(instanceId, BacktestInstanceStatus.Failed, heartbeat.Scanned, heartbeat.Evaluated,
                         null, UnexpectedError)
                     .ConfigureAwait(false);
@@ -160,6 +173,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             string result, string error)
         {
             await using var dbContext = NewDbContext();
+
             var recorded = await EntityAnalysisModelBacktestInstanceRepository.CompleteAsync(dbContext, instanceId,
                 status,
                 scanned, evaluated, result, error, CancellationToken.None).ConfigureAwait(false);
@@ -185,9 +199,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
         private async Task RecoverStaleAsync(CancellationToken token)
         {
             await using var dbContext = NewDbContext();
+
             var recovered = await EntityAnalysisModelBacktestInstanceRepository.RecoverStaleAsync(dbContext,
                     SettingWindow("BacktestStaleInterval", "BacktestStaleIntervalValue", 120), token)
                 .ConfigureAwait(false);
+
             if (recovered > 0 && context.Services.Log.IsWarnEnabled)
             {
                 context.Services.Log.Warn($"Entity Backtest: {recovered} stale backtest instances were closed.");
@@ -203,6 +219,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
         private DbContext NewReportDbContext()
         {
             var report = context.Services.ReportConnectionString;
+
             return string.IsNullOrWhiteSpace(report)
                 ? null
                 : DataConnectionDbContext.GetResilientDbContextDataConnection(report, context.Services.Log);

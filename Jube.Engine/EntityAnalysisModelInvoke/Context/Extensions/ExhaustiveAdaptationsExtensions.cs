@@ -14,8 +14,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.Exhaustive.Models;
+using Jube.Engine.Exhaustive.Utilities;
+using Jube.HttpAdaptationProtocol;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -23,14 +26,21 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
     public static class ExhaustiveAdaptationsExtensions
     {
+        internal const int DefaultBudgetMilliseconds = 1000;
+
         public static Context ExecuteExhaustiveAdaptation(this Context context)
+        {
+            return ExecuteExhaustiveAdaptation(context, ResolveBudgetTicks(context));
+        }
+
+        internal static Context ExecuteExhaustiveAdaptation(Context context, long budgetTicks)
         {
             context.TraceLog($"will now perform Exhaustive and will loop through each.");
 
             var stopwatch = Stopwatch.StartNew();
             var items = new Dictionary<string, TaskPerformance>();
 
-            IterateAndProcess(context, items);
+            IterateAndProcess(context, items, stopwatch, budgetTicks);
 
             stopwatch.Stop();
 
@@ -51,39 +61,126 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             return context;
         }
 
-        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
+        internal static long ResolveBudgetTicks(Context context)
+        {
+            var milliseconds = DefaultBudgetMilliseconds;
+            var configured = context.Environment?.AppSettings("ExhaustiveRecallTimeout");
+
+            if (configured != null && int.TryParse(configured, out var parsed))
+            {
+                milliseconds = parsed;
+            }
+
+            return milliseconds <= 0 ? long.MaxValue : (long)(milliseconds * (Stopwatch.Frequency / 1000.0));
+        }
+
+        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items,
+            Stopwatch stageStopwatch, long budgetTicks)
         {
             foreach (var exhaustive in context.Snapshot.ExhaustiveModels)
             {
+                if (stageStopwatch.ElapsedTicks > budgetTicks)
+                {
+                    context.TraceLog(
+                        $"has exceeded the Exhaustive recall budget and will skip Exhaustive Search Instance Id {exhaustive.Id}.");
+
+                    continue;
+                }
+
+                if ((exhaustive.TopologyNetwork == null && exhaustive.ChallengerRecall == null)
+                    || exhaustive.NetworkVariablesInOrder.Count == 0
+                    || exhaustive.Calibration.IsInvalid
+                    || (exhaustive.TopologyNetwork != null
+                        && exhaustive.TopologyNetwork.InputsCount != exhaustive.NetworkVariablesInOrder.Count))
+                {
+                    context.TraceLog(
+                        $"is incomplete or invalid and will not be scored for Exhaustive Search Instance Id {exhaustive.Id}.");
+
+                    items[exhaustive.Name] = new TaskPerformance(0, 0);
+                    continue;
+                }
+
                 context.TraceLog($"evaluating Exhaustive Search Instance Id {exhaustive.Id}.");
 
                 var itemStopwatch = Stopwatch.StartNew();
                 var startBytes = GC.GetAllocatedBytesForCurrentThread();
+
                 try
                 {
                     var data = new double[exhaustive.NetworkVariablesInOrder.Count];
+
                     for (var i = 0; i < exhaustive.NetworkVariablesInOrder.Count; i++)
                     {
-                        ExtractValueGivenProcessingTypeAndUpdateArray(context, exhaustive, i, data);
+                        if (stageStopwatch.ElapsedTicks > budgetTicks)
+                        {
+                            throw new TimeoutException(
+                                $"Exhaustive recall budget exceeded while extracting variable {i} of {exhaustive.NetworkVariablesInOrder.Count}.");
+                        }
+
+                        if (exhaustive.TopologyNetwork != null)
+                        {
+                            ExtractValueGivenProcessingTypeAndUpdateArray(context, exhaustive, i, data);
+                        }
+                        else
+                        {
+                            ExtractRawValueAndUpdateArray(context, exhaustive, i, data);
+                        }
                     }
 
                     context.TraceLog($"is about to recall model with {data.Length} variables.");
 
-                    var value = exhaustive.TopologyNetwork.Compute(data)[0];
+                    double value;
+                    double rawScore;
+
+                    if (exhaustive.TopologyNetwork != null)
+                    {
+                        rawScore = exhaustive.TopologyNetwork.Compute(data)[0];
+                        value = exhaustive.Calibration.Apply(rawScore);
+                    }
+                    else
+                    {
+                        rawScore = exhaustive.ChallengerRecall.Predict(data)[0];
+                        value = rawScore;
+                    }
 
                     context.TraceLog(
                         $"has recalled a score of {value}. Will proceed to add the value to payload collection.");
 
                     context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.Add(exhaustive.Name, value);
+
+                    try
+                    {
+                        var detail = exhaustive.TopologyNetwork != null
+                            ? BuildAdaptationDetail(exhaustive, data, value)
+                            : BuildChallengerAdaptationDetail(exhaustive, data, value);
+
+                        if (detail != null)
+                        {
+                            context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptationDetail.Add(
+                                exhaustive.Name, detail);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        context.TraceLog($"could not build the Exhaustive explainability detail: {ex}.");
+
+                        context.Log?.Warn(
+                            $"Exhaustive Adaptation: GUID {exhaustive.Guid} ({exhaustive.Name}) recalled a score " +
+                            $"but the explainability detail could not be built as {ex}");
+                    }
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     context.TraceLog($"has exception {ex}.");
+
+                    context.Log?.Error(
+                        $"Exhaustive Adaptation: GUID {exhaustive.Guid} ({exhaustive.Name}) could not be scored in the pipeline as {ex}");
                 }
                 finally
                 {
                     itemStopwatch.Stop();
                     var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
                     items[exhaustive.Name] = new TaskPerformance(
                         (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                         Math.Max(allocated, 0));
@@ -93,55 +190,117 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
         }
 
+        private static Adaptation BuildAdaptationDetail(ExhaustiveSearchInstance exhaustive, double[] data,
+            double value)
+        {
+            var names = exhaustive.NetworkVariablesInOrder.Select(v => v.Name).ToArray();
+            var relevance = RecallExplainability.Explain(exhaustive.TopologyNetwork, data, names);
+            var processingTypeIds = exhaustive.NetworkVariablesInOrder.Select(v => v.ProcessingTypeId).ToList();
+
+            return relevance.ToAdaptation(value, exhaustive.Name, exhaustive.TopologyNetwork.Layers.Length - 1,
+                exhaustive.TopologyNetwork.Layers.Sum(l => l.Neurons.Length), exhaustive.Calibration,
+                processingTypeIds);
+        }
+
+        private static Adaptation BuildChallengerAdaptationDetail(ExhaustiveSearchInstance exhaustive, double[] data,
+            double value)
+        {
+            var explanation = exhaustive.ChallengerRecall.Explain?.Invoke(data);
+
+            if (explanation == null)
+            {
+                return null;
+            }
+
+            var processingTypeIds = exhaustive.NetworkVariablesInOrder.Select(v => v.ProcessingTypeId).ToList();
+
+            return explanation.ToAdaptation(value, exhaustive.Name, processingTypeIds);
+        }
+
+        private static void ExtractRawValueAndUpdateArray(Context context, ExhaustiveSearchInstance exhaustive,
+            int i, double[] data)
+        {
+            var variable = exhaustive.NetworkVariablesInOrder[i];
+
+            if (variable.IsCategorical)
+            {
+                var sourceName = AdaptationInputExtraction.CleanName(variable.CategoricalSourceName);
+                string raw = null;
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(sourceName,
+                        out var payloadValue))
+                {
+                    raw = CategoricalValue.FromInternalValue(payloadValue);
+                }
+
+                data[i] = variable.CategoricalEncoder.Indicator(raw, variable.CategoricalIndicatorIndex);
+
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" categorical {sourceName} indicator {variable.Name} value {data[i]}.");
+
+                return;
+            }
+
+            var cleanName = AdaptationInputExtraction.CleanName(variable.Name);
+
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" Will look up {cleanName} for processing type id {variable.ProcessingTypeId}.");
+
+            if (AdaptationInputExtraction.TryGetValue(context, variable.ProcessingTypeId, cleanName, out var value))
+            {
+                data[i] = value;
+
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
+            }
+            else
+            {
+                data[i] = variable.Mean;
+
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
+            }
+        }
+
         private static void ExtractValueGivenProcessingTypeAndUpdateArray(Context context,
             ExhaustiveSearchInstance exhaustive, int i, double[] data)
         {
-            var cleanName = exhaustive.NetworkVariablesInOrder[i].Name.Contains('.')
-                ? exhaustive.NetworkVariablesInOrder[i].Name.Split(".")[1]
-                : exhaustive.NetworkVariablesInOrder[i].Name;
+            var variable = exhaustive.NetworkVariablesInOrder[i];
 
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $"  Will look up {cleanName} for processing type id {exhaustive.NetworkVariablesInOrder[i].ProcessingTypeId}.");
-
-            switch (exhaustive.NetworkVariablesInOrder[i].ProcessingTypeId)
+            if (variable.IsCategorical)
             {
-                case 1:
-                    ExtractFromPayload(context, exhaustive, i, data, cleanName);
-                    break;
-                case 2:
-                    ExtractFromDictionary(context, exhaustive, i, data, cleanName);
-                    break;
-                case 3:
-                    ExtractFromTtlCounter(context, exhaustive, i, data, cleanName);
-                    break;
-                case 4:
-                    ExtractFromSanction(context, exhaustive, i, data, cleanName);
-                    break;
-                case 5:
-                    ExtractFromAbstraction(context, exhaustive, i, data, cleanName);
-                    break;
-                case 6:
-                    ExtractFromAbstractionCalculation(context, exhaustive, i, data, cleanName);
-                    break;
-                default:
-                    ExtractFromAbstraction(context, exhaustive, i, data, cleanName);
-                    break;
+                var sourceName = AdaptationInputExtraction.CleanName(variable.CategoricalSourceName);
+                string raw = null;
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(sourceName,
+                        out var payloadValue))
+                {
+                    raw = CategoricalValue.FromInternalValue(payloadValue);
+                }
+
+                data[i] = variable.ZScore(
+                    variable.CategoricalEncoder.Indicator(raw, variable.CategoricalIndicatorIndex));
+
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" categorical {sourceName} indicator {variable.Name} value {data[i]}.");
+
+                return;
             }
-        }
 
-        private static void ExtractFromAbstractionCalculation(Context context, ExhaustiveSearchInstance exhaustive,
-            int i, double[] data, string cleanName)
-        {
+            var cleanName = AdaptationInputExtraction.CleanName(variable.Name);
+
             context.TraceLog(
                 $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for Abstraction Calculation.");
+                $"  Will look up {cleanName} for processing type id {variable.ProcessingTypeId}.");
 
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .AbstractionCalculation.TryGetValue(cleanName, out var valueAbstractionCalculation))
+            if (AdaptationInputExtraction.TryGetValue(context, variable.ProcessingTypeId, cleanName, out var value))
             {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    valueAbstractionCalculation);
+                data[i] = variable.ZScore(value);
 
                 context.TraceLog(
                     $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
@@ -149,148 +308,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
             else
             {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} fall back value {data[i]}.");
-            }
-        }
-
-        private static void ExtractFromAbstraction(Context context, ExhaustiveSearchInstance exhaustive, int i,
-            double[] data, string cleanName)
-        {
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for Abstraction.");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .Abstraction.TryGetValue(cleanName, out var valueAbstraction))
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    valueAbstraction);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} found value {data[i]}.");
-            }
-            else
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} fall back value {data[i]}.");
-            }
-        }
-
-        private static void ExtractFromSanction(Context context, ExhaustiveSearchInstance exhaustive, int i,
-            double[] data, string cleanName)
-        {
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for Sanction.");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .Sanction.TryGetValue(cleanName, out var valueSanction))
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    valueSanction);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} found value {data[i]}.");
-            }
-            else
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} fall back value {data[i]}.");
-            }
-        }
-
-        private static void ExtractFromTtlCounter(Context context, ExhaustiveSearchInstance exhaustive, int i,
-            double[] data, string cleanName)
-        {
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for Ttl Counter.");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .TtlCounter.TryGetValue(cleanName, out var valueTtl))
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    valueTtl);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} found value {data[i]}.");
-            }
-            else
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} fall back value {data[i]}.");
-            }
-        }
-
-        private static void ExtractFromDictionary(Context context, ExhaustiveSearchInstance exhaustive, int i,
-            double[] data, string cleanName)
-        {
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for KVP.");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .Dictionary.TryGetValue(cleanName, out var valueKvp))
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    valueKvp);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} found value {data[i]}.");
-            }
-            else
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} fall back value {data[i]}.");
-            }
-        }
-
-        private static void ExtractFromPayload(Context context, ExhaustiveSearchInstance exhaustive, int i,
-            double[] data, string cleanName)
-        {
-            context.TraceLog(
-                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" will look up {cleanName} for payload.");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload
-                .Payload.ContainsKey(cleanName))
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    context.EntityAnalysisModelInstanceEntryPayload.Payload[cleanName].AsDouble());
-
-                context.TraceLog(
-                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" {cleanName} found value {data[i]}.");
-            }
-            else
-            {
-                data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
-                    exhaustive.NetworkVariablesInOrder[i].Mean);
+                data[i] = variable.ZScore(variable.Mean);
 
                 context.TraceLog(
                     $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +

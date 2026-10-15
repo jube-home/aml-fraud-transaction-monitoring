@@ -15,8 +15,10 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Jube.Engine.Integrity;
+using Jube.Engine.Integrity.Models;
 using Jube.Parser;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Xunit;
 
 namespace Jube.Test.RuleParser
@@ -66,6 +68,7 @@ namespace Jube.Test.RuleParser
         public void PrerequisitesAreListedDependenciesFirstSoTheyCanBeApprovedInThatOrder()
         {
             var middle = new ModelEntity(ModelEntityKind.AbstractionRule, 6, "Middle", true, false);
+
             var graph = new ModelDependencyGraph([amount, newList, newRule, middle],
             [
                 new ModelReference(newRule, ModelDependencyKind.RuleText, RuleReference.Abstraction, "Middle", 0),
@@ -93,6 +96,7 @@ namespace Jube.Test.RuleParser
         public void ApprovingTheDeletionOfAnEntityAnActiveRuleUsesIsRefused()
         {
             var list = new ModelEntity(ModelEntityKind.List, 2, "NewList", true);
+
             var graph = new ModelDependencyGraph([amount, list, oldRule],
             [
                 new ModelReference(oldRule, ModelDependencyKind.RuleText, RuleReference.List, "NewList", 0)
@@ -120,6 +124,7 @@ namespace Jube.Test.RuleParser
         {
             var inactive = new ModelEntity(ModelEntityKind.ActivationRule, 7, "Dormant", false);
             var list = new ModelEntity(ModelEntityKind.List, 2, "NewList", true);
+
             var graph = new ModelDependencyGraph([list, inactive],
             [
                 new ModelReference(inactive, ModelDependencyKind.RuleText, RuleReference.List, "NewList", 0)
@@ -148,6 +153,7 @@ namespace Jube.Test.RuleParser
         public void AnInactiveDependentOfAnUnapprovedTargetIsNotReported()
         {
             var inactive = new ModelEntity(ModelEntityKind.ActivationRule, 7, "Dormant", false);
+
             var graph = new ModelDependencyGraph([newList, inactive],
             [
                 new ModelReference(inactive, ModelDependencyKind.RuleText, RuleReference.List, "NewList", 0)

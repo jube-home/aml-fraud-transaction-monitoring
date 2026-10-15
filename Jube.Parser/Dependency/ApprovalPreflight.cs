@@ -100,6 +100,7 @@ namespace Jube.Parser.Dependency
             }
 
             Visit(root);
+
             return ordered;
         }
     }

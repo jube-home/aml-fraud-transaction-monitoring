@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.PostgresActivity;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -23,7 +26,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists every backend currently known to PostgreSQL (pg_stat_activity), live -- not a stored " +
                     "snapshot, so results reflect only the instant this is called. Includes each row's blocking " +
                     "chain (pg_blocking_pids) and current query/transaction duration. Optional case-insensitive " +
-                    "substring search against username, application name or query text. Read-only."));
+                    "substring search against username, application name or query text. Read-only.",
+                    PostgresActivityService.RequiredPermissions, PostgresActivityService.RequiresLandlord));
         }
     }
 }

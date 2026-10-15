@@ -1,46 +1,53 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Numerics;
+using Accord.Math.Transforms;
 
 namespace Accord.Math
 {
-    using System;
-    using Accord.Compat;
-    using System.Numerics;
-    using Accord.Math.Transforms;
-
     /// <summary>
-    ///   Obsolete. Please use <see cref="HilbertTransform2"/> instead.
+    ///     Obsolete. Please use <see cref="HilbertTransform2" /> instead.
     /// </summary>
-    /// 
     [Obsolete("Please use HilbertTransform2 instead.")]
     public static class HilbertTransform
     {
         /// <summary>
-        ///   Performs the Fast Hilbert Transform over a double[] array.
+        ///     Performs the Fast Hilbert Transform over a double[] array.
         /// </summary>
-        /// 
         public static void FHT(double[] data, FourierTransform.Direction direction)
         {
-            int N = data.Length;
+            var N = data.Length;
 
 
             // Forward operation
@@ -48,22 +55,24 @@ namespace Accord.Math
             {
                 // Copy the input to a complex array which can be processed
                 //  in the complex domain by the FFT
-                Complex[] cdata = new Complex[N];
-                for (int i = 0; i < N; i++)
+                var cdata = new Complex[N];
+                for (var i = 0; i < N; i++)
+                {
                     cdata[i] = new Complex(data[i], 0.0);
+                }
 
                 // Perform FFT
                 FourierTransform.FFT(cdata, FourierTransform.Direction.Forward);
 
                 //double positive frequencies
-                for (int i = 1; i < (N / 2); i++)
+                for (var i = 1; i < N / 2; i++)
                 {
                     cdata[i] *= 2.0;
                 }
 
                 // zero out negative frequencies
                 //  (leaving out the dc component)
-                for (int i = (N / 2) + 1; i < N; i++)
+                for (var i = N / 2 + 1; i < N; i++)
                 {
                     cdata[i] = Complex.Zero;
                 }
@@ -72,8 +81,10 @@ namespace Accord.Math
                 FourierTransform.FFT(cdata, FourierTransform.Direction.Backward);
 
                 // Convert back to our initial double array
-                for (int i = 0; i < N; i++)
+                for (var i = 0; i < N; i++)
+                {
                     data[i] = cdata[i].Imaginary;
+                }
             }
 
             else // Backward operation
@@ -86,38 +97,39 @@ namespace Accord.Math
 
                 FHT(data, FourierTransform.Direction.Forward);
 
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
+                {
                     data[i] = -data[i];
+                }
             }
         }
 
-
         /// <summary>
-        ///   Performs the Fast Hilbert Transform over a complex[] array.
+        ///     Performs the Fast Hilbert Transform over a complex[] array.
         /// </summary>
-        /// 
         public static void FHT(Complex[] data, FourierTransform.Direction direction)
         {
-            int N = data.Length;
+            var N = data.Length;
 
             // Forward operation
             if (direction == FourierTransform.Direction.Forward)
             {
                 // Makes a copy of the data so we don't lose the
                 //  original information to build our final signal
-                Complex[] shift = (Complex[])data.Clone();
+                var shift = (Complex[])data.Clone();
 
                 // Perform FFT
                 FourierTransform.FFT(shift, FourierTransform.Direction.Backward);
 
                 //double positive frequencies
-                for (int i = 1; i < (N / 2); i++)
+                for (var i = 1; i < N / 2; i++)
                 {
                     shift[i] *= 2.0;
                 }
+
                 // zero out negative frequencies
                 //  (leaving out the dc component)
-                for (int i = (N / 2) + 1; i < N; i++)
+                for (var i = N / 2 + 1; i < N; i++)
                 {
                     shift[i] = Complex.Zero;
                 }
@@ -127,17 +139,20 @@ namespace Accord.Math
 
                 // Put the Hilbert transform in the Imaginary part
                 //  of the input signal, creating a Analytic Signal
-                for (int i = 0; i < N; i++)
+                for (var i = 0; i < N; i++)
+                {
                     data[i] = new Complex(data[i].Real, shift[i].Imaginary);
+                }
             }
 
             else // Backward operation
             {
                 // Just discard the imaginary part
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
+                {
                     data[i] = new Complex(data[i].Real, 0.0);
+                }
             }
         }
-
     }
 }

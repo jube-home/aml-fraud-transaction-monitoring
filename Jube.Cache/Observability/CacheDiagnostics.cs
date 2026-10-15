@@ -20,7 +20,6 @@ namespace Jube.Cache.Observability
     public static class CacheDiagnostics
     {
         public const string Name = "Jube.Cache";
-
         private static readonly AssemblyName Asm = typeof(CacheDiagnostics).Assembly.GetName();
         private static readonly string Version = Asm.Version?.ToString() ?? "0.0.0";
         private static readonly Meter Meter = new(Name, Version);
@@ -38,6 +37,7 @@ namespace Jube.Cache.Observability
         {
             var stopwatch = Stopwatch.StartNew();
             Interlocked.Increment(ref inFlightCount);
+
             try
             {
                 return await func().ConfigureAwait(false);
@@ -53,6 +53,7 @@ namespace Jube.Cache.Observability
         {
             var stopwatch = Stopwatch.StartNew();
             Interlocked.Increment(ref inFlightCount);
+
             try
             {
                 await func().ConfigureAwait(false);
@@ -68,6 +69,7 @@ namespace Jube.Cache.Observability
         {
             var stopwatch = Stopwatch.StartNew();
             Interlocked.Increment(ref inFlightCount);
+
             try
             {
                 return func();

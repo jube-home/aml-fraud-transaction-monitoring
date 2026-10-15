@@ -30,6 +30,7 @@ namespace Jube.Dictionary.Fuzzy
         public static int DamerauDistance(string a, string b)
         {
             var d = new int[a.Length + 1, b.Length + 1];
+
             for (var i = 0; i <= a.Length; i++)
             {
                 d[i, 0] = i;
@@ -46,6 +47,7 @@ namespace Jube.Dictionary.Fuzzy
                 {
                     var cost = a[i - 1] == b[j - 1] ? 0 : 1;
                     d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+
                     if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1])
                     {
                         d[i, j] = Math.Min(d[i, j], d[i - 2, j - 2] + 1);
@@ -59,6 +61,7 @@ namespace Jube.Dictionary.Fuzzy
         public static double DistanceScore(int distance, string a, string b)
         {
             var longest = Math.Max(a.Length, b.Length);
+
             return longest == 0 ? 1d : Math.Max(0d, 1d - (double)distance / longest);
         }
 
@@ -85,6 +88,7 @@ namespace Jube.Dictionary.Fuzzy
             }
 
             var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+
             for (var i = 0; i < a.Length - 1; i++)
             {
                 var gram = a.Substring(i, 2);
@@ -92,9 +96,11 @@ namespace Jube.Dictionary.Fuzzy
             }
 
             var intersection = 0;
+
             for (var i = 0; i < b.Length - 1; i++)
             {
                 var gram = b.Substring(i, 2);
+
                 if (counts.TryGetValue(gram, out var remaining) && remaining > 0)
                 {
                     counts[gram] = remaining - 1;
@@ -109,6 +115,7 @@ namespace Jube.Dictionary.Fuzzy
         {
             var left = FuzzyNormaliser.Tokens(a);
             var right = FuzzyNormaliser.Tokens(b);
+
             if (left.Length == 0 || left.Length != right.Length)
             {
                 return 0d;
@@ -118,6 +125,7 @@ namespace Jube.Dictionary.Fuzzy
             {
                 var leftCode = left[i].Soundex();
                 var rightCode = right[i].Soundex();
+
                 if (leftCode.Length == 0 && rightCode.Length == 0)
                 {
                     if (!string.Equals(left[i], right[i], StringComparison.Ordinal))
@@ -138,6 +146,7 @@ namespace Jube.Dictionary.Fuzzy
         {
             var left = FuzzyNormaliser.Tokens(a).OrderBy(x => x, StringComparer.Ordinal);
             var right = FuzzyNormaliser.Tokens(b).OrderBy(x => x, StringComparer.Ordinal);
+
             return JaroWinkler(string.Join(' ', left), string.Join(' ', right));
         }
 
@@ -145,6 +154,7 @@ namespace Jube.Dictionary.Fuzzy
         {
             var left = FuzzyNormaliser.Tokens(a);
             var right = FuzzyNormaliser.Tokens(b);
+
             if (left.Length == 0 || right.Length == 0)
             {
                 return left.Length == right.Length ? 1d : 0d;
@@ -154,10 +164,12 @@ namespace Jube.Dictionary.Fuzzy
             var longer = left.Length <= right.Length ? right : left;
             var used = new bool[longer.Length];
             var total = 0d;
+
             foreach (var token in shorter)
             {
                 var best = 0d;
                 var bestIndex = -1;
+
                 for (var i = 0; i < longer.Length; i++)
                 {
                     if (used[i])
@@ -166,6 +178,7 @@ namespace Jube.Dictionary.Fuzzy
                     }
 
                     var score = JaroWinkler(token, longer[i]);
+
                     if (score > best)
                     {
                         best = score;
@@ -187,12 +200,14 @@ namespace Jube.Dictionary.Fuzzy
         {
             var left = FuzzyNormaliser.Tokens(a);
             var right = FuzzyNormaliser.Tokens(b);
+
             if (left.Length == 0 || left.Length != right.Length)
             {
                 return 0d;
             }
 
             var fullMatches = 0;
+
             for (var i = 0; i < left.Length; i++)
             {
                 if (string.Equals(left[i], right[i], StringComparison.Ordinal))
@@ -207,6 +222,7 @@ namespace Jube.Dictionary.Fuzzy
 
                 var initialAgainstFull = left[i].Length == 1 && right[i].Length > 1 && right[i][0] == left[i][0] ||
                                          right[i].Length == 1 && left[i].Length > 1 && left[i][0] == right[i][0];
+
                 if (!initialAgainstFull)
                 {
                     return 0d;

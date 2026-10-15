@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class CaseWorkflowMacroRepository
     {
         private readonly DbContext dbContext;
@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -145,6 +146,13 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
+        public Task<CaseWorkflowMacro> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflowMacro.FirstOrDefaultAsync(w =>
+                w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public Task<CaseWorkflowMacro> GetByIdActiveOnlyAsync(int id, CancellationToken token = default)
         {
             return dbContext.CaseWorkflowMacro.FirstOrDefaultAsync(w =>
@@ -177,6 +185,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -231,7 +240,7 @@ namespace Jube.Data.Repository
                 NotificationDestination = existing.NotificationDestination,
                 NotificationSubject = existing.NotificationSubject,
                 NotificationBody = existing.NotificationBody,
-                Guid = existing.Guid,
+                Guid = existing.Guid
             };
 
             await dbContext.InsertAsync(audit, token: token);
@@ -266,7 +275,7 @@ namespace Jube.Data.Repository
                 .Set(s => s.ImportId, importId)
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token: token);
+                .UpdateAsync(token);
         }
     }
 }

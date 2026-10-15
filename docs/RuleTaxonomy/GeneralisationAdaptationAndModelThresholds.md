@@ -40,11 +40,11 @@ Three terms are used consistently on this page:
 A model reaches an Activation Rule by one of three routes. All three produce a number that an Activation Rule reads, and
 all three take the same resolved inputs from the invocation.
 
-| Route                           | Where the model runs                                               | Trained                                                                                                   | Token in a rule                        | Status                              |
-|---------------------------------|--------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|----------------------------------------|-------------------------------------|
-| Exhaustive Adaptation           | In the Jube process                                                | In Jube, by the Exhaustive training algorithm (neural networks)                                           | `ExhaustiveAdaptation.<Name>`          | Documented and available            |
-| HTTP Adaptation (remote recall) | At a remote HTTP endpoint (R Plumber, Python Flask or any service) | Outside Jube                                                                                              | `HttpAdaptation.<Name>`                | Documented and available            |
-| AskJooby Analytics              | In the Jube process                                                | In Jube, by the AskJooby Analytics service, chosen from a wide toolset by an agent-assisted trial process | Not yet available in rules (see below) | In development on a separate branch |
+| Route                           | Where the model runs                                               | Trained                                                                                                   | Token in a rule                    |
+|---------------------------------|--------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|------------------------------------|
+| Exhaustive Adaptation           | In the Jube process                                                | In Jube, by the Exhaustive training algorithm (neural networks)                                           | `ExhaustiveAdaptation.<Name>`      |
+| HTTP Adaptation (remote recall) | At a remote HTTP endpoint (R Plumber, Python Flask or any service) | Outside Jube                                                                                              | `HttpAdaptation.<Name>`            |
+| AskJooby Analytics              | In the Jube process                                                | In Jube, by the AskJooby Analytics service, chosen from a wide toolset by an agent-assisted trial process | Not available in rules (see below) |
 
 See [Exhaustive Adaptation](../Configuration/ExhaustiveAdaptation/index.html),
 [Exhaustive Adaptation Recall](../Configuration/ExhaustiveAdaptation/Recall/index.html),
@@ -55,15 +55,15 @@ See [Exhaustive Adaptation](../Configuration/ExhaustiveAdaptation/index.html),
 
 Models are recalled after every value they read has been produced, and before Activation Rules are evaluated:
 
-| Order | Stage                                                                                  | Notes                                                                                |
-|-------|----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| 1     | Inline Functions, Inline Scripts, Gateway Rules                                        | Derived payload values                                                               |
-| 2     | Sanctions, TTL Counters, Abstraction Rules                                             | Counters, aggregates, sanction distances                                             |
-| 3     | [Abstraction Calculations](../Configuration/Models/AbstractionCalculations/index.html) | Ratios and derived numbers                                                           |
-| 4     | Exhaustive Adaptation                                                                  | In-process neural networks                                                           |
-| 5     | AskJooby Analytics Adaptation                                                          | In-process models, recalled right after Exhaustive (on the branch where it is built) |
-| 6     | HTTP Adaptations                                                                       | Remote models, in ascending Priority                                                 |
-| 7     | Activation Rules                                                                       | Read everything above, in Priority order                                             |
+| Order | Stage                                                                                  | Notes                                              |
+|-------|----------------------------------------------------------------------------------------|----------------------------------------------------|
+| 1     | Inline Functions, Inline Scripts, Gateway Rules                                        | Derived payload values                             |
+| 2     | Sanctions, TTL Counters, Abstraction Rules                                             | Counters, aggregates, sanction distances           |
+| 3     | [Abstraction Calculations](../Configuration/Models/AbstractionCalculations/index.html) | Ratios and derived numbers                         |
+| 4     | Exhaustive Adaptation                                                                  | In-process neural networks                         |
+| 5     | AskJooby Analytics Adaptation                                                          | In-process models, recalled right after Exhaustive |
+| 6     | HTTP Adaptations                                                                       | Remote models, in ascending Priority               |
+| 7     | Activation Rules                                                                       | Read everything above, in Priority order           |
 
 Three consequences follow. A model can read anything in stages 1 to 3, so the counters, aggregates and ratios that rules
 use are also model features. A model does not choose to read another route's score, except that an HTTP Adaptation is
@@ -123,13 +123,13 @@ returned an error or nothing, so decide what null means. `OrNaN()` reads it as a
 and `NaN` fails every comparison, so a suppressed score never matches whichever way the rule is written:
 
 ```vb
-If (HttpAdaptation.RemoteScore.Value.OrNaN() > 0.8) Then
+If (HTTPAdaptation.RemoteScore.OrNaN() > 0.8) Then
     Return True
 End If
 ```
 
 ```vb
-If (HttpAdaptation.RemoteScore.Value.OrNaN() < 0.2) Then
+If (HTTPAdaptation.RemoteScore.OrNaN() < 0.2) Then
     Return True
 End If
 ```
@@ -139,7 +139,7 @@ but it makes a rule that fires on a **low** score fire on a missing score, so us
 want:
 
 ```vb
-If (HttpAdaptation.RemoteScore.Value.OrZero() > 0.8) Then
+If (HTTPAdaptation.RemoteScore.OrZero() > 0.8) Then
     Return True
 End If
 ```
@@ -154,7 +154,7 @@ says so. Register `Value` there, or confirm it is present, before relying on an 
 Scores from different routes are combined with `Or` and `And`, and negated with `Not`:
 
 ```vb
-If (ExhaustiveAdaptation.FraudScore > 0.8 Or HttpAdaptation.RemoteScore.Value.OrNaN() > 0.8) Then
+If (ExhaustiveAdaptation.FraudScore > 0.8 Or HTTPAdaptation.RemoteScore.OrNaN() > 0.8) Then
     Return True
 End If
 ```
@@ -170,12 +170,9 @@ with a second, independent condition, and never let a score of zero alone approv
 ### AskJooby Analytics Scores
 
 An AskJooby Analytics model is recalled in the pipeline and its score is stored in the payload and shown in the
-`AskJoobyAnalyticsAdaptation` element of the response, in the same shape as the Exhaustive one. **Reading that score
-from an Activation Rule is not yet available**: adding it changes the compiled rule contract (a new parameter in the
-generated
-`Match` signature, the parser tokens and the field catalogue), and is a pending decision on the branch. Until then, an
-AskJooby Analytics score can be reported and compared offline, and a model that must drive a rule should be recalled by
-Exhaustive or HTTP Adaptation. This page will name the token when it exists.
+`AdvancedAnalyticsAdaptation` element of the response, in the same shape as the Exhaustive one. **Reading that score
+from an Activation Rule is not available.** An AskJooby Analytics score can be reported and compared offline, and a
+model that must drive a rule should be recalled by Exhaustive or HTTP Adaptation instead.
 
 ## Choosing a Model Threshold
 
@@ -272,11 +269,11 @@ are the model's inputs, its guards and its backstop.
 
 A model is a dependency that can be absent. Decide for each rule what an absent score should do.
 
-| Situation                     | Exhaustive and AskJooby Analytics                                                                                                                                          | HTTP Adaptation                                                                                           |
-|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| No model promoted or deployed | Absent, and an Exhaustive score reads as zero                                                                                                                              | Not applicable                                                                                            |
-| The model throws              | The exception is traced and swallowed, the score is absent for that invocation, and the rest of the invocation continues                                                   | The endpoint error suppresses `Value`, which is null, and a rule that does not handle null does not match |
-| Slow model                    | The AskJooby Analytics stage has a per-invocation time budget, checked between models (a model not started leaves no score). Exhaustive has no stage budget on this branch | The call is part of the response time, so budget for the round trip                                       |
+| Situation                     | Exhaustive and AskJooby Analytics                                                                                                                           | HTTP Adaptation                                                                                           |
+|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| No model promoted or deployed | Absent, and an Exhaustive score reads as zero                                                                                                               | Not applicable                                                                                            |
+| The model throws              | The exception is traced and swallowed, the score is absent for that invocation, and the rest of the invocation continues                                    | The endpoint error suppresses `Value`, which is null, and a rule that does not handle null does not match |
+| Slow model                    | The AskJooby Analytics stage has a per-invocation time budget, checked between models (a model not started leaves no score). Exhaustive has no stage budget | The call is part of the response time, so budget for the round trip                                       |
 
 Design so that the absence of a score fails towards review, not towards approval: fire on high scores, guard low-score
 rules with independent evidence, and add a backstop rule for the case where the model has not answered.
@@ -300,3 +297,9 @@ that is the case most often left untested.
 | A missing score reading as zero                         | `Jube.Dictionary/PooledDictionary.cs` (indexer returns the default for an absent key)                 |
 | Rule tokens `ExhaustiveAdaptation` and `HttpAdaptation` | [Rule Compilation Tokens and Extensions](../Configuration/Models/RuleCompilationAlgorithm/index.html) |
 | Comparison and pipeline steps                           | [Rule Pipeline Reference](RulePipelineReference.html)                                                 |
+
+## Model-Based Examples Are Downstream
+
+Examples that depend on a fitted model, such as a change-point test, a covariance or Mahalanobis distance, a text
+classifier or a language identifier, are not examples in this taxonomy. Model scores are produced downstream in
+Exhaustive or AdvancedAnalytics and reach a rule as an input through the model threshold patterns on this page.

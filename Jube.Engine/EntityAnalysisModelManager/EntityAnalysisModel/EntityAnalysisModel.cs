@@ -30,9 +30,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel
         public Services Services { get; } = new();
         public Flags Flags { get; } = new();
         public Dependencies Dependencies { get; } = new();
-
         private ModelSnapshot snapshot = new();
-
         public ModelSnapshot Snapshot => Volatile.Read(ref snapshot);
 
         public void PublishSnapshot(ModelSnapshot value)

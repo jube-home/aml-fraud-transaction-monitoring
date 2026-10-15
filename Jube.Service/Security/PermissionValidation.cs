@@ -11,20 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Security.Models;
+
 namespace Jube.Service.Security
 {
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Jube.Data.Context;
-    using Jube.Data.Security;
     using log4net;
     using DataPermissionValidation = Jube.Data.Security.PermissionValidation;
 
     public sealed class PermissionValidation
     {
         private readonly PermissionValidationDto dto;
-
         private PermissionValidation(PermissionValidationDto dto) => this.dto = dto;
 
         public static async Task<PermissionValidation> CreateAsync(
@@ -32,7 +32,7 @@ namespace Jube.Service.Security
         {
             var loaded = await new DataPermissionValidation()
                 .GetPermissionsAsync(dbContext, userName, log).ConfigureAwait(false);
-            
+
             return new PermissionValidation(loaded);
         }
 

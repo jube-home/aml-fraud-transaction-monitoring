@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Repository
 {
     using System;
@@ -33,6 +35,7 @@ namespace Jube.Data.Repository
             instance.Guid = instance.Guid == Guid.Empty ? Guid.NewGuid() : instance.Guid;
             instance.CreatedDate = DateTime.UtcNow;
             instance.Id = await dbContext.InsertWithInt32IdentityAsync(instance, token: token).ConfigureAwait(false);
+
             return instance;
         }
 
@@ -60,12 +63,14 @@ namespace Jube.Data.Repository
         public async Task<BacktestInstanceStatus?> StopAsync(int id, CancellationToken token = default)
         {
             var now = DateTime.UtcNow;
+
             var cancelled = await dbContext.EntityAnalysisModelBacktestInstance
                 .Where(w => w.Id == id && w.TenantRegistryId == tenantRegistryId &&
                             w.Status == (short)BacktestInstanceStatus.Pending)
                 .Set(s => s.Status, (short)BacktestInstanceStatus.Cancelled)
                 .Set(s => s.CompletedDate, now)
                 .UpdateAsync(token).ConfigureAwait(false);
+
             if (cancelled == 0)
             {
                 await dbContext.EntityAnalysisModelBacktestInstance
@@ -98,6 +103,7 @@ namespace Jube.Data.Repository
 
             var status = await dbContext.EntityAnalysisModelBacktestInstance.Where(w => w.Id == id)
                 .Select(s => (short?)s.Status).FirstOrDefaultAsync(token).ConfigureAwait(false);
+
             return (BacktestInstanceStatus?)status;
         }
 
@@ -105,6 +111,7 @@ namespace Jube.Data.Repository
             long scanned, long evaluated, string result, string error, CancellationToken token = default)
         {
             var now = DateTime.UtcNow;
+
             var updated = await dbContext.EntityAnalysisModelBacktestInstance
                 .Where(w => w.Id == id && (w.Status == (short)BacktestInstanceStatus.Running ||
                                            w.Status == (short)BacktestInstanceStatus.Cancelling))
@@ -117,6 +124,7 @@ namespace Jube.Data.Repository
                 .Set(s => s.CompletedDate, now)
                 .Set(s => s.HeartbeatDate, now)
                 .UpdateAsync(token).ConfigureAwait(false);
+
             return updated > 0;
         }
 
@@ -125,6 +133,7 @@ namespace Jube.Data.Repository
         {
             var now = DateTime.UtcNow;
             var threshold = now - stale;
+
             var failed = await dbContext.EntityAnalysisModelBacktestInstance
                 .Where(w => w.Status == (short)BacktestInstanceStatus.Running &&
                             (w.HeartbeatDate ?? w.StartedDate) < threshold)
@@ -132,12 +141,14 @@ namespace Jube.Data.Repository
                 .Set(s => s.Error, "The engine stopped while the backtest was running.")
                 .Set(s => s.CompletedDate, now)
                 .UpdateAsync(token).ConfigureAwait(false);
+
             var cancelled = await dbContext.EntityAnalysisModelBacktestInstance
                 .Where(w => w.Status == (short)BacktestInstanceStatus.Cancelling &&
                             (w.HeartbeatDate ?? w.StartedDate) < threshold)
                 .Set(s => s.Status, (short)BacktestInstanceStatus.Cancelled)
                 .Set(s => s.CompletedDate, now)
                 .UpdateAsync(token).ConfigureAwait(false);
+
             return failed + cancelled;
         }
     }

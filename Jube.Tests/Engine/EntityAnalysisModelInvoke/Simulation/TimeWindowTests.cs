@@ -16,6 +16,7 @@ using FluentAssertions;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Xunit;
 
 namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
@@ -38,6 +39,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             window.From.Should().Be(DateTime.Parse(from, null, System.Globalization.DateTimeStyles.AdjustToUniversal |
                                                                System.Globalization.DateTimeStyles.AssumeUniversal));
+
             window.From.Should().Be(TtlCounterExtensions.ApplyTtlCounterInterval(reference, interval, value));
             window.To.Should().Be(reference);
             window.Length.Should().Be(reference - window.From);

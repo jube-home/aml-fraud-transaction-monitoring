@@ -164,7 +164,7 @@ namespace Jube.Test.Dictionary.Extensions
         }
 
         [Fact]
-        public void FromOaDateConvertsAnOleAutomationDateToADateTime()
+        public void FromOADateConvertsAnOleAutomationDateToADateTime()
         {
             var result = 0d.FromOADate();
 
@@ -180,13 +180,13 @@ namespace Jube.Test.Dictionary.Extensions
         [Fact]
         public void IeeeRemainderFollowsBankersRoundingOfTheQuotientNotTruncatedDivisionRemainder()
         {
-            3d.IEEERemainder(2d).Should().Be(-1d);
+            3d.IeeeRemainder(2d).Should().Be(-1d);
         }
 
         [Fact]
         public void IeeeRemainderOfDivisionByZeroIsNaN()
         {
-            double.IsNaN(5d.IEEERemainder(0d)).Should().BeTrue();
+            double.IsNaN(5d.IeeeRemainder(0d)).Should().BeTrue();
         }
 
         [Theory]

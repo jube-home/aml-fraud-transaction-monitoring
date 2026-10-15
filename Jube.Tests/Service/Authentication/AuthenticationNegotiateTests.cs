@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
 using Jube.Service.Exceptions.Authentication;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
@@ -31,6 +32,7 @@ public sealed class AuthenticationNegotiateTests(DatabaseFixture fx) : Authentic
         params (string Key, string Value)[] env)
     {
         await using var db = Fx.GetDbContext();
+
         return await Service(db, env.Length == 0 ? [NegotiateOn] : env).ByNegotiateAsync(Context(identity), token);
     }
 
@@ -38,6 +40,7 @@ public sealed class AuthenticationNegotiateTests(DatabaseFixture fx) : Authentic
         params (string Key, string Value)[] env)
     {
         await using var db = Fx.GetDbContext();
+
         return await Service(db, env.Length == 0 ? [NegotiateOn] : env)
             .ByNegotiateMfaAsync(new AuthenticationRequestDto { UserAgent = "spoofed" }, Context(identity));
     }
@@ -102,6 +105,7 @@ public sealed class AuthenticationNegotiateTests(DatabaseFixture fx) : Authentic
     public async Task IdentityMatchingIsExact_DomainQualifiersAreNotStripped_AndCaseMattersAsync(string variant)
     {
         var user = await AddUserAsync("NegExact");
+
         var presented = variant switch
         {
             "domain-prefix" => $"CORP\\{user.Name}",
@@ -179,6 +183,7 @@ public sealed class AuthenticationNegotiateTests(DatabaseFixture fx) : Authentic
             AuthenticationOutcomeKind.Unauthorized);
         AssertPlainOutcome(await PostAsync(new NegotiateIdentity(false, user.Name)),
             AuthenticationOutcomeKind.Forbidden);
+
         (await HistoryAsync()).Should().BeEmpty();
     }
 

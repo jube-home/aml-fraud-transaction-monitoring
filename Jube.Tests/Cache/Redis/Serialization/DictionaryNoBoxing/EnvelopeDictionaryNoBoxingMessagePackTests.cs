@@ -15,7 +15,8 @@ using System;
 using FluentAssertions;
 using Jube.Cache.Redis.Serialization;
 using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
-using Jube.Dictionary.Models;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
+using Jube.Dictionary;
 using MessagePack;
 using Xunit;
 using IntDictionaryNoBoxing = Jube.Dictionary.DictionaryNoBoxing<int>;
@@ -120,6 +121,7 @@ namespace Jube.Test.Cache.Redis.Serialization.DictionaryNoBoxing
 
             deserialized.Data.TryGetValue(1, out var value).Should().BeTrue();
             value.Type.Should().Be(InternalValue.ValueType.Double);
+
             if (double.IsNaN(doubleValue))
             {
                 double.IsNaN(value.AsDouble()).Should().BeTrue();
@@ -303,6 +305,7 @@ namespace Jube.Test.Cache.Redis.Serialization.DictionaryNoBoxing
         public void EnvelopeWithNullDataIsDistinguishableFromAnEmptyDataOnRoundTrip()
         {
             var nullDataEnvelope = new EnvelopeDictionaryNoBoxing<int> { Version = 1, Data = null };
+
             var emptyDataEnvelope = new EnvelopeDictionaryNoBoxing<int>
                 { Version = 1, Data = new IntDictionaryNoBoxing() };
 
@@ -323,12 +326,14 @@ namespace Jube.Test.Cache.Redis.Serialization.DictionaryNoBoxing
         private static EnvelopeDictionaryNoBoxing<int> RoundTrip(EnvelopeDictionaryNoBoxing<int> envelope)
         {
             var bytes = MessagePackSerializer.Serialize(envelope, options);
+
             return MessagePackSerializer.Deserialize<EnvelopeDictionaryNoBoxing<int>>(bytes, options);
         }
 
         private static EnvelopeDictionaryNoBoxing<string> RoundTrip(EnvelopeDictionaryNoBoxing<string> envelope)
         {
             var bytes = MessagePackSerializer.Serialize(envelope, options);
+
             return MessagePackSerializer.Deserialize<EnvelopeDictionaryNoBoxing<string>>(bytes, options);
         }
     }

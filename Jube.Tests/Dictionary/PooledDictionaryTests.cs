@@ -247,6 +247,7 @@ namespace Jube.Test.Dictionary
             }
 
             dictionary.Count.Should().Be(100);
+
             for (var i = 0; i < 100; i++)
             {
                 dictionary[$"key{i}"].Should().Be(i);
@@ -264,6 +265,7 @@ namespace Jube.Test.Dictionary
             }
 
             dictionary.Count.Should().Be(50);
+
             for (var i = 0; i < 50; i++)
             {
                 dictionary[$"key{i}"].Should().Be(i);

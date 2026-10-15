@@ -1,0 +1,353 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-e8561a11" viewBox="0 0 520 560" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-e8561a11-t jc-e8561a11-d">
+    <title id="jc-e8561a11-t">Calibration</title>
+    <desc id="jc-e8561a11-d">Calibration curve with 1 series: Neural network. Y values range from 0.0006498 to 1. Neural
+        network (ECE 0.137).
+    </desc>
+    <style>
+        .jc-e8561a11{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-e8561a11:not([data-theme="light"]),.jc-e8561a11:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-e8561a11:not([data-theme="light"]),.jc-e8561a11[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-e8561a11
+        text{fill:var(--jc-text);font-size:12px}.jc-e8561a11 .bg{fill:var(--jc-surface)}.jc-e8561a11
+        .ttl{font-size:16px;font-weight:600}.jc-e8561a11 .sub{fill:var(--jc-text2)}.jc-e8561a11
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-e8561a11 .at{fill:var(--jc-text2);font-weight:500}.jc-e8561a11
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-e8561a11
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-e8561a11
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-e8561a11 .ref.s0,.jc-e8561a11
+        .ref.s1,.jc-e8561a11 .ref.s2,.jc-e8561a11 .ref.s3,.jc-e8561a11 .ref.s4,.jc-e8561a11 .ref.s5,.jc-e8561a11
+        .ref.s6,.jc-e8561a11 .ref.s7{stroke:var(--sc)}.jc-e8561a11
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-e8561a11
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-e8561a11
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-e8561a11
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-e8561a11 .wh,.jc-e8561a11
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-e8561a11
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-e8561a11
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-e8561a11
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-e8561a11 .cd.hollow{fill:var(--jc-surface)}.jc-e8561a11
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-e8561a11
+        .ar.off{fill-opacity:0}.jc-e8561a11 .ring{font-size:10px}.jc-e8561a11
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-e8561a11 .needle{fill:var(--jc-text);stroke:none}.jc-e8561a11
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-e8561a11
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-e8561a11
+        .big{font-size:28px;font-weight:600}.jc-e8561a11 .rg0,.jc-e8561a11 .rg1,.jc-e8561a11
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-e8561a11 .rg0{fill-opacity:.1}.jc-e8561a11
+        .rg1{fill-opacity:.2}.jc-e8561a11 .rg2{fill-opacity:.32}.jc-e8561a11
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-e8561a11
+        .bar.part{fill-opacity:.35}.jc-e8561a11 .lgt{fill:var(--jc-text2)}.jc-e8561a11
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-e8561a11
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-e8561a11
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-e8561a11
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-e8561a11 .bar{fill:var(--sc)}.jc-e8561a11
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-e8561a11
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-e8561a11
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-e8561a11
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-e8561a11
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-e8561a11
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-e8561a11 .mk:hover .pt.h,.jc-e8561a11 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-e8561a11 .pt.sm{fill-opacity:.55;stroke:none}.jc-e8561a11
+        .na{fill:var(--jc-grid)}.jc-e8561a11 .mk:hover .sl,.jc-e8561a11 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-e8561a11
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-e8561a11
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-e8561a11
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-e8561a11
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-e8561a11
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-e8561a11 .ctr{text-anchor:middle}.jc-e8561a11
+        .end{text-anchor:end}.jc-e8561a11 .mid{dominant-baseline:central}.jc-e8561a11 .mk{outline:none}.jc-e8561a11
+        .m,.jc-e8561a11 .pt,.jc-e8561a11 .bub,.jc-e8561a11 .bar,.jc-e8561a11 .ov,.jc-e8561a11 .sl,.jc-e8561a11
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-e8561a11 .mk:hover .m,.jc-e8561a11 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-e8561a11 .mk:hover .pt,.jc-e8561a11 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-e8561a11 .mk:hover .bub,.jc-e8561a11 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-e8561a11 .mk:hover .bar,.jc-e8561a11 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-e8561a11 .mk:hover .ov,.jc-e8561a11 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-e8561a11 .mk:hover .sl,.jc-e8561a11 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-e8561a11 .mk:hover .box,.jc-e8561a11 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-e8561a11 .mk:hover .wk,.jc-e8561a11 .mk:focus-visible
+        .wk,.jc-e8561a11 .mk:hover .cd,.jc-e8561a11 .mk:focus-visible .cd{stroke-width:2.5}.jc-e8561a11 .mk:hover
+        .cell,.jc-e8561a11 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-e8561a11 .mk:hover
+        .vl,.jc-e8561a11 .mk:focus-visible .vl,.jc-e8561a11 .mk:hover .cx,.jc-e8561a11 .mk:focus-visible
+        .cx{opacity:1}.jc-e8561a11 .mk:hover .mkr,.jc-e8561a11 .mk:focus-visible .mkr{stroke-width:3}.jc-e8561a11
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-e8561a11
+        .mk:hover .tt,.jc-e8561a11 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-e8561a11
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-e8561a11
+        .tx{fill:var(--jc-text);font-size:12px}.jc-e8561a11 .tx.b{font-weight:600}.jc-e8561a11
+        .tsw{fill:var(--sc)}.jc-e8561a11 .lg{cursor:default;transition:opacity .15s ease}.jc-e8561a11 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-e8561a11 .sr{transition:opacity .15s ease}.jc-e8561a11:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-e8561a11:has(.mk:hover) .mk:not(:hover) .pt,.jc-e8561a11:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-e8561a11:has(.mk:hover) .mk:not(:hover) .bar,.jc-e8561a11:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-e8561a11:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-e8561a11:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-e8561a11 .s0{--sc:var(--jc-c0)}.jc-e8561a11 .s0
+        .on{fill:var(--jc-ct0)}.jc-e8561a11:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-e8561a11:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-e8561a11:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-e8561a11:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-e8561a11:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-e8561a11,.jc-e8561a11 *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="520" height="560" rx="8"/>
+    <text class="ttl" x="16" y="32">Calibration</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="169.56" height="18"/>
+        <rect class="sw" x="16" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="57">Neural network (ECE 0.137)</text>
+    </g>
+    <line class="gl" x1="57.18" y1="432" x2="504" y2="432"/>
+    <text class="tk end mid" x="49.18" y="432">0</text>
+    <line class="gl" x1="57.18" y1="396" x2="504" y2="396"/>
+    <text class="tk end mid" x="49.18" y="396">0.1</text>
+    <line class="gl" x1="57.18" y1="360" x2="504" y2="360"/>
+    <text class="tk end mid" x="49.18" y="360">0.2</text>
+    <line class="gl" x1="57.18" y1="324" x2="504" y2="324"/>
+    <text class="tk end mid" x="49.18" y="324">0.3</text>
+    <line class="gl" x1="57.18" y1="288" x2="504" y2="288"/>
+    <text class="tk end mid" x="49.18" y="288">0.4</text>
+    <line class="gl" x1="57.18" y1="252" x2="504" y2="252"/>
+    <text class="tk end mid" x="49.18" y="252">0.5</text>
+    <line class="gl" x1="57.18" y1="216" x2="504" y2="216"/>
+    <text class="tk end mid" x="49.18" y="216">0.6</text>
+    <line class="gl" x1="57.18" y1="180" x2="504" y2="180"/>
+    <text class="tk end mid" x="49.18" y="180">0.7</text>
+    <line class="gl" x1="57.18" y1="144" x2="504" y2="144"/>
+    <text class="tk end mid" x="49.18" y="144">0.8</text>
+    <line class="gl" x1="57.18" y1="108" x2="504" y2="108"/>
+    <text class="tk end mid" x="49.18" y="108">0.9</text>
+    <line class="gl" x1="57.18" y1="72" x2="504" y2="72"/>
+    <text class="tk end mid" x="49.18" y="72">1.0</text>
+    <line class="gl" x1="57.18" y1="72" x2="57.18" y2="432"/>
+    <line class="gl" x1="168.89" y1="72" x2="168.89" y2="432"/>
+    <line class="gl" x1="280.59" y1="72" x2="280.59" y2="432"/>
+    <line class="gl" x1="392.3" y1="72" x2="392.3" y2="432"/>
+    <line class="gl" x1="504" y1="72" x2="504" y2="432"/>
+    <line class="ax" x1="57.18" y1="432" x2="504" y2="432"/>
+    <line class="ref" x1="57.18" y1="432" x2="504" y2="72">
+        <title>Perfectly calibrated</title>
+    </line>
+    <g class="sr s0">
+        <path class="ln"
+              d="M83.95 431.77L122.14 427.18L166.05 415.7L211.19 392.08L256.76 364.1L301.3 283.76L344.39 262.19L392.7 122.63L435.03 96L471.51 72">
+            <title>Neural network</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 1539, Mean predicted probability: 0.05991, Observed fraction of positives: 0.0006498">
+            <title>Observations: 1539, Mean predicted probability: 0.05991, Observed fraction of positives: 0.0006498
+            </title>
+            <circle class="hit" cx="83.95" cy="431.77" r="9"/>
+            <circle class="pt" cx="83.95" cy="431.77" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="357.27" width="245.6" height="61" rx="6"/>
+                <text class="tx b" x="67.18" y="375.27">Observations: 1539</text>
+                <text class="tx" x="67.18" y="392.27">Mean predicted probability: 0.05991</text>
+                <text class="tx" x="67.18" y="409.27">Observed fraction of positives: 0.0006498</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 1495, Mean predicted probability: 0.1454, Observed fraction of positives: 0.01338">
+            <title>Observations: 1495, Mean predicted probability: 0.1454, Observed fraction of positives: 0.01338
+            </title>
+            <circle class="hit" cx="122.14" cy="427.18" r="9"/>
+            <circle class="pt" cx="122.14" cy="427.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="352.68" width="232.16" height="61" rx="6"/>
+                <text class="tx b" x="67.18" y="370.68">Observations: 1495</text>
+                <text class="tx" x="67.18" y="387.68">Mean predicted probability: 0.1454</text>
+                <text class="tx" x="67.18" y="404.68">Observed fraction of positives: 0.01338</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 773, Mean predicted probability: 0.2437, Observed fraction of positives: 0.04528">
+            <title>Observations: 773, Mean predicted probability: 0.2437, Observed fraction of positives: 0.04528
+            </title>
+            <circle class="hit" cx="166.05" cy="415.7" r="9"/>
+            <circle class="pt" cx="166.05" cy="415.7" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="341.2" width="232.16" height="61" rx="6"/>
+                <text class="tx b" x="67.18" y="359.2">Observations: 773</text>
+                <text class="tx" x="67.18" y="376.2">Mean predicted probability: 0.2437</text>
+                <text class="tx" x="67.18" y="393.2">Observed fraction of positives: 0.04528</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 496, Mean predicted probability: 0.3447, Observed fraction of positives: 0.1109">
+            <title>Observations: 496, Mean predicted probability: 0.3447, Observed fraction of positives: 0.1109</title>
+            <circle class="hit" cx="211.19" cy="392.08" r="9"/>
+            <circle class="pt" cx="211.19" cy="392.08" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="98.47" y="317.58" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="108.47" y="335.58">Observations: 496</text>
+                <text class="tx" x="108.47" y="352.58">Mean predicted probability: 0.3447</text>
+                <text class="tx" x="108.47" y="369.58">Observed fraction of positives: 0.1109</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 281, Mean predicted probability: 0.4467, Observed fraction of positives: 0.1886">
+            <title>Observations: 281, Mean predicted probability: 0.4467, Observed fraction of positives: 0.1886</title>
+            <circle class="hit" cx="256.76" cy="364.1" r="9"/>
+            <circle class="pt" cx="256.76" cy="364.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="144.04" y="289.6" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="154.04" y="307.6">Observations: 281</text>
+                <text class="tx" x="154.04" y="324.6">Mean predicted probability: 0.4467</text>
+                <text class="tx" x="154.04" y="341.6">Observed fraction of positives: 0.1886</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 187, Mean predicted probability: 0.5464, Observed fraction of positives: 0.4118">
+            <title>Observations: 187, Mean predicted probability: 0.5464, Observed fraction of positives: 0.4118</title>
+            <circle class="hit" cx="301.3" cy="283.76" r="9"/>
+            <circle class="pt" cx="301.3" cy="283.76" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="188.58" y="209.26" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="198.58" y="227.26">Observations: 187</text>
+                <text class="tx" x="198.58" y="244.26">Mean predicted probability: 0.5464</text>
+                <text class="tx" x="198.58" y="261.26">Observed fraction of positives: 0.4118</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 106, Mean predicted probability: 0.6428, Observed fraction of positives: 0.4717">
+            <title>Observations: 106, Mean predicted probability: 0.6428, Observed fraction of positives: 0.4717</title>
+            <circle class="hit" cx="344.39" cy="262.19" r="9"/>
+            <circle class="pt" cx="344.39" cy="262.19" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="231.67" y="187.69" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="241.67" y="205.69">Observations: 106</text>
+                <text class="tx" x="241.67" y="222.69">Mean predicted probability: 0.6428</text>
+                <text class="tx" x="241.67" y="239.69">Observed fraction of positives: 0.4717</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 64, Mean predicted probability: 0.7509, Observed fraction of positives: 0.8594">
+            <title>Observations: 64, Mean predicted probability: 0.7509, Observed fraction of positives: 0.8594</title>
+            <circle class="hit" cx="392.7" cy="122.63" r="9"/>
+            <circle class="pt" cx="392.7" cy="122.63" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="278.56" y="129.13" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="288.56" y="147.13">Observations: 64</text>
+                <text class="tx" x="288.56" y="164.13">Mean predicted probability: 0.7509</text>
+                <text class="tx" x="288.56" y="181.13">Observed fraction of positives: 0.8594</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 45, Mean predicted probability: 0.8456, Observed fraction of positives: 0.9333">
+            <title>Observations: 45, Mean predicted probability: 0.8456, Observed fraction of positives: 0.9333</title>
+            <circle class="hit" cx="435.03" cy="96" r="9"/>
+            <circle class="pt" cx="435.03" cy="96" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="278.56" y="102.5" width="225.44" height="61" rx="6"/>
+                <text class="tx b" x="288.56" y="120.5">Observations: 45</text>
+                <text class="tx" x="288.56" y="137.5">Mean predicted probability: 0.8456</text>
+                <text class="tx" x="288.56" y="154.5">Observed fraction of positives: 0.9333</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Observations: 14, Mean predicted probability: 0.9273, Observed fraction of positives: 1">
+            <title>Observations: 14, Mean predicted probability: 0.9273, Observed fraction of positives: 1</title>
+            <circle class="hit" cx="471.51" cy="72" r="9"/>
+            <circle class="pt" cx="471.51" cy="72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="297.28" y="78.5" width="206.72" height="61" rx="6"/>
+                <text class="tx b" x="307.28" y="96.5">Observations: 14</text>
+                <text class="tx" x="307.28" y="113.5">Mean predicted probability: 0.9273</text>
+                <text class="tx" x="307.28" y="130.5">Observed fraction of positives: 1</text>
+            </g>
+        </g>
+    </g>
+    <line class="ax" x1="57.18" y1="502" x2="504" y2="502"/>
+    <text class="tk end" x="49.18" y="454">Count</text>
+    <text class="tk ctr" x="57.18" y="518">0</text>
+    <text class="tk ctr" x="168.89" y="518">0.25</text>
+    <text class="tk ctr" x="280.59" y="518">0.50</text>
+    <text class="tk ctr" x="392.3" y="518">0.75</text>
+    <text class="tk ctr" x="504" y="518">1.00</text>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0 to 0.1: 1539">
+        <title>Bin 0 to 0.1: 1539</title>
+        <rect class="bar m s0" x="58.18" y="450" width="42.68" height="52" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="57.18" y="388" width="85.38" height="44" rx="6"/>
+            <text class="tx b" x="67.18" y="406">Bin 0 to 0.1</text>
+            <text class="tx" x="67.18" y="423">Count: 1539</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.1 to 0.2: 1495">
+        <title>Bin 0.1 to 0.2: 1495</title>
+        <rect class="bar m s0" x="102.86" y="451.49" width="42.68" height="50.51" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="76.3" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="86.3" y="406">Bin 0.1 to 0.2</text>
+            <text class="tx" x="86.3" y="423">Count: 1495</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.2 to 0.3: 773">
+        <title>Bin 0.2 to 0.3: 773</title>
+        <rect class="bar m s0" x="147.54" y="475.88" width="42.68" height="26.12" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="120.98" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="130.98" y="406">Bin 0.2 to 0.3</text>
+            <text class="tx" x="130.98" y="423">Count: 773</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.3 to 0.4: 496">
+        <title>Bin 0.3 to 0.4: 496</title>
+        <rect class="bar m s0" x="192.23" y="485.24" width="42.68" height="16.76" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="165.66" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="175.66" y="406">Bin 0.3 to 0.4</text>
+            <text class="tx" x="175.66" y="423">Count: 496</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.4 to 0.5: 281">
+        <title>Bin 0.4 to 0.5: 281</title>
+        <rect class="bar m s0" x="236.91" y="492.51" width="42.68" height="9.49" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="210.34" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="220.34" y="406">Bin 0.4 to 0.5</text>
+            <text class="tx" x="220.34" y="423">Count: 281</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.5 to 0.6: 187">
+        <title>Bin 0.5 to 0.6: 187</title>
+        <rect class="bar m s0" x="281.59" y="495.68" width="42.68" height="6.32" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="255.03" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="265.03" y="406">Bin 0.5 to 0.6</text>
+            <text class="tx" x="265.03" y="423">Count: 187</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.6 to 0.7: 106">
+        <title>Bin 0.6 to 0.7: 106</title>
+        <rect class="bar m s0" x="326.27" y="498.42" width="42.68" height="3.58" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="299.71" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="309.71" y="406">Bin 0.6 to 0.7</text>
+            <text class="tx" x="309.71" y="423">Count: 106</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.7 to 0.8: 64">
+        <title>Bin 0.7 to 0.8: 64</title>
+        <rect class="bar m s0" x="370.95" y="499.84" width="42.68" height="2.16" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="344.39" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="354.39" y="406">Bin 0.7 to 0.8</text>
+            <text class="tx" x="354.39" y="423">Count: 64</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.8 to 0.9: 45">
+        <title>Bin 0.8 to 0.9: 45</title>
+        <rect class="bar m s0" x="415.64" y="500.48" width="42.68" height="1.52" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="389.07" y="388" width="95.81" height="44" rx="6"/>
+            <text class="tx b" x="399.07" y="406">Bin 0.8 to 0.9</text>
+            <text class="tx" x="399.07" y="423">Count: 45</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Bin 0.9 to 1: 14">
+        <title>Bin 0.9 to 1: 14</title>
+        <rect class="bar m s0" x="460.32" y="501.53" width="42.68" height="0.47" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="418.62" y="388" width="85.38" height="44" rx="6"/>
+            <text class="tx b" x="428.62" y="406">Bin 0.9 to 1</text>
+            <text class="tx" x="428.62" y="423">Count: 14</text>
+        </g>
+    </g>
+    <text class="at ctr" x="280.59" y="540">Mean predicted probability</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 252) rotate(-90)">Observed fraction of positives</text>
+</svg>

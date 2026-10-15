@@ -1,92 +1,91 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Models.Fields.Features;
 
 namespace Accord.Statistics.Models.Fields.Functions
 {
-    using System;
-    using Accord.Statistics.Models.Fields.Features;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Base implementation for <see cref="IPotentialFunction{T}">potential functions</see>.
+    ///     Base implementation for <see cref="IPotentialFunction{T}">potential functions</see>.
     /// </summary>
-    /// 
     /// <typeparam name="T">The type of the observations modeled.</typeparam>
-    /// 
     [Serializable]
-    public abstract class PotentialFunctionBase<T> 
+    public abstract class PotentialFunctionBase<T>
     {
-
         /// <summary>
-        ///   Gets the factor potentials (also known as clique potentials) 
-        ///   functions composing this potential function.
+        ///     Gets the factor potentials (also known as clique potentials)
+        ///     functions composing this potential function.
         /// </summary>
-        /// 
         public FactorPotential<T>[] Factors { get; protected set; }
 
         /// <summary>
-        ///   Gets the number of output classes assumed by this function.
+        ///     Gets the number of output classes assumed by this function.
         /// </summary>
-        /// 
         public int Outputs { get; protected set; }
 
         /// <summary>
-        ///   Gets or sets the set of weights for each feature function.
+        ///     Gets or sets the set of weights for each feature function.
         /// </summary>
-        /// 
         /// <value>The weights for each of the feature functions.</value>
-        /// 
         public double[] Weights { get; set; }
 
         /// <summary>
-        /// Gets the feature functions composing this potential function.
+        ///     Gets the feature functions composing this potential function.
         /// </summary>
-        /// 
         public IFeature<T>[] Features { get; protected set; }
 
         /// <summary>
-        ///   Computes the factor potential function for the given parameters.
+        ///     Computes the factor potential function for the given parameters.
         /// </summary>
-        /// 
         /// <param name="states">A state sequence.</param>
         /// <param name="observations">A sequence of observations.</param>
         /// <param name="output">The output class label for the sequence.</param>
         /// <returns>The value of the factor potential function evaluated for the given parameters.</returns>
-        /// 
         public virtual double[] GetFeatureVector(int[] states, T[] observations, int output = 0)
         {
-            double[] featureVector = new double[Weights.Length];
+            var featureVector = new double[Weights.Length];
 
-            for (int i = 0; i < featureVector.Length; i++)
+            for (var i = 0; i < featureVector.Length; i++)
+            {
                 featureVector[i] = Features[i].Compute(states, observations, output);
+            }
 
             return featureVector;
         }
 
-
-
         internal void Deoptimize()
         {
-            for (int i = 0; i < Factors.Length; i++)
+            for (var i = 0; i < Factors.Length; i++)
             {
                 var factor = Factors[i];
                 Factors[i] = new FactorPotential<T>(factor.Owner, factor.States, factor.Index,

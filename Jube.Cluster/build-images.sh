@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds the five jube-cluster images (etcd, Patroni, App, Monitoring, OpenTelemetry Listener) from
+# Builds the six jube-cluster images (etcd, Patroni, App, Monitoring, OpenTelemetry Listener, R sandbox) from
 # the current git HEAD and tags each with its short commit SHA, e.g. jube.patroni:801ac72.
 #
 # jube-etcd wraps the stock quay.io/coreos/etcd binaries (copied in statically, so any base
@@ -12,11 +12,15 @@
 # gated behind EnableOpenTelemetry) - without its image, that service has nothing to run and
 # sits failing in `docker service ls`.
 #
+# jube-r is its own image, Jube.R/Dockerfile, not the main .NET app - the sandboxed R/Plumber
+# server AskJooby's RunScript tool talks to over RServerUrl, built with Jube.R/ itself as
+# context (unlike the .NET images below, it has no repo-root-relative COPY paths to satisfy).
+#
 # Run this from anywhere - it locates the repo root relative to its own location,
 # since Jube.App/Dockerfile, Jube.Monitoring/Dockerfile and Jube.OpenTelemetryListener/Dockerfile
 # COPY project files by repo-root-relative paths and must be built with the repo root as
-# context, not Jube.Cluster/. (Jube.Cluster/patroni/Dockerfile is self-contained, but is built
-# the same way here for consistency.)
+# context, not Jube.Cluster/. (Jube.Cluster/patroni/Dockerfile and Jube.R/Dockerfile are both
+# self-contained, but are built the same way here for consistency.)
 #
 # Usage:
 #   ./build-images.sh              # tag with HEAD's short SHA, docker save each image to Jube.Cluster/Images/
@@ -62,6 +66,7 @@ PATRONI_IMAGE="jube.patroni:${SHA}"
 JUBE_IMAGE="jube.app:${SHA}"
 JUBE_MONITORING_IMAGE="jube.monitoring:${SHA}"
 JUBE_OTEL_LISTENER_IMAGE="jube.opentelemetrylistener:${SHA}"
+JUBE_R_IMAGE="jube.r:${SHA}"
 
 echo
 echo "==> Building ${ETCD_IMAGE} (context: Jube.Cluster/etcd)"
@@ -99,18 +104,26 @@ docker build --no-cache \
     "$REPO_ROOT"
 
 echo
+echo "==> Building ${JUBE_R_IMAGE} (context: Jube.R)"
+docker build --no-cache \
+    -f "$REPO_ROOT/Jube.R/Dockerfile" \
+    -t "$JUBE_R_IMAGE" \
+    "$REPO_ROOT/Jube.R"
+
+echo
 echo "Built:"
 echo "  ETCD_IMAGE=${ETCD_IMAGE}"
 echo "  PATRONI_IMAGE=${PATRONI_IMAGE}"
 echo "  JUBE_IMAGE=${JUBE_IMAGE}"
 echo "  JUBE_MONITORING_IMAGE=${JUBE_MONITORING_IMAGE}"
 echo "  JUBE_OTEL_LISTENER_IMAGE=${JUBE_OTEL_LISTENER_IMAGE}"
+echo "  JUBE_R_IMAGE=${JUBE_R_IMAGE}"
 
 if [ "$SAVE_IMAGES" -eq 1 ]; then
     IMAGES_DIR="$SCRIPT_DIR/Images"
     mkdir -p "$IMAGES_DIR"
     echo
-    for IMAGE in "$ETCD_IMAGE" "$PATRONI_IMAGE" "$JUBE_IMAGE" "$JUBE_MONITORING_IMAGE" "$JUBE_OTEL_LISTENER_IMAGE"; do
+    for IMAGE in "$ETCD_IMAGE" "$PATRONI_IMAGE" "$JUBE_IMAGE" "$JUBE_MONITORING_IMAGE" "$JUBE_OTEL_LISTENER_IMAGE" "$JUBE_R_IMAGE"; do
         TAR_FILE="$IMAGES_DIR/${IMAGE}.tar"
         echo "==> Saving ${IMAGE} -> ${TAR_FILE}"
         docker save -o "$TAR_FILE" "$IMAGE"
@@ -122,7 +135,7 @@ fi
 if [ "$UPDATE_ENV" -eq 1 ]; then
     ENV_FILE="$SCRIPT_DIR/.env"
     if [ -f "$ENV_FILE" ]; then
-        for VAR in ETCD_IMAGE PATRONI_IMAGE JUBE_IMAGE JUBE_MONITORING_IMAGE JUBE_OTEL_LISTENER_IMAGE; do
+        for VAR in ETCD_IMAGE PATRONI_IMAGE JUBE_IMAGE JUBE_MONITORING_IMAGE JUBE_OTEL_LISTENER_IMAGE JUBE_R_IMAGE; do
             VALUE="${!VAR}"
             if grep -q "^${VAR}=" "$ENV_FILE"; then
                 sed -i "s#^${VAR}=.*#${VAR}=${VALUE}#" "$ENV_FILE"
@@ -142,6 +155,7 @@ if [ "$UPDATE_ENV" -eq 1 ]; then
         echo "  JUBE_IMAGE=${JUBE_IMAGE}"
         echo "  JUBE_MONITORING_IMAGE=${JUBE_MONITORING_IMAGE}"
         echo "  JUBE_OTEL_LISTENER_IMAGE=${JUBE_OTEL_LISTENER_IMAGE}"
+        echo "  JUBE_R_IMAGE=${JUBE_R_IMAGE}"
     fi
 fi
 

@@ -24,6 +24,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormRole;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseWorkflowFormRole;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -48,7 +49,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
         private readonly List<int> createdFormIds = [];
         private readonly List<int> createdWorkflowIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -60,13 +60,18 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
 
             await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>()
                 .Where(w => formGuids.Contains(w.CaseWorkflowFormGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowForm.Where(w => createdFormIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowVersion>()
                 .Where(w => w.CaseWorkflowId != null && createdWorkflowIds.Contains(w.CaseWorkflowId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -81,6 +86,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -91,6 +97,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -112,12 +119,14 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             }).ConfigureAwait(false);
 
             createdWorkflowIds.Add(workflowId);
+
             return workflowId;
         }
 
         private async Task<Guid> CreateFormAsync(DbContext dbContext, int caseWorkflowId, string createdUser)
         {
             var formGuid = Guid.NewGuid();
+
             var formId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowForm
             {
                 Name = $"{DatabaseFixture.Prefix}Form{Guid.NewGuid():N}"[..40],
@@ -134,6 +143,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             }).ConfigureAwait(false);
 
             createdFormIds.Add(formId);
+
             return formGuid;
         }
 
@@ -143,6 +153,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var modelId = await CreateModelAsync(dbContext, userName);
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userName);
             var formGuid = await CreateFormAsync(dbContext, workflowId, userName);
+
             return (modelId, workflowId, formGuid);
         }
 
@@ -315,6 +326,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
@@ -351,6 +363,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var (_, _, formGuid) = await CreateModelWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission);
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
@@ -381,6 +394,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var (_, _, formGuidB) = await CreateModelWorkflowFormAsync(dbContext, fx.Seed.UserTenantB);
             var roleRegistryGuidB = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserTenantB);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             await serviceB.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuidB,
@@ -400,11 +414,13 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var (_, _, formGuid) = await CreateModelWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission);
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(saved.Id);
 
             var grants = await service.GetByCaseWorkflowFormGuidAsync(formGuid);
@@ -420,6 +436,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
@@ -453,6 +470,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var (_, _, formGuidB) = await CreateModelWorkflowFormAsync(dbContext, fx.Seed.UserTenantB);
             var roleRegistryGuidB = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserTenantB);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             var savedB = await serviceB.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuidB,
@@ -500,6 +518,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
                 CaseWorkflowFormGuid = Guid.NewGuid(),
                 RoleRegistryGuid = Guid.NewGuid(),
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -514,8 +533,10 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
 
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
+
             await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
@@ -530,6 +551,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -542,6 +564,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
         public void CatalogueListsUniqueCaseWorkflowFormRoleToolNames()
         {
             var tools = ServiceToolCatalogue.All;
+
             var names = tools.Where(t => t.Name.StartsWith("CaseWorkflowFormRole"))
                 .Select(t => t.Name).ToList();
 
@@ -550,6 +573,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
                 "CaseWorkflowFormRoleCreate",
                 "CaseWorkflowFormRoleDelete",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
 
@@ -573,6 +597,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             });
 
             second.Id.Should().Be(first.Id);
+
             (await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().CountAsync(w =>
                 w.CaseWorkflowFormGuid == formGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -591,7 +616,9 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
                 CaseWorkflowFormGuid = formGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(first.Id);
+
             var again = await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
@@ -599,6 +626,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             });
 
             again.Id.Should().NotBe(first.Id, "a soft-deleted grant must not block granting again");
+
             (await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().CountAsync(w =>
                 w.CaseWorkflowFormGuid == formGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -617,11 +645,13 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
                 CaseWorkflowFormGuid = formGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             var repeated = await service.InsertAsync(new CaseWorkflowFormRoleDto
             {
                 CaseWorkflowFormGuid = formGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(repeated.Id);
 
             (await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().CountAsync(w =>
@@ -652,6 +682,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             });
 
             two.Id.Should().NotBe(one.Id);
+
             (await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().CountAsync(w =>
                 w.CaseWorkflowFormGuid == formGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -668,10 +699,12 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
 
             var ids = new ConcurrentBag<int>();
+
             await Task.WhenAll(Enumerable.Range(0, 8).Select(async _ =>
             {
                 await using var raceContext = fx.GetDbContext();
                 var raceService = await BuildServiceAsync(raceContext, fx.Seed.UserWithPermission);
+
                 var saved = await raceService.InsertAsync(new CaseWorkflowFormRoleDto
                 {
                     CaseWorkflowFormGuid = formGuid,
@@ -681,6 +714,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormRole
             }));
 
             ids.Distinct().Should().ContainSingle("every racing grant must resolve to the one live row");
+
             (await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().CountAsync(w =>
                 w.CaseWorkflowFormGuid == formGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);

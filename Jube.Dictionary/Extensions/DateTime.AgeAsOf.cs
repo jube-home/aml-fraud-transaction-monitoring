@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static int AgeAsOf(this DateTime @this, DateTime asOf)
         {
             var age = asOf.Year - @this.Year;
+
             if (asOf.Month < @this.Month || (asOf.Month == @this.Month && asOf.Day < @this.Day))
             {
                 age--;

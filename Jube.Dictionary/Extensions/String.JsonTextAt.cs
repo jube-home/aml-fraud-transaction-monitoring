@@ -21,6 +21,7 @@ namespace Jube.Dictionary.Extensions
         public static string JsonTextAt(this string? @this, string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
+
             return node switch
             {
                 null => "",

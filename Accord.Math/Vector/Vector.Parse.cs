@@ -1,83 +1,97 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Math
 {
-    using System;
-    using System.Collections.Generic;
-
-
     public static partial class Vector
     {
         #region Parse
+
         /// <summary>
-        ///   Converts the string representation of a vector to its
-        ///   double-precision floating-point number vector equivalent.
+        ///     Converts the string representation of a vector to its
+        ///     double-precision floating-point number vector equivalent.
         /// </summary>
         /// <param name="str">The string representation of the matrix.</param>
-        /// <returns>A double-precision floating-point number matrix parsed
-        /// from the given string using the given format provider.</returns>
-        /// 
+        /// <returns>
+        ///     A double-precision floating-point number matrix parsed
+        ///     from the given string using the given format provider.
+        /// </returns>
         public static double[] Parse(string str)
         {
             return MatrixFormatter.ParseJagged(str, DefaultMatrixFormatProvider.CurrentCulture).Flatten();
         }
 
         /// <summary>
-        ///   Converts the string representation of a vector to its
-        ///   double-precision floating-point number vector equivalent.
+        ///     Converts the string representation of a vector to its
+        ///     double-precision floating-point number vector equivalent.
         /// </summary>
         /// <param name="str">The string representation of the vector.</param>
         /// <param name="provider">
-        ///   The format provider to use in the conversion. Default is to use
-        ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
+        ///     The format provider to use in the conversion. Default is to use
+        ///     <see cref="DefaultMatrixFormatProvider.CurrentCulture" />.
         /// </param>
-        /// <returns>A double-precision floating-point number matrix parsed
-        /// from the given string using the given format provider.</returns>
-        /// 
+        /// <returns>
+        ///     A double-precision floating-point number matrix parsed
+        ///     from the given string using the given format provider.
+        /// </returns>
         public static double[] Parse(string str, IMatrixFormatProvider provider)
         {
             return MatrixFormatter.ParseJagged(str, provider).Flatten();
         }
 
         /// <summary>
-        ///   Converts the string representation of a vector to its
-        ///   double-precision floating-point number vector equivalent.
-        ///   A return value indicates whether the conversion succeeded or failed.
+        ///     Converts the string representation of a vector to its
+        ///     double-precision floating-point number vector equivalent.
+        ///     A return value indicates whether the conversion succeeded or failed.
         /// </summary>
         /// <param name="s">The string representation of the vector.</param>
         /// <param name="provider">
-        ///   The format provider to use in the conversion. Default is to use
-        ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
+        ///     The format provider to use in the conversion. Default is to use
+        ///     <see cref="DefaultMatrixFormatProvider.CurrentCulture" />.
         /// </param>
-        /// <param name="vector">A double-precision floating-point number matrix parsed
-        /// from the given string using the given format provider.</param>
-        /// <result>When this method returns, contains the double-precision floating-point
-        /// number matrix equivalent to the <see param="s"/> parameter, if the conversion succeeded, 
-        /// or null if the conversion failed. The conversion fails if the <see param="s"/> parameter
-        /// is null, is not a matrix in a valid format, or contains elements which represent
-        /// a number less than MinValue or greater than MaxValue. This parameter is passed
-        /// uninitialized. </result>
-        /// 
+        /// <param name="vector">
+        ///     A double-precision floating-point number matrix parsed
+        ///     from the given string using the given format provider.
+        /// </param>
+        /// <result>
+        ///     When this method returns, contains the double-precision floating-point
+        ///     number matrix equivalent to the <see param="s" /> parameter, if the conversion succeeded,
+        ///     or null if the conversion failed. The conversion fails if the <see param="s" /> parameter
+        ///     is null, is not a matrix in a valid format, or contains elements which represent
+        ///     a number less than MinValue or greater than MaxValue. This parameter is passed
+        ///     uninitialized.
+        /// </result>
         public static bool TryParse(string s, IMatrixFormatProvider provider, out double[] vector)
         {
             // TODO: Create a proper TryParse method without
@@ -99,7 +113,5 @@ namespace Accord.Math
         }
 
         #endregion
-
-
     }
 }

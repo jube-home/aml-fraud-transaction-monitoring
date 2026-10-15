@@ -86,6 +86,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             var writer = Task.Run(() =>
             {
                 var size = 2;
+
                 while (!token.IsCancellationRequested && size < 400)
                 {
                     model.PublishSnapshot(Generation(model.Snapshot, size));
@@ -94,6 +95,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             }, CancellationToken.None);
 
             var readers = new Task[4];
+
             for (var r = 0; r < readers.Length; r++)
             {
                 readers[r] = Task.Run(() =>
@@ -140,6 +142,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
                 for (var size = 2; size < 200; size++)
                 {
                     var next = Generation(model.Snapshot, size);
+
                     lock (published)
                     {
                         published.Add(next.Generation);
@@ -162,6 +165,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 
             using var scope = new AssertionScope();
             seen.Should().NotBeEmpty();
+
             lock (published)
             {
                 seen.Should().OnlyContain(g => published.Contains(g));

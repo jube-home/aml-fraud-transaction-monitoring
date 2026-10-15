@@ -1,0 +1,391 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-104eb561" viewBox="0 0 720 588" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-104eb561-t jc-104eb561-d">
+    <title id="jc-104eb561-t">Tree-augmented naive Bayes</title>
+    <desc id="jc-104eb561-d">Structure of a tree-augmented naive Bayes classifier over 4 features.</desc>
+    <style>
+        .jc-104eb561{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-104eb561:not([data-theme="light"]),.jc-104eb561:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-104eb561:not([data-theme="light"]),.jc-104eb561[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-104eb561
+        text{fill:var(--jc-text);font-size:12px}.jc-104eb561 .bg{fill:var(--jc-surface)}.jc-104eb561
+        .ttl{font-size:16px;font-weight:600}.jc-104eb561 .sub{fill:var(--jc-text2)}.jc-104eb561
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-104eb561 .at{fill:var(--jc-text2);font-weight:500}.jc-104eb561
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-104eb561
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-104eb561
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-104eb561 .ref.s0,.jc-104eb561
+        .ref.s1,.jc-104eb561 .ref.s2,.jc-104eb561 .ref.s3,.jc-104eb561 .ref.s4,.jc-104eb561 .ref.s5,.jc-104eb561
+        .ref.s6,.jc-104eb561 .ref.s7{stroke:var(--sc)}.jc-104eb561
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-104eb561
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-104eb561
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-104eb561
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-104eb561 .wh,.jc-104eb561
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-104eb561
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-104eb561
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-104eb561
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-104eb561 .cd.hollow{fill:var(--jc-surface)}.jc-104eb561
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-104eb561
+        .ar.off{fill-opacity:0}.jc-104eb561 .ring{font-size:10px}.jc-104eb561
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-104eb561 .needle{fill:var(--jc-text);stroke:none}.jc-104eb561
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-104eb561
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-104eb561
+        .big{font-size:28px;font-weight:600}.jc-104eb561 .rg0,.jc-104eb561 .rg1,.jc-104eb561
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-104eb561 .rg0{fill-opacity:.1}.jc-104eb561
+        .rg1{fill-opacity:.2}.jc-104eb561 .rg2{fill-opacity:.32}.jc-104eb561
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-104eb561
+        .bar.part{fill-opacity:.35}.jc-104eb561 .lgt{fill:var(--jc-text2)}.jc-104eb561
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-104eb561
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-104eb561
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-104eb561
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-104eb561 .bar{fill:var(--sc)}.jc-104eb561
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-104eb561
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-104eb561
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-104eb561
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-104eb561
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-104eb561
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-104eb561 .mk:hover .pt.h,.jc-104eb561 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-104eb561 .pt.sm{fill-opacity:.55;stroke:none}.jc-104eb561
+        .na{fill:var(--jc-grid)}.jc-104eb561 .mk:hover .sl,.jc-104eb561 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-104eb561
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-104eb561
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-104eb561
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-104eb561
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-104eb561
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-104eb561 .ctr{text-anchor:middle}.jc-104eb561
+        .end{text-anchor:end}.jc-104eb561 .mid{dominant-baseline:central}.jc-104eb561 .mk{outline:none}.jc-104eb561
+        .m,.jc-104eb561 .pt,.jc-104eb561 .bub,.jc-104eb561 .bar,.jc-104eb561 .ov,.jc-104eb561 .sl,.jc-104eb561
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-104eb561 .mk:hover .m,.jc-104eb561 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-104eb561 .mk:hover .pt,.jc-104eb561 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-104eb561 .mk:hover .bub,.jc-104eb561 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-104eb561 .mk:hover .bar,.jc-104eb561 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-104eb561 .mk:hover .ov,.jc-104eb561 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-104eb561 .mk:hover .sl,.jc-104eb561 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-104eb561 .mk:hover .box,.jc-104eb561 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-104eb561 .mk:hover .wk,.jc-104eb561 .mk:focus-visible
+        .wk,.jc-104eb561 .mk:hover .cd,.jc-104eb561 .mk:focus-visible .cd{stroke-width:2.5}.jc-104eb561 .mk:hover
+        .cell,.jc-104eb561 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-104eb561 .mk:hover
+        .vl,.jc-104eb561 .mk:focus-visible .vl,.jc-104eb561 .mk:hover .cx,.jc-104eb561 .mk:focus-visible
+        .cx{opacity:1}.jc-104eb561 .mk:hover .mkr,.jc-104eb561 .mk:focus-visible .mkr{stroke-width:3}.jc-104eb561
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-104eb561
+        .mk:hover .tt,.jc-104eb561 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-104eb561
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-104eb561
+        .tx{fill:var(--jc-text);font-size:12px}.jc-104eb561 .tx.b{font-weight:600}.jc-104eb561
+        .tsw{fill:var(--sc)}.jc-104eb561 .lg{cursor:default;transition:opacity .15s ease}.jc-104eb561 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-104eb561 .sr{transition:opacity .15s ease}.jc-104eb561:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-104eb561:has(.mk:hover) .mk:not(:hover) .pt,.jc-104eb561:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-104eb561:has(.mk:hover) .mk:not(:hover) .bar,.jc-104eb561:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-104eb561:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-104eb561:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-104eb561 .s0{--sc:var(--jc-c0)}.jc-104eb561 .s0
+        .on{fill:var(--jc-ct0)}.jc-104eb561:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-104eb561:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-104eb561:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-104eb561:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-104eb561
+        .s1{--sc:var(--jc-c1)}.jc-104eb561 .s1 .on{fill:var(--jc-ct1)}.jc-104eb561:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-104eb561:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-104eb561:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-104eb561:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-104eb561
+        .s2{--sc:var(--jc-c2)}.jc-104eb561 .s2 .on{fill:var(--jc-ct2)}.jc-104eb561:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-104eb561:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-104eb561:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-104eb561:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-104eb561
+        .s3{--sc:var(--jc-c3)}.jc-104eb561 .s3 .on{fill:var(--jc-ct3)}.jc-104eb561:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-104eb561:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-104eb561:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-104eb561:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-104eb561
+        .s4{--sc:var(--jc-c4)}.jc-104eb561 .s4 .on{fill:var(--jc-ct4)}.jc-104eb561:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-104eb561:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-104eb561:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-104eb561:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-104eb561
+        .s5{--sc:var(--jc-c5)}.jc-104eb561 .s5 .on{fill:var(--jc-ct5)}.jc-104eb561:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-104eb561:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-104eb561:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-104eb561:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-104eb561
+        .s6{--sc:var(--jc-c6)}.jc-104eb561 .s6 .on{fill:var(--jc-ct6)}.jc-104eb561:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-104eb561:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-104eb561:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-104eb561:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-104eb561
+        .s7{--sc:var(--jc-c7)}.jc-104eb561 .s7 .on{fill:var(--jc-ct7)}.jc-104eb561:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-104eb561:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-104eb561:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-104eb561:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-104eb561:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-104eb561,.jc-104eb561
+        *{transition:none!important;animation:none!important}}.jc-104eb561 .q0{fill:var(--jc-q0)}.jc-104eb561
+        .qt0{fill:var(--jc-qt0)}.jc-104eb561 .q1{fill:var(--jc-q1)}.jc-104eb561 .qt1{fill:var(--jc-qt1)}.jc-104eb561
+        .q2{fill:var(--jc-q2)}.jc-104eb561 .qt2{fill:var(--jc-qt2)}.jc-104eb561 .q3{fill:var(--jc-q3)}.jc-104eb561
+        .qt3{fill:var(--jc-qt3)}.jc-104eb561 .q4{fill:var(--jc-q4)}.jc-104eb561 .qt4{fill:var(--jc-qt4)}.jc-104eb561
+        .q5{fill:var(--jc-q5)}.jc-104eb561 .qt5{fill:var(--jc-qt5)}.jc-104eb561 .q6{fill:var(--jc-q6)}.jc-104eb561
+        .qt6{fill:var(--jc-qt6)}.jc-104eb561 .q7{fill:var(--jc-q7)}.jc-104eb561 .qt7{fill:var(--jc-qt7)}.jc-104eb561
+        .q8{fill:var(--jc-q8)}.jc-104eb561 .qt8{fill:var(--jc-qt8)}.jc-104eb561 .d0{fill:var(--jc-d0)}.jc-104eb561
+        .dt0{fill:var(--jc-dt0)}.jc-104eb561 .d1{fill:var(--jc-d1)}.jc-104eb561 .dt1{fill:var(--jc-dt1)}.jc-104eb561
+        .d2{fill:var(--jc-d2)}.jc-104eb561 .dt2{fill:var(--jc-dt2)}.jc-104eb561 .d3{fill:var(--jc-d3)}.jc-104eb561
+        .dt3{fill:var(--jc-dt3)}.jc-104eb561 .d4{fill:var(--jc-d4)}.jc-104eb561 .dt4{fill:var(--jc-dt4)}.jc-104eb561
+        .d5{fill:var(--jc-d5)}.jc-104eb561 .dt5{fill:var(--jc-dt5)}.jc-104eb561 .d6{fill:var(--jc-d6)}.jc-104eb561
+        .dt6{fill:var(--jc-dt6)}.jc-104eb561 .d7{fill:var(--jc-d7)}.jc-104eb561 .dt7{fill:var(--jc-dt7)}.jc-104eb561
+        .d8{fill:var(--jc-d8)}.jc-104eb561 .dt8{fill:var(--jc-dt8)}.jc-104eb561 .d9{fill:var(--jc-d9)}.jc-104eb561
+        .dt9{fill:var(--jc-dt9)}.jc-104eb561 .d10{fill:var(--jc-d10)}.jc-104eb561 .dt10{fill:var(--jc-dt10)}.jc-104eb561
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-104eb561
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-104eb561 .nb.dash{stroke-dasharray:4
+        3}.jc-104eb561 .nd,.jc-104eb561 .eg,.jc-104eb561 .pn{transition:opacity .15s ease}.jc-104eb561 .mk:hover
+        .nb,.jc-104eb561 .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-104eb561
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-104eb561 .ep.en{stroke:var(--jc-axis)}.jc-104eb561
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-104eb561 .vt{fill:var(--jc-grid)}.jc-104eb561
+        .nt.lf{fill-opacity:.38}.jc-104eb561 .ep.ed{stroke-dasharray:5 4}.jc-104eb561
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-104eb561 .eg:hover .ep,.jc-104eb561
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-104eb561 .ah{fill:var(--jc-text2);stroke:none}.jc-104eb561 .mk:hover
+        .ah,.jc-104eb561 .mk:focus-visible .ah{fill:var(--jc-text)}.jc-104eb561
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-104eb561 .mk:hover
+        .hl,.jc-104eb561 .mk:focus-visible .hl{fill-opacity:.07}.jc-104eb561
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-104eb561 .mk:hover .bs,.jc-104eb561 .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-104eb561
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-104eb561
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-104eb561 .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-104eb561
+        .ph{font-size:12px;font-weight:600}.jc-104eb561 .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-104eb561
+        .tps{pointer-events:none}.jc-104eb561 .dsh{stroke-dasharray:3 3}.jc-104eb561
+        .ln.thin{stroke-width:1.5}.jc-104eb561 .ln.hi{stroke-width:2.5}.jc-104eb561
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-104eb561 .mk:hover .rb,.jc-104eb561 .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-104eb561
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-104eb561
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-104eb561
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-104eb561 .mk:hover .dmd,.jc-104eb561
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-104eb561 .mk:hover .ci,.jc-104eb561
+        .mk:focus-visible .ci{stroke-width:3}.jc-104eb561
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-104eb561 .mk:hover
+        .tri,.jc-104eb561 .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-104eb561
+        .cl{fill:var(--sc)}.jc-104eb561 .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-104eb561
+        .ax.dsh{stroke-dasharray:3 3}.jc-104eb561 .sd0{stroke:var(--jc-d0)}.jc-104eb561
+        .sd1{stroke:var(--jc-d1)}.jc-104eb561 .sd2{stroke:var(--jc-d2)}.jc-104eb561
+        .sd3{stroke:var(--jc-d3)}.jc-104eb561 .sd4{stroke:var(--jc-d4)}.jc-104eb561
+        .sd5{stroke:var(--jc-d5)}.jc-104eb561 .sd6{stroke:var(--jc-d6)}.jc-104eb561
+        .sd7{stroke:var(--jc-d7)}.jc-104eb561 .sd8{stroke:var(--jc-d8)}.jc-104eb561
+        .sd9{stroke:var(--jc-d9)}.jc-104eb561 .sd10{stroke:var(--jc-d10)}.jc-104eb561:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-104eb561:has(.eg:hover) .nd{opacity:.45}.jc-104eb561:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-104eb561:has(.lg.s0:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-104eb561:has(.lg.s1:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-104eb561:has(.lg.s2:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-104eb561:has(.lg.s3:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-104eb561:has(.lg.s4:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-104eb561:has(.lg.s5:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-104eb561:has(.lg.s6:hover) .eg{opacity:.3}.jc-104eb561:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-104eb561:has(.lg.s7:hover)
+        .eg{opacity:.3}.jc-104eb561:has(.mk.x0:hover,.mk.x0:focus-visible) .tp.tx0
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x1:hover,.mk.x1:focus-visible) .tp.tx1
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x2:hover,.mk.x2:focus-visible) .tp.tx2
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x3:hover,.mk.x3:focus-visible) .tp.tx3
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x4:hover,.mk.x4:focus-visible) .tp.tx4
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x5:hover,.mk.x5:focus-visible) .tp.tx5
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.x6:hover,.mk.x6:focus-visible) .tp.tx6
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.mk.n0:hover,.mk.n0:focus-visible) .tp.tn0
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .nd:not(.n0):not(.j0){opacity:.22}.jc-104eb561:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .eg:not(.e0){opacity:.07}.jc-104eb561:has(.nd.n0:hover,.nd.n0:focus-visible) .eg.e0
+        .ep{stroke-opacity:1}.jc-104eb561:has(.mk.n1:hover,.mk.n1:focus-visible) .tp.tn1
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .nd:not(.n1):not(.j1){opacity:.22}.jc-104eb561:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .eg:not(.e1){opacity:.07}.jc-104eb561:has(.nd.n1:hover,.nd.n1:focus-visible) .eg.e1
+        .ep{stroke-opacity:1}.jc-104eb561:has(.mk.n2:hover,.mk.n2:focus-visible) .tp.tn2
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .nd:not(.n2):not(.j2){opacity:.22}.jc-104eb561:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .eg:not(.e2){opacity:.07}.jc-104eb561:has(.nd.n2:hover,.nd.n2:focus-visible) .eg.e2
+        .ep{stroke-opacity:1}.jc-104eb561:has(.mk.n3:hover,.mk.n3:focus-visible) .tp.tn3
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .nd:not(.n3):not(.j3){opacity:.22}.jc-104eb561:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .eg:not(.e3){opacity:.07}.jc-104eb561:has(.nd.n3:hover,.nd.n3:focus-visible) .eg.e3
+        .ep{stroke-opacity:1}.jc-104eb561:has(.mk.n4:hover,.mk.n4:focus-visible) .tp.tn4
+        .tt{opacity:1;visibility:visible}.jc-104eb561:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .nd:not(.n4):not(.j4){opacity:.22}.jc-104eb561:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .eg:not(.e4){opacity:.07}.jc-104eb561:has(.nd.n4:hover,.nd.n4:focus-visible) .eg.e4 .ep{stroke-opacity:1}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="588" rx="8"/>
+    <text class="ttl" x="16" y="32">Tree-augmented naive Bayes</text>
+    <text class="sub" x="16" y="50">The class and at most one other feature are the parents of each feature</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="48.72" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Class</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="80.72" y="62" width="60.24" height="18"/>
+        <rect class="sw" x="82.72" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="100.72" y="75">Feature</text>
+    </g>
+    <g transform="translate(247.41 90)">
+        <g class="mk x0 eg e0 e1" tabindex="0" role="graphics-symbol" aria-label="Class to amount">
+            <title>Class to amount</title>
+            <path class="eh" d="M136.08 40C136.08 92 120.41 92 120.41 144"/>
+            <path class="ep et" d="M136.08 40C136.08 92 120.41 92 120.41 144" style="stroke-width:1.6"/>
+            <path class="ah" d="M120.41 144L115.65 134.08L125.17 134.08Z"/>
+        </g>
+        <g class="mk x1 eg e0 e2" tabindex="0" role="graphics-symbol" aria-label="Class to velocity">
+            <title>Class to velocity</title>
+            <path class="eh" d="M124.08 40C124.08 100 72 100 72 160C72 220 33.75 220 33.75 280"/>
+            <path class="ep et" d="M124.08 40C124.08 100 72 100 72 160C72 220 33.75 220 33.75 280"
+                  style="stroke-width:1.6"/>
+            <path class="ah" d="M33.75 280L28.99 270.08L38.51 270.08Z"/>
+        </g>
+        <g class="mk x2 eg e0 e3" tabindex="0" role="graphics-symbol" aria-label="Class to merchant_risk">
+            <title>Class to merchant_risk</title>
+            <path class="eh" d="M148.08 40C148.08 100 168.82 100 168.82 160C168.82 220 156.35 220 156.35 280"/>
+            <path class="ep et" d="M148.08 40C148.08 100 168.82 100 168.82 160C168.82 220 156.35 220 156.35 280"
+                  style="stroke-width:1.6"/>
+            <path class="ah" d="M156.35 280L151.59 270.08L161.11 270.08Z"/>
+        </g>
+        <g class="mk x3 eg e0 e4" tabindex="0" role="graphics-symbol" aria-label="Class to account_age">
+            <title>Class to account_age</title>
+            <path class="eh"
+                  d="M160.08 40C160.08 100 190.82 100 190.82 160C190.82 228 216.18 228 216.18 296C216.18 356 135.47 356 135.47 416"/>
+            <path class="ep et"
+                  d="M160.08 40C160.08 100 190.82 100 190.82 160C190.82 228 216.18 228 216.18 296C216.18 356 135.47 356 135.47 416"
+                  style="stroke-width:1.6"/>
+            <path class="ah" d="M135.47 416L130.71 406.08L140.23 406.08Z"/>
+        </g>
+        <g class="mk x4 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="amount to velocity, Conditional…: 0.4835">
+            <title>amount to velocity, Conditional…: 0.4835</title>
+            <path class="eh" d="M113.41 176C113.41 228 47.75 228 47.75 280"/>
+            <path class="ep et" d="M113.41 176C113.41 228 47.75 228 47.75 280" style="stroke-width:4.5"/>
+            <path class="ah" d="M47.75 280L41.25 266.6L54.25 266.6Z"/>
+            <text class="ant ctr" x="80.58" y="228">0.4835</text>
+        </g>
+        <g class="mk x5 eg e1 e3" tabindex="0" role="graphics-symbol"
+           aria-label="amount to merchant_risk, Conditional…: 0.007509">
+            <title>amount to merchant_risk, Conditional…: 0.007509</title>
+            <path class="eh" d="M127.41 176C127.41 228 142.35 228 142.35 280"/>
+            <path class="ep et" d="M127.41 176C127.41 228 142.35 228 142.35 280" style="stroke-width:0.96"/>
+            <path class="ah" d="M142.35 280L137.97 270.85L146.72 270.85Z"/>
+            <text class="ant ctr" x="134.88" y="228">0.007509</text>
+        </g>
+        <g class="mk x6 eg e2 e4" tabindex="0" role="graphics-symbol"
+           aria-label="velocity to account_age, Conditional…: 0.006416">
+            <title>velocity to account_age, Conditional…: 0.006416</title>
+            <path class="eh" d="M40.75 312C40.75 364 121.47 364 121.47 416"/>
+            <path class="ep et" d="M40.75 312C40.75 364 121.47 364 121.47 416" style="stroke-width:0.95"/>
+            <path class="ah" d="M121.47 416L117.1 406.86L125.84 406.86Z"/>
+            <text class="ant ctr" x="81.11" y="364">0.006416</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j2 j3 j4" tabindex="0" role="graphics-symbol"
+           aria-label="Class, Class, Class priors: 0.5, 0.5, Edges in: 0, out: 4">
+            <title>Class, Class, Class priors: 0.5, 0.5, Edges in: 0, out: 4</title>
+            <rect class="nb" x="114.08" y="8" width="56" height="32" rx="6"/>
+            <rect class="nt" x="114.08" y="8" width="56" height="32" rx="6"/>
+            <text class="lbl ctr mid" x="142.08" y="24">Class</text>
+        </g>
+        <g class="mk n1 nd s2 j0 j2 j3" tabindex="0" role="graphics-symbol"
+           aria-label="amount, Feature, Edges in: 1, out: 2">
+            <title>amount, Feature, Edges in: 1, out: 2</title>
+            <rect class="nb" x="89" y="144" width="62.83" height="32" rx="16"/>
+            <rect class="nt" x="89" y="144" width="62.83" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="120.41" y="160">amount</text>
+        </g>
+        <g class="mk n2 nd s2 j0 j1 j4" tabindex="0" role="graphics-symbol"
+           aria-label="velocity, Feature, Edges in: 2, out: 1">
+            <title>velocity, Feature, Edges in: 2, out: 1</title>
+            <rect class="nb" x="8" y="280" width="65.51" height="32" rx="16"/>
+            <rect class="nt" x="8" y="280" width="65.51" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="40.75" y="296">velocity</text>
+        </g>
+        <g class="mk n3 nd s2 j0 j1" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk, Feature, Edges in: 2, out: 0">
+            <title>merchant_risk, Feature, Edges in: 2, out: 0</title>
+            <rect class="nb" x="99.51" y="280" width="99.67" height="32" rx="16"/>
+            <rect class="nt" x="99.51" y="280" width="99.67" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="149.35" y="296">merchant_risk</text>
+        </g>
+        <g class="mk n4 nd s2 j0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="account_age, Feature, Edges in: 2, out: 0">
+            <title>account_age, Feature, Edges in: 2, out: 0</title>
+            <rect class="nb" x="82.65" y="416" width="91.63" height="32" rx="16"/>
+            <rect class="nt" x="82.65" y="416" width="91.63" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="128.47" y="432">account_age</text>
+        </g>
+    </g>
+    <text class="kn" x="247.41" y="565">thickness = conditional mutual information</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="385.65" y="169" width="113.24" height="27" rx="6"/>
+                <text class="tx b" x="395.65" y="187">Class to amount</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="355.44" y="177" width="116.16" height="27" rx="6"/>
+                <text class="tx b" x="365.44" y="195">Class to velocity</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="415.86" y="177" width="153.43" height="27" rx="6"/>
+                <text class="tx b" x="425.86" y="195">Class to merchant_risk</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="460.91" y="305" width="144.66" height="27" rx="6"/>
+                <text class="tx b" x="470.91" y="323">Class to account_age</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="337.99" y="296" width="130.88" height="44" rx="6"/>
+                <text class="tx b" x="347.99" y="314">amount to velocity</text>
+                <text class="tx" x="347.99" y="331">Conditional…: 0.4835</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="392.29" y="296" width="163.23" height="44" rx="6"/>
+                <text class="tx b" x="402.29" y="314">amount to merchant_risk</text>
+                <text class="tx" x="402.29" y="331">Conditional…: 0.007509</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="338.52" y="432" width="157.38" height="44" rx="6"/>
+                <text class="tx b" x="348.52" y="450">velocity to account_age</text>
+                <text class="tx" x="348.52" y="467">Conditional…: 0.006416</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="427.48" y="75" width="130.88" height="78" rx="6"/>
+                <text class="tx b" x="437.48" y="93">Class</text>
+                <text class="tx" x="437.48" y="110">Class</text>
+                <text class="tx" x="437.48" y="127">Class priors: 0.5, 0.5</text>
+                <text class="tx" x="437.48" y="144">Edges in: 0, out: 4</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="409.23" y="220" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="419.23" y="238">amount</text>
+                <text class="tx" x="419.23" y="255">Feature</text>
+                <text class="tx" x="419.23" y="272">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="330.92" y="356" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="340.92" y="374">velocity</text>
+                <text class="tx" x="340.92" y="391">Feature</text>
+                <text class="tx" x="340.92" y="408">Edges in: 2, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="456.59" y="356" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="466.59" y="374">merchant_risk</text>
+                <text class="tx" x="466.59" y="391">Feature</text>
+                <text class="tx" x="466.59" y="408">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="431.69" y="492" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="441.69" y="510">account_age</text>
+                <text class="tx" x="441.69" y="527">Feature</text>
+                <text class="tx" x="441.69" y="544">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+    </g>
+</svg>

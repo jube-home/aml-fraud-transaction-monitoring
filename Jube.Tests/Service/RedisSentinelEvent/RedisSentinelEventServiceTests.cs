@@ -81,6 +81,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -261,6 +262,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
 
             var descending = await service.ListAsync(search: channel, sortField: "channel",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.Channel).Should().Equal($"{channel}C", $"{channel}B", $"{channel}A");
         }
 
@@ -276,6 +278,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}A", "message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: channel, sortField: "channel",
                 sortDirection: ascendingKeyword);
 
@@ -301,8 +304,10 @@ namespace Jube.Test.Service.RedisSentinelEvent
         {
             await using var dbContext = fx.GetDbContext();
             var channel = $"{DatabaseFixture.Prefix}Channel{Guid.NewGuid():N}";
+
             var firstId = await CreateEntryAsync(dbContext, channel, "message",
                 DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateEntryAsync(dbContext, channel, "message", DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -318,6 +323,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
         {
             await using var dbContext = fx.GetDbContext();
             var channel = $"{DatabaseFixture.Prefix}Channel{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, channel, "message");

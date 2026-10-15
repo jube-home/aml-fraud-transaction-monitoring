@@ -38,6 +38,7 @@ namespace Jube.Test.Cache.Redis.Models
         public void CachePayloadLatestHoldsAssignedFields()
         {
             var now = DateTime.UtcNow;
+
             var model = new CachePayloadLatest
             {
                 Key = "Payload:1:abc",
@@ -135,6 +136,7 @@ namespace Jube.Test.Cache.Redis.Models
         public void ExpiredTtlCounterEntryHoldsAssignedFields()
         {
             var referenceDate = DateTime.UtcNow;
+
             var entry = new ExpiredTtlCounterEntry
             {
                 ReferenceDate = referenceDate,

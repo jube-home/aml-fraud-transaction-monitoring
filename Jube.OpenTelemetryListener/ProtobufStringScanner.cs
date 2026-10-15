@@ -25,6 +25,7 @@ namespace Jube.OpenTelemetryListener
         {
             var strings = new List<string>();
             Walk(data, strings, 0);
+
             return strings;
         }
 
@@ -36,6 +37,7 @@ namespace Jube.OpenTelemetryListener
             }
 
             var offset = 0;
+
             while (offset < data.Length && strings.Count < MaxStrings)
             {
                 if (!TryReadVarint(data, ref offset, out var key))
@@ -100,6 +102,7 @@ namespace Jube.OpenTelemetryListener
             }
 
             string text;
+
             try
             {
                 text = Encoding.UTF8.GetString(slice);
@@ -118,6 +121,7 @@ namespace Jube.OpenTelemetryListener
         private static bool IsMostlyPrintable(string text)
         {
             var printable = 0;
+
             foreach (var c in text)
             {
                 if (!char.IsControl(c) || c is '\t' or '\n' or '\r')
@@ -146,6 +150,7 @@ namespace Jube.OpenTelemetryListener
                 }
 
                 shift += 7;
+
                 if (shift >= 64)
                 {
                     return false;

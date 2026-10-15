@@ -15,8 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 
 namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.Models
 {
@@ -27,6 +27,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.Models
         public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
         {
             Published.Add(change);
+
             return Task.CompletedTask;
         }
 

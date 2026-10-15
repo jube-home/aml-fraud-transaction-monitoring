@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowFormEntryValue;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormEntryValue;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,11 +30,10 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntryValue
     public sealed class CaseWorkflowFormEntryValueService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
-        private readonly RuleRepository repository;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -53,6 +52,8 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntryValue
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowFormEntryValueService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +111,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntryValue
         {
             using var op = OperationScope.Start("CaseWorkflowFormEntryValue", "GetByCaseWorkflowFormEntryId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormEntryValue.GetByCaseWorkflowFormEntryId: entry " +
@@ -119,6 +121,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntryValue
             try
             {
                 EnsurePermitted("CaseWorkflowFormEntryValue.GetByCaseWorkflowFormEntryId");
+
                 var dtos = CaseWorkflowFormEntryValueMapper.ToDto(
                     await repository.GetByCaseWorkflowFormEntryIdActiveOnlyAsync(caseWorkflowFormEntryId, token)
                         .ConfigureAwait(false));
@@ -145,8 +148,10 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntryValue
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowFormEntryValue.GetByCaseWorkflowFormEntryId: unexpected failure " +
                           $"caseWorkflowFormEntryId={caseWorkflowFormEntryId} user={userName}", ex);
+
                 throw;
             }
         }

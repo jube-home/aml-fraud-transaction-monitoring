@@ -15,33 +15,48 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Accord.Neuro;
 using FluentAssertions;
+using Jube.Analytics.Categorical;
 using Jube.Cryptography;
-using Jube.Dto.Repository.PreservationSnapshot;
-using Jube.Service.Repository.PreservationSnapshot;
-using System.Text.Json;
 using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.Repository.Preservation;
+using Jube.Dto.Repository.PreservationSnapshot;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
+using Jube.Engine.Exhaustive.Extensions;
+using Jube.Engine.Helpers;
 using Jube.Preservation.Exceptions;
 using Jube.Preservation.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.Preservation;
+using Jube.Service.Exceptions.Repository.PreservationSnapshot;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.Preservation;
+using Jube.Service.Repository.PreservationSnapshot;
+using Jube.Test.Analytics.Categorical;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.Preservation.Models;
 using LinqToDB;
 using LinqToDB.Data;
+using log4net;
 using MessagePack;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
-using log4net;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery;
 
 namespace Jube.Test.Service.Repository.Preservation
 {
@@ -59,34 +74,66 @@ namespace Jube.Test.Service.Repository.Preservation
         private readonly List<int> createdTenantRegistryIds = [];
         private readonly List<string> createdUserNames = [];
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var ownPrefix = $"{DatabaseFixture.Prefix}Pr";
+
             var tenantIds = createdTenantRegistryIds
                 .Concat(await dbContext.TenantRegistry.Where(w => w.Name != null && w.Name.StartsWith(ownPrefix))
                     .Select(s => s.Id).ToListAsync()).Distinct().ToList();
+
             var userNames = createdUserNames
                 .Concat(await dbContext.UserRegistry.Where(w => w.Name != null && w.Name.StartsWith(ownPrefix))
                     .Select(s => s.Name.Required()).ToListAsync()).Distinct().ToList();
+
             var tenantIdsNullable = tenantIds.Select(id => (int?)id).ToList();
 
             var modelIds = await dbContext.EntityAnalysisModel
                 .Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).Select(s => s.Id).ToListAsync();
             var modelGuids = await dbContext.EntityAnalysisModel
                 .Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).Select(s => s.Guid).ToListAsync();
+
             var dictionaryIds = await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionary>()
                 .Where(w => modelGuids.Contains(w.EntityAnalysisModelGuid)).Select(s => s.Id).ToListAsync();
             var listIds = await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .Where(w => modelGuids.Contains(w.EntityAnalysisModelGuid)).Select(s => s.Id).ToListAsync();
+
             var dictionaryIdsNullable = dictionaryIds.Select(id => (int?)id).ToList();
             var listIdsNullable = listIds.Select(id => (int?)id).ToList();
             var modelIdsNullable = modelIds.Select(id => (int?)id).ToList();
 
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvpVersion>()
+            var exhaustiveInstanceIds = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).Select(s => s.Id).ToListAsync();
+
+            var exhaustiveInstanceIdsNullable = exhaustiveInstanceIds.Select(id => (int?)id).ToList();
+
+            var exhaustiveVariableIds = await dbContext.GetTable<ExhaustiveSearchInstanceVariable>()
+                .Where(w => exhaustiveInstanceIdsNullable.Contains(w.ExhaustiveSearchInstanceId)).Select(s => s.Id)
+                .ToListAsync();
+
+            var exhaustiveVariableIdsNullable = exhaustiveVariableIds.Select(id => (int?)id).ToList();
+
+            await dbContext.GetTable<ExhaustiveSearchInstanceVariableHistogramClass>()
+                .Where(w => exhaustiveVariableIdsNullable.Contains(w.ExhaustiveSearchInstanceVariableId)).DeleteAsync();
+            await dbContext.GetTable<ExhaustiveSearchInstanceVariableHistogram>()
+                .Where(w => exhaustiveVariableIdsNullable.Contains(w.ExhaustiveSearchInstanceVariableId)).DeleteAsync();
+            await dbContext.GetTable<ExhaustiveSearchInstanceVariable>()
+                .Where(w => exhaustiveVariableIds.Contains(w.Id)).DeleteAsync();
+            await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
+                .Where(w => exhaustiveInstanceIdsNullable.Contains(w.ExhaustiveSearchInstanceId)).DeleteAsync();
+
+            await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .Where(w => exhaustiveInstanceIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
                 .Where(w => dictionaryIdsNullable.Contains(w.EntityAnalysisModelDictionaryId)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
                 .Where(w => dictionaryIdsNullable.Contains(w.EntityAnalysisModelDictionaryId)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionary>()
@@ -97,21 +144,48 @@ namespace Jube.Test.Service.Repository.Preservation
                 .Where(w => listIds.Contains(w.Id)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelOverride>()
                 .Where(w => modelGuids.Contains(w.EntityAnalysisModelGuid)).DeleteAsync();
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpathVersion>()
+
+            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                 .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>()
+            await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                 .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            var instanceIds = await dbContext.ExhaustiveSearchInstance
+                .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).Select(s => s.Id).ToListAsync();
+
+            await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
+                .Where(w => instanceIds.Contains(w.ExhaustiveSearchInstanceId)).DeleteAsync();
+
+            await dbContext.ExhaustiveSearchInstance.Where(w => instanceIds.Contains(w.Id)).DeleteAsync();
+
+            var datasetIds = await dbContext.ExhaustiveInstanceCsv
+                .Where(w => tenantIds.Contains(w.TenantRegistryId)).Select(s => s.Id).ToListAsync();
+
+            await dbContext.ExhaustiveInstanceCsvRow
+                .Where(w => datasetIds.Contains(w.DatasetId)).DeleteAsync();
+            await dbContext.ExhaustiveInstanceCsv.Where(w => datasetIds.Contains(w.Id)).DeleteAsync();
+
+            var jsonDatasetIds = await dbContext.ExhaustiveInstanceJson
+                .Where(w => tenantIds.Contains(w.TenantRegistryId)).Select(s => s.Id).ToListAsync();
+
+            await dbContext.ExhaustiveInstanceJsonRow
+                .Where(w => jsonDatasetIds.Contains(w.DatasetId)).DeleteAsync();
+            await dbContext.ExhaustiveInstanceJson.Where(w => jsonDatasetIds.Contains(w.Id)).DeleteAsync();
             await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
 
             var roleIds = await dbContext.RoleRegistry
                 .Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).Select(s => s.Id).ToListAsync();
+
             var roleIdsNullable = roleIds.Select(id => (int?)id).ToList();
+
             var userIds = await dbContext.UserRegistry.Where(w => userNames.Contains(w.Name))
                 .Select(s => s.Id).ToListAsync();
-            await dbContext.GetTable<Data.Poco.UserRegistryVersion>()
+
+            await dbContext.GetTable<UserRegistryVersion>()
                 .Where(w => userIds.Contains(w.UserRegistryId)).DeleteAsync();
+
             await dbContext.UserInTenant.Where(w => userNames.Contains(w.User)).DeleteAsync();
             await dbContext.UserRegistry.Where(w => userNames.Contains(w.Name)).DeleteAsync();
             await dbContext.RoleRegistryPermission
@@ -181,6 +255,7 @@ namespace Jube.Test.Service.Repository.Preservation
 
             var roleGuid = Guid.NewGuid();
             var roleName = $"{DatabaseFixture.Prefix}Pr{label}R{suffix}";
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -211,6 +286,7 @@ namespace Jube.Test.Service.Repository.Preservation
             }
 
             var userName = $"{DatabaseFixture.Prefix}Pr{label}U{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -225,6 +301,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant { User = userName, TenantRegistryId = tenantId });
@@ -253,7 +330,8 @@ namespace Jube.Test.Service.Repository.Preservation
             });
 
             var xpathName = $"{tag}Xp{suffix}";
-            await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelRequestXpath
+
+            await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
             {
                 Guid = Guid.NewGuid(),
                 EntityAnalysisModelId = modelId,
@@ -269,6 +347,7 @@ namespace Jube.Test.Service.Repository.Preservation
             });
 
             var listName = $"{tag}Li{suffix}";
+
             var listId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelList
             {
                 Guid = Guid.NewGuid(),
@@ -281,7 +360,9 @@ namespace Jube.Test.Service.Repository.Preservation
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = tenant.UserName
             });
+
             var listValue = $"{tag}Lv{suffix}";
+
             await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelListValue
             {
                 EntityAnalysisModelListId = listId,
@@ -293,6 +374,7 @@ namespace Jube.Test.Service.Repository.Preservation
             });
 
             var dictionaryName = $"{tag}Di{suffix}";
+
             var dictionaryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelDictionary
             {
                 Guid = Guid.NewGuid(),
@@ -306,7 +388,9 @@ namespace Jube.Test.Service.Repository.Preservation
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = tenant.UserName
             });
+
             var kvpKey = $"{tag}Kk{suffix}";
+
             await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelDictionaryKvp
             {
                 Guid = Guid.NewGuid(),
@@ -338,6 +422,7 @@ namespace Jube.Test.Service.Repository.Preservation
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, tenant.UserName);
+
             return (await service.ExportAsync(options)).EncryptedBytes;
         }
 
@@ -348,6 +433,7 @@ namespace Jube.Test.Service.Repository.Preservation
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, tenant.UserName, log, auditLog, bus, legacyFallback);
             await using var stream = new MemoryStream(bytes);
+
             await service.ImportAsync([new PreservationImportFileDto { FileName = "x.jemp", Content = stream }],
                 password, token);
         }
@@ -355,6 +441,7 @@ namespace Jube.Test.Service.Repository.Preservation
         private static Wrapper Decrypt(byte[] encrypted, string password = Password)
         {
             var bytes = new JempAesEncryption(password, Salt).Decrypt(encrypted);
+
             return MessagePackSerializer.Deserialize<Wrapper>(bytes,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
         }
@@ -363,6 +450,7 @@ namespace Jube.Test.Service.Repository.Preservation
         {
             var bytes = MessagePackSerializer.Serialize(wrapper,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
+
             return new JempAesEncryption(Password, Salt).Encrypt(bytes);
         }
 
@@ -390,6 +478,7 @@ namespace Jube.Test.Service.Repository.Preservation
 
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, $"{DatabaseFixture.Prefix}NoSuchUser{Guid.NewGuid():N}"));
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -404,10 +493,13 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildServiceAsync(dbContext, tenant.UserName, log);
 
             await using var stream = new MemoryStream([1, 2, 3]);
+
             var import = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.ImportAsync([new PreservationImportFileDto { Content = stream }], Password));
+
             var peek = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.ExportPeekAsync(true, true, true, true));
+
             var export = await Assert.ThrowsAsync<ForbiddenException>(() => service.ExportAsync(FullOptions()));
 
             foreach (var ex in new[] { import, peek, export })
@@ -439,14 +531,17 @@ namespace Jube.Test.Service.Repository.Preservation
             models[0].EntityAnalysisModelRequestXpath.Should().ContainSingle(x => x.Name == seededA.XpathName);
 
             var wrapperB = Decrypt(await ExportAsync(tenantB, FullOptions()));
+
             wrapperB.Payload.Required().EntityAnalysisModel.Required().Select(m => m.Name).Should()
                 .BeEquivalentTo(seededB.ModelName);
 
             await using var dbContext = fx.GetDbContext();
             var serviceA = await BuildServiceAsync(dbContext, tenantA.UserName);
             var peekA = await serviceA.ExportPeekAsync(true, true, true, true);
+
             peekA.Should().Contain(seededA.ModelName).And.Contain(seededA.ListName)
                 .And.Contain(seededA.DictionaryName);
+
             peekA.Should().NotContain(seededB.ModelName).And.NotContain(seededB.ListName)
                 .And.NotContain(seededB.DictionaryName).And.NotContain(seededB.XpathName)
                 .And.NotContain(seededB.KvpKey);
@@ -508,7 +603,7 @@ namespace Jube.Test.Service.Repository.Preservation
             (model.Deleted ?? 0).Should().Be(0);
             model.ImportId.Should().NotBeNull();
 
-            var xpaths = await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>()
+            var xpaths = await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                 .Where(w => w.EntityAnalysisModelId == model.Id).ToListAsync();
             xpaths.Should().ContainSingle();
             xpaths[0].Name.Should().Be(seeded.XpathName);
@@ -517,16 +612,21 @@ namespace Jube.Test.Service.Repository.Preservation
 
             var list = await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .SingleAsync(w => w.EntityAnalysisModelGuid == model.Guid);
+
             list.Name.Should().Be(seeded.ListName);
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
                     .Where(w => w.EntityAnalysisModelListId == list.Id).Select(s => s.ListValue).ToListAsync())
                 .Should().BeEquivalentTo(seeded.ListValue);
 
             var dictionary = await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionary>()
                 .SingleAsync(w => w.EntityAnalysisModelGuid == model.Guid);
+
             dictionary.Name.Should().Be(seeded.DictionaryName);
+
             var kvp = await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
                 .SingleAsync(w => w.EntityAnalysisModelDictionaryId == dictionary.Id);
+
             kvp.KvpKey.Should().Be(seeded.KvpKey);
             kvp.KvpValue.Should().Be(seeded.KvpValue);
 
@@ -537,8 +637,10 @@ namespace Jube.Test.Service.Repository.Preservation
             sourceModel.TenantRegistryId.Should().Be(source.Id);
             sourceModel.Guid.Should().Be(seeded.ModelGuid);
             (sourceModel.Deleted ?? 0).Should().Be(0);
-            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>()
+
+            (await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                 .CountAsync(w => w.EntityAnalysisModelId == seeded.ModelId)).Should().Be(1);
+
             (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == source.Id)).Should().Be(1);
 
             var importRow = await dbContext.Import.SingleAsync(w => w.TenantRegistryId == target.Id);
@@ -548,12 +650,445 @@ namespace Jube.Test.Service.Repository.Preservation
 
             bus.Published.Select(e => e.Area).Should().BeEquivalentTo("Preservation", "EntityAnalysisModel",
                 "RoleRegistry", "VisualisationRegistry", "CaseWorkflow");
+
             bus.Published.Should().OnlyContain(e => e.TenantRegistryId == target.Id
                                                     && e.Kind == ServiceChangeKind.Updated
                                                     && e.Actor == target.UserName && e.EntityId == null);
+
             audit.Entries.Count(e => e.Message.Contains("area=Preservation op=Import ")).Should().Be(1);
+
             audit.Entries.Single(e => e.Message.Contains("area=Preservation op=Import "))
                 .Message.Should().Contain("outcome=ok");
+        }
+
+        [Fact]
+        public async Task ExhaustiveClassHistogramsAreExportedAndRoundTripIntoASecondTenantAsync()
+        {
+            var source = await CreateTenantAsync("ChS");
+            var target = await CreateTenantAsync("ChT");
+            var seeded = await SeedTenantAsync(source, "ChS");
+
+            int variableId;
+
+            await using (var seedContext = fx.GetDbContext())
+            {
+                var instance =
+                    await new ExhaustiveSearchInstanceRepository(seedContext, source.UserName)
+                        .InsertAsync(
+                            new Data.Poco.ExhaustiveSearchInstance
+                            {
+                                Name = $"{DatabaseFixture.Prefix}ChI{Guid.NewGuid():N}"[..40],
+                                Guid = Guid.NewGuid(),
+                                EntityAnalysisModelId = seeded.ModelId,
+                                Active = 1,
+                                Locked = 0,
+                                Deleted = 0,
+                                StatusId = 0
+                            });
+
+                variableId = await seedContext.InsertWithInt32IdentityAsync(
+                    new ExhaustiveSearchInstanceVariable
+                    {
+                        ExhaustiveSearchInstanceId = instance.Id, Name = "ChVar", Mean = 1
+                    });
+
+                foreach (var label in new[] { 0, 1 })
+                {
+                    for (var bin = 0; bin < 3; bin++)
+                    {
+                        await seedContext.InsertWithInt32IdentityAsync(
+                            new ExhaustiveSearchInstanceVariableHistogramClass
+                            {
+                                ExhaustiveSearchInstanceVariableId = variableId, ClassLabel = label,
+                                BinSequence = bin, BinRangeStart = bin, BinRangeEnd = bin + 1,
+                                Frequency = label * 100 + bin, Deleted = 0
+                            });
+                    }
+                }
+            }
+
+            var options = FullOptions();
+            options.Exhaustive = true;
+            var bytes = await ExportAsync(source, options);
+
+            var payload = MessagePackSerializer.Deserialize<Wrapper>(
+                new JempAesEncryption(Password, Salt).Decrypt(bytes),
+                MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
+
+            var exportedVariable = payload.Payload!.EntityAnalysisModel!.Single(m => m.Guid == seeded.ModelGuid)
+                .ExhaustiveSearchInstance!.Single().ExhaustiveSearchInstanceVariable!.Single();
+
+            exportedVariable.ExhaustiveSearchInstanceVariableHistogramClass!.Select(c => (c.ClassLabel, c.Frequency))
+                .Should().Equal((0, 0), (0, 1), (0, 2), (1, 100), (1, 101), (1, 102));
+
+            await ImportAsync(target, bytes);
+
+            await using var dbContext = fx.GetDbContext();
+
+            var importedModel = await dbContext.EntityAnalysisModel
+                .SingleAsync(w => w.TenantRegistryId == target.Id && w.Name == seeded.ModelName);
+
+            var importedVariable = await dbContext.GetTable<ExhaustiveSearchInstanceVariable>()
+                .SingleAsync(w => w.Name == "ChVar" && w.ExhaustiveSearchInstance!.EntityAnalysisModelId ==
+                    importedModel.Id);
+
+            importedVariable.Id.Should().NotBe(variableId);
+
+            var rows = await dbContext.GetTable<ExhaustiveSearchInstanceVariableHistogramClass>()
+                .Where(w => w.ExhaustiveSearchInstanceVariableId == importedVariable.Id).OrderBy(o => o.Id)
+                .ToListAsync();
+
+            rows.Select(r => (r.ClassLabel, r.BinSequence, r.Frequency)).Should()
+                .Equal((0, 0, 0), (0, 1, 1), (0, 2, 2), (1, 0, 100), (1, 1, 101), (1, 2, 102));
+
+            rows.Should().OnlyContain(r => r.ImportId != null && (r.Deleted ?? 0) == 0);
+
+            (await dbContext.GetTable<ExhaustiveSearchInstanceVariableHistogramClass>()
+                .CountAsync(w => w.ExhaustiveSearchInstanceVariableId == variableId)).Should().Be(6);
+        }
+
+        [Fact]
+        public async Task ExhaustiveUploadedDatasetsRoundTripWithRowsAndRemappedInstanceReferenceAsync()
+        {
+            var source = await CreateTenantAsync("DsS");
+            var target = await CreateTenantAsync("DsT");
+            var seeded = await SeedTenantAsync(source, "DsS");
+            var targetSeeded = await SeedTenantAsync(target, "DsT");
+
+            await using var dbContext = fx.GetDbContext();
+            var sourceDatasetRepository = new ExhaustiveInstanceDatasetRepository(dbContext, source.Id);
+
+            var sourceDataset = await sourceDatasetRepository.InsertAsync(new ExhaustiveInstanceCsv
+            {
+                Name = $"{DatabaseFixture.Prefix}PrDataset{Guid.NewGuid():N}"[..40],
+                FileName = "x.csv",
+                ColumnsJson = "[]",
+#pragma warning disable CS0618
+                DependentColumnIndex = 2,
+#pragma warning restore CS0618
+                RowCount = 30,
+                StatusId = 1
+            });
+
+            var sourceGuids = Enumerable.Range(0, 30).Select(_ => Guid.NewGuid()).ToList();
+
+            await sourceDatasetRepository.InsertRowsAsync(DatasetKind.Csv, sourceGuids.Select((g, i) =>
+                new ExhaustiveInstanceCsvRow
+                {
+                    DatasetId = sourceDataset.Id,
+                    EntityAnalysisModelInstanceEntryGuid = g,
+                    Json = $"{{\"values\":{{\"c0\":{i},\"c1\":{i * 2},\"c2\":{(i % 3 == 0 ? 1 : 0)}}}}}"
+                }));
+
+            var sourceInstance = await new ExhaustiveSearchInstanceRepository(dbContext, source.UserName).InsertAsync(
+                new Data.Poco.ExhaustiveSearchInstance
+                {
+                    Name = $"{DatabaseFixture.Prefix}PrInst{Guid.NewGuid():N}"[..40],
+                    Guid = Guid.NewGuid(),
+                    EntityAnalysisModelId = seeded.ModelId,
+                    Active = 1,
+                    Locked = 0,
+                    Deleted = 0,
+                    StatusId = 16,
+                    DataSourceId = 2,
+                    ExhaustiveInstanceCsvId = sourceDataset.Id
+                });
+
+            var targetDataset = await new ExhaustiveInstanceDatasetRepository(dbContext, target.Id).InsertAsync(
+                new ExhaustiveInstanceCsv
+                {
+                    Name = $"{DatabaseFixture.Prefix}PrOld{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 1
+                });
+
+            await new ExhaustiveInstanceDatasetRepository(dbContext, target.Id).InsertRowsAsync(DatasetKind.Csv,
+            [
+                new ExhaustiveInstanceCsvRow
+                {
+                    DatasetId = targetDataset.Id,
+                    EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(), Json = "{}"
+                }
+            ]);
+
+            var options = FullOptions();
+            options.Exhaustive = true;
+            var bytes = await ExportAsync(source, options);
+            var wrapper = Decrypt(bytes);
+
+            wrapper.Payload!.ExhaustiveInstanceCsv.Should().ContainSingle()
+                .Which.Rows.Should().HaveCount(30);
+
+            await ImportAsync(target, bytes);
+
+            var imported = await dbContext.ExhaustiveInstanceCsv
+                .Where(w => w.TenantRegistryId == target.Id && w.Name == sourceDataset.Name && w.Deleted != 1)
+                .ToListAsync();
+            imported.Should().ContainSingle();
+            var dataset = imported[0];
+            dataset.Id.Should().NotBe(sourceDataset.Id);
+            dataset.TenantRegistryId.Should().Be(target.Id);
+            dataset.ImportId.Should().NotBeNull();
+            dataset.Guid.Should().Be(sourceDataset.Guid);
+#pragma warning disable CS0618
+            dataset.DependentColumnIndex.Should().Be(2);
+#pragma warning restore CS0618
+            dataset.StatusId.Should().Be(1);
+
+            var rows = await dbContext.ExhaustiveInstanceCsvRow
+                .Where(w => w.DatasetId == dataset.Id).ToListAsync();
+            rows.Should().HaveCount(30);
+            rows.Select(r => r.EntityAnalysisModelInstanceEntryGuid).Should().BeEquivalentTo(sourceGuids);
+
+            var importedInstance = await dbContext.ExhaustiveSearchInstance
+                .Where(w => w.EntityAnalysisModel.TenantRegistryId == target.Id && w.Name == sourceInstance.Name
+                    && w.Deleted != 1)
+                .SingleAsync();
+            importedInstance.DataSourceId.Should().Be(2);
+            importedInstance.ExhaustiveInstanceCsvId.Should().Be(dataset.Id);
+
+            (await dbContext.ExhaustiveInstanceCsv.SingleAsync(w => w.Id == targetDataset.Id)).Deleted
+                .Should().Be(1);
+
+            (await dbContext.ExhaustiveInstanceCsvRow.CountAsync(w =>
+                w.DatasetId == targetDataset.Id)).Should().Be(0);
+            (await dbContext.ExhaustiveInstanceCsvRow.CountAsync(w =>
+                w.DatasetId == sourceDataset.Id)).Should().Be(30);
+
+            (await dbContext.ExhaustiveInstanceCsv.SingleAsync(w => w.Id == sourceDataset.Id)).TenantRegistryId
+                .Should().Be(source.Id);
+
+            targetSeeded.ModelId.Should().BeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task ExhaustiveUploadedJsonDatasetsRoundTripWithRowsAndRemappedInstanceReferenceAsync()
+        {
+            var source = await CreateTenantAsync("JsS");
+            var target = await CreateTenantAsync("JsT");
+            var seeded = await SeedTenantAsync(source, "JsS");
+            await SeedTenantAsync(target, "JsT");
+
+            await using var dbContext = fx.GetDbContext();
+            var sourceRepository = new ExhaustiveInstanceDatasetRepository(dbContext, source.Id);
+
+            var sourceDataset = await sourceRepository.InsertAsync(new ExhaustiveInstanceJson
+            {
+                Name = $"{DatabaseFixture.Prefix}PrJson{Guid.NewGuid():N}"[..40],
+                SourceLabel = "label", ContentHash = "ab12", ColumnsJson = "[]",
+#pragma warning disable CS0618
+                DependentColumnIndex = 2,
+#pragma warning restore CS0618
+                RowCount = 30, StatusId = 1
+            });
+
+            var pending = await sourceRepository.InsertAsync(new ExhaustiveInstanceJson
+            {
+                Name = $"{DatabaseFixture.Prefix}PrJsonP{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 0
+            });
+
+            var sourceGuids = Enumerable.Range(0, 30).Select(_ => Guid.NewGuid()).ToList();
+
+            await sourceRepository.InsertRowsAsync(DatasetKind.Json, sourceGuids.Select((g, i) =>
+                new ExhaustiveInstanceJsonRow
+                {
+                    DatasetId = sourceDataset.Id, EntityAnalysisModelInstanceEntryGuid = g,
+                    Json = $"{{\"values\":{{\"c0\":{i},\"c1\":{i * 2},\"c2\":{(i % 3 == 0 ? 1 : 0)}}}}}"
+                }));
+
+            var sourceInstance = await new ExhaustiveSearchInstanceRepository(dbContext, source.UserName).InsertAsync(
+                new Data.Poco.ExhaustiveSearchInstance
+                {
+                    Name = $"{DatabaseFixture.Prefix}PrJInst{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
+                    EntityAnalysisModelId = seeded.ModelId, Active = 1, Locked = 0, Deleted = 0, StatusId = 16,
+                    DataSourceId = 2, ExhaustiveInstanceJsonId = sourceDataset.Id
+                });
+
+            var options = FullOptions();
+            options.Exhaustive = true;
+            var bytes = await ExportAsync(source, options);
+            var wrapper = Decrypt(bytes);
+
+            wrapper.Payload!.ExhaustiveInstanceJson.Should().ContainSingle()
+                .Which.Rows.Should().HaveCount(30);
+
+            wrapper.Payload.ExhaustiveInstanceJson!.Should().NotContain(e => e.Dataset!.Id == pending.Id);
+
+            await ImportAsync(target, bytes);
+
+            var imported = await dbContext.ExhaustiveInstanceJson
+                .Where(w => w.TenantRegistryId == target.Id && w.Name == sourceDataset.Name && w.Deleted != 1)
+                .SingleAsync();
+
+            imported.Id.Should().NotBe(sourceDataset.Id);
+            imported.TenantRegistryId.Should().Be(target.Id);
+            imported.ImportId.Should().NotBeNull();
+            imported.SourceLabel.Should().Be("label");
+            imported.ContentHash.Should().Be("ab12");
+#pragma warning disable CS0618
+            imported.DependentColumnIndex.Should().Be(2);
+#pragma warning restore CS0618
+            imported.StatusId.Should().Be(1);
+
+            (await dbContext.ExhaustiveInstanceJsonRow.Where(w => w.DatasetId == imported.Id).ToListAsync())
+                .Select(r => r.EntityAnalysisModelInstanceEntryGuid).Should().BeEquivalentTo(sourceGuids);
+
+            (await dbContext.ExhaustiveInstanceJson.CountAsync(w => w.TenantRegistryId == target.Id
+                                                                    && w.Name == pending.Name)).Should().Be(0);
+
+            var importedInstance = await dbContext.ExhaustiveSearchInstance
+                .Where(w => w.EntityAnalysisModel.TenantRegistryId == target.Id && w.Name == sourceInstance.Name
+                    && w.Deleted != 1)
+                .SingleAsync();
+            importedInstance.DataSourceId.Should().Be(2);
+            importedInstance.ExhaustiveInstanceJsonId.Should().Be(imported.Id);
+            importedInstance.ExhaustiveInstanceCsvId.Should().BeNull();
+
+            (await dbContext.ExhaustiveInstanceJson.SingleAsync(w => w.Id == sourceDataset.Id)).TenantRegistryId
+                .Should().Be(source.Id);
+        }
+
+        [Fact]
+        public async Task ExhaustiveInstanceWhoseDatasetIsAbsentFromTheFileFallsBackToArchiveAsync()
+        {
+            var source = await CreateTenantAsync("JsF");
+            var target = await CreateTenantAsync("JsG");
+            var seeded = await SeedTenantAsync(source, "JsF");
+            await SeedTenantAsync(target, "JsG");
+
+            await using var dbContext = fx.GetDbContext();
+            var repository = new ExhaustiveInstanceDatasetRepository(dbContext, source.Id);
+
+            var pendingJson = await repository.InsertAsync(new ExhaustiveInstanceJson
+            {
+                Name = $"{DatabaseFixture.Prefix}PrFbJ{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 0
+            });
+            var pendingCsv = await repository.InsertAsync(new ExhaustiveInstanceCsv
+            {
+                Name = $"{DatabaseFixture.Prefix}PrFbC{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 0
+            });
+
+            foreach (var (label, json, csv) in new[] { ("J", pendingJson.Id, (int?)null), ("C", 0, pendingCsv.Id) })
+            {
+                await new ExhaustiveSearchInstanceRepository(dbContext, source.UserName).InsertAsync(
+                    new Data.Poco.ExhaustiveSearchInstance
+                    {
+                        Name = $"{DatabaseFixture.Prefix}PrFb{label}{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
+                        EntityAnalysisModelId = seeded.ModelId, Active = 1, Locked = 0, Deleted = 0, StatusId = 16,
+                        DataSourceId = 2, ExhaustiveInstanceJsonId = csv.HasValue ? null : json,
+                        ExhaustiveInstanceCsvId = csv
+                    });
+            }
+
+            var options = FullOptions();
+            options.Exhaustive = true;
+            await ImportAsync(target, await ExportAsync(source, options));
+
+            var importedInstances = await dbContext.ExhaustiveSearchInstance
+                .Where(w => w.EntityAnalysisModel.TenantRegistryId == target.Id && w.Name.Contains("PrFb")
+                    && w.Deleted != 1).ToListAsync();
+            importedInstances.Should().HaveCount(2);
+
+            importedInstances.Should().OnlyContain(i => i.DataSourceId == 0 && i.ExhaustiveInstanceCsvId == null
+                                                                            && i.ExhaustiveInstanceJsonId == null);
+        }
+
+        [Fact]
+        public async Task ExhaustiveJsonDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync()
+        {
+            var tenant = await CreateTenantAsync("JsC");
+            await using var dbContext = fx.GetDbContext();
+            var repository = new ExhaustiveInstanceDatasetRepository(dbContext, tenant.Id);
+
+            var dataset = await repository.InsertAsync(new ExhaustiveInstanceJson
+            {
+                Name = $"{DatabaseFixture.Prefix}PrJCap{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 1,
+#pragma warning disable CS0618
+                DependentColumnIndex = 0
+#pragma warning restore CS0618
+            });
+
+            await repository.InsertRowsAsync(DatasetKind.Json, Enumerable.Range(0, 40).Select(i =>
+                new ExhaustiveInstanceJsonRow
+                {
+                    DatasetId = dataset.Id, EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
+                    Json = $"{{\"values\":{{\"c0\":{(i % 4 == 0 ? 1 : 0)}}}}}"
+                }));
+
+            var exported = await repository.GetForExportAsync(DatasetKind.Json, 5);
+
+            var rows = exported.Should().ContainSingle(e => e.Dataset.Id == dataset.Id).Subject.Rows;
+            rows.Should().HaveCount(10);
+            (await repository.GetForExportAsync(DatasetKind.Csv, 5)).Should().BeEmpty();
+        }
+
+        [Fact]
+        public void PreservationCoversEveryExhaustiveInstanceTable()
+        {
+            var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
+            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Jube.sln")))
+            {
+                directory = directory.Parent;
+            }
+
+            var pocos = string.Concat(Directory
+                .EnumerateFiles(Path.Combine(directory!.FullName, "Jube.Data/Poco"), "*.cs")
+                .Select(File.ReadAllText));
+
+            var preservation = File.ReadAllText(Path.Combine(directory.FullName, "Jube.Preservation/Preservation.cs"))
+                               + File.ReadAllText(Path.Combine(directory.FullName,
+                                   "Jube.Preservation/Models/Payload.cs"));
+
+            var tables = Regex
+                .Matches(pocos, @"public class (ExhaustiveInstance[A-Za-z]+)\b")
+                .Select(m => m.Groups[1].Value).Where(n => !n.EndsWith("Row")).ToList();
+
+            tables.Should().Contain(["ExhaustiveInstanceCsv", "ExhaustiveInstanceJson"]);
+
+            foreach (var table in tables)
+            {
+                preservation.Should().Contain(table, $"{table} must be exported and imported by Preservation");
+            }
+        }
+
+        [Fact]
+        public async Task ExhaustiveDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync()
+        {
+            var tenant = await CreateTenantAsync("DsC");
+            await using var dbContext = fx.GetDbContext();
+            var repository = new ExhaustiveInstanceDatasetRepository(dbContext, tenant.Id);
+
+            var dataset = await repository.InsertAsync(new ExhaustiveInstanceCsv
+            {
+                Name = $"{DatabaseFixture.Prefix}PrCap{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 1,
+#pragma warning disable CS0618
+                DependentColumnIndex = 0
+#pragma warning restore CS0618
+            });
+
+            await repository.InsertRowsAsync(DatasetKind.Csv, Enumerable.Range(0, 40).Select(i =>
+                new ExhaustiveInstanceCsvRow
+                {
+                    DatasetId = dataset.Id,
+                    EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
+                    Json = $"{{\"values\":{{\"c0\":{(i % 4 == 0 ? 1 : 0)}}}}}"
+                }));
+
+            var pending = await repository.InsertAsync(new ExhaustiveInstanceCsv
+            {
+                Name = $"{DatabaseFixture.Prefix}PrPend{Guid.NewGuid():N}"[..40], ColumnsJson = "[]", StatusId = 0
+            });
+
+            var exported = await repository.GetForExportAsync(DatasetKind.Csv, 5);
+
+            exported.Should().ContainSingle(e => e.Dataset.Id == dataset.Id);
+            exported.Should().NotContain(e => e.Dataset.Id == pending.Id);
+            var rows = exported.Single(e => e.Dataset.Id == dataset.Id).Rows;
+
+            rows.Should().HaveCount(10, "the export is a capped sample of size 2 x maxRowsPerClass, " +
+                                        "not a class-balanced split");
+
+            (await new ExhaustiveInstanceDatasetRepository(dbContext, 0).GetForExportAsync(DatasetKind.Csv)).Should()
+                .BeEmpty();
         }
 
         [Fact]
@@ -564,13 +1099,17 @@ namespace Jube.Test.Service.Repository.Preservation
             await ImportAsync(tenant, await ExportAsync(tenant, FullOptions(true)));
 
             await using var dbContext = fx.GetDbContext();
+
             var live = await dbContext.RoleRegistry
                 .Where(w => w.TenantRegistryId == tenant.Id && (w.Deleted == 0 || w.Deleted == null))
                 .ToListAsync();
+
             live.Should().Contain(r => r.Guid == tenant.RoleGuid && r.Name == tenant.RoleName);
             var role = live.Single(r => r.Guid == tenant.RoleGuid);
+
             (await dbContext.RoleRegistryPermission.Where(w => w.RoleRegistryId == role.Id).ToListAsync())
                 .Should().ContainSingle(p => p.PermissionSpecificationId == 38);
+
             (await dbContext.RoleRegistry.CountAsync(w => w.Guid == tenant.RoleGuid && w.Deleted == 1))
                 .Should().Be(1);
         }
@@ -602,6 +1141,7 @@ namespace Jube.Test.Service.Repository.Preservation
             await ImportAsync(tenant, await ExportAsync(tenant, FullOptions()));
 
             await using var dbContext = fx.GetDbContext();
+
             var live = await dbContext.EntityAnalysisModel
                 .Where(w => w.TenantRegistryId == tenant.Id && (w.Deleted == 0 || w.Deleted == null)).ToListAsync();
             live.Should().ContainSingle();
@@ -686,6 +1226,7 @@ namespace Jube.Test.Service.Repository.Preservation
 
             var exported = Decrypt(await ExportAsync(source, FullOptions()));
             var good = exported.Payload.Required().EntityAnalysisModel.Required().Single();
+
             var bad = new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}RbBad{Guid.NewGuid():N}"[..30],
@@ -695,6 +1236,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 Deleted = 0,
                 EntityAnalysisModelRequestXpath = null
             };
+
             var crafted = new Wrapper
             {
                 Version = 2,
@@ -705,6 +1247,7 @@ namespace Jube.Test.Service.Repository.Preservation
                     EntityPermission = new EntityPermission()
                 }
             };
+
             var bus = new CapturingBus();
 
             var ex = await Record.ExceptionAsync(() => ImportAsync(target, Encrypt(crafted), bus: bus));
@@ -712,8 +1255,10 @@ namespace Jube.Test.Service.Repository.Preservation
             ex.Should().NotBeNull();
             await AssertTargetUntouchedAsync(target, targetSeed);
             await using var dbContext = fx.GetDbContext();
+
             (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == target.Id
                                                                  && w.Name == seededSource.ModelName)).Should().Be(0);
+
             (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == target.Id)).Should().Be(1);
             var importRow = await dbContext.Import.SingleAsync(w => w.TenantRegistryId == target.Id);
             importRow.InError.Should().Be(1);
@@ -724,15 +1269,18 @@ namespace Jube.Test.Service.Repository.Preservation
         private async Task AssertTargetUntouchedAsync(Tenant target, Seeded targetSeed)
         {
             await using var dbContext = fx.GetDbContext();
+
             var live = await dbContext.EntityAnalysisModel
                 .Where(w => w.TenantRegistryId == target.Id && (w.Deleted == 0 || w.Deleted == null))
                 .ToListAsync();
             live.Should().ContainSingle();
             live[0].Id.Should().Be(targetSeed.ModelId);
             live[0].Guid.Should().Be(targetSeed.ModelGuid);
+
             (await dbContext.RoleRegistry.CountAsync(w => w.Guid == target.RoleGuid && (w.Deleted ?? 0) == 0))
                 .Should().Be(1);
-            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>()
+
+            (await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                     .CountAsync(w => w.EntityAnalysisModelId == targetSeed.ModelId && w.DeletedDate == null))
                 .Should().Be(1);
         }
@@ -749,14 +1297,17 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildServiceAsync(dbContext, tenant.UserName);
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
-                service.ExportPeekAsync(true, true, true, true, cts.Token));
+                service.ExportPeekAsync(true, true, true, true, true, cts.Token));
+
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExportAsync(FullOptions(), cts.Token));
+
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 ImportAsync(tenant, bytes, token: cts.Token));
 
             await using var check = fx.GetDbContext();
-            (await check.EntityAnalysisModel.SingleAsync(w => w.Id == seeded.ModelId, token: CancellationToken.None))
+
+            (await check.EntityAnalysisModel.SingleAsync(w => w.Id == seeded.ModelId, CancellationToken.None))
                 .Deleted
                 .Should().Be(0);
         }
@@ -791,6 +1342,275 @@ namespace Jube.Test.Service.Repository.Preservation
 
             audit.Entries.Should().ContainSingle(e => e.Message.Contains("op=Export ")
                                                       && e.Message.Contains("outcome=forbidden"));
+        }
+
+        private async Task<int> SeedCategoricalInstanceAsync(int modelId,
+            CategoricalFieldEncoder encoder,
+            string userName)
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var instanceId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.ExhaustiveSearchInstance
+            {
+                Guid = Guid.NewGuid(),
+                Name = $"{DatabaseFixture.Prefix}CatX{Guid.NewGuid():N}"[..40],
+                EntityAnalysisModelId = modelId,
+                Active = 1,
+                Locked = 0,
+                Deleted = 0,
+                StatusId = 16,
+                Anomaly = 0,
+                Filter = 0,
+                CategoricalOptionsJson = "{\"enabled\":true}",
+                BaseRate = 0.031,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = userName,
+                Version = 1
+            });
+
+            var fieldId = await dbContext.InsertWithInt32IdentityAsync(
+                new ExhaustiveSearchInstanceCategoricalField
+                {
+                    ExhaustiveSearchInstanceId = instanceId,
+                    SourceName = encoder.SourceName,
+                    ProcessingTypeId = 1,
+                    VocabularyJson = encoder.ToJson(),
+                    CreatedDate = DateTime.UtcNow,
+                    Deleted = 0
+                });
+
+            var trialInstanceId = await dbContext.InsertWithInt32IdentityAsync(
+                new ExhaustiveSearchInstanceTrialInstance
+                {
+                    ExhaustiveSearchInstanceId = instanceId,
+                    CreatedDate = DateTime.UtcNow
+                });
+
+            var sequence = 0;
+
+            var numericId = await dbContext.InsertWithInt32IdentityAsync(new ExhaustiveSearchInstanceVariable
+            {
+                ExhaustiveSearchInstanceId = instanceId,
+                VariableSequence = sequence,
+                Name = "Abstraction.A",
+                ProcessingTypeId = 5,
+                Mean = 4,
+                StandardDeviation = 2,
+                Minimum = 0,
+                Maximum = 9,
+                NormalisationTypeId = 2,
+                Deleted = 0
+            });
+
+            await dbContext.InsertWithInt32IdentityAsync(new ExhaustiveSearchInstanceTrialInstanceVariable
+            {
+                ExhaustiveSearchInstanceVariableId = numericId,
+                ExhaustiveSearchInstanceTrialInstanceId = trialInstanceId,
+                VariableSequence = sequence,
+                Removed = 0
+            });
+
+            for (var i = 0; i < encoder.Indicators.Count; i++)
+            {
+                sequence++;
+
+                var variableId = await dbContext.InsertWithInt32IdentityAsync(
+                    new ExhaustiveSearchInstanceVariable
+                    {
+                        ExhaustiveSearchInstanceId = instanceId,
+                        VariableSequence = sequence,
+                        Name = encoder.Indicators[i].Name,
+                        ProcessingTypeId = 1,
+                        Mean = 0.1,
+                        StandardDeviation = 0.3,
+                        Minimum = 0,
+                        Maximum = 1,
+                        NormalisationTypeId = 1,
+                        CategoricalFieldId = fieldId,
+                        CategoricalKind = (byte)encoder.Indicators[i].Kind,
+                        CategoricalLevel = encoder.Indicators[i].Label,
+                        CategoricalIndicatorIndex = i,
+                        Deleted = 0
+                    });
+
+                await dbContext.InsertWithInt32IdentityAsync(new ExhaustiveSearchInstanceTrialInstanceVariable
+                {
+                    ExhaustiveSearchInstanceVariableId = variableId,
+                    ExhaustiveSearchInstanceTrialInstanceId = trialInstanceId,
+                    VariableSequence = sequence,
+                    Removed = 0
+                });
+            }
+
+            await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.ExhaustiveSearchInstancePromotedTrialInstance
+            {
+                ExhaustiveSearchInstanceTrialInstanceId = trialInstanceId,
+                Json = "{}",
+                Active = 1,
+                CreatedDate = DateTime.UtcNow,
+                CalibrationMethodId = ExhaustiveCalibrationMethod.Platt,
+                CalibrationInputId = ExhaustiveCalibrationInput.Logit,
+                CalibrationSlope = 1.9138919318703835,
+                CalibrationIntercept = 0.03593553619719747,
+                CalibrationEpsilon = 1e-6,
+                TrainingPrior = 0.5,
+                CalibrationPrior = 0.535,
+                BaseRate = 0.031,
+                BaseRateSourceId = ExhaustiveBaseRateSource.Override,
+                CalibrationSampleSize = 400,
+                CalibrationStatusId = ExhaustiveCalibrationStatus.Calibrated,
+                CalibrationReason = null,
+                CalibrationQualityJson = "{\"Test\":{\"Rows\":400}}"
+            });
+
+            return instanceId;
+        }
+
+        private async Task<List<double[]>> CategoricalRecallInputsAsync(int instanceId, IEnumerable<string?> strings)
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var rows = await new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(dbContext)
+                .ExecuteByExhaustiveSearchInstanceIdAsync(instanceId);
+
+            var helper = new JsonSerializationHelper();
+            var network = new ActivationNetwork(new SigmoidFunction(), 1, null, 1);
+
+            var model = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(
+                new Data.Poco.ExhaustiveSearchInstance { Id = instanceId, Guid = Guid.NewGuid(), Name = "Rt" },
+                new Data.Poco.ExhaustiveSearchInstancePromotedTrialInstance
+                {
+                    Json = JsonConvert.SerializeObject(network,
+                        helper.TopologyNetworkJsonSerializerSettings)
+                }, rows, helper.DeserializeTopologyNetworkJsonSerializerSettings);
+
+            return
+            [
+                .. strings.Select(s => ExhaustiveExtensions.BuildScoreInputs(
+                    model.NetworkVariablesInOrder,
+                    new JObject
+                    {
+                        ["Abstraction.A"] = 6, ["Payload.Country"] = s
+                    }))
+            ];
+        }
+
+        [Fact]
+        public async Task RoundTripKeepsTheCategoricalVocabularyAndTheRecallInputsAreIdenticalAsync()
+        {
+            var source = await CreateTenantAsync("CatS");
+            var target = await CreateTenantAsync("CatT");
+            var seeded = await SeedTenantAsync(source, "CatS");
+            var encoder = CategoricalTestData.Country();
+            var sourceInstanceId = await SeedCategoricalInstanceAsync(seeded.ModelId, encoder, source.UserName);
+            var strings = new[] { "GB", "us", " NG ", "FR", "XX", "unseen", "", null, "\uFF35\uFF33" };
+            var before = await CategoricalRecallInputsAsync(sourceInstanceId, strings);
+
+            try
+            {
+                var options = FullOptions();
+                options.Exhaustive = true;
+                var bytes = await ExportAsync(source, options);
+                var wrapper = Decrypt(bytes);
+
+                wrapper.Payload.Required().EntityAnalysisModel.Required().Single().ExhaustiveSearchInstance.Required()
+                    .Single().ExhaustiveSearchInstanceCategoricalField.Required().Single().VocabularyJson
+                    .Should().Be(encoder.ToJson());
+
+                await ImportAsync(target, bytes);
+
+                await using var dbContext = fx.GetDbContext();
+
+                var importedModel = await dbContext.EntityAnalysisModel
+                    .SingleAsync(w => w.TenantRegistryId == target.Id && w.Name == seeded.ModelName);
+
+                var imported = await dbContext.ExhaustiveSearchInstance
+                    .SingleAsync(w => w.EntityAnalysisModelId == importedModel.Id);
+
+                imported.Id.Should().NotBe(sourceInstanceId);
+                imported.CategoricalOptionsJson.Should().Be("{\"enabled\":true}");
+                imported.BaseRate.Should().Be(0.031);
+
+                var promotedTrial = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                    .SingleAsync(w =>
+                        w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId == imported.Id);
+                promotedTrial.CalibrationMethodId.Should().Be(ExhaustiveCalibrationMethod.Platt);
+                promotedTrial.CalibrationInputId.Should().Be(ExhaustiveCalibrationInput.Logit);
+                promotedTrial.CalibrationSlope.Should().Be(1.9138919318703835);
+                promotedTrial.CalibrationIntercept.Should().Be(0.03593553619719747);
+                promotedTrial.CalibrationEpsilon.Should().Be(1e-6);
+                promotedTrial.TrainingPrior.Should().Be(0.5);
+                promotedTrial.CalibrationPrior.Should().Be(0.535);
+                promotedTrial.BaseRate.Should().Be(0.031);
+                promotedTrial.BaseRateSourceId.Should().Be(ExhaustiveBaseRateSource.Override);
+                promotedTrial.CalibrationSampleSize.Should().Be(400);
+                promotedTrial.CalibrationStatusId.Should().Be(ExhaustiveCalibrationStatus.Calibrated);
+                promotedTrial.CalibrationQualityJson.Should().Be("{\"Test\":{\"Rows\":400}}");
+
+                var field = await dbContext.ExhaustiveSearchInstanceCategoricalField
+                    .SingleAsync(w => w.ExhaustiveSearchInstanceId == imported.Id);
+
+                field.VocabularyJson.Should().Be(encoder.ToJson());
+                field.ImportId.Should().NotBeNull();
+
+                var variables = await dbContext.ExhaustiveSearchInstanceVariable
+                    .Where(w => w.ExhaustiveSearchInstanceId == imported.Id).OrderBy(o => o.VariableSequence)
+                    .ToListAsync();
+
+                variables.Should().HaveCount(1 + encoder.Indicators.Count);
+                variables.Skip(1).Should().OnlyContain(v => v.CategoricalFieldId == field.Id);
+
+                variables.Skip(1).Select(s => s.CategoricalIndicatorIndex).Should()
+                    .Equal(Enumerable.Range(0, encoder.Indicators.Count).Select(i => (int?)i));
+
+                variables.Skip(1).Select(s => s.CategoricalLevel).Should()
+                    .Equal(encoder.Indicators.Select(s => s.Label));
+
+                var importedVariableIds = variables.Select(s => (int?)s.Id).ToList();
+
+                var links = await dbContext.ExhaustiveSearchInstanceTrialInstanceVariable
+                    .Where(w => w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId == imported.Id)
+                    .ToListAsync();
+
+                links.Should().HaveCount(variables.Count);
+
+                links.Should().OnlyContain(l => importedVariableIds.Contains(l.ExhaustiveSearchInstanceVariableId),
+                    "the trial variables must point at the imported variables and not at the source ones");
+
+                var after = await CategoricalRecallInputsAsync(imported.Id, strings);
+                after.Should().HaveCount(before.Count);
+
+                for (var i = 0; i < before.Count; i++)
+                {
+                    after[i].Should().Equal(before[i], $"string {strings[i]}");
+                }
+            }
+            finally
+            {
+                await using var cleanup = fx.GetDbContext();
+
+                var modelIds = await cleanup.EntityAnalysisModel
+                    .Where(w => w.TenantRegistryId == source.Id || w.TenantRegistryId == target.Id)
+                    .Select(s => (int?)s.Id).ToListAsync();
+
+                var instanceIds = await cleanup.ExhaustiveSearchInstance
+                    .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).Select(s => (int?)s.Id).ToListAsync();
+                var trialIds = await cleanup.ExhaustiveSearchInstanceTrialInstance
+                    .Where(w => instanceIds.Contains(w.ExhaustiveSearchInstanceId)).Select(s => (int?)s.Id)
+                    .ToListAsync();
+
+                await cleanup.ExhaustiveSearchInstancePromotedTrialInstance
+                    .Where(w => trialIds.Contains(w.ExhaustiveSearchInstanceTrialInstanceId)).DeleteAsync();
+                await cleanup.ExhaustiveSearchInstanceTrialInstanceVariable
+                    .Where(w => trialIds.Contains(w.ExhaustiveSearchInstanceTrialInstanceId)).DeleteAsync();
+                await cleanup.ExhaustiveSearchInstanceTrialInstance
+                    .Where(w => instanceIds.Contains(w.ExhaustiveSearchInstanceId)).DeleteAsync();
+                await cleanup.ExhaustiveSearchInstanceVariable
+                    .Where(w => instanceIds.Contains(w.ExhaustiveSearchInstanceId)).DeleteAsync();
+                await cleanup.ExhaustiveSearchInstanceCategoricalField
+                    .Where(w => instanceIds.Contains(w.ExhaustiveSearchInstanceId)).DeleteAsync();
+                await cleanup.ExhaustiveSearchInstance.Where(w => instanceIds.Contains(w.Id)).DeleteAsync();
+            }
         }
 
         [Fact]
@@ -831,6 +1651,7 @@ namespace Jube.Test.Service.Repository.Preservation
             using var document = JsonDocument.Parse(stored.Json!);
             document.RootElement.TryGetProperty("Payload", out var payload).Should().BeTrue();
             payload.TryGetProperty("EntityAnalysisModel", out var models).Should().BeTrue();
+
             models.EnumerateArray().Select(m => m.GetProperty("Name").GetString()).Should()
                 .Contain(seeded.ModelName, "the body must be readable as JSON, which is the point of storing it so");
         }
@@ -876,11 +1697,13 @@ namespace Jube.Test.Service.Repository.Preservation
 
             var serviceB = await BuildSnapshotServiceAsync(dbContext, tenantB.UserName);
             var listB = await serviceB.GetAsync();
+
             listB.Should().NotContain(s => s.Id == created.Id,
                 "another tenant must never see this tenant's snapshots");
 
             var fromB = async () => await serviceB.GetByIdAsync(created.Id);
-            await fromB.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>(
+
+            await fromB.Should().ThrowAsync<NotFoundException>(
                 "a snapshot of another tenant must be indistinguishable from one that does not exist");
         }
 
@@ -897,6 +1720,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var snapshot = await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "rollback point" });
 
             var renamed = $"{DatabaseFixture.Prefix}Changed{Guid.NewGuid():N}"[..40];
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
                 .Set(s => s.Name, renamed).UpdateAsync();
 
@@ -922,8 +1746,10 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync());
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.CreateAsync(new PreservationSnapshotRequestDto()));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(1));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(1));
 
@@ -946,9 +1772,8 @@ namespace Jube.Test.Service.Repository.Preservation
 
             (await service.GetAsync()).Should().NotContain(s => s.Id == created.Id);
             var gone = async () => await service.GetByIdAsync(created.Id);
-            await gone.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>();
+            await gone.Should().ThrowAsync<NotFoundException>();
         }
-
 
         [Fact]
         public async Task SnapshotImportIsRefusedWithoutItsOwnPermissionEvenWithPreservationAsync()
@@ -967,6 +1792,7 @@ namespace Jube.Test.Service.Repository.Preservation
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(snapshot.Id));
 
             var renamed = $"{DatabaseFixture.Prefix}Untouched{Guid.NewGuid():N}"[..40];
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
                 .Set(s => s.Name, renamed).UpdateAsync();
 
@@ -986,7 +1812,6 @@ namespace Jube.Test.Service.Repository.Preservation
                                                                         && w.Name == seeded.ModelName))
                 .Should().Be(1, "granting the import permission must let the rollback through");
         }
-
 
         [Fact]
         public async Task ProcessSnapshotBypassesPermissionButStillRecordsTheUserAndStaysInTenantAsync()
@@ -1008,14 +1833,18 @@ namespace Jube.Test.Service.Repository.Preservation
 
             snapshot.Id.Should().BeGreaterThan(0,
                 "a process has already decided to act, so it is not gated by the user's permission");
+
             snapshot.SnapshotSourceId.Should().Be(PreservationSnapshotSource.ModelSync);
+
             snapshot.CreatedUser.Should().Be(tenant.UserName,
                 "the user is recorded even where the process, not the user, forced the snapshot");
 
             var stored = await dbContext.PreservationSnapshot.FirstOrDefaultAsync(w => w.Id == snapshot.Id);
             stored.Should().NotBeNull();
+
             stored!.TenantRegistryId.Should().Be(tenant.Id,
                 "bypassing permission must never bypass tenant scoping");
+
             stored.Json.Should().Contain(seeded.ModelName);
         }
 
@@ -1055,6 +1884,7 @@ namespace Jube.Test.Service.Repository.Preservation
             });
 
             var renamed = $"{DatabaseFixture.Prefix}Changed{Guid.NewGuid():N}"[..40];
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
                 .Set(s => s.Name, renamed).UpdateAsync();
 
@@ -1066,7 +1896,6 @@ namespace Jube.Test.Service.Repository.Preservation
                                                                  && w.Name == seeded.ModelName))
                 .Should().Be(1, "AskJooby must be able to roll back the change it made");
         }
-
 
         [Fact]
         public async Task SnapshotBodyIsReturnedWholeAndIsTenantScopedAsync()
@@ -1084,13 +1913,15 @@ namespace Jube.Test.Service.Repository.Preservation
 
             body.Should().NotBeNullOrEmpty();
             using var document = JsonDocument.Parse(body);
+
             document.RootElement.GetProperty("Payload").GetProperty("EntityAnalysisModel")
                 .EnumerateArray().Select(m => m.GetProperty("Name").GetString()).Should()
                 .Contain(seededA.ModelName, "the whole captured body must come back, not a summary of it");
 
             var serviceB = await BuildSnapshotServiceAsync(dbContext, tenantB.UserName);
             var fromB = async () => await serviceB.GetBodyAsync(snapshot.Id);
-            await fromB.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>(
+
+            await fromB.Should().ThrowAsync<NotFoundException>(
                 "the body of another tenant's snapshot is the whole of its configuration and must never be served");
         }
 

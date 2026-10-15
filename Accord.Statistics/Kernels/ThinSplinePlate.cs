@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-framework.net
 //
-// Copyright © Diego Catalano, 2015
+// Copyright Â© Diego Catalano, 2015
 // diego.catalano at live.com
 //
 // Copyright 2015 Haifeng Li
@@ -21,77 +21,66 @@
 // limitations under the License.
 //
 
+using System;
+
 namespace Accord.Statistics.Kernels
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Thin Spline Plate Kernel.
+    ///     Thin Spline Plate Kernel.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   Thin plate splines (TPS) are a spline-based technique for data interpolation and smoothing.
+    ///     Thin plate splines (TPS) are a spline-based technique for data interpolation and smoothing.
     /// </remarks>
-    /// 
     [Serializable]
     public sealed class ThinSplinePlate : KernelBase, IKernel, ICloneable
     {
         private double sigma;
 
         /// <summary>
-        ///   Gets or sets the sigma constant for this kernel.
+        ///     Constructs a new ThinSplinePlate Kernel.
         /// </summary>
-        /// 
-        public double Sigma
-        {
-            get { return sigma; }
-            set { sigma = Math.Max(value,1); }
-        }
-
-        /// <summary>
-        ///   Constructs a new ThinSplinePlate Kernel.
-        /// </summary>
-        /// 
         /// <param name="sigma">The value for sigma.</param>
-        /// 
         public ThinSplinePlate(double sigma)
         {
             Sigma = sigma;
         }
 
         /// <summary>
-        ///   Thin Spline Plate Kernel Function.
+        ///     Gets or sets the sigma constant for this kernel.
         /// </summary>
-        /// 
-        /// <param name="x">Vector <c>x</c> in input space.</param>
-        /// <param name="y">Vector <c>y</c> in input space.</param>
-        /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
-        public override double Function(double[] x, double[] y)
+        public double Sigma
         {
-            double r = 0;
-            for (int i = 0; i < x.Length; i++)
-            {
-                double dxy = x[i] - y[i];
-                r += dxy * dxy;
-            }
-
-            return r / (sigma * sigma) * Math.Log(Math.Sqrt(r) / sigma);
+            get => sigma;
+            set => sigma = System.Math.Max(value, 1);
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public object Clone()
         {
             return MemberwiseClone();
         }
 
+        /// <summary>
+        ///     Thin Spline Plate Kernel Function.
+        /// </summary>
+        /// <param name="x">Vector <c>x</c> in input space.</param>
+        /// <param name="y">Vector <c>y</c> in input space.</param>
+        /// <returns>Dot product in feature (kernel) space.</returns>
+        public override double Function(double[] x, double[] y)
+        {
+            double r = 0;
+            for (var i = 0; i < x.Length; i++)
+            {
+                var dxy = x[i] - y[i];
+                r += dxy * dxy;
+            }
+
+            return r / (sigma * sigma) * System.Math.Log(System.Math.Sqrt(r) / sigma);
+        }
     }
 }

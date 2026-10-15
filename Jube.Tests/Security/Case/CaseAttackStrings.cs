@@ -50,11 +50,8 @@ public static class CaseAttackStrings
     ];
 
     public static IReadOnlyList<string> Seeds { get; } = [.. sqlSeeds, .. markupSeeds, .. otherSeeds];
-
     public static IReadOnlyList<string> SqlOnly { get; } = sqlSeeds;
-
     public static IReadOnlyList<string> Mutated { get; } = [.. Seeds.SelectMany(Variants).Distinct()];
-
     public static IReadOnlyList<string> MutatedSql { get; } = [.. sqlSeeds.SelectMany(Variants).Distinct()];
 
     public static IEnumerable<string> Variants(string seed)
@@ -80,6 +77,7 @@ public static class CaseAttackStrings
     private static string AlternateCase(string value)
     {
         var chars = value.ToCharArray();
+
         for (var i = 0; i < chars.Length; i++)
         {
             chars[i] = i % 2 == 0 ? char.ToUpperInvariant(chars[i]) : char.ToLowerInvariant(chars[i]);

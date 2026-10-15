@@ -48,6 +48,7 @@ namespace Jube.Data.Helpers
                 var deletedThisChunk = await dbContext.GetTable<T>()
                     .Where(byIdsPredicate(ids))
                     .DeleteAsync(token).ConfigureAwait(false);
+
                 totalDeleted += deletedThisChunk;
 
                 if (ids.Count < chunkSize)

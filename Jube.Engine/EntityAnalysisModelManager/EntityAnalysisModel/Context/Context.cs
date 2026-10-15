@@ -25,15 +25,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context
             ApprovalsRequiredResolver.Resolve(Services.DynamicEnvironment?.AppSettings("ApprovalsRequired"));
 
         public Services Services { get; } = new Services();
-
         public Paths Paths { get; } = new Paths();
-
         public EntityAnalysisModels EntityAnalysisModels { get; } = new EntityAnalysisModels();
-
         public Snapshots Snapshots { get; } = new Snapshots();
-
         public Caching Caching { get; } = new Caching();
-
         public ConcurrentQueues ConcurrentQueues { get; } = new ConcurrentQueues();
     }
 }

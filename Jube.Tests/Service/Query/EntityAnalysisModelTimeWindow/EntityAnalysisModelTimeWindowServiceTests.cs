@@ -39,7 +39,6 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
                 NullLoggerFactory.Instance);
 
         private static readonly DateTime reference = new(2026, 9, 23, 12, 0, 0, DateTimeKind.Utc);
-
         private int abstractionRuleId;
         private int foreverCounterId;
         private int modelId;
@@ -49,18 +48,21 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             modelId = (await new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission).InsertAsync(
                 new Data.Poco.EntityAnalysisModel
                 {
                     Name = $"{DatabaseFixture.Prefix}Tw{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     Active = 1, Locked = 0, Deleted = 0
                 })).Id;
+
             await dbContext.InsertAsync(new EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = modelId, Name = "AccountId", DataTypeId = 1, XPath = "$.AccountId",
                 Active = 1, Cache = 1, Deleted = 0, Guid = Guid.NewGuid(), SearchKey = 1,
                 SearchKeyTtlInterval = "h", SearchKeyTtlIntervalValue = 12
             });
+
             abstractionRuleId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelAbstractionRule
                 {
@@ -68,12 +70,14 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
                     SearchInterval = "d", SearchValue = 1, SearchFunctionTypeId = 1, Active = 1, Deleted = 0,
                     Guid = Guid.NewGuid()
                 });
+
             nonSearchRuleId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelAbstractionRule
                 {
                     EntityAnalysisModelId = modelId, Name = "NotSearch", Search = 0, Active = 1, Deleted = 0,
                     Guid = Guid.NewGuid()
                 });
+
             onlineCounterId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId, Name = "Online", TtlCounterDataName = "AccountId",
@@ -91,14 +95,18 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>()
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
         }
 
@@ -148,6 +156,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
             window.SearchKeyShortensTheWindow.Should().BeTrue();
             window.From.Should().Be(reference.AddHours(-12));
             window.Note.Should().Contain("AccountId");
+
             (await service.AbstractionRuleAsync(nonSearchRuleId, reference)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "NotASearchRule");
         }
@@ -175,8 +184,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
 
             (await service.CalculateAsync("Fortnight", "d", 1)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "KindInvalid");
+
             (await service.CalculateAsync("AbstractionRule", "m", 1)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "IntervalInvalid" && e.Message.Contains("s, n, h, d"));
+
             (await service.CalculateAsync("Calendar", "d", -1)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "ValueInvalid");
         }
@@ -190,6 +201,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
             var kinds = await service.IntervalsAsync();
 
             kinds.Select(k => k.Kind).Should().BeEquivalentTo("AbstractionRule", "SearchKey", "TtlCounter", "Calendar");
+
             kinds.Single(k => k.Kind == "TtlCounter").Intervals.Select(i => i.Code).Should()
                 .Equal("s", "n", "h", "d", "m", "y");
         }
@@ -201,6 +213,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelTimeWindow
 
             await Assert.ThrowsAsync<NotFoundException>(async () =>
                 await (await ServiceAsync(dbContext, fx.Seed.UserTenantB)).AbstractionRuleAsync(abstractionRuleId));
+
             await Assert.ThrowsAsync<ForbiddenException>(async () =>
                 await (await ServiceAsync(dbContext, fx.Seed.UserWithoutPermission)).CalculateAsync("Calendar", "d",
                     1));

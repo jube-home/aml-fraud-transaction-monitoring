@@ -32,27 +32,6 @@ namespace Jube.Test.Repository
         private readonly List<int> xPathIds = [];
         private int tenantRegistryId;
 
-        public async Task InitializeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            tenantRegistryId = await dbContext.UserInTenant
-                .Where(w => w.User == fx.Seed.UserWithPermission)
-                .Select(s => s.TenantRegistryId)
-                .FirstAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
-                .Where(w => xPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
-            await dbContext.EntityAnalysisModelRequestXpath.Where(w => xPathIds.Contains(w.Id)).DeleteAsync();
-            await dbContext.GetTable<EntityAnalysisModelVersion>()
-                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
-        }
-
         private async Task<int> SeedRequestXPathAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -69,10 +48,12 @@ namespace Jube.Test.Repository
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
 
             var name = $"ZzTx{Guid.NewGuid():N}"[..20];
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = model.Id,
@@ -87,7 +68,33 @@ namespace Jube.Test.Repository
                 CreatedUser = DatabaseFixture.Prefix
             });
             xPathIds.Add(id);
+
             return id;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
+                .Where(w => xPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelRequestXpath.Where(w => xPathIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
+                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         [Fact]
@@ -102,6 +109,7 @@ namespace Jube.Test.Repository
 
             var row = await dbContext.EntityAnalysisModelRequestXpath.FirstAsync(w => w.Id == id);
             row.Deleted.Should().Be(0);
+
             (await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                 .CountAsync(w => w.EntityAnalysisModelRequestXpathId == id)).Should().Be(0);
         }
@@ -116,6 +124,7 @@ namespace Jube.Test.Repository
 
             var row = await dbContext.EntityAnalysisModelRequestXpath.FirstAsync(w => w.Id == id);
             row.Deleted.Should().Be(1);
+
             (await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                 .CountAsync(w => w.EntityAnalysisModelRequestXpathId == id)).Should().Be(2);
         }

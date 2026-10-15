@@ -115,6 +115,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelActivationRuleCount.Should().Be(3);
             context.EntityAnalysisModelInstanceEntryPayload.PrevailingEntityAnalysisModelActivationRuleId.Should()
                 .Be(42);
+
             context.EntityAnalysisModelInstanceEntryPayload.CreateCase.Should().BeSameAs(createCase);
         }
 
@@ -432,8 +433,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             AddOverrideKey(context, "CardFingerprint");
             AddRule(context, "BlacklistCard", overrideKey: "CardFingerprint");
+
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard",
                 EntityAnalysisModelOverrideKind.Force);
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var outcome = context.ActivationRuleGetOverrides();
@@ -446,8 +449,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             AddOverrideKey(context, "CardFingerprint");
+
             AddOverride(context, "CardFingerprint", "cdb7", "GoneAway",
                 EntityAnalysisModelOverrideKind.Force);
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var outcome = context.ActivationRuleGetOverrides();
@@ -646,12 +651,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ActivationRuleGetOverridesIgnoresXPathsThatDoNotHaveOverrideEnabled()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "Country",
                     EnableOverride = false
                 });
+
             AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
@@ -665,8 +672,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             AddOverrideKey(context, "CardFingerprint");
+
             context.EntityAnalysisModel.PublishSnapshot(
                 new ModelSnapshotBuilder(context.Snapshot) { EntityAnalysisModelOverrides = null }.Build());
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var outcome = context.ActivationRuleGetOverrides();

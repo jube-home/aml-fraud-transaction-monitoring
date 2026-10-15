@@ -1,23 +1,33 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 // ======================================================================
@@ -28,6 +38,7 @@
 namespace Accord.Math
 {
     using System;
+    using System.Runtime.InteropServices;
     using System.CodeDom.Compiler;
     using Accord.Math;
     using System.Runtime.CompilerServices;
@@ -140,10 +151,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -549,9 +559,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -923,10 +932,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -1330,9 +1338,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -1716,10 +1723,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -2183,9 +2189,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -2605,10 +2610,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -3072,9 +3076,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -3482,10 +3485,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -3889,9 +3891,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -4263,10 +4264,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -4670,9 +4670,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -5044,10 +5043,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -5451,9 +5449,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -5825,10 +5822,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -6232,9 +6228,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int32* ptrA = a)
+                Span<Int32> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -6606,10 +6601,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -7013,9 +7007,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -7391,10 +7384,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -7800,9 +7792,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -8186,10 +8177,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -8653,9 +8643,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -9075,10 +9064,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -9542,9 +9530,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -9952,10 +9939,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -10359,9 +10345,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -10733,10 +10718,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -11140,9 +11124,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -11514,10 +11497,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -11921,9 +11903,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -12295,10 +12276,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -12702,9 +12682,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int16* ptrA = a)
+                Span<Int16> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -13088,10 +13067,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -13555,9 +13533,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -13977,10 +13954,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -14444,9 +14420,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -14882,10 +14857,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -15411,9 +15385,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -15881,10 +15854,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -16408,9 +16380,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -16866,10 +16837,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -17333,9 +17303,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -17751,10 +17720,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -18198,9 +18166,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -18608,10 +18575,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -19075,9 +19041,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -19497,10 +19462,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -19964,9 +19928,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Single* ptrA = a)
+                Span<Single> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -20386,10 +20349,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -20853,9 +20815,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -21275,10 +21236,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -21742,9 +21702,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -22176,10 +22135,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -22703,9 +22661,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -23177,10 +23134,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -23706,9 +23662,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -24164,10 +24119,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -24631,9 +24585,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -25049,10 +25002,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -25496,9 +25448,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -25906,10 +25857,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -26373,9 +26323,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -26795,10 +26744,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -27262,9 +27210,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Double* ptrA = a)
+                Span<Double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -27672,10 +27619,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -28079,9 +28025,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -28453,10 +28398,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -28860,9 +28804,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -29246,10 +29189,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -29713,9 +29655,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -30135,10 +30076,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -30602,9 +30542,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -31016,10 +30955,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -31425,9 +31363,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -31799,10 +31736,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -32206,9 +32142,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -32580,10 +32515,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -32987,9 +32921,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -33361,10 +33294,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -33768,9 +33700,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Int64* ptrA = a)
+                Span<Int64> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -34142,10 +34073,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -34549,9 +34479,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -34923,10 +34852,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -35330,9 +35258,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -35712,10 +35639,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -36159,9 +36085,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -36565,10 +36490,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -37012,9 +36936,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -37410,10 +37333,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -37817,9 +37739,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -38195,10 +38116,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -38604,9 +38524,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -38978,10 +38897,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -39385,9 +39303,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -39759,10 +39676,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -40166,9 +40082,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Decimal* ptrA = a)
+                Span<Decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -40540,10 +40455,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -40947,9 +40861,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -41321,10 +41234,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -41728,9 +41640,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -42114,10 +42025,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -42581,9 +42491,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -43003,10 +42912,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -43470,9 +43378,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -43880,10 +43787,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -44287,9 +44193,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -44661,10 +44566,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -45068,9 +44972,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -45446,10 +45349,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -45855,9 +45757,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -46229,10 +46130,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -46636,9 +46536,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (Byte* ptrA = a)
+                Span<Byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -47010,10 +46909,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Int32* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int32> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int32>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -47417,9 +47315,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -47791,10 +47688,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Int16* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int16> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int16>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -48198,9 +48094,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -48584,10 +48479,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Single* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Single> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Single>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -49051,9 +48945,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -49473,10 +49366,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Double* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -49940,9 +49832,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -50350,10 +50241,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Int64* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Int64> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Int64>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -50757,9 +50647,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -51131,10 +51020,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Decimal* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -51538,9 +51426,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -51912,10 +51799,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (Byte* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<Byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -52319,9 +52205,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {
@@ -52697,10 +52582,9 @@ namespace Accord.Math
         if (la[i] != lb[i])
             return false;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
-                fixed (sbyte* ptrB = b)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<sbyte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
                 {
                     if (rtol > 0)
                     {
@@ -53106,9 +52990,8 @@ namespace Accord.Math
     if (a == null)
         return true;
 
-            unsafe
             {
-                fixed (sbyte* ptrA = a)
+                Span<sbyte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
                 {
                     if (rtol > 0)
                     {

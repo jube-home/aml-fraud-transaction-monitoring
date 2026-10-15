@@ -37,6 +37,10 @@ namespace Jube.Migrations.Branches
             CreateArchiveKeyVersion();
         }
 
+        public override void Down()
+        {
+        }
+
         private void AddNewColumnToEntityAnalysisAsynchronousQueueBalance()
         {
             Alter.Table("EntityAnalysisAsynchronousQueueBalance").AddColumn("CaseCreation").AsInt32().Nullable();
@@ -252,10 +256,6 @@ namespace Jube.Migrations.Branches
 
             Create.Index().OnTable("CacheTtlCounterEntryRemovalBatch")
                 .OnColumn("EntityAnalysisModelTtlCounterGuid").Ascending();
-        }
-
-        public override void Down()
-        {
         }
     }
 }

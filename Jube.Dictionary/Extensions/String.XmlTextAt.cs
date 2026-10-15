@@ -20,6 +20,7 @@ namespace Jube.Dictionary.Extensions
         public static string XmlTextAt(this string? @this, string? xpath)
         {
             var document = StructuredDataSupport.ParseXml(@this);
+
             if (document is null || string.IsNullOrWhiteSpace(xpath))
             {
                 return "";

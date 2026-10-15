@@ -8,8 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Clustering\FastMeanShift.cs"/>
-        <Compile Remove="Representations\BaseBagOfWords`3.cs"/>
         <ProjectReference Include="..\Accord.Core\Accord.Core.csproj"/>
         <ProjectReference Include="..\Accord.Math.Core\Accord.Math.Core.csproj"/>
         <ProjectReference Include="..\Accord.Math\Accord.Math.csproj"/>

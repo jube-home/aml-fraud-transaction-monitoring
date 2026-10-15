@@ -26,6 +26,7 @@ namespace Jube.Service.Concurrency
         {
             var gate = gates[(uint)StringComparer.OrdinalIgnoreCase.GetHashCode(key) % Stripes];
             await gate.WaitAsync(token).ConfigureAwait(false);
+
             return new Releaser(gate);
         }
     }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.VisualisationRegistry;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Concurrency;
 using Jube.Service.Exceptions.Repository.VisualisationRegistry;
 using Jube.Service.Observability;
@@ -37,7 +38,6 @@ namespace Jube.Service.Repository.VisualisationRegistry
         private static readonly int[] readPermissions = [31, 28, 1];
         private static readonly int[] showInDirectoryPermissions = [28];
         private static readonly int[] writePermissions = [31];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -62,6 +62,11 @@ namespace Jube.Service.Repository.VisualisationRegistry
             repository = new RegistryRepository(dbContext, userName);
             validator = new VisualisationRegistryDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> ShowInDirectoryPermissions => showInDirectoryPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<VisualisationRegistryService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -113,6 +118,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.List: entry user={userName}");
@@ -121,9 +127,11 @@ namespace Jube.Service.Repository.VisualisationRegistry
             try
             {
                 EnsurePermitted("VisualisationRegistry.List", listPermissions);
+
                 var dtos = VisualisationRegistryMapper.ToDto(await repository.GetOrderByIdAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistry.List: {dtos.Count} rows user={userName}");
@@ -161,6 +169,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.List: entry user={userName} take={take} afterId={afterId}");
@@ -170,11 +179,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             {
                 EnsurePermitted("VisualisationRegistry.List", listPermissions);
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = VisualisationRegistryMapper.ToDto(await repository.GetOrderByIdAsync(token)
                         .ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -208,6 +219,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.FilterFields: entry user={userName}");
@@ -219,6 +231,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<VisualisationRegistryDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -258,6 +271,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -266,10 +280,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             try
             {
                 EnsurePermitted("VisualisationRegistry.Filter", listPermissions);
+
                 var rows = VisualisationRegistryMapper.ToDto(await repository.GetOrderByIdAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -307,6 +324,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Count: entry groupBy={groupBy} user={userName}");
@@ -315,10 +333,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             try
             {
                 EnsurePermitted("VisualisationRegistry.Count", listPermissions);
+
                 var rows = VisualisationRegistryMapper.ToDto(await repository.GetOrderByIdAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -349,6 +370,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Get: entry id={id} user={userName}");
@@ -359,6 +381,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
                 EnsurePermitted("VisualisationRegistry.Get", readPermissions);
                 var entity = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
                 var dto = VisualisationRegistryMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistry.Get: id={id} not found or not visible to tenant " +
@@ -385,6 +408,54 @@ namespace Jube.Service.Repository.VisualisationRegistry
             }
         }
 
+        [Description("Returns a single Visualisation Registry by Id, or null if it doesn't exist or isn't " +
+                     "visible to the caller's tenant.")]
+        [ServiceOperation("VisualisationRegistryGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<VisualisationRegistryDto?> GetByGuidAsync(
+            [Description("Server-assigned identifier of the Visualisation Registry.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistry", "GetByGuid", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistry.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("VisualisationRegistry.GetByGuid", readPermissions);
+                var entity = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+                var dto = VisualisationRegistryMapper.ToDto(entity);
+
+                if (entity == null && log.IsDebugEnabled)
+                {
+                    log.Debug($"VisualisationRegistry.GetByGuid: guid={guid} not found or not visible to tenant " +
+                              $"user={userName}");
+                }
+
+                return dto;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"VisualisationRegistry.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Returns a single active Visualisation Registry by Guid, for embedded recall, provided " +
                      "the caller holds a role grant on it. Returns null if it doesn't exist, isn't active, isn't " +
                      "visible to the caller's tenant, or the caller has no role grant.")]
@@ -396,6 +467,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "GetByGuidActiveOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.GetByGuidActiveOnly: entry guid={guid} user={userName}");
@@ -406,6 +478,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
                 EnsurePermitted("VisualisationRegistry.GetByGuidActiveOnly", readPermissions);
                 var entity = await repository.GetByGuidActiveOnlyAsync(guid, token).ConfigureAwait(false);
                 var dto = VisualisationRegistryMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistry.GetByGuidActiveOnly: guid={guid} not found, not active, " +
@@ -427,8 +500,10 @@ namespace Jube.Service.Repository.VisualisationRegistry
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistry.GetByGuidActiveOnly: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -440,6 +515,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "ListByShowInDirectory", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.ListByShowInDirectory: entry user={userName}");
@@ -448,9 +524,11 @@ namespace Jube.Service.Repository.VisualisationRegistry
             try
             {
                 EnsurePermitted("VisualisationRegistry.ListByShowInDirectory", showInDirectoryPermissions);
+
                 var dtos = VisualisationRegistryMapper.ToDto(
                     await repository.GetByShowInDirectoryActiveOrderByIdDescAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistry.ListByShowInDirectory: {dtos.Count} rows user={userName}");
@@ -484,6 +562,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Insert: entry user={userName} name={model?.Name}");
@@ -493,11 +572,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("VisualisationRegistry.Insert", writePermissions);
+
                 using var nameGate = await NameGate
                     .EnterAsync($"{tenantRegistryId}|VisualisationRegistry|{model.Name}", token)
                     .ConfigureAwait(false);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -543,8 +624,10 @@ namespace Jube.Service.Repository.VisualisationRegistry
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistry.Insert: unexpected failure user={userName} name={model?.Name}",
                     ex);
+
                 throw;
             }
         }
@@ -560,6 +643,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Validate: entry id={model?.Id} user={userName}");
@@ -572,6 +656,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -600,6 +685,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Update: entry id={model?.Id} user={userName}");
@@ -609,11 +695,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("VisualisationRegistry.Update", writePermissions);
+
                 using var nameGate = await NameGate
                     .EnterAsync($"{tenantRegistryId}|VisualisationRegistry|{model.Name}", token)
                     .ConfigureAwait(false);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -655,6 +743,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"VisualisationRegistry.Update: id={model?.Id} not found, not visible, or locked " +
@@ -686,6 +775,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
         {
             using var op = OperationScope.Start("VisualisationRegistry", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistry.Delete: entry id={id} user={userName}");
@@ -711,6 +801,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"VisualisationRegistry.Delete: id={id} not found, not visible, or locked " +

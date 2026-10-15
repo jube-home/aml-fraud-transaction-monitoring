@@ -1,36 +1,42 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Kernels;
 
 namespace Accord.MachineLearning.VectorMachines.Learning
 {
-    using Accord.Math;
-    using Accord.Statistics.Kernels;
-    using System;
-    using System.Collections;
-
     internal static class SupportVectorLearningHelper
     {
-
-
         public static TModel Create<TModel, TInput, TKernel>(int inputs, TKernel kernel)
             where TModel : class, ISupportVectorMachine<TInput>
             where TKernel : IKernel<TInput>
@@ -41,34 +47,52 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             TModel result = null;
             var type = typeof(TModel);
             if (type == typeof(SupportVectorMachine))
+            {
                 result = new SupportVectorMachine(inputs) as TModel;
+            }
+
             if (type == typeof(SupportVectorMachine<IKernel>))
+            {
                 result = new SupportVectorMachine<IKernel>(inputs, kernel as IKernel) as TModel;
+            }
+
             if (type == typeof(SupportVectorMachine<IKernel<double[]>>))
+            {
                 result = new SupportVectorMachine<IKernel<double[]>>(inputs, kernel as IKernel<double[]>) as TModel;
+            }
 #if !NETSTANDARD1_4
 #pragma warning disable 0618
             else if (type == typeof(KernelSupportVectorMachine))
+            {
                 result = new KernelSupportVectorMachine(kernel as IKernel, inputs) as TModel;
+            }
 #pragma warning restore 0618
 #endif
             else if (type == typeof(SupportVectorMachine<TKernel, TInput>))
+            {
                 result = new SupportVectorMachine<TKernel, TInput>(inputs, kernel) as TModel;
+            }
+
             if (result == null)
-                throw new NotSupportedException("If you are implementing your own support vector machine type, please override the Create method in your learning algorithm to instruct the framework how to instantiate a type of your new class.");
+            {
+                throw new NotSupportedException(
+                    "If you are implementing your own support vector machine type, please override the Create method in your learning algorithm to instruct the framework how to instantiate a type of your new class.");
+            }
+
             return result;
         }
-
-
 
         public static TModel Create<TModel, TKernel>(int inputs, TKernel kernel)
             where TModel : class, ISupportVectorMachine<double[]>
             where TKernel : IKernel<double[]>
         {
-            TModel result = Create<TModel, double[], TKernel>(inputs, kernel);
+            var result = Create<TModel, double[], TKernel>(inputs, kernel);
 
             if (result == null)
-                throw new NotSupportedException("If you are implementing your own support vector machine type, please override the Create method in your learning algorithm to instruct the framework how to instantiate a type of your new class.");
+            {
+                throw new NotSupportedException(
+                    "If you are implementing your own support vector machine type, please override the Create method in your learning algorithm to instruct the framework how to instantiate a type of your new class.");
+            }
 
             return result;
         }
@@ -76,27 +100,36 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         public static int GetNumberOfInputs<TKernel, TInput>(TKernel kernel, TInput[] x)
         {
             if (x.Length == 0)
-                throw new ArgumentException("Impossible to determine number of inputs because there are no training samples in this set.");
+            {
+                throw new ArgumentException(
+                    "Impossible to determine number of inputs because there are no training samples in this set.");
+            }
 
             var linear = kernel as ILinear<TInput>;
             if (linear != null)
+            {
                 return linear.GetLength(x);
+            }
 
-            return Accord.MachineLearning.Tools.GetNumberOfInputs(x);
+            return Tools.GetNumberOfInputs(x);
         }
-
-
-       
-        
 
         public static void CheckOutput<TInput>(ISupportVectorMachine<TInput> model)
         {
             if (model.SupportVectors == null)
+            {
                 throw new Exception();
+            }
+
             if (model.Weights == null)
+            {
                 throw new Exception();
+            }
+
             if (model.SupportVectors.Length != model.Weights.Length)
+            {
                 throw new Exception();
+            }
         }
 
         public static TKernel EstimateKernel<TKernel, TInput>(TKernel kernel, TInput[] x)
@@ -104,7 +137,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         {
             var estimable = kernel as IEstimable<TInput>;
             if (estimable == null)
+            {
                 throw new InvalidOperationException("Kernel type does not support estimation.");
+            }
+
             estimable.Estimate(x);
             return (TKernel)estimable;
         }
@@ -113,7 +149,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             where TKernel : IKernel<TInput>
         {
             if (!typeof(TKernel).HasDefaultConstructor())
+            {
                 throw new InvalidOperationException("Please set the kernel function before learning a model.");
+            }
 
             var kernel = Activator.CreateInstance<TKernel>();
             var estimable = kernel as IEstimable<TInput>;
@@ -125,6 +163,5 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             return kernel;
         }
-
     }
 }

@@ -18,7 +18,8 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
     internal static class ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramMapper
     {
         public static List<ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery.Dto>
+            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery.
+                    GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQueryDto>
                 source) =>
             source.Select(bin => new ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramDto
             {

@@ -12,6 +12,7 @@
  */
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("SanctionsLoader", "readonly", null);
     const sanctionEntrySource = $("#SanctionEntrySource").kendoDropDownList({
         dataTextField: "text",
         dataValueField: "value"

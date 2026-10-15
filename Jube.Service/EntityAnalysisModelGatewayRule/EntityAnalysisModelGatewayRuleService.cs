@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,14 +15,15 @@ using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Parser;
-using Jube.Dto.Filter;
-using Jube.Dto.RuleExecution;
-using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
-using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelGatewayRule;
+using Jube.Dto.Filter;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Validation;
+using Jube.Parser;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelGatewayRule;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
@@ -67,9 +68,14 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelGatewayRuleRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelGatewayRuleDtoValidator(repository, strings,
                 new RuleScriptParser(dbContext, tenantRegistryId));
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<EntityAnalysisModelGatewayRuleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -122,6 +128,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.List: entry user={userName}");
@@ -130,9 +137,11 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelGatewayRule.List");
+
                 var dtos = EntityAnalysisModelGatewayRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.List: {dtos.Count} rows user={userName}");
@@ -148,6 +157,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.List: cancelled user={userName}");
@@ -174,6 +184,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -183,9 +194,11 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             try
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelGatewayRule.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelGatewayRuleMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -202,6 +215,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -213,9 +227,11 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelGatewayRule.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -230,6 +246,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Get: entry id={id} user={userName}");
@@ -239,6 +256,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelGatewayRule.Get");
                 var gatewayRule = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (gatewayRule == null)
                 {
                     if (log.IsDebugEnabled)
@@ -251,6 +269,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 }
 
                 op.Entity(gatewayRule.Id);
+
                 return EntityAnalysisModelGatewayRuleMapper.ToDto(gatewayRule);
             }
             catch (ForbiddenException)
@@ -261,6 +280,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.Get: cancelled id={id} user={userName}");
@@ -272,6 +292,69 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelGatewayRule.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one Gateway Rule by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("EntityAnalysisModelGatewayRuleGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<EntityAnalysisModelGatewayRuleDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Gateway Rule.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelGatewayRule.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "EntityAnalysisModelGatewayRule.GetByGuid");
+                var gatewayRule = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (gatewayRule == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"EntityAnalysisModelGatewayRule.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(gatewayRule.Id);
+
+                return EntityAnalysisModelGatewayRuleMapper.ToDto(gatewayRule);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelGatewayRule.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error($"EntityAnalysisModelGatewayRule.GetByGuid: unexpected failure guid={guid} user={userName}",
+                    ex);
+
                 throw;
             }
         }
@@ -288,7 +371,9 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -319,6 +404,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.ListPaged: cancelled user={userName}");
@@ -344,6 +430,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.FilterFields: entry user={userName}");
@@ -355,6 +442,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelGatewayRuleDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -394,6 +482,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -403,10 +492,13 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelGatewayRule.Filter");
+
                 var rows = EntityAnalysisModelGatewayRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -444,6 +536,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Count: entry groupBy={groupBy} user={userName}");
@@ -452,10 +545,13 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelGatewayRule.Count");
+
                 var rows = EntityAnalysisModelGatewayRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -486,6 +582,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Create: entry user={userName} name={model?.Name}");
@@ -498,6 +595,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 EnsurePermitted(writePermissions, "EntityAnalysisModelGatewayRule.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -537,6 +635,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.Create: cancelled user={userName}");
@@ -547,8 +646,10 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelGatewayRule.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -563,6 +664,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Validate: entry id={model?.Id} user={userName}");
@@ -575,6 +677,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -609,6 +712,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "ParseRule", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.ParseRule: entry id={model?.Id} user={userName}");
@@ -621,7 +725,9 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
 
                 var results = await validator.ValidateAsync(model,
                     o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -657,6 +763,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Execute", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Execute: entry id={model?.Id} user={userName}");
@@ -673,7 +780,9 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                     model.RuleScriptTypeId == 1 ? model.BuilderRuleScript : model.CoderRuleScript,
                     model.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
                     null, false, context, token).ConfigureAwait(false);
+
                 op.Rows(result.Errors.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -712,12 +821,16 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "BuildRuleFromBuilderJson", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             try
             {
                 EnsurePermitted(writePermissions, "EntityAnalysisModelGatewayRule.BuildRuleFromBuilderJson");
+
                 var result = await BuilderRuleComposer.ComposeAsync(dbContext, tenantRegistryId,
                     entityAnalysisModelId, RuleParse.GatewayRule, builderJson, token).ConfigureAwait(false);
+
                 op.Rows(result.Errors.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -733,8 +846,10 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelGatewayRule.BuildRuleFromBuilderJson: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }
@@ -752,6 +867,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Update: entry id={model?.Id} user={userName}");
@@ -763,6 +879,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 EnsurePermitted(writePermissions, "EntityAnalysisModelGatewayRule.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -775,6 +892,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 }
 
                 GatewayRulePoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(EntityAnalysisModelGatewayRuleMapper.ToPoco(model), token)
@@ -821,6 +939,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.Update: cancelled id={model?.Id} user={userName}");
@@ -831,9 +950,11 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelGatewayRule.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -850,6 +971,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.Delete: entry id={id} user={userName}");
@@ -895,6 +1017,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.Delete: cancelled id={id} user={userName}");
@@ -921,6 +1044,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelGatewayRule", "ResetCounter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelGatewayRule.ResetCounter: entry id={id} user={userName}");
@@ -966,6 +1090,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelGatewayRule.ResetCounter: cancelled id={id} user={userName}");
@@ -976,8 +1101,10 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelGatewayRule.ResetCounter: unexpected failure id={id} user={userName}", ex);
+
                 throw;
             }
         }

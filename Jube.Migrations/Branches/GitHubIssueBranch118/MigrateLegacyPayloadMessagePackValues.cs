@@ -18,7 +18,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
     using System.Linq;
     using Cache;
     using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
-    using Data.Extension;
+    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
+    using Data.Extensions;
     using Dictionary;
     using DynamicEnvironment;
     using FluentMigrator;
@@ -41,7 +42,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
 
         public override void Down()
         {
-
         }
 
         private Dictionary<int, Dictionary<string, int>> GetEntityAnalysisModelRequestXPaths()
@@ -58,6 +58,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
             command.Connection = connection;
 
             var reader = command.ExecuteReader();
+
             while (reader.Read())
             {
                 if (values.ContainsKey(reader[0].AsInt()))
@@ -92,6 +93,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
             command.Connection = connection;
 
             var reader = command.ExecuteReader();
+
             while (reader.Read())
             {
                 if (values.ContainsKey(reader[0].AsGuid()))
@@ -123,6 +125,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
 
             var useCompression = dynamicEnvironment.AppSettings("RedisMessagePackCompression")
                 .Equals("True", StringComparison.OrdinalIgnoreCase);
+
             var compression = useCompression ? MessagePackCompression.Lz4BlockArray : MessagePackCompression.None;
 
             var oldMessagePackSerializerOptions = MessagePackSerializerOptions.Standard
@@ -137,6 +140,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
             var entityAnalysisModelRequestXPaths = GetEntityAnalysisModelRequestXPaths();
 
             const int batchSize = 1000;
+
             foreach (var key in redisServers.SelectMany(s => s.Keys(pattern: "Payload:*")))
             {
                 try
@@ -144,7 +148,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                     var batch = new List<HashEntry>(batchSize);
                     var splits = key.ToString().Split(":");
 
-                    foreach (var entry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(key, pageSize: 500))
+                    foreach (var entry in
+                             cacheService.ResilientRedisResilientRedisDatabase.HashScan(key, pageSize: 500))
                     {
                         if (!entry.Value.HasValue)
                         {
@@ -163,7 +168,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                                 continue;
                             }
 
-                            if (!entityAnalysisModelRequestXPaths.TryGetValue(entityAnalysisModel.id, out var xPathsForModel))
+                            if (!entityAnalysisModelRequestXPaths.TryGetValue(entityAnalysisModel.id,
+                                    out var xPathsForModel))
                             {
                                 continue;
                             }
@@ -177,7 +183,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                                 Data = MapToNewReducedInternedPayload(oldEnvelope, entityAnalysisModel, xPathsForModel)
                             };
 
-                            batch.Add(new HashEntry(entry.Name, MessagePackSerializer.Serialize(newEnvelope, newMessagePackSerializerOptions)));
+                            batch.Add(new HashEntry(entry.Name,
+                                MessagePackSerializer.Serialize(newEnvelope, newMessagePackSerializerOptions)));
 
                             if (batch.Count >= batchSize)
                             {

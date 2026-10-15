@@ -66,6 +66,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 {
                     var jsonString = JsonConvert.SerializeObject(notification,
                         context.EntityAnalysisModel.JsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+
                     var bodyBytes = Encoding.UTF8.GetBytes(jsonString);
                     rabbitMqChannel.BasicPublish("", "jubeNotifications", null, bodyBytes);
 

@@ -21,6 +21,7 @@ using Jube.Dto.Repository.CaseWorkflowFormEntry;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormEntry;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseWorkflowFormEntry;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -45,14 +46,12 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 NullLoggerFactory.Instance);
 
         private static readonly EngineJsonSerializationHelper jsonSerializationHelper = new();
-
         private readonly List<int> createdEntryIds = [];
         private readonly List<int> createdCaseIds = [];
         private readonly List<int> createdCaseWorkflowFormIds = [];
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -63,13 +62,17 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 .Where(w => w.CaseWorkflowFormEntryId != null &&
                             createdEntryIds.Contains(w.CaseWorkflowFormEntryId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflowFormEntry.Where(w => createdEntryIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>()
                 // ReSharper disable once AccessToDisposedClosure
                 .Where(w => dbContext.CaseWorkflowForm.Where(f => createdCaseWorkflowFormIds.Contains(f.Id))
                     .Select(f => f.Guid).Contains(w.CaseWorkflowFormGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowForm.Where(w => createdCaseWorkflowFormIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 // ReSharper disable once AccessToDisposedClosure
                 .Where(w => dbContext.CaseWorkflowStatus.Where(s => createdCaseWorkflowStatusIds.Contains(s.Id))
@@ -78,10 +81,13 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 // ReSharper disable once AccessToDisposedClosure
                 .Where(w => dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                     .Select(s => s.Guid).Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -106,6 +112,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -116,6 +123,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -128,6 +136,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -152,6 +161,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             });
 
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -203,6 +213,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
 
             var roleRegistryGuid = await dbContext.UserRegistry
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
+
             await dbContext.InsertAsync(new Data.Poco.CaseWorkflowFormRole
             {
                 CaseWorkflowFormGuid = await dbContext.CaseWorkflowForm.Where(f => f.Id == formId)
@@ -230,6 +241,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CreatedDate = DateTime.UtcNow,
             });
             createdCaseIds.Add(caseId);
+
             return caseId;
         }
 
@@ -256,6 +268,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -264,6 +277,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
         }
 
@@ -281,6 +295,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -289,6 +304,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -297,6 +313,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?>(),
@@ -305,6 +322,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -313,6 +331,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -321,6 +340,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -329,6 +349,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -337,6 +358,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -344,12 +366,15 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task InsertWithUnknownCaseWorkflowFormIdThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -358,6 +383,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = caseKeyValue,
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -371,6 +397,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserTenantB, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -379,6 +406,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = caseKeyValue,
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -386,13 +414,16 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task InsertPersistsEntryAndValueRowsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["firstName"] = "Ada", ["age"] = "36" },
@@ -423,13 +454,16 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task InsertSkipsNullPayloadValuesAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["firstName"] = "Ada", ["skipped"] = null },
@@ -450,14 +484,17 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task InsertPublishesCreatedChangeEventAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -480,6 +517,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             await using var dbContext = fx.GetDbContext();
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?>(),
@@ -488,6 +526,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
             bus.Published.Should().BeEmpty();
         }
@@ -496,13 +535,16 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task GetByCaseKeyValueReturnsNewestFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var first = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "first" },
@@ -512,6 +554,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKeyValue = caseKeyValue,
             });
             createdEntryIds.Add(first.Id);
+
             var second = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "second" },
@@ -540,6 +583,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             var formIdB = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserTenantB, workflowGuidB);
 
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             var entryB = await serviceB.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -584,6 +628,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             await using var dbContext = fx.GetDbContext();
             var capturingLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, log: capturingLog);
+
             var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },
@@ -592,6 +637,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 CaseKey = "account",
                 CaseKeyValue = "acc-1",
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -602,14 +648,17 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         public async Task InsertLogsOneAuditRecordOnSuccessAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
             var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var capturingAuditLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, auditLog: capturingAuditLog);
+
             var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
             {
                 Payload = new Dictionary<string, object?> { ["field"] = "value" },

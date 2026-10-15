@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelInlineFunction;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,46 +24,64 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionList", OperationKind.Read, true, false,
-                    "Lists Inline Functions for the caller's tenant, keyset-paged and capped."),
+                    "Lists Inline Functions for the caller's tenant, keyset-paged and capped.",
+                    EntityAnalysisModelInlineFunctionService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Inline Functions may use."),
+                    "Lists the fields a query builder JSON filter over Inline Functions may use.",
+                    EntityAnalysisModelInlineFunctionService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionFilter", OperationKind.Read, true, false,
-                    "Returns the Inline Functions matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Inline Functions matching query builder JSON, keyset-paged and capped.",
+                    EntityAnalysisModelInlineFunctionService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionCount", OperationKind.Read, true, false,
-                    "Counts the Inline Functions matching query builder JSON, optionally grouped by a field."),
+                    "Counts the Inline Functions matching query builder JSON, optionally grouped by a field.",
+                    EntityAnalysisModelInlineFunctionService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionGet", OperationKind.Read, true, false,
-                    "Returns one Inline Function by id, scoped to the caller's tenant."),
+                    "Returns one Inline Function by id, scoped to the caller's tenant.",
+                    EntityAnalysisModelInlineFunctionService.ReadPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionGetByGuid", OperationKind.Read, true, false,
+                    "Returns one Inline Function by Guid, scoped to the caller's tenant.",
+                    EntityAnalysisModelInlineFunctionService.ReadPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionGetByEntityAnalysisModelId", OperationKind.Read, true,
-                    false, "Lists Inline Functions belonging to a given Model, scoped to the caller's tenant."),
+                    false, "Lists Inline Functions belonging to a given Model, scoped to the caller's tenant.",
+                    EntityAnalysisModelInlineFunctionService.ReadPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionCreate", OperationKind.Write, false, false,
-                    "Creates an Inline Function under a Model in the caller's tenant; calling twice creates two."),
+                    "Creates an Inline Function under a Model in the caller's tenant; calling twice creates two.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionValidate", OperationKind.Read, true, false,
-                    "Validates an Inline Function without saving it and returns every failure."),
+                    "Validates an Inline Function without saving it and returns every failure.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionParseRule", OperationKind.Read, true, false,
-                    "Parses and compiles an Inline Function's rule text as the engine would and returns each located error."),
+                    "Parses and compiles an Inline Function's rule text as the engine would and returns each located error.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionExecute", OperationKind.Read, true, false,
-                    "Runs an Inline Function against an invocation context as the engine would and returns the result."),
+                    "Runs an Inline Function against an invocation context as the engine would and returns the result.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionUpdate", OperationKind.Write, true, false,
-                    "Updates an Inline Function in the caller's tenant by id."),
+                    "Updates an Inline Function in the caller's tenant by id.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an Inline Function in the caller's tenant by id."),
+                    "Soft-deletes an Inline Function in the caller's tenant by id.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionResubmit", OperationKind.Write, false, false,
-                    "Resubmits a rejected Inline Function for approval again, unchanged, opening a fresh approval cycle."),
+                    "Resubmits a rejected Inline Function for approval again, unchanged, opening a fresh approval cycle.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionRetract", OperationKind.Write, false, false,
-                    "Retracts a rejected Inline Function, restoring it to its last approved version without a new approval cycle.")
+                    "Retracts a rejected Inline Function, restoring it to its last approved version without a new approval cycle.",
+                    EntityAnalysisModelInlineFunctionService.WritePermissions)
             ]);
         }
     }

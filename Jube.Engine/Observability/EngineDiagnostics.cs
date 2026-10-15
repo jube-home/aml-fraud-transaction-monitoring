@@ -20,13 +20,10 @@ namespace Jube.Engine.Observability
 {
     public static class EngineDiagnostics
     {
-        public const string Name = "Jube.Engine";
         private static readonly AssemblyName asm = typeof(EngineDiagnostics).Assembly.GetName();
-
         private static readonly string version = asm.Version?.ToString() ?? "0.0.0";
-
+        public const string Name = "Jube.Engine";
         public static readonly ActivitySource ActivitySource = new(Name, version);
-
         public static readonly Meter Meter = new(Name, version);
 
         public static readonly Histogram<double> StageDuration =

@@ -18,7 +18,6 @@ namespace Jube.Service.Reactivity
     public static class TenantGroup
     {
         public const string Prefix = "Tenant_";
-
         private const string InvalidTenantMessage = "A tenant group needs a positive tenant registry id.";
 
         public static string Name(int tenantRegistryId)

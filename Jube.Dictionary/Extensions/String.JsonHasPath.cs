@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool JsonHasPath(this string? @this, string? path)
         {
             var root = StructuredDataSupport.Parse(@this);
+
             return root is not null && StructuredDataSupport.Navigate(root, path) is not null;
         }
     }

@@ -13,6 +13,8 @@
 
 using Jube.Data.Context;
 using Jube.Dto.Authentication;
+using Jube.Service.Authentication.Interfaces;
+using Jube.Service.Authentication.Models;
 using Jube.Service.Exceptions.Authentication;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
@@ -33,7 +35,6 @@ namespace Jube.Service.Authentication
         LoginSourceIpThrottle? loginSourceIpThrottle = null)
     {
         private const string Area = "Authentication";
-
         private readonly ILog auditLog = auditLog ?? LogManager.GetLogger("Jube.Audit");
         private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
 
@@ -59,9 +60,11 @@ namespace Jube.Service.Authentication
             NegotiateIdentity identity, CancellationToken token = default)
         {
             using var op = Start("WirePasswordHash", null);
+
             if (request == null)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequest();
             }
 
@@ -69,11 +72,13 @@ namespace Jube.Service.Authentication
             {
                 var wire = request.UserName != null
                            && await service.IsWirePasswordHashAsync(request.UserName, token).ConfigureAwait(false);
+
                 return Succeeded(op, AuthenticationOutcome.WireScheme(wire));
             }
 
             _ = identity;
             op.Outcome("not-found");
+
             return AuthenticationOutcome.NotFound();
         }
 
@@ -82,9 +87,11 @@ namespace Jube.Service.Authentication
         {
             var identity = context.Identity;
             using var op = Start("ByNegotiate", identity);
+
             if (OAuth || !Negotiate)
             {
                 op.Outcome("not-found");
+
                 return AuthenticationOutcome.NotFound();
             }
 
@@ -96,10 +103,12 @@ namespace Jube.Service.Authentication
                 }
 
                 op.Outcome("unauthorized");
+
                 return AuthenticationOutcome.Unauthorized();
             }
 
             var name = identity.Name;
+
             try
             {
                 if (name != null)
@@ -126,6 +135,7 @@ namespace Jube.Service.Authentication
                     }
 
                     op.Outcome("unauthorized");
+
                     return AuthenticationOutcome.Unauthorized();
                 }
             }
@@ -133,12 +143,14 @@ namespace Jube.Service.Authentication
             {
                 log.Error($"ByNegotiate: AuthenticateByNegotiateAsync failed for identity '{Safe(name)}'.", ex);
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
 
             if (MfaEnabled)
             {
                 op.Outcome("mfa-required");
+
                 return AuthenticationOutcome.Accepted();
             }
 
@@ -150,15 +162,18 @@ namespace Jube.Service.Authentication
         {
             var identity = context.Identity;
             using var op = Start("ByNegotiateMfa", identity);
+
             if (OAuth || !Negotiate)
             {
                 op.Outcome("not-found");
+
                 return AuthenticationOutcome.NotFound();
             }
 
             if (model == null)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequest();
             }
 
@@ -169,10 +184,12 @@ namespace Jube.Service.Authentication
             if (!identity.IsAuthenticated)
             {
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
 
             var name = identity.Name;
+
             try
             {
                 if (name != null)
@@ -188,12 +205,14 @@ namespace Jube.Service.Authentication
                 else
                 {
                     op.Outcome("unauthorized");
+
                     return AuthenticationOutcome.Unauthorized();
                 }
             }
             catch (Exception)
             {
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
 
@@ -202,13 +221,16 @@ namespace Jube.Service.Authentication
                 if (string.IsNullOrEmpty(model.Mfa))
                 {
                     op.Outcome("mfa-required");
+
                     return AuthenticationOutcome.Accepted();
                 }
 
                 var attempts = int.Parse(dynamicEnvironment.AppSettings("PasswordAttempts"));
+
                 if (!await service.ReserveMfaAttemptAsync(name, attempts, token).ConfigureAwait(false))
                 {
                     op.Outcome("unauthorized");
+
                     return AuthenticationOutcome.Unauthorized();
                 }
 
@@ -216,7 +238,9 @@ namespace Jube.Service.Authentication
                 {
                     await service.RegisterMfaFailureAsync(name, model.LocalIp, model.UserAgent, 2, attempts, token,
                         model.RemoteIp).ConfigureAwait(false);
+
                     op.Outcome("unauthorized");
+
                     return AuthenticationOutcome.Unauthorized();
                 }
 
@@ -225,6 +249,7 @@ namespace Jube.Service.Authentication
             }
 
             model.UserName = name;
+
             return Succeeded(op, AuthenticationOutcome.Ok(cookieIssuer.Issue(name)));
         }
 
@@ -232,9 +257,11 @@ namespace Jube.Service.Authentication
             AuthenticationRequestContext context, CancellationToken token = default)
         {
             using var op = Start("ByUserNamePassword", null);
+
             if (OAuth || Negotiate)
             {
                 op.Outcome("not-found");
+
                 return AuthenticationOutcome.NotFound();
             }
 
@@ -246,20 +273,24 @@ namespace Jube.Service.Authentication
                     clock))
             {
                 op.Outcome("rate-limited");
+
                 return AuthenticationOutcome.Unauthorized();
             }
 
             if (model == null)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequest();
             }
 
             var validator = new AuthenticationRequestDtoValidator(dynamicEnvironment);
             var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
             if (!results.IsValid)
             {
                 op.Outcome("invalid");
+
                 return AuthenticationOutcome.ValidationFailed(results);
             }
 
@@ -281,22 +312,26 @@ namespace Jube.Service.Authentication
             catch (PasswordExpiredException)
             {
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
             catch (PasswordNewMustChangeException)
             {
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
             catch (PasswordStrengthException ex)
             {
                 op.Outcome("password-strength");
+
                 return AuthenticationOutcome.PasswordStrength(ex.Errors);
             }
             catch (Exception)
             {
                 loginSourceIpThrottle.RecordFailedAttempt(context.RemoteIp, loginIpRateLimitWindow, clock);
                 op.Outcome("unauthorized");
+
                 return AuthenticationOutcome.Unauthorized();
             }
 
@@ -305,6 +340,7 @@ namespace Jube.Service.Authentication
             if (string.IsNullOrEmpty(authenticatedUserName))
             {
                 op.Outcome("unauthorized");
+
                 return AuthenticationOutcome.Unauthorized();
             }
 
@@ -313,6 +349,7 @@ namespace Jube.Service.Authentication
                 if (string.IsNullOrEmpty(model.Mfa))
                 {
                     op.Outcome("mfa-required");
+
                     return AuthenticationOutcome.Accepted();
                 }
 
@@ -323,7 +360,9 @@ namespace Jube.Service.Authentication
                             model.UserAgent, 1,
                             int.Parse(dynamicEnvironment.AppSettings("PasswordAttempts")), token, model.RemoteIp)
                         .ConfigureAwait(false);
+
                     op.Outcome("unauthorized");
+
                     return AuthenticationOutcome.Unauthorized();
                 }
 
@@ -339,21 +378,25 @@ namespace Jube.Service.Authentication
             NegotiateIdentity identity, CancellationToken token = default)
         {
             using var op = Start("ChangePassword", identity);
+
             if (OAuth || Negotiate)
             {
                 op.Outcome("forbidden");
+
                 return AuthenticationOutcome.Forbidden();
             }
 
             if (model == null)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequest();
             }
 
             if (identity.Name == null)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequestMessage("Authorized but the username is null.");
             }
 
@@ -365,16 +408,19 @@ namespace Jube.Service.Authentication
             catch (BadCredentialsException)
             {
                 op.Outcome("unauthorized");
+
                 return AuthenticationOutcome.Unauthorized();
             }
             catch (PasswordEmptyException)
             {
                 op.Outcome("bad-request");
+
                 return AuthenticationOutcome.BadRequest();
             }
             catch (PasswordStrengthException ex)
             {
                 op.Outcome("password-strength");
+
                 return AuthenticationOutcome.PasswordStrength(ex.Errors);
             }
 
@@ -398,6 +444,7 @@ namespace Jube.Service.Authentication
         private static AuthenticationOutcome Succeeded(OperationScope op, AuthenticationOutcome outcome)
         {
             op.Outcome("ok");
+
             return outcome;
         }
 
@@ -406,6 +453,7 @@ namespace Jube.Service.Authentication
             var actor = identity is { IsAuthenticated: true, Name: not null } ? Safe(identity.Name) : null;
             var op = OperationScope.Start(Area, operation, actor, null, auditLog, log, new NullServiceChangeBus());
             op.Outcome("error");
+
             return op;
         }
 

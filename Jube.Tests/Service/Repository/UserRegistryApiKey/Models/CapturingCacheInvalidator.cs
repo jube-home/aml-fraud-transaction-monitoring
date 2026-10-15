@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Service.Repository.UserRegistryApiKey;
+using Jube.Service.Repository.UserRegistryApiKey.Interfaces;
 
 namespace Jube.Test.Service.Repository.UserRegistryApiKey.Models
 {
@@ -26,12 +26,14 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey.Models
         public Task PublishCreatedAsync(string apiKeyHash, CancellationToken token = default)
         {
             Created.Add(apiKeyHash);
+
             return Task.CompletedTask;
         }
 
         public Task PublishRemovedAsync(string apiKeyHash, CancellationToken token = default)
         {
             Removed.Add(apiKeyHash);
+
             return Task.CompletedTask;
         }
     }

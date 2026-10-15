@@ -12,6 +12,7 @@
  */
 
 using System.Collections.Concurrent;
+using Jube.Cache.Observability.CacheCallCounters.Models;
 
 namespace Jube.Cache.Observability.CacheCallCounters
 {
@@ -37,6 +38,7 @@ namespace Jube.Cache.Observability.CacheCallCounters
             foreach (var (call, accumulator) in accumulators)
             {
                 var count = Interlocked.Exchange(ref accumulator.Count, 0);
+
                 if (count == 0)
                 {
                     continue;
@@ -55,9 +57,11 @@ namespace Jube.Cache.Observability.CacheCallCounters
         private static void AccumulateMin(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value < initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;
@@ -70,9 +74,11 @@ namespace Jube.Cache.Observability.CacheCallCounters
         private static void AccumulateMax(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value > initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;

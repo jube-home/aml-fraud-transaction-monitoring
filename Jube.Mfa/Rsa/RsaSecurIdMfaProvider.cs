@@ -18,6 +18,8 @@ namespace Jube.Mfa.Rsa
     using System.Net.Sockets;
     using System.Security.Authentication;
     using System.Text;
+    using Interfaces;
+    using Models;
     using log4net;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
@@ -28,9 +30,7 @@ namespace Jube.Mfa.Rsa
     {
         private const string AuthnAttemptIdMetadataKey = "AuthnAttemptId";
         private const string InResponseToMetadataKey = "InResponseTo";
-
         private static readonly MediaTypeHeaderValue jsonMediaType = new("application/json");
-
         private readonly string clientId;
         private readonly string clientKey;
         private readonly string endpoint;
@@ -43,6 +43,7 @@ namespace Jube.Mfa.Rsa
             clientKey = options.ClientKey;
             clientId = options.ClientId;
             this.log = log;
+
             httpClient = new HttpClient(CreateHandler(options.OutboundHttpCertificateBypass,
                 options.OutboundHttpCertificateThumbprint));
 
@@ -135,6 +136,7 @@ namespace Jube.Mfa.Rsa
             {
                 log.Error($"MFA ClientId: {clientId}; SubjectName: {request.SubjectName}; Endpoint: {endpoint}; " +
                           $"VerifyAsync failed. {Describe(ex)}", ex);
+
                 throw;
             }
         }
@@ -187,9 +189,11 @@ namespace Jube.Mfa.Rsa
         private static string Describe(Exception ex)
         {
             var sb = new StringBuilder();
+
             for (var e = ex; e is not null; e = e.InnerException)
             {
                 sb.Append(e.GetType().Name).Append(": ").Append(e.Message);
+
                 switch (e)
                 {
                     case HttpRequestException hre:

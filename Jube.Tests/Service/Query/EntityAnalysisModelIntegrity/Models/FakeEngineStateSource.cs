@@ -12,14 +12,13 @@
  */
 
 using Jube.Engine.Integrity;
-using Jube.Service.Query.EntityAnalysisModelIntegrity;
+using Jube.Service.Query.EntityAnalysisModelIntegrity.Interfaces;
 
 namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity.Models
 {
     internal sealed class FakeEngineStateSource(string instance, EngineModelState state) : IEngineStateSource
     {
         public string Instance { get; } = instance;
-
         public bool Available => true;
 
         public EngineModelState? GetModelState(int entityAnalysisModelId)

@@ -264,6 +264,7 @@ namespace Jube.Test.Dictionary
 
             IEnumerable nonGeneric = cache;
             var count = 0;
+
             foreach (var _ in nonGeneric)
             {
                 count++;
@@ -331,6 +332,7 @@ namespace Jube.Test.Dictionary
         {
             var cache = new LruCacheConcurrentSizedDictionary<string, string>(v => v.Length, 10,
                 0.5) { { "keep", "12345" } };
+
             _ = cache["keep"];
 
             cache.Add("filler0", "12345");
@@ -338,6 +340,7 @@ namespace Jube.Test.Dictionary
 
             cache.ContainsKey("keep").Should()
                 .BeTrue("an accessed entry is skipped once by the eviction sweep before it can be evicted");
+
             cache.ContainsKey("filler0").Should().BeFalse();
             cache.ContainsKey("filler1").Should().BeFalse();
         }

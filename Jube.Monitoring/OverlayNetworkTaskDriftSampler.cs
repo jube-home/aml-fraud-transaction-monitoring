@@ -40,6 +40,7 @@ namespace Jube.Monitoring
             foreach (var serviceName in serviceNames)
             {
                 var drift = await SampleServiceAsync(serviceName).ConfigureAwait(false);
+
                 if (drift != null)
                 {
                     results.Add(drift);
@@ -52,12 +53,14 @@ namespace Jube.Monitoring
         private async Task<OverlayNetworkTaskDrift?> SampleServiceAsync(string serviceName)
         {
             var tasks = await client.GetRunningTasksForServiceAsync(serviceName).ConfigureAwait(false);
+
             if (tasks == null)
             {
                 return null;
             }
 
             HashSet<string> dnsAddresses;
+
             try
             {
                 dnsAddresses = (await Dns.GetHostAddressesAsync($"tasks.{serviceName}").ConfigureAwait(false))
@@ -112,6 +115,7 @@ namespace Jube.Monitoring
                     foreach (var address in taskAddresses)
                     {
                         var cidr = (string?)address;
+
                         if (string.IsNullOrEmpty(cidr))
                         {
                             continue;

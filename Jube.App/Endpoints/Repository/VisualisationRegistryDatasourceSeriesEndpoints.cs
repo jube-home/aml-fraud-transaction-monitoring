@@ -50,6 +50,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByVisualisationRegistryDatasourceId/{id}: entry user={user}");
@@ -57,10 +58,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryDatasourceSeriesService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(
                     await service.GetByVisualisationRegistryDatasourceIdAsync(id, token));
             }
@@ -95,6 +98,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByVisualisationRegistryDatasourceId/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

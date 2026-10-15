@@ -45,284 +45,224 @@
 //   connection with the software or the use or other dealings in the software.
 //   
 
+using System;
+using Accord.Math;
+
 namespace Accord.MachineLearning
 {
-    using Accord.Math;
-    using Accord.Statistics;
-    using System;
-
     /// <summary>
-    ///   Multipurpose RANSAC algorithm.
+    ///     Multipurpose RANSAC algorithm.
     /// </summary>
-    /// 
     /// <typeparam name="TModel">The model type to be trained by RANSAC.</typeparam>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   RANSAC is an abbreviation for "RANdom SAmple Consensus". It is an iterative
-    ///   method to estimate parameters of a mathematical model from a set of observed
-    ///   data which contains outliers. It is a non-deterministic algorithm in the sense
-    ///   that it produces a reasonable result only with a certain probability, with this
-    ///   probability increasing as more iterations are allowed.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       P. D. Kovesi. MATLAB and Octave Functions for Computer Vision and Image Processing.
-    ///       School of Computer Science and Software Engineering, The University of Western Australia.
-    ///       Available in: http://www.csse.uwa.edu.au/~pk/research/matlabfns </description></item>
-    ///     <item><description>
-    ///       Wikipedia, The Free Encyclopedia. RANSAC. Available on:
-    ///       http://en.wikipedia.org/wiki/RANSAC </description></item>
-    ///   </list>
-    /// </para>
+    ///     <para>
+    ///         RANSAC is an abbreviation for "RANdom SAmple Consensus". It is an iterative
+    ///         method to estimate parameters of a mathematical model from a set of observed
+    ///         data which contains outliers. It is a non-deterministic algorithm in the sense
+    ///         that it produces a reasonable result only with a certain probability, with this
+    ///         probability increasing as more iterations are allowed.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     P. D. Kovesi. MATLAB and Octave Functions for Computer Vision and Image Processing.
+    ///                     School of Computer Science and Software Engineering, The University of Western Australia.
+    ///                     Available in: http://www.csse.uwa.edu.au/~pk/research/matlabfns
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     Wikipedia, The Free Encyclopedia. RANSAC. Available on:
+    ///                     http://en.wikipedia.org/wiki/RANSAC
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code source="Unit Tests\Accord.Tests.MachineLearning\RansacTest.cs" region="doc_learn" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\RansacTest.cs" region="doc_learn" />
     /// </example>
-    /// 
     public class RANSAC<TModel> where TModel : class
-        // TODO: Implement ISupervisedLearning interface
+    // TODO: Implement ISupervisedLearning interface
     {
-        // RANSAC parameters
-        private int s;    // number of samples
-        private double t; // inlier threshold
-        private int maxSamplings = 100;
-        private int maxEvaluations = 1000;
-        private double probability = 0.99;
-
         // RANSAC functions
-        private Func<int[], TModel> fitting;
-        private Func<TModel, double, int[]> distances;
-        private Func<int[], bool> degenerate;
 
-
+        // RANSAC parameters
 
         /// <summary>
-        ///   Model fitting function.
+        ///     Constructs a new RANSAC algorithm.
         /// </summary>
-        /// 
-        public Func<int[], TModel> Fitting
-        {
-            get { return fitting; }
-            set { fitting = value; }
-        }
-
-        /// <summary>
-        ///   Degenerative set detection function.
-        /// </summary>
-        /// 
-        public Func<int[], bool> Degenerate
-        {
-            get { return degenerate; }
-            set { degenerate = value; }
-        }
-
-        /// <summary>
-        ///   Distance function.
-        /// </summary>
-        /// 
-        public Func<TModel, double, int[]> Distances
-        {
-            get { return distances; }
-            set { distances = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the minimum distance between a data point and
-        ///   the model used to decide whether the point is an inlier or not.
-        /// </summary>
-        /// 
-        public double Threshold
-        {
-            get { return t; }
-            set { t = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the minimum number of samples from the data
-        ///   required by the fitting function to fit a model.
-        /// </summary>
-        /// 
-        public int Samples
-        {
-            get { return s; }
-            set { s = value; }
-        }
-
-        /// <summary>
-        ///   Maximum number of attempts to select a 
-        ///   non-degenerate data set. Default is 100.
-        /// </summary>
-        /// 
-        public int MaxSamplings
-        {
-            get { return maxSamplings; }
-            set { maxSamplings = value; }
-        }
-
-        /// <summary>
-        ///   Maximum number of trials. Default is 1000.
-        /// </summary>
-        /// 
-        public int MaxEvaluations
-        {
-            get { return maxEvaluations; }
-            set { maxEvaluations = value; }
-        }
-
-        /// <summary>
-        /// Gets the current estimate of trials needed.
-        /// </summary>
-        /// 
-        public int TrialsNeeded { get; private set; }
-
-        /// <summary>
-        /// Gets the current number of trials performed.
-        /// </summary>
-        /// 
-        public int TrialsPerformed { get; private set; }
-
-
-        /// <summary>
-        ///   Gets or sets the probability of obtaining a random
-        ///   sample of the input points that contains no outliers.
-        ///   Default is 0.99.
-        /// </summary>
-        /// 
-        public double Probability
-        {
-            get { return probability; }
-            set { probability = value; }
-        }
-
-
-        /// <summary>
-        ///   Constructs a new RANSAC algorithm.
-        /// </summary>
-        /// 
         /// <param name="minSamples">
-        ///   The minimum number of samples from the data
-        ///   required by the fitting function to fit a model.
+        ///     The minimum number of samples from the data
+        ///     required by the fitting function to fit a model.
         /// </param>
-        /// 
         public RANSAC(int minSamples)
         {
-            this.s = minSamples;
+            Samples = minSamples;
         }
 
         /// <summary>
-        ///   Constructs a new RANSAC algorithm.
+        ///     Constructs a new RANSAC algorithm.
         /// </summary>
-        /// 
         /// <param name="minSamples">
-        ///   The minimum number of samples from the data
-        ///   required by the fitting function to fit a model.
+        ///     The minimum number of samples from the data
+        ///     required by the fitting function to fit a model.
         /// </param>
         /// <param name="threshold">
-        ///   The minimum distance between a data point and
-        ///   the model used to decide whether the point is
-        ///   an inlier or not.
+        ///     The minimum distance between a data point and
+        ///     the model used to decide whether the point is
+        ///     an inlier or not.
         /// </param>
-        /// 
         public RANSAC(int minSamples, double threshold)
         {
-            this.s = minSamples;
-            this.t = threshold;
+            Samples = minSamples;
+            Threshold = threshold;
         }
 
         /// <summary>
-        ///   Constructs a new RANSAC algorithm.
+        ///     Constructs a new RANSAC algorithm.
         /// </summary>
-        /// 
         /// <param name="minSamples">
-        ///   The minimum number of samples from the data
-        ///   required by the fitting function to fit a model.
+        ///     The minimum number of samples from the data
+        ///     required by the fitting function to fit a model.
         /// </param>
         /// <param name="threshold">
-        ///   The minimum distance between a data point and
-        ///   the model used to decide whether the point is
-        ///   an inlier or not.
+        ///     The minimum distance between a data point and
+        ///     the model used to decide whether the point is
+        ///     an inlier or not.
         /// </param>
         /// <param name="probability">
-        ///   The probability of obtaining a random sample of
-        ///   the input points that contains no outliers.
+        ///     The probability of obtaining a random sample of
+        ///     the input points that contains no outliers.
         /// </param>
-        /// 
         public RANSAC(int minSamples, double threshold, double probability)
         {
             if (minSamples < 0)
+            {
                 throw new ArgumentOutOfRangeException("minSamples");
+            }
 
             if (threshold < 0)
+            {
                 throw new ArgumentOutOfRangeException("threshold");
+            }
 
             if (probability > 1.0 || probability < 0.0)
+            {
                 throw new ArgumentException("Probability should be a value between 0 and 1", "probability");
+            }
 
-            this.s = minSamples;
-            this.t = threshold;
-            this.probability = probability;
+            Samples = minSamples;
+            Threshold = threshold;
+            this.Probability = probability;
         }
 
+        /// <summary>
+        ///     Model fitting function.
+        /// </summary>
+        public Func<int[], TModel> Fitting { get; set; }
 
         /// <summary>
-        ///   Computes the model using the RANSAC algorithm.
+        ///     Degenerative set detection function.
         /// </summary>
-        /// 
+        public Func<int[], bool> Degenerate { get; set; }
+
+        /// <summary>
+        ///     Distance function.
+        /// </summary>
+        public Func<TModel, double, int[]> Distances { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the minimum distance between a data point and
+        ///     the model used to decide whether the point is an inlier or not.
+        /// </summary>
+        public double Threshold { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the minimum number of samples from the data
+        ///     required by the fitting function to fit a model.
+        /// </summary>
+        public int Samples { get; set; }
+
+        /// <summary>
+        ///     Maximum number of attempts to select a
+        ///     non-degenerate data set. Default is 100.
+        /// </summary>
+        public int MaxSamplings { get; set; } = 100;
+
+        /// <summary>
+        ///     Maximum number of trials. Default is 1000.
+        /// </summary>
+        public int MaxEvaluations { get; set; } = 1000;
+
+        /// <summary>
+        ///     Gets the current estimate of trials needed.
+        /// </summary>
+        public int TrialsNeeded { get; private set; }
+
+        /// <summary>
+        ///     Gets the current number of trials performed.
+        /// </summary>
+        public int TrialsPerformed { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the probability of obtaining a random
+        ///     sample of the input points that contains no outliers.
+        ///     Default is 0.99.
+        /// </summary>
+        public double Probability { get; set; } = 0.99;
+
+        /// <summary>
+        ///     Computes the model using the RANSAC algorithm.
+        /// </summary>
         /// <param name="size">The total number of points in the data set.</param>
-        /// 
         public TModel Compute(int size)
         {
-            int[] inliers;
-            return Compute(size, out inliers);
+            return Compute(size, out _);
         }
 
         /// <summary>
-        ///   Computes the model using the RANSAC algorithm.
+        ///     Computes the model using the RANSAC algorithm.
         /// </summary>
-        /// 
         /// <param name="size">The total number of points in the data set.</param>
         /// <param name="inliers">The indexes of the outlier points in the data set.</param>
-        /// 
         public TModel Compute(int size, out int[] inliers)
         {
             // We are going to find the best model (which fits
             //  the maximum number of inlier points as possible).
             TModel bestModel = null;
             int[] bestInliers = null;
-            int maxInliers = 0;
+            var maxInliers = 0;
 
-            int r = Math.Min(size, s);
+            var r = System.Math.Min(size, Samples);
 
             // For this we are going to search for random samples
             //  of the original points which contains no outliers.
 
-            TrialsPerformed = 0;              // Total number of trials performed
-            TrialsNeeded = maxEvaluations;  // Estimative of number of trials needed.
+            TrialsPerformed = 0; // Total number of trials performed
+            TrialsNeeded = MaxEvaluations; // Estimative of number of trials needed.
 
             // While the number of trials is less than our estimative,
             //   and we have not surpassed the maximum number of trials
-            while (TrialsPerformed < TrialsNeeded && TrialsPerformed < maxEvaluations)
+            while (TrialsPerformed < TrialsNeeded && TrialsPerformed < MaxEvaluations)
             {
                 TModel model = null;
-                int[] sample = null;
-                int samplings = 0;
+                var samplings = 0;
 
                 // While the number of samples attempted is less
                 //   than the maximum limit of attempts
-                while (samplings < maxSamplings)
+                while (samplings < MaxSamplings)
                 {
                     // Select at random s data points to form a trial model.
-                    sample = Vector.Sample(r, size);
+                    var sample = Vector.Sample(r, size);
 
                     // If the sampled points are not in a degenerate configuration,
-                    if (degenerate == null || !degenerate(sample))
+                    if (Degenerate == null || !Degenerate(sample))
                     {
                         // Fit model using the random selection of points
-                        model = fitting(sample);
+                        model = Fitting(sample);
                         break; // Exit the while loop.
                     }
 
@@ -330,32 +270,38 @@ namespace Accord.MachineLearning
                 }
 
                 if (model == null)
+                {
                     throw new ConvergenceException("A model could not be inferred from the data points");
+                }
 
                 // Now, evaluate the distances between total points and the model returning the
                 //  indices of the points that are inliers (according to a distance threshold t).
-                inliers = distances(model, t);
+                inliers = Distances(model, Threshold);
 
                 // Check if the model was the model which highest number of inliers:
                 if (bestInliers == null || inliers.Length > maxInliers)
                 {
                     // Yes, this model has the highest number of inliers.
 
-                    maxInliers = inliers.Length;  // Set the new maximum,
-                    bestModel = model;            // This is the best model found so far,
-                    bestInliers = inliers;        // Store the indices of the current inliers.
+                    maxInliers = inliers.Length; // Set the new maximum,
+                    bestModel = model; // This is the best model found so far,
+                    bestInliers = inliers; // Store the indices of the current inliers.
 
                     // Update estimate of N, the number of trials to ensure we pick, 
                     //   with probability p, a data set with no outliers.
-                    double pInlier = (double)inliers.Length / (double)size;
-                    double pNoOutliers = 1.0 - System.Math.Pow(pInlier, s);
+                    var pInlier = inliers.Length / (double)size;
+                    var pNoOutliers = 1.0 - System.Math.Pow(pInlier, Samples);
 
-                    double num = System.Math.Log(1.0 - probability);
-                    double den = System.Math.Log(pNoOutliers);
+                    var num = System.Math.Log(1.0 - Probability);
+                    var den = System.Math.Log(pNoOutliers);
                     if (den == 0)
+                    {
                         TrialsNeeded = num == 0 ? 0 : MaxEvaluations;
+                    }
                     else
+                    {
                         TrialsNeeded = (int)(num / den);
+                    }
                 }
 
                 TrialsPerformed++; // Increase the trial counter.
@@ -364,8 +310,5 @@ namespace Accord.MachineLearning
             inliers = bestInliers;
             return bestModel;
         }
-
-
-
     }
 }

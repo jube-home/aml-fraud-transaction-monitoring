@@ -28,7 +28,10 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
     {
         public override void Up()
         {
-            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"), log);
+            var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             var entityAnalysisModels = dbContext.EntityAnalysisModel.Select(s => new
             {
                 s.TenantRegistryId,
@@ -46,9 +49,9 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                 }
             }
         }
+
         public override void Down()
         {
-
         }
     }
 }

@@ -44,71 +44,38 @@ namespace Jube.ResilientNpgsqlConnection
         [AllowNull]
         public override sealed string CommandText
         {
-            get
-            {
-                return inner.CommandText;
-            }
-            set
-            {
-                inner.CommandText = value;
-            }
+            get { return inner.CommandText; }
+            set { inner.CommandText = value; }
         }
 
         public override int CommandTimeout
         {
-            get
-            {
-                return inner.CommandTimeout;
-            }
-            set
-            {
-                inner.CommandTimeout = value;
-            }
+            get { return inner.CommandTimeout; }
+            set { inner.CommandTimeout = value; }
         }
 
         public override CommandType CommandType
         {
-            get
-            {
-                return inner.CommandType;
-            }
-            set
-            {
-                inner.CommandType = value;
-            }
+            get { return inner.CommandType; }
+            set { inner.CommandType = value; }
         }
 
         public override UpdateRowSource UpdatedRowSource
         {
-            get
-            {
-                return inner.UpdatedRowSource;
-            }
-            set
-            {
-                inner.UpdatedRowSource = value;
-            }
+            get { return inner.UpdatedRowSource; }
+            set { inner.UpdatedRowSource = value; }
         }
 
         public override bool DesignTimeVisible
         {
-            get
-            {
-                return inner.DesignTimeVisible;
-            }
-            set
-            {
-                inner.DesignTimeVisible = value;
-            }
+            get { return inner.DesignTimeVisible; }
+            set { inner.DesignTimeVisible = value; }
         }
 
         [AllowNull]
         protected override DbConnection DbConnection
         {
-            get
-            {
-                return inner.Connection!;
-            }
+            get { return inner.Connection!; }
             set
             {
                 inner.Connection = value switch
@@ -124,23 +91,14 @@ namespace Jube.ResilientNpgsqlConnection
 
         protected override DbParameterCollection DbParameterCollection
         {
-            get
-            {
-                return inner.Parameters;
-            }
+            get { return inner.Parameters; }
         }
 
         [AllowNull]
         protected override DbTransaction DbTransaction
         {
-            get
-            {
-                return inner.Transaction!;
-            }
-            set
-            {
-                inner.Transaction = (NpgsqlTransaction)value!;
-            }
+            get { return inner.Transaction!; }
+            set { inner.Transaction = (NpgsqlTransaction)value!; }
         }
 
         public override void Prepare()
@@ -173,7 +131,8 @@ namespace Jube.ResilientNpgsqlConnection
             return await policy.ExecuteAsync(_ => inner.ExecuteScalarAsync(ct), new Context()).ConfigureAwait(false);
         }
 
-        protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken ct)
+        protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,
+            CancellationToken ct)
         {
             if (inner.Transaction != null)
             {
@@ -189,6 +148,7 @@ namespace Jube.ResilientNpgsqlConnection
         {
             return ExecuteNonQueryAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
+
         public override object? ExecuteScalar()
         {
             return ExecuteScalarAsync(CancellationToken.None).GetAwaiter().GetResult();
@@ -215,6 +175,7 @@ namespace Jube.ResilientNpgsqlConnection
             {
                 inner.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

@@ -79,6 +79,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -86,10 +87,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -122,6 +125,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -131,6 +135,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/GetByShowInDirectory: entry user={user}");
@@ -138,10 +143,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetByShowInDirectoryAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -174,6 +181,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/GetByShowInDirectory: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -183,6 +191,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/GetByGuidActiveOnly/{guid}: entry user={user}");
@@ -190,10 +199,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetByGuidActiveOnlyAsync(guid, token));
             }
             catch (NotAuthenticatedException)
@@ -226,6 +237,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/GetByGuidActiveOnly/{guid}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -235,6 +247,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -242,10 +255,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetByIdAsync(id, token));
             }
             catch (NotAuthenticatedException)
@@ -278,6 +293,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -288,6 +304,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -295,10 +312,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.InsertAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -340,6 +359,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -350,6 +370,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry id={model?.Id} user={user}");
@@ -357,10 +378,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.UpdateAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -411,6 +434,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -420,6 +444,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"DELETE {Base}/{id}: entry user={user}");
@@ -427,11 +452,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 await service.DeleteAsync(id, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -473,6 +501,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

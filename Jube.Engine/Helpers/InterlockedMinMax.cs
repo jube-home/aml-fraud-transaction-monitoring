@@ -20,9 +20,11 @@ namespace Jube.Engine.Helpers
         public static void AccumulateMin(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value < initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;
@@ -35,9 +37,11 @@ namespace Jube.Engine.Helpers
         public static void AccumulateMax(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value > initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;

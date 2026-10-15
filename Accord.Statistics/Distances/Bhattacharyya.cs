@@ -1,39 +1,46 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Decompositions;
+using Accord.Statistics;
+using Accord.Statistics.Distributions.Multivariate;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Math.Distances
 {
-    using Accord.Math.Decompositions;
-    using Accord.Statistics;
-    using Accord.Statistics.Distributions.Multivariate;
-    using Accord.Statistics.Distributions.Univariate;
-    using System;
-    using System.Runtime.CompilerServices;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Bhattacharyya distance.
+    ///     Bhattacharyya distance.
     /// </summary>
-    /// 
     [Serializable]
     public sealed class Bhattacharyya :
         IDistance<double[]>,
@@ -43,195 +50,187 @@ namespace Accord.Math.Distances
         IDistance<MultivariateNormalDistribution>
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Bhattacharyya"/> class.
+        ///     Initializes a new instance of the <see cref="Bhattacharyya" /> class.
         /// </summary>
-        /// 
         public Bhattacharyya()
         {
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two histograms.
+        ///     Bhattacharyya distance between two histograms.
         /// </summary>
-        /// 
         /// <param name="x">The first histogram.</param>
         /// <param name="y">The second histogram.</param>
-        /// 
         /// <returns>
-        ///   The Bhattacharyya between the two histograms.
+        ///     The Bhattacharyya between the two histograms.
         /// </returns>
-        /// 
-#if NET45 || NET46 || NET462 || NETSTANDARD2_0
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        public double Distance(double[] x, double[] y)
-        {
-            double b = 0;
-            for (int i = 0; i < x.Length; i++)
-                b += System.Math.Sqrt(x[i] * y[i]);
-
-            return System.Math.Sqrt(1.0 - b);
-        }
-
-        /// <summary>
-        ///   Bhattacharyya distance between two histograms.
-        /// </summary>
-        /// 
-        /// <param name="x">The first histogram.</param>
-        /// <param name="y">The second histogram.</param>
-        /// 
-        /// <returns>
-        ///   The Bhattacharyya between the two histograms.
-        /// </returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public double Distance(GeneralDiscreteDistribution x, GeneralDiscreteDistribution y)
         {
             double b = 0;
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
+            {
                 b += System.Math.Sqrt(x.Frequencies[i] * y.Frequencies[i]);
+            }
 
             return System.Math.Sqrt(1.0 - b);
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two histograms.
+        ///     Bhattacharyya distance between two Gaussian distributions.
         /// </summary>
-        /// 
+        /// <param name="x">The first Normal distribution.</param>
+        /// <param name="y">The second Normal distribution.</param>
+        /// <returns>The Bhattacharyya distance between the two distributions.</returns>
+        public double Distance(MultivariateNormalDistribution x, MultivariateNormalDistribution y)
+        {
+            return Distance(x.Mean, x.Covariance, y.Mean, y.Covariance);
+        }
+
+        /// <summary>
+        ///     Bhattacharyya distance between two histograms.
+        /// </summary>
         /// <param name="x">The first histogram.</param>
         /// <param name="y">The second histogram.</param>
-        /// 
         /// <returns>
-        ///   The Bhattacharyya between the two histograms.
+        ///     The Bhattacharyya between the two histograms.
         /// </returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public double Distance(UnivariateDiscreteDistribution x, UnivariateDiscreteDistribution y)
         {
             double b = 0;
-            foreach (int i in x.Support.Intersection(y.Support))
+            foreach (var i in x.Support.Intersection(y.Support))
+            {
                 b += System.Math.Sqrt(x.ProbabilityMassFunction(i) * y.ProbabilityMassFunction(i));
+            }
 
             return System.Math.Sqrt(1.0 - b);
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two datasets, assuming
-        ///   their contents can be modelled by multivariate Gaussians.
+        ///     Bhattacharyya distance between two datasets, assuming
+        ///     their contents can be modelled by multivariate Gaussians.
         /// </summary>
-        /// 
         /// <param name="x">The first dataset.</param>
         /// <param name="y">The second dataset.</param>
-        /// 
         /// <returns>
-        ///   The Bhattacharyya between the two datasets.
+        ///     The Bhattacharyya between the two datasets.
         /// </returns>
-        /// 
-#if NET45 || NET46 || NET462 || NETSTANDARD2_0
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        public double Distance(double[][] x, double[][] y)
-        {
-            double[] meanX = x.Mean(dimension: 0);
-            double[] meanY = y.Mean(dimension: 0);
-            double[][] covX = x.Covariance(meanX);
-            double[][] covY = y.Covariance(meanY);
-
-            return Distance(meanX, covX, meanY, covY);
-        }
-
-        /// <summary>
-        ///   Bhattacharyya distance between two datasets, assuming
-        ///   their contents can be modelled by multivariate Gaussians.
-        /// </summary>
-        /// 
-        /// <param name="x">The first dataset.</param>
-        /// <param name="y">The second dataset.</param>
-        /// 
-        /// <returns>
-        ///   The Bhattacharyya between the two datasets.
-        /// </returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public double Distance(double[,] x, double[,] y)
         {
-            double[] meanX = x.Mean(dimension: 0);
-            double[] meanY = y.Mean(dimension: 0);
-            double[,] covX = x.Covariance(meanX);
-            double[,] covY = y.Covariance(meanY);
+            var meanX = x.Mean(0);
+            var meanY = y.Mean(0);
+            var covX = x.Covariance(meanX);
+            var covY = y.Covariance(meanY);
 
             return Distance(meanX, covX, meanY, covY);
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two Gaussian distributions.
+        ///     Bhattacharyya distance between two histograms.
         /// </summary>
-        /// 
+        /// <param name="x">The first histogram.</param>
+        /// <param name="y">The second histogram.</param>
+        /// <returns>
+        ///     The Bhattacharyya between the two histograms.
+        /// </returns>
+#if NET45 || NET46 || NET462 || NETSTANDARD2_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public double Distance(double[] x, double[] y)
+        {
+            double b = 0;
+            for (var i = 0; i < x.Length; i++)
+            {
+                b += System.Math.Sqrt(x[i] * y[i]);
+            }
+
+            return System.Math.Sqrt(1.0 - b);
+        }
+
+        /// <summary>
+        ///     Bhattacharyya distance between two datasets, assuming
+        ///     their contents can be modelled by multivariate Gaussians.
+        /// </summary>
+        /// <param name="x">The first dataset.</param>
+        /// <param name="y">The second dataset.</param>
+        /// <returns>
+        ///     The Bhattacharyya between the two datasets.
+        /// </returns>
+#if NET45 || NET46 || NET462 || NETSTANDARD2_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public double Distance(double[][] x, double[][] y)
+        {
+            var meanX = x.Mean(0);
+            var meanY = y.Mean(0);
+            var covX = x.Covariance(meanX);
+            var covY = y.Covariance(meanY);
+
+            return Distance(meanX, covX, meanY, covY);
+        }
+
+        /// <summary>
+        ///     Bhattacharyya distance between two Gaussian distributions.
+        /// </summary>
         /// <param name="meanX">Mean for the first distribution.</param>
         /// <param name="covX">Covariance matrix for the first distribution.</param>
         /// <param name="meanY">Mean for the second distribution.</param>
         /// <param name="covY">Covariance matrix for the second distribution.</param>
-        /// 
         /// <returns>The Bhattacharyya distance between the two distributions.</returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public double Distance(double[] meanX, double[,] covX, double[] meanY, double[,] covY)
         {
-            int n = meanX.Length;
-
-            double lnDetX = covX.LogPseudoDeterminant();
-            double lnDetY = covY.LogPseudoDeterminant();
+            var lnDetX = covX.LogPseudoDeterminant();
+            var lnDetY = covY.LogPseudoDeterminant();
 
             return Distance(meanX, covX, lnDetX, meanY, covY, lnDetY);
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two Gaussian distributions.
+        ///     Bhattacharyya distance between two Gaussian distributions.
         /// </summary>
-        /// 
         /// <param name="meanX">Mean for the first distribution.</param>
         /// <param name="covX">Covariance matrix for the first distribution.</param>
         /// <param name="meanY">Mean for the second distribution.</param>
         /// <param name="covY">Covariance matrix for the second distribution.</param>
-        /// 
         /// <returns>The Bhattacharyya distance between the two distributions.</returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public double Distance(double[] meanX, double[][] covX, double[] meanY, double[][] covY)
         {
-            int n = meanX.Length;
-
-            double lnDetX = covX.LogPseudoDeterminant();
-            double lnDetY = covY.LogPseudoDeterminant();
+            var lnDetX = covX.LogPseudoDeterminant();
+            var lnDetY = covY.LogPseudoDeterminant();
 
             return Distance(meanX, covX, lnDetX, meanY, covY, lnDetY);
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two Gaussian distributions.
+        ///     Bhattacharyya distance between two Gaussian distributions.
         /// </summary>
-        /// 
         /// <param name="meanX">Mean for the first distribution.</param>
         /// <param name="covX">Covariance matrix for the first distribution.</param>
         /// <param name="meanY">Mean for the second distribution.</param>
         /// <param name="covY">Covariance matrix for the second distribution.</param>
-        /// <param name="lnDetCovX">The logarithm of the determinant for 
-        ///   the covariance matrix of the first distribution.</param>
-        /// <param name="lnDetCovY">The logarithm of the determinant for 
-        ///   the covariance matrix of the second distribution.</param>
-        /// 
+        /// <param name="lnDetCovX">
+        ///     The logarithm of the determinant for
+        ///     the covariance matrix of the first distribution.
+        /// </param>
+        /// <param name="lnDetCovY">
+        ///     The logarithm of the determinant for
+        ///     the covariance matrix of the second distribution.
+        /// </param>
         /// <returns>The Bhattacharyya distance between the two distributions.</returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -239,50 +238,59 @@ namespace Accord.Math.Distances
             double[] meanX, double[,] covX, double lnDetCovX,
             double[] meanY, double[,] covY, double lnDetCovY)
         {
-            int n = meanX.Length;
+            var n = meanX.Length;
 
             // P = (covX + covY) / 2
             var P = new double[n, n];
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
                     P[i, j] = (covX[i, j] + covY[i, j]) / 2.0;
+                }
+            }
 
             var svd = new SingularValueDecomposition(P);
-            double detP = svd.LogPseudoDeterminant;
+            var detP = svd.LogPseudoDeterminant;
 
-            double[] d = new double[meanX.Length];
-            for (int i = 0; i < meanX.Length; i++)
+            var d = new double[meanX.Length];
+            for (var i = 0; i < meanX.Length; i++)
+            {
                 d[i] = meanX[i] - meanY[i];
+            }
 
-            double[] z = svd.Solve(d);
+            var z = svd.Solve(d);
 
-            double r = 0.0;
-            for (int i = 0; i < d.Length; i++)
+            var r = 0.0;
+            for (var i = 0; i < d.Length; i++)
+            {
                 r += d[i] * z[i];
+            }
 
-            double mahalanobis = Math.Abs(r);
+            var mahalanobis = System.Math.Abs(r);
 
-            double a = (1.0 / 8.0) * mahalanobis;
-            double b = (0.5) * (detP - 0.5 * (lnDetCovX + lnDetCovY));
+            var a = 1.0 / 8.0 * mahalanobis;
+            var b = 0.5 * (detP - 0.5 * (lnDetCovX + lnDetCovY));
 
             return a + b;
         }
 
         /// <summary>
-        ///   Bhattacharyya distance between two Gaussian distributions.
+        ///     Bhattacharyya distance between two Gaussian distributions.
         /// </summary>
-        /// 
         /// <param name="meanX">Mean for the first distribution.</param>
         /// <param name="covX">Covariance matrix for the first distribution.</param>
         /// <param name="meanY">Mean for the second distribution.</param>
         /// <param name="covY">Covariance matrix for the second distribution.</param>
-        /// <param name="lnDetCovX">The logarithm of the determinant for 
-        ///   the covariance matrix of the first distribution.</param>
-        /// <param name="lnDetCovY">The logarithm of the determinant for 
-        ///   the covariance matrix of the second distribution.</param>
-        /// 
+        /// <param name="lnDetCovX">
+        ///     The logarithm of the determinant for
+        ///     the covariance matrix of the first distribution.
+        /// </param>
+        /// <param name="lnDetCovY">
+        ///     The logarithm of the determinant for
+        ///     the covariance matrix of the second distribution.
+        /// </param>
         /// <returns>The Bhattacharyya distance between the two distributions.</returns>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -290,47 +298,41 @@ namespace Accord.Math.Distances
             double[] meanX, double[][] covX, double lnDetCovX,
             double[] meanY, double[][] covY, double lnDetCovY)
         {
-            int n = meanX.Length;
+            var n = meanX.Length;
 
             // P = (covX + covY) / 2
             var P = Jagged.Zeros(n, n);
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
                     P[i][j] = (covX[i][j] + covY[i][j]) / 2.0;
+                }
+            }
 
             var svd = new JaggedSingularValueDecomposition(P);
-            double detP = svd.LogPseudoDeterminant;
+            var detP = svd.LogPseudoDeterminant;
 
-            double[] d = new double[meanX.Length];
-            for (int i = 0; i < meanX.Length; i++)
+            var d = new double[meanX.Length];
+            for (var i = 0; i < meanX.Length; i++)
+            {
                 d[i] = meanX[i] - meanY[i];
+            }
 
-            double[] z = svd.Solve(d);
+            var z = svd.Solve(d);
 
-            double r = 0.0;
-            for (int i = 0; i < d.Length; i++)
+            var r = 0.0;
+            for (var i = 0; i < d.Length; i++)
+            {
                 r += d[i] * z[i];
+            }
 
-            double mahalanobis = Math.Abs(r);
+            var mahalanobis = System.Math.Abs(r);
 
-            double a = (1.0 / 8.0) * mahalanobis;
-            double b = (0.5) * (detP - 0.5 * (lnDetCovX + lnDetCovY));
+            var a = 1.0 / 8.0 * mahalanobis;
+            var b = 0.5 * (detP - 0.5 * (lnDetCovX + lnDetCovY));
 
             return a + b;
-        }
-
-        /// <summary>
-        ///   Bhattacharyya distance between two Gaussian distributions.
-        /// </summary>
-        /// 
-        /// <param name="x">The first Normal distribution.</param>
-        /// <param name="y">The second Normal distribution.</param>
-        /// 
-        /// <returns>The Bhattacharyya distance between the two distributions.</returns>
-        /// 
-        public double Distance(MultivariateNormalDistribution x, MultivariateNormalDistribution y)
-        {
-            return Distance(x.Mean, x.Covariance, y.Mean, y.Covariance);
         }
     }
 }

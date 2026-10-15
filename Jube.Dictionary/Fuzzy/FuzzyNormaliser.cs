@@ -13,18 +13,19 @@
 
 using System.Globalization;
 using System.Text;
+using Jube.Dictionary.Fuzzy.Models;
 
 namespace Jube.Dictionary.Fuzzy
 {
     public static class FuzzyNormaliser
     {
-        private static readonly HashSet<string> Titles = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> titles = new(StringComparer.OrdinalIgnoreCase)
         {
             "mr", "mrs", "ms", "miss", "mx", "dr", "prof", "sir", "dame", "lord", "lady", "rev", "hon", "sr", "sra",
             "herr", "frau", "monsieur", "madame", "mme", "mlle"
         };
 
-        private static readonly HashSet<string> CompanySuffixes = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> companySuffixes = new(StringComparer.OrdinalIgnoreCase)
         {
             "ltd", "limited", "llc", "inc", "incorporated", "plc", "corp", "corporation", "gmbh", "ag", "sa", "sarl",
             "bv", "nv", "oy", "ab", "srl", "spa", "co", "company", "llp", "lp", "pte", "pty", "sas", "kg", "ug"
@@ -38,6 +39,7 @@ namespace Jube.Dictionary.Fuzzy
             }
 
             var text = value;
+
             if (options.RemoveDiacritics)
             {
                 text = FoldDiacritics(text);
@@ -57,7 +59,7 @@ namespace Jube.Dictionary.Fuzzy
 
             if (options.RemoveTitles)
             {
-                while (tokens.Count > 1 && Titles.Contains(tokens[0]))
+                while (tokens.Count > 1 && titles.Contains(tokens[0]))
                 {
                     tokens.RemoveAt(0);
                 }
@@ -65,7 +67,7 @@ namespace Jube.Dictionary.Fuzzy
 
             if (options.RemoveCompanySuffixes)
             {
-                while (tokens.Count > 1 && CompanySuffixes.Contains(tokens[^1]))
+                while (tokens.Count > 1 && companySuffixes.Contains(tokens[^1]))
                 {
                     tokens.RemoveAt(tokens.Count - 1);
                 }
@@ -85,6 +87,7 @@ namespace Jube.Dictionary.Fuzzy
         {
             var decomposed = text.Normalize(NormalizationForm.FormD);
             var builder = new StringBuilder(decomposed.Length);
+
             foreach (var c in decomposed)
             {
                 if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark)
@@ -142,6 +145,7 @@ namespace Jube.Dictionary.Fuzzy
         private static string StripPunctuation(string text)
         {
             var builder = new StringBuilder(text.Length);
+
             foreach (var c in text)
             {
                 if (c is '\'' or '’' or '‘' or '`' or '´')

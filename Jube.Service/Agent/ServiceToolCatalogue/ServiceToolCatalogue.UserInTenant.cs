@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,21 +11,30 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.UserInTenant;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddUserInTenant(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "UserInTenantList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the users allocated to the caller's own tenant, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "UserInTenantGetCurrentTenantRegistry", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns the caller's own tenant allocation, or nothing if unallocated."),
-            new ServiceToolDescriptor(
-                "UserInTenantSwitchTenant", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Switches the caller to a different tenant; restricted to a Landlord caller.")
-        ]);
+        static partial void AddUserInTenant(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "UserInTenantList", OperationKind.Read, true, false,
+                    "Lists the users allocated to the caller's own tenant, keyset-paged and capped.",
+                    UserInTenantService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "UserInTenantGetCurrentTenantRegistry", OperationKind.Read, true, false,
+                    "Returns the caller's own tenant allocation, or nothing if unallocated.",
+                    UserInTenantService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "UserInTenantSwitchTenant", OperationKind.Write, true, false,
+                    "Switches the caller to a different tenant; restricted to a Landlord caller.",
+                    UserInTenantService.RequiredPermissions, UserInTenantService.RequiresLandlord)
+            ]);
+        }
     }
 }

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,7 +22,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -38,9 +38,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
         private readonly Dictionary<string, (string Role, string State, int? TimelineId)> lastSeenByName = new();
         private readonly HashSet<string> seenHistoryKeys = [];
-
         private string cachedEtcdToken;
-
         public string LastError { get; private set; }
 
         public void Dispose()
@@ -52,13 +50,16 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             var body = $"{{\"name\":\"{etcdUsername}\",\"password\":\"{etcdPassword}\"}}";
             using var content = new StringContent(body, Encoding.UTF8, "application/json");
+
             using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
                 .ConfigureAwait(false);
+
             var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
 
             if (!EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
             {
                 LastError ??= $"authenticating as {etcdUsername} at {baseUrl} returned {error}";
+
                 return null;
             }
 
@@ -69,6 +70,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             IReadOnlyList<string> endpoints, CancellationToken token = default)
         {
             var results = new List<PatroniMemberStatus>();
+
             if (endpoints.Count == 0)
             {
                 return (results, []);
@@ -77,14 +79,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var cluster = await GetClusterAsync(endpoints, token).ConfigureAwait(false);
             var clusterMembersByName = new Dictionary<string, JToken>(StringComparer.OrdinalIgnoreCase);
             string scope = null;
+
             if (cluster != null)
             {
                 scope = (string)cluster["scope"];
+
                 if (cluster["members"] is JArray members)
                 {
                     foreach (var member in members)
                     {
                         var name = (string)member["name"];
+
                         if (name != null)
                         {
                             clusterMembersByName[name] = member;
@@ -98,6 +103,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             foreach (var endpoint in endpoints)
             {
                 var patroni = await GetPatroniAsync(endpoint, token).ConfigureAwait(false);
+
                 if (patroni == null)
                 {
                     continue;
@@ -113,6 +119,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                         if ((string)replica["sync_state"] == "sync")
                         {
                             var applicationName = (string)replica["application_name"];
+
                             if (applicationName != null)
                             {
                                 syncStandbyByApplicationName.Add(applicationName);
@@ -158,6 +165,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
 
             var events = new List<PatroniClusterEvent>();
+
             foreach (var result in results)
             {
                 if (result.Name == null)
@@ -196,6 +204,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             string scope, string dcsNamespace, CancellationToken token = default)
         {
             var events = new List<PatroniClusterEvent>();
+
             if (etcdEndpoints.Count == 0 || string.IsNullOrEmpty(scope))
             {
                 return events;
@@ -207,11 +216,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var keyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(key));
 
             JArray history = null;
+
             foreach (var etcdEndpoint in etcdEndpoints)
             {
                 var rangeResult = await PostJsonAsync($"http://{etcdEndpoint}", $"http://{etcdEndpoint}/v3/kv/range",
                     $"{{\"key\":\"{keyBase64}\"}}", token).ConfigureAwait(false);
+
                 var valueBase64 = (string)rangeResult?["kvs"]?[0]?["value"];
+
                 if (valueBase64 == null)
                 {
                     continue;
@@ -240,6 +252,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
 
             string previousLeader = null;
+
             foreach (var entry in history)
             {
                 if (entry is not JArray fields)
@@ -254,6 +267,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 var newLeader = (string)At(fields, 4);
 
                 var dedupeKey = $"{timeline}:{lsn}";
+
                 if (!seenHistoryKeys.Add(dedupeKey))
                 {
                     previousLeader = newLeader;
@@ -287,6 +301,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             using var stringReader = new StringReader(json);
             using var jsonReader = new JsonTextReader(stringReader);
             jsonReader.DateParseHandling = DateParseHandling.None;
+
             return (JArray)JToken.ReadFrom(jsonReader);
         }
 
@@ -313,6 +328,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             foreach (var endpoint in endpoints)
             {
                 var cluster = await GetJsonAsync($"http://{endpoint}/cluster", token).ConfigureAwait(false);
+
                 if (cluster != null)
                 {
                     return cluster;
@@ -332,6 +348,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             try
             {
                 var text = await httpClient.GetStringAsync(url, token).ConfigureAwait(false);
+
                 return JObject.Parse(text);
             }
             catch (Exception) when (!token.IsCancellationRequested)
@@ -346,9 +363,11 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             try
             {
                 using var request = new HttpRequestMessage(HttpMethod.Post, url);
+
                 if (!string.IsNullOrEmpty(etcdUsername))
                 {
                     cachedEtcdToken ??= await AuthenticateEtcdAsync(baseUrl, token).ConfigureAwait(false);
+
                     if (cachedEtcdToken != null)
                     {
                         request.Headers.TryAddWithoutValidation("Authorization", cachedEtcdToken);
@@ -361,6 +380,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 if (response.StatusCode == HttpStatusCode.Unauthorized && retryOnUnauthorized)
                 {
                     cachedEtcdToken = null;
+
                     return await PostJsonAsync(baseUrl, url, body, token, retryOnUnauthorized: false)
                         .ConfigureAwait(false);
                 }
@@ -373,6 +393,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 LastError ??= $"{url} returned {error}";
+
                 return null;
             }
             catch (Exception) when (!token.IsCancellationRequested)
@@ -384,6 +405,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private static string SplitHost(string endpoint)
         {
             var colonIndex = endpoint.LastIndexOf(':');
+
             return colonIndex > 0 ? endpoint[..colonIndex] : endpoint;
         }
 

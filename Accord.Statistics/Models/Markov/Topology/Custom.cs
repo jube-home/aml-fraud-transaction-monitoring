@@ -1,115 +1,122 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Data;
+using Accord.Math;
 
 namespace Accord.Statistics.Models.Markov.Topology
 {
-    using System;
-    using Accord.Math;
-    using System.Data;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Custom Topology for Hidden Markov Model.
+    ///     Custom Topology for Hidden Markov Model.
     /// </summary>
-    /// 
     /// <remarks>
-    ///  <para>
-    ///   An Hidden Markov Model Topology specifies how many states and which
-    ///   initial probabilities a Markov model should have. Two common topologies
-    ///   can be discussed in terms of transition state probabilities and are
-    ///   available to construction through the <see cref="Ergodic"/> and
-    ///   <see cref="Forward"/> classes implementing the <see cref="ITopology"/>
-    ///   interface.</para>
-    ///   
-    ///  <para>Topology specification is important with regard to both learning and
-    ///   performance: A model with too many states (and thus too many settable
-    ///   parameters) will require too much training data while an model with an
-    ///   insufficient number of states will prohibit the HMM from capturing subtle
-    ///   statistical patterns.</para>
-    ///   
-    ///  <para>This custom implementation allows for arbitrarily specification of
-    ///   the state transition matrix and initial state probabilities for
-    ///   <see cref="IHiddenMarkovModel">hidden Markov models</see>.</para>
-    ///   
+    ///     <para>
+    ///         An Hidden Markov Model Topology specifies how many states and which
+    ///         initial probabilities a Markov model should have. Two common topologies
+    ///         can be discussed in terms of transition state probabilities and are
+    ///         available to construction through the <see cref="Ergodic" /> and
+    ///         <see cref="Forward" /> classes implementing the <see cref="ITopology" />
+    ///         interface.
+    ///     </para>
+    ///     <para>
+    ///         Topology specification is important with regard to both learning and
+    ///         performance: A model with too many states (and thus too many settable
+    ///         parameters) will require too much training data while an model with an
+    ///         insufficient number of states will prohibit the HMM from capturing subtle
+    ///         statistical patterns.
+    ///     </para>
+    ///     <para>
+    ///         This custom implementation allows for arbitrarily specification of
+    ///         the state transition matrix and initial state probabilities for
+    ///         <see cref="IHiddenMarkovModel">hidden Markov models</see>.
+    ///     </para>
     /// </remarks>
-    ///   
-    /// <seealso cref="HiddenMarkovModel"/>
-    /// <seealso cref="Accord.Statistics.Models.Markov.Topology.ITopology"/>
-    /// <seealso cref="Accord.Statistics.Models.Markov.Topology.Ergodic"/>
-    /// <seealso cref="Accord.Statistics.Models.Markov.Topology.Forward"/>
-    ///
+    /// <seealso cref="HiddenMarkovModel" />
+    /// <seealso cref="ITopology" />
+    /// <seealso cref="Ergodic" />
+    /// <seealso cref="Forward" />
     [Serializable]
     public class Custom : ITopology
     {
-
         private int states;
-        private double[] pi;
-        private double[,] A;
 
         /// <summary>
-        ///   Creates a new custom topology with user-defined
-        ///   transition matrix and initial state probabilities.
+        ///     Creates a new custom topology with user-defined
+        ///     transition matrix and initial state probabilities.
         /// </summary>
-        /// 
         /// <param name="initial">The initial probabilities for the model.</param>
         /// <param name="transitions">The transition probabilities for the model.</param>
-        /// 
         public Custom(double[][] transitions, double[] initial)
-            : this(transitions, initial, false) { }
+            : this(transitions, initial, false)
+        {
+        }
 
         /// <summary>
-        ///   Creates a new custom topology with user-defined
-        ///   transition matrix and initial state probabilities.
+        ///     Creates a new custom topology with user-defined
+        ///     transition matrix and initial state probabilities.
         /// </summary>
-        /// 
         /// <param name="initial">The initial probabilities for the model.</param>
         /// <param name="transitions">The transition probabilities for the model.</param>
-        /// <param name="logarithm">Set to true if the passed transitions are given 
-        ///   in log-probabilities. Default is false (given values are probabilities).</param>
-        /// 
+        /// <param name="logarithm">
+        ///     Set to true if the passed transitions are given
+        ///     in log-probabilities. Default is false (given values are probabilities).
+        /// </param>
         public Custom(double[][] transitions, double[] initial, bool logarithm)
-            : this(transitions.ToMatrix(), initial, logarithm) { }
+            : this(transitions.ToMatrix(), initial, logarithm)
+        {
+        }
 
         /// <summary>
-        ///   Creates a new custom topology with user-defined
-        ///   transition matrix and initial state probabilities.
+        ///     Creates a new custom topology with user-defined
+        ///     transition matrix and initial state probabilities.
         /// </summary>
-        /// 
         /// <param name="initial">The initial probabilities for the model.</param>
         /// <param name="transitions">The transition probabilities for the model.</param>
-        /// 
         public Custom(double[,] transitions, double[] initial)
-        : this(transitions, initial, false) { }
+            : this(transitions, initial, false)
+        {
+        }
 
         /// <summary>
-        ///   Creates a new custom topology with user-defined
-        ///   transition matrix and initial state probabilities.
+        ///     Creates a new custom topology with user-defined
+        ///     transition matrix and initial state probabilities.
         /// </summary>
-        /// 
         /// <param name="initial">The initial probabilities for the model.</param>
         /// <param name="transitions">The transition probabilities for the model.</param>
-        /// <param name="logarithm">Set to true if the passed transitions are given 
-        ///   in log-probabilities. Default is false (given values are probabilities).</param>
-        /// 
+        /// <param name="logarithm">
+        ///     Set to true if the passed transitions are given
+        ///     in log-probabilities. Default is false (given values are probabilities).
+        /// </param>
         public Custom(double[,] transitions, double[] initial, bool logarithm)
         {
             if (transitions == null)
@@ -125,24 +132,32 @@ namespace Accord.Statistics.Models.Markov.Topology
             if (transitions.GetLength(0) != transitions.GetLength(1))
             {
                 if (transitions.GetLength(0) != transitions.GetLength(1))
+                {
                     throw new ArgumentException(
                         "Transition matrix should be square.",
                         "transitions");
+                }
             }
 
             if (initial.Length != transitions.GetLength(0))
             {
                 throw new ArgumentException(
-                     "Initial probabilities should have the same length as the number of states in the transition matrix.",
-                     "initial");
+                    "Initial probabilities should have the same length as the number of states in the transition matrix.",
+                    "initial");
             }
 
-            this.states = transitions.GetLength(0);
+            states = transitions.GetLength(0);
 
-            for (int i = 0; i < states; i++)
-                for (int j = 0; j < states; j++)
-                    if (Double.IsNaN(transitions[i, j]))
+            for (var i = 0; i < states; i++)
+            {
+                for (var j = 0; j < states; j++)
+                {
+                    if (double.IsNaN(transitions[i, j]))
+                    {
                         throw new ArgumentOutOfRangeException("transitions");
+                    }
+                }
+            }
 
             if (logarithm)
             {
@@ -150,12 +165,14 @@ namespace Accord.Statistics.Models.Markov.Topology
                 initial = initial.Exp();
             }
 
-            this.A = transitions;
-            this.pi = initial;
+            Transitions = transitions;
+            Initial = initial;
 
             double initialSum = 0;
-            for (int i = 0; i < pi.Length; i++)
-                initialSum += pi[i];
+            for (var i = 0; i < Initial.Length; i++)
+            {
+                initialSum += Initial[i];
+            }
 
             if (!initialSum.IsEqual(1, 1e-10))
             {
@@ -163,71 +180,59 @@ namespace Accord.Statistics.Models.Markov.Topology
                     "initial");
             }
 
-            for (int i = 0; i < states; i++)
+            for (var i = 0; i < states; i++)
             {
                 double stateSum = 0;
-                for (int j = 0; j < states; j++)
+                for (var j = 0; j < states; j++)
+                {
                     stateSum += transitions[i, j];
+                }
 
                 if (!stateSum.IsEqual(1, 1e-10))
                 {
                     throw new ArgumentException("State probabilities for state " + i +
-                        " do not sum up to one.", "transitions");
+                                                " do not sum up to one.", "transitions");
                 }
             }
         }
 
+        /// <summary>
+        ///     Gets the initial state probabilities.
+        /// </summary>
+        public double[] Initial { get; }
 
         /// <summary>
-        ///   Gets the number of states in this topology.
+        ///     Gets the state-transitions matrix.
         /// </summary>
-        /// 
+        public double[,] Transitions { get; }
+
+        /// <summary>
+        ///     Gets the number of states in this topology.
+        /// </summary>
         public int States
         {
-            get { return states; }
-            set { throw new ReadOnlyException("Property is read-only."); }
+            get => states;
+            set => throw new ReadOnlyException("Property is read-only.");
         }
 
         /// <summary>
-        ///   Gets the initial state probabilities.
+        ///     Creates the state transitions matrix and the
+        ///     initial state probabilities for this topology.
         /// </summary>
-        /// 
-        public double[] Initial
-        {
-            get { return pi; }
-        }
-
-        /// <summary>
-        ///   Gets the state-transitions matrix.
-        /// </summary>
-        /// 
-        public double[,] Transitions
-        {
-            get { return A; }
-        }
-
-
-
-        /// <summary>
-        ///   Creates the state transitions matrix and the
-        ///   initial state probabilities for this topology.
-        /// </summary>
-        /// 
         public int Create(bool logarithm, out double[,] transitionMatrix, out double[] initialState)
         {
             if (logarithm)
             {
-                transitionMatrix = Elementwise.Log(A);
-                initialState = Elementwise.Log(pi);
+                transitionMatrix = Transitions.Log();
+                initialState = Initial.Log();
             }
             else
             {
-                transitionMatrix = (double[,])A.Clone();
-                initialState = (double[])pi.Clone();
+                transitionMatrix = (double[,])Transitions.Clone();
+                initialState = (double[])Initial.Clone();
             }
 
             return states;
         }
-
     }
 }

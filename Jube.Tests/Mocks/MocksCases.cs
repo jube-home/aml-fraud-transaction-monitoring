@@ -18,7 +18,6 @@ namespace Jube.Test.Mocks
 {
     public static class MocksCases
     {
-        public const string ValidKey = "SomethingSecretForTheClientKeyHeader";
         private const string Json = "application/json";
 
         private static readonly string[] routes =
@@ -33,6 +32,7 @@ namespace Jube.Test.Mocks
             "{\"clientId\":\"c\",\"subjectName\":\"s\",\"subjectCredentials\":[{\"methodId\":\"SECURID\"," +
             $"\"collectedInputs\":[{{\"name\":\"SECURID\",\"value\":\"{value}\"}}]}}],\"context\":{{}}}}";
 
+        public const string ValidKey = "SomethingSecretForTheClientKeyHeader";
         public static IEnumerable<MockRequest> All => HttpAdaptation.Concat(Mfa);
 
         public static IEnumerable<MockRequest> HttpAdaptation =>

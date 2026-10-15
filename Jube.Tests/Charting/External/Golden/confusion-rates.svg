@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 520 460" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-88e7c29d-t jc-88e7c29d-d">
+    <title id="jc-88e7c29d-t">Confusion matrix, row rates</title>
+    <desc id="jc-88e7c29d-d">Confusion matrix with 2 rows and 2 columns. Accuracy 97.6% over 9500 observations. Rows are
+        actual classes and columns are predicted classes.
+    </desc>
+    <rect class="bg" x="0" y="0" width="520" height="460" rx="8"/>
+    <text class="ttl" x="16" y="32">Confusion matrix, row rates</text>
+    <text class="tk end mid" x="74.04" y="137.5">Genuine</text>
+    <text class="tk end mid" x="74.04" y="316.5">Fraud</text>
+    <text class="tk ctr" x="168.53" y="422">Genuine</text>
+    <text class="tk ctr" x="341.51" y="422">Fraud</text>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="Actual Genuine, predicted Genuine, Count: 9120, Of actual Genuine: 98.1%, Of predicted Genuine: 99.5%, Of all: 96%">
+        <title>Actual Genuine, predicted Genuine, Count: 9120, Of actual Genuine: 98.1%, Of predicted Genuine: 99.5%, Of
+            all: 96%
+        </title>
+        <rect class="cell m q8" x="82.04" y="48" width="172.98" height="179"/>
+        <text class="lbl ctr mid qt8" x="168.53" y="130.5">98.1%</text>
+        <text class="lbl ctr mid qt8" x="168.53" y="144.5">9120</text>
+        <g class="tt">
+            <rect class="tb" x="82.04" y="147.5" width="216.65" height="95" rx="6"/>
+            <text class="tx b" x="92.04" y="165.5">Actual Genuine, predicted Genuine</text>
+            <text class="tx" x="92.04" y="182.5">Count: 9120</text>
+            <text class="tx" x="92.04" y="199.5">Of actual Genuine: 98.1%</text>
+            <text class="tx" x="92.04" y="216.5">Of predicted Genuine: 99.5%</text>
+            <text class="tx" x="92.04" y="233.5">Of all: 96%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="Actual Genuine, predicted Fraud, Count: 180, Of actual Genuine: 1.9%, Of predicted Fraud: 53.7%, Of all: 1.89%">
+        <title>Actual Genuine, predicted Fraud, Count: 180, Of actual Genuine: 1.9%, Of predicted Fraud: 53.7%, Of all:
+            1.89%
+        </title>
+        <rect class="cell m q0" x="255.02" y="48" width="172.98" height="179"/>
+        <text class="lbl ctr mid qt0" x="341.51" y="130.5">1.9%</text>
+        <text class="lbl ctr mid qt0" x="341.51" y="144.5">180</text>
+        <g class="tt">
+            <rect class="tb" x="224.07" y="147.5" width="203.93" height="95" rx="6"/>
+            <text class="tx b" x="234.07" y="165.5">Actual Genuine, predicted Fraud</text>
+            <text class="tx" x="234.07" y="182.5">Count: 180</text>
+            <text class="tx" x="234.07" y="199.5">Of actual Genuine: 1.9%</text>
+            <text class="tx" x="234.07" y="216.5">Of predicted Fraud: 53.7%</text>
+            <text class="tx" x="234.07" y="233.5">Of all: 1.89%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="Actual Fraud, predicted Genuine, Count: 45, Of actual Fraud: 22.5%, Of predicted Genuine: 0.5%, Of all: 0.47%">
+        <title>Actual Fraud, predicted Genuine, Count: 45, Of actual Fraud: 22.5%, Of predicted Genuine: 0.5%, Of all:
+            0.47%
+        </title>
+        <rect class="cell m q2" x="82.04" y="227" width="172.98" height="179"/>
+        <text class="lbl ctr mid qt2" x="168.53" y="309.5">22.5%</text>
+        <text class="lbl ctr mid qt2" x="168.53" y="323.5">45</text>
+        <g class="tt">
+            <rect class="tb" x="82.04" y="211.5" width="203.93" height="95" rx="6"/>
+            <text class="tx b" x="92.04" y="229.5">Actual Fraud, predicted Genuine</text>
+            <text class="tx" x="92.04" y="246.5">Count: 45</text>
+            <text class="tx" x="92.04" y="263.5">Of actual Fraud: 22.5%</text>
+            <text class="tx" x="92.04" y="280.5">Of predicted Genuine: 0.5%</text>
+            <text class="tx" x="92.04" y="297.5">Of all: 0.47%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="Actual Fraud, predicted Fraud, Count: 155, Of actual Fraud: 77.5%, Of predicted Fraud: 46.3%, Of all: 1.63%">
+        <title>Actual Fraud, predicted Fraud, Count: 155, Of actual Fraud: 77.5%, Of predicted Fraud: 46.3%, Of all:
+            1.63%
+        </title>
+        <rect class="cell m q6" x="255.02" y="227" width="172.98" height="179"/>
+        <text class="lbl ctr mid qt6" x="341.51" y="309.5">77.5%</text>
+        <text class="lbl ctr mid qt6" x="341.51" y="323.5">155</text>
+        <g class="tt">
+            <rect class="tb" x="236.79" y="211.5" width="191.21" height="95" rx="6"/>
+            <text class="tx b" x="246.79" y="229.5">Actual Fraud, predicted Fraud</text>
+            <text class="tx" x="246.79" y="246.5">Count: 155</text>
+            <text class="tx" x="246.79" y="263.5">Of actual Fraud: 77.5%</text>
+            <text class="tx" x="246.79" y="280.5">Of predicted Fraud: 46.3%</text>
+            <text class="tx" x="246.79" y="297.5">Of all: 1.63%</text>
+        </g>
+    </g>
+    <rect class="q8" x="444" y="48" width="12" height="24.94"/>
+    <rect class="q7" x="444" y="72.44" width="12" height="24.94"/>
+    <rect class="q6" x="444" y="96.89" width="12" height="24.94"/>
+    <rect class="q5" x="444" y="121.33" width="12" height="24.94"/>
+    <rect class="q4" x="444" y="145.78" width="12" height="24.94"/>
+    <rect class="q3" x="444" y="170.22" width="12" height="24.94"/>
+    <rect class="q2" x="444" y="194.67" width="12" height="24.94"/>
+    <rect class="q1" x="444" y="219.11" width="12" height="24.94"/>
+    <rect class="q0" x="444" y="243.56" width="12" height="24.94"/>
+    <text class="tk" x="444" y="34">Row rate</text>
+    <line class="ax" x1="456" y1="268" x2="460" y2="268"/>
+    <text class="tk mid" x="464" y="268">0%</text>
+    <line class="ax" x1="456" y1="213" x2="460" y2="213"/>
+    <text class="tk mid" x="464" y="213">25%</text>
+    <line class="ax" x1="456" y1="158" x2="460" y2="158"/>
+    <text class="tk mid" x="464" y="158">50%</text>
+    <line class="ax" x1="456" y1="103" x2="460" y2="103"/>
+    <text class="tk mid" x="464" y="103">75%</text>
+    <line class="ax" x1="456" y1="48" x2="460" y2="48"/>
+    <text class="tk mid" x="464" y="48">100%</text>
+    <text class="at ctr" x="255.02" y="440">Predicted</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 227) rotate(-90)">Actual</text>
+</svg>

@@ -48,7 +48,7 @@ The database contains the following Visual Basic code to provide a "straight thr
 default
 environment, while also showing a minimal VB.net example (which is to say LanguageId = 1):
 
-```vb
+```vbnet
 Imports System
 Imports System.Net.Http
 Imports System.Threading
@@ -216,7 +216,7 @@ entry point.
 The class at a minimum must contain one method conforming to the following signature, and otherwise enforced as per
 the IInlineScript interface:
 
-```vb
+```csharp
 public async Task<bool> ExecuteAsync(Context context)
 {
 }

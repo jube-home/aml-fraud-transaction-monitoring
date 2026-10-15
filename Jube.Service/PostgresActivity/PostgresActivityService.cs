@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -18,7 +18,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.PostgresActivity;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.PostgresActivity;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -53,6 +53,9 @@ namespace Jube.Service.PostgresActivity
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<PostgresActivityService> CreateAsync(DbContext dbContext, string connectionString,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -123,6 +126,7 @@ namespace Jube.Service.PostgresActivity
         {
             using var op = OperationScope.Start("PostgresActivity", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PostgresActivity.List: entry user={userName}");
@@ -139,6 +143,7 @@ namespace Jube.Service.PostgresActivity
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     var lowerSearch = search.ToLower();
+
                     rows = rows.Where(r =>
                         (r.UserName != null && r.UserName.ToLower().Contains(lowerSearch)) ||
                         (r.ApplicationName != null && r.ApplicationName.ToLower().Contains(lowerSearch)) ||
@@ -161,6 +166,7 @@ namespace Jube.Service.PostgresActivity
                 });
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresActivity.List: {dtos.Count} rows user={userName}");
@@ -176,6 +182,7 @@ namespace Jube.Service.PostgresActivity
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PostgresActivity.List: cancelled user={userName}");
@@ -200,6 +207,7 @@ namespace Jube.Service.PostgresActivity
             }
 
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             IEnumerable<PostgresActivityDto> sorted = sortField switch
             {
                 "pid" => OrderBy(dtos, d => d.Pid, descending),

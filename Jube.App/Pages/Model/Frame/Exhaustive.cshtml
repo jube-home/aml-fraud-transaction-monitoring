@@ -18,8 +18,13 @@
 }
 
 <script src="/js/CRUD.js"></script>
+<script src="/js/EvidenceTree.js"></script>
 <script src="/js/ExhaustiveFilterBuilder.js"></script>
+<script src="/js/Model/Frame/ExhaustiveCharts.js"></script>
+<script src="/js/Model/Frame/ExhaustiveDataset.js"></script>
+<script src="/js/Model/Frame/ExhaustiveStatisticsClasses.js"></script>
 <script src="/js/Model/Frame/Exhaustive.js"></script>
+<script src="/js/Model/Frame/ExhaustiveBatchRecall.js"></script>
 
 <form id="Form" class="k-form" data-approval-endpoint="/api/ExhaustiveSearchInstance">
     <body>
@@ -53,17 +58,194 @@
                 </tr>
                 <tr>
                     <td>
+                        <label for="DataSourceId">Training Data</label>
+                    </td>
+                    <td>
+                        <ul id="DataSourceId" class="fieldlist">
+                            <li>
+                                <input type="radio" checked class="k-radio" id="DataSourceArchive" value="0"
+                                       name="DataSourceId"/>
+                                <label class="k-radio-label" for="DataSourceArchive">Archive</label>
+                            </li>
+                            <li>
+                                <input type="radio" class="k-radio" id="DataSourceDemo" value="1"
+                                       name="DataSourceId"/>
+                                <label class="k-radio-label" for="DataSourceDemo">Demonstration dataset</label>
+                            </li>
+                            <li>
+                                <input type="radio" class="k-radio" id="DataSourceUploaded" value="2"
+                                       name="DataSourceId"/>
+                                <label class="k-radio-label" for="DataSourceUploaded">Uploaded dataset</label>
+                            </li>
+                        </ul>
+                        <div class="hint">The rows the model trains on: real processed transactions from the
+                            Archive, the bundled demonstration dataset, or a CSV or JSON file uploaded here.
+                        </div>
+                        <table id="DatasetTable" class="sTStyle" style="display: none;">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label for="ExhaustiveDatasetReference">Dataset</label>
+                                </td>
+                                <td>
+                                    <input id="ExhaustiveDatasetReference"/>
+                                    <button type="button" id="DatasetOpenButton" class="ButtonDefault">Upload dataset
+                                    </button>
+                                    <button type="button" id="DatasetDeleteButton" class="ButtonDefault">Delete
+                                        dataset
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr id="DatasetUploadTable" class="datasetUploadRow" style="display: none;">
+                                <td class="sTBorderStyle">
+                                    <label for="DatasetFile">CSV or JSON file</label>
+                                </td>
+                                <td>
+                                    <input type="file" id="DatasetFile"
+                                           accept=".csv,.txt,.json,text/csv,text/plain,application/json"/>
+                                </td>
+                            </tr>
+                            <tr class="datasetUploadRow" style="display: none;">
+                                <td colspan="2">
+                                    <div id="DatasetMessage" class="errorMessage"></div>
+                                    <div id="DatasetSummary"></div>
+                                    <ul id="DatasetWarnings"></ul>
+                                </td>
+                            </tr>
+                            <tr class="datasetUploadRow datasetMappingRow" style="display: none;">
+                                <td colspan="2">
+                                    <div id="DatasetColumnsGrid"></div>
+                                </td>
+                            </tr>
+                            <tr class="datasetUploadRow" style="display: none;">
+                                <td colspan="2">
+                                    <button type="button" id="DatasetConfirmButton" class="ButtonDefault">
+                                        Confirm mapping
+                                    </button>
+                                    <button type="button" id="DatasetCancelButton" class="ButtonDefault">
+                                        Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="CalibrationMethod">Probability Scaling</label>
+                    </td>
+                    <td>
+                        <ul id="CalibrationMethod" class="fieldlist">
+                            <li>
+                                <input type="radio" checked class="k-radio" id="CalibrationAutomatic"
+                                       value="automatic" name="CalibrationMethod"/>
+                                <label class="k-radio-label" for="CalibrationAutomatic"
+                                       title="Fits Platt, Isotonic and Beta, keeps whichever scores best on held-out data.">Automatic</label>
+                            </li>
+                            <li>
+                                <input type="radio" class="k-radio" id="CalibrationPlatt" value="platt"
+                                       name="CalibrationMethod"/>
+                                <label class="k-radio-label" for="CalibrationPlatt"
+                                       title="Two-parameter sigmoid, the traditional choice, best for small samples.">Platt</label>
+                            </li>
+                            <li>
+                                <input type="radio" class="k-radio" id="CalibrationIsotonic" value="isotonic"
+                                       name="CalibrationMethod"/>
+                                <label class="k-radio-label" for="CalibrationIsotonic"
+                                       title="Non-parametric monotone step function, more flexible, needs a larger sample.">Isotonic</label>
+                            </li>
+                            <li>
+                                <input type="radio" class="k-radio" id="CalibrationBeta" value="beta"
+                                       name="CalibrationMethod"/>
+                                <label class="k-radio-label" for="CalibrationBeta"
+                                       title="Asymmetric two-parameter curve, often a better fit than Platt for skewed score families.">Beta</label>
+                            </li>
+                        </ul>
+                        <div class="hint">Rescales raw model outputs to calibrated probabilities. Automatic trains
+                            Platt, Isotonic and Beta and keeps whichever scores best on held-out data.
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Bootstrap" class="k-checkbox-label">Minority Class Bootstrap</label>
+                    </td>
+                    <td>
+                        <input id="Bootstrap" type="checkbox"/>
+                        <div class="hint">Synthesises extra minority class rows so training sees a more balanced
+                            class mix.
+                        </div>
+                        <table id="BootstrapTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Bootstrap To</label>
+                                </td>
+                                <td>
+                                    <input id="BootstrapTo"/>
+                                    <div class="hint">Target number of rows per class, real plus synthesised.</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Bootstrap Weight Factor</label>
+                                </td>
+                                <td>
+                                    <input id="BootstrapWeightFactor"/>
+                                    <div class="hint">Training weight given to synthesised rows by challenger
+                                        models. 1 is full weight.
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="ChallengerModelBaseProbability">Challenger Model Base Probability</label>
+                    </td>
+                    <td>
+                        <input id="ChallengerModelBaseProbability"/>
+                        <div class="hint">Chance per trial of training a challenger classifier family instead of
+                            a Neural Network topology. Rises as the best topology nears its complexity limit.
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <label for="Anomaly" class="k-checkbox-label">Class Anomaly Threshold</label>
                     </td>
                     <td>
                         <input id="Anomaly" type="checkbox"/>
+                        <div class="hint">Labels training rows by unsupervised anomaly detection, with the most
+                            anomalous rows forming the positive class.
+                        </div>
                         <table id="AnomalyTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Anomaly Algorithm</label>
+                                </td>
+                                <td>
+                                    <input id="AnomalyAlgorithmId"/>
+                                </td>
+                            </tr>
                             <tr>
                                 <td class="sTBorderStyle">
                                     <label>Anomaly Probability</label>
                                 </td>
                                 <td>
                                     <input id="AnomalyProbability"/>
+                                    <div class="hint">Contamination fraction, above 0 and at most 0.5, for every
+                                        algorithm other than One Class SVM.
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Variable Reduction</label>
+                                </td>
+                                <td>
+                                    <input id="AnomalyReduction"/>
+                                    <div class="hint">How variables are scaled and reduced before anomaly scoring.
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -75,6 +257,13 @@
                     </td>
                     <td>
                         <input id="Filter" type="checkbox"/>
+                        <div class="hint">A filter over the training data that defines the positive class for
+                            supervised learning.
+                        </div>
+                        <div id="FilterDatasetHint" class="hint" style="display: none;">
+                            For an uploaded dataset, this filter defines the positive class for classification
+                            training. Required unless Anomaly is enabled.
+                        </div>
                         <table id="FilterTable" class="sTStyle">
                             <tr>
                                 <td class="sTBorderStyle">
@@ -153,6 +342,12 @@
                 </td>
             </tr>
             <tr>
+                <td><label for="AnomalySummary">Anomaly Detection</label></td>
+                <td>
+                    <div id="AnomalySummary"></div>
+                </td>
+            </tr>
+            <tr>
                 <td><label for="Score">Best Score</label></td>
                 <td>
                     <div id="Score"></div>
@@ -183,6 +378,7 @@
                 </td>
             </tr>
         </table>
+        <div id="NarrativeHolistic" class="narrative"></div>
         <div id="tabstrip">
             <ul>
                 <li>
@@ -199,15 +395,24 @@
                 </li>
                 <li>
                     Promoted Model Performance
-                <li/>
+                </li>
+                <li>
+                    Trials
+                </li>
             </ul>
             <div>
+                <div id="NarrativePrescription" class="narrative"></div>
                 <div id="statistics"></div>
             </div>
             <div>
+                <div id="NarrativeLearningCurve" class="narrative"></div>
+                <div id="PromotionChart"></div>
                 <div id="chart"></div>
             </div>
             <div>
+                <div class="hint">Only one promoted model is Active at a time: activating one deactivates the
+                    rest, and deactivating the Active one promotes the next best score in its place.
+                </div>
                 <div id="grid"></div>
             </div>
             <div>
@@ -218,143 +423,88 @@
                     <br/>
                     <table id="SlidersPlaceholder"></table>
                 </div>
+                <div id="NarrativeSensitivity" class="narrative"></div>
+                <div id="TopologyChart" style="min-height: 720px; background: #FFF;"></div>
+                <div class="statistics-classes-toolbar">
+                    <label for="BatchRecallFile">Batch recall from a file</label>
+                    <input type="file" id="BatchRecallFile"
+                           accept=".csv,.txt,.json,text/csv,text/plain,application/json"/>
+                    <div class="hint">Upload a CSV or JSON file of rows to score every row against this promoted
+                        model at once, instead of one row at a time on the sliders above. The file is not saved as
+                        training data.
+                    </div>
+                    <div id="BatchRecallMessage" class="errorMessage"></div>
+                    <div id="BatchRecallSummary"></div>
+                </div>
+                <div id="BatchRecallGrid"></div>
             </div>
             <div>
                 <div id="KPI" style="background: #FFF; display: none;">
-                    <div id="LeftChart" style="float: left; width: 50%;">
-                    </div>
-                    <div id="RightChart" style="float: right; width: 50%;"></div>
-                    <div style="clear: both;"></div>
-                    <div id="Confusion" style="display: none; float: left; width: 50%;">
-                        <div
-                            style="color: #8e8e8e; font: 16px Arial, Helvetica, sans-serif; padding-bottom: 15px; padding-top: 15px; text-align: center;">
-                            Confusion Matrix
+                    <div class="statistics-classes-toolbar">
+                        <label for="PerformanceValueVariable">Detection rate basis</label>
+                        <select id="PerformanceValueVariable"></select>
+                        <div class="hint">Count (default) shows detection rate by row. Choosing a variable shows
+                            detection rate by that variable's summed value instead, across the Score Distribution,
+                            ROC, Gains, Value Captured, Lift and KS charts below. Value Captured always shows the
+                            actual cumulative amount rather than a share of it.
                         </div>
-                        <table style="table-border-color-light: #8e8e8e; width: 100%;">
-                            <tr>
-                                <td rowspan="2" style="padding: 10px; text-align: center;">
-                                    Actual
-                                </td>
-                                <td colspan="3" style="padding: 10px; vertical-align: top;">
-                                    <div style="text-align: center;">Predicted</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Positive
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Negative
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Row Total
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Positive
-                                </td>
-                                <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="TP" style="float: right;">TP</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="TPRowTotal" style="float: right;">TPRowTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="TPColumnTotal" style="float: right;">TPColumnTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Table Total %:</div>
-                                    <div id="TPTableTotal" style="float: right;">TPTableTotal</div>
-                                </td>
-                                <td style="background-color: salmon; padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="FN" style="float: right;">FN</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="FNRowTotal" style="float: right;">FNRowTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="FNColumnTotal" style="float: right;">FNColumnTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Table Total %:</div>
-                                    <div id="FNTableTotal" style="float: right;">FNTableTotal</div>
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="PositiveRow" style="float: right;">P</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="PositiveRowTableTotal" style="float: right;">PRowTotal</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Negative
-                                </td>
-                                <td style="background-color: salmon; padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="FP" style="float: right;">FP</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="FPRowTotal" style="float: right;">FPRowTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="FPColumnTotal" style="float: right;">FPColumnTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Table Total %:</div>
-                                    <div id="FPTableTotal" style="float: right;">FPTableTotal</div>
-                                </td>
-                                <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="TN" style="float: right;">TN</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="TNRowTotal" style="float: right;">TNRowTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="TNColumnTotal" style="float: right;">TNColumnTotal</div>
-                                    <br/>
-                                    <div style="float: left;">Table Total %:</div>
-                                    <div id="TNTableTotal" style="float: right;">TNTableTotal</div>
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="NegativeRow" style="float: right;">N</div>
-                                    <br/>
-                                    <div style="float: left;">Row Total %:</div>
-                                    <div id="NegativeRowTableTotal" style="float: right;">NegativeRowTotal</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    Column Total
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="PositiveColumn" style="float: right;">PColumn</div>
-                                    <br/>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="PositiveColumnTableTotal" style="float: right;">PColumnTotal</div>
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="NegativeColumn" style="float: right;">NColumn</div>
-                                    <br/>
-                                    <br/>
-                                    <div style="float: left;">Column Total %:</div>
-                                    <div id="NegativeColumnTableTotal" style="float: right;">NColumnTotal</div>
-                                </td>
-                                <td style="padding: 10px; vertical-align: top;">
-                                    <div style="float: left;">Frequency:</div>
-                                    <div id="TableTotal" style="float: right;">TableTotal</div>
-                                </td>
-                            </tr>
-                        </table>
                     </div>
-                    <div id="ROCChart" style="float: Right; width: 50%;"></div>
-                    <div style="clear: both;"></div>
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+                        <div>
+                            <div id="NarrativePerformance" class="narrative"></div>
+                            <div id="PerformanceMeasures"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeConfusion" class="narrative"></div>
+                            <div id="PerformanceConfusion"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeScoreDistribution" class="narrative"></div>
+                            <div id="ScoreDistributionChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeDiscrimination" class="narrative"></div>
+                            <div id="PerformanceRocChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativePrecisionRecall" class="narrative"></div>
+                            <div id="PrecisionRecallChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeCalibration" class="narrative"></div>
+                            <div id="CalibrationChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeGains" class="narrative"></div>
+                            <div id="GainsChart"></div>
+                        </div>
+                        <div>
+                            <div id="ValueCapturedChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeLift" class="narrative"></div>
+                            <div id="LiftChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeKs" class="narrative"></div>
+                            <div id="KsChart"></div>
+                        </div>
+                        <div>
+                            <div id="NarrativeThresholdSweep" class="narrative"></div>
+                            <div id="ThresholdSweepChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div id="TrialsGrid"></div>
+                <div id="TrialEvidenceEmpty" class="hint">Choose a row above to see its model diagram and, for a
+                    challenger family, its evidence.
+                </div>
+                <div id="TrialEvidencePanel" style="display:none;">
+                    <div id="TrialEvidenceTitle" style="font-weight:600;margin:8px 0;"></div>
+                    <div id="TrialEvidenceTree"></div>
+                    <div id="TrialDiagramChart" style="min-height: 400px; background: #FFF;"></div>
                 </div>
             </div>
         </div>

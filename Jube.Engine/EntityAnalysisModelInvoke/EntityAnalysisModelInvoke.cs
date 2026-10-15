@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -24,6 +24,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.AsyncInvocationCallbackToken;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
@@ -33,6 +34,7 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.TaskPerf
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke
 {
@@ -40,8 +42,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
 
     public static class EntityAnalysisModelInvoke
     {
-        private const int DefaultImplicitAsyncTimeoutMilliseconds = 5000;
-
         public static async Task<Context.Context> InvokeAsync(EntityAnalysisModel entityAnalysisModel,
             MemoryStream inputStream, int? maxBytes = null,
             bool async = false)
@@ -62,6 +62,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             {
                 var parseStages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
                     new InvokeStagePerformance();
+
                 parseStages.Parse = new StageDuration
                 {
                     DurationMicroseconds =
@@ -82,6 +83,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             var extractor = new EntityAnalysisModelDictionaryNoBoxingExtractor(entityAnalysisModel,
                 entityAnalysisModel.Dependencies.ActiveEntityAnalysisModels,
                 entityAnalysisModel.Services.JubeEnvironment, entityAnalysisModel.Services.Log);
+
             var context = extractor.CreateContext(dictionaryNoBoxing, entityAnalysisModelReprocessingRuleInstanceId);
             context.EntityAnalysisModelInstanceEntryPayload.ReprocessingArchiveBatch = reprocessingArchiveBatch;
             DetermineSampled(context);
@@ -90,6 +92,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             {
                 var parseStages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
                     new InvokeStagePerformance();
+
                 parseStages.Parse = new StageDuration
                 {
                     DurationMicroseconds =
@@ -98,120 +101,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             }
 
             context.RecordResponseTime("Parse");
+
             return InvokeAsync(context);
-        }
-
-        private static async Task CheckAsyncAndInvokeContextAsync(bool async, Context.Context context)
-        {
-            if (async && context.EntityAnalysisModel.ConcurrentQueues.PendingEntityInvoke != null)
-            {
-                context.TraceLog($"will start asynchronous invocation.");
-
-                EnqueueForAsyncInvocationOfContext(context,
-                    context.EntityAnalysisModel.ConcurrentQueues.PendingEntityInvoke);
-            }
-            else if (context.EntityAnalysisModel.Flags.EnableImplicitAsync)
-            {
-                context.TraceLog($"will start implicit asynchronous invocation.");
-
-                await InvokeWithImplicitAsyncTimeoutAsync(context).ConfigureAwait(false);
-            }
-            else
-            {
-                context.TraceLog($"will start synchronous invocation.");
-
-                await InvokeAsync(context).ConfigureAwait(false);
-            }
-
-            context.TraceLog($"has finished model invocation.");
-        }
-
-        private static async Task InvokeWithImplicitAsyncTimeoutAsync(Context.Context context)
-        {
-            Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelImplicitAsyncInvokeCounter);
-
-            var timeoutMilliseconds = context.EntityAnalysisModel.Flags.ImplicitAsyncTimeoutMilliseconds ??
-                                      DefaultImplicitAsyncTimeoutMilliseconds;
-
-            var stableSnapshot = new EntityAnalysisModelInstanceEntryPayload
-            {
-                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
-                    .EntityAnalysisModelInstanceEntryGuid,
-                EntityInstanceEntryId = context.EntityAnalysisModelInstanceEntryPayload.EntityInstanceEntryId,
-                CreatedDate = context.EntityAnalysisModelInstanceEntryPayload.CreatedDate,
-                ReferenceDate = context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
-                EntityAnalysisModelGuid = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
-                EntityAnalysisModelName = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelName,
-                EntityAnalysisModelInstanceGuid =
-                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceGuid,
-                EntityAnalysisModelInstanceName =
-                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceName,
-                EntityAnalysisModelReprocessingRuleInstanceId = context.EntityAnalysisModelInstanceEntryPayload
-                    .EntityAnalysisModelReprocessingRuleInstanceId
-            };
-
-            var invocation = InvokeAsync(context);
-
-            try
-            {
-                await invocation.WaitAsync(TimeSpan.FromMilliseconds(timeoutMilliseconds)).ConfigureAwait(false);
-            }
-            catch (TimeoutException)
-            {
-                Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelImplicitAsyncTimeoutCounter);
-
-                context.Async = true;
-                context.ImplicitAsyncTimedOut = true;
-                stableSnapshot.ImplicitAsyncTimedOut = true;
-                context.EntityAnalysisModelInstanceEntryPayload.ImplicitAsyncTimedOut = true;
-
-                var timeoutResponseJson = BuildJsonResponses.BuildFullJson(
-                    stableSnapshot, context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
-
-                context.ImplicitAsyncTimeoutResponseJson = timeoutResponseJson;
-                context.EntityAnalysisModelInstanceEntryPayload.ResponseJson = timeoutResponseJson;
-
-                context.EntityAnalysisModel.Services.ImplicitAsyncInvocationTracker.TrackOverdueInvocation(
-                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
-                    context.EntityAnalysisModel, invocation);
-            }
-        }
-
-        private static void CheckLengthGuardsForExceptions(MemoryStream inputStream, int maxBytes)
-        {
-            if (inputStream.Length == 0)
-            {
-                throw new ZeroBytesException();
-            }
-
-            if (inputStream.Length > maxBytes)
-            {
-                throw new ExceededBytesException();
-            }
-        }
-
-        private static void EnqueueForAsyncInvocationOfContext(Context.Context context,
-            ConcurrentQueue<Context.Context> pendingEntityInvoke)
-        {
-            if (pendingEntityInvoke.Count >=
-                int.Parse(context.EntityAnalysisModel.Services.JubeEnvironment.AppSettings(
-                    "MaximumModelInvokeAsyncQueue")))
-            {
-                throw new ExceededQueueLengthException();
-            }
-
-            context.Async = true;
-            pendingEntityInvoke.Enqueue(context);
-
-            var asyncInvocationCallbackToken = new AsyncInvocationCallbackToken
-            {
-                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
-                    .EntityAnalysisModelInstanceEntryGuid
-            };
-
-            context.EntityAnalysisModelInstanceEntryPayload.ResponseJson = BuildJsonResponses.BuildFullJson(
-                asyncInvocationCallbackToken,
-                context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
         }
 
         public static async Task InvokeAsync(Context.Context context)
@@ -225,6 +116,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
 
                 await context.CheckIntegrityAndUpsertAsync(context.EntityAnalysisModel.Services.CacheService)
                     .ConfigureAwait(false);
+
                 context.RecordResponseTime("CheckIntegrityAndUpsert");
 
                 context.TraceLog(
@@ -275,6 +167,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
 
                     context.ExecuteExhaustiveAdaptation();
                     context.RecordResponseTime("ExhaustiveAdaptation");
+
+                    context.ExecuteAdvancedAnalyticsAdaptation();
+                    context.RecordResponseTime("AdvancedAnalyticsAdaptation");
 
                     await context.ExecuteHttpAdaptationsAsync().ConfigureAwait(false);
                     context.RecordResponseTime("HttpAdaptation");
@@ -330,6 +225,118 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             }
         }
 
+        private const int DefaultImplicitAsyncTimeoutMilliseconds = 5000;
+
+        private static async Task CheckAsyncAndInvokeContextAsync(bool async, Context.Context context)
+        {
+            if (async && context.EntityAnalysisModel.ConcurrentQueues.PendingEntityInvoke != null)
+            {
+                context.TraceLog($"will start asynchronous invocation.");
+
+                EnqueueForAsyncInvocationOfContext(context,
+                    context.EntityAnalysisModel.ConcurrentQueues.PendingEntityInvoke);
+            }
+            else if (context.EntityAnalysisModel.Flags.EnableImplicitAsync)
+            {
+                context.TraceLog($"will start implicit asynchronous invocation.");
+                await InvokeWithImplicitAsyncTimeoutAsync(context).ConfigureAwait(false);
+            }
+            else
+            {
+                context.TraceLog($"will start synchronous invocation.");
+                await InvokeAsync(context).ConfigureAwait(false);
+            }
+
+            context.TraceLog($"has finished model invocation.");
+        }
+
+        private static async Task InvokeWithImplicitAsyncTimeoutAsync(Context.Context context)
+        {
+            Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelImplicitAsyncInvokeCounter);
+
+            var timeoutMilliseconds = context.EntityAnalysisModel.Flags.ImplicitAsyncTimeoutMilliseconds ??
+                                      DefaultImplicitAsyncTimeoutMilliseconds;
+
+            var stableSnapshot = new EntityAnalysisModelInstanceEntryPayload
+            {
+                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelInstanceEntryGuid,
+                EntityInstanceEntryId = context.EntityAnalysisModelInstanceEntryPayload.EntityInstanceEntryId,
+                CreatedDate = context.EntityAnalysisModelInstanceEntryPayload.CreatedDate,
+                ReferenceDate = context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
+                EntityAnalysisModelGuid = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
+                EntityAnalysisModelName = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelName,
+                EntityAnalysisModelInstanceGuid =
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceGuid,
+                EntityAnalysisModelInstanceName =
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceName,
+                EntityAnalysisModelReprocessingRuleInstanceId = context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelReprocessingRuleInstanceId
+            };
+
+            var invocation = InvokeAsync(context);
+
+            try
+            {
+                await invocation.WaitAsync(TimeSpan.FromMilliseconds(timeoutMilliseconds)).ConfigureAwait(false);
+            }
+            catch (TimeoutException)
+            {
+                Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelImplicitAsyncTimeoutCounter);
+                context.Async = true;
+                context.ImplicitAsyncTimedOut = true;
+                stableSnapshot.ImplicitAsyncTimedOut = true;
+                context.EntityAnalysisModelInstanceEntryPayload.ImplicitAsyncTimedOut = true;
+
+                var timeoutResponseJson = BuildJsonResponses.BuildFullJson(
+                    stableSnapshot, context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+
+                context.ImplicitAsyncTimeoutResponseJson = timeoutResponseJson;
+                context.EntityAnalysisModelInstanceEntryPayload.ResponseJson = timeoutResponseJson;
+
+                context.EntityAnalysisModel.Services.ImplicitAsyncInvocationTracker.TrackOverdueInvocation(
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
+                    context.EntityAnalysisModel, invocation);
+            }
+        }
+
+        private static void CheckLengthGuardsForExceptions(MemoryStream inputStream, int maxBytes)
+        {
+            if (inputStream.Length == 0)
+            {
+                throw new ZeroBytesException();
+            }
+
+            if (inputStream.Length > maxBytes)
+            {
+                throw new ExceededBytesException();
+            }
+        }
+
+        private static void EnqueueForAsyncInvocationOfContext(Context.Context context,
+            ConcurrentQueue<Context.Context> pendingEntityInvoke)
+        {
+            if (pendingEntityInvoke.Count >=
+                int.Parse(context.EntityAnalysisModel.Services.JubeEnvironment.AppSettings(
+                    "MaximumModelInvokeAsyncQueue")))
+            {
+                throw new ExceededQueueLengthException();
+            }
+
+            context.Async = true;
+            pendingEntityInvoke.Enqueue(context);
+
+            var asyncInvocationCallbackToken = new AsyncInvocationCallbackToken
+            {
+                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelInstanceEntryGuid
+            };
+
+            context.EntityAnalysisModelInstanceEntryPayload.ResponseJson = BuildJsonResponses.BuildFullJson(
+                asyncInvocationCallbackToken,
+                context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+        }
+
         private static void IncrementModelInvokeCounter(Context.Context context)
         {
             Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelInvokeCounter);
@@ -338,6 +345,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
         private static void DetermineSampled(Context.Context context)
         {
             var flags = context.EntityAnalysisModel.Flags;
+
             context.LogSampled = !flags.EnableLogsInfo
                                  || !flags.EnableSampling
                                  || context.Random.NextDouble() * 100.0 < flags.SamplePercentage.GetValueOrDefault();
@@ -353,6 +361,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             }
 
             var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages;
+
             if (stages == null)
             {
                 return;
@@ -367,6 +376,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                 var accumulator =
                     context.EntityAnalysisModel.StagePerformanceCounters.Stages.GetOrAdd(name,
                         _ => new StagePerformanceAccumulator());
+
                 Interlocked.Add(ref accumulator.TotalMicroseconds, stage.DurationMicroseconds);
                 InterlockedMinMax.AccumulateMin(ref accumulator.MinMicroseconds, stage.DurationMicroseconds);
                 InterlockedMinMax.AccumulateMax(ref accumulator.MaxMicroseconds, stage.DurationMicroseconds);
@@ -377,6 +387,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
         private static void RecordResponseTimePipelinePerformance(Context.Context context)
         {
             var pipeline = context.EntityAnalysisModelInstanceEntryPayload.ResponseTimePipeline;
+
             if (pipeline == null)
             {
                 return;
@@ -390,6 +401,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                 var accumulator =
                     context.EntityAnalysisModel.ResponseTimePipelineCounters.Stages.GetOrAdd(entry.Stage,
                         _ => new ResponseTimePipelineAccumulator());
+
                 Interlocked.Add(ref accumulator.TotalMicroseconds, entry.DurationMicroseconds);
                 InterlockedMinMax.AccumulateMin(ref accumulator.MinMicroseconds, entry.DurationMicroseconds);
                 InterlockedMinMax.AccumulateMax(ref accumulator.MaxMicroseconds, entry.DurationMicroseconds);
@@ -409,6 +421,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
 
             var taskWrapperStats =
                 context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats;
+
             if (taskWrapperStats == null)
             {
                 return;
@@ -421,9 +434,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                     new KeyValuePair<string, object>("task", name));
 
                 var key = $"{direction}.{name}";
+
                 var accumulator =
                     context.EntityAnalysisModel.TaskPerformanceCounters.Tasks.GetOrAdd(key,
                         _ => new TaskPerformanceAccumulator());
+
                 Interlocked.Add(ref accumulator.TotalMicroseconds, task.ComputeTimeMicroseconds);
                 InterlockedMinMax.AccumulateMin(ref accumulator.MinMicroseconds, task.ComputeTimeMicroseconds);
                 InterlockedMinMax.AccumulateMax(ref accumulator.MaxMicroseconds, task.ComputeTimeMicroseconds);

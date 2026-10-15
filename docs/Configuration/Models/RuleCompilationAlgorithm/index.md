@@ -25,8 +25,8 @@ not pass an integrity check, it would be bypassed, with ERROR level being writte
 
 Activation Rules, Gateway Rules, Abstraction Rules, Abstraction Calculations, Inline Functions and Inline Scripts each
 carry `Compiled` (boolean) and `CompileError` (text) columns on their own table, updated on every compile attempt - both
-on save and during background model synchronisation. An active rule whose last compile in the engine failed is
-reported, with the engine's own error, as **Did not compile in the engine** on the
+on save and during background model synchronisation. An active rule whose last compile in the engine failed is reported,
+with the engine's own error, as **Did not compile in the engine** on the
 [Model Integrity](../ModelIntegrity/index.html) page. The columns can also be queried directly, for example:
 
 ```sql
@@ -65,6 +65,10 @@ from "HashCacheAssemblyInstance"
 
 ## Rule Author Syntax vs. Internal Token Representation
 
+> **NOT VALID RULE SYNTAX. INTERNAL PARSING STEP ONLY.** Everything in this section describes what the parser does to a
+> rule before it is compiled. The parenthesised forms, `Data(...)`, `KVP(...)`, `Calculation(...)` and `Abstraction(...)`,
+> are never typed in a rule. Write rules in the dot notation shown in the Fraud/AML examples below.
+
 Everything from here to the end of this section - the hardcoded token list and the worked soft-parse walkthrough -
 describes what the **compiler produces internally**, after a rule is saved, not what a rule author types. A rule is
 always written in plain dot notation against a token; the compiler rewrites it, before the integrity check below ever
@@ -101,15 +105,16 @@ There are some default tokens which are embedded into the parser already, suppor
 internal names produced by the translation above. The following tokens are hard coded (verified against
 `Jube.Parser.Parser`'s constructor):
 
-{"Return","If","Then","End If","False","True","Payload","Abstraction","Activation","ExhaustiveAdaptation",
+{"Return","Matched","If","Then","End If","False","True","Payload","Abstraction","Activation","ExhaustiveAdaptation",
 "HttpAdaptation","Select","Case","End
 Select","Contains","StartsWith","EndsWith","Sanctions","KVP","List","TTLCounter","String","Double",
 "Integer","DateTime","AsString","AsInt","AsDouble","AsDateTime","AsBool","Data","Calculation","Not","AND","OR",
 "GetValueOrThrow"}
 
-Of these, only `Payload`, `Abstraction`, `Activation`, `TTLCounter`, `List`, `ExhaustiveAdaptation` and
-`HttpAdaptation` ever appear as something a rule author typed - and even then only as a defensive fallback, since a
-well-formed rule has already had them rewritten by the translation step before the integrity check runs. `Data`,
+Of these, `Matched` is the one a rule author types most often: it is half the match signal, alongside `Return`, and
+every pipeline is written as an assignment to it. `Payload`, `Abstraction`, `Activation`, `TTLCounter`,
+`List`, `ExhaustiveAdaptation` and `HttpAdaptation` also appear in authored text, though only as a defensive fallback,
+since a well-formed rule has already had them rewritten by the translation step before the integrity check runs. `Data`,
 `KVP`, `Calculation`, `Sanctions`, `GetValueOrThrow`, `AsString`, `AsInt`, `AsDouble`, `AsDateTime` and `AsBool`
 exist purely so the *translated* text can pass the check; a rule author has no reason to type any of them.
 
@@ -120,9 +125,10 @@ converts to the underlying score wherever a numeric context expects one, so no `
 The parse function takes a string containing a VB .Net code fragment and performs several steps to parse for integrity.
 For the purposes of this example, the following rule will be parsed for integrity:
 
-```vb
+```text
+//NOT VALID RULE SYNTAX. INTERNAL PARSING STEP ONLY.
 If Payload.Name = "Richard" Then
-  Matched = True
+  Return True
 End If
 ```
 
@@ -135,7 +141,8 @@ removed as they are allowed to contain a multitude of data - in this example, bo
 `Data(...)` call) and `"Richard"` are enclosed strings. The soft parser will now see the line as follows - note that it
 is `Data`, not `Payload`, that actually gets validated here:
 
-```vb
+```text
+//NOT VALID RULE SYNTAX. INTERNAL PARSING STEP ONLY.
 If Data().AsString() = Then
 ```
 
@@ -264,7 +271,7 @@ Extension methods enhance rule flexibility via a fluent syntax. For example, con
 
 ``` vb
 If(Payload.StringValue.Contains("Value")) Then
-    Return Matched
+    Return True
 End If
 ```
 
@@ -868,8 +875,8 @@ tables (ISO 4217 currencies and ISO 3166-1 countries) are embedded in the produc
 | `XmlTextAt(this string? @this, string? xpath)`                                                         | Text of the first node selected by an XPath expression, otherwise empty; DTDs and entities are refused.                     |
 
 Methods that could reach the file system or run arbitrary delegates (`SaveAs`, `PathCombine`, `IfTrue`, `IfFalse`
-and the `TextWriter` overloads of `HtmlEncode`, `HtmlDecode` and `HtmlAttributeEncode`) have been removed from this
-library, so they are no longer rule tokens. A regular expression that takes longer than 250 ms on a value throws
+and the `TextWriter` overloads of `HtmlEncode`, `HtmlDecode` and `HtmlAttributeEncode`) are excluded from this library,
+so none of them are rule tokens. A regular expression that takes longer than 250 ms on a value throws
 `RegexMatchTimeoutException` instead of holding the rule thread.
 
 ## Pipeline, Calculation and Fuzzy List Extensions
@@ -902,87 +909,96 @@ plain value never throws on a null or `NaN` input, it fails the test.
 
 The extensions below are the most recently added and are the ones most likely to need a worked example rather than a
 bare signature, because the receiver (`@this`, the value the rule's fluent call is written against) is easy to place
-wrong when there is more than one number of the same type in the parameter list. Every example uses the same convention
-as the rest of this page: `Payload.FieldName` reads a field from the transaction being evaluated, and the call is
-written exactly as it would appear in a rule.
+wrong when there is more than one number of the same type in the parameter list. Every example below is written exactly
+as a rule author types it: in dot notation, where `Payload.FieldName` reads a field from the transaction being
+evaluated, and a match is signalled by `Return True`, which leaves the rule as soon as it has decided. The parenthesised
+forms -- `Data("FieldName")`, `KVP("FieldName")`, `Calculation("FieldName")` and the rest -- are what the compiler
+produces afterwards and are never valid to type in a rule. If an example anywhere appears to read a field as
+`Payload("FieldName")`, that is the internal form and will not compile as written; see
+[Rule Author Syntax vs. Internal Token Representation](#rule-author-syntax-vs-internal-token-representation)
+for the full mapping.
 
 For `HaversineDistanceKilometers`, `HaversineDistanceMiles` and `ImpliedTravelSpeedKmh`, the receiver (`@this`) is
 `latitude1` and the first explicit argument is `longitude1` -- i.e. the call is always
 `<latitude1>.MethodName(<longitude1>, <latitude2>, <longitude2>, ...)`, both points given as (latitude, longitude) pairs
 in that order:
 
+The checks below are listed in order:
+
+- Distance in kilometers between the customer's registered address and this transaction's location
+- Impossible-travel check: speed implied by two consecutive transaction locations and the hours between them
+
 ```vb
-' Distance in kilometers between the customer's registered address and this transaction's location
 If (Payload.HomeLatitude.HaversineDistanceKilometers(Payload.HomeLongitude, Payload.TransactionLatitude, Payload.TransactionLongitude) > 500) Then
-    Matched = True
+    Return True
 End If
 
-' Impossible-travel check: speed implied by two consecutive transaction locations and the hours between them
-If (Payload.PreviousLatitude.ImpliedTravelSpeedKmh(Payload.PreviousLongitude, Payload.TransactionLatitude, Payload.TransactionLongitude, Payload.HoursSincePreviousTransaction) > 900) Then
-    Matched = True
+If (Payload.PreviousLatitude.ImpliedTravelSpeedKmh(Payload.PreviousLongitude, Payload.TransactionLatitude, Payload.TransactionLongitude, Payload.ElapsedHours) > 900) Then
+    Return True
 End If
 ```
 
 For the remaining new extensions, the receiver is always the single value being tested or transformed, and every other
 value is an explicit argument in the order shown in the signature:
 
+The checks below are listed in order:
+
+- Structuring / smurfing: amount sits within 10% below a 10,000 reporting threshold
+- Suspiciously round amount, e.g. an exact multiple of 1000
+- How unusual this amount is versus the customer's own historical mean/standard deviation
+- Percentage jump versus the customer's previous transaction amount
+- Card/IMEI number checksum validation
+- IBAN checksum validation on a wire transfer's beneficiary account
+- Fuzzy match between the payload's stated name and a sanctions-list name already on file
+- Phonetic match, catches misspellings a similarity score alone would miss
+- Randomness of a freshly-supplied account/reference identifier -- high entropy suggests it was generated, not chosen
+- Display-safe masking, e.g. for a case note or notification -- never for the value a rule matches on
+- Multi-accounting via Gmail-style "+tag" addresses: two payloads normalise to the same real inbox
+- Synthetic-looking account number, e.g. "...123456..."
+
 ```vb
-' Structuring / smurfing: amount sits within 10% below a 10,000 reporting threshold
 If (Payload.Amount.IsJustBelowThreshold(10000, 10)) Then
-    Matched = True
+    Return True
 End If
 
-' Suspiciously round amount, e.g. an exact multiple of 1000
 If (Payload.Amount.IsRoundAmount(1000)) Then
-    Matched = True
+    Return True
 End If
 
-' How unusual this amount is versus the customer's own historical mean/standard deviation
 If (Payload.Amount.ZScore(Payload.CustomerMeanAmount, Payload.CustomerStandardDeviationAmount) > 3) Then
-    Matched = True
+    Return True
 End If
 
-' Percentage jump versus the customer's previous transaction amount
 If (Payload.Amount.PercentageChangeFrom(Payload.PreviousAmount) > 300) Then
-    Matched = True
+    Return True
 End If
 
-' Card/IMEI number checksum validation
-If (Not Payload.CardNumber.IsValidLuhn()) Then
-    Matched = True
+If (Not Payload.CardPan.IsValidLuhn()) Then
+    Return True
 End If
 
-' IBAN checksum validation on a wire transfer's beneficiary account
 If (Not Payload.BeneficiaryIban.IsValidIban()) Then
-    Matched = True
+    Return True
 End If
 
-' Fuzzy match between the payload's stated name and a sanctions-list name already on file
 If (Payload.CustomerName.JaroWinklerSimilarity(Payload.WatchlistName) > 0.9) Then
-    Matched = True
+    Return True
 End If
 
-' Phonetic match, catches misspellings a similarity score alone would miss
 If (Payload.CustomerName.Soundex() = Payload.WatchlistName.Soundex()) Then
-    Matched = True
+    Return True
 End If
 
-' Randomness of a freshly-supplied account/reference identifier -- high entropy suggests it was generated, not chosen
 If (Payload.AccountReference.ShannonEntropy() > 3.5) Then
-    Matched = True
+    Return True
 End If
 
-' Display-safe masking, e.g. for a case note or notification -- never for the value a rule matches on
-Payload.MaskedCardNumber = Payload.CardNumber.MaskExceptLast(4)
-
-' Multi-accounting via Gmail-style "+tag" addresses: two payloads normalise to the same real inbox
 If (Payload.Email.NormalizeEmailAlias() = Payload.PreviousEmail.NormalizeEmailAlias()) Then
-    Matched = True
+    Return True
 End If
 
-' Synthetic-looking account number, e.g. "...123456..."
-If (Payload.AccountNumber.HasSequentialDigits(6)) Then
-    Matched = True
+If (Payload.AccountCode.HasSequentialDigits(6)) Then
+    Return True
 End If
 ```
 
@@ -998,45 +1014,48 @@ or `Payload.Amount.Clamp(0, 10000)`.
 A second batch, added the same way, rounds out coverage of common card, identity and geofencing checks. As above, the
 receiver is the value being tested and every other value is an explicit argument in signature order:
 
+The checks below are listed in order:
+
+- Geofence: is this transaction within 50km of the customer's registered address?
+- Invoice amount must match the purchase order within 2%
+- Card scheme routing/segmentation from the PAN's IIN/BIN prefix
+- Reject an already-elapsed or malformed card expiry
+- Malformed beneficiary BIC/SWIFT code on a wire transfer
+- Free-mail domain check, or grouping by domain
+- New account fraud: account opened very recently
+- Corporate wire transfer initiated outside normal business hours
+
 ```vb
-' Geofence: is this transaction within 50km of the customer's registered address?
 If (Not Payload.HomeLatitude.IsWithinRadiusKm(Payload.HomeLongitude, Payload.TransactionLatitude, Payload.TransactionLongitude, 50)) Then
-    Matched = True
+    Return True
 End If
 
-' Invoice amount must match the purchase order within 2%
 If (Not Payload.InvoiceAmount.IsWithinPercentOf(Payload.PurchaseOrderAmount, 2)) Then
-    Matched = True
+    Return True
 End If
 
-' Card scheme routing/segmentation from the PAN's IIN/BIN prefix
-If (Payload.CardNumber.CardNetwork() = "AmericanExpress") Then
-    Matched = True
+If (Payload.CardPan.CardNetwork() = "AmericanExpress") Then
+    Return True
 End If
 
-' Reject an already-elapsed or malformed card expiry
-If (Not Payload.CardExpiry.IsValidCardExpiry()) Then
-    Matched = True
+If (Not Payload.CardValidity.IsValidCardExpiry()) Then
+    Return True
 End If
 
-' Malformed beneficiary BIC/SWIFT code on a wire transfer
 If (Not Payload.BeneficiaryBic.IsValidBic()) Then
-    Matched = True
+    Return True
 End If
 
-' Free-mail domain check, or grouping by domain
 If (Payload.Email.EmailDomain() = "example.com") Then
-    Matched = True
+    Return True
 End If
 
-' New account fraud: account opened very recently
 If (Payload.AccountOpenedDate.AgeInDays() < 2) Then
-    Matched = True
+    Return True
 End If
 
-' Corporate wire transfer initiated outside normal business hours
 If (Not Payload.TransactionDate.IsWithinBusinessHours(9, 17)) Then
-    Matched = True
+    Return True
 End If
 ```
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,7 +17,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.UserLogin;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.UserLogin;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -51,9 +51,12 @@ namespace Jube.Service.UserLogin
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+
             repository = new UserLoginRepository(dbContext, null,
                 permissionValidation.Landlord ? null : tenantRegistryId);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<UserLoginService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -135,12 +138,16 @@ namespace Jube.Service.UserLogin
         {
             using var op = OperationScope.Start("UserLogin", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserLogin.List: entry take={clampedTake} user={userName}");
@@ -152,8 +159,10 @@ namespace Jube.Service.UserLogin
 
                 var rows = await repository.GetLastAsync(clampedTake, from, to, search, clampedSamplePercentage,
                     sortField, sortDirection, token).ConfigureAwait(false);
+
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
                     .ConfigureAwait(false);
+
                 var statistics = await repository.GetStatisticsAsync(from, to, search, clampedSamplePercentage,
                     MaxListTake, token).ConfigureAwait(false);
 
@@ -164,6 +173,7 @@ namespace Jube.Service.UserLogin
                     r.RemoteIp, r.LocalIp, r.UserAgent)).ToList();
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserLogin.List: {dtos.Count} rows user={userName}");
@@ -179,6 +189,7 @@ namespace Jube.Service.UserLogin
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserLogin.List: cancelled user={userName}");

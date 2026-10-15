@@ -39,6 +39,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 channel.QueueDeclare("jubeInbound", false, false, false, null);
 
                 consumer = new EventingBasicConsumer(channel);
+
                 consumer.Received += (o, ea) =>
                 {
                     Interlocked.Increment(ref inFlight);
@@ -49,7 +50,9 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         {
                             if (context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                             {
-                                context.Services.Log.Info("Cancellation requested before processing message; requeueing.");
+                                context.Services.Log.Info(
+                                    "Cancellation requested before processing message; requeueing.");
+
                                 return;
                             }
 
@@ -61,12 +64,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             if (ea.BasicProperties.Headers == null)
                             {
                                 context.Services.Log.Info("AMQP Inbound: Header is null, rejecting message.");
+
                                 return;
                             }
 
                             if (!ea.BasicProperties.Headers.TryGetValue("EntityAnalysisModelGuid", out var header))
                             {
-                                context.Services.Log.Info("AMQP Inbound: EntityAnalysisModelGuid header missing, rejecting message.");
+                                context.Services.Log.Info(
+                                    "AMQP Inbound: EntityAnalysisModelGuid header missing, rejecting message.");
+
                                 return;
                             }
 
@@ -74,14 +80,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             EntityAnalysisModel entityAnalysisModel = null;
 
                             foreach (var (_, value) in
-                                     from modelKvp in context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.ActiveEntityAnalysisModels
+                                     from modelKvp in context.Tasks.EntityAnalysisModelManager.Context
+                                         .EntityAnalysisModels.ActiveEntityAnalysisModels
                                      where entityAnalysisModelGuid == modelKvp.Value.Instance.Guid.ToString()
                                      select modelKvp)
                             {
-                                if (!context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.EntityModelsHasLoadedForStartup)
+                                if (!context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                                        .EntityModelsHasLoadedForStartup)
                                 {
                                     channel.BasicReject(ea.DeliveryTag, false);
                                     context.Services.Log.Info("Models not ready; requeueing.");
+
                                     return;
                                 }
 
@@ -94,21 +103,26 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                             if (entityAnalysisModel is not { Started: true })
                             {
-                                context.Services.Log.Info($"AMQP Inbound: Model not found or not started, rejecting message for GUID {entityAnalysisModelGuid}.");
+                                context.Services.Log.Info(
+                                    $"AMQP Inbound: Model not found or not started, rejecting message for GUID {entityAnalysisModelGuid}.");
+
                                 return;
                             }
 
                             try
                             {
                                 using var inputStream = new MemoryStream(ea.Body.ToArray());
+
                                 await EntityAnalysisModelInvoke.InvokeAsync(entityAnalysisModel, inputStream)
                                     .ConfigureAwait(false);
 
-                                context.Services.Log.Info($"AMQP Inbound: Successfully processed message for GUID {entityAnalysisModelGuid}.");
+                                context.Services.Log.Info(
+                                    $"AMQP Inbound: Successfully processed message for GUID {entityAnalysisModelGuid}.");
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
                             {
-                                context.Services.Log.Error($"AMQP Inbound: Error during processing message for GUID {entityAnalysisModelGuid}: {ex}");
+                                context.Services.Log.Error(
+                                    $"AMQP Inbound: Error during processing message for GUID {entityAnalysisModelGuid}: {ex}");
                             }
                         }
                         finally
@@ -139,7 +153,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             }
 
                             context.Services.RabbitMqConnection.Close();
-                            context.Services.Log.Info("RabbitMQ channel closed safely after in-flight messages completed.");
+                            context.Services.Log.Info(
+                                "RabbitMQ channel closed safely after in-flight messages completed.");
                         }
                         catch (Exception ex)
                         {

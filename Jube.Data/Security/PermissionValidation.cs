@@ -11,13 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Security.Models;
+
 namespace Jube.Data.Security
 {
     using System;
     using System.Data.Common;
     using System.Threading.Tasks;
     using Context;
-    using Extension;
+    using Extensions;
     using log4net;
     using ResilientNpgsqlConnection;
 
@@ -28,6 +30,7 @@ namespace Jube.Data.Security
         {
             await using var connection = new ResilientNpgsqlConnection(connectionString, log);
             await connection.OpenAsync().ConfigureAwait(false);
+
             return await GetPermissionsFromDatabaseAsync(connection, userName).ConfigureAwait(false);
         }
 
@@ -83,6 +86,7 @@ namespace Jube.Data.Security
             await command.PrepareAsync().ConfigureAwait(false);
 
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 dto.Permissions.Add(reader.GetValue(0).AsInt());
@@ -117,6 +121,7 @@ namespace Jube.Data.Security
             await command.PrepareAsync().ConfigureAwait(false);
 
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
             if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 if (!await reader.IsDBNullAsync(0).ConfigureAwait(false))

@@ -33,6 +33,7 @@ namespace Jube.Test.Cluster
         private static string ComposePath()
         {
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
             while (directory != null && !Directory.Exists(Path.Join(directory.FullName, "Jube.Cluster")))
             {
                 directory = directory.Parent;
@@ -65,6 +66,7 @@ namespace Jube.Test.Cluster
                     service.Environment.Should().ContainKey(setting,
                         $"{name} runs the engine, whose Infrastructure Health Metrics samplers poll etcd, and " +
                         "etcd client authentication is mandatory in this deployment");
+
                     service.Environment[setting].Should().NotBeNullOrWhiteSpace();
                 }
 
@@ -114,7 +116,6 @@ namespace Jube.Test.Cluster
         private sealed class ComposeService
         {
             public Dictionary<string, string> Environment { get; } = new(StringComparer.Ordinal);
-
             public List<string> Secrets { get; } = [];
         }
 
@@ -127,7 +128,6 @@ namespace Jube.Test.Cluster
             }
 
             public Dictionary<string, ComposeService> Services { get; }
-
             public List<string> DeclaredSecrets { get; }
 
             public static ComposeFile Parse(IReadOnlyList<string> lines)
@@ -205,6 +205,7 @@ namespace Jube.Test.Cluster
                             break;
                         case "environment":
                             var separator = item.IndexOf('=');
+
                             if (separator > 0)
                             {
                                 service.Environment[item[..separator]] = item[(separator + 1)..];

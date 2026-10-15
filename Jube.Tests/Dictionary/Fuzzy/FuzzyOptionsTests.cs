@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using FluentAssertions;
 using Jube.Dictionary.Fuzzy;
+using Jube.Dictionary.Fuzzy.Models;
 using Xunit;
 
 namespace Jube.Test.Dictionary.Fuzzy
@@ -37,8 +38,10 @@ namespace Jube.Test.Dictionary.Fuzzy
             var options = FuzzyOptions.Default;
 
             options.IsValid.Should().BeTrue();
+
             options.Algorithms.Select(a => a.Algorithm).Should()
                 .BeEquivalentTo([FuzzyAlgorithm.JaroWinkler, FuzzyAlgorithm.TokenSort]);
+
             options.Algorithms.Should().OnlyContain(a => Math.Abs(a.Threshold - 0.92) < 0.0001);
             options.RequireAll.Should().BeFalse();
             options.Within.Should().BeFalse();
@@ -103,7 +106,8 @@ namespace Jube.Test.Dictionary.Fuzzy
         [Fact]
         public void NormalisationFlagsCanBeSwitchedBackByTheirOpposites()
         {
-            var options = FuzzyOptions.Parse("exact,case,nocase,diacritics,nodiacritics,punct,nopunct,nospaces,keepspaces");
+            var options =
+                FuzzyOptions.Parse("exact,case,nocase,diacritics,nodiacritics,punct,nopunct,nospaces,keepspaces");
 
             options.Normalisation.Should().Be(FuzzyNormalisation.Default);
         }

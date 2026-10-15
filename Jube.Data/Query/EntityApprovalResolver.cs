@@ -11,13 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Models;
-    using Repository;
 
     public static class EntityApprovalResolver
     {

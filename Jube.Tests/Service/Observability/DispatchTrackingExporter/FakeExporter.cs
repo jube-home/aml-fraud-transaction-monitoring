@@ -23,6 +23,7 @@ namespace Jube.Test.Service.Observability.DispatchTrackingExporter
         public override ExportResult Export(in Batch<T> batch)
         {
             CallCount++;
+
             return behavior();
         }
     }

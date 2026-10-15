@@ -28,6 +28,7 @@ using Jube.Service.Exceptions.Repository.UserRegistry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.UserRegistry.Models;
@@ -90,6 +91,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
         private async Task<Guid> CreateParentRoleAsync(DbContext dbContext, string createdUser)
         {
             var repository = new RoleRegistryRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.RoleRegistry
             {
                 Name = UniqueName("Role"),
@@ -99,6 +101,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
             }).ConfigureAwait(false);
 
             createdRoleIds.Add(saved.Id);
+
             return saved.Guid;
         }
 
@@ -138,6 +141,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
                 try
                 {
                     var saved = await service.InsertAsync(NewDto(role, casing));
+
                     return new RaceAttempt(saved.Id, null);
                 }
                 catch (Exception ex)
@@ -149,10 +153,12 @@ namespace Jube.Test.Service.Repository.UserRegistry
             createdIds.AddRange(results.Where(r => r.SavedId != null).Select(r => r.SavedId.Required()));
 
             results.Count(r => r.SavedId != null).Should().Be(1, "the database allows one live user per name");
+
             foreach (var failure in results.Where(r => r.Error != null))
             {
                 var validation = failure.Error.Should().BeOfType<DtoValidationException>(
                     "a lost race is a validation outcome, never a server error").Subject;
+
                 validation.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
             }
 
@@ -277,12 +283,14 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(roleRegistryGuid, UniqueName("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
             var updateDto = NewDto(roleRegistryGuid, seedRow.Name);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.UpdatePasswordAsync(new UserRegistryPasswordResetDto { Id = seedRow.Id }));
 
@@ -313,6 +321,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -321,6 +330,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -379,6 +389,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
             dto.Name = name;
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(UserRegistryDto.Name) && e.ErrorCode == "NameNotEmpty");
         }
@@ -409,6 +420,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(roleAGuid, name)));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
 
             var roleBGuid = await CreateParentRoleAsync(dbContext, fx.Seed.UserTenantB);
@@ -416,6 +428,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             var crossTenant = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 otherTenantService.InsertAsync(NewDto(roleBGuid, name)));
+
             crossTenant.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -432,6 +445,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(roleRegistryGuid, name.ToUpperInvariant())));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -722,6 +736,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var roleRegistryGuid = await CreateParentRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -739,10 +754,12 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var roleRegistryGuid = await CreateParentRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(roleRegistryGuid, "")));
 
@@ -755,11 +772,13 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "UserRegistryList", "UserRegistryGet", "UserRegistryListByRoleRegistryGuid",
                 "UserRegistryCreate", "UserRegistryUpdate", "UserRegistryDelete"
             ]);
+
             names.Should().NotContain("UserRegistryUpdatePassword");
         }
 
@@ -800,8 +819,10 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             var persisted = await dbContext.UserRegistry.SingleAsync(w => w.Id == saved.Id);
             persisted.Password.Should().NotBeNullOrEmpty();
+
             Data.Security.HashPassword.Verify(persisted.Password, response.Password.Required(),
                 dynamicEnvironment.AppSettings("PasswordHashingKey")).Should().BeTrue();
+
             persisted.PasswordLocked.Should().Be(0);
             persisted.FailedPasswordCount.Should().Be(0);
         }
@@ -821,8 +842,10 @@ namespace Jube.Test.Service.Repository.UserRegistry
 
             var persisted = await dbContext.UserRegistry.SingleAsync(w => w.Id == saved.Id);
             var expectedPreHash = Data.Security.HashPassword.Sha256(response.Password.Required() + name);
+
             Data.Security.HashPassword.Verify(persisted.Password, expectedPreHash,
                 dynamicEnvironment.AppSettings("PasswordHashingKey")).Should().BeTrue();
+
             persisted.WirePasswordHash.Should().Be(1);
         }
 
@@ -843,6 +866,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
         public async Task DuplicateNameErrorMessageResolvesFrenchTranslationAsync()
         {
             var originalCulture = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

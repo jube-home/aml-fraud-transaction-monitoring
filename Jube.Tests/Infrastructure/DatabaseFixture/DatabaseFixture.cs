@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,14 +13,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Service.UserLogout;
+using Jube.Test.Infrastructure.DatabaseFixture.Models;
 using LinqToDB;
 using LinqToDB.Data;
 using Xunit;
-using Jube.Test.Infrastructure.DatabaseFixture.Models;
 
 namespace Jube.Test.Infrastructure.DatabaseFixture
 {
@@ -28,8 +30,16 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
     public sealed class DatabaseFixture : IAsyncLifetime
     {
         public const string Prefix = "ZzTest";
+        private const int CascadeMaxRows = 1_000_000;
+        private const int CascadeMaxDepth = 8;
 
-        private string ConnectionString { get; } =
+        private static readonly HashSet<string> cascadeRootTables = new(StringComparer.Ordinal)
+        {
+            "CaseWorkflow", "EntityAnalysisModel", "UserRegistry", "RoleRegistry", "VisualisationRegistry",
+            "TenantRegistry"
+        };
+
+        public string ConnectionString { get; } =
             Environment.GetEnvironmentVariable("JubeTestConnectionString")
             ?? Environment.GetEnvironmentVariable("ConnectionString")
             ??
@@ -101,6 +111,14 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .DeleteAsync().ConfigureAwait(false);
 
+            var prefixedRequestXpathIds = dbContext.GetTable<EntityAnalysisModelRequestXpath>()
+                .Where(w => prefixedModelIds.Contains(w.EntityAnalysisModelId))
+                .Select(w => (int?)w.Id);
+
+            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
+                .Where(w => prefixedRequestXpathIds.Contains(w.EntityAnalysisModelRequestXpathId))
+                .DeleteAsync().ConfigureAwait(false);
+
             await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                 .Where(w => prefixedModelIds.Contains(w.EntityAnalysisModelId))
                 .DeleteAsync().ConfigureAwait(false);
@@ -144,6 +162,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             var prefixedVisualisationRegistryIds = dbContext.GetTable<VisualisationRegistry>()
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .Select(w => (int?)w.Id);
+
             var prefixedVisualisationRegistryGuids = dbContext.GetTable<VisualisationRegistry>()
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .Select(w => w.Guid);
@@ -151,6 +170,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             var prefixedDatasourceIds = dbContext.GetTable<VisualisationRegistryDatasource>()
                 .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
                 .Select(w => (int?)w.Id);
+
             var prefixedDatasourceGuids = dbContext.GetTable<VisualisationRegistryDatasource>()
                 .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
                 .Select(w => w.Guid);
@@ -158,6 +178,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             var prefixedParameterIds = dbContext.GetTable<VisualisationRegistryParameter>()
                 .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
                 .Select(w => (int?)w.Id);
+
             var prefixedParameterGuids = dbContext.GetTable<VisualisationRegistryParameter>()
                 .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
                 .Select(w => w.Guid);
@@ -224,7 +245,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 .DeleteAsync().ConfigureAwait(false);
 
             await dbContext.GetTable<UserLogout>()
-                .Where(w => w.OutcomeId == Jube.Service.UserLogout.UserLogoutOutcome.NoSession
+                .Where(w => w.OutcomeId == UserLogoutOutcome.NoSession
                             && (w.CreatedUser == null || w.CreatedUser == "") && w.TenantRegistryId == null)
                 .DeleteAsync().ConfigureAwait(false);
 
@@ -241,15 +262,6 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 .DeleteAsync().ConfigureAwait(false);
         }
 
-        private static readonly HashSet<string> cascadeRootTables = new(StringComparer.Ordinal)
-        {
-            "CaseWorkflow", "EntityAnalysisModel", "UserRegistry", "RoleRegistry", "VisualisationRegistry",
-            "TenantRegistry"
-        };
-
-        private const int CascadeMaxRows = 1_000_000;
-        private const int CascadeMaxDepth = 8;
-
         private static string QuoteIdentifier(string identifier)
         {
             return "\"" + identifier.Replace("\"", "\"\"") + "\"";
@@ -260,7 +272,6 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             if (!cascadeRootTables.Contains(table))
             {
                 throw new ArgumentException(
-                    // ReSharper disable once LocalizableElement
                     $"'{table}' is not an allowed cascade root ({string.Join(", ", cascadeRootTables)}).",
                     nameof(table));
             }
@@ -268,7 +279,6 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             if (!whereSql.Contains("@prefix", StringComparison.Ordinal))
             {
                 throw new ArgumentException(
-                    // ReSharper disable once LocalizableElement
                     "The root filter of a cascade must be restricted by the test prefix (@prefix).", nameof(whereSql));
             }
 
@@ -280,6 +290,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 await CascadeAsync(dbContext, table, whereSql, 0, deleted).ConfigureAwait(false);
 
                 var total = deleted.Values.Sum();
+
                 if (total > CascadeMaxRows)
                 {
                     throw new InvalidOperationException(
@@ -291,7 +302,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
 
                 if (total > 0)
                 {
-                    System.Diagnostics.Trace.WriteLine(
+                    Trace.WriteLine(
                         $"DatabaseFixture cascade from {table}: deleted {total} row(s): " +
                         string.Join(", ", deleted.Where(d => d.Value > 0).Select(d => $"{d.Key}={d.Value}")));
                 }
@@ -304,6 +315,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
         }
 
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+
         private static async Task CascadeAsync(DbContext dbContext, string table, string whereSql, int depth,
             Dictionary<string, long> deleted)
         {
@@ -356,31 +368,39 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             int[] readWriteSpecs =
             [
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28,
-                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45, 60, 61
+                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 60, 61, 66
             ];
+
             var readWriteSpecsNoApproval = readWriteSpecs.Where(s => s != AllowApprovalSpecificationId).ToArray();
 
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var tenantAId = await InsertTenantAsync(dbContext, $"{Prefix}TenantA{suffix}", false)
                 .ConfigureAwait(false);
             var tenantBId = await InsertTenantAsync(dbContext, $"{Prefix}TenantB{suffix}", false)
                 .ConfigureAwait(false);
+
             var landlordTenantId = await InsertTenantAsync(dbContext, $"{Prefix}TenantL{suffix}", true)
                 .ConfigureAwait(false);
+
             var roleWithPermissionAId =
                 await InsertRoleAsync(dbContext, $"{Prefix}RoleWithPermissionA{suffix}", tenantAId,
                     readWriteSpecs).ConfigureAwait(false);
+
             var roleWithoutPermissionAId =
                 await InsertRoleAsync(dbContext, $"{Prefix}RoleWithoutPermissionA{suffix}", tenantAId, [])
                     .ConfigureAwait(false);
+
             var roleWithPermissionNoApprovalAId =
                 await InsertRoleAsync(dbContext, $"{Prefix}RoleWithPermissionNoApprovalA{suffix}", tenantAId,
                     readWriteSpecsNoApproval).ConfigureAwait(false);
             var roleWithPermissionBId =
                 await InsertRoleAsync(dbContext, $"{Prefix}RoleWithPermissionB{suffix}", tenantBId,
                     readWriteSpecs).ConfigureAwait(false);
+
             var landlordRoleId = await InsertRoleAsync(dbContext, $"{Prefix}RoleLandlord{suffix}", landlordTenantId, [])
                 .ConfigureAwait(false);
+
             var userWithPermission = $"{Prefix}UserWithPermission{suffix}";
             var userWithoutPermission = $"{Prefix}UserWithoutPermission{suffix}";
             var userWithPermissionNoApproval = $"{Prefix}UserWithPermissionNoApproval{suffix}";
@@ -388,6 +408,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             var landlordUser = $"{Prefix}UserLandlord{suffix}";
             var userNoTenant = $"{Prefix}UserNoTenant{suffix}";
             var userBothTenants = $"{Prefix}UserBothTenants{suffix}";
+
             var roleWithPermissionAGuid = await InsertUserAsync(dbContext, userWithPermission, roleWithPermissionAId)
                 .ConfigureAwait(false);
             var roleWithoutPermissionAGuid =
@@ -450,6 +471,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             int[] specs)
         {
             var guid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new RoleRegistry
             {
                 Guid = guid,

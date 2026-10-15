@@ -19,7 +19,6 @@ namespace Jube.Service.Exceptions.Repository.CaseWorkflowFilterRole
         : ServiceException(BuildMessage(result))
     {
         public override string Code => "ValidationFailed";
-
         public ValidationResult Result { get; } = result;
 
         private static string BuildMessage(ValidationResult result)

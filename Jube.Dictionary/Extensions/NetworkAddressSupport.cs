@@ -24,6 +24,7 @@ namespace Jube.Dictionary.Extensions
         {
             address = IPAddress.None;
             var value = (text ?? "").Trim();
+
             if (value.Length is 0 or > 64 || value.Contains('%'))
             {
                 return false;
@@ -42,6 +43,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             address = parsed.IsIPv4MappedToIPv6 ? parsed.MapToIPv4() : parsed;
+
             return true;
         }
 
@@ -56,6 +58,7 @@ namespace Jube.Dictionary.Extensions
             var bytes = number.ToByteArray(true, true);
             var padded = new byte[length];
             Array.Copy(bytes, 0, padded, length - bytes.Length, bytes.Length);
+
             return new IPAddress(padded);
         }
 
@@ -66,6 +69,7 @@ namespace Jube.Dictionary.Extensions
             bits = 0;
             var value = (text ?? "").Trim();
             var slash = value.IndexOf('/');
+
             if (slash < 0)
             {
                 return false;
@@ -78,6 +82,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             bits = address.AddressFamily == AddressFamily.InterNetwork ? 32 : 128;
+
             if (prefix < 0 || prefix > bits)
             {
                 return false;
@@ -85,12 +90,14 @@ namespace Jube.Dictionary.Extensions
 
             var mask = Mask(prefix, bits);
             network = FromNumber(ToNumber(address) & mask, address.AddressFamily);
+
             return true;
         }
 
         internal static BigInteger Mask(int prefix, int bits)
         {
             var all = (BigInteger.One << bits) - 1;
+
             return all ^ ((BigInteger.One << (bits - prefix)) - 1);
         }
 

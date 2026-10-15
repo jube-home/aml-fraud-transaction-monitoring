@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.DynamicEnvironment.Logging.Models;
 using log4net.Appender;
 using log4net.Core;
 

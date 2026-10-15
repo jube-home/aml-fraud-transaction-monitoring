@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public async Task<RedisMetric> InsertAsync(RedisMetric model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -59,42 +60,96 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["connectedClients"] = rows.Where(w => w.ConnectedClients.HasValue)
-                    .Select(s => (double)s.ConnectedClients!.Value).ToArray(),
-                ["blockedClients"] = rows.Where(w => w.BlockedClients.HasValue)
-                    .Select(s => (double)s.BlockedClients!.Value).ToArray(),
-                ["usedMemoryBytes"] = rows.Where(w => w.UsedMemoryBytes.HasValue)
-                    .Select(s => (double)s.UsedMemoryBytes!.Value).ToArray(),
-                ["usedMemoryRssBytes"] = rows.Where(w => w.UsedMemoryRssBytes.HasValue)
-                    .Select(s => (double)s.UsedMemoryRssBytes!.Value).ToArray(),
-                ["maxMemoryBytes"] = rows.Where(w => w.MaxMemoryBytes.HasValue)
-                    .Select(s => (double)s.MaxMemoryBytes!.Value).ToArray(),
-                ["instantaneousOpsPerSecond"] = rows.Where(w => w.InstantaneousOpsPerSecond.HasValue)
-                    .Select(s => (double)s.InstantaneousOpsPerSecond!.Value).ToArray(),
-                ["totalCommandsProcessed"] = rows.Where(w => w.TotalCommandsProcessed.HasValue)
-                    .Select(s => (double)s.TotalCommandsProcessed!.Value).ToArray(),
-                ["totalConnectionsReceived"] = rows.Where(w => w.TotalConnectionsReceived.HasValue)
-                    .Select(s => (double)s.TotalConnectionsReceived!.Value).ToArray(),
-                ["keyspaceHits"] = rows.Where(w => w.KeyspaceHits.HasValue)
-                    .Select(s => (double)s.KeyspaceHits!.Value).ToArray(),
-                ["keyspaceMisses"] = rows.Where(w => w.KeyspaceMisses.HasValue)
-                    .Select(s => (double)s.KeyspaceMisses!.Value).ToArray(),
-                ["hitRatePercent"] = rows.Where(w => w.HitRatePercent.HasValue)
-                    .Select(s => s.HitRatePercent!.Value).ToArray(),
-                ["evictedKeys"] = rows.Where(w => w.EvictedKeys.HasValue)
-                    .Select(s => (double)s.EvictedKeys!.Value).ToArray(),
-                ["expiredKeys"] = rows.Where(w => w.ExpiredKeys.HasValue)
-                    .Select(s => (double)s.ExpiredKeys!.Value).ToArray(),
-                ["connectedReplicas"] = rows.Where(w => w.ConnectedReplicas.HasValue)
-                    .Select(s => (double)s.ConnectedReplicas!.Value).ToArray(),
-                ["uptimeSeconds"] = rows.Where(w => w.UptimeSeconds.HasValue)
-                    .Select(s => (double)s.UptimeSeconds!.Value).ToArray(),
-                ["totalKeys"] = rows.Where(w => w.TotalKeys.HasValue)
-                    .Select(s => (double)s.TotalKeys!.Value).ToArray(),
-                ["memoryFragmentationRatio"] = rows.Where(w => w.MemoryFragmentationRatio.HasValue)
-                    .Select(s => s.MemoryFragmentationRatio!.Value).ToArray(),
-                ["rdbLastSaveAgeSeconds"] = rows.Where(w => w.RdbLastSaveAgeSeconds.HasValue)
-                    .Select(s => (double)s.RdbLastSaveAgeSeconds!.Value).ToArray()
+                ["connectedClients"] =
+                [
+                    .. rows.Where(w => w.ConnectedClients.HasValue)
+                        .Select(s => (double)s.ConnectedClients!.Value)
+                ],
+                ["blockedClients"] =
+                [
+                    .. rows.Where(w => w.BlockedClients.HasValue)
+                        .Select(s => (double)s.BlockedClients!.Value)
+                ],
+                ["usedMemoryBytes"] =
+                [
+                    .. rows.Where(w => w.UsedMemoryBytes.HasValue)
+                        .Select(s => (double)s.UsedMemoryBytes!.Value)
+                ],
+                ["usedMemoryRssBytes"] =
+                [
+                    .. rows.Where(w => w.UsedMemoryRssBytes.HasValue)
+                        .Select(s => (double)s.UsedMemoryRssBytes!.Value)
+                ],
+                ["maxMemoryBytes"] =
+                [
+                    .. rows.Where(w => w.MaxMemoryBytes.HasValue)
+                        .Select(s => (double)s.MaxMemoryBytes!.Value)
+                ],
+                ["instantaneousOpsPerSecond"] =
+                [
+                    .. rows.Where(w => w.InstantaneousOpsPerSecond.HasValue)
+                        .Select(s => (double)s.InstantaneousOpsPerSecond!.Value)
+                ],
+                ["totalCommandsProcessed"] =
+                [
+                    .. rows.Where(w => w.TotalCommandsProcessed.HasValue)
+                        .Select(s => (double)s.TotalCommandsProcessed!.Value)
+                ],
+                ["totalConnectionsReceived"] =
+                [
+                    .. rows.Where(w => w.TotalConnectionsReceived.HasValue)
+                        .Select(s => (double)s.TotalConnectionsReceived!.Value)
+                ],
+                ["keyspaceHits"] =
+                [
+                    .. rows.Where(w => w.KeyspaceHits.HasValue)
+                        .Select(s => (double)s.KeyspaceHits!.Value)
+                ],
+                ["keyspaceMisses"] =
+                [
+                    .. rows.Where(w => w.KeyspaceMisses.HasValue)
+                        .Select(s => (double)s.KeyspaceMisses!.Value)
+                ],
+                ["hitRatePercent"] =
+                [
+                    .. rows.Where(w => w.HitRatePercent.HasValue)
+                        .Select(s => s.HitRatePercent!.Value)
+                ],
+                ["evictedKeys"] =
+                [
+                    .. rows.Where(w => w.EvictedKeys.HasValue)
+                        .Select(s => (double)s.EvictedKeys!.Value)
+                ],
+                ["expiredKeys"] =
+                [
+                    .. rows.Where(w => w.ExpiredKeys.HasValue)
+                        .Select(s => (double)s.ExpiredKeys!.Value)
+                ],
+                ["connectedReplicas"] =
+                [
+                    .. rows.Where(w => w.ConnectedReplicas.HasValue)
+                        .Select(s => (double)s.ConnectedReplicas!.Value)
+                ],
+                ["uptimeSeconds"] =
+                [
+                    .. rows.Where(w => w.UptimeSeconds.HasValue)
+                        .Select(s => (double)s.UptimeSeconds!.Value)
+                ],
+                ["totalKeys"] =
+                [
+                    .. rows.Where(w => w.TotalKeys.HasValue)
+                        .Select(s => (double)s.TotalKeys!.Value)
+                ],
+                ["memoryFragmentationRatio"] =
+                [
+                    .. rows.Where(w => w.MemoryFragmentationRatio.HasValue)
+                        .Select(s => s.MemoryFragmentationRatio!.Value)
+                ],
+                ["rdbLastSaveAgeSeconds"] =
+                [
+                    .. rows.Where(w => w.RdbLastSaveAgeSeconds.HasValue)
+                        .Select(s => (double)s.RdbLastSaveAgeSeconds!.Value)
+                ]
             });
         }
 
@@ -130,6 +185,7 @@ namespace Jube.Data.Repository
             string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "instance" => query.OrderByField(o => o.Instance, descending),

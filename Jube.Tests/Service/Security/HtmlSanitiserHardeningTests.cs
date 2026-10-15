@@ -135,6 +135,7 @@ namespace Jube.Test.Service.Security
 
                 output.WriteLine(
                     $"{name}: {text.Length} chars in {stopwatch.ElapsedMilliseconds} ms -> {result.Length} chars");
+
                 stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(1.5), name);
                 result.Should().NotContain("<script");
             }

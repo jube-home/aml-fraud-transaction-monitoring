@@ -16,7 +16,9 @@ using System.Text.Json;
 using FluentAssertions;
 using Jube.Data.Reporting;
 using Xunit;
-using FieldQuery = Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
+using FieldQuery =
+    Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery.
+    GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 
 namespace Jube.Test.Service.Query.Completions
 {

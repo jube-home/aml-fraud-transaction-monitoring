@@ -28,11 +28,13 @@ namespace Jube.Dictionary.Extensions
             var even = true;
             var bit = 0;
             var character = 0;
+
             while (builder.Length < precision)
             {
                 if (even)
                 {
                     var middle = (longitudeLow + longitudeHigh) / 2;
+
                     if (longitude >= middle)
                     {
                         character = (character << 1) | 1;
@@ -47,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                 else
                 {
                     var middle = (latitudeLow + latitudeHigh) / 2;
+
                     if (latitude >= middle)
                     {
                         character = (character << 1) | 1;
@@ -60,6 +63,7 @@ namespace Jube.Dictionary.Extensions
                 }
 
                 even = !even;
+
                 if (++bit == 5)
                 {
                     builder.Append(alphabet[character]);

@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public async Task<PostgresMetric> InsertAsync(PostgresMetric model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -59,48 +60,111 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["activeConnections"] = rows.Where(w => w.ActiveConnections.HasValue)
-                    .Select(s => (double)s.ActiveConnections!.Value).ToArray(),
-                ["transactionsCommitted"] = rows.Where(w => w.TransactionsCommitted.HasValue)
-                    .Select(s => (double)s.TransactionsCommitted!.Value).ToArray(),
-                ["transactionsRolledBack"] = rows.Where(w => w.TransactionsRolledBack.HasValue)
-                    .Select(s => (double)s.TransactionsRolledBack!.Value).ToArray(),
-                ["blocksRead"] = rows.Where(w => w.BlocksRead.HasValue)
-                    .Select(s => (double)s.BlocksRead!.Value).ToArray(),
-                ["blocksHit"] = rows.Where(w => w.BlocksHit.HasValue)
-                    .Select(s => (double)s.BlocksHit!.Value).ToArray(),
-                ["cacheHitRatioPercent"] = rows.Where(w => w.CacheHitRatioPercent.HasValue)
-                    .Select(s => s.CacheHitRatioPercent!.Value).ToArray(),
-                ["rowsReturned"] = rows.Where(w => w.RowsReturned.HasValue)
-                    .Select(s => (double)s.RowsReturned!.Value).ToArray(),
-                ["rowsFetched"] = rows.Where(w => w.RowsFetched.HasValue)
-                    .Select(s => (double)s.RowsFetched!.Value).ToArray(),
-                ["rowsInserted"] = rows.Where(w => w.RowsInserted.HasValue)
-                    .Select(s => (double)s.RowsInserted!.Value).ToArray(),
-                ["rowsUpdated"] = rows.Where(w => w.RowsUpdated.HasValue)
-                    .Select(s => (double)s.RowsUpdated!.Value).ToArray(),
-                ["rowsDeleted"] = rows.Where(w => w.RowsDeleted.HasValue)
-                    .Select(s => (double)s.RowsDeleted!.Value).ToArray(),
-                ["deadlocks"] = rows.Where(w => w.Deadlocks.HasValue)
-                    .Select(s => (double)s.Deadlocks!.Value).ToArray(),
-                ["tempFilesCreated"] = rows.Where(w => w.TempFilesCreated.HasValue)
-                    .Select(s => (double)s.TempFilesCreated!.Value).ToArray(),
-                ["tempBytesWritten"] = rows.Where(w => w.TempBytesWritten.HasValue)
-                    .Select(s => (double)s.TempBytesWritten!.Value).ToArray(),
-                ["conflicts"] = rows.Where(w => w.Conflicts.HasValue)
-                    .Select(s => (double)s.Conflicts!.Value).ToArray(),
-                ["replicationLagSeconds"] = rows.Where(w => w.ReplicationLagSeconds.HasValue)
-                    .Select(s => s.ReplicationLagSeconds!.Value).ToArray(),
-                ["replicaCount"] = rows.Where(w => w.ReplicaCount.HasValue)
-                    .Select(s => (double)s.ReplicaCount!.Value).ToArray(),
-                ["databaseSizeBytes"] = rows.Where(w => w.DatabaseSizeBytes.HasValue)
-                    .Select(s => (double)s.DatabaseSizeBytes!.Value).ToArray(),
-                ["longestRunningQuerySeconds"] = rows.Where(w => w.LongestRunningQuerySeconds.HasValue)
-                    .Select(s => s.LongestRunningQuerySeconds!.Value).ToArray(),
-                ["waitingBackends"] = rows.Where(w => w.WaitingBackends.HasValue)
-                    .Select(s => (double)s.WaitingBackends!.Value).ToArray(),
-                ["walBytesGenerated"] = rows.Where(w => w.WalBytesGenerated.HasValue)
-                    .Select(s => (double)s.WalBytesGenerated!.Value).ToArray()
+                ["activeConnections"] =
+                [
+                    .. rows.Where(w => w.ActiveConnections.HasValue)
+                        .Select(s => (double)s.ActiveConnections!.Value)
+                ],
+                ["transactionsCommitted"] =
+                [
+                    .. rows.Where(w => w.TransactionsCommitted.HasValue)
+                        .Select(s => (double)s.TransactionsCommitted!.Value)
+                ],
+                ["transactionsRolledBack"] =
+                [
+                    .. rows.Where(w => w.TransactionsRolledBack.HasValue)
+                        .Select(s => (double)s.TransactionsRolledBack!.Value)
+                ],
+                ["blocksRead"] =
+                [
+                    .. rows.Where(w => w.BlocksRead.HasValue)
+                        .Select(s => (double)s.BlocksRead!.Value)
+                ],
+                ["blocksHit"] =
+                [
+                    .. rows.Where(w => w.BlocksHit.HasValue)
+                        .Select(s => (double)s.BlocksHit!.Value)
+                ],
+                ["cacheHitRatioPercent"] =
+                [
+                    .. rows.Where(w => w.CacheHitRatioPercent.HasValue)
+                        .Select(s => s.CacheHitRatioPercent!.Value)
+                ],
+                ["rowsReturned"] =
+                [
+                    .. rows.Where(w => w.RowsReturned.HasValue)
+                        .Select(s => (double)s.RowsReturned!.Value)
+                ],
+                ["rowsFetched"] =
+                [
+                    .. rows.Where(w => w.RowsFetched.HasValue)
+                        .Select(s => (double)s.RowsFetched!.Value)
+                ],
+                ["rowsInserted"] =
+                [
+                    .. rows.Where(w => w.RowsInserted.HasValue)
+                        .Select(s => (double)s.RowsInserted!.Value)
+                ],
+                ["rowsUpdated"] =
+                [
+                    .. rows.Where(w => w.RowsUpdated.HasValue)
+                        .Select(s => (double)s.RowsUpdated!.Value)
+                ],
+                ["rowsDeleted"] =
+                [
+                    .. rows.Where(w => w.RowsDeleted.HasValue)
+                        .Select(s => (double)s.RowsDeleted!.Value)
+                ],
+                ["deadlocks"] =
+                [
+                    .. rows.Where(w => w.Deadlocks.HasValue)
+                        .Select(s => (double)s.Deadlocks!.Value)
+                ],
+                ["tempFilesCreated"] =
+                [
+                    .. rows.Where(w => w.TempFilesCreated.HasValue)
+                        .Select(s => (double)s.TempFilesCreated!.Value)
+                ],
+                ["tempBytesWritten"] =
+                [
+                    .. rows.Where(w => w.TempBytesWritten.HasValue)
+                        .Select(s => (double)s.TempBytesWritten!.Value)
+                ],
+                ["conflicts"] =
+                [
+                    .. rows.Where(w => w.Conflicts.HasValue)
+                        .Select(s => (double)s.Conflicts!.Value)
+                ],
+                ["replicationLagSeconds"] =
+                [
+                    .. rows.Where(w => w.ReplicationLagSeconds.HasValue)
+                        .Select(s => s.ReplicationLagSeconds!.Value)
+                ],
+                ["replicaCount"] =
+                [
+                    .. rows.Where(w => w.ReplicaCount.HasValue)
+                        .Select(s => (double)s.ReplicaCount!.Value)
+                ],
+                ["databaseSizeBytes"] =
+                [
+                    .. rows.Where(w => w.DatabaseSizeBytes.HasValue)
+                        .Select(s => (double)s.DatabaseSizeBytes!.Value)
+                ],
+                ["longestRunningQuerySeconds"] =
+                [
+                    .. rows.Where(w => w.LongestRunningQuerySeconds.HasValue)
+                        .Select(s => s.LongestRunningQuerySeconds!.Value)
+                ],
+                ["waitingBackends"] =
+                [
+                    .. rows.Where(w => w.WaitingBackends.HasValue)
+                        .Select(s => (double)s.WaitingBackends!.Value)
+                ],
+                ["walBytesGenerated"] =
+                [
+                    .. rows.Where(w => w.WalBytesGenerated.HasValue)
+                        .Select(s => (double)s.WalBytesGenerated!.Value)
+                ]
             });
         }
 
@@ -136,6 +200,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "instance" => query.OrderByField(o => o.Instance, descending),

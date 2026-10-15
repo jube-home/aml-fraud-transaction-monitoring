@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n’avez pas la permission d’effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="RunNotFound" xml:space="preserve">
+    <value>L'exécution d'entraînement est introuvable.</value>
+  </data>
+    <data name="DatasetInputNotSupported" xml:space="preserve">
+    <value>L'entrée d'entraînement par jeu de données n'est pas encore prise en charge.</value>
+  </data>
+    <data name="InlineTooManyRows" xml:space="preserve">
+    <value>L'entrée en ligne est limitée à {0} lignes. Placez les données plus volumineuses dans le cache et soumettez un pointeur de cache.</value>
+  </data>
+    <data name="InlineTooLarge" xml:space="preserve">
+    <value>L'entrée en ligne est limitée à {0} octets. Placez les données plus volumineuses dans le cache et soumettez un pointeur de cache.</value>
+  </data>
+    <data name="OnlineTooManyRows" xml:space="preserve">
+    <value>Une exécution d'entraînement immédiate est limitée à {0} lignes. Utilisez l'opération de soumission pour des données plus volumineuses.</value>
+  </data>
+    <data name="CachePointerRequired" xml:space="preserve">
+    <value>Un pointeur de cache est requis pour une entrée de cache.</value>
+  </data>
+    <data name="CachePointerNotFound" xml:space="preserve">
+    <value>L'entrée en cache a expiré ou n'existe pas.</value>
+  </data>
+    <data name="CacheShapeMismatch" xml:space="preserve">
+    <value>La table en cache doit avoir une colonne par nom de variable plus une colonne d'étiquette.</value>
+  </data>
+    <data name="InputKindInvalid" xml:space="preserve">
+    <value>Le type d'entrée d'entraînement n'est pas reconnu.</value>
+  </data>
+    <data name="OutputsRequired" xml:space="preserve">
+    <value>Au moins une valeur de sortie est requise.</value>
+  </data>
+    <data name="OutputsLengthMismatch" xml:space="preserve">
+    <value>Il doit y avoir exactement une sortie par ligne d'entrée.</value>
+  </data>
+    <data name="OutputsNotFinite" xml:space="preserve">
+    <value>Chaque sortie doit être un nombre fini.</value>
+  </data>
+</root>

@@ -27,6 +27,7 @@ namespace Jube.Data.Repository
             EntityAnalysisModelSearchKeyCalculationInstance model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 

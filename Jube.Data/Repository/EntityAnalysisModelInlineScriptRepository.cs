@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
+using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -109,6 +111,13 @@ namespace Jube.Data.Repository
                 && w.Id == id, token);
         }
 
+        public Task<EntityAnalysisModelInlineScript> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelInlineScript.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<EntityAnalysisModelInlineScript> InsertAsync(EntityAnalysisModelInlineScript model,
             CancellationToken token = default)
         {
@@ -117,6 +126,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -162,6 +172,19 @@ namespace Jube.Data.Repository
         public Task DeleteAsync(int id, CancellationToken token = default)
         {
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
+        }
+
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelInlineScript
+                .Where(d =>
+                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
         }
 
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
@@ -212,19 +235,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModelInlineScript
-                .Where(d =>
-                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
         }
 
         public async Task<IEnumerable<EntityAnalysisModelInlineScript>>

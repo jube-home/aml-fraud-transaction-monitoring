@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static int TokenCount(this string? @this, string? separator)
         {
             var value = @this ?? "";
+
             return value.Length == 0
                 ? 0
                 : value.Split(string.IsNullOrEmpty(separator) ? " " : separator).Length;

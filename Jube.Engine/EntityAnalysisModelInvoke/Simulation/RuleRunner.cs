@@ -11,27 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Reprocessing;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
+using Jube.HttpAdaptationProtocol;
+using Jube.Parser;
+using Jube.Parser.Compiler;
+using Jube.Parser.Models;
+using log4net;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Dictionary;
-    using EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Reprocessing;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-    using HttpAdaptationProtocol;
-    using log4net;
-    using Parser;
-    using Parser.Compiler;
-
     public sealed record RuleRunResult(object Value, Exception Error, bool TimedOut, long DurationMicroseconds);
 
     public static class RuleRunner
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(RuleRunner));
-
         public static RuleSandbox Sandbox { get; } = new();
 
         public static RuleRunInputs ToInputs(InvocationContext context, Dictionary<string, List<string>> lists)
@@ -39,6 +40,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(context);
 
             var inputs = new RuleRunInputs { Lists = lists ?? new Dictionary<string, List<string>>() };
+
             foreach (var value in context.Values.Values)
             {
                 if (value.Value == null)
@@ -47,6 +49,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 }
 
                 var key = value.Field.Key;
+
                 switch (value.Field.Namespace)
                 {
                     case "Payload":
@@ -70,6 +73,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     case "ExhaustiveAdaptation":
                         inputs.ExhaustiveAdaptation[key] = Convert.ToDouble(value.Value);
                         break;
+                    case "AdvancedAnalyticsAdaptation":
+                        inputs.AdvancedAnalyticsAdaptation[key] = Convert.ToDouble(value.Value);
+                        break;
                     case "HTTPAdaptation":
                         inputs.HttpAdaptation[key] = new Adaptation { Value = Convert.ToDouble(value.Value) };
                         break;
@@ -92,7 +98,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(parsed);
             ArgumentNullException.ThrowIfNull(inputs);
 
-            Func<object> invocation = ruleParseType switch
+            var invocation = ruleParseType switch
             {
                 RuleParse.GatewayRule when reprocessing =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelRuleReprocessingInstance.Match>(parsed,
@@ -118,8 +124,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelActivationRule.Match>(parsed, token)
                             .ConfigureAwait(false),
                         m => m(inputs.Data, inputs.TtlCounter, inputs.Abstraction, inputs.HttpAdaptation,
-                            inputs.ExhaustiveAdaptation, inputs.Lists, inputs.AbstractionCalculation, inputs.Sanction,
-                            inputs.Kvp, inputs.Activation, log)),
+                            inputs.ExhaustiveAdaptation, inputs.AdvancedAnalyticsAdaptation, inputs.Lists,
+                            inputs.AbstractionCalculation, inputs.Sanction, inputs.Kvp, inputs.Activation, log)),
 
                 RuleParse.InlineFunction =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelInlineFunction.Match>(parsed, token)
@@ -128,9 +134,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             };
 
             var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 var value = await Sandbox.RunAsync(invocation, token).ConfigureAwait(false);
+
                 return new RuleRunResult(value, null, false, Microseconds(stopwatch));
             }
             catch (TimeoutException ex)

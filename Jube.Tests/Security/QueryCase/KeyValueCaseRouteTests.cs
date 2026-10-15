@@ -32,7 +32,6 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
     protected abstract string Path { get; }
     protected abstract string CaseIdProperty { get; }
     protected abstract string[] AllowedProperties { get; }
-
     protected abstract Task SeedRowsAsync(CaseGraph graph);
 
     protected virtual Task<IReadOnlyList<CaseGraph>> ExtraInvisibleVariantsAsync(string key) =>
@@ -46,7 +45,9 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
     {
         var graph = await Seeder.CaseAsync(owner, key, value, workflowRoles: workflowRoles, statusRoles: statusRoles,
             workflowDeleted: workflowDeleted, statusDeleted: statusDeleted, modelDeleted: modelDeleted);
+
         await SeedRowsAsync(graph);
+
         return graph;
     }
 
@@ -78,9 +79,12 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         var b = await GraphAsync(UserB, key, value);
 
         var asA = run.Check(await As(PenTestUser.WithPermission).GetAsync(Target(key, value)));
+
         run.Expect(asA.Status == 200 && IntsOf(asA, CaseIdProperty).Distinct().SequenceEqual([a.CaseId]), asA,
             "TENANT-A-VIEW", "tenant A must see exactly its own case");
+
         var asB = run.Check(await As(PenTestUser.TenantB).GetAsync(Target(key, value)));
+
         run.Expect(asB.Status == 200 && IntsOf(asB, CaseIdProperty).Distinct().SequenceEqual([b.CaseId]), asB,
             "TENANT-B-VIEW", "tenant B must see exactly its own case");
 
@@ -94,11 +98,13 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             (key, ".*"), (key, "^" + value + "$"), (key, "(?i)" + value), (key, value + "\\"),
             (key, new string('a', 4000))
         };
+
         await run.ForEachAsync(nearMisses, async pair =>
         {
             foreach (var user in new[] { PenTestUser.WithPermission, PenTestUser.TenantB })
             {
                 var response = run.Check(await As(user).GetAsync(Target(pair.Key, pair.Value)));
+
                 run.Expect(Empty(response) || response.Status is 400 or 403 or 414 or 431, response, "NOT-EXACT",
                     $"{user}: near miss key='{pair.Key[..Math.Min(20, pair.Key.Length)]}' matched");
             }
@@ -112,6 +118,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
     {
         var run = NewRun($"{GetType().Name}.Visibility");
         var key = QueryCaseSeeder.Unique("Key");
+
         var visible = new List<CaseGraph>
         {
             await GraphAsync(UserA, key),
@@ -119,6 +126,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             await GraphAsync(UserA, key, workflowRoles: [UserA, Fx.Seed.UserWithoutPermission],
                 statusRoles: [UserA, Fx.Seed.UserWithoutPermission])
         };
+
         var invisible = new List<CaseGraph>
         {
             await GraphAsync(UserA, key, statusRoles: []),
@@ -136,6 +144,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         foreach (var graph in visible)
         {
             var response = run.Check(await As(PenTestUser.WithPermission).GetAsync(Target(key, graph.Value)));
+
             run.Expect(IntsOf(response, CaseIdProperty).Contains(graph.CaseId), response, "VISIBLE-MISSING",
                 "case with workflow and status role must be returned");
         }
@@ -148,6 +157,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
                      })
             {
                 var response = run.Check(await As(user).GetAsync(Target(key, graph.Value)));
+
                 run.Expect(!IntsOf(response, CaseIdProperty).Contains(graph.CaseId), response, "VISIBILITY-BYPASS",
                     $"{user} obtained a case it may not see (workflow/status/action role, deletion or tenant)");
             }
@@ -164,6 +174,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             foreach (var stranger in new[] { PenTestUser.TenantB, PenTestUser.Landlord })
             {
                 var foreignForVisible = run.Check(await As(stranger).GetAsync(Target(key, graph.Value)));
+
                 run.Expect(!IntsOf(foreignForVisible, CaseIdProperty).Contains(graph.CaseId), foreignForVisible,
                     "BOLA", $"{stranger} obtained a tenant A case even where its role was granted the workflow");
             }
@@ -194,6 +205,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         await run.ForEachAsync(HostileSeeds.Take(40), v => ProbeAsync(key + v, graph.Value + v, "concatenated"));
 
         var still = run.Check(await client.GetAsync(Target(key, graph.Value)));
+
         run.Expect(IntsOf(still, CaseIdProperty).Contains(graph.CaseId), still, "STATE-DAMAGED",
             "the legitimate lookup must be unaffected by the injection attempts");
 
@@ -230,6 +242,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             $"{Path}?key={Q(key)}&value={Q(graph.Value)}&orderBy=id;drop table x&sort=desc%00",
             $"{Path}?key={Q(key)}&value={Q(graph.Value)}&tenantRegistryId=1&TenantRegistryId=2&userName=admin"
         };
+
         for (var i = 0; i < 200; i++)
         {
             targets.Add($"{Path}?key={Q(key)}&value={Q(graph.Value)}&p{i}={i}");
@@ -238,6 +251,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         await run.ForEachAsync(targets, async target =>
         {
             var response = run.Check(await client.GetAsync(target), BlindBound);
+
             if (response.Status == 200)
             {
                 var ids = IntsOf(response, CaseIdProperty);
@@ -251,6 +265,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
 
         var normalisation = run.Check(await client.GetAsync(
             Target(key, graph.Value.Normalize(NormalizationForm.FormD))));
+
         run.Expect(Empty(normalisation), normalisation, "NORMALISATION",
             "decomposed and composed forms must not be conflated");
 
@@ -278,11 +293,13 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         var rows = ArrayOf(response);
         run.Expect(rows is { Count: > 0 }, response, "NO-ROWS", "seeded row not returned");
         var allowed = AllowedProperties.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         foreach (var row in rows ?? [])
         {
             foreach (var property in row.EnumerateObject())
             {
                 run.Expect(allowed.Contains(property.Name), response, "EXTRA-PROPERTY", property.Name);
+
                 run.Expect(!forbiddenNames.Any(f => property.Name.Contains(f, StringComparison.OrdinalIgnoreCase)),
                     response, "SENSITIVE-PROPERTY", property.Name);
             }
@@ -290,6 +307,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
 
         run.Expect(response.ContentType?.Contains("json", StringComparison.OrdinalIgnoreCase) == true, response,
             "CONTENT-TYPE", response.ContentType ?? "none");
+
         run.Expect(response.Header("X-Content-Type-Options") != null, response, "NOSNIFF");
         await run.AssertCleanAsync(Output);
     }
@@ -305,11 +323,13 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         var before = run.Check(await client.GetAsync(target));
 
         await VerbTamperingAsync(run, client, target, "POST", "PUT", "PATCH", "DELETE", "TRACE");
+
         foreach (var method in new[] { "POST", "PUT", "PATCH", "DELETE" })
         {
             var response = run.Check(await client.SendAsync(method, target,
                 Utf8($"{{\"id\":{graph.CaseId},\"caseId\":{graph.CaseId},\"deleted\":1,\"caseKeyValue\":\"x\"}}"),
                 "application/json", [("X-HTTP-Method-Override", "GET")]));
+
             run.Expect(!response.IsSuccess, response, "OVERRIDE-SUCCEEDED", method);
         }
 
@@ -334,8 +354,10 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             var response = run.Check(await As(user).GetAsync(Target(key, graph.Value)));
             var ids = IntsOf(response, CaseIdProperty).Distinct().ToList();
             var expected = user == PenTestUser.WithPermission ? graph.CaseId : foreignGraph.CaseId;
+
             run.Expect(response.Status == 200 && ids.SequenceEqual([expected]), response, "INCONSISTENT",
                 $"{user} saw {string.Join(",", ids)}");
+
             if (user == PenTestUser.WithPermission)
             {
                 run.Expect(response.Body == baseline.Body, response, "BODY-DRIFT");

@@ -18,7 +18,8 @@ const valueGridStyles = [
     ".value-grid .k-grid-edit-row td { padding: 8px 12px; white-space: nowrap; }",
     ".value-grid .k-grid-edit-row .k-textbox, .value-grid .k-grid-edit-row .k-numerictextbox { width: 100%; min-width: 0; }",
     ".value-grid .k-grid td.k-command-cell { white-space: nowrap; }",
-    ".value-grid .k-grid td.k-command-cell .k-button { min-width: 64px; }"
+    ".value-grid .k-grid td.k-command-cell .k-button { min-width: 64px; }",
+    ".value-grid .value-approval-note { width: 100%; min-width: 180px; }"
 ].join("\n");
 
 function ensureValueGridStyles() {
@@ -314,6 +315,28 @@ function createValueGrid(options) {
                 }
             },
             {
+                title: "Checker note",
+                width: 230,
+                editable: false,
+                template: function (d) {
+                    const status = statusById[d.id];
+                    if (status && status.pending && status.canApprove) {
+                        return "<input type=\"text\" class=\"k-textbox value-approval-note\" " +
+                            "placeholder=\"Note (optional)\" autocomplete=\"off\"/>";
+                    }
+                    return kendo.htmlEncode(status && status.note ? status.note : "");
+                }
+            },
+            {
+                title: "Return note",
+                width: 230,
+                editable: false,
+                template: function (d) {
+                    const status = statusById[d.id];
+                    return kendo.htmlEncode(status && status.returnedNote ? status.returnedNote : "");
+                }
+            },
+            {
                 title: "",
                 width: 300,
                 editable: false,
@@ -344,7 +367,11 @@ function createValueGrid(options) {
             {
                 command: [
                     {name: "edit", text: "Edit"},
-                    {name: "destroy", text: "Delete"}
+                    {
+                        name: "destroy", text: "Delete", visible: function (d) {
+                            return !d.deletedUser;
+                        }
+                    }
                 ],
                 title: "",
                 width: 160
@@ -359,6 +386,7 @@ function createValueGrid(options) {
             return;
         }
         const action = $(this).hasClass("value-approve") ? "Approve" : "Reject";
+        const note = $(this).closest("tr").find(".value-approval-note").val();
         $.ajax({
             url: "/api/EntityApproval/" + action,
             method: "POST",
@@ -367,7 +395,7 @@ function createValueGrid(options) {
                 kind: status.kind,
                 entityId: status.entityId,
                 version: status.currentVersion,
-                note: null
+                note: note || null
             }),
             success: function () {
                 report("");

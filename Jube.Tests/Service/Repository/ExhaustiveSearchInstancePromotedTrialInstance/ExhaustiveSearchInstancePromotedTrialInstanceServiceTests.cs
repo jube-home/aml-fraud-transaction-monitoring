@@ -28,16 +28,17 @@ using Jube.Service.Exceptions.Repository.ExhaustiveSearchInstancePromotedTrialIn
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
 {
@@ -84,6 +85,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id).DeleteAsync();
             }
 
@@ -91,6 +93,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -108,6 +111,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             bool active = false)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -119,6 +123,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             createdModelIds.Add(model.Id);
 
             var searchInstanceRepository = new ExhaustiveSearchInstanceRepository(dbContext, createdUser);
+
             var searchInstance = await searchInstanceRepository.InsertAsync(new Data.Poco.ExhaustiveSearchInstance
             {
                 Name = $"{DatabaseFixture.Prefix}Search{Guid.NewGuid():N}"[..40],
@@ -132,6 +137,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             createdSearchInstanceIds.Add(searchInstance.Id);
 
             var trialInstanceRepository = new ExhaustiveSearchInstanceTrialInstanceRepository(dbContext);
+
             var trialInstance = await trialInstanceRepository.InsertAsync(new ExhaustiveSearchInstanceTrialInstance
             {
                 ExhaustiveSearchInstanceId = searchInstance.Id,
@@ -141,6 +147,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
 
             var promotedTrialInstanceRepository =
                 new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext);
+
             var promotedTrialInstance = await promotedTrialInstanceRepository.InsertAsync(
                 new Data.Poco.ExhaustiveSearchInstancePromotedTrialInstance
                 {
@@ -158,6 +165,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         {
             var row = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstancePromotedTrialInstance>()
                 .FirstAsync(w => w.Id == id).ConfigureAwait(false);
+
             return row.Active;
         }
 
@@ -293,6 +301,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -301,6 +310,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -458,7 +468,8 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             await service.UpdateActiveAsync(
                 new ExhaustiveSearchInstancePromotedTrialInstanceDto { Id = id, Active = true });
 
-            collector.GetMeasurementSnapshot().Should().ContainSingle(m => (string)m.Tags["operation"].Required() == "Update");
+            collector.GetMeasurementSnapshot().Should()
+                .ContainSingle(m => (string)m.Tags["operation"].Required() == "Update");
         }
 
         [Fact]
@@ -482,6 +493,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var id = await CreatePromotedTrialInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -498,6 +510,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -521,6 +534,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         public async Task IdInvalidMessageResolvesFromFrenchResourceAsync()
         {
             var originalCulture = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

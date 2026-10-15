@@ -51,7 +51,6 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
         private readonly List<int> createdRoleRegistryIds = [];
         private readonly List<int> createdTenantRegistryIds = [];
         private readonly List<string> createdUserNames = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -94,6 +93,7 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
             createdTenantRegistryIds.Add(tenantRegistryId);
 
             var roleRegistryGuid = Guid.NewGuid();
+
             var roleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleRegistryGuid,
@@ -122,6 +122,7 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
             });
 
             var userName = $"{DatabaseFixture.Prefix}PsUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -136,6 +137,7 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix,
             });
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
@@ -406,7 +408,8 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             await service.GetAsync();
 
-            collector.GetMeasurementSnapshot().Should().ContainSingle(m => (string)m.Tags["operation"].Required() == "List");
+            collector.GetMeasurementSnapshot().Should()
+                .ContainSingle(m => (string)m.Tags["operation"].Required() == "List");
         }
 
         [Fact]
@@ -451,6 +454,7 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

@@ -14,6 +14,11 @@
 using System.ComponentModel;
 using Jube.Dto.Validation;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.RuleExecution
 {
     [Description("The outcome of turning query builder JSON into rule text: the rule text the browser's rule " +

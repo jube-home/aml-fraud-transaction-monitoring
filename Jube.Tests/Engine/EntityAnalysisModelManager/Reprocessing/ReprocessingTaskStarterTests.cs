@@ -37,9 +37,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
         : IClassFixture<ReprocessingModelFixture>, IAsyncLifetime
     {
         private const string AmountRule = "If (Payload.CurrencyAmount > 50) Then\n   Return True\nEnd If";
-
         public Task InitializeAsync() => ClearAsync();
-
         public Task DisposeAsync() => ClearAsync();
 
         private static DbContext Db()
@@ -55,6 +53,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             var model = fixture.Engine.FindActiveModel(fixture.Shared.ModelGuid)
                         ?? throw new InvalidOperationException("The scaffolded model is not loaded.");
             model.Started.Should().BeTrue();
+
             return new KeyValuePair<int,
                 global::Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel>(
                 model.Instance.Id, model);
@@ -72,6 +71,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
         {
             await using var dbContext = Db();
             var modelId = fixture.Shared.ModelId;
+
             await dbContext.ExecuteAsync(
                 "delete from \"ArchiveKeyVersion\" v using \"ArchiveKey\" k, \"Archive\" a where v.\"ArchiveKeyId\" = k.\"Id\" and k.\"EntityAnalysisModelInstanceEntryGuid\" = a.\"EntityAnalysisModelInstanceEntryGuid\" and a.\"EntityAnalysisModelId\" = @id",
                 new DataParameter("id", modelId));
@@ -83,8 +83,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
                 new DataParameter("id", modelId));
             await dbContext.ExecuteAsync("delete from \"Archive\" where \"EntityAnalysisModelId\" = @id",
                 new DataParameter("id", modelId));
+
             await dbContext.EntityAnalysisModelReprocessingRuleInstance
                 .Where(w => w.EntityAnalysisModelReprocessingRule.EntityAnalysisModelId == modelId).DeleteAsync();
+
             await dbContext.EntityAnalysisModelReprocessingRule.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
         }
@@ -93,6 +95,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             string? createdDate = null)
         {
             await using var dbContext = Db();
+
             await dbContext.ExecuteAsync(
                 "insert into \"Archive\" (\"Json\", \"EntityAnalysisModelInstanceEntryGuid\", \"EntryKeyValue\", " +
                 "\"ResponseElevation\", \"EntityAnalysisModelId\", \"ActivationRuleCount\", \"CreatedDate\", \"ReferenceDate\") " +
@@ -115,6 +118,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             int value = 10)
         {
             await using var dbContext = Db();
+
             var ruleId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelReprocessingRule
             {
                 EntityAnalysisModelId = fixture.Shared.ModelId, Name = "Reprocess" + Guid.NewGuid().ToString("N")[..8],
@@ -122,6 +126,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
                 ReprocessingInterval = interval, ReprocessingValue = value, ReprocessingSample = sample, Active = 1,
                 Deleted = 0, Priority = 1, Version = 1, CreatedDate = DateTime.UtcNow, CreatedUser = "Test"
             });
+
             return await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelReprocessingRuleInstance
             {
                 EntityAnalysisModelReprocessingRuleId = ruleId, StatusId = 0, CreatedDate = DateTime.UtcNow,
@@ -132,18 +137,21 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
         private static async Task<EntityAnalysisModelReprocessingRuleInstance> InstanceAsync(int id)
         {
             await using var dbContext = Db();
+
             return await dbContext.EntityAnalysisModelReprocessingRuleInstance.SingleAsync(w => w.Id == id);
         }
 
         private async Task<List<Archive>> ArchiveAsync()
         {
             await using var dbContext = Db();
+
             return await dbContext.Archive.Where(w => w.EntityAnalysisModelId == fixture.Shared.ModelId).ToListAsync();
         }
 
         private async Task<ReprocessingRunResult?> TryRunAsync(ReprocessingTaskStarter? starter = null)
         {
             await using var dbContext = Db();
+
             return await (starter ?? Starter()).RunNextAsync(dbContext, Model(), CancellationToken.None);
         }
 
@@ -174,10 +182,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             result.Sampled.Should().Be(250);
             result.Matched.Should().Be(expectedMatched);
             result.Errors.Should().Be(0);
+
             result.Pages.Should()
                 .Be((250 + ReprocessingModelFixture.BulkLimit - 1) / ReprocessingModelFixture.BulkLimit);
 
             var archive = await ArchiveAsync();
+
             var reprocessed = archive.Where(a => a.EntityAnalysisModelsReprocessingRuleInstanceId == instanceId)
                 .ToList();
             reprocessed.Should().HaveCount(expectedMatched);
@@ -185,6 +195,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             archive.Except(reprocessed).Should().OnlyContain(a => a.Version == null);
 
             await using var dbContext = Db();
+
             var versions = await dbContext.ArchiveVersion
                 .Where(v => reprocessed.Select(r => r.Id).Contains(v.ArchiveId)).ToListAsync();
             versions.Should().HaveCount(expectedMatched);
@@ -282,6 +293,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
 
             await using var dbContext = Db();
             var ruleId = instance.EntityAnalysisModelReprocessingRuleId!.Value;
+
             await new Jube.Data.Repository.EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext,
                     fixture.Shared.UserName)
                 .InsertAsync(new EntityAnalysisModelReprocessingRuleInstance
@@ -309,6 +321,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
 
             var run = RunAsync(starter);
             var deadline = DateTime.UtcNow.AddSeconds(60);
+
             while ((await InstanceAsync(instanceId)).ProcessedCount.GetValueOrDefault() == 0 &&
                    DateTime.UtcNow < deadline)
             {
@@ -334,6 +347,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
         {
             var tenant = fixture.Shared.TenantRegistryId;
             var snapshot = new Dictionary<string, byte[]>();
+
             await foreach (var key in server.KeysAsync(pattern: $"*{tenant}*{fixture.Shared.ModelGuid:N}*"))
             {
                 if (!key.ToString().StartsWith("LruJournal:", StringComparison.Ordinal))
@@ -344,6 +358,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
 
             snapshot["ReferenceDate"] = (await database.HashGetAsync($"ReferenceDate:{tenant}",
                 fixture.Shared.ModelGuid.ToString("N")))!;
+
             return snapshot;
         }
 
@@ -359,8 +374,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
 
             await using var multiplexer =
                 await ConnectionMultiplexer.ConnectAsync(ModelEngineHost.RedisConnectionString + ",allowAdmin=true");
+
             var database = multiplexer.GetDatabase();
             var server = multiplexer.GetServer(multiplexer.GetEndPoints()[0]);
+
             await foreach (var key in server.KeysAsync(pattern: $"*{tenant}*{modelGuid:N}*"))
             {
                 await database.KeyDeleteAsync(key);
@@ -370,13 +387,16 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             {
                 var payload = new DictionaryNoBoxing<int>();
                 payload.TryAdd(-1, archive.ReferenceDate!.Value);
+
                 await cache.CachePayloadRepository.InsertAsync(tenant, modelGuid, payload,
                     archive.ReferenceDate.Value, archive.EntityAnalysisModelInstanceEntryGuid);
+
                 await cache.CachePayloadRepository.InsertPayloadJournalAndLedgerAsync(tenant, modelGuid, "AccountId",
                     archive.EntryKeyValue, archive.ReferenceDate.Value, archive.EntityAnalysisModelInstanceEntryGuid);
             }
 
             var latest = DateTime.UtcNow.AddMinutes(-1);
+
             foreach (var account in Enumerable.Range(0, 7).Select(n => "Acc" + n))
             {
                 await cache.CachePayloadLatestRepository.UpsertAsync(tenant, modelGuid, latest, Guid.NewGuid(),
@@ -391,6 +411,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             result.Matched.Should().Be(30);
             var after = await CacheSnapshotAsync(database, server);
             after.Keys.Should().BeEquivalentTo(before.Keys);
+
             foreach (var (key, value) in before)
             {
                 after[key].Should().Equal(value, key);
@@ -409,6 +430,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
 
             var claimed = results.Where(r => r != null).Select(r => r!.EntityAnalysisModelsReprocessingRuleInstanceId)
                 .Concat(third == null ? [] : [third.EntityAnalysisModelsReprocessingRuleInstanceId]).ToList();
+
             claimed.Should().BeEquivalentTo([first, second]);
             (await InstanceAsync(first)).StatusId.Should().Be(4);
             (await InstanceAsync(second)).StatusId.Should().Be(4);

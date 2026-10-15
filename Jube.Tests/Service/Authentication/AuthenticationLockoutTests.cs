@@ -15,7 +15,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
@@ -43,11 +43,13 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
 
             var reloaded = await ReloadAsync(user);
             reloaded.FailedPasswordCount.Should().Be(attempt);
+
             reloaded.PasswordLocked.Should().Be(attempt == threshold ? (byte)1 : (byte)0,
                 $"attempt {attempt} of threshold {threshold}");
         }
 
         (await ReloadAsync(user)).PasswordLockedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+
         AssertPlainOutcome(await LoginAsync(user.Name, user.Password, env: [Attempts(threshold)]),
             AuthenticationOutcomeKind.Unauthorized);
     }
@@ -86,6 +88,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task OnceLocked_EvenTheCorrectPasswordIsRefused_WithNoRealHashWork_AndTheCounterStopsMovingAsync()
     {
         var user = await AddUserAsync("LockedOut");
+
         for (var i = 0; i < 3; i++)
         {
             await LoginAsync(user.Name, "wrong");
@@ -106,6 +109,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task ALockoutDoesNotExpireBeforeTheConfiguredWindowAsync()
     {
         var user = await AddUserAsync("NotYetExpiredLock", u => u.PasswordLocked = 1);
+
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
@@ -115,6 +119,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
 
         AssertPlainOutcome(await LoginAsync(user.Name, user.Password, env: [.. LockoutMinutes(30)]),
             AuthenticationOutcomeKind.Unauthorized);
+
         (await ReloadAsync(user)).PasswordLocked.Should().Be(1);
     }
 
@@ -122,6 +127,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task ALockoutAutomaticallyExpiresAfterTheConfiguredWindowAsync()
     {
         var user = await AddUserAsync("ExpiredLock", u => u.PasswordLocked = 1);
+
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
@@ -143,6 +149,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task ANonPositiveLockoutMinutes_NeverAutoExpiresNoMatterHowOldTheLockIsAsync(int lockoutMinutes)
     {
         var user = await AddUserAsync("PermanentLock", u => u.PasswordLocked = 1);
+
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
@@ -162,6 +169,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task EnablePasswordLockoutResetFalse_NeverAutoExpiresEvenWithAPositiveWindowAsync()
     {
         var user = await AddUserAsync("SwitchedOffLock", u => u.PasswordLocked = 1);
+
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
@@ -183,6 +191,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task EnablePasswordLockoutResetTrue_StillAutoExpiresAfterTheConfiguredWindowAsync()
     {
         var user = await AddUserAsync("SwitchedOnLock", u => u.PasswordLocked = 1);
+
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
@@ -216,6 +225,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task AfterAReset_TheCountRestartsFromZero_SoFailuresDoNotAccumulateAcrossSuccessesAsync()
     {
         var user = await AddUserAsync("Restart");
+
         for (var round = 0; round < 3; round++)
         {
             await LoginAsync(user.Name, "wrong");
@@ -232,6 +242,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
     public async Task TheCorrectPasswordOnTheLastUnlockedAttempt_StillSucceedsAsync()
     {
         var user = await AddUserAsync("LastChance");
+
         for (var i = 0; i < 2; i++)
         {
             await LoginAsync(user.Name, "wrong");
@@ -309,6 +320,7 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
 
         (await ReloadAsync(noExpiry)).PasswordLocked.Should().Be(1);
         (await ReloadAsync(expiring)).PasswordLocked.Should().Be(1);
+
         (await ReloadAsync(noExpiry)).FailedPasswordCount.Should()
             .Be((await ReloadAsync(expiring)).FailedPasswordCount);
     }
@@ -445,8 +457,10 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
             .Select(i => Task.Run(() => LoginAsync(user.Name, i % 2 == 0 ? user.Password : "wrong"))));
 
         outcomes.Count(o => o.Kind == AuthenticationOutcomeKind.Ok).Should().BeLessThanOrEqualTo(8);
+
         outcomes.Should().OnlyContain(o => o.Kind == AuthenticationOutcomeKind.Ok
                                            || o.Kind == AuthenticationOutcomeKind.Unauthorized);
+
         Cookies.Issued.Should().NotContain(n => n != user.Name);
         Cookies.Issued.Count.Should().Be(outcomes.Count(o => o.Kind == AuthenticationOutcomeKind.Ok));
         Hash.RealVerifyCalls.Should().BeLessThanOrEqualTo(16);

@@ -18,10 +18,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
     using System.Threading;
     using System.Threading.Tasks;
     using Data.Context;
-    using Data.Query;
     using Dictionary;
     using EntityAnalysisModel;
     using EntityAnalysisModel.Models.Models;
+    using Jube.Data.Query.GetArchiveDistinctEntryKeyValue;
+    using Jube.Data.Query.GetArchiveSqlByKeyValueLimitQuery;
 
     public class AbstractionRuleCachingQueries(DbContext dbContext, EntityAnalysisModel entityAnalysisModel)
     {
@@ -32,7 +33,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
             try
             {
-                var getArchiveDistinctEntryKeyValue = new GetArchiveDistinctEntryKeyValue(dbContext, entityAnalysisModel.Services.Log);
+                var getArchiveDistinctEntryKeyValue =
+                    new GetArchiveDistinctEntryKeyValue(dbContext, entityAnalysisModel.Services.Log);
 
                 if (entityAnalysisModel.Dependencies.LastAbstractionRuleCache.ContainsKey(distinctSearchKey.SearchKey))
                 {
@@ -44,7 +46,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
                     value = await getArchiveDistinctEntryKeyValue.ExecuteAsync(entityAnalysisModel.Instance.Guid,
                         distinctSearchKey.SearchKey,
-                        entityAnalysisModel.Dependencies.LastAbstractionRuleCache[distinctSearchKey.SearchKey], toDate, token).ConfigureAwait(false);
+                        entityAnalysisModel.Dependencies.LastAbstractionRuleCache[distinctSearchKey.SearchKey], toDate,
+                        token).ConfigureAwait(false);
 
                     entityAnalysisModel.Dependencies.LastAbstractionRuleCache[distinctSearchKey.SearchKey] = toDate;
 
@@ -62,7 +65,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} has been set to a ready state and is now bringing back a distinct list of values for the grouping key.");
                     }
 
-                    value = await getArchiveDistinctEntryKeyValue.ExecuteAsync(entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey, token).ConfigureAwait(false);
+                    value = await getArchiveDistinctEntryKeyValue
+                        .ExecuteAsync(entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey, token)
+                        .ConfigureAwait(false);
 
                     if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                     {
@@ -79,15 +84,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"GetDistinctListOfGroupingValuesAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"GetDistinctListOfGroupingValuesAsync: has produced an error {ex}");
             }
 
             return value;
         }
 
-        public async Task<List<DictionaryNoBoxing<string>>> GetAllForKeyAsync(DistinctSearchKey distinctSearchKey, string groupingValue, CancellationToken token = default)
+        public async Task<List<DictionaryNoBoxing<string>>> GetAllForKeyAsync(DistinctSearchKey distinctSearchKey,
+            string groupingValue, CancellationToken token = default)
         {
             List<DictionaryNoBoxing<string>> values = null;
+
             try
             {
                 if (entityAnalysisModel.Services.Log.IsInfoEnabled)
@@ -96,16 +104,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                         $"Abstraction Rule Caching: For grouping key {distinctSearchKey.SearchKey} is processing grouping value {groupingValue} returning the top {distinctSearchKey.SearchKeyCacheFetchLimit}.");
                 }
 
-                var getArchiveSqlByKeyValueLimitQuery = new GetArchiveSqlByKeyValueLimitQuery(dbContext, entityAnalysisModel.Services.Log);
+                var getArchiveSqlByKeyValueLimitQuery =
+                    new GetArchiveSqlByKeyValueLimitQuery(dbContext, entityAnalysisModel.Services.Log);
 
-                var cachePayloadSql = "select * from (" + distinctSearchKey.SqlSelect + distinctSearchKey.SqlSelectFrom +
+                var cachePayloadSql = "select * from (" + distinctSearchKey.SqlSelect +
+                                      distinctSearchKey.SqlSelectFrom +
                                       distinctSearchKey.SqlSelectOrderBy + ") c order by 2;";
 
                 if (distinctSearchKey.SearchKeyCacheSample)
                 {
                     values = await getArchiveSqlByKeyValueLimitQuery.ExecuteAsync(
-                        cachePayloadSql, distinctSearchKey.SearchKey,
-                        groupingValue, "RANDOM()", distinctSearchKey.SearchKeyCacheFetchLimit, token).ConfigureAwait(false);
+                            cachePayloadSql, distinctSearchKey.SearchKey,
+                            groupingValue, "RANDOM()", distinctSearchKey.SearchKeyCacheFetchLimit, token)
+                        .ConfigureAwait(false);
 
                     if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                     {
@@ -116,8 +127,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 else
                 {
                     values = await getArchiveSqlByKeyValueLimitQuery.ExecuteAsync(
-                        cachePayloadSql, distinctSearchKey.SearchKey,
-                        groupingValue, "CreatedDate", distinctSearchKey.SearchKeyCacheFetchLimit, token).ConfigureAwait(false);
+                            cachePayloadSql, distinctSearchKey.SearchKey,
+                            groupingValue, "CreatedDate", distinctSearchKey.SearchKeyCacheFetchLimit, token)
+                        .ConfigureAwait(false);
 
                     if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                     {

@@ -257,10 +257,12 @@ namespace Jube.Test.Service.RedisMetric
 
             var ascending = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ConnectedClients).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ConnectedClients).Should().Equal(3000, 2000, 1000);
         }
 
@@ -276,6 +278,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: ascendingKeyword);
 
@@ -291,6 +294,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: "banana");
 
@@ -318,6 +322,7 @@ namespace Jube.Test.Service.RedisMetric
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateSampleAsync(dbContext, instance, i);
@@ -361,6 +366,7 @@ namespace Jube.Test.Service.RedisMetric
 
             var lastAofRewriteDate = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc);
             var lastBgSaveDate = new DateTime(2026, 1, 2, 3, 0, 0, DateTimeKind.Utc);
+
             await CreateSampleAsync(dbContext, instance, 1, lastAofRewriteDate: lastAofRewriteDate,
                 lastBgSaveDate: lastBgSaveDate);
 
@@ -403,10 +409,12 @@ namespace Jube.Test.Service.RedisMetric
 
             var ascending = await service.ListAsync(search: instance, sortField: "lastBgSaveDate",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.LastBgSaveDate).Should().Equal(earlier, later);
 
             var descending = await service.ListAsync(search: instance, sortField: "lastBgSaveDate",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.LastBgSaveDate).Should().Equal(later, earlier);
         }
 

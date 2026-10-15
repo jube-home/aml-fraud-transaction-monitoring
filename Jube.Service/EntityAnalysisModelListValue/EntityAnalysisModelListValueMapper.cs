@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 : new EntityAnalysisModelListValueDto
                 {
                     Id = listValue.Id,
+                    Guid = listValue.Guid,
                     EntityAnalysisModelListId = listValue.EntityAnalysisModelListId.GetValueOrDefault(),
                     ListValue = listValue.ListValue,
                     DeleteExpiryDate = ToOffset(listValue.DeleteExpiryDate),

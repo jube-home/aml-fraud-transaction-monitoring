@@ -59,6 +59,7 @@ function GetData() {
 }
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("OpenTelemetryLogCounter", "readonly", null);
     showHomePage();
 
     $.getScript('/js/CRUD.js', function () {

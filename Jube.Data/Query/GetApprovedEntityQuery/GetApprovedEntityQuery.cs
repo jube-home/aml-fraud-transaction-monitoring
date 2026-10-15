@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetApprovedEntityQuery
 {
     using System;
@@ -70,7 +72,7 @@ namespace Jube.Data.Query.GetApprovedEntityQuery
             }
 
             var approvals = await repository
-                .GetRowsByKindAndEntityIdsAsync(kind, currentVersionByEntityId.Keys.ToList(), token)
+                .GetRowsByKindAndEntityIdsAsync(kind, [.. currentVersionByEntityId.Keys], token)
                 .ConfigureAwait(false);
 
             var effective = EntityApprovalResolver.EffectiveVersionsByEntity(approvals, currentVersionByEntityId,
@@ -118,12 +120,40 @@ namespace Jube.Data.Query.GetApprovedEntityQuery
         {
             var entity = mapper.Map<TEntity>(version);
             typeof(TEntity).GetProperty(IdPropertyName)?.SetValue(entity, parentId);
+
             return entity;
         }
 
         public static int VersionNumberOf(TVersion version)
         {
             return VersionOfVersionRow(version);
+        }
+
+        public Expression<Func<TVersion, bool>> ParentIdInPredicate(ICollection<int> parentIds)
+        {
+            var parameter = Expression.Parameter(typeof(TVersion), "x");
+            var property = Expression.Property(parameter, versionParentIdProperty);
+
+            var value = property.Type == typeof(int)
+                ? property
+                : Expression.Property(property, "Value");
+
+            var hasValue = property.Type == typeof(int)
+                ? (Expression)Expression.Constant(true)
+                : Expression.Property(property, "HasValue");
+
+            var contains = Expression.Call(
+                typeof(Enumerable), nameof(Enumerable.Contains), [typeof(int)],
+                Expression.Constant(parentIds), value);
+
+            return Expression.Lambda<Func<TVersion, bool>>(Expression.AndAlso(hasValue, contains), parameter);
+        }
+
+        public static bool IsDeleted(TEntity entity)
+        {
+            var value = typeof(TEntity).GetProperty(DeletedPropertyName)?.GetValue(entity);
+
+            return value != null && Convert.ToInt32(value) != 0;
         }
 
         private async Task<Dictionary<int, TEntity>> SubstitutionsAsync(Dictionary<int, int> substitutions,
@@ -157,50 +187,29 @@ namespace Jube.Data.Query.GetApprovedEntityQuery
             return substituted;
         }
 
-        public Expression<Func<TVersion, bool>> ParentIdInPredicate(ICollection<int> parentIds)
-        {
-            var parameter = Expression.Parameter(typeof(TVersion), "x");
-            var property = Expression.Property(parameter, versionParentIdProperty);
-            var value = property.Type == typeof(int)
-                ? property
-                : Expression.Property(property, "Value");
-            var hasValue = property.Type == typeof(int)
-                ? (Expression)Expression.Constant(true)
-                : Expression.Property(property, "HasValue");
-
-            var contains = Expression.Call(
-                typeof(Enumerable), nameof(Enumerable.Contains), [typeof(int)],
-                Expression.Constant(parentIds), value);
-
-            return Expression.Lambda<Func<TVersion, bool>>(Expression.AndAlso(hasValue, contains), parameter);
-        }
-
         private static int IdOf(TEntity entity)
         {
             return Convert.ToInt32(typeof(TEntity).GetProperty(IdPropertyName)?.GetValue(entity) ?? 0);
         }
 
-        public static bool IsDeleted(TEntity entity)
-        {
-            var value = typeof(TEntity).GetProperty(DeletedPropertyName)?.GetValue(entity);
-            return value != null && Convert.ToInt32(value) != 0;
-        }
-
         private static int VersionOf(TEntity entity)
         {
             var value = typeof(TEntity).GetProperty(VersionPropertyName)?.GetValue(entity);
+
             return value == null ? 1 : Convert.ToInt32(value);
         }
 
         private static int VersionOfVersionRow(TVersion version)
         {
             var value = typeof(TVersion).GetProperty(VersionPropertyName)?.GetValue(version);
+
             return value == null ? 0 : Convert.ToInt32(value);
         }
 
         private int? ParentIdOf(TVersion version)
         {
             var value = versionParentIdProperty.GetValue(version);
+
             return value == null ? null : Convert.ToInt32(value);
         }
     }

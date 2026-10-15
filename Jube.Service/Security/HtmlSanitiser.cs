@@ -73,14 +73,17 @@ namespace Jube.Service.Security
             var index = 0;
             var nextClose = -1;
             var longTagBudget = 4L * html.Length;
+
             while (index < html.Length)
             {
                 var current = html[index];
+
                 if (current == '<')
                 {
                     if (nextClose < index)
                     {
                         nextClose = html.IndexOf('>', index);
+
                         if (nextClose < 0)
                         {
                             nextClose = int.MaxValue;
@@ -89,6 +92,7 @@ namespace Jube.Service.Security
 
                     var end = nextClose == int.MaxValue ? -1 : nextClose;
                     var match = end < 0 ? Match.Empty : MatchTag(html, index, end - index + 1, ref longTagBudget);
+
                     if (match.Success && allowedTags.Contains(match.Groups[2].Value))
                     {
                         AppendTag(builder, match);
@@ -158,6 +162,7 @@ namespace Jube.Service.Security
         {
             var closing = match.Groups[1].Value == "/";
             var name = match.Groups[2].Value.ToLowerInvariant();
+
             if (closing)
             {
                 if (!voidTags.Contains(name))
@@ -169,13 +174,17 @@ namespace Jube.Service.Security
             }
 
             builder.Append('<').Append(name);
+
             foreach (Match attribute in AttributePattern().Matches(match.Groups[3].Value))
             {
                 var attributeName = attribute.Groups[1].Value.ToLowerInvariant();
+
                 var value = attribute.Groups[2].Success ? attribute.Groups[2].Value
                     : attribute.Groups[3].Success ? attribute.Groups[3].Value
                     : attribute.Groups[4].Value;
+
                 value = System.Net.WebUtility.HtmlDecode(value).Trim();
+
                 var safe = attributeName switch
                 {
                     "style" => SanitiseStyle(value),
@@ -207,9 +216,11 @@ namespace Jube.Service.Security
         private static string? SanitiseStyle(string style)
         {
             var kept = new List<string>();
+
             foreach (var declaration in style.Split(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 var colon = declaration.IndexOf(':');
+
                 if (colon <= 0)
                 {
                     continue;
@@ -217,6 +228,7 @@ namespace Jube.Service.Security
 
                 var property = declaration[..colon].Trim();
                 var value = declaration[(colon + 1)..].Trim();
+
                 if (allowedStyles.Contains(property) && value.Length is > 0 and <= 120 &&
                     StyleValuePattern().IsMatch(value) &&
                     !value.Contains("url", StringComparison.OrdinalIgnoreCase) &&

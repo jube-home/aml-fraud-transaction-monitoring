@@ -51,6 +51,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -58,11 +59,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await PostgresIndexStatisticsService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.ListAsync(sortField, sortDirection, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -95,6 +99,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

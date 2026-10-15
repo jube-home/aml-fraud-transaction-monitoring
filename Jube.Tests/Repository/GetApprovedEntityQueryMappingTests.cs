@@ -12,13 +12,13 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Xunit;
 
 namespace Jube.Test.Repository
@@ -130,6 +130,7 @@ namespace Jube.Test.Repository
 
             var wanted = new EntityAnalysisModelListValueVersion
                 { EntityAnalysisModelListValueId = 61, Version = 1 };
+
             var orphan = new EntityAnalysisModelListValueVersion
                 { EntityAnalysisModelListValueId = null, Version = 1 };
 
@@ -177,6 +178,7 @@ namespace Jube.Test.Repository
 
             GetApprovedEntityQuery<EntityAnalysisModelList, EntityAnalysisModelListVersion>
                 .IsDeleted(new EntityAnalysisModelList { Id = 41, Deleted = 0 }).Should().BeFalse();
+
             GetApprovedEntityQuery<EntityAnalysisModelList, EntityAnalysisModelListVersion>
                 .IsDeleted(new EntityAnalysisModelList { Id = 41, Deleted = null }).Should().BeFalse();
         }
@@ -191,9 +193,11 @@ namespace Jube.Test.Repository
                 .MapVersionToEntity(version, 41);
 
             using var scope = new AssertionScope();
+
             GetApprovedEntityQuery<EntityAnalysisModelList, EntityAnalysisModelListVersion>
                 .IsDeleted(entity).Should()
                 .BeFalse("the pre-delete snapshot is what keeps running while the delete awaits a checker");
+
             entity.Version.Should().Be(4);
         }
 

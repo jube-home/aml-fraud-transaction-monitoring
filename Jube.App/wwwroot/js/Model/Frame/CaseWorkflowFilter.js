@@ -19,6 +19,7 @@ var validationFail = "There is invalid data in the form. Please check fields and
 if (typeof id === "undefined") {
     initCaseFilterBuilder(false, parentKey);
     ReadyNew();
+    window.AskJoobySetPageContext?.("CaseWorkflowFilter", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -31,6 +32,12 @@ if (typeof id === "undefined") {
             initCaseFilterBuilder(false, parentKey, casesFilterBuilder);
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("CaseWorkflowFilter", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 

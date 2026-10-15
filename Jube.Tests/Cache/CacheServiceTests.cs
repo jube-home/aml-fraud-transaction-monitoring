@@ -11,11 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Net;
 using FluentAssertions;
 using Jube.Cache;
-using Jube.Data.Repository;
 using Jube.Test.Infrastructure;
 using StackExchange.Redis;
 using Xunit;
@@ -35,6 +35,7 @@ namespace Jube.Test.Cache
             var diagnostics = new RedisConnectionDiagnosticsCounters();
             var log = new TestLog();
             var exception = new InvalidOperationException("boom");
+
             var args = new ConnectionFailedEventArgs(new object(), endPoint, ConnectionType.Interactive,
                 ConnectionFailureType.SocketClosed, exception, "physical");
 
@@ -59,6 +60,7 @@ namespace Jube.Test.Cache
             RedisConnectionEventCapture.DrainAll();
             var diagnostics = new RedisConnectionDiagnosticsCounters();
             var log = new TestLog();
+
             var args = new ConnectionFailedEventArgs(new object(), endPoint, ConnectionType.Subscription,
                 ConnectionFailureType.None, null!, "physical");
 
@@ -101,6 +103,7 @@ namespace Jube.Test.Cache
             var diagnostics = new RedisConnectionDiagnosticsCounters();
             var log = new TestLog();
             var exception = new InvalidOperationException("internal boom");
+
             var args = new InternalErrorEventArgs(new object(), endPoint, ConnectionType.Interactive, exception,
                 "ReadFromPipe");
 

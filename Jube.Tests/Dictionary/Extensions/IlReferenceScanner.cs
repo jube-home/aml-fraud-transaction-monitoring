@@ -30,7 +30,9 @@ namespace Jube.Test.Dictionary.Extensions
         {
             const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
                                      BindingFlags.Static | BindingFlags.DeclaredOnly;
+
             var methods = type.GetMethods(all).Cast<MethodBase>().Concat(type.GetConstructors(all));
+
             foreach (var method in methods)
             {
                 foreach (var reference in References(method))
@@ -50,6 +52,7 @@ namespace Jube.Test.Dictionary.Extensions
         private static IEnumerable<MemberInfo> References(MethodBase method)
         {
             var il = method.GetMethodBody()?.GetILAsByteArray();
+
             if (il is null)
             {
                 yield break;
@@ -58,17 +61,21 @@ namespace Jube.Test.Dictionary.Extensions
             var typeArguments = method.DeclaringType?.IsGenericType == true
                 ? method.DeclaringType.GetGenericArguments()
                 : null;
+
             var methodArguments = method.IsGenericMethod ? method.GetGenericArguments() : null;
             var position = 0;
+
             while (position < il.Length)
             {
                 short value = il[position++];
+
                 if (value == 0xFE)
                 {
                     value = (short)(0xFE00 | il[position++]);
                 }
 
                 var opCode = opCodesByValue[value];
+
                 switch (opCode.OperandType)
                 {
                     case OperandType.InlineMethod:
@@ -78,6 +85,7 @@ namespace Jube.Test.Dictionary.Extensions
                         var token = BitConverter.ToInt32(il, position);
                         position += 4;
                         MemberInfo? member = null;
+
                         try
                         {
                             member = method.Module.ResolveMember(token, typeArguments, methodArguments);

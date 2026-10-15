@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Helpers;
 using Jube.Data.Poco;
-using Jube.Dto.Payload;
 using LinqToDB;
 
 namespace Jube.Data.Repository
@@ -29,6 +28,7 @@ namespace Jube.Data.Repository
         public async Task<DotNetRuntimeMetric> InsertAsync(DotNetRuntimeMetric model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -47,77 +47,6 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             return BuildFilteredQuery(from, to, search, samplePercentage).CountAsync(token);
-        }
-
-        public async Task<PayloadStatistics> GetStatisticsAsync(DateTime? from, DateTime? to, string search,
-            double? samplePercentage, int statisticsCap, CancellationToken token = default)
-        {
-            var rows = await BuildFilteredQuery(from, to, search, samplePercentage)
-                .OrderByDescending(o => o.Id)
-                .Take(statisticsCap)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return SummaryStatistics.Build(new Dictionary<string, double[]>
-            {
-                ["processorCount"] = rows.Where(w => w.ProcessorCount.HasValue)
-                    .Select(s => (double)s.ProcessorCount!.Value).ToArray(),
-                ["gen0CollectionCount"] = rows.Where(w => w.Gen0CollectionCount.HasValue)
-                    .Select(s => (double)s.Gen0CollectionCount!.Value).ToArray(),
-                ["gen1CollectionCount"] = rows.Where(w => w.Gen1CollectionCount.HasValue)
-                    .Select(s => (double)s.Gen1CollectionCount!.Value).ToArray(),
-                ["gen2CollectionCount"] = rows.Where(w => w.Gen2CollectionCount.HasValue)
-                    .Select(s => (double)s.Gen2CollectionCount!.Value).ToArray(),
-                ["totalAllocatedBytes"] = rows.Where(w => w.TotalAllocatedBytes.HasValue)
-                    .Select(s => (double)s.TotalAllocatedBytes!.Value).ToArray(),
-                ["heapSizeBytes"] = rows.Where(w => w.HeapSizeBytes.HasValue)
-                    .Select(s => (double)s.HeapSizeBytes!.Value).ToArray(),
-                ["fragmentedBytes"] = rows.Where(w => w.FragmentedBytes.HasValue)
-                    .Select(s => (double)s.FragmentedBytes!.Value).ToArray(),
-                ["memoryLoadBytes"] = rows.Where(w => w.MemoryLoadBytes.HasValue)
-                    .Select(s => (double)s.MemoryLoadBytes!.Value).ToArray(),
-                ["highMemoryLoadThresholdBytes"] = rows.Where(w => w.HighMemoryLoadThresholdBytes.HasValue)
-                    .Select(s => (double)s.HighMemoryLoadThresholdBytes!.Value).ToArray(),
-                ["workingSetBytes"] = rows.Where(w => w.WorkingSetBytes.HasValue)
-                    .Select(s => (double)s.WorkingSetBytes!.Value).ToArray(),
-                ["privateMemoryBytes"] = rows.Where(w => w.PrivateMemoryBytes.HasValue)
-                    .Select(s => (double)s.PrivateMemoryBytes!.Value).ToArray(),
-                ["threadCount"] = rows.Where(w => w.ThreadCount.HasValue)
-                    .Select(s => (double)s.ThreadCount!.Value).ToArray(),
-                ["threadPoolWorkerThreadsAvailable"] = rows.Where(w => w.ThreadPoolWorkerThreadsAvailable.HasValue)
-                    .Select(s => (double)s.ThreadPoolWorkerThreadsAvailable!.Value).ToArray(),
-                ["threadPoolWorkerThreadsMax"] = rows.Where(w => w.ThreadPoolWorkerThreadsMax.HasValue)
-                    .Select(s => (double)s.ThreadPoolWorkerThreadsMax!.Value).ToArray(),
-                ["threadPoolCompletionPortThreadsAvailable"] = rows
-                    .Where(w => w.ThreadPoolCompletionPortThreadsAvailable.HasValue)
-                    .Select(s => (double)s.ThreadPoolCompletionPortThreadsAvailable!.Value).ToArray(),
-                ["threadPoolCompletionPortThreadsMax"] = rows
-                    .Where(w => w.ThreadPoolCompletionPortThreadsMax.HasValue)
-                    .Select(s => (double)s.ThreadPoolCompletionPortThreadsMax!.Value).ToArray(),
-                ["threadPoolQueueLength"] = rows.Where(w => w.ThreadPoolQueueLength.HasValue)
-                    .Select(s => (double)s.ThreadPoolQueueLength!.Value).ToArray(),
-                ["cpuTimeMicroseconds"] = rows.Where(w => w.CpuTimeMicroseconds.HasValue)
-                    .Select(s => (double)s.CpuTimeMicroseconds!.Value).ToArray(),
-                ["runtimeAvailableMemoryBytes"] = rows.Where(w => w.RuntimeAvailableMemoryBytes.HasValue)
-                    .Select(s => (double)s.RuntimeAvailableMemoryBytes!.Value).ToArray(),
-                ["runtimeCommittedMemoryBytes"] = rows.Where(w => w.RuntimeCommittedMemoryBytes.HasValue)
-                    .Select(s => (double)s.RuntimeCommittedMemoryBytes!.Value).ToArray(),
-                ["containerCpuLimitCores"] = rows.Where(w => w.ContainerCpuLimitCores.HasValue)
-                    .Select(s => s.ContainerCpuLimitCores!.Value).ToArray(),
-                ["containerCpuUsageMicroseconds"] = rows.Where(w => w.ContainerCpuUsageMicroseconds.HasValue)
-                    .Select(s => (double)s.ContainerCpuUsageMicroseconds!.Value).ToArray(),
-                ["containerCpuThrottledPeriods"] = rows.Where(w => w.ContainerCpuThrottledPeriods.HasValue)
-                    .Select(s => (double)s.ContainerCpuThrottledPeriods!.Value).ToArray(),
-                ["containerCpuThrottledMicroseconds"] = rows.Where(w => w.ContainerCpuThrottledMicroseconds.HasValue)
-                    .Select(s => (double)s.ContainerCpuThrottledMicroseconds!.Value).ToArray(),
-                ["containerMemoryLimitBytes"] = rows.Where(w => w.ContainerMemoryLimitBytes.HasValue)
-                    .Select(s => (double)s.ContainerMemoryLimitBytes!.Value).ToArray(),
-                ["containerMemoryUsageBytes"] = rows.Where(w => w.ContainerMemoryUsageBytes.HasValue)
-                    .Select(s => (double)s.ContainerMemoryUsageBytes!.Value).ToArray(),
-                ["gcPauseTimeMicroseconds"] = rows.Where(w => w.GcPauseTimeMicroseconds.HasValue)
-                    .Select(s => (double)s.GcPauseTimeMicroseconds!.Value).ToArray(),
-                ["lockContentionCount"] = rows.Where(w => w.LockContentionCount.HasValue)
-                    .Select(s => (double)s.LockContentionCount!.Value).ToArray()
-            });
         }
 
         private IQueryable<DotNetRuntimeMetric> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
@@ -152,6 +81,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "instance" => query.OrderByField(o => o.Instance, descending),

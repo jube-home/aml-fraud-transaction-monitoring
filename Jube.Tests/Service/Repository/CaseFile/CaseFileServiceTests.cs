@@ -23,6 +23,7 @@ using Jube.Data.Repository;
 using Jube.Service.Exceptions.Repository.CaseFile;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseFile;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -33,6 +34,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
+using Jube.Service.Repository.CaseFile.Models;
 
 namespace Jube.Test.Service.Repository.CaseFile
 {
@@ -49,7 +51,6 @@ namespace Jube.Test.Service.Repository.CaseFile
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -58,20 +59,28 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             await dbContext.GetTable<Data.Poco.CaseFile>().Where(w => createdCaseFileIds.Contains(w.Id))
                 .DeleteAsync();
+
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids1 = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids1.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids2 = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids2.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -86,6 +95,7 @@ namespace Jube.Test.Service.Repository.CaseFile
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -96,6 +106,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -108,6 +119,7 @@ namespace Jube.Test.Service.Repository.CaseFile
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -132,6 +144,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             });
 
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -174,6 +187,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             }).ConfigureAwait(false);
 
             createdCaseIds.Add(caseId);
+
             return caseId;
         }
 
@@ -195,6 +209,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             }).ConfigureAwait(false);
 
             createdCaseFileIds.Add(id);
+
             return id;
         }
 
@@ -244,6 +259,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             await using var dbContext = fx.GetDbContext();
             var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+
             var fileId = await CreateCaseFileAsync(dbContext, caseId, "account", "value",
                 fx.Seed.UserWithPermission);
 
@@ -270,8 +286,10 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var result = await service.UploadAsync([NonEmptyFile("report.pdf", "%PDF-1.4 test")], "account",
                 "acc-value", caseId);
+
             result = result.Required();
             createdCaseFileIds.Add(result.Id);
 
@@ -296,8 +314,10 @@ namespace Jube.Test.Service.Repository.CaseFile
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result = await service.UploadAsync(
                 [EmptyFile(), NonEmptyFile("first.txt"), NonEmptyFile("second.txt")], "account", "value", caseId);
+
             createdCaseFileIds.Add(result.Required().Id);
 
             result.Required().Name.Should().Be("first.txt");
@@ -331,6 +351,7 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.UploadAsync([NonEmptyFile()], caseKey, caseKeyValue, 1));
+
             ex.Result.Errors.Should().Contain(e => e.PropertyName == "caseKey");
         }
 
@@ -342,6 +363,7 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.UploadAsync([NonEmptyFile()], "account", "", 1));
+
             ex.Result.Errors.Should().Contain(e => e.PropertyName == "caseKeyValue");
         }
 
@@ -355,6 +377,7 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.UploadAsync([NonEmptyFile()], "account", "value", caseId));
+
             ex.Result.Errors.Should().Contain(e => e.PropertyName == "caseId");
         }
 
@@ -399,6 +422,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             await using var dbContext = fx.GetDbContext();
             var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+
             var fileId = await CreateCaseFileAsync(dbContext, caseId, "account", "value",
                 fx.Seed.UserWithPermission);
 
@@ -444,6 +468,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
             var content = Encoding.UTF8.GetBytes("ZzTest binary content");
+
             var fileId = await CreateCaseFileAsync(dbContext, caseId, "account", "value",
                 fx.Seed.UserWithPermission, content);
 
@@ -483,6 +508,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var fileId = await CreateCaseFileAsync(dbContext, caseId, "account", caseKeyValue,
                 fx.Seed.UserWithPermission);
 
@@ -511,10 +537,13 @@ namespace Jube.Test.Service.Repository.CaseFile
         public async Task GetByCaseKeyValueRequiresCaseWorkflowRoleNotJustTenantPermissionAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             await CreateCaseFileAsync(dbContext, caseId, "account", caseKeyValue,
                 fx.Seed.UserWithPermissionNoApproval);
 
@@ -531,6 +560,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var fileId = await CreateCaseFileAsync(dbContext, caseId, "account", caseKeyValue,
                 fx.Seed.UserWithPermission);
 
@@ -636,6 +666,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             await service.GetByCaseKeyValueAsync("account", "no-such-value");
 
             var entry = auditLog.Entries.Should().ContainSingle().Subject;
+
             entry.Message.Should().Contain("area=CaseFile").And.Contain("op=GetByCaseKeyValue")
                 .And.Contain("outcome=ok");
         }
@@ -644,6 +675,7 @@ namespace Jube.Test.Service.Repository.CaseFile
         public async Task UploadWithBlankCaseKeyUsesFrenchMessageUnderFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
@@ -671,7 +703,6 @@ namespace Jube.Test.Service.Repository.CaseFile
 
             names.Should().Contain("CaseFileRemove").And.Contain("CaseFileListByCaseKeyValue");
             names.Should().OnlyHaveUniqueItems();
-            names.Should().NotContain("CaseFileUpload");
         }
     }
 }

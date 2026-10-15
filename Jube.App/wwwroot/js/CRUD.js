@@ -162,7 +162,7 @@ function HandleDataSourceError(e) {
             DisplayServerValidationErrors(JSON.parse(jqXHR.responseText));
             return;
         } catch (ex) {
-            // fall through to the generic failure message below
+            //ignore
         }
     }
 
@@ -184,7 +184,6 @@ function clearFieldErrorStyles() {
         const $el = $(this);
         $el.removeClass("field-error-highlight").removeAttr("title");
 
-        // Destroy bootstrap tooltip if it exists
         if ($el.data('bs.tooltip')) {
             $el.tooltip('dispose');
         }
@@ -194,7 +193,6 @@ function clearFieldErrorStyles() {
 function highlightFieldError(fieldId, errorMessage) {
     let $field = $(`#${fieldId}`);
 
-    // Handle radio buttons
     const $radios = $(`input[name='${fieldId}'][type='radio']`);
     if ($radios.length > 1) {
         $radios.each(function () {

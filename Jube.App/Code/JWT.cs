@@ -27,6 +27,7 @@ namespace Jube.App.Code
         {
             var now = utcNow ?? DateTime.UtcNow;
             var sessionStart = sessionStartUtc ?? now;
+
             var descriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new List<Claim>

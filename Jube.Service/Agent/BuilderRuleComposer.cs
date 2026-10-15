@@ -12,8 +12,10 @@
  */
 
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
+using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 using Jube.Data.QueryBuilder;
+using Jube.Data.QueryBuilder.Models;
 using Jube.Dto.RuleExecution;
 using Jube.Dto.Validation;
 using Jube.Parser;
@@ -31,9 +33,11 @@ namespace Jube.Service.Agent
             var completions = await new GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery(dbContext,
                     tenantRegistryId)
                 .ExecuteAsync(entityAnalysisModelId, ruleParseType, false, token).ConfigureAwait(false);
+
             var fields = BuilderRuleTranslator.Fields(completions.Select(c => (c.Name, c.JQueryBuilderDataType)));
 
             var parsed = BuilderProfile.Parse(json ?? string.Empty, fields, BuilderTarget.RuleText);
+
             if (!parsed.Valid)
             {
                 return new BuilderRuleResultDto
@@ -44,8 +48,10 @@ namespace Jube.Service.Agent
             }
 
             var ruleText = BuilderRuleTranslator.Translate(parsed.Group);
+
             var environment = await new GetRuleParseEnvironmentQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(entityAnalysisModelId, ruleParseType, token).ConfigureAwait(false);
+
             var compiled = RuleParse.Execute(ruleText, ruleParseType, environment, log,
                 RuleParse.DefaultReferences());
 

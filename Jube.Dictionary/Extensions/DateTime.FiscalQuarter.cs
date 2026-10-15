@@ -24,6 +24,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var monthsIntoYear = (@this.Month - fiscalYearStartMonth + 12) % 12;
+
             return monthsIntoYear / 3 + 1;
         }
     }

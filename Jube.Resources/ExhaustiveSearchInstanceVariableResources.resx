@@ -42,4 +42,13 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>You must be signed in to a tenant to perform this action.</value>
   </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The variable was not found.</value>
+  </data>
+    <data name="ReallocateNameInvalid" xml:space="preserve">
+    <value>A variable name must start with a letter and contain only letters, digits and underscores, up to 64 characters.</value>
+  </data>
+    <data name="ReallocateProcessingTypeInvalid" xml:space="preserve">
+    <value>The processing type must be Payload, Dictionary, TtlCounter, Sanction, Abstraction or AbstractionCalculation.</value>
+  </data>
 </root>

@@ -100,8 +100,10 @@ namespace Jube.Test.ResilientNpgsql
         }
 
         [Theory]
-        [InlineData("The connection pool has been exhausted, either raise MaxPoolSize (currently 20) or Timeout (currently 15 seconds)")]
-        [InlineData("The connection pool has been exhausted, either raise MaxPoolSize (currently 400) or Timeout (currently 90 seconds)")]
+        [InlineData(
+            "The connection pool has been exhausted, either raise MaxPoolSize (currently 20) or Timeout (currently 15 seconds)")]
+        [InlineData(
+            "The connection pool has been exhausted, either raise MaxPoolSize (currently 400) or Timeout (currently 90 seconds)")]
         [InlineData("Timeout during connection attempt")]
         [InlineData("")]
         public void RecognisingAnAcquisitionTimeoutNeverReadsTheMessage(string message)
@@ -121,6 +123,7 @@ namespace Jube.Test.ResilientNpgsql
         public void ABareTimeoutIsNotAConnectionAcquisitionTimeout()
         {
             PostgresErrorClassification.IsConnectionAcquisitionTimeout(new TimeoutException()).Should().BeFalse();
+
             PostgresErrorClassification.IsConnectionAcquisitionTimeout(new NpgsqlException("broken pipe"))
                 .Should().BeFalse();
         }

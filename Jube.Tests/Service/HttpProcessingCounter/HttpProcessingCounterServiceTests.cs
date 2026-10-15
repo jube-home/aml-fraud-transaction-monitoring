@@ -90,6 +90,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
                 }).ConfigureAwait(false);
 
             createdCounterIds.Add(id);
+
             return instance;
         }
 
@@ -234,15 +235,19 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "all", sortDirection: "asc");
+
             var ascendingMine = ascending.Rows
                 .Where(r => r.Instance == instanceLow || r.Instance == instanceMid || r.Instance == instanceHigh)
                 .ToList();
+
             ascendingMine.Select(r => r.All).Should().Equal(10, 20, 30);
 
             var descending = await service.ListAsync(sortField: "all", sortDirection: "desc");
+
             var descendingMine = descending.Rows
                 .Where(r => r.Instance == instanceLow || r.Instance == instanceMid || r.Instance == instanceHigh)
                 .ToList();
+
             descendingMine.Select(r => r.All).Should().Equal(30, 20, 10);
         }
 
@@ -257,13 +262,17 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "instance", sortDirection: "asc");
+
             var ascendingMine = ascending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
                 .ToList();
+
             ascendingMine.Select(r => r.Instance).Should().Equal(instanceA, instanceB);
 
             var descending = await service.ListAsync(sortField: "instance", sortDirection: "desc");
+
             var descendingMine = descending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
                 .ToList();
+
             descendingMine.Select(r => r.Instance).Should().Equal(instanceB, instanceA);
         }
 
@@ -318,6 +327,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var from = DateTime.UtcNow.AddMinutes(-1);
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateCounterAsync(dbContext, 1);
@@ -341,6 +351,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(
                 "model", "asynchronousModel", "tag", "error", "sanction", "exhaustive", "all");
+
             result.Statistics.Columns["all"].Histogram.Should().NotBeNull();
         }
     }

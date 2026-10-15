@@ -13,7 +13,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
@@ -21,7 +24,6 @@ namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
     public class EngineLoadedCountDto
     {
         [Description("The kind of entity.")] public string Kind { get; set; } = string.Empty;
-
         [Description("How many are loaded.")] public int Count { get; set; }
 
         [Description("The entities loaded, ordered by name.")]

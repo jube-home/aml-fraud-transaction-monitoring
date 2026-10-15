@@ -15,12 +15,12 @@ namespace Jube.Dictionary.Extensions
         {
             public Boolean IsMatch(String pattern)
             {
-                return Regex.IsMatch(input, pattern, RegexOptions.None, RegexSupport.MatchTimeout);
+                return Regex.IsMatch(input, pattern, RegexOptions.None, RegexSupport.matchTimeout);
             }
 
             public Boolean IsMatch(String pattern, RegexOptions options)
             {
-                return Regex.IsMatch(input, pattern, options, RegexSupport.MatchTimeout);
+                return Regex.IsMatch(input, pattern, options, RegexSupport.matchTimeout);
             }
         }
     }

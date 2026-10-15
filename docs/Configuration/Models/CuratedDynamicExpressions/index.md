@@ -23,7 +23,7 @@ managed today. Once curated, it is used from a rule exactly like any other exten
 
 ``` vb
 If Payload.Email.IsGmailEmail Then
-    Return Matched
+    Return True
 End If
 ```
 

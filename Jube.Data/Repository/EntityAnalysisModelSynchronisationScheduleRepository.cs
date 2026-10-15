@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -41,7 +42,8 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelSynchronisationSchedule>> GetAsync(CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelSynchronisationSchedule>> GetAsync(
+            CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelSynchronisationSchedule
                 .Where(w => w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue).ToListAsync(token);
@@ -55,7 +57,8 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(token);
         }
 
-        public async Task<EntityAnalysisModelSynchronisationSchedule> InsertAsync(EntityAnalysisModelSynchronisationSchedule model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelSynchronisationSchedule> InsertAsync(
+            EntityAnalysisModelSynchronisationSchedule model, CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.TenantRegistryId = tenantRegistryId;
@@ -67,6 +70,7 @@ namespace Jube.Data.Repository
             }
 
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
     }

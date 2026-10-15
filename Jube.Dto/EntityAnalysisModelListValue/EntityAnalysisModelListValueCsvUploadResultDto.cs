@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.EntityAnalysisModelListValue
 {
     [Description("The recorded outcome of one uploaded CSV file.")]

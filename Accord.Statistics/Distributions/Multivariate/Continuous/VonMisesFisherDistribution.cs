@@ -53,164 +53,97 @@
 //    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
+using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
+
 namespace Accord.Statistics.Distributions.Multivariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Math.Decompositions;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Math.Random;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Von-Mises Fisher distribution.
+    ///     Von-Mises Fisher distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In directional statistics, the von Mises–Fisher distribution is a probability distribution 
-    ///   on the (p-1)-dimensional sphere in R^p. If p = 2 the distribution reduces to the <see cref="VonMisesDistribution">
-    ///   von Mises distribution on the circle</see>.</para>
-    ///   
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       Wikipedia, The Free Encyclopedia. Von Mises-Fisher Distribution. Available on:
-    ///       <a href=" https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">
-    ///        https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         In directional statistics, the von Mises–Fisher distribution is a probability distribution
+    ///         on the (p-1)-dimensional sphere in R^p. If p = 2 the distribution reduces to the
+    ///         <see cref="VonMisesDistribution">
+    ///             von Mises distribution on the circle
+    ///         </see>
+    ///         .
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     Wikipedia, The Free Encyclopedia. Von Mises-Fisher Distribution. Available on:
+    ///                     <a href=" https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution">
+    ///                         https://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="VonMisesDistribution"/>
-    /// 
+    /// <seealso cref="VonMisesDistribution" />
     [Serializable]
     public class VonMisesFisherDistribution : MultivariateContinuousDistribution,
         ISampleableDistribution<double[]>
     {
+        private double constant;
+
+        private double kappa; // κ (kappa)
 
         // Distribution parameters
         private double[] mean; // μ (mu)
-        private double kappa;  // κ (kappa)
-
-        private double constant;
-
 
         /// <summary>
-        ///   Constructs a Von-Mises Fisher distribution with unit mean.
+        ///     Constructs a Von-Mises Fisher distribution with unit mean.
         /// </summary>
-        /// 
         /// <param name="dimension">The number of dimensions in the distribution.</param>
         /// <param name="concentration">The concentration value κ (kappa).</param>
-        /// 
         public VonMisesFisherDistribution(int dimension, double concentration)
             : base(dimension)
         {
             if (concentration < 0)
-                throw new ArgumentOutOfRangeException("concentration", "Concentration parameter kappa must be non-negative.");
+            {
+                throw new ArgumentOutOfRangeException("concentration",
+                    "Concentration parameter kappa must be non-negative.");
+            }
 
-            for (int i = 0; i < mean.Length; i++)
-                mean[i] = 1 / Math.Sqrt(mean.Length);
+            for (var i = 0; i < mean.Length; i++)
+            {
+                mean[i] = 1 / System.Math.Sqrt(mean.Length);
+            }
         }
 
         /// <summary>
-        ///   Constructs a Von-Mises Fisher distribution with unit mean.
+        ///     Constructs a Von-Mises Fisher distribution with unit mean.
         /// </summary>
-        /// 
         /// <param name="mean">The mean direction vector (with unit length).</param>
         /// <param name="concentration">The concentration value κ (kappa).</param>
-        /// 
         public VonMisesFisherDistribution(double[] mean, double concentration)
             : base(mean.Length)
         {
             if (concentration < 0)
-                throw new ArgumentOutOfRangeException("concentration", "Concentration parameter kappa must be non-negative.");
+            {
+                throw new ArgumentOutOfRangeException("concentration",
+                    "Concentration parameter kappa must be non-negative.");
+            }
 
-            if (!Norm.Euclidean(mean).IsEqual(1, 1e-10))
+            if (!mean.Euclidean().IsEqual(1, 1e-10))
+            {
                 throw new ArgumentOutOfRangeException("mean", "The mean vector must have unit length.");
+            }
 
             this.mean = mean;
-            this.kappa = concentration;
+            kappa = concentration;
 
-            int p = Dimension;
-            double num = Math.Pow(concentration, p / 2 - 1);
-            double den = Math.Pow(2 * Math.PI, p / 2) * Bessel.I(p / 2 - 1, concentration);
-            this.constant = num / den;
+            var p = Dimension;
+            var num = System.Math.Pow(concentration, p / 2 - 1);
+            var den = System.Math.Pow(2 * System.Math.PI, p / 2) * Bessel.I(p / 2 - 1, concentration);
+            constant = num / den;
         }
-
-
-        /// <summary>
-        ///   Gets the mean for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   A vector containing the mean values for the distribution.
-        /// </value>
-        /// 
-        public override double[] Mean
-        {
-            get { return mean; }
-        }
-
-        /// <summary>
-        ///   Not supported.
-        /// </summary>
-        /// 
-        public override double[] Variance
-        {
-            get { return null; }
-        }
-
-        /// <summary>
-        ///   Not supported.
-        /// </summary>
-        /// 
-        public override double[,] Covariance
-        {
-            get { return null; }
-        }
-
-        /// <summary>
-        ///   Not supported.
-        /// </summary>
-        /// 
-        protected internal override double InnerDistributionFunction(params double[] x)
-        {
-            throw new NotSupportedException();
-        }
-
-
-        /// <summary>
-        ///   Gets the probability density function (pdf) for this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="x">
-        ///   A single point in the distribution range. For a univariate distribution, this should be
-        ///   a  single double value. For a multivariate distribution, this should be a double array.
-        /// </param>
-        ///   
-        /// <returns>
-        ///   The probability of <c>x</c> occurring in the current distribution.
-        /// </returns>
-        /// 
-        /// <exception cref="DimensionMismatchException">x;The vector should have the same dimension as the distribution.</exception>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerProbabilityDensityFunction(params double[] x)
-        {
-            if (x.Length != Dimension)
-                throw new DimensionMismatchException("x", "The vector should have the same dimension as the distribution.");
-
-            double[] z = x.Normalize(Norm.Euclidean);
-            double d = mean.Dot(z);
-            return constant * Math.Exp(kappa * d);
-        }
-
 
         private VonMisesFisherDistribution(int dimension)
             : base(dimension)
@@ -218,16 +151,32 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
+        /// <value>
+        ///     A vector containing the mean values for the distribution.
+        /// </value>
+        public override double[] Mean => mean;
+
+        /// <summary>
+        ///     Not supported.
+        /// </summary>
+        public override double[] Variance => null;
+
+        /// <summary>
+        ///     Not supported.
+        /// </summary>
+        public override double[,] Covariance => null;
+
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
-            var clone = new VonMisesFisherDistribution(this.Dimension);
+            var clone = new VonMisesFisherDistribution(Dimension);
             clone.constant = constant;
             clone.mean = (double[])mean.Clone();
             clone.kappa = kappa;
@@ -235,26 +184,110 @@ namespace Accord.Statistics.Distributions.Multivariate
             return clone;
         }
 
-
         /// <summary>
-        ///   Returns a <see cref="System.String" /> that represents this instance.
+        ///     Generates a random vector of observations from the current distribution.
         /// </summary>
-        /// 
-        /// <param name="format">The format.</param>
-        /// <param name="formatProvider">The format provider.</param>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString(string format, IFormatProvider formatProvider)
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <param name="result">The location where to store the samples.</param>
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        public override double[][] Generate(int samples, double[][] result, Random source)
         {
-            return String.Format(formatProvider, "VonMises-Fisher(X; μ, κ = {0})", kappa);
+            if (mean.Length <= 2)
+            {
+                throw new InvalidOperationException();
+            }
+
+            // Based on the function randVMF, available in the
+            // SphericalDistributionsRand repository under BSD license,
+            // originally written by Yu-Hui Chen,  University of Michigan.
+            // https://github.com/yuhuichen1015/SphericalDistributionsRand
+
+            var p = mean.Length;
+            var tmpMu = Vector.Create(p, new[] { 1.0 });
+
+            var t = randomDirection(samples, kappa, p, source);
+
+            var RandSphere = UniformSphereDistribution.Random(samples, p - 1, source);
+
+            for (var i = 0; i < samples; i++)
+            {
+                for (var j = 0; j < tmpMu.Length; j++)
+                {
+                    result[i][j] = t[i] * tmpMu[j];
+                }
+            }
+
+            for (var i = 0; i < samples; i++)
+            {
+                for (var j = 0; j < RandSphere[i].Length; j++)
+                {
+                    result[i][j + 1] += System.Math.Sqrt(1 - t[i] * t[i]) * RandSphere[i][j];
+                }
+            }
+
+            // Rotate the distribution to the right direction
+            var Otho = mean.Null();
+            var Rot = Otho.InsertColumn(mean, 0);
+
+            result = Rot.DotWithTransposed(result).Transpose();
+            return result;
         }
 
-        VonMisesFisherDistribution Uniform(double[] mean)
+        /// <summary>
+        ///     Not supported.
+        /// </summary>
+        protected internal override double InnerDistributionFunction(double[] x)
         {
-            return new VonMisesFisherDistribution(mean, concentration: 0);
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        ///     Gets the probability density function (pdf) for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">
+        ///     A single point in the distribution range. For a univariate distribution, this should be
+        ///     a  single double value. For a multivariate distribution, this should be a double array.
+        /// </param>
+        /// <returns>
+        ///     The probability of <c>x</c> occurring in the current distribution.
+        /// </returns>
+        /// <exception cref="DimensionMismatchException">x;The vector should have the same dimension as the distribution.</exception>
+        /// <remarks>
+        ///     The Probability Density Function (PDF) describes the probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        protected internal override double InnerProbabilityDensityFunction(double[] x)
+        {
+            if (x.Length != Dimension)
+            {
+                throw new DimensionMismatchException("x",
+                    "The vector should have the same dimension as the distribution.");
+            }
+
+            var z = x.Normalize(Norm.Euclidean);
+            var d = mean.Dot(z);
+            return constant * System.Math.Exp(kappa * d);
+        }
+
+        /// <summary>
+        ///     Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format(formatProvider, "VonMises-Fisher(X; μ, κ = {0})", kappa);
+        }
+
+        private VonMisesFisherDistribution Uniform(double[] mean)
+        {
+            return new VonMisesFisherDistribution(mean, 0);
         }
 
         private double density(double x)
@@ -264,17 +297,17 @@ namespace Accord.Statistics.Distributions.Multivariate
             // originally written by Yu-Hui Chen,  University of Michigan.
             // https://github.com/yuhuichen1015/SphericalDistributionsRand
 
-            int p = Dimension;
-            double g1 = Gamma.Function((p - 1.0) / 2.0);
-            double g2 = Gamma.Function(1.0 / 2.0);
-            double bi = Bessel.I(p / 2 - 1, kappa);
-            double num = Math.Pow(kappa / 2.0, p / 2.0 - 1.0);
-            double den = g1 * g2 * bi;
-            double c = num / den;
+            var p = Dimension;
+            var g1 = Gamma.Function((p - 1.0) / 2.0);
+            var g2 = Gamma.Function(1.0 / 2.0);
+            var bi = Bessel.I(p / 2 - 1, kappa);
+            var num = System.Math.Pow(kappa / 2.0, p / 2.0 - 1.0);
+            var den = g1 * g2 * bi;
+            var c = num / den;
 
-            double a = Math.Exp(kappa * x);
-            double b = Math.Pow(1.0 - x * x, (p - 3.0) / 2.0);
-            double y = c * a * b;
+            var a = System.Math.Exp(kappa * x);
+            var b = System.Math.Pow(1.0 - x * x, (p - 3.0) / 2.0);
+            var y = c * a * b;
             return y;
         }
 
@@ -286,32 +319,32 @@ namespace Accord.Statistics.Distributions.Multivariate
             // https://github.com/yuhuichen1015/SphericalDistributionsRand
 
             double N = samples;
-            double min_thresh = 1.0 / (5.0 * N);
+            var min_thresh = 1.0 / (5.0 * N);
 
-            double[] xx = Vector.Range(-1.0, 1.0, 0.000001);
-            double[] yy = xx.Apply(density);
-            double[] cumyy = yy.CumulativeSum().Multiply(xx[1] - xx[0]);
+            var xx = Vector.Range(-1.0, 1.0, 0.000001);
+            var yy = xx.Apply(density);
+            var cumyy = yy.CumulativeSum().Multiply(xx[1] - xx[0]);
 
-            double leftBound = xx.Get(cumyy.Find(x => x > min_thresh)[0]);
+            var leftBound = xx.Get(cumyy.Find(x => x > min_thresh)[0]);
 
             // Fin the left bound
             xx = Vector.Interval(leftBound, 1, 1000);
             yy = xx.Apply(density);
 
-            double M = yy.Max();
-            double[] t = new double[samples];
+            var M = yy.Max();
+            var t = new double[samples];
 
-            for (int i = 0; i < N; i++)
+            for (var i = 0; i < N; i++)
             {
                 while (true)
                 {
-                    double u1 = source.NextDouble();
-                    double u2 = source.NextDouble();
+                    var u1 = source.NextDouble();
+                    var u2 = source.NextDouble();
 
-                    double x = u1 * (1 - leftBound) + leftBound;
-                    double h = density(x);
+                    var x = u1 * (1 - leftBound) + leftBound;
+                    var h = density(x);
 
-                    double draw = u2 * M;
+                    var draw = u2 * M;
                     if (draw <= h)
                     {
                         t[i] = x;
@@ -321,50 +354,6 @@ namespace Accord.Statistics.Distributions.Multivariate
             }
 
             return t;
-        }
-
-        /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
-        /// </summary>
-        /// 
-        /// <param name="samples">The number of samples to generate.</param>
-        /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        /// 
-        /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
-        public override double[][] Generate(int samples, double[][] result, Random source)
-        {
-            if (mean.Length <= 2)
-                throw new InvalidOperationException();
-
-            // Based on the function randVMF, available in the
-            // SphericalDistributionsRand repository under BSD license,
-            // originally written by Yu-Hui Chen,  University of Michigan.
-            // https://github.com/yuhuichen1015/SphericalDistributionsRand
-
-            int p = mean.Length;
-            double[] tmpMu = Vector.Create(p, new[] { 1.0 });
-
-            double[] t = randomDirection(samples, kappa, p, source);
-
-            double[][] RandSphere = UniformSphereDistribution.Random(samples, p - 1, source);
-
-            for (int i = 0; i < samples; i++)
-                for (int j = 0; j < tmpMu.Length; j++)
-                    result[i][j] = t[i] * tmpMu[j];
-
-            for (int i = 0; i < samples; i++)
-                for (int j = 0; j < RandSphere[i].Length; j++)
-                    result[i][j + 1] += Math.Sqrt(1 - t[i] * t[i]) * RandSphere[i][j];
-
-            // Rotate the distribution to the right direction
-            double[][] Otho = Matrix.Null(mean);
-            double[][] Rot = Otho.InsertColumn(mean, index: 0);
-
-            result = Rot.DotWithTransposed(result).Transpose();
-            return result;
         }
     }
 }

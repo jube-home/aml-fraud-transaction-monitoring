@@ -13,6 +13,11 @@
 
 using System.Collections.Generic;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.App.Code.Waf.Models
 {
     public sealed record WafInspectionResult(bool Blocked, IReadOnlyList<WafMatch> Matches)

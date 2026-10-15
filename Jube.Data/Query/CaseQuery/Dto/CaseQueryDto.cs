@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Data.Query.CaseQuery.Dto
 {
     using System;
@@ -40,8 +45,10 @@ namespace Jube.Data.Query.CaseQuery.Dto
         public string ForeColor { get; set; }
         public string BackColor { get; set; }
         public string Json { get; set; }
+
         // ReSharper disable once CollectionNeverQueried.Global
         public List<GetCaseByIdFieldEntryDto> FormattedPayload { get; set; }
+
         // ReSharper disable once CollectionNeverQueried.Global
         public List<GetCaseByIdActivationDto> Activation { get; set; }
         public bool EnableVisualisation { get; set; }

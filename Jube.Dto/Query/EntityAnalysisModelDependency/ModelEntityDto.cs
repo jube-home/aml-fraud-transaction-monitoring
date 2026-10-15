@@ -13,7 +13,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Query.EntityAnalysisModelDependency
 {
@@ -24,7 +27,6 @@ namespace Jube.Dto.Query.EntityAnalysisModelDependency
         public string Kind { get; set; } = string.Empty;
 
         [Description("The entity's id.")] public int Id { get; set; }
-
         [Description("The entity's name.")] public string Name { get; set; } = string.Empty;
 
         [Description("Whether the entity is active.")]

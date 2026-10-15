@@ -255,10 +255,12 @@ namespace Jube.Test.Service.PostgresMetric
 
             var ascending = await service.ListAsync(search: instance, sortField: "activeConnections",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ActiveConnections).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: instance, sortField: "activeConnections",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ActiveConnections).Should().Equal(3000, 2000, 1000);
         }
 
@@ -274,6 +276,7 @@ namespace Jube.Test.Service.PostgresMetric
             await CreateSampleAsync(dbContext, instance, 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "activeConnections",
                 sortDirection: ascendingKeyword);
 
@@ -289,6 +292,7 @@ namespace Jube.Test.Service.PostgresMetric
             await CreateSampleAsync(dbContext, instance, 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "activeConnections",
                 sortDirection: "banana");
 
@@ -316,6 +320,7 @@ namespace Jube.Test.Service.PostgresMetric
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateSampleAsync(dbContext, instance, i);

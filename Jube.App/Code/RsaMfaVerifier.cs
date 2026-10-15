@@ -15,13 +15,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Mfa;
+using Jube.Mfa.Interfaces;
 using Jube.Mfa.Rsa;
-using Jube.Service.Authentication;
+using Jube.Mfa.Rsa.Models;
+using Jube.Service.Authentication.Interfaces;
 using log4net;
 
 namespace Jube.App.Code
 {
-    public sealed class RsaMfaVerifier(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log) : IMfaVerifier
+    public sealed class RsaMfaVerifier(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        : IMfaVerifier
     {
         public async Task<bool> VerifyAsync(string userName, string code, CancellationToken token = default)
         {

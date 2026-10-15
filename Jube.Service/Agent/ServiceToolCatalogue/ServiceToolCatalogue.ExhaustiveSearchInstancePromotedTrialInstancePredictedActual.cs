@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstancePromotedTrialInstancePredictedActual(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstancePromotedTrialInstancePredictedActualGet", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns predicted, actual and error values for the promoted trial instance of an exhaustive search instance.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstancePromotedTrialInstancePredictedActualGet", OperationKind.Read, true,
+                    false,
+                    "Returns predicted, actual and error values for the promoted trial instance of an exhaustive search instance.",
+                    ExhaustiveSearchInstancePromotedTrialInstancePredictedActualService.RequiredPermissions)
+            ]);
+        }
     }
 }

@@ -1,0 +1,89 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Linq;
+using Jube.Analytics;
+
+namespace Jube.Engine.AdvancedAnalytics.DimensionReduction
+{
+    internal sealed class PrincipalComponentPipeline
+    {
+        private readonly double[][] components;
+        private readonly double[] fill;
+        private readonly double[] means;
+        private readonly double[] standardDeviations;
+
+        public PrincipalComponentPipeline(bool standardise, double[] fill, double[] means, double[] standardDeviations,
+            double[][] components)
+        {
+            Standardise = standardise;
+            this.fill = (double[])fill.Clone();
+            this.means = (double[])means.Clone();
+            this.standardDeviations = (double[])standardDeviations.Clone();
+            this.components = [.. components.Select(c => (double[])c.Clone())];
+        }
+
+        public int InputCount => fill.Length;
+        public int ComponentCount => components.Length;
+        public bool Standardise { get; }
+        public double[] Fill => (double[])fill.Clone();
+        public double[] Means => (double[])means.Clone();
+        public double[] StandardDeviations => (double[])standardDeviations.Clone();
+        public double[][] Components => [.. components.Select(c => (double[])c.Clone())];
+
+        public double[] Prepare(double[] row)
+        {
+            var count = fill.Length;
+
+            if (row.Length != count)
+            {
+                throw new ArgumentException($"A row has {row.Length} values but the model expects {count}.");
+            }
+
+            var prepared = new double[count];
+
+            for (var j = 0; j < count; j++)
+            {
+                var value = double.IsFinite(row[j]) ? row[j] : fill[j];
+
+                prepared[j] = Standardise
+                    ? Standardisation.ZScore(value, means[j], standardDeviations[j])
+                    : value - means[j];
+            }
+
+            return prepared;
+        }
+
+        public double[] Project(double[] row)
+        {
+            var prepared = Prepare(row);
+            var scores = new double[components.Length];
+
+            for (var c = 0; c < components.Length; c++)
+            {
+                var vector = components[c];
+                var sum = 0d;
+
+                for (var j = 0; j < prepared.Length; j++)
+                {
+                    sum += vector[j] * prepared[j];
+                }
+
+                scores[c] = sum;
+            }
+
+            return scores;
+        }
+    }
+}

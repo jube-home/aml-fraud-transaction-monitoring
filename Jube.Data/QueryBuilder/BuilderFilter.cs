@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
+
 namespace Jube.Data.QueryBuilder
 {
     using System;
@@ -32,14 +34,16 @@ namespace Jube.Data.QueryBuilder
         {
             ArgumentNullException.ThrowIfNull(type);
 
-            return fieldCache.GetOrAdd(type, t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-                .Select(p => (Property: p, Type: TypeOf(p.PropertyType)))
-                .Where(p => p.Type != null)
-                .Select(p => new FilterField(p.Property.Name, p.Type!.Value,
-                    p.Property.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty, p.Property))
-                .OrderBy(f => f.Id, StringComparer.Ordinal)
-                .ToList());
+            return fieldCache.GetOrAdd(type, t =>
+            [
+                .. t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+                    .Select(p => (Property: p, Type: TypeOf(p.PropertyType)))
+                    .Where(p => p.Type != null)
+                    .Select(p => new FilterField(p.Property.Name, p.Type!.Value,
+                        p.Property.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty, p.Property))
+                    .OrderBy(f => f.Id, StringComparer.Ordinal)
+            ]);
         }
 
         public static IReadOnlyDictionary<string, BuilderField> Catalogue(Type type)
@@ -52,11 +56,14 @@ namespace Jube.Data.QueryBuilder
             ArgumentNullException.ThrowIfNull(group);
 
             var properties = Fields(typeof(T)).ToDictionary(f => f.Id, f => f.Property, StringComparer.Ordinal);
+
             var predicate = CompileGroup(group, id =>
             {
                 var property = properties[id];
-                return row => property.GetValue(row);
+
+                return property.GetValue;
             });
+
             return row => predicate(row);
         }
 
@@ -65,8 +72,9 @@ namespace Jube.Data.QueryBuilder
             ArgumentNullException.ThrowIfNull(group);
 
             var predicate = CompileGroup(group, id => row =>
-                ((IReadOnlyDictionary<string, object>)row).TryGetValue(id, out var value) ? value : null);
-            return values => predicate(values);
+                ((IReadOnlyDictionary<string, object>)row).GetValueOrDefault(id));
+
+            return predicate;
         }
 
         private static Func<object, bool> CompileGroup(BuilderGroup group,
@@ -89,6 +97,7 @@ namespace Jube.Data.QueryBuilder
         private static Func<object, bool> CompileRule(BuilderRule rule, Func<object, object> read)
         {
             var definition = BuilderOperators.ByType[rule.Operator];
+
             if (!definition.Evaluators.TryGetValue(rule.Type, out var evaluate) ||
                 rule.Arguments.Any(a => a.IsField))
             {
@@ -100,6 +109,7 @@ namespace Jube.Data.QueryBuilder
             return row =>
             {
                 var value = Value(rule.Type, read(row));
+
                 if (value == null)
                 {
                     return rule.Operator is BuilderProfile.IsEmpty or BuilderProfile.IsNull;
@@ -141,6 +151,7 @@ namespace Jube.Data.QueryBuilder
                 };
 
             var items = value.Literals.Select(l => Literal(type, kind, l)).ToList();
+
             return value.Argument.Many ? items : items[0];
         }
 
@@ -204,6 +215,7 @@ namespace Jube.Data.QueryBuilder
         private static BuilderFieldType? TypeOf(Type type)
         {
             var underlying = Nullable.GetUnderlyingType(type) ?? type;
+
             if (underlying == typeof(string) || underlying == typeof(char))
             {
                 return BuilderFieldType.String;

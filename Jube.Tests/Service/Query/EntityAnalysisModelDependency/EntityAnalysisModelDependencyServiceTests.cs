@@ -48,12 +48,14 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var model = await new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission).InsertAsync(
                 new Data.Poco.EntityAnalysisModel
                 {
                     Name = $"{DatabaseFixture.Prefix}Dep{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     Active = 1, Locked = 0, Deleted = 0
                 });
+
             (modelId, modelGuid) = (model.Id, model.Guid);
 
             accountIdField = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
@@ -61,11 +63,13 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
                 EntityAnalysisModelId = modelId, Name = "AccountId", DataTypeId = 1, XPath = "$.AccountId",
                 Active = 1, Cache = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             ttlCounterId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId, Name = "PerAccount", TtlCounterDataName = "AccountId",
                 TtlCounterInterval = "d", TtlCounterValue = 1, Active = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             activationRuleId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelActivationRule
                 {
@@ -73,12 +77,14 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
                     CoderRuleScript = "If (TTLCounter.PerAccount > 3) Then\n   Return True\nEnd If",
                     Active = 1, Deleted = 0, Guid = Guid.NewGuid()
                 });
+
             await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelActivationRule
             {
                 EntityAnalysisModelId = modelId, Name = "Dangling", RuleScriptTypeId = 2,
                 CoderRuleScript = "If (TTLCounter.Missing > 3) Then\n   Return True\nEnd If",
                 Active = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             unusedListId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelList
             {
                 EntityAnalysisModelGuid = modelGuid, Name = "Unused", Active = 1, Deleted = 0, Guid = Guid.NewGuid()
@@ -88,6 +94,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid)
                 .DeleteAsync();
@@ -95,10 +102,13 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
         }
 
@@ -121,8 +131,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
             impact.Entity!.Name.Should().Be("AccountId");
             impact.DirectDependents.Should().Be(1);
             impact.DeleteBlocked.Should().BeTrue();
+
             impact.Dependents.Should().ContainSingle(d => d.Depth == 1 && d.Dependent.Kind == "TtlCounter" &&
                                                           d.DependencyKind == "TtlCounterDataName" && d.Via == null);
+
             impact.Dependents.Should().ContainSingle(d => d.Depth == 2 && d.Dependent.Name == "ManyPerAccount" &&
                                                           d.DependencyKind == "RuleText" &&
                                                           d.Name == "TTLCounter.PerAccount" &&
@@ -163,6 +175,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
 
             issues.Dangling.Should().ContainSingle(d => d.Dependent.Name == "Dangling" &&
                                                         d.Name == "TTLCounter.Missing" && d.Target == null);
+
             issues.Unreferenced.Should().ContainSingle(e => e.Kind == "List" && e.Name == "Unused");
             issues.Unreferenced.Should().NotContain(e => e.Name == "PerAccount");
         }
@@ -177,6 +190,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelDependency
                 .ContainSingle(e => e.ErrorCode == "KindInvalid");
             (await service.DependentsAsync(modelId, "7", 1)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "KindInvalid");
+
             (await service.DependenciesAsync(modelId, "List", int.MaxValue)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "EntityNotFound");
         }

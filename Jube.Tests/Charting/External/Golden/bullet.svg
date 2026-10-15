@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 560 260" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-828a2890-t jc-828a2890-d">
+    <title id="jc-828a2890-t">Team KPIs</title>
+    <desc id="jc-828a2890-d">Bullet chart with 3 measures: Alerts triaged 108 against target 100; Cases closed 78
+        against target 90; SLA met 96 against target 98.
+    </desc>
+    <rect class="bg" x="0" y="0" width="560" height="260" rx="8"/>
+    <text class="ttl" x="16" y="32">Team KPIs</text>
+    <line class="gl" x1="96.96" y1="48" x2="96.96" y2="224"/>
+    <line class="gl" x1="208.72" y1="48" x2="208.72" y2="224"/>
+    <line class="gl" x1="320.48" y1="48" x2="320.48" y2="224"/>
+    <line class="gl" x1="432.24" y1="48" x2="432.24" y2="224"/>
+    <line class="gl" x1="544" y1="48" x2="544" y2="224"/>
+    <text class="tk ctr" x="96.96" y="240">0</text>
+    <text class="tk ctr" x="208.72" y="240">30</text>
+    <text class="tk ctr" x="320.48" y="240">60</text>
+    <text class="tk ctr" x="432.24" y="240">90</text>
+    <text class="tk ctr" x="544" y="240">120</text>
+    <text class="tk end mid" x="88.96" y="77.33">Alerts triaged</text>
+    <rect class="rg2" x="96.96" y="62.33" width="223.52" height="30"/>
+    <rect class="rg1" x="320.48" y="62.33" width="111.76" height="30"/>
+    <rect class="rg0" x="432.24" y="62.33" width="111.76" height="30"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Alerts triaged, Value: 108, Target: 100">
+            <title>Alerts triaged, Value: 108, Target: 100</title>
+            <rect class="bar m" x="96.96" y="72.33" width="402.34" height="10" rx="2"/>
+            <line class="tgt" x1="469.49" y1="65.33" x2="469.49" y2="89.33"/>
+            <g class="tt">
+                <rect class="tb" x="432.66" y="72.33" width="111.34" height="61" rx="6"/>
+                <rect class="tsw s0" x="442.66" y="81.33" width="9" height="9" rx="2"/>
+                <text class="tx b" x="456.66" y="90.33">Alerts triaged</text>
+                <text class="tx" x="442.66" y="107.33">Value: 108</text>
+                <text class="tx" x="442.66" y="124.33">Target: 100</text>
+            </g>
+        </g>
+    </g>
+    <text class="tk end mid" x="88.96" y="136">Cases closed</text>
+    <rect class="rg2" x="96.96" y="121" width="223.52" height="30"/>
+    <rect class="rg1" x="320.48" y="121" width="74.51" height="30"/>
+    <rect class="rg0" x="394.99" y="121" width="149.01" height="30"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cases closed, Value: 78, Target: 90">
+            <title>Cases closed, Value: 78, Target: 90</title>
+            <rect class="bar m" x="96.96" y="131" width="290.58" height="10" rx="2"/>
+            <line class="tgt" x1="432.24" y1="124" x2="432.24" y2="148"/>
+            <g class="tt">
+                <rect class="tb" x="331.87" y="50" width="111.34" height="61" rx="6"/>
+                <rect class="tsw s0" x="341.87" y="59" width="9" height="9" rx="2"/>
+                <text class="tx b" x="355.87" y="68">Cases closed</text>
+                <text class="tx" x="341.87" y="85">Value: 78</text>
+                <text class="tx" x="341.87" y="102">Target: 90</text>
+            </g>
+        </g>
+    </g>
+    <text class="tk end mid" x="88.96" y="194.67">SLA met</text>
+    <rect class="rg2" x="96.96" y="179.67" width="335.28" height="30"/>
+    <rect class="rg1" x="432.24" y="179.67" width="18.63" height="30"/>
+    <rect class="rg0" x="450.87" y="179.67" width="93.13" height="30"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="SLA met, Value: 96, Target: 98">
+            <title>SLA met, Value: 96, Target: 98</title>
+            <rect class="bar m" x="96.96" y="189.67" width="357.63" height="10" rx="2"/>
+            <line class="tgt" x1="462.04" y1="182.67" x2="462.04" y2="206.67"/>
+            <g class="tt">
+                <rect class="tb" x="411.96" y="108.67" width="85.26" height="61" rx="6"/>
+                <rect class="tsw s0" x="421.96" y="117.67" width="9" height="9" rx="2"/>
+                <text class="tx b" x="435.96" y="126.67">SLA met</text>
+                <text class="tx" x="421.96" y="143.67">Value: 96</text>
+                <text class="tx" x="421.96" y="160.67">Target: 98</text>
+            </g>
+        </g>
+    </g>
+</svg>

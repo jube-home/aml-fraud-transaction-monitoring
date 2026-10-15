@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,13 +13,14 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetArchiveByEntityAnalysisModelInstanceEntryGuidQuery;
+using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelInvocationContext;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -35,10 +36,8 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
     {
         public const int MaximumRequestJsonLength = 1_048_576;
         private const int ContextParseType = 5;
-
         private static readonly int[] authoringPermissions = [8, 10, 13, 14, 16, 17, 25, 26];
         private static readonly int[] archivePermissions = [1, 40];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -61,6 +60,9 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> ArchivePermissions => archivePermissions;
+        public static IReadOnlyList<int> AuthoringPermissions => authoringPermissions;
 
         public static Task<EntityAnalysisModelInvocationContextService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -174,8 +176,9 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
             {
                 ArgumentNullException.ThrowIfNull(request);
                 var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
-                var archive = await new ArchiveRepository(dbContext)
-                    .GetByEntityAnalysisModelInstanceEntryGuidAsync(request.EntityAnalysisModelInstanceEntryGuid,
+
+                var archive = await new GetArchiveByEntityAnalysisModelInstanceEntryGuidQuery(dbContext)
+                    .ExecuteAsync(request.EntityAnalysisModelInstanceEntryGuid,
                         model.Id, tenantRegistryId, token).ConfigureAwait(false);
 
                 if (archive?.Json == null)
@@ -185,6 +188,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
                 }
 
                 var fields = await FieldsAsync(model.Id, token).ConfigureAwait(false);
+
                 return EntityAnalysisModelInvocationContextMapper.ToDto(InvocationContextBuilder.FromArchive(
                     model.Id, request.EntityAnalysisModelInstanceEntryGuid, JObject.Parse(archive.Json), fields));
             }, token);
@@ -208,6 +212,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
 
                 var context = EntityAnalysisModelInvocationContextMapper.ToContext(request.Context);
                 var errors = InvocationContextBuilder.Overlay(context, request.Values);
+
                 return EntityAnalysisModelInvocationContextMapper.ToDto(context, errors);
             }, token);
         }
@@ -217,6 +222,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
         {
             using var op = OperationScope.Start("EntityAnalysisModelInvocationContext", operation, userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInvocationContext.{operation}: entry user={userName}");
@@ -229,6 +235,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
                 var result = await body().ConfigureAwait(false);
                 op.Entity(result.EntityAnalysisModelId);
                 op.Rows(result.Values.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -254,8 +261,10 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelInvocationContext.{operation}: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

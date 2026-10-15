@@ -19,7 +19,8 @@ namespace Jube.Dictionary.Extensions
     {
         public static string RegexCapture(this string? @this, string pattern, int group)
         {
-            var match = Regex.Match(@this ?? "", pattern, RegexOptions.None, RegexSupport.MatchTimeout);
+            var match = Regex.Match(@this ?? "", pattern, RegexOptions.None, RegexSupport.matchTimeout);
+
             return match.Success && group >= 0 && group < match.Groups.Count && match.Groups[group].Success
                 ? match.Groups[group].Value
                 : "";

@@ -1,60 +1,68 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Diagnostics;
+using Accord.Statistics.Models.Fields.Features;
 
 namespace Accord.Statistics.Models.Fields.Functions.Specialized
 {
-    using System;
-    using System.Runtime.Serialization;
-    using Accord.Statistics.Models.Fields.Features;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Factor Potential function for a Markov model whose states are independent 
-    ///   distributions composed of discrete and Normal distributed components.
+    ///     Factor Potential function for a Markov model whose states are independent
+    ///     distributions composed of discrete and Normal distributed components.
     /// </summary>
-    /// 
     [Serializable]
     public class MarkovIndependentFactor : FactorPotential<double[]>
     {
-
         private int[][] stateTable;
 
-
         /// <summary>
-        ///   Creates a new factor (clique) potential function.
+        ///     Creates a new factor (clique) potential function.
         /// </summary>
-        /// 
-        /// <param name="owner">The owner <see cref="IPotentialFunction{T}"/>.</param>
+        /// <param name="owner">The owner <see cref="IPotentialFunction{T}" />.</param>
         /// <param name="states">The number of states in this clique potential.</param>
-        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
+        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner" />.</param>
         /// <param name="stateTable">The lookup table of states where the independent distributions begin.</param>
-        /// <param name="classIndex">The index of the first class label feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="classIndex">
+        ///     The index of the first class label feature in the <paramref name="owner" />'s parameter
+        ///     vector.
+        /// </param>
         /// <param name="classCount">The number of class label features in this factor.</param>
-        /// <param name="edgeIndex">The index of the first edge feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="edgeIndex">The index of the first edge feature in the <paramref name="owner" />'s parameter vector.</param>
         /// <param name="edgeCount">The number of edge features in this factor.</param>
-        /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner" />'s parameter vector.</param>
         /// <param name="stateCount">The number of state features in this factor.</param>
-        /// 
-        public MarkovIndependentFactor(IPotentialFunction<double[]> owner, int states, int factorIndex, int[][] stateTable,
+        public MarkovIndependentFactor(IPotentialFunction<double[]> owner, int states, int factorIndex,
+            int[][] stateTable,
             int edgeIndex, int edgeCount,
             int stateIndex, int stateCount,
             int classIndex = 0, int classCount = 0)
@@ -63,19 +71,17 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
             this.stateTable = stateTable;
         }
 
-
         /// <summary>
-        ///   Computes the factor potential function for the given parameters.
+        ///     Computes the factor potential function for the given parameters.
         /// </summary>
-        /// 
         /// <param name="previousState">The previous state in a given sequence of states.</param>
         /// <param name="currentState">The current state in a given sequence of states.</param>
         /// <param name="observations">The observation vector.</param>
         /// <param name="index">The index of the observation in the current state of the sequence.</param>
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// <returns>The value of the factor potential function evaluated for the given parameters.</returns>
-        /// 
-        public override double Compute(int previousState, int currentState, double[][] observations, int index, int outputClass = 0)
+        public override double Compute(int previousState, int currentState, double[][] observations, int index,
+            int outputClass = 0)
         {
             // PS: This code seems messy because it should be as fast as possible. Unfortunately, 
             // avoiding (virtual) function calls is the main objective for this method to exist;
@@ -84,11 +90,13 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
             // migrates to .NET 4.5 and we could then use the explicit in-line method attributes.
 
 
-            if (outputClass != this.Index)
-                return Double.NegativeInfinity;
+            if (outputClass != Index)
+            {
+                return double.NegativeInfinity;
+            }
 
-            double[] parameters = Owner.Weights;
-            IFeature<double[]>[] features = Owner.Features;
+            var parameters = Owner.Weights;
+            var features = Owner.Features;
 
 
             double sum = 0;
@@ -96,14 +104,18 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
             // Output (class) probability
             if (OutputParameters.Count != 0 && previousState == -1)
             {
-                int cindex = OutputParameters.Offset;
-                double w = parameters[cindex];
+                var cindex = OutputParameters.Offset;
+                var w = parameters[cindex];
 
-                if (Double.IsNegativeInfinity(w))
-                    return Double.NegativeInfinity;
+                if (double.IsNegativeInfinity(w))
+                {
+                    return double.NegativeInfinity;
+                }
 
-                if (Double.IsNaN(w))
-                    return parameters[cindex] = Double.NegativeInfinity;
+                if (double.IsNaN(w))
+                {
+                    return parameters[cindex] = double.NegativeInfinity;
+                }
 
                 sum += w;
             }
@@ -111,55 +123,67 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
             if (previousState == -1)
             {
                 // Initial state probability (pi)
-                int pindex = EdgeParameters.Offset + currentState;
-                double pi = parameters[pindex];
+                var pindex = EdgeParameters.Offset + currentState;
+                var pi = parameters[pindex];
 
-                if (Double.IsNegativeInfinity(pi))
-                    return Double.NegativeInfinity;
+                if (double.IsNegativeInfinity(pi))
+                {
+                    return double.NegativeInfinity;
+                }
 
-                if (Double.IsNaN(pi))
-                    return parameters[pindex] = Double.NegativeInfinity;
+                if (double.IsNaN(pi))
+                {
+                    return parameters[pindex] = double.NegativeInfinity;
+                }
 
                 sum += pi;
             }
             else
             {
                 // State transition probabilities (A)
-                int aindex = EdgeParameters.Offset + States + previousState * States + currentState;
-                double a = parameters[aindex];
+                var aindex = EdgeParameters.Offset + States + previousState * States + currentState;
+                var a = parameters[aindex];
 
-                if (Double.IsNegativeInfinity(a))
-                    return Double.NegativeInfinity;
+                if (double.IsNegativeInfinity(a))
+                {
+                    return double.NegativeInfinity;
+                }
 
-                if (Double.IsNaN(a))
-                    return parameters[aindex] = Double.NegativeInfinity;
+                if (double.IsNaN(a))
+                {
+                    return parameters[aindex] = double.NegativeInfinity;
+                }
 
                 sum += a;
             }
 
 
             // State emission probability (B)
-            int[] lookup = stateTable[currentState];
-            double[] observation = observations[index];
+            var lookup = stateTable[currentState];
+            var observation = observations[index];
 
             double B = 0;
 
             // For each dimension of the observation
-            for (int j = 0; j < observation.Length; j++)
+            for (var j = 0; j < observation.Length; j++)
             {
-                int bindex = StateParameters.Offset + lookup[j];
+                var bindex = StateParameters.Offset + lookup[j];
 
                 var discrete = features[bindex] as MultivariateEmissionFeature;
                 if (discrete != null)
                 {
-                    int i = (int)observations[index][j];
-                    double b = parameters[bindex + i];
+                    var i = (int)observations[index][j];
+                    var b = parameters[bindex + i];
 
-                    if (Double.IsNegativeInfinity(b))
-                        return Double.NegativeInfinity;
+                    if (double.IsNegativeInfinity(b))
+                    {
+                        return double.NegativeInfinity;
+                    }
 
-                    if (Double.IsNaN(b))
-                        return parameters[bindex + i] = Double.NegativeInfinity;
+                    if (double.IsNaN(b))
+                    {
+                        return parameters[bindex + i] = double.NegativeInfinity;
+                    }
 
                     B += b;
                     continue;
@@ -169,40 +193,52 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
                 if (occupancy != null)
                 {
                     // State occupancy feature
-                    double b = parameters[bindex];
+                    var b = parameters[bindex];
 
-                    if (Double.IsNegativeInfinity(b))
-                        return Double.NegativeInfinity;
+                    if (double.IsNegativeInfinity(b))
+                    {
+                        return double.NegativeInfinity;
+                    }
 
-                    if (Double.IsNaN(b))
-                        return parameters[bindex] = Double.NegativeInfinity;
+                    if (double.IsNaN(b))
+                    {
+                        return parameters[bindex] = double.NegativeInfinity;
+                    }
 
-                    double u = observation[j];
+                    var u = observation[j];
 
-                    int m1index = ++bindex;
-                    int m2index = ++bindex;
+                    var m1index = ++bindex;
+                    var m2index = ++bindex;
 
                     if (u != 0)
                     {
                         // First moment feature
-                        double m1 = parameters[m1index];
+                        var m1 = parameters[m1index];
 
-                        if (Double.IsNegativeInfinity(m1))
-                            return Double.NegativeInfinity;
+                        if (double.IsNegativeInfinity(m1))
+                        {
+                            return double.NegativeInfinity;
+                        }
 
-                        if (Double.IsNaN(m1))
-                            m1 = parameters[m1index] = Double.NegativeInfinity;
+                        if (double.IsNaN(m1))
+                        {
+                            m1 = parameters[m1index] = double.NegativeInfinity;
+                        }
 
                         b += m1 * u;
 
                         // Second moment feature
-                        double m2 = parameters[m2index];
+                        var m2 = parameters[m2index];
 
-                        if (Double.IsNegativeInfinity(m2))
-                            return Double.NegativeInfinity;
+                        if (double.IsNegativeInfinity(m2))
+                        {
+                            return double.NegativeInfinity;
+                        }
 
-                        if (Double.IsNaN(m2))
-                            m2 = parameters[m2index] = Double.NegativeInfinity;
+                        if (double.IsNaN(m2))
+                        {
+                            m2 = parameters[m2index] = double.NegativeInfinity;
+                        }
 
                         b += m2 * u * u;
                     }
@@ -212,18 +248,17 @@ namespace Accord.Statistics.Models.Fields.Functions.Specialized
                 }
 
                 throw new InvalidOperationException("The feature vector contains an unsupported"
-                + " feature type. The MarkovIndependentFactor (which was likely created by a "
-                + " MarkovMultivariateFunction) supports only discrete MultivariateEmissionFeature "
-                + " (for GeneralDiscreteDistributions) and Occupancy/FirstMoment/SecondMoment features "
-                + " (for Normal distributions).");
+                                                    + " feature type. The MarkovIndependentFactor (which was likely created by a "
+                                                    + " MarkovMultivariateFunction) supports only discrete MultivariateEmissionFeature "
+                                                    + " (for GeneralDiscreteDistributions) and Occupancy/FirstMoment/SecondMoment features "
+                                                    + " (for Normal distributions).");
             }
 
             sum += B;
 
-            Accord.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
+            Debug.Assert(!double.IsNaN(sum));
 
             return sum;
         }
-
     }
 }

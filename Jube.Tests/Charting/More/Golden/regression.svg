@@ -1,0 +1,1325 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-9880d9ac" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-9880d9ac-t jc-9880d9ac-d">
+    <title id="jc-9880d9ac-t">Linear fit</title>
+    <desc id="jc-9880d9ac-d">Regression chart with 2 series: Sample, Sample fit: y = 3 + 0.5001x, R² 0.6…. Y values
+        range from 0.8529 to 14.15. Interval bands are shown.
+    </desc>
+    <style>
+        .jc-9880d9ac{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-9880d9ac:not([data-theme="light"]),.jc-9880d9ac:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-9880d9ac:not([data-theme="light"]),.jc-9880d9ac[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-9880d9ac
+        text{fill:var(--jc-text);font-size:12px}.jc-9880d9ac .bg{fill:var(--jc-surface)}.jc-9880d9ac
+        .ttl{font-size:16px;font-weight:600}.jc-9880d9ac .sub{fill:var(--jc-text2)}.jc-9880d9ac
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-9880d9ac .at{fill:var(--jc-text2);font-weight:500}.jc-9880d9ac
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-9880d9ac
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-9880d9ac
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-9880d9ac .ref.s0,.jc-9880d9ac
+        .ref.s1,.jc-9880d9ac .ref.s2,.jc-9880d9ac .ref.s3,.jc-9880d9ac .ref.s4,.jc-9880d9ac .ref.s5,.jc-9880d9ac
+        .ref.s6,.jc-9880d9ac .ref.s7{stroke:var(--sc)}.jc-9880d9ac
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-9880d9ac
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-9880d9ac
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-9880d9ac
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-9880d9ac .wh,.jc-9880d9ac
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-9880d9ac
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-9880d9ac
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-9880d9ac
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-9880d9ac .cd.hollow{fill:var(--jc-surface)}.jc-9880d9ac
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-9880d9ac
+        .ar.off{fill-opacity:0}.jc-9880d9ac .ring{font-size:10px}.jc-9880d9ac
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-9880d9ac .needle{fill:var(--jc-text);stroke:none}.jc-9880d9ac
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-9880d9ac
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-9880d9ac
+        .big{font-size:28px;font-weight:600}.jc-9880d9ac .rg0,.jc-9880d9ac .rg1,.jc-9880d9ac
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-9880d9ac .rg0{fill-opacity:.1}.jc-9880d9ac
+        .rg1{fill-opacity:.2}.jc-9880d9ac .rg2{fill-opacity:.32}.jc-9880d9ac
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-9880d9ac
+        .bar.part{fill-opacity:.35}.jc-9880d9ac .lgt{fill:var(--jc-text2)}.jc-9880d9ac
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-9880d9ac
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-9880d9ac
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-9880d9ac
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-9880d9ac .bar{fill:var(--sc)}.jc-9880d9ac
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-9880d9ac
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-9880d9ac
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-9880d9ac
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-9880d9ac
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-9880d9ac
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-9880d9ac .mk:hover .pt.h,.jc-9880d9ac .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-9880d9ac .pt.sm{fill-opacity:.55;stroke:none}.jc-9880d9ac
+        .na{fill:var(--jc-grid)}.jc-9880d9ac .mk:hover .sl,.jc-9880d9ac .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-9880d9ac
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-9880d9ac
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-9880d9ac
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-9880d9ac
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-9880d9ac
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-9880d9ac .ctr{text-anchor:middle}.jc-9880d9ac
+        .end{text-anchor:end}.jc-9880d9ac .mid{dominant-baseline:central}.jc-9880d9ac .mk{outline:none}.jc-9880d9ac
+        .m,.jc-9880d9ac .pt,.jc-9880d9ac .bub,.jc-9880d9ac .bar,.jc-9880d9ac .ov,.jc-9880d9ac .sl,.jc-9880d9ac
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-9880d9ac .mk:hover .m,.jc-9880d9ac .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-9880d9ac .mk:hover .pt,.jc-9880d9ac .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-9880d9ac .mk:hover .bub,.jc-9880d9ac .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-9880d9ac .mk:hover .bar,.jc-9880d9ac .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-9880d9ac .mk:hover .ov,.jc-9880d9ac .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-9880d9ac .mk:hover .sl,.jc-9880d9ac .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-9880d9ac .mk:hover .box,.jc-9880d9ac .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-9880d9ac .mk:hover .wk,.jc-9880d9ac .mk:focus-visible
+        .wk,.jc-9880d9ac .mk:hover .cd,.jc-9880d9ac .mk:focus-visible .cd{stroke-width:2.5}.jc-9880d9ac .mk:hover
+        .cell,.jc-9880d9ac .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-9880d9ac .mk:hover
+        .vl,.jc-9880d9ac .mk:focus-visible .vl,.jc-9880d9ac .mk:hover .cx,.jc-9880d9ac .mk:focus-visible
+        .cx{opacity:1}.jc-9880d9ac .mk:hover .mkr,.jc-9880d9ac .mk:focus-visible .mkr{stroke-width:3}.jc-9880d9ac
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-9880d9ac
+        .mk:hover .tt,.jc-9880d9ac .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-9880d9ac
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-9880d9ac
+        .tx{fill:var(--jc-text);font-size:12px}.jc-9880d9ac .tx.b{font-weight:600}.jc-9880d9ac
+        .tsw{fill:var(--sc)}.jc-9880d9ac .lg{cursor:default;transition:opacity .15s ease}.jc-9880d9ac .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-9880d9ac .sr{transition:opacity .15s ease}.jc-9880d9ac:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-9880d9ac:has(.mk:hover) .mk:not(:hover) .pt,.jc-9880d9ac:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-9880d9ac:has(.mk:hover) .mk:not(:hover) .bar,.jc-9880d9ac:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-9880d9ac:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-9880d9ac:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-9880d9ac .s0{--sc:var(--jc-c0)}.jc-9880d9ac .s0
+        .on{fill:var(--jc-ct0)}.jc-9880d9ac:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-9880d9ac:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-9880d9ac:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-9880d9ac:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-9880d9ac:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-9880d9ac
+        .s1{--sc:var(--jc-c1)}.jc-9880d9ac .s1 .on{fill:var(--jc-ct1)}.jc-9880d9ac:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-9880d9ac:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-9880d9ac:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-9880d9ac:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-9880d9ac:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-9880d9ac,.jc-9880d9ac
+        *{transition:none!important;animation:none!important}}.jc-9880d9ac
+        .cib{fill:var(--sc);fill-opacity:.16;stroke:none}.jc-9880d9ac .cib.o{fill-opacity:.09}.jc-9880d9ac
+        .ck{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-9880d9ac
+        .hl{fill:none;stroke:var(--jc-surface);stroke-opacity:0;stroke-width:12;stroke-linejoin:round;stroke-linecap:round;pointer-events:stroke}.jc-9880d9ac
+        .dash{stroke-dasharray:6 4}.jc-9880d9ac .sr:hover .ln{stroke-width:3}.jc-9880d9ac .sr .ln,.jc-9880d9ac .sr
+        .cib{transition:stroke-width .15s ease,fill-opacity .15s ease}.jc-9880d9ac .sr:hover
+        .cib{fill-opacity:.28}.jc-9880d9ac .gt{fill:none;stroke:var(--jc-text2);stroke-width:1.2}.jc-9880d9ac
+        .dm{opacity:.28}.jc-9880d9ac .ebs{stroke:var(--sc);stroke-width:1.5;fill:none;stroke-linecap:round}.jc-9880d9ac
+        .evl{stroke:var(--jc-text2);stroke-width:1.2;stroke-dasharray:4 3;fill:none}.jc-9880d9ac
+        .evl.cp{stroke:var(--jc-text);stroke-width:1.8;stroke-dasharray:1 3;stroke-linecap:round}.jc-9880d9ac
+        .evd{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-9880d9ac
+        .evt{fill:var(--jc-text2);font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-9880d9ac
+        .mk:hover .evl,.jc-9880d9ac .mk:focus-visible .evl{stroke:var(--jc-text);stroke-width:2}.jc-9880d9ac
+        .rsb{fill:var(--jc-grid);fill-opacity:.55;stroke:none}.jc-9880d9ac
+        .rsl{fill:none;stroke:var(--sc);stroke-width:1.2;stroke-linejoin:round}.jc-9880d9ac
+        .rsd{fill:var(--jc-surface);fill-opacity:.62;stroke:none}.jc-9880d9ac
+        .rsw{fill:var(--jc-c0);fill-opacity:.16;stroke:var(--jc-text2);stroke-width:1.2}.jc-9880d9ac
+        .rsh{fill:var(--jc-surface);stroke:var(--jc-axis);stroke-width:1.5}.jc-9880d9ac .mk:hover .rsw,.jc-9880d9ac
+        .mk:focus-visible .rsw{fill-opacity:.3}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Linear fit</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="58.68" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Sample</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="90.68" y="44" width="219.24" height="18"/>
+        <rect class="sw" x="92.68" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="110.68" y="57">Sample fit: y = 3 + 0.5001x, R² 0.667</text>
+    </g>
+    <line class="gl" x1="63.34" y1="346" x2="624" y2="346"/>
+    <text class="tk end mid" x="55.34" y="346">0</text>
+    <line class="gl" x1="63.34" y1="300.33" x2="624" y2="300.33"/>
+    <text class="tk end mid" x="55.34" y="300.33">2.5</text>
+    <line class="gl" x1="63.34" y1="254.67" x2="624" y2="254.67"/>
+    <text class="tk end mid" x="55.34" y="254.67">5.0</text>
+    <line class="gl" x1="63.34" y1="209" x2="624" y2="209"/>
+    <text class="tk end mid" x="55.34" y="209">7.5</text>
+    <line class="gl" x1="63.34" y1="163.33" x2="624" y2="163.33"/>
+    <text class="tk end mid" x="55.34" y="163.33">10.0</text>
+    <line class="gl" x1="63.34" y1="117.67" x2="624" y2="117.67"/>
+    <text class="tk end mid" x="55.34" y="117.67">12.5</text>
+    <line class="gl" x1="63.34" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="55.34" y="72">15.0</text>
+    <line class="gl" x1="63.34" y1="72" x2="63.34" y2="346"/>
+    <text class="tk ctr" x="63.34" y="362">2</text>
+    <line class="gl" x1="143.43" y1="72" x2="143.43" y2="346"/>
+    <text class="tk ctr" x="143.43" y="362">4</text>
+    <line class="gl" x1="223.53" y1="72" x2="223.53" y2="346"/>
+    <text class="tk ctr" x="223.53" y="362">6</text>
+    <line class="gl" x1="303.62" y1="72" x2="303.62" y2="346"/>
+    <text class="tk ctr" x="303.62" y="362">8</text>
+    <line class="gl" x1="383.72" y1="72" x2="383.72" y2="346"/>
+    <text class="tk ctr" x="383.72" y="362">10</text>
+    <line class="gl" x1="463.81" y1="72" x2="463.81" y2="346"/>
+    <text class="tk ctr" x="463.81" y="362">12</text>
+    <line class="gl" x1="543.91" y1="72" x2="543.91" y2="346"/>
+    <text class="tk ctr" x="543.91" y="362">14</text>
+    <line class="gl" x1="624" y1="72" x2="624" y2="346"/>
+    <text class="tk ctr" x="624" y="362">16</text>
+    <line class="ax" x1="63.34" y1="346" x2="624" y2="346"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 4, y: 4.26">
+            <title>Sample, x: 4, y: 4.26</title>
+            <circle class="hit" cx="143.43" cy="268.18" r="9"/>
+            <circle class="pt" cx="143.43" cy="268.18" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="104.87" y="193.18" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="114.87" y="202.18" width="9" height="9" rx="2"/>
+                <text class="tx b" x="128.87" y="211.18">Sample</text>
+                <text class="tx" x="114.87" y="228.18">x: 4</text>
+                <text class="tx" x="114.87" y="245.18">y: 4.26</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 5, y: 5.68">
+            <title>Sample, x: 5, y: 5.68</title>
+            <circle class="hit" cx="183.48" cy="242.25" r="9"/>
+            <circle class="pt" cx="183.48" cy="242.25" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="144.92" y="167.25" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="154.92" y="176.25" width="9" height="9" rx="2"/>
+                <text class="tx b" x="168.92" y="185.25">Sample</text>
+                <text class="tx" x="154.92" y="202.25">x: 5</text>
+                <text class="tx" x="154.92" y="219.25">y: 5.68</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 6, y: 7.24">
+            <title>Sample, x: 6, y: 7.24</title>
+            <circle class="hit" cx="223.53" cy="213.75" r="9"/>
+            <circle class="pt" cx="223.53" cy="213.75" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="184.97" y="138.75" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="194.97" y="147.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="208.97" y="156.75">Sample</text>
+                <text class="tx" x="194.97" y="173.75">x: 6</text>
+                <text class="tx" x="194.97" y="190.75">y: 7.24</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 7, y: 4.82">
+            <title>Sample, x: 7, y: 4.82</title>
+            <circle class="hit" cx="263.58" cy="257.95" r="9"/>
+            <circle class="pt" cx="263.58" cy="257.95" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="225.02" y="182.95" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="235.02" y="191.95" width="9" height="9" rx="2"/>
+                <text class="tx b" x="249.02" y="200.95">Sample</text>
+                <text class="tx" x="235.02" y="217.95">x: 7</text>
+                <text class="tx" x="235.02" y="234.95">y: 4.82</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 8, y: 6.95">
+            <title>Sample, x: 8, y: 6.95</title>
+            <circle class="hit" cx="303.62" cy="219.05" r="9"/>
+            <circle class="pt" cx="303.62" cy="219.05" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="265.06" y="144.05" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="275.06" y="153.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="289.06" y="162.05">Sample</text>
+                <text class="tx" x="275.06" y="179.05">x: 8</text>
+                <text class="tx" x="275.06" y="196.05">y: 6.95</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 9, y: 8.81">
+            <title>Sample, x: 9, y: 8.81</title>
+            <circle class="hit" cx="343.67" cy="185.07" r="9"/>
+            <circle class="pt" cx="343.67" cy="185.07" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="305.11" y="110.07" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="315.11" y="119.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="329.11" y="128.07">Sample</text>
+                <text class="tx" x="315.11" y="145.07">x: 9</text>
+                <text class="tx" x="315.11" y="162.07">y: 8.81</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 10, y: 8.04">
+            <title>Sample, x: 10, y: 8.04</title>
+            <circle class="hit" cx="383.72" cy="199.14" r="9"/>
+            <circle class="pt" cx="383.72" cy="199.14" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="345.16" y="124.14" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="355.16" y="133.14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="369.16" y="142.14">Sample</text>
+                <text class="tx" x="355.16" y="159.14">x: 10</text>
+                <text class="tx" x="355.16" y="176.14">y: 8.04</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 11, y: 8.33">
+            <title>Sample, x: 11, y: 8.33</title>
+            <circle class="hit" cx="423.76" cy="193.84" r="9"/>
+            <circle class="pt" cx="423.76" cy="193.84" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="385.2" y="118.84" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="395.2" y="127.84" width="9" height="9" rx="2"/>
+                <text class="tx b" x="409.2" y="136.84">Sample</text>
+                <text class="tx" x="395.2" y="153.84">x: 11</text>
+                <text class="tx" x="395.2" y="170.84">y: 8.33</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 12, y: 10.84">
+            <title>Sample, x: 12, y: 10.84</title>
+            <circle class="hit" cx="463.81" cy="147.99" r="9"/>
+            <circle class="pt" cx="463.81" cy="147.99" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="425.25" y="72.99" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="435.25" y="81.99" width="9" height="9" rx="2"/>
+                <text class="tx b" x="449.25" y="90.99">Sample</text>
+                <text class="tx" x="435.25" y="107.99">x: 12</text>
+                <text class="tx" x="435.25" y="124.99">y: 10.84</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 13, y: 7.58">
+            <title>Sample, x: 13, y: 7.58</title>
+            <circle class="hit" cx="503.86" cy="207.54" r="9"/>
+            <circle class="pt" cx="503.86" cy="207.54" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="465.3" y="132.54" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="475.3" y="141.54" width="9" height="9" rx="2"/>
+                <text class="tx b" x="489.3" y="150.54">Sample</text>
+                <text class="tx" x="475.3" y="167.54">x: 13</text>
+                <text class="tx" x="475.3" y="184.54">y: 7.58</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Sample, x: 14, y: 9.96">
+            <title>Sample, x: 14, y: 9.96</title>
+            <circle class="hit" cx="543.91" cy="164.06" r="9"/>
+            <circle class="pt" cx="543.91" cy="164.06" r="4"/>
+            <g class="tt">
+                <rect class="tb" x="505.35" y="89.06" width="77.12" height="61" rx="6"/>
+                <rect class="tsw s0" x="515.35" y="98.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="529.35" y="107.06">Sample</text>
+                <text class="tx" x="515.35" y="124.06">x: 14</text>
+                <text class="tx" x="515.35" y="141.06">y: 9.96</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="cib o"
+              d="M83.36 206.3L92.19 204.83L101.01 203.34L109.84 201.84L118.66 200.33L127.48 198.8L136.31 197.25L145.13 195.69L153.96 194.11L162.78 192.52L171.6 190.9L180.43 189.27L189.25 187.63L198.07 185.96L206.9 184.28L215.72 182.57L224.55 180.85L233.37 179.11L242.19 177.35L251.02 175.57L259.84 173.77L268.67 171.95L277.49 170.1L286.31 168.24L295.14 166.36L303.96 164.45L312.79 162.52L321.61 160.58L330.43 158.61L339.26 156.62L348.08 154.6L356.91 152.57L365.73 150.51L374.55 148.44L383.38 146.34L392.2 144.22L401.03 142.07L409.85 139.91L418.67 137.73L427.5 135.53L436.32 133.3L445.15 131.06L453.97 128.79L462.79 126.51L471.62 124.2L480.44 121.88L489.27 119.54L498.09 117.18L506.91 114.8L515.74 112.4L524.56 109.99L533.38 107.56L542.21 105.11L551.03 102.65L559.86 100.17L568.68 97.68L577.5 95.16L586.33 92.64L595.15 90.1L603.98 87.55L603.98 211.67L595.15 213.14L586.33 214.62L577.5 216.12L568.68 217.64L559.86 219.17L551.03 220.72L542.21 222.28L533.38 223.86L524.56 225.45L515.74 227.06L506.91 228.69L498.09 230.34L489.27 232.01L480.44 233.69L471.62 235.39L462.79 237.11L453.97 238.86L445.15 240.62L436.32 242.4L427.5 244.2L418.67 246.02L409.85 247.86L401.03 249.73L392.2 251.61L383.38 253.52L374.55 255.44L365.73 257.39L356.91 259.36L348.08 261.35L339.26 263.36L330.43 265.4L321.61 267.45L312.79 269.53L303.96 271.63L295.14 273.75L286.31 275.89L277.49 278.05L268.67 280.24L259.84 282.44L251.02 284.67L242.19 286.91L233.37 289.18L224.55 291.46L215.72 293.76L206.9 296.09L198.07 298.43L189.25 300.79L180.43 303.17L171.6 305.56L162.78 307.98L153.96 310.41L145.13 312.85L136.31 315.32L127.48 317.8L118.66 320.29L109.84 322.8L101.01 325.33L92.19 327.87L83.36 330.42Z">
+            <title>Sample fit: y = 3 + 0.5001x, R² 0.667 95% prediction</title>
+        </path>
+        <path class="cib"
+              d="M83.36 233.14L92.19 232.09L101.01 231.04L109.84 229.97L118.66 228.9L127.48 227.82L136.31 226.72L145.13 225.62L153.96 224.51L162.78 223.38L171.6 222.24L180.43 221.08L189.25 219.91L198.07 218.72L206.9 217.5L215.72 216.27L224.55 215L233.37 213.71L242.19 212.39L251.02 211.03L259.84 209.63L268.67 208.19L277.49 206.7L286.31 205.15L295.14 203.55L303.96 201.89L312.79 200.17L321.61 198.38L330.43 196.51L339.26 194.57L348.08 192.56L356.91 190.47L365.73 188.31L374.55 186.08L383.38 183.78L392.2 181.41L401.03 178.99L409.85 176.5L418.67 173.97L427.5 171.39L436.32 168.76L445.15 166.09L453.97 163.39L462.79 160.66L471.62 157.9L480.44 155.11L489.27 152.3L498.09 149.46L506.91 146.61L515.74 143.74L524.56 140.86L533.38 137.96L542.21 135.05L551.03 132.12L559.86 129.19L568.68 126.24L577.5 123.29L586.33 120.33L595.15 117.36L603.98 114.39L603.98 184.82L595.15 185.87L586.33 186.93L577.5 188L568.68 189.07L559.86 190.15L551.03 191.24L542.21 192.34L533.38 193.46L524.56 194.59L515.74 195.73L506.91 196.88L498.09 198.06L489.27 199.25L480.44 200.46L471.62 201.7L462.79 202.96L453.97 204.25L445.15 205.58L436.32 206.94L427.5 208.34L418.67 209.78L409.85 211.27L401.03 212.81L392.2 214.41L383.38 216.07L374.55 217.8L365.73 219.59L356.91 221.46L348.08 223.39L339.26 225.41L330.43 227.49L321.61 229.65L312.79 231.89L303.96 234.19L295.14 236.55L286.31 238.98L277.49 241.46L268.67 244L259.84 246.58L251.02 249.21L242.19 251.87L233.37 254.57L224.55 257.31L215.72 260.07L206.9 262.86L198.07 265.67L189.25 268.5L180.43 271.36L171.6 274.22L162.78 277.11L153.96 280.01L145.13 282.92L136.31 285.84L127.48 288.78L118.66 291.72L109.84 294.67L101.01 297.64L92.19 300.6L83.36 303.58Z">
+            <title>Sample fit: y = 3 + 0.5001x, R² 0.667 95% confidence</title>
+        </path>
+        <path class="ln"
+              d="M83.36 268.36L92.19 266.35L101.01 264.34L109.84 262.32L118.66 260.31L127.48 258.3L136.31 256.28L145.13 254.27L153.96 252.26L162.78 250.25L171.6 248.23L180.43 246.22L189.25 244.21L198.07 242.19L206.9 240.18L215.72 238.17L224.55 236.16L233.37 234.14L242.19 232.13L251.02 230.12L259.84 228.1L268.67 226.09L277.49 224.08L286.31 222.07L295.14 220.05L303.96 218.04L312.79 216.03L321.61 214.02L330.43 212L339.26 209.99L348.08 207.98L356.91 205.96L365.73 203.95L374.55 201.94L383.38 199.93L392.2 197.91L401.03 195.9L409.85 193.89L418.67 191.87L427.5 189.86L436.32 187.85L445.15 185.84L453.97 183.82L462.79 181.81L471.62 179.8L480.44 177.79L489.27 175.77L498.09 173.76L506.91 171.75L515.74 169.73L524.56 167.72L533.38 165.71L542.21 163.7L551.03 161.68L559.86 159.67L568.68 157.66L577.5 155.64L586.33 153.63L595.15 151.62L603.98 149.61">
+            <title>Sample fit: y = 3 + 0.5001x, R² 0.667</title>
+        </path>
+        <path class="hl"
+              d="M83.36 268.36L92.19 266.35L101.01 264.34L109.84 262.32L118.66 260.31L127.48 258.3L136.31 256.28L145.13 254.27L153.96 252.26L162.78 250.25L171.6 248.23L180.43 246.22L189.25 244.21L198.07 242.19L206.9 240.18L215.72 238.17L224.55 236.16L233.37 234.14L242.19 232.13L251.02 230.12L259.84 228.1L268.67 226.09L277.49 224.08L286.31 222.07L295.14 220.05L303.96 218.04L312.79 216.03L321.61 214.02L330.43 212L339.26 209.99L348.08 207.98L356.91 205.96L365.73 203.95L374.55 201.94L383.38 199.93L392.2 197.91L401.03 195.9L409.85 193.89L418.67 191.87L427.5 189.86L436.32 187.85L445.15 185.84L453.97 183.82L462.79 181.81L471.62 179.8L480.44 177.79L489.27 175.77L498.09 173.76L506.91 171.75L515.74 169.73L524.56 167.72L533.38 165.71L542.21 163.7L551.03 161.68L559.86 159.67L568.68 157.66L577.5 155.64L586.33 153.63L595.15 151.62L603.98 149.61"/>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="2.5, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.25,    95% prediction: 0.8529 to 7.648,    95% confidence: 2.322 to 6.178">
+        <title>2.5, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.25, 95% prediction: 0.8529 to 7.648, 95% confidence: 2.322
+            to 6.178
+        </title>
+        <rect class="hit" x="63.34" y="72" width="24.44" height="274"/>
+        <line class="vl" x1="83.36" y1="72" x2="83.36" y2="346"/>
+        <circle class="cx s1" cx="83.36" cy="268.36" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="95.36" y="229.36" width="265" height="78" rx="6"/>
+            <text class="tx b" x="105.36" y="247.36">2.5</text>
+            <rect class="tsw s1" x="105.36" y="255.36" width="9" height="9" rx="2"/>
+            <text class="tx" x="119.36" y="264.36">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.25</text>
+            <text class="tx" x="105.36" y="281.36">95% prediction: 0.8529 to 7.648</text>
+            <text class="tx" x="105.36" y="298.36">95% confidence: 2.322 to 6.178</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="2.72, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.361,    95% prediction: 0.9927 to 7.728,    95% confidence: 2.485 to 6.236">
+        <title>2.72, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.361, 95% prediction: 0.9927 to 7.728, 95% confidence:
+            2.485 to 6.236
+        </title>
+        <rect class="hit" x="87.78" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="92.19" y1="72" x2="92.19" y2="346"/>
+        <circle class="cx s1" cx="92.19" cy="266.35" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="104.19" y="227.35" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="114.19" y="245.35">2.72</text>
+            <rect class="tsw s1" x="114.19" y="253.35" width="9" height="9" rx="2"/>
+            <text class="tx" x="128.19" y="262.35">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.361</text>
+            <text class="tx" x="114.19" y="279.35">95% prediction: 0.9927 to 7.728</text>
+            <text class="tx" x="114.19" y="296.35">95% confidence: 2.485 to 6.236</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="2.941, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.471,    95% prediction: 1.132 to 7.81,    95% confidence: 2.648 to 6.294">
+        <title>2.941, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.471, 95% prediction: 1.132 to 7.81, 95% confidence: 2.648
+            to 6.294
+        </title>
+        <rect class="hit" x="96.6" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="101.01" y1="72" x2="101.01" y2="346"/>
+        <circle class="cx s1" cx="101.01" cy="264.34" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="113.01" y="225.34" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="123.01" y="243.34">2.941</text>
+            <rect class="tsw s1" x="123.01" y="251.34" width="9" height="9" rx="2"/>
+            <text class="tx" x="137.01" y="260.34">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.471</text>
+            <text class="tx" x="123.01" y="277.34">95% prediction: 1.132 to 7.81</text>
+            <text class="tx" x="123.01" y="294.34">95% confidence: 2.648 to 6.294</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="3.161, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.581,    95% prediction: 1.27 to 7.892,    95% confidence: 2.81 to 6.352">
+        <title>3.161, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.581, 95% prediction: 1.27 to 7.892, 95% confidence: 2.81
+            to 6.352
+        </title>
+        <rect class="hit" x="105.42" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="109.84" y1="72" x2="109.84" y2="346"/>
+        <circle class="cx s1" cx="109.84" cy="262.32" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="121.84" y="223.32" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="131.84" y="241.32">3.161</text>
+            <rect class="tsw s1" x="131.84" y="249.32" width="9" height="9" rx="2"/>
+            <text class="tx" x="145.84" y="258.32">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.581</text>
+            <text class="tx" x="131.84" y="275.32">95% prediction: 1.27 to 7.892</text>
+            <text class="tx" x="131.84" y="292.32">95% confidence: 2.81 to 6.352</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="3.381, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.691,    95% prediction: 1.407 to 7.975,    95% confidence: 2.971 to 6.411">
+        <title>3.381, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.691, 95% prediction: 1.407 to 7.975, 95% confidence:
+            2.971 to 6.411
+        </title>
+        <rect class="hit" x="114.25" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="118.66" y1="72" x2="118.66" y2="346"/>
+        <circle class="cx s1" cx="118.66" cy="260.31" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="130.66" y="221.31" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="140.66" y="239.31">3.381</text>
+            <rect class="tsw s1" x="140.66" y="247.31" width="9" height="9" rx="2"/>
+            <text class="tx" x="154.66" y="256.31">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.691</text>
+            <text class="tx" x="140.66" y="273.31">95% prediction: 1.407 to 7.975</text>
+            <text class="tx" x="140.66" y="290.31">95% confidence: 2.971 to 6.411</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="3.602, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.801,    95% prediction: 1.544 to 8.059,    95% confidence: 3.133 to 6.47">
+        <title>3.602, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.801, 95% prediction: 1.544 to 8.059, 95% confidence:
+            3.133 to 6.47
+        </title>
+        <rect class="hit" x="123.07" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="127.48" y1="72" x2="127.48" y2="346"/>
+        <circle class="cx s1" cx="127.48" cy="258.3" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="139.48" y="219.3" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="149.48" y="237.3">3.602</text>
+            <rect class="tsw s1" x="149.48" y="245.3" width="9" height="9" rx="2"/>
+            <text class="tx" x="163.48" y="254.3">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.801</text>
+            <text class="tx" x="149.48" y="271.3">95% prediction: 1.544 to 8.059</text>
+            <text class="tx" x="149.48" y="288.3">95% confidence: 3.133 to 6.47</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="3.822, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.911,    95% prediction: 1.68 to 8.143,    95% confidence: 3.293 to 6.53">
+        <title>3.822, Sample fit: y = 3 + 0.5001x, R² 0.667: 4.911, 95% prediction: 1.68 to 8.143, 95% confidence: 3.293
+            to 6.53
+        </title>
+        <rect class="hit" x="131.9" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="136.31" y1="72" x2="136.31" y2="346"/>
+        <circle class="cx s1" cx="136.31" cy="256.28" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="148.31" y="217.28" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="158.31" y="235.28">3.822</text>
+            <rect class="tsw s1" x="158.31" y="243.28" width="9" height="9" rx="2"/>
+            <text class="tx" x="172.31" y="252.28">Sample fit: y = 3 + 0.5001x, R² 0.667: 4.911</text>
+            <text class="tx" x="158.31" y="269.28">95% prediction: 1.68 to 8.143</text>
+            <text class="tx" x="158.31" y="286.28">95% confidence: 3.293 to 6.53</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="4.042, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.022,    95% prediction: 1.815 to 8.229,    95% confidence: 3.453 to 6.59">
+        <title>4.042, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.022, 95% prediction: 1.815 to 8.229, 95% confidence:
+            3.453 to 6.59
+        </title>
+        <rect class="hit" x="140.72" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="145.13" y1="72" x2="145.13" y2="346"/>
+        <circle class="cx s1" cx="145.13" cy="254.27" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="157.13" y="215.27" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="167.13" y="233.27">4.042</text>
+            <rect class="tsw s1" x="167.13" y="241.27" width="9" height="9" rx="2"/>
+            <text class="tx" x="181.13" y="250.27">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.022</text>
+            <text class="tx" x="167.13" y="267.27">95% prediction: 1.815 to 8.229</text>
+            <text class="tx" x="167.13" y="284.27">95% confidence: 3.453 to 6.59</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="4.263, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.132,    95% prediction: 1.949 to 8.315,    95% confidence: 3.613 to 6.651">
+        <title>4.263, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.132, 95% prediction: 1.949 to 8.315, 95% confidence:
+            3.613 to 6.651
+        </title>
+        <rect class="hit" x="149.54" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="153.96" y1="72" x2="153.96" y2="346"/>
+        <circle class="cx s1" cx="153.96" cy="252.26" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="165.96" y="213.26" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="175.96" y="231.26">4.263</text>
+            <rect class="tsw s1" x="175.96" y="239.26" width="9" height="9" rx="2"/>
+            <text class="tx" x="189.96" y="248.26">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.132</text>
+            <text class="tx" x="175.96" y="265.26">95% prediction: 1.949 to 8.315</text>
+            <text class="tx" x="175.96" y="282.26">95% confidence: 3.613 to 6.651</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="4.483, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.242,    95% prediction: 2.082 to 8.402,    95% confidence: 3.771 to 6.713">
+        <title>4.483, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.242, 95% prediction: 2.082 to 8.402, 95% confidence:
+            3.771 to 6.713
+        </title>
+        <rect class="hit" x="158.37" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="162.78" y1="72" x2="162.78" y2="346"/>
+        <circle class="cx s1" cx="162.78" cy="250.25" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="174.78" y="211.25" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="184.78" y="229.25">4.483</text>
+            <rect class="tsw s1" x="184.78" y="237.25" width="9" height="9" rx="2"/>
+            <text class="tx" x="198.78" y="246.25">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.242</text>
+            <text class="tx" x="184.78" y="263.25">95% prediction: 2.082 to 8.402</text>
+            <text class="tx" x="184.78" y="280.25">95% confidence: 3.771 to 6.713</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="4.703, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.352,    95% prediction: 2.214 to 8.491,    95% confidence: 3.929 to 6.775">
+        <title>4.703, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.352, 95% prediction: 2.214 to 8.491, 95% confidence:
+            3.929 to 6.775
+        </title>
+        <rect class="hit" x="167.19" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="171.6" y1="72" x2="171.6" y2="346"/>
+        <circle class="cx s1" cx="171.6" cy="248.23" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="183.6" y="209.23" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="193.6" y="227.23">4.703</text>
+            <rect class="tsw s1" x="193.6" y="235.23" width="9" height="9" rx="2"/>
+            <text class="tx" x="207.6" y="244.23">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.352</text>
+            <text class="tx" x="193.6" y="261.23">95% prediction: 2.214 to 8.491</text>
+            <text class="tx" x="193.6" y="278.23">95% confidence: 3.929 to 6.775</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="4.924, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.462,    95% prediction: 2.345 to 8.58,    95% confidence: 4.086 to 6.838">
+        <title>4.924, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.462, 95% prediction: 2.345 to 8.58, 95% confidence: 4.086
+            to 6.838
+        </title>
+        <rect class="hit" x="176.02" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="180.43" y1="72" x2="180.43" y2="346"/>
+        <circle class="cx s1" cx="180.43" cy="246.22" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="192.43" y="207.22" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="202.43" y="225.22">4.924</text>
+            <rect class="tsw s1" x="202.43" y="233.22" width="9" height="9" rx="2"/>
+            <text class="tx" x="216.43" y="242.22">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.462</text>
+            <text class="tx" x="202.43" y="259.22">95% prediction: 2.345 to 8.58</text>
+            <text class="tx" x="202.43" y="276.22">95% confidence: 4.086 to 6.838</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="5.144, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.573,    95% prediction: 2.475 to 8.67,    95% confidence: 4.243 to 6.903">
+        <title>5.144, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.573, 95% prediction: 2.475 to 8.67, 95% confidence: 4.243
+            to 6.903
+        </title>
+        <rect class="hit" x="184.84" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="189.25" y1="72" x2="189.25" y2="346"/>
+        <circle class="cx s1" cx="189.25" cy="244.21" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="201.25" y="205.21" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="211.25" y="223.21">5.144</text>
+            <rect class="tsw s1" x="211.25" y="231.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="225.25" y="240.21">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.573</text>
+            <text class="tx" x="211.25" y="257.21">95% prediction: 2.475 to 8.67</text>
+            <text class="tx" x="211.25" y="274.21">95% confidence: 4.243 to 6.903</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="5.364, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.683,    95% prediction: 2.604 to 8.761,    95% confidence: 4.398 to 6.968">
+        <title>5.364, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.683, 95% prediction: 2.604 to 8.761, 95% confidence:
+            4.398 to 6.968
+        </title>
+        <rect class="hit" x="193.66" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="198.07" y1="72" x2="198.07" y2="346"/>
+        <circle class="cx s1" cx="198.07" cy="242.19" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="210.07" y="203.19" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="220.07" y="221.19">5.364</text>
+            <rect class="tsw s1" x="220.07" y="229.19" width="9" height="9" rx="2"/>
+            <text class="tx" x="234.07" y="238.19">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.683</text>
+            <text class="tx" x="220.07" y="255.19">95% prediction: 2.604 to 8.761</text>
+            <text class="tx" x="220.07" y="272.19">95% confidence: 4.398 to 6.968</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="5.585, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.793,    95% prediction: 2.732 to 8.853,    95% confidence: 4.552 to 7.034">
+        <title>5.585, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.793, 95% prediction: 2.732 to 8.853, 95% confidence:
+            4.552 to 7.034
+        </title>
+        <rect class="hit" x="202.49" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="206.9" y1="72" x2="206.9" y2="346"/>
+        <circle class="cx s1" cx="206.9" cy="240.18" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="218.9" y="201.18" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="228.9" y="219.18">5.585</text>
+            <rect class="tsw s1" x="228.9" y="227.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="242.9" y="236.18">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.793</text>
+            <text class="tx" x="228.9" y="253.18">95% prediction: 2.732 to 8.853</text>
+            <text class="tx" x="228.9" y="270.18">95% confidence: 4.552 to 7.034</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="5.805, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.903,    95% prediction: 2.86 to 8.947,    95% confidence: 4.704 to 7.102">
+        <title>5.805, Sample fit: y = 3 + 0.5001x, R² 0.667: 5.903, 95% prediction: 2.86 to 8.947, 95% confidence: 4.704
+            to 7.102
+        </title>
+        <rect class="hit" x="211.31" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="215.72" y1="72" x2="215.72" y2="346"/>
+        <circle class="cx s1" cx="215.72" cy="238.17" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="227.72" y="199.17" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="237.72" y="217.17">5.805</text>
+            <rect class="tsw s1" x="237.72" y="225.17" width="9" height="9" rx="2"/>
+            <text class="tx" x="251.72" y="234.17">Sample fit: y = 3 + 0.5001x, R² 0.667: 5.903</text>
+            <text class="tx" x="237.72" y="251.17">95% prediction: 2.86 to 8.947</text>
+            <text class="tx" x="237.72" y="268.17">95% confidence: 4.704 to 7.102</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="6.025, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.013,    95% prediction: 2.986 to 9.041,    95% confidence: 4.855 to 7.171">
+        <title>6.025, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.013, 95% prediction: 2.986 to 9.041, 95% confidence:
+            4.855 to 7.171
+        </title>
+        <rect class="hit" x="220.13" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="224.55" y1="72" x2="224.55" y2="346"/>
+        <circle class="cx s1" cx="224.55" cy="236.16" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="236.55" y="197.16" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="246.55" y="215.16">6.025</text>
+            <rect class="tsw s1" x="246.55" y="223.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="260.55" y="232.16">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.013</text>
+            <text class="tx" x="246.55" y="249.16">95% prediction: 2.986 to 9.041</text>
+            <text class="tx" x="246.55" y="266.16">95% confidence: 4.855 to 7.171</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="6.246, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.124,    95% prediction: 3.111 to 9.136,    95% confidence: 5.005 to 7.242">
+        <title>6.246, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.124, 95% prediction: 3.111 to 9.136, 95% confidence:
+            5.005 to 7.242
+        </title>
+        <rect class="hit" x="228.96" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="233.37" y1="72" x2="233.37" y2="346"/>
+        <circle class="cx s1" cx="233.37" cy="234.14" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="245.37" y="195.14" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="255.37" y="213.14">6.246</text>
+            <rect class="tsw s1" x="255.37" y="221.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="269.37" y="230.14">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.124</text>
+            <text class="tx" x="255.37" y="247.14">95% prediction: 3.111 to 9.136</text>
+            <text class="tx" x="255.37" y="264.14">95% confidence: 5.005 to 7.242</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="6.466, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.234,    95% prediction: 3.235 to 9.233,    95% confidence: 5.153 to 7.315">
+        <title>6.466, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.234, 95% prediction: 3.235 to 9.233, 95% confidence:
+            5.153 to 7.315
+        </title>
+        <rect class="hit" x="237.78" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="242.19" y1="72" x2="242.19" y2="346"/>
+        <circle class="cx s1" cx="242.19" cy="232.13" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="254.19" y="193.13" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="264.19" y="211.13">6.466</text>
+            <rect class="tsw s1" x="264.19" y="219.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="278.19" y="228.13">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.234</text>
+            <text class="tx" x="264.19" y="245.13">95% prediction: 3.235 to 9.233</text>
+            <text class="tx" x="264.19" y="262.13">95% confidence: 5.153 to 7.315</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="6.686, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.344,    95% prediction: 3.358 to 9.33,    95% confidence: 5.299 to 7.389">
+        <title>6.686, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.344, 95% prediction: 3.358 to 9.33, 95% confidence: 5.299
+            to 7.389
+        </title>
+        <rect class="hit" x="246.61" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="251.02" y1="72" x2="251.02" y2="346"/>
+        <circle class="cx s1" cx="251.02" cy="230.12" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="263.02" y="191.12" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="273.02" y="209.12">6.686</text>
+            <rect class="tsw s1" x="273.02" y="217.12" width="9" height="9" rx="2"/>
+            <text class="tx" x="287.02" y="226.12">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.344</text>
+            <text class="tx" x="273.02" y="243.12">95% prediction: 3.358 to 9.33</text>
+            <text class="tx" x="273.02" y="260.12">95% confidence: 5.299 to 7.389</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="6.907, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.454,    95% prediction: 3.479 to 9.429,    95% confidence: 5.443 to 7.466">
+        <title>6.907, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.454, 95% prediction: 3.479 to 9.429, 95% confidence:
+            5.443 to 7.466
+        </title>
+        <rect class="hit" x="255.43" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="259.84" y1="72" x2="259.84" y2="346"/>
+        <circle class="cx s1" cx="259.84" cy="228.1" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="271.84" y="189.1" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="281.84" y="207.1">6.907</text>
+            <rect class="tsw s1" x="281.84" y="215.1" width="9" height="9" rx="2"/>
+            <text class="tx" x="295.84" y="224.1">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.454</text>
+            <text class="tx" x="281.84" y="241.1">95% prediction: 3.479 to 9.429</text>
+            <text class="tx" x="281.84" y="258.1">95% confidence: 5.443 to 7.466</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="7.127, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.564,    95% prediction: 3.6 to 9.528,    95% confidence: 5.584 to 7.545">
+        <title>7.127, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.564, 95% prediction: 3.6 to 9.528, 95% confidence: 5.584
+            to 7.545
+        </title>
+        <rect class="hit" x="264.25" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="268.67" y1="72" x2="268.67" y2="346"/>
+        <circle class="cx s1" cx="268.67" cy="226.09" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="280.67" y="187.09" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="290.67" y="205.09">7.127</text>
+            <rect class="tsw s1" x="290.67" y="213.09" width="9" height="9" rx="2"/>
+            <text class="tx" x="304.67" y="222.09">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.564</text>
+            <text class="tx" x="290.67" y="239.09">95% prediction: 3.6 to 9.528</text>
+            <text class="tx" x="290.67" y="256.09">95% confidence: 5.584 to 7.545</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="7.347, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.674,    95% prediction: 3.72 to 9.629,    95% confidence: 5.723 to 7.626">
+        <title>7.347, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.674, 95% prediction: 3.72 to 9.629, 95% confidence: 5.723
+            to 7.626
+        </title>
+        <rect class="hit" x="273.08" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="277.49" y1="72" x2="277.49" y2="346"/>
+        <circle class="cx s1" cx="277.49" cy="224.08" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="289.49" y="185.08" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="299.49" y="203.08">7.347</text>
+            <rect class="tsw s1" x="299.49" y="211.08" width="9" height="9" rx="2"/>
+            <text class="tx" x="313.49" y="220.08">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.674</text>
+            <text class="tx" x="299.49" y="237.08">95% prediction: 3.72 to 9.629</text>
+            <text class="tx" x="299.49" y="254.08">95% confidence: 5.723 to 7.626</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="7.568, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.785,    95% prediction: 3.838 to 9.731,    95% confidence: 5.859 to 7.711">
+        <title>7.568, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.785, 95% prediction: 3.838 to 9.731, 95% confidence:
+            5.859 to 7.711
+        </title>
+        <rect class="hit" x="281.9" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="286.31" y1="72" x2="286.31" y2="346"/>
+        <circle class="cx s1" cx="286.31" cy="222.07" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="298.31" y="183.07" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="308.31" y="201.07">7.568</text>
+            <rect class="tsw s1" x="308.31" y="209.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="322.31" y="218.07">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.785</text>
+            <text class="tx" x="308.31" y="235.07">95% prediction: 3.838 to 9.731</text>
+            <text class="tx" x="308.31" y="252.07">95% confidence: 5.859 to 7.711</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="7.788, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.895,    95% prediction: 3.955 to 9.834,    95% confidence: 5.992 to 7.798">
+        <title>7.788, Sample fit: y = 3 + 0.5001x, R² 0.667: 6.895, 95% prediction: 3.955 to 9.834, 95% confidence:
+            5.992 to 7.798
+        </title>
+        <rect class="hit" x="290.73" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="295.14" y1="72" x2="295.14" y2="346"/>
+        <circle class="cx s1" cx="295.14" cy="220.05" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="307.14" y="181.05" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="317.14" y="199.05">7.788</text>
+            <rect class="tsw s1" x="317.14" y="207.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="331.14" y="216.05">Sample fit: y = 3 + 0.5001x, R² 0.667: 6.895</text>
+            <text class="tx" x="317.14" y="233.05">95% prediction: 3.955 to 9.834</text>
+            <text class="tx" x="317.14" y="250.05">95% confidence: 5.992 to 7.798</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="8.008, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.005,    95% prediction: 4.071 to 9.939,    95% confidence: 6.121 to 7.889">
+        <title>8.008, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.005, 95% prediction: 4.071 to 9.939, 95% confidence:
+            6.121 to 7.889
+        </title>
+        <rect class="hit" x="299.55" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="303.96" y1="72" x2="303.96" y2="346"/>
+        <circle class="cx s1" cx="303.96" cy="218.04" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="315.96" y="179.04" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="325.96" y="197.04">8.008</text>
+            <rect class="tsw s1" x="325.96" y="205.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="339.96" y="214.04">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.005</text>
+            <text class="tx" x="325.96" y="231.04">95% prediction: 4.071 to 9.939</text>
+            <text class="tx" x="325.96" y="248.04">95% confidence: 6.121 to 7.889</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="8.229, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.115,    95% prediction: 4.186 to 10.04,    95% confidence: 6.247 to 7.983">
+        <title>8.229, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.115, 95% prediction: 4.186 to 10.04, 95% confidence:
+            6.247 to 7.983
+        </title>
+        <rect class="hit" x="308.37" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="312.79" y1="72" x2="312.79" y2="346"/>
+        <circle class="cx s1" cx="312.79" cy="216.03" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="324.79" y="177.03" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="334.79" y="195.03">8.229</text>
+            <rect class="tsw s1" x="334.79" y="203.03" width="9" height="9" rx="2"/>
+            <text class="tx" x="348.79" y="212.03">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.115</text>
+            <text class="tx" x="334.79" y="229.03">95% prediction: 4.186 to 10.04</text>
+            <text class="tx" x="334.79" y="246.03">95% confidence: 6.247 to 7.983</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="8.449, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.225,    95% prediction: 4.3 to 10.15,    95% confidence: 6.369 to 8.082">
+        <title>8.449, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.225, 95% prediction: 4.3 to 10.15, 95% confidence: 6.369
+            to 8.082
+        </title>
+        <rect class="hit" x="317.2" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="321.61" y1="72" x2="321.61" y2="346"/>
+        <circle class="cx s1" cx="321.61" cy="214.02" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="333.61" y="175.02" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="343.61" y="193.02">8.449</text>
+            <rect class="tsw s1" x="343.61" y="201.02" width="9" height="9" rx="2"/>
+            <text class="tx" x="357.61" y="210.02">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.225</text>
+            <text class="tx" x="343.61" y="227.02">95% prediction: 4.3 to 10.15</text>
+            <text class="tx" x="343.61" y="244.02">95% confidence: 6.369 to 8.082</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="8.669, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.336,    95% prediction: 4.413 to 10.26,    95% confidence: 6.488 to 8.184">
+        <title>8.669, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.336, 95% prediction: 4.413 to 10.26, 95% confidence:
+            6.488 to 8.184
+        </title>
+        <rect class="hit" x="326.02" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="330.43" y1="72" x2="330.43" y2="346"/>
+        <circle class="cx s1" cx="330.43" cy="212" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="342.43" y="173" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="352.43" y="191">8.669</text>
+            <rect class="tsw s1" x="352.43" y="199" width="9" height="9" rx="2"/>
+            <text class="tx" x="366.43" y="208">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.336</text>
+            <text class="tx" x="352.43" y="225">95% prediction: 4.413 to 10.26</text>
+            <text class="tx" x="352.43" y="242">95% confidence: 6.488 to 8.184</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="8.89, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.446,    95% prediction: 4.524 to 10.37,    95% confidence: 6.602 to 8.29">
+        <title>8.89, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.446, 95% prediction: 4.524 to 10.37, 95% confidence: 6.602
+            to 8.29
+        </title>
+        <rect class="hit" x="334.85" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="339.26" y1="72" x2="339.26" y2="346"/>
+        <circle class="cx s1" cx="339.26" cy="209.99" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="351.26" y="170.99" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="361.26" y="188.99">8.89</text>
+            <rect class="tsw s1" x="361.26" y="196.99" width="9" height="9" rx="2"/>
+            <text class="tx" x="375.26" y="205.99">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.446</text>
+            <text class="tx" x="361.26" y="222.99">95% prediction: 4.524 to 10.37</text>
+            <text class="tx" x="361.26" y="239.99">95% confidence: 6.602 to 8.29</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="9.11, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.556,    95% prediction: 4.634 to 10.48,    95% confidence: 6.712 to 8.4">
+        <title>9.11, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.556, 95% prediction: 4.634 to 10.48, 95% confidence: 6.712
+            to 8.4
+        </title>
+        <rect class="hit" x="343.67" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="348.08" y1="72" x2="348.08" y2="346"/>
+        <circle class="cx s1" cx="348.08" cy="207.98" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="64.36" y="168.98" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="74.36" y="186.98">9.11</text>
+            <rect class="tsw s1" x="74.36" y="194.98" width="9" height="9" rx="2"/>
+            <text class="tx" x="88.36" y="203.98">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.556</text>
+            <text class="tx" x="74.36" y="220.98">95% prediction: 4.634 to 10.48</text>
+            <text class="tx" x="74.36" y="237.98">95% confidence: 6.712 to 8.4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="9.331, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.666,    95% prediction: 4.743 to 10.59,    95% confidence: 6.818 to 8.514">
+        <title>9.331, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.666, 95% prediction: 4.743 to 10.59, 95% confidence:
+            6.818 to 8.514
+        </title>
+        <rect class="hit" x="352.49" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="356.91" y1="72" x2="356.91" y2="346"/>
+        <circle class="cx s1" cx="356.91" cy="205.96" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.19" y="166.96" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="83.19" y="184.96">9.331</text>
+            <rect class="tsw s1" x="83.19" y="192.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="97.19" y="201.96">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.666</text>
+            <text class="tx" x="83.19" y="218.96">95% prediction: 4.743 to 10.59</text>
+            <text class="tx" x="83.19" y="235.96">95% confidence: 6.818 to 8.514</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="9.551, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.776,    95% prediction: 4.851 to 10.7,    95% confidence: 6.92 to 8.633">
+        <title>9.551, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.776, 95% prediction: 4.851 to 10.7, 95% confidence: 6.92
+            to 8.633
+        </title>
+        <rect class="hit" x="361.32" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="365.73" y1="72" x2="365.73" y2="346"/>
+        <circle class="cx s1" cx="365.73" cy="203.95" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="82.01" y="164.95" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="92.01" y="182.95">9.551</text>
+            <rect class="tsw s1" x="92.01" y="190.95" width="9" height="9" rx="2"/>
+            <text class="tx" x="106.01" y="199.95">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.776</text>
+            <text class="tx" x="92.01" y="216.95">95% prediction: 4.851 to 10.7</text>
+            <text class="tx" x="92.01" y="233.95">95% confidence: 6.92 to 8.633</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="9.771, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.887,    95% prediction: 4.958 to 10.82,    95% confidence: 7.018 to 8.755">
+        <title>9.771, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.887, 95% prediction: 4.958 to 10.82, 95% confidence:
+            7.018 to 8.755
+        </title>
+        <rect class="hit" x="370.14" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="374.55" y1="72" x2="374.55" y2="346"/>
+        <circle class="cx s1" cx="374.55" cy="201.94" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="90.83" y="162.94" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="100.83" y="180.94">9.771</text>
+            <rect class="tsw s1" x="100.83" y="188.94" width="9" height="9" rx="2"/>
+            <text class="tx" x="114.83" y="197.94">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.887</text>
+            <text class="tx" x="100.83" y="214.94">95% prediction: 4.958 to 10.82</text>
+            <text class="tx" x="100.83" y="231.94">95% confidence: 7.018 to 8.755</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="9.992, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.997,    95% prediction: 5.063 to 10.93,    95% confidence: 7.113 to 8.881">
+        <title>9.992, Sample fit: y = 3 + 0.5001x, R² 0.667: 7.997, 95% prediction: 5.063 to 10.93, 95% confidence:
+            7.113 to 8.881
+        </title>
+        <rect class="hit" x="378.97" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="383.38" y1="72" x2="383.38" y2="346"/>
+        <circle class="cx s1" cx="383.38" cy="199.93" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="99.66" y="160.93" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="109.66" y="178.93">9.992</text>
+            <rect class="tsw s1" x="109.66" y="186.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="123.66" y="195.93">Sample fit: y = 3 + 0.5001x, R² 0.667: 7.997</text>
+            <text class="tx" x="109.66" y="212.93">95% prediction: 5.063 to 10.93</text>
+            <text class="tx" x="109.66" y="229.93">95% confidence: 7.113 to 8.881</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="10.21, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.107,    95% prediction: 5.167 to 11.05,    95% confidence: 7.204 to 9.01">
+        <title>10.21, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.107, 95% prediction: 5.167 to 11.05, 95% confidence:
+            7.204 to 9.01
+        </title>
+        <rect class="hit" x="387.79" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="392.2" y1="72" x2="392.2" y2="346"/>
+        <circle class="cx s1" cx="392.2" cy="197.91" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="108.48" y="158.91" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="118.48" y="176.91">10.21</text>
+            <rect class="tsw s1" x="118.48" y="184.91" width="9" height="9" rx="2"/>
+            <text class="tx" x="132.48" y="193.91">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.107</text>
+            <text class="tx" x="118.48" y="210.91">95% prediction: 5.167 to 11.05</text>
+            <text class="tx" x="118.48" y="227.91">95% confidence: 7.204 to 9.01</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="10.43, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.217,    95% prediction: 5.27 to 11.16,    95% confidence: 7.291 to 9.143">
+        <title>10.43, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.217, 95% prediction: 5.27 to 11.16, 95% confidence: 7.291
+            to 9.143
+        </title>
+        <rect class="hit" x="396.61" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="401.03" y1="72" x2="401.03" y2="346"/>
+        <circle class="cx s1" cx="401.03" cy="195.9" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="117.31" y="156.9" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="127.31" y="174.9">10.43</text>
+            <rect class="tsw s1" x="127.31" y="182.9" width="9" height="9" rx="2"/>
+            <text class="tx" x="141.31" y="191.9">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.217</text>
+            <text class="tx" x="127.31" y="208.9">95% prediction: 5.27 to 11.16</text>
+            <text class="tx" x="127.31" y="225.9">95% confidence: 7.291 to 9.143</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="10.65, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.327,    95% prediction: 5.372 to 11.28,    95% confidence: 7.376 to 9.279">
+        <title>10.65, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.327, 95% prediction: 5.372 to 11.28, 95% confidence:
+            7.376 to 9.279
+        </title>
+        <rect class="hit" x="405.44" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="409.85" y1="72" x2="409.85" y2="346"/>
+        <circle class="cx s1" cx="409.85" cy="193.89" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="126.13" y="154.89" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="136.13" y="172.89">10.65</text>
+            <rect class="tsw s1" x="136.13" y="180.89" width="9" height="9" rx="2"/>
+            <text class="tx" x="150.13" y="189.89">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.327</text>
+            <text class="tx" x="136.13" y="206.89">95% prediction: 5.372 to 11.28</text>
+            <text class="tx" x="136.13" y="223.89">95% confidence: 7.376 to 9.279</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="10.87, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.438,    95% prediction: 5.473 to 11.4,    95% confidence: 7.457 to 9.418">
+        <title>10.87, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.438, 95% prediction: 5.473 to 11.4, 95% confidence: 7.457
+            to 9.418
+        </title>
+        <rect class="hit" x="414.26" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="418.67" y1="72" x2="418.67" y2="346"/>
+        <circle class="cx s1" cx="418.67" cy="191.87" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="134.95" y="152.87" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="144.95" y="170.87">10.87</text>
+            <rect class="tsw s1" x="144.95" y="178.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="158.95" y="187.87">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.438</text>
+            <text class="tx" x="144.95" y="204.87">95% prediction: 5.473 to 11.4</text>
+            <text class="tx" x="144.95" y="221.87">95% confidence: 7.457 to 9.418</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="11.09, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.548,    95% prediction: 5.573 to 11.52,    95% confidence: 7.536 to 9.559">
+        <title>11.09, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.548, 95% prediction: 5.573 to 11.52, 95% confidence:
+            7.536 to 9.559
+        </title>
+        <rect class="hit" x="423.09" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="427.5" y1="72" x2="427.5" y2="346"/>
+        <circle class="cx s1" cx="427.5" cy="189.86" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="143.78" y="150.86" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="153.78" y="168.86">11.09</text>
+            <rect class="tsw s1" x="153.78" y="176.86" width="9" height="9" rx="2"/>
+            <text class="tx" x="167.78" y="185.86">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.548</text>
+            <text class="tx" x="153.78" y="202.86">95% prediction: 5.573 to 11.52</text>
+            <text class="tx" x="153.78" y="219.86">95% confidence: 7.536 to 9.559</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="11.31, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.658,    95% prediction: 5.672 to 11.64,    95% confidence: 7.613 to 9.703">
+        <title>11.31, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.658, 95% prediction: 5.672 to 11.64, 95% confidence:
+            7.613 to 9.703
+        </title>
+        <rect class="hit" x="431.91" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="436.32" y1="72" x2="436.32" y2="346"/>
+        <circle class="cx s1" cx="436.32" cy="187.85" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="152.6" y="148.85" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="162.6" y="166.85">11.31</text>
+            <rect class="tsw s1" x="162.6" y="174.85" width="9" height="9" rx="2"/>
+            <text class="tx" x="176.6" y="183.85">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.658</text>
+            <text class="tx" x="162.6" y="200.85">95% prediction: 5.672 to 11.64</text>
+            <text class="tx" x="162.6" y="217.85">95% confidence: 7.613 to 9.703</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="11.53, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.768,    95% prediction: 5.769 to 11.77,    95% confidence: 7.687 to 9.849">
+        <title>11.53, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.768, 95% prediction: 5.769 to 11.77, 95% confidence:
+            7.687 to 9.849
+        </title>
+        <rect class="hit" x="440.73" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="445.15" y1="72" x2="445.15" y2="346"/>
+        <circle class="cx s1" cx="445.15" cy="185.84" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="161.43" y="146.84" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="171.43" y="164.84">11.53</text>
+            <rect class="tsw s1" x="171.43" y="172.84" width="9" height="9" rx="2"/>
+            <text class="tx" x="185.43" y="181.84">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.768</text>
+            <text class="tx" x="171.43" y="198.84">95% prediction: 5.769 to 11.77</text>
+            <text class="tx" x="171.43" y="215.84">95% confidence: 7.687 to 9.849</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="11.75, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.878,    95% prediction: 5.866 to 11.89,    95% confidence: 7.76 to 9.997">
+        <title>11.75, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.878, 95% prediction: 5.866 to 11.89, 95% confidence: 7.76
+            to 9.997
+        </title>
+        <rect class="hit" x="449.56" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="453.97" y1="72" x2="453.97" y2="346"/>
+        <circle class="cx s1" cx="453.97" cy="183.82" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="170.25" y="144.82" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="180.25" y="162.82">11.75</text>
+            <rect class="tsw s1" x="180.25" y="170.82" width="9" height="9" rx="2"/>
+            <text class="tx" x="194.25" y="179.82">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.878</text>
+            <text class="tx" x="180.25" y="196.82">95% prediction: 5.866 to 11.89</text>
+            <text class="tx" x="180.25" y="213.82">95% confidence: 7.76 to 9.997</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="11.97, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.988,    95% prediction: 5.961 to 12.02,    95% confidence: 7.831 to 10.15">
+        <title>11.97, Sample fit: y = 3 + 0.5001x, R² 0.667: 8.988, 95% prediction: 5.961 to 12.02, 95% confidence:
+            7.831 to 10.15
+        </title>
+        <rect class="hit" x="458.38" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="462.79" y1="72" x2="462.79" y2="346"/>
+        <circle class="cx s1" cx="462.79" cy="181.81" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="179.07" y="142.81" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="189.07" y="160.81">11.97</text>
+            <rect class="tsw s1" x="189.07" y="168.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="203.07" y="177.81">Sample fit: y = 3 + 0.5001x, R² 0.667: 8.988</text>
+            <text class="tx" x="189.07" y="194.81">95% prediction: 5.961 to 12.02</text>
+            <text class="tx" x="189.07" y="211.81">95% confidence: 7.831 to 10.15</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="12.19, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.099,    95% prediction: 6.055 to 12.14,    95% confidence: 7.9 to 10.3">
+        <title>12.19, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.099, 95% prediction: 6.055 to 12.14, 95% confidence: 7.9
+            to 10.3
+        </title>
+        <rect class="hit" x="467.21" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="471.62" y1="72" x2="471.62" y2="346"/>
+        <circle class="cx s1" cx="471.62" cy="179.8" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="187.9" y="140.8" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="197.9" y="158.8">12.19</text>
+            <rect class="tsw s1" x="197.9" y="166.8" width="9" height="9" rx="2"/>
+            <text class="tx" x="211.9" y="175.8">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.099</text>
+            <text class="tx" x="197.9" y="192.8">95% prediction: 6.055 to 12.14</text>
+            <text class="tx" x="197.9" y="209.8">95% confidence: 7.9 to 10.3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="12.42, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.209,    95% prediction: 6.148 to 12.27,    95% confidence: 7.967 to 10.45">
+        <title>12.42, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.209, 95% prediction: 6.148 to 12.27, 95% confidence:
+            7.967 to 10.45
+        </title>
+        <rect class="hit" x="476.03" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="480.44" y1="72" x2="480.44" y2="346"/>
+        <circle class="cx s1" cx="480.44" cy="177.79" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="196.72" y="138.79" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="206.72" y="156.79">12.42</text>
+            <rect class="tsw s1" x="206.72" y="164.79" width="9" height="9" rx="2"/>
+            <text class="tx" x="220.72" y="173.79">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.209</text>
+            <text class="tx" x="206.72" y="190.79">95% prediction: 6.148 to 12.27</text>
+            <text class="tx" x="206.72" y="207.79">95% confidence: 7.967 to 10.45</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="12.64, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.319,    95% prediction: 6.241 to 12.4,    95% confidence: 8.034 to 10.6">
+        <title>12.64, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.319, 95% prediction: 6.241 to 12.4, 95% confidence: 8.034
+            to 10.6
+        </title>
+        <rect class="hit" x="484.85" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="489.27" y1="72" x2="489.27" y2="346"/>
+        <circle class="cx s1" cx="489.27" cy="175.77" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="205.55" y="136.77" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="215.55" y="154.77">12.64</text>
+            <rect class="tsw s1" x="215.55" y="162.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="229.55" y="171.77">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.319</text>
+            <text class="tx" x="215.55" y="188.77">95% prediction: 6.241 to 12.4</text>
+            <text class="tx" x="215.55" y="205.77">95% confidence: 8.034 to 10.6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="12.86, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.429,    95% prediction: 6.332 to 12.53,    95% confidence: 8.099 to 10.76">
+        <title>12.86, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.429, 95% prediction: 6.332 to 12.53, 95% confidence:
+            8.099 to 10.76
+        </title>
+        <rect class="hit" x="493.68" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="498.09" y1="72" x2="498.09" y2="346"/>
+        <circle class="cx s1" cx="498.09" cy="173.76" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="214.37" y="134.76" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="224.37" y="152.76">12.86</text>
+            <rect class="tsw s1" x="224.37" y="160.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="238.37" y="169.76">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.429</text>
+            <text class="tx" x="224.37" y="186.76">95% prediction: 6.332 to 12.53</text>
+            <text class="tx" x="224.37" y="203.76">95% confidence: 8.099 to 10.76</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="13.08, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.539,    95% prediction: 6.422 to 12.66,    95% confidence: 8.163 to 10.92">
+        <title>13.08, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.539, 95% prediction: 6.422 to 12.66, 95% confidence:
+            8.163 to 10.92
+        </title>
+        <rect class="hit" x="502.5" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="506.91" y1="72" x2="506.91" y2="346"/>
+        <circle class="cx s1" cx="506.91" cy="171.75" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="223.19" y="132.75" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="233.19" y="150.75">13.08</text>
+            <rect class="tsw s1" x="233.19" y="158.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="247.19" y="167.75">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.539</text>
+            <text class="tx" x="233.19" y="184.75">95% prediction: 6.422 to 12.66</text>
+            <text class="tx" x="233.19" y="201.75">95% confidence: 8.163 to 10.92</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="13.3, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.65,    95% prediction: 6.511 to 12.79,    95% confidence: 8.227 to 11.07">
+        <title>13.3, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.65, 95% prediction: 6.511 to 12.79, 95% confidence: 8.227
+            to 11.07
+        </title>
+        <rect class="hit" x="511.32" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="515.74" y1="72" x2="515.74" y2="346"/>
+        <circle class="cx s1" cx="515.74" cy="169.73" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="238.74" y="130.73" width="265" height="78" rx="6"/>
+            <text class="tx b" x="248.74" y="148.73">13.3</text>
+            <rect class="tsw s1" x="248.74" y="156.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="262.74" y="165.73">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.65</text>
+            <text class="tx" x="248.74" y="182.73">95% prediction: 6.511 to 12.79</text>
+            <text class="tx" x="248.74" y="199.73">95% confidence: 8.227 to 11.07</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="13.52, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.76,    95% prediction: 6.599 to 12.92,    95% confidence: 8.289 to 11.23">
+        <title>13.52, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.76, 95% prediction: 6.599 to 12.92, 95% confidence: 8.289
+            to 11.23
+        </title>
+        <rect class="hit" x="520.15" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="524.56" y1="72" x2="524.56" y2="346"/>
+        <circle class="cx s1" cx="524.56" cy="167.72" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="247.56" y="128.72" width="265" height="78" rx="6"/>
+            <text class="tx b" x="257.56" y="146.72">13.52</text>
+            <rect class="tsw s1" x="257.56" y="154.72" width="9" height="9" rx="2"/>
+            <text class="tx" x="271.56" y="163.72">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.76</text>
+            <text class="tx" x="257.56" y="180.72">95% prediction: 6.599 to 12.92</text>
+            <text class="tx" x="257.56" y="197.72">95% confidence: 8.289 to 11.23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="13.74, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.87,    95% prediction: 6.687 to 13.05,    95% confidence: 8.351 to 11.39">
+        <title>13.74, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.87, 95% prediction: 6.687 to 13.05, 95% confidence: 8.351
+            to 11.39
+        </title>
+        <rect class="hit" x="528.97" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="533.38" y1="72" x2="533.38" y2="346"/>
+        <circle class="cx s1" cx="533.38" cy="165.71" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="256.38" y="126.71" width="265" height="78" rx="6"/>
+            <text class="tx b" x="266.38" y="144.71">13.74</text>
+            <rect class="tsw s1" x="266.38" y="152.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="280.38" y="161.71">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.87</text>
+            <text class="tx" x="266.38" y="178.71">95% prediction: 6.687 to 13.05</text>
+            <text class="tx" x="266.38" y="195.71">95% confidence: 8.351 to 11.39</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="13.96, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.98,    95% prediction: 6.773 to 13.19,    95% confidence: 8.412 to 11.55">
+        <title>13.96, Sample fit: y = 3 + 0.5001x, R² 0.667: 9.98, 95% prediction: 6.773 to 13.19, 95% confidence: 8.412
+            to 11.55
+        </title>
+        <rect class="hit" x="537.8" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="542.21" y1="72" x2="542.21" y2="346"/>
+        <circle class="cx s1" cx="542.21" cy="163.7" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="265.21" y="124.7" width="265" height="78" rx="6"/>
+            <text class="tx b" x="275.21" y="142.7">13.96</text>
+            <rect class="tsw s1" x="275.21" y="150.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="289.21" y="159.7">Sample fit: y = 3 + 0.5001x, R² 0.667: 9.98</text>
+            <text class="tx" x="275.21" y="176.7">95% prediction: 6.773 to 13.19</text>
+            <text class="tx" x="275.21" y="193.7">95% confidence: 8.412 to 11.55</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="14.18, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.09,    95% prediction: 6.859 to 13.32,    95% confidence: 8.472 to 11.71">
+        <title>14.18, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.09, 95% prediction: 6.859 to 13.32, 95% confidence:
+            8.472 to 11.71
+        </title>
+        <rect class="hit" x="546.62" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="551.03" y1="72" x2="551.03" y2="346"/>
+        <circle class="cx s1" cx="551.03" cy="161.68" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="267.31" y="122.68" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="277.31" y="140.68">14.18</text>
+            <rect class="tsw s1" x="277.31" y="148.68" width="9" height="9" rx="2"/>
+            <text class="tx" x="291.31" y="157.68">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.09</text>
+            <text class="tx" x="277.31" y="174.68">95% prediction: 6.859 to 13.32</text>
+            <text class="tx" x="277.31" y="191.68">95% confidence: 8.472 to 11.71</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="14.4, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.2,    95% prediction: 6.943 to 13.46,    95% confidence: 8.532 to 11.87">
+        <title>14.4, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.2, 95% prediction: 6.943 to 13.46, 95% confidence: 8.532
+            to 11.87
+        </title>
+        <rect class="hit" x="555.44" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="559.86" y1="72" x2="559.86" y2="346"/>
+        <circle class="cx s1" cx="559.86" cy="159.67" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="282.86" y="120.67" width="265" height="78" rx="6"/>
+            <text class="tx b" x="292.86" y="138.67">14.4</text>
+            <rect class="tsw s1" x="292.86" y="146.67" width="9" height="9" rx="2"/>
+            <text class="tx" x="306.86" y="155.67">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.2</text>
+            <text class="tx" x="292.86" y="172.67">95% prediction: 6.943 to 13.46</text>
+            <text class="tx" x="292.86" y="189.67">95% confidence: 8.532 to 11.87</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="14.62, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.31,    95% prediction: 7.027 to 13.59,    95% confidence: 8.591 to 12.03">
+        <title>14.62, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.31, 95% prediction: 7.027 to 13.59, 95% confidence:
+            8.591 to 12.03
+        </title>
+        <rect class="hit" x="564.27" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="568.68" y1="72" x2="568.68" y2="346"/>
+        <circle class="cx s1" cx="568.68" cy="157.66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="284.96" y="118.66" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="294.96" y="136.66">14.62</text>
+            <rect class="tsw s1" x="294.96" y="144.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="308.96" y="153.66">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.31</text>
+            <text class="tx" x="294.96" y="170.66">95% prediction: 7.027 to 13.59</text>
+            <text class="tx" x="294.96" y="187.66">95% confidence: 8.591 to 12.03</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="14.84, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.42,    95% prediction: 7.11 to 13.73,    95% confidence: 8.65 to 12.19">
+        <title>14.84, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.42, 95% prediction: 7.11 to 13.73, 95% confidence: 8.65
+            to 12.19
+        </title>
+        <rect class="hit" x="573.09" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="577.5" y1="72" x2="577.5" y2="346"/>
+        <circle class="cx s1" cx="577.5" cy="155.64" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="293.78" y="116.64" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="303.78" y="134.64">14.84</text>
+            <rect class="tsw s1" x="303.78" y="142.64" width="9" height="9" rx="2"/>
+            <text class="tx" x="317.78" y="151.64">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.42</text>
+            <text class="tx" x="303.78" y="168.64">95% prediction: 7.11 to 13.73</text>
+            <text class="tx" x="303.78" y="185.64">95% confidence: 8.65 to 12.19</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="15.06, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.53,    95% prediction: 7.192 to 13.87,    95% confidence: 8.708 to 12.35">
+        <title>15.06, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.53, 95% prediction: 7.192 to 13.87, 95% confidence:
+            8.708 to 12.35
+        </title>
+        <rect class="hit" x="581.92" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="586.33" y1="72" x2="586.33" y2="346"/>
+        <circle class="cx s1" cx="586.33" cy="153.63" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="302.61" y="114.63" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="312.61" y="132.63">15.06</text>
+            <rect class="tsw s1" x="312.61" y="140.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="326.61" y="149.63">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.53</text>
+            <text class="tx" x="312.61" y="166.63">95% prediction: 7.192 to 13.87</text>
+            <text class="tx" x="312.61" y="183.63">95% confidence: 8.708 to 12.35</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="15.28, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.64,    95% prediction: 7.274 to 14.01,    95% confidence: 8.766 to 12.52">
+        <title>15.28, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.64, 95% prediction: 7.274 to 14.01, 95% confidence:
+            8.766 to 12.52
+        </title>
+        <rect class="hit" x="590.74" y="72" width="8.82" height="274"/>
+        <line class="vl" x1="595.15" y1="72" x2="595.15" y2="346"/>
+        <circle class="cx s1" cx="595.15" cy="151.62" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="311.43" y="112.62" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="321.43" y="130.62">15.28</text>
+            <rect class="tsw s1" x="321.43" y="138.62" width="9" height="9" rx="2"/>
+            <text class="tx" x="335.43" y="147.62">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.64</text>
+            <text class="tx" x="321.43" y="164.62">95% prediction: 7.274 to 14.01</text>
+            <text class="tx" x="321.43" y="181.62">95% confidence: 8.766 to 12.52</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="15.5, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.75,    95% prediction: 7.354 to 14.15,    95% confidence: 8.824 to 12.68">
+        <title>15.5, Sample fit: y = 3 + 0.5001x, R² 0.667: 10.75, 95% prediction: 7.354 to 14.15, 95% confidence: 8.824
+            to 12.68
+        </title>
+        <rect class="hit" x="599.56" y="72" width="24.44" height="274"/>
+        <line class="vl" x1="603.98" y1="72" x2="603.98" y2="346"/>
+        <circle class="cx s1" cx="603.98" cy="149.61" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="320.26" y="110.61" width="271.72" height="78" rx="6"/>
+            <text class="tx b" x="330.26" y="128.61">15.5</text>
+            <rect class="tsw s1" x="330.26" y="136.61" width="9" height="9" rx="2"/>
+            <text class="tx" x="344.26" y="145.61">Sample fit: y = 3 + 0.5001x, R² 0.667: 10.75</text>
+            <text class="tx" x="330.26" y="162.61">95% prediction: 7.354 to 14.15</text>
+            <text class="tx" x="330.26" y="179.61">95% confidence: 8.824 to 12.68</text>
+        </g>
+    </g>
+    <text class="at ctr" x="343.67" y="380">x</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 209) rotate(-90)">y</text>
+</svg>

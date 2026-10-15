@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelProcessingCounter;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -25,7 +28,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "one-minute interval's counts for one Entity Analysis Model -- synchronous invocations, " +
                     "Gateway Rule matches, response-elevation triggers, activation-watcher triggers, " +
                     "response times, and pending archive WAL entries. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw an " +
-                    "unbiased random subset of matching rows instead of the most recent ones."));
+                    "unbiased random subset of matching rows instead of the most recent ones.",
+                    EntityAnalysisModelProcessingCounterService.RequiredPermissions,
+                    EntityAnalysisModelProcessingCounterService.RequiresLandlord));
         }
     }
 }

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     style="--jc-s2:#7d7c76;--jc-o2:#0b0b0b" role="img" aria-labelledby="jc-4f8ab79e-t jc-4f8ab79e-d">
+    <title id="jc-4f8ab79e-t">Loss bridge</title>
+    <desc id="jc-4f8ab79e-d">Waterfall chart with 6 steps ending at 525.</desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Loss bridge</text>
+    <text class="sub" x="16" y="50">From gross fraud to net loss</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="64.08" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Increase</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="96.08" y="62" width="69.12" height="18"/>
+        <rect class="sw" x="98.08" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="116.08" y="75">Decrease</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="183.2" y="62" width="46.32" height="18"/>
+        <rect class="sw" x="185.2" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="203.2" y="75">Total</text>
+    </g>
+    <line class="gl" x1="48.64" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="40.64" y="364">0</text>
+    <line class="gl" x1="48.64" y1="318.33" x2="624" y2="318.33"/>
+    <text class="tk end mid" x="40.64" y="318.33">200</text>
+    <line class="gl" x1="48.64" y1="272.67" x2="624" y2="272.67"/>
+    <text class="tk end mid" x="40.64" y="272.67">400</text>
+    <line class="gl" x1="48.64" y1="227" x2="624" y2="227"/>
+    <text class="tk end mid" x="40.64" y="227">600</text>
+    <line class="gl" x1="48.64" y1="181.33" x2="624" y2="181.33"/>
+    <text class="tk end mid" x="40.64" y="181.33">800</text>
+    <line class="gl" x1="48.64" y1="135.67" x2="624" y2="135.67"/>
+    <text class="tk end mid" x="40.64" y="135.67">1000</text>
+    <line class="gl" x1="48.64" y1="90" x2="624" y2="90"/>
+    <text class="tk end mid" x="40.64" y="90">1200</text>
+    <line class="ax" x1="48.64" y1="364" x2="624" y2="364"/>
+    <text class="tk ctr" x="96.59" y="380">Gross fraud</text>
+    <text class="tk ctr" x="192.48" y="380">Blocked</text>
+    <text class="tk ctr" x="288.37" y="380">Recovered</text>
+    <text class="tk ctr" x="384.27" y="380">Chargebacks</text>
+    <text class="tk ctr" x="480.16" y="380">Fees</text>
+    <text class="tk ctr" x="576.05" y="380">Net loss</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Chargebacks, Change: +90, Running total: 490">
+            <title>Chargebacks, Change: +90, Running total: 490</title>
+            <rect class="bar m" x="350.7" y="252.12" width="67.13" height="20.55" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="325.31" y="183.12" width="117.92" height="61" rx="6"/>
+                <rect class="tsw s0" x="335.31" y="192.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="349.31" y="201.12">Chargebacks</text>
+                <text class="tx" x="335.31" y="218.12">Change: +90</text>
+                <text class="tx" x="335.31" y="235.12">Running total: 490</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="384.27" y="247.12">+90</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Fees, Change: +35, Running total: 525">
+            <title>Fees, Change: +35, Running total: 525</title>
+            <rect class="bar m" x="446.6" y="244.13" width="67.13" height="7.99" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="421.2" y="175.13" width="117.92" height="61" rx="6"/>
+                <rect class="tsw s0" x="431.2" y="184.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="445.2" y="193.13">Fees</text>
+                <text class="tx" x="431.2" y="210.13">Change: +35</text>
+                <text class="tx" x="431.2" y="227.13">Running total: 525</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="480.16" y="239.13">+35</text>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Blocked, Change: -420, Running total: 580">
+            <title>Blocked, Change: -420, Running total: 580</title>
+            <rect class="bar m" x="158.92" y="135.67" width="67.13" height="95.9" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="133.52" y="143.67" width="117.92" height="61" rx="6"/>
+                <rect class="tsw s1" x="143.52" y="152.67" width="9" height="9" rx="2"/>
+                <text class="tx b" x="157.52" y="161.67">Blocked</text>
+                <text class="tx" x="143.52" y="178.67">Change: -420</text>
+                <text class="tx" x="143.52" y="195.67">Running total: 580</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="192.48" y="130.67">-420</text>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Recovered, Change: -180, Running total: 400">
+            <title>Recovered, Change: -180, Running total: 400</title>
+            <rect class="bar m" x="254.81" y="231.57" width="67.13" height="41.1" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="229.41" y="162.57" width="117.92" height="61" rx="6"/>
+                <rect class="tsw s1" x="239.41" y="171.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="253.41" y="180.57">Recovered</text>
+                <text class="tx" x="239.41" y="197.57">Change: -180</text>
+                <text class="tx" x="239.41" y="214.57">Running total: 400</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="288.37" y="226.57">-180</text>
+    </g>
+    <g class="sr s2">
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Gross fraud, Total: 1000, Running total: 1000">
+            <title>Gross fraud, Total: 1000, Running total: 1000</title>
+            <rect class="bar m" x="63.02" y="135.67" width="67.13" height="228.33" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="48.64" y="143.67" width="124.64" height="61" rx="6"/>
+                <rect class="tsw s2" x="58.64" y="152.67" width="9" height="9" rx="2"/>
+                <text class="tx b" x="72.64" y="161.67">Gross fraud</text>
+                <text class="tx" x="58.64" y="178.67">Total: 1000</text>
+                <text class="tx" x="58.64" y="195.67">Running total: 1000</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="96.59" y="130.67">1000</text>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Net loss, Total: 525, Running total: 525">
+            <title>Net loss, Total: 525, Running total: 525</title>
+            <rect class="bar m" x="542.49" y="244.13" width="67.13" height="119.88" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="506.08" y="175.13" width="117.92" height="61" rx="6"/>
+                <rect class="tsw s2" x="516.08" y="184.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="530.08" y="193.13">Net loss</text>
+                <text class="tx" x="516.08" y="210.13">Total: 525</text>
+                <text class="tx" x="516.08" y="227.13">Running total: 525</text>
+            </g>
+        </g>
+        <text class="lbl ctr" x="576.05" y="239.13">525</text>
+    </g>
+    <line class="conn" x1="130.15" y1="135.67" x2="158.92" y2="135.67"/>
+    <line class="conn" x1="226.04" y1="231.57" x2="254.81" y2="231.57"/>
+    <line class="conn" x1="321.94" y1="272.67" x2="350.7" y2="272.67"/>
+    <line class="conn" x1="417.83" y1="252.12" x2="446.6" y2="252.12"/>
+    <line class="conn" x1="513.72" y1="244.13" x2="542.49" y2="244.13"/>
+</svg>

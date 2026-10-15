@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Xml;
 
 namespace Jube.Dictionary.Extensions
@@ -10,6 +11,7 @@ namespace Jube.Dictionary.Extensions
         {
             var doc = new XmlDocument();
             doc.LoadXml(@this);
+
             return doc;
         }
     }

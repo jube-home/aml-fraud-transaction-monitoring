@@ -45,11 +45,14 @@ public static class IdentityBodyAttacks
         object validBody, bool emptyObjectIsValid = false)
     {
         var bodies = StructuralBodies.Concat(extraBodies).ToList();
+
         await run.ForEachAsync([.. bodies.SelectMany(b => targets.Select(t => (b, t)))], async item =>
         {
             var response = await client.SendAsync(item.t.Method, item.t.Target, Encoding.UTF8.GetBytes(item.b.Json),
                 "application/json");
+
             run.Check(IdentityPenTestBase.Scrub(response, ""), slow);
+
             run.Expect(response.Status is >= 400 and < 500 || (emptyObjectIsValid && !response.IsServerError), response,
                 "REJECTED", $"{item.b.Name} on {item.t.Method} {item.t.Target}");
         });
@@ -62,6 +65,7 @@ public static class IdentityBodyAttacks
                     IdentityPenTestBase.Scrub(await client.SendAsync(method, target, attack.Bytes, attack.ContentType),
                         ""),
                     slow);
+
                 run.Expect(response.Status is >= 400 and < 500 || (emptyObjectIsValid && !response.IsServerError),
                     response, "REJECTED", $"{attack.Name} on {method} {target}");
             }
@@ -69,6 +73,7 @@ public static class IdentityBodyAttacks
 
         var valid = Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(validBody,
             new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web)));
+
         foreach (var contentType in new[]
                  {
                      "text/plain", "application/xml", "application/x-www-form-urlencoded",
@@ -80,6 +85,7 @@ public static class IdentityBodyAttacks
                 var response =
                     run.Check(IdentityPenTestBase.Scrub(await client.SendAsync(method, target, valid, contentType), ""),
                         slow);
+
                 run.Expect(response.Status is >= 400 and < 500, response, "CONTENT-TYPE",
                     $"{contentType ?? "none"} accepted on {method} {target}");
             }
@@ -92,15 +98,18 @@ public static class IdentityBodyAttacks
             ("invalid-utf8", [.. valid, 0xFF, 0xFE]),
             ("gzip-lie", valid)
         };
+
         foreach (var (name, bytes) in encodings)
         {
             foreach (var (method, target) in targets)
             {
                 var headers = name == "gzip-lie" ? new[] { ("Content-Encoding", "gzip") } : [];
+
                 var response =
                     run.Check(
                         IdentityPenTestBase.Scrub(
                             await client.SendAsync(method, target, bytes, "application/json", headers), ""), slow);
+
                 run.Expect(!response.IsServerError, response, "STATUS", $"{name} on {method} {target}");
             }
         }

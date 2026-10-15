@@ -24,6 +24,7 @@ using Jube.App.Endpoints;
 using Jube.App.Middlewares;
 using Jube.App.Middlewares.Models;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
 using Jube.Test.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Negotiate;
@@ -46,8 +47,10 @@ public sealed class AuthApiHost : IAsyncDisposable
     private AuthApiHost(WebApplication app)
     {
         this.app = app;
+
         var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Required()
             .Addresses.Single();
+
         client = new HttpClient(new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false })
             { BaseAddress = new Uri(address) };
     }
@@ -67,6 +70,7 @@ public sealed class AuthApiHost : IAsyncDisposable
             ["JWTKey"] = "an-adequately-long-unit-test-signing-key-0123456789",
             ["PasswordHashingKey"] = AuthenticationTestBase.HashKey
         };
+
         foreach (var (key, value) in env)
         {
             settings[key] = value;
@@ -75,6 +79,7 @@ public sealed class AuthApiHost : IAsyncDisposable
         var dynamicEnvironment = TestDynamicEnvironment.Create(settings);
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
+
         if (Environment.GetEnvironmentVariable("AUTH_HOST_LOG") == "1")
         {
             builder.Logging.AddConsole();
@@ -88,6 +93,7 @@ public sealed class AuthApiHost : IAsyncDisposable
         builder.Services.AddSingleton<LoginSourceIpThrottle>();
         builder.Services.AddSingleton<WatcherStreamRegistry>();
         builder.Services.AddSingleton<ServiceChangeStreamRegistry>();
+
         if (mfa != null)
         {
             builder.Services.AddSingleton(mfa);
@@ -96,6 +102,7 @@ public sealed class AuthApiHost : IAsyncDisposable
         builder.Services.AddSingleton(
             (ApiTokensCache.ApiTokensCache)RuntimeHelpers.GetUninitializedObject(
                 typeof(ApiTokensCache.ApiTokensCache)));
+
         builder.Services.AddAuthentication(o =>
             {
                 o.DefaultScheme = "Hybrid";
@@ -109,6 +116,7 @@ public sealed class AuthApiHost : IAsyncDisposable
                 o.JwtValidAudience = dynamicEnvironment.AppSettings("JWTValidAudience");
             })
             ;
+
         if (negotiateScheme)
         {
             builder.Services.AddAuthentication().AddScheme<AuthenticationSchemeOptions, TestNegotiateHandler>(
@@ -123,6 +131,7 @@ public sealed class AuthApiHost : IAsyncDisposable
         app.UseAuthorization();
         app.MapAuthenticationEndpoints();
         await app.StartAsync();
+
         return new AuthApiHost(app);
     }
 
@@ -140,6 +149,7 @@ public sealed class AuthApiHost : IAsyncDisposable
         string contentType = "application/json", params (string Name, string Value)[] headers)
     {
         using var message = new HttpRequestMessage(new HttpMethod(method), path);
+
         if (body != null)
         {
             message.Content = new StringContent(body, Encoding.UTF8);
@@ -155,8 +165,10 @@ public sealed class AuthApiHost : IAsyncDisposable
         using var response = await client.SendAsync(message);
         var text = await response.Content.ReadAsStringAsync();
         var cookies = response.Headers.TryGetValues("Set-Cookie", out var values) ? values.ToList() : [];
+
         var all = response.Headers.Concat(response.Content.Headers)
             .ToDictionary(h => h.Key, h => String.Join("|", h.Value), StringComparer.OrdinalIgnoreCase);
+
         return new ApiResponse((int)response.StatusCode, text, cookies, all);
     }
 

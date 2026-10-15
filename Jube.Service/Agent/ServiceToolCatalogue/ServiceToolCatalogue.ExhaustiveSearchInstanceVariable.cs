@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,29 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstanceVariable;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstanceVariable(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstanceVariableGet", OperationKind.Read,
-                Idempotent: true, Destructive: false,
-                "Lists the variables of an Exhaustive Search Instance with distribution statistics and histogram bins.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceVariableGet", OperationKind.Read,
+                    true, false,
+                    "Lists the variables of an Exhaustive Search Instance with distribution statistics and histogram bins.",
+                    ExhaustiveSearchInstanceVariableService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceVariableReallocate", OperationKind.Write,
+                    true, false,
+                    "Reallocates a trained variable's live name and processing type, without retraining.",
+                    ExhaustiveSearchInstanceVariableService.RequiredPermissions)
+            ]);
+        }
     }
 }

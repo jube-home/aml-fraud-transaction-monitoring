@@ -19,22 +19,27 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.Analytics.Anomaly;
+using Jube.Analytics.Anomaly.Models;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.ExhaustiveSearchInstance;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.ExhaustiveSearchInstance;
 using Jube.Service.Exceptions.EntityApproval;
-using Jube.Service.ExhaustiveSearchInstance;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
+using Jube.Service.Repository.ExhaustiveSearchInstance;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
 using log4net;
+using MessagePack;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -79,6 +84,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id).DeleteAsync();
             }
 
@@ -86,6 +92,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -102,6 +109,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
         private async Task<int> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -112,6 +120,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -251,6 +260,38 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
         }
 
         [Fact]
+        public async Task SetActiveOfRowAlreadyPickedUpForTrainingSucceedsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TrainingActive")));
+            createdIds.Add(saved.Id);
+
+            await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .Where(w => w.Id == saved.Id).Set(s => s.StatusId, (byte)16).UpdateAsync();
+
+            var activated = await service.SetActiveAsync(saved.Id, true);
+            activated.Active.Should().Be(1);
+
+            var deactivated = await service.SetActiveAsync(saved.Id, false);
+            deactivated.Active.Should().Be(0);
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.Active.Should().BeFalse();
+            fetched.StatusId.Should().Be(16);
+        }
+
+        [Fact]
+        public async Task SetActiveOfUnknownIdThrowsNotFoundAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.SetActiveAsync(int.MaxValue, true));
+        }
+
+        [Fact]
         public async Task DeleteKeepsRowReachableByIdAndHidesItFromListsAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -311,11 +352,13 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(modelId, UniqueName("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
             var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.SetActiveAsync(seedRow.Id, true));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.StopAsync(seedRow.Guid));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ResubmitAsync(seedRow.Id));
@@ -348,6 +391,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -356,6 +400,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -378,6 +423,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UpdateAsync(updateDto));
+            await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.SetActiveAsync(saved.Id, false));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
 
             var stillThere = await owner.GetByIdAsync(saved.Id);
@@ -412,6 +458,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var dto = NewDto(modelId, name!);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(ExhaustiveSearchInstanceDto.Name) && e.ErrorCode == "NameNotEmpty");
         }
@@ -443,6 +490,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelAId, name)));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
 
             var second = await service.InsertAsync(NewDto(modelBId, name));
@@ -472,6 +520,71 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "AnomalyProbabilityRange");
+        }
+
+        [Theory]
+        [InlineData(0.0)]
+        [InlineData(1.0)]
+        [InlineData(-0.1)]
+        [InlineData(1.5)]
+        [InlineData(double.NaN)]
+        [InlineData(double.PositiveInfinity)]
+        public async Task BaseRateOutsideZeroToOneExclusiveIsRejectedAsync(double baseRate)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("BaseRateBad"));
+            dto.BaseRate = baseRate;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task BaseRateIsOptionalPersistsOnInsertAndUpdateAndIsSettableByTheClientAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("BaseRate"));
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+            saved.BaseRate.Should().BeNull();
+
+            dto = (await service.GetByIdAsync(saved.Id))!;
+            dto.BaseRate = 0.02;
+            var updated = await service.UpdateAsync(dto);
+            updated.BaseRate.Should().Be(0.02);
+
+            var row = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().FirstAsync(w => w.Id == saved.Id);
+            row.BaseRate.Should().Be(0.02);
+            (await service.GetByIdAsync(saved.Id))!.BaseRate.Should().Be(0.02);
+
+            dto.BaseRate = null;
+            (await service.UpdateAsync(dto)).BaseRate.Should().BeNull();
+        }
+
+        [Fact]
+        public void TheServerWrittenCalibrationColumnsAreNotOnTheClientWritableInstanceDto()
+        {
+            var names = typeof(ExhaustiveSearchInstanceDto).GetProperties().Select(p => p.Name).ToList();
+
+            names.Should().Contain("BaseRate");
+
+            names.Should().Contain("CalibrationMethod",
+                "the requested calibration method is a client choice, like DataSourceId, not a server-computed " +
+                "result");
+
+            string[] serverWrittenNames =
+            [
+                "CalibrationInput", "CalibrationSlope", "CalibrationIntercept", "CalibrationEpsilon",
+                "CalibrationPrior", "CalibrationSampleSize", "CalibrationStatus", "CalibrationReason",
+                "CalibrationQualityJson", "CalibrationParametersJson", "TrainingPrior", "BaseRateSource"
+            ];
+
+            names.Should().NotContain(n => serverWrittenNames.Contains(n));
         }
 
         [Fact]
@@ -520,8 +633,10 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var fetched = await service.GetByIdAsync(saved.Id);
             fetched!.FilterJson.Should().NotBeNullOrEmpty();
+
             JsonDocument.Parse(fetched.FilterJson!).RootElement.GetRawText()
                 .Should().Be(JsonDocument.Parse(dto.FilterJson).RootElement.GetRawText());
+
             fetched.FilterSql.Should().Be(dto.FilterSql);
             fetched.FilterTokens.Should().NotBeNullOrEmpty();
         }
@@ -936,6 +1051,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -953,10 +1069,12 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelId, "")));
 
@@ -969,6 +1087,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "ExhaustiveSearchInstanceList", "ExhaustiveSearchInstanceGet",
@@ -996,6 +1115,194 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Fact]
+        public async Task AnomalyAlgorithmAndParametersPersistAndAreAuditedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("Anomaly"));
+            dto.Anomaly = true;
+            dto.AnomalyProbability = 0.05;
+            dto.AnomalyAlgorithmId = 1;
+            dto.AnomalyParametersJson = "{\"trees\":50,\"reduction\":{\"mode\":\"Standard\"}}";
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.AnomalyAlgorithmId.Should().Be(1);
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.AnomalyAlgorithmId.Should().Be(1);
+            fetched.AnomalyParametersJson.Should().Be(dto.AnomalyParametersJson);
+            fetched.AnomalyProbability.Should().Be(0.05);
+
+            var update = NewDto(modelId, saved.Name!);
+            update.Id = saved.Id;
+            update.Anomaly = true;
+            update.AnomalyProbability = 0.1;
+            update.AnomalyAlgorithmId = 100;
+            await service.UpdateAsync(update);
+
+            var afterUpdate = await service.GetByIdAsync(saved.Id);
+            afterUpdate!.AnomalyAlgorithmId.Should().Be(100);
+
+            var audit = await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
+                .Where(w => w.ExhaustiveSearchInstanceId == saved.Id).ToListAsync();
+
+            audit.Should().Contain(a =>
+                a.AnomalyAlgorithmId == 1 && a.AnomalyParametersJson == dto.AnomalyParametersJson);
+        }
+
+        [Fact]
+        public async Task DefaultAnomalyAlgorithmIsStoredAsNullAndReadBackAsNullAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("AnomalyDefault"));
+            dto.Anomaly = true;
+            dto.AnomalyProbability = 0.5;
+            dto.AnomalyAlgorithmId = 0;
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.AnomalyAlgorithmId.Should().BeNull();
+            (await service.GetByIdAsync(saved.Id))!.AnomalyAlgorithmId.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task TheAnomalyReportIsServerWrittenAndAClientSuppliedValueIsIgnoredAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("AnomalyReport"));
+            dto.AnomalyReportJson = "{\"forged\":true}";
+            dto.AnomalySummary = "forged";
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+            saved.AnomalyReportJson.Should().BeNull();
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.AnomalyReportJson.Should().BeNull();
+            fetched.AnomalySummary.Should().BeNull();
+
+            var report = new AnomalyReport
+            {
+                Algorithm = "IsolationForest",
+                Requested = "IsolationForest",
+                Rows = 100,
+                InputVariables = 4,
+                KeptVariables = 4,
+                Threshold = new ThresholdApplied("Contamination", 0.9, 0.05, 5, 100)
+            };
+
+            var repository = new ExhaustiveSearchInstanceRepository(dbContext);
+            await repository.UpdateAnomalyReportAsync(saved.Id, report.ToJson());
+
+            var withReport = await service.GetByIdAsync(saved.Id);
+            withReport!.AnomalyReportJson.Should().Be(report.ToJson());
+            withReport.AnomalySummary.Should().Contain("IsolationForest").And.Contain("flagged 5 of 100");
+
+            var forgery = NewDto(modelId, saved.Name!);
+            forgery.Id = saved.Id;
+            forgery.AnomalyReportJson = "{\"forged\":true}";
+            forgery.AnomalySummary = "forged";
+            await service.UpdateAsync(forgery);
+            var afterForgery = await service.GetByIdAsync(saved.Id);
+            afterForgery!.AnomalyReportJson.Should().NotContain("forged");
+            afterForgery.AnomalySummary.Should().NotBe("forged");
+        }
+
+        [Fact]
+        public async Task TheAnomalyReportRoundTripsThroughTheMessagePackPreservationFormatAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("AnomalyPreserve"));
+            dto.Anomaly = true;
+            dto.AnomalyProbability = 0.05;
+            dto.AnomalyAlgorithmId = 2;
+            dto.AnomalyParametersJson = "{\"bins\":20}";
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var repository = new ExhaustiveSearchInstanceRepository(dbContext);
+            await repository.UpdateAnomalyReportAsync(saved.Id, "{\"algorithm\":\"Hbos\"}");
+
+            var poco = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .FirstAsync(w => w.Id == saved.Id);
+
+            var bytes = MessagePackSerializer.Serialize(poco);
+            var restored = MessagePackSerializer.Deserialize<Data.Poco.ExhaustiveSearchInstance>(bytes);
+            restored.AnomalyAlgorithmId.Should().Be(2);
+            restored.AnomalyParametersJson.Should().Be("{\"bins\":20}");
+            restored.AnomalyReportJson.Should().Be("{\"algorithm\":\"Hbos\"}");
+
+            restored.EntityAnalysisModelId = modelId;
+            restored.Name = UniqueName("AnomalyImported");
+            restored.Guid = Guid.NewGuid();
+
+            var imported = await new ExhaustiveSearchInstanceRepository(dbContext, fx.Seed.UserWithPermission)
+                .InsertAsync(restored);
+            createdIds.Add(imported.Id);
+
+            var reread = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .FirstAsync(w => w.Id == imported.Id);
+            reread.AnomalyAlgorithmId.Should().Be(2);
+            reread.AnomalyParametersJson.Should().Be("{\"bins\":20}");
+            reread.AnomalyReportJson.Should().Be("{\"algorithm\":\"Hbos\"}");
+        }
+
+        [Theory]
+        [InlineData(-1, null, 0.05, "AnomalyAlgorithmInvalid")]
+        [InlineData(12, null, 0.05, "AnomalyAlgorithmInvalid")]
+        [InlineData(99, null, 0.05, "AnomalyAlgorithmInvalid")]
+        [InlineData(1, "{\"trees\":0}", 0.05, "AnomalyParametersInvalid")]
+        [InlineData(1, "{\"unknown\":1}", 0.05, "AnomalyParametersInvalid")]
+        [InlineData(1, "not json", 0.05, "AnomalyParametersInvalid")]
+        [InlineData(1, "{\"reduction\":{\"correlationThreshold\":9}}", 0.05, "AnomalyParametersInvalid")]
+        [InlineData(1, null, 0.9, "AnomalyContaminationRange")]
+        [InlineData(100, null, 0d, "AnomalyContaminationRange")]
+        [InlineData(0, null, 1.5, "AnomalyProbabilityRange")]
+        public async Task InvalidAnomalyAlgorithmParametersAndContaminationAreRejectedAsync(int algorithm,
+            string? parameters, double probability, string errorCode)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("AnomalyInvalid"));
+            dto.Anomaly = true;
+            dto.AnomalyProbability = probability;
+            dto.AnomalyAlgorithmId = algorithm;
+            dto.AnomalyParametersJson = parameters;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == errorCode);
+        }
+
+        [Fact]
+        public async Task TheContaminationParameterSatisfiesTheContaminationRuleAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("AnomalyContamination"));
+            dto.Anomaly = true;
+            dto.AnomalyProbability = 0.9;
+            dto.AnomalyAlgorithmId = 2;
+            dto.AnomalyParametersJson = "{\"contamination\":0.1}";
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+            saved.AnomalyParametersJson.Should().Be(dto.AnomalyParametersJson);
         }
     }
 }

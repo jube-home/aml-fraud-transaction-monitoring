@@ -11,19 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Accord.Neuro;
+using Jube.Analytics;
+using Jube.Engine.BackgroundTasks.Context;
+using Jube.Engine.Exhaustive.Models;
+using Jube.Engine.Exhaustive.Utilities;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.Engine.Exhaustive.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using BackgroundTasks.Context;
-    using Newtonsoft.Json.Linq;
-
     public static class ExhaustiveExtensions
     {
         public static double RecallExhaustive(this Context context, Guid guid, JObject jObject)
         {
             double valueRecall = 0;
+
             try
             {
                 if (context.Services.Log.IsInfoEnabled)
@@ -44,72 +49,8 @@ namespace Jube.Engine.Exhaustive.Extensions
                     {
                         foundExhaustive = true;
 
-                        var scoreInputs = new double[exhaustive.NetworkVariablesInOrder.Count];
-                        for (var i = 0; i < exhaustive.NetworkVariablesInOrder.Count; i++)
-                        {
-                            var scoreInput = exhaustive.NetworkVariablesInOrder[i];
-
-                            if (context.Services.Log.IsInfoEnabled)
-                            {
-                                context.Services.Log.Info(
-                                    $"Exhaustive Recall: GUID {guid}" +
-                                    $" looking for match on {scoreInput.Name}.");
-                            }
-
-                            double valueElement;
-                            try
-                            {
-                                var selectedToken = GetValueFromJson(jObject, scoreInput.Name);
-                                if (selectedToken != null)
-                                {
-                                    valueElement = Convert.ToDouble(selectedToken);
-
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Exhaustive Recall: GUID {guid} " +
-                                            $"has found a value in the payload for {scoreInput.Name} as {valueElement}.");
-                                    }
-
-                                    if (scoreInput.NormalisationTypeId == 2
-                                       )
-                                    {
-                                        valueElement = (valueElement - scoreInput.Mean) / scoreInput.Sd;
-
-                                        if (context.Services.Log.IsInfoEnabled)
-                                        {
-                                            context.Services.Log.Info(
-                                                $"Exhaustive Recall: GUID {guid}" +
-                                                $" has a standardization type of 2 for {scoreInput.Name}" +
-                                                $" and has been standardized to {valueElement} .");
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Exhaustive Recall: GUID {guid}" +
-                                            $" could not locate a match for {scoreInput.Name}.");
-                                    }
-
-                                    valueElement = 0;
-                                }
-                            }
-                            catch (Exception ex) when (ex is not OperationCanceledException)
-                            {
-                                context.Services.Log.Error(
-                                    $"Exhaustive Recall: GUID {guid}" +
-                                    $" has produced an error on {scoreInput.Name} as {ex}.");
-
-                                valueElement = 0;
-                            }
-
-                            scoreInputs[i] = valueElement;
-                        }
-
-                        valueRecall = exhaustive.TopologyNetwork.Compute(scoreInputs)[0];
+                        valueRecall = Score(exhaustive, jObject,
+                            message => context.Services.Log.Info($"Exhaustive Recall: GUID {guid} {message}"));
                     }
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
@@ -154,6 +95,114 @@ namespace Jube.Engine.Exhaustive.Extensions
             }
 
             return valueRecall;
+        }
+
+        public static (double Value, RecallRelevance Relevance) RecallExhaustiveWithExplainability(
+            this Context context, Guid guid, JObject jObject)
+        {
+            try
+            {
+                var exhaustive = context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                    .ActiveEntityAnalysisModels
+                    .Select(model => model.Value.Snapshot.ExhaustiveModels.FirstOrDefault(w => w.Guid == guid))
+                    .FirstOrDefault(found => found != null);
+
+                if (exhaustive == null)
+                {
+                    return (0, null);
+                }
+
+                if (exhaustive.TopologyNetwork != null)
+                {
+                    var inputs = BuildScoreInputs(exhaustive.NetworkVariablesInOrder, jObject);
+                    var rawScore = exhaustive.TopologyNetwork.Compute(inputs)[0];
+                    var names = exhaustive.NetworkVariablesInOrder.Select(v => v.Name).ToArray();
+                    var relevance = RecallExplainability.Explain(exhaustive.TopologyNetwork, inputs, names);
+
+                    return (exhaustive.Calibration.Apply(rawScore), relevance);
+                }
+
+                var rawInputs = BuildScoreInputs(exhaustive.NetworkVariablesInOrder, jObject, standardise: false);
+                var value = exhaustive.ChallengerRecall.Predict(rawInputs)[0];
+
+                return (value, null);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.Services.Log.Error(
+                    $"Exhaustive Recall: GUID {guid} has caused an error as {ex}");
+
+                return (0, null);
+            }
+        }
+
+        internal static double Score(ExhaustiveSearchInstance model, JObject jObject,
+            Action<string> trace = null)
+        {
+            if (model.TopologyNetwork == null && model.ChallengerRecall != null)
+            {
+                var rawInputs = BuildScoreInputs(model.NetworkVariablesInOrder, jObject, trace, false);
+
+                return model.ChallengerRecall.Predict(rawInputs)[0];
+            }
+
+            return model.Calibration.Apply(Score(model.TopologyNetwork, model.NetworkVariablesInOrder, jObject,
+                trace));
+        }
+
+        internal static double Score(ActivationNetwork network,
+            IReadOnlyList<ExhaustiveSearchInstancePromotedTrialInstanceVariable> variables, JObject jObject,
+            Action<string> trace = null)
+        {
+            return network.Compute(BuildScoreInputs(variables, jObject, trace))[0];
+        }
+
+        internal static double[] BuildScoreInputs(
+            IReadOnlyList<ExhaustiveSearchInstancePromotedTrialInstanceVariable> variables, JObject jObject,
+            Action<string> trace = null, bool standardise = true)
+        {
+            var scoreInputs = new double[variables.Count];
+
+            for (var i = 0; i < variables.Count; i++)
+            {
+                var variable = variables[i];
+
+                if (variable.IsCategorical)
+                {
+                    var indicator = variable.CategoricalEncoder.Indicator(
+                        CategoricalValue.FromToken(GetValueFromJson(jObject, variable.CategoricalSourceName)),
+                        variable.CategoricalIndicatorIndex);
+
+                    scoreInputs[i] = standardise ? variable.ZScore(indicator) : indicator;
+                    continue;
+                }
+
+                double? raw = null;
+
+                var token = GetValueFromJson(jObject, variable.Name);
+
+                if (token is { Type: not JTokenType.Null })
+                {
+                    try
+                    {
+                        raw = Convert.ToDouble(token);
+                    }
+                    catch (Exception ex) when (ex is FormatException or InvalidCastException or OverflowException)
+                    {
+                        trace?.Invoke($"could not convert {variable.Name} as {ex.Message}, treating as missing.");
+                    }
+                }
+
+                scoreInputs[i] = Standardisation.Resolve(raw, variable.Mean, variable.Sd,
+                    standardise && variable.NormalisationTypeId == 2, out var imputed);
+
+                if (imputed)
+                {
+                    trace?.Invoke($"has no usable value for {variable.Name}, imputed the training mean.");
+                }
+            }
+
+            return scoreInputs;
         }
 
         private static JToken GetValueFromJson(JObject jObject, string name)

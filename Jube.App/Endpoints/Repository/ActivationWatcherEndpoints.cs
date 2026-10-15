@@ -48,6 +48,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/Replay: entry user={user}");
@@ -55,10 +56,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ActivationWatcherService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var rows = await service.ReplayAsync(dateFrom, dateTo, token);
 
                 return TypedResults.Ok(rows);
@@ -93,6 +96,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/Replay: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

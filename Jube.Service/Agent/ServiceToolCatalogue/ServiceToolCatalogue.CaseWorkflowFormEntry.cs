@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,23 +11,32 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseWorkflowFormEntry;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowFormEntry(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowFormEntryInsert", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Submits a CaseWorkflowForm entry for a case; dispatches that form's notification/webhook if " +
-                "enabled."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowFormEntryValidate", OperationKind.Read, true, false,
-                "Validates a Case Workflow Form Entry without saving it and returns every failure."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowFormEntryListByCaseKeyValue", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists case workflow form entries for a Case Key/Value pair, newest first, scoped to the caller's " +
-                "tenant and role grants.")
-        ]);
+        static partial void AddCaseWorkflowFormEntry(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowFormEntryInsert", OperationKind.Write, false, false,
+                    "Submits a CaseWorkflowForm entry for a case; dispatches that form's notification/webhook if " +
+                    "enabled.",
+                    CaseWorkflowFormEntryService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowFormEntryValidate", OperationKind.Read, true, false,
+                    "Validates a Case Workflow Form Entry without saving it and returns every failure.",
+                    CaseWorkflowFormEntryService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowFormEntryListByCaseKeyValue", OperationKind.Read, true, false,
+                    "Lists case workflow form entries for a Case Key/Value pair, newest first, scoped to the caller's " +
+                    "tenant and role grants.",
+                    CaseWorkflowFormEntryService.RequiredPermissions)
+            ]);
+        }
     }
 }

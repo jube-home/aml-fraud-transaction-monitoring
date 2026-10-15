@@ -13,6 +13,11 @@
 
 using System;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue.Models
 {
     internal sealed record Fixture(int EntryId, int CaseId, string FormName, DateTime CreatedDate);

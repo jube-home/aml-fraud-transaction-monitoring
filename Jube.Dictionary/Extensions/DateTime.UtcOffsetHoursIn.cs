@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static double UtcOffsetHoursIn(this DateTime @this, string? zoneId)
         {
             var zone = TimeZoneSupport.Find(zoneId);
+
             return zone is null
                 ? double.NaN
                 : zone.GetUtcOffset(DateTime.SpecifyKind(@this, DateTimeKind.Utc)).TotalHours;

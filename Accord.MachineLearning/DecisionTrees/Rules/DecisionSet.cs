@@ -1,95 +1,125 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using Accord.MachineLearning.DecisionTrees.Learning;
+using Accord.Math;
+using Accord.Statistics.Filters;
 
 namespace Accord.MachineLearning.DecisionTrees.Rules
 {
-    using System.Collections.Generic;
-    using System.Text;
-    using Accord.Statistics.Filters;
-    using System;
-    using System.Globalization;
-    using Accord.Math;
-    using Accord.MachineLearning.DecisionTrees.Learning;
-
     /// <summary>
-    ///   Decision rule set.
+    ///     Decision rule set.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   Decision rule sets can be created from <see cref="DecisionTree"/>s using their
-    ///   <see cref="DecisionTree.ToRules()"/> method. An example is shown below.</para>
+    ///     <para>
+    ///         Decision rule sets can be created from <see cref="DecisionTree" />s using their
+    ///         <see cref="DecisionTree.ToRules()" /> method. An example is shown below.
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\C45LearningTest.cs" region="doc_iris" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\C45LearningTest.cs" region="doc_missing" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\C45LearningTest.cs" region="doc_iris" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\C45LearningTest.cs" region="doc_missing" />
     /// </example>
-    /// 
-    /// <seealso cref="DecisionTree"/>
-    /// <seealso cref="C45Learning"/>
-    /// 
+    /// <seealso cref="DecisionTree" />
+    /// <seealso cref="C45Learning" />
     public class DecisionSet : MulticlassClassifierBase<double[]>, IEnumerable<DecisionRule>
     {
-
-        HashSet<DecisionRule> rules;
-
-        /// <summary>
-        ///   Obsolete. Please use <see cref="ClassifierBase{TInput, TClasses}.NumberOfClasses"/> instead.
-        /// </summary>
-        /// 
-        [Obsolete("Please use NumberOfClasses instead.")]
-        public int OutputClasses { get { return NumberOfClasses; } }
-
+        private readonly HashSet<DecisionRule> rules;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionSet"/> class.
+        ///     Initializes a new instance of the <see cref="DecisionSet" /> class.
         /// </summary>
-        /// 
         public DecisionSet()
         {
-            this.rules = new HashSet<DecisionRule>();
+            rules = new HashSet<DecisionRule>();
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionSet"/> class.
+        ///     Initializes a new instance of the <see cref="DecisionSet" /> class.
         /// </summary>
-        /// 
         /// <param name="rules">A set of decision rules.</param>
-        /// 
         public DecisionSet(IEnumerable<DecisionRule> rules)
         {
             this.rules = new HashSet<DecisionRule>(rules);
         }
 
         /// <summary>
-        ///   Creates a new <see cref="DecisionSet"/> from a <see cref="DecisionTree"/>.
+        ///     Obsolete. Please use <see cref="ClassifierBase{TInput, TClasses}.NumberOfClasses" /> instead.
         /// </summary>
-        /// 
-        /// <param name="tree">A <see cref="DecisionTree"/>.</param>
-        /// 
-        /// <returns>A <see cref="DecisionSet"/> that is completely 
-        /// equivalent to the given <paramref name="tree"/></returns>
-        /// 
+        [Obsolete("Please use NumberOfClasses instead.")]
+        public int OutputClasses => NumberOfClasses;
+
+        /// <summary>
+        ///     Gets the number of rules in this set.
+        /// </summary>
+        public int Count => rules.Count;
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object
+        ///     that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<DecisionRule> GetEnumerator()
+        {
+            return rules.GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object
+        ///     that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return rules.GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="DecisionSet" /> from a <see cref="DecisionTree" />.
+        /// </summary>
+        /// <param name="tree">A <see cref="DecisionTree" />.</param>
+        /// <returns>
+        ///     A <see cref="DecisionSet" /> that is completely
+        ///     equivalent to the given <paramref name="tree" />
+        /// </returns>
         public static DecisionSet FromDecisionTree(DecisionTree tree)
         {
             var rules = new List<DecisionRule>();
@@ -109,124 +139,98 @@ namespace Accord.MachineLearning.DecisionTrees.Rules
             };
         }
 
-
         /// <summary>
-        ///   Computes the decision output for a given input.
+        ///     Computes the decision output for a given input.
         /// </summary>
-        /// 
         /// <param name="input">An input vector.</param>
-        /// 
-        /// <returns>The decision output for the given 
-        ///   <paramref name="input"/>.</returns>
-        /// 
+        /// <returns>
+        ///     The decision output for the given
+        ///     <paramref name="input" />.
+        /// </returns>
         public double? Compute(double[] input)
         {
             double r = Decide(input);
-            return r == -1 ? (double?)null : r;
+            return r == -1 ? null : r;
         }
 
-
         /// <summary>
-        ///   Adds a new <see cref="DecisionRule"/> to the set.
+        ///     Adds a new <see cref="DecisionRule" /> to the set.
         /// </summary>
-        /// 
-        /// <param name="item">The <see cref="DecisionRule"/> to be added.</param>
-        /// 
+        /// <param name="item">The <see cref="DecisionRule" /> to be added.</param>
         public void Add(DecisionRule item)
         {
             rules.Add(item);
         }
 
         /// <summary>
-        ///   Adds a collection of new <see cref="DecisionRule"/>s to the set.
+        ///     Adds a collection of new <see cref="DecisionRule" />s to the set.
         /// </summary>
-        /// 
-        /// <param name="items">The collection of <see cref="DecisionRule"/>s to be added.</param>
-        /// 
+        /// <param name="items">The collection of <see cref="DecisionRule" />s to be added.</param>
         public void AddRange(IEnumerable<DecisionRule> items)
         {
             foreach (var rule in items)
+            {
                 rules.Add(rule);
+            }
         }
 
         /// <summary>
-        ///   Removes all rules from this set.
+        ///     Removes all rules from this set.
         /// </summary>
-        /// 
         public void Clear()
         {
             rules.Clear();
         }
 
         /// <summary>
-        ///   Gets the number of rules in this set.
+        ///     Removes a given rule from the set.
         /// </summary>
-        /// 
-        public int Count
-        {
-            get { return rules.Count; }
-        }
-
-        /// <summary>
-        ///   Removes a given rule from the set.
-        /// </summary>
-        /// 
-        /// <param name="item">The <see cref="DecisionRule"/> to be removed.</param>
-        /// 
+        /// <param name="item">The <see cref="DecisionRule" /> to be removed.</param>
         /// <returns>True if the rule was removed; false otherwise.</returns>
-        /// 
         public bool Remove(DecisionRule item)
         {
             return rules.Remove(item);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public override string ToString()
         {
             return toString(null, null, CultureInfo.CurrentUICulture);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public string ToString(Codification<string> codebook, CultureInfo cultureInfo)
         {
             return toString(codebook, null, cultureInfo);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public string ToString(Codification<string> codebook)
         {
             return ToString(codebook, CultureInfo.CurrentUICulture);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public string ToString(Codification<string> codebook, string outputColumn, CultureInfo cultureInfo)
         {
             return toString(codebook, outputColumn, CultureInfo.CurrentUICulture);
@@ -234,80 +238,62 @@ namespace Accord.MachineLearning.DecisionTrees.Rules
 
         private string toString(Codification<string> codebook, string outputColumn, CultureInfo cultureInfo)
         {
-            var rulesArray = new DecisionRule[this.rules.Count];
+            var rulesArray = new DecisionRule[rules.Count];
 
             rules.CopyTo(rulesArray);
             Array.Sort(rulesArray);
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (codebook != null)
             {
-                foreach (DecisionRule rule in rulesArray)
+                foreach (var rule in rulesArray)
+                {
                     sb.AppendLine(rule.ToString(codebook, outputColumn, cultureInfo));
+                }
             }
             else
             {
-                foreach (DecisionRule rule in rulesArray)
+                foreach (var rule in rulesArray)
+                {
                     sb.AppendLine(rule.ToString(cultureInfo));
+                }
             }
 
             return sb.ToString();
         }
 
         /// <summary>
-        ///    Returns an enumerator that iterates through a collection.
+        ///     Computes a class-label decision for a given <paramref name="input" />.
         /// </summary>
-        /// 
+        /// <param name="input">
+        ///     The input vector that should be classified into
+        ///     one of the <see cref="P:Accord.MachineLearning.ITransform.NumberOfOutputs" /> possible classes.
+        /// </param>
         /// <returns>
-        ///    An <see cref="T:System.Collections.IEnumerator"/> object 
-        ///    that can be used to iterate through the collection.
+        ///     A class-label that best described <paramref name="input" /> according
+        ///     to this classifier.
         /// </returns>
-        /// 
-        public IEnumerator<DecisionRule> GetEnumerator()
-        {
-            return rules.GetEnumerator();
-        }
-
-        /// <summary>
-        ///    Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///    An <see cref="T:System.Collections.IEnumerator"/> object 
-        ///    that can be used to iterate through the collection.
-        /// </returns>
-        /// 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return rules.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Computes a class-label decision for a given <paramref name="input" />.
-        /// </summary>
-        /// <param name="input">The input vector that should be classified into
-        /// one of the <see cref="P:Accord.MachineLearning.ITransform.NumberOfOutputs" /> possible classes.</param>
-        /// <returns>A class-label that best described <paramref name="input" /> according
-        /// to this classifier.</returns>
         public override int Decide(double[] input)
         {
             if (input.HasNaN())
             {
-                int[] outputs = new int[NumberOfClasses];
-                foreach (DecisionRule rule in rules)
+                var outputs = new int[NumberOfClasses];
+                foreach (var rule in rules)
                 {
                     if (rule.Match(input))
+                    {
                         outputs[(int)rule.Output] += 1;
+                    }
                 }
 
                 return outputs.ArgMax();
             }
-            else
+
+            foreach (var rule in rules)
             {
-                foreach (DecisionRule rule in rules)
+                if (rule.Match(input))
                 {
-                    if (rule.Match(input))
-                        return (int)rule.Output;
+                    return (int)rule.Output;
                 }
             }
 

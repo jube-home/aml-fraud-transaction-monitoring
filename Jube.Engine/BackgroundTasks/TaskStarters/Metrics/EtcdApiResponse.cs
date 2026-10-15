@@ -28,10 +28,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             if (string.IsNullOrWhiteSpace(body))
             {
                 error = $"{status} with an empty response body";
+
                 return false;
             }
 
             JObject parsed;
+
             try
             {
                 parsed = JObject.Parse(body);
@@ -39,27 +41,33 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             catch (JsonException)
             {
                 error = $"{status} with a response body that is not a JSON object";
+
                 return false;
             }
 
             var reported = (string)parsed["error"] ?? (string)parsed["message"];
+
             if (!string.IsNullOrWhiteSpace(reported))
             {
                 var code = (int?)parsed["code"];
+
                 error = code.HasValue
                     ? $"{status}: {reported} (etcd code {code.Value})"
                     : $"{status}: {reported}";
+
                 return false;
             }
 
             if (statusCode is < HttpStatusCode.OK or > (HttpStatusCode)299)
             {
                 error = status;
+
                 return false;
             }
 
             payload = parsed;
             error = null;
+
             return true;
         }
     }

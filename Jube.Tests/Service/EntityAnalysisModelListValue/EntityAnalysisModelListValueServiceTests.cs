@@ -23,6 +23,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelListValue;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityApproval;
@@ -31,16 +32,17 @@ using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModelListValue.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.EntityAnalysisModelListValue
 {
@@ -83,6 +85,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             {
                 await dbContext.GetTable<EntityAnalysisModelListValueVersion>()
                     .Where(w => w.EntityAnalysisModelListValueId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -91,10 +94,12 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
                     .Where(w => w.EntityAnalysisModelListId == listId).DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelListCsvFileUpload>()
                     .Where(w => w.EntityAnalysisModelListId == listId).DeleteAsync();
                 await dbContext.GetTable<EntityAnalysisModelListVersion>()
                     .Where(w => w.EntityAnalysisModelListId == listId).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>().Where(w => w.Id == listId)
                     .DeleteAsync();
             }
@@ -103,6 +108,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -119,6 +125,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         private async Task<int> CreateParentListAsync(DbContext dbContext, string createdUser)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -130,6 +137,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             createdModelIds.Add(model.Id);
 
             var listRepository = new EntityAnalysisModelListRepository(dbContext, createdUser);
+
             var list = await listRepository.InsertAsync(new Data.Poco.EntityAnalysisModelList
             {
                 EntityAnalysisModelGuid = model.Guid,
@@ -269,6 +277,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(listId, UniqueValue("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.GetByEntityAnalysisModelListIdAsync(listId));
 
@@ -306,6 +315,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -314,6 +324,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -370,6 +381,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var dto = NewDto(listId, listValue);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelListValueDto.ListValue) &&
                 e.ErrorCode == "ListValueNotEmpty");
@@ -1040,6 +1052,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1057,10 +1070,12 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(listId, "")));
 
@@ -1073,6 +1088,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelListValueList", "EntityAnalysisModelListValueGet",
@@ -1106,6 +1122,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         private static EntityAnalysisModelListValueCsvFileDto CsvFile(string name, string content)
         {
             var bytes = Encoding.UTF8.GetBytes(content);
+
             return new EntityAnalysisModelListValueCsvFileDto
             {
                 FileName = name, Length = bytes.Length, Content = new MemoryStream(bytes)
@@ -1295,6 +1312,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1313,6 +1331,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1330,6 +1349,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var auditLog = new TestLog();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: auditLog, serviceChangeBus: serviceChangeBus);
 
@@ -1354,6 +1374,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var foreignListId = await CreateParentListAsync(dbContext, fx.Seed.UserTenantB);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1365,6 +1386,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             serviceChangeBus.Published.Should().BeEmpty();
 
             var ownerService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             (await ownerService.UploadCsvAsync(foreignListId, [CsvFile("y.csv", "legit\n")]))[0].Records
                 .Should().Be(1);
         }
@@ -1377,6 +1399,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
 
             await Assert.ThrowsAsync<NotFoundException>(() =>
                 service.UploadCsvAsync(int.MaxValue, [CsvFile("x.csv", "a\n")]));
+
             await Assert.ThrowsAsync<NotFoundException>(() => service.UploadCsvAsync(0, [CsvFile("x.csv", "a\n")]));
         }
 
@@ -1387,6 +1410,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var log = new TestLog();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, log,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1418,6 +1442,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             using var cts = new CancellationTokenSource();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1439,8 +1464,10 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             using var cts = new CancellationTokenSource();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
+
             await cts.CancelAsync();
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
@@ -1457,6 +1484,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var log = new TestLog();
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, log,
                 serviceChangeBus: serviceChangeBus);
 

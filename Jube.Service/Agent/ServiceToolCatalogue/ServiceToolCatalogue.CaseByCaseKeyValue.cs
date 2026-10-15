@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseByCaseKeyValue;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseByCaseKeyValue(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseByCaseKeyValueGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Gets the Cases matching a Case Key and Case Key Value that the caller's role may see.")
-        ]);
+        static partial void AddCaseByCaseKeyValue(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseByCaseKeyValueGet", OperationKind.Read, true, false,
+                    "Gets the Cases matching a Case Key and Case Key Value that the caller's role may see.",
+                    CaseByCaseKeyValueService.RequiredPermissions)
+            ]);
+        }
     }
 }

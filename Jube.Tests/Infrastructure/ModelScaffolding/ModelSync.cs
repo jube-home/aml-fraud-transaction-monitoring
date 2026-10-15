@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Test.Infrastructure.ModelScaffolding.Exceptions;
 using LinqToDB;
 using Npgsql;
 using Fixture = Jube.Test.Infrastructure.DatabaseFixture.DatabaseFixture;
@@ -37,6 +38,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             var scheduleDate = before is { } last && last < now ? last + (now - last) / 2 : now.AddSeconds(-5);
 
             int scheduleId;
+
             await using (var dbContext =
                          DataConnectionDbContext.GetResilientDbContextDataConnection(ModelScaffold.ConnectionString,
                              TestLog.NoOp))
@@ -59,6 +61,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 var current = await SynchronisedDateAsync(scaffold.TenantRegistryId).ConfigureAwait(false);
                 var advanced = current != null && (before == null || current > before);
                 var model = engine.FindActiveModel(scaffold.ModelGuid);
+
                 var hasCallers = !scaffold.Options.CreateCallers || (model != null &&
                                                                      model.Snapshot.Users
                                                                          .Contains(scaffold.UserName));
@@ -93,12 +96,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             await using var connection = new NpgsqlConnection(ModelScaffold.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
+
             await using var command = new NpgsqlCommand(
                 "SELECT \"SynchronisedDate\" FROM \"EntityAnalysisModelSynchronisationNodeStatusEntry\" " +
                 "WHERE \"TenantRegistryId\" = @tenant AND \"Instance\" = @instance", connection);
             command.Parameters.AddWithValue("tenant", tenantRegistryId);
             command.Parameters.AddWithValue("instance", Dns.GetHostName());
             var value = await command.ExecuteScalarAsync().ConfigureAwait(false);
+
             return value is DateTime date ? date : null;
         }
 
@@ -106,8 +111,10 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             await using var connection = new NpgsqlConnection(ModelScaffold.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
+
             await using var command = new NpgsqlCommand(
                 "SELECT count(*) FROM \"EntityAnalysisModelSynchronisationError\"", connection);
+
             return (long)(await command.ExecuteScalarAsync().ConfigureAwait(false)).Required();
         }
 
@@ -115,10 +122,12 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             await using var connection = new NpgsqlConnection(ModelScaffold.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
+
             await using var command = new NpgsqlCommand(
                 "SELECT count(*) FROM \"EntityAnalysisModelSynchronisationSchedule\" WHERE \"TenantRegistryId\" = @tenant",
                 connection);
             command.Parameters.AddWithValue("tenant", tenantRegistryId);
+
             return (long)(await command.ExecuteScalarAsync().ConfigureAwait(false)).Required();
         }
     }

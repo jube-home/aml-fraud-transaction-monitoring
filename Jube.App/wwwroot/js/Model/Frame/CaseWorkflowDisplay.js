@@ -29,6 +29,7 @@ $.getScript('/js/ace/ace.js', function () {
 
     if (typeof id === "undefined") {
         ReadyNew();
+        window.AskJoobySetPageContext?.("CaseWorkflowDisplay", "new", {[parentKeyName]: parentKey});
     } else {
         $.get(endpoint + "/" + id,
             function (data) {
@@ -36,6 +37,12 @@ $.getScript('/js/ace/ace.js', function () {
                 editor.setValue(data.html);
 
                 ReadyExisting(data);
+                window.AskJoobySetPageContext?.("CaseWorkflowDisplay", "edit", {
+                    id: data.id,
+                    guid: data.guid,
+                    name: data.name,
+                    [parentKeyName]: parentKey
+                });
             });
     }
 });

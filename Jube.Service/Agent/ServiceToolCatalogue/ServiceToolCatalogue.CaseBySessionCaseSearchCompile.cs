@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseBySessionCaseSearchCompile;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseBySessionCaseSearchCompile(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseBySessionCaseSearchCompileGet", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Retrieves the next case for a compiled Session Case Search, recording a case-opened event and " +
-                "locking the case to the calling user.")
-        ]);
+        static partial void AddCaseBySessionCaseSearchCompile(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseBySessionCaseSearchCompileGet", OperationKind.Write, false, false,
+                    "Retrieves the next case for a compiled Session Case Search, recording a case-opened event and " +
+                    "locking the case to the calling user.",
+                    CaseBySessionCaseSearchCompileService.RequiredPermissions)
+            ]);
+        }
     }
 }

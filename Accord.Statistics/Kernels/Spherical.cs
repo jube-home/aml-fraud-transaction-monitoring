@@ -1,120 +1,120 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Kernels
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Spherical Kernel.
+    ///     Spherical Kernel.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   The spherical kernel comes from a statistics perspective. It is an example
-    ///   of an isotropic stationary kernel and is positive definite in R^3.
+    ///     The spherical kernel comes from a statistics perspective. It is an example
+    ///     of an isotropic stationary kernel and is positive definite in R^3.
     /// </remarks>
-    /// 
     [Serializable]
     public sealed class Spherical : KernelBase, IKernel, IRadialBasisKernel, ICloneable
     {
         private double sigma;
 
         /// <summary>
-        ///   Gets or sets the kernel's sigma value.
+        ///     Constructs a new Spherical Kernel.
         /// </summary>
-        /// 
-        public double Sigma
-        {
-            get { return sigma; }
-            set { sigma = value; }
-        }
-
-        /// <summary>
-        ///   Constructs a new Spherical Kernel.
-        /// </summary>
-        /// 
         /// <param name="sigma">Value for sigma.</param>
-        /// 
         public Spherical(double sigma)
         {
             this.sigma = sigma;
         }
 
         /// <summary>
-        ///   Spherical Kernel Function
+        ///     Gets or sets the kernel's sigma value.
         /// </summary>
-        /// 
+        public double Sigma
+        {
+            get => sigma;
+            set => sigma = value;
+        }
+
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+        /// <summary>
+        ///     Spherical Kernel Function
+        /// </summary>
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
-        /// 
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public override double Function(double[] x, double[] y)
         {
-            double norm = 0.0;
-            for (int i = 0; i < x.Length; i++)
+            var norm = 0.0;
+            for (var i = 0; i < x.Length; i++)
             {
-                double d = x[i] - y[i];
+                var d = x[i] - y[i];
                 norm += d * d;
             }
 
             norm = System.Math.Sqrt(norm);
 
             if (norm >= sigma)
+            {
                 return 0;
+            }
 
             norm = norm / sigma;
             return 1.0 - 1.5 * norm + 0.5 * norm * norm * norm;
         }
 
         /// <summary>
-        ///   Spherical Kernel Function
+        ///     Spherical Kernel Function
         /// </summary>
-        /// 
         /// <param name="z">Distance <c>z</c> in input space.</param>
-        /// 
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public double Function(double z)
         {
             if (z >= sigma)
+            {
                 return 0;
+            }
 
-            double norm = z / sigma;
+            var norm = z / sigma;
             return 1.0 - 1.5 * norm + 0.5 * norm * norm * norm;
-        }
-
-        /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A new object that is a copy of this instance.
-        /// </returns>
-        /// 
-        public object Clone()
-        {
-            return MemberwiseClone();
         }
     }
 }

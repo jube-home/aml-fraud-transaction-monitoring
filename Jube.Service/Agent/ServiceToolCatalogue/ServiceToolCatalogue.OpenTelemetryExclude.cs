@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.OpenTelemetryExclude;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,24 +24,30 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeList", OperationKind.Read, true, false,
-                    "Lists every OpenTelemetryExclude row, most recent first. Not scoped to any tenant."),
+                    "Lists every OpenTelemetryExclude row, most recent first. Not scoped to any tenant.",
+                    OpenTelemetryExcludeService.RequiredPermissions, OpenTelemetryExcludeService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeGet", OperationKind.Read, true, false,
-                    "Returns one OpenTelemetryExclude row by id."),
+                    "Returns one OpenTelemetryExclude row by id.", OpenTelemetryExcludeService.RequiredPermissions,
+                    OpenTelemetryExcludeService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeCreate", OperationKind.Write, false, false,
                     "Registers an OpenTelemetry instrument/counter name to stop exporting; calling twice " +
-                    "creates two rows."),
+                    "creates two rows.", OpenTelemetryExcludeService.RequiredPermissions,
+                    OpenTelemetryExcludeService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeValidate", OperationKind.Read, true, false,
-                    "Validates an Open Telemetry Exclude without saving it and returns every failure."),
+                    "Validates an Open Telemetry Exclude without saving it and returns every failure.",
+                    OpenTelemetryExcludeService.RequiredPermissions, OpenTelemetryExcludeService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeUpdate", OperationKind.Write, true, false,
-                    "Updates an existing exclusion row in place."),
+                    "Updates an existing exclusion row in place.", OpenTelemetryExcludeService.RequiredPermissions,
+                    OpenTelemetryExcludeService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryExcludeDelete", OperationKind.Delete, true, true,
                     "Soft-deletes an exclusion row by id; the named instrument becomes eligible for export " +
-                    "again.")
+                    "again.", OpenTelemetryExcludeService.RequiredPermissions,
+                    OpenTelemetryExcludeService.RequiresLandlord)
             ]);
         }
     }

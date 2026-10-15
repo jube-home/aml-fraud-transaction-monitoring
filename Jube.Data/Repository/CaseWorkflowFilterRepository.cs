@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -162,6 +163,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 

@@ -11,13 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using Tokenisation;
-
     public static class EntityAnalysisModelInstanceEntryPayloadExtensions
     {
         public static string ReplaceTokens(
@@ -61,6 +60,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                     entityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.TryGetValue(key, out var v)
                         ? v.ToString(CultureInfo.InvariantCulture)
                         : null,
+                ["AdvancedAnalyticsAdaptation"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.AdvancedAnalyticsAdaptation != null &&
+                    entityAnalysisModelInstanceEntryPayload.AdvancedAnalyticsAdaptation.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
                 ["Activation"] = key =>
                     entityAnalysisModelInstanceEntryPayload.Activation != null &&
                     entityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(key)
@@ -75,9 +79,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
             var result = existing;
 
-            foreach (var token in Tokenisation.ReturnTokens(existing))
+            foreach (var token in Tokenisation.Tokenisation.ReturnTokens(existing))
             {
                 var splits = token.Split('.', 2);
+
                 if (splits.Length < 2)
                 {
                     continue;
@@ -89,6 +94,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                 }
 
                 var value = resolver(splits[1]);
+
                 if (value is null)
                 {
                     continue;

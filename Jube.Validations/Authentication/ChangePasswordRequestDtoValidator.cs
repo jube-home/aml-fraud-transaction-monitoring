@@ -21,6 +21,7 @@ namespace Jube.Validations.Authentication
         public ChangePasswordRequestDtoValidator()
         {
             RuleFor(p => p.Password).NotEmpty();
+
             RuleFor(p => p.NewPassword)
                 .MinimumLength(8).WithMessage("Your password length must be at least 8.")
                 .MaximumLength(16).WithMessage("Your password length must not exceed 16.")

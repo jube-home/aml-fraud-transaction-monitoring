@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 588" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-17b06c25-t jc-17b06c25-d">
+    <title id="jc-17b06c25-t">Tree-augmented naive Bayes</title>
+    <desc id="jc-17b06c25-d">Graph diagram with 7 nodes and 11 directed edges in 4 levels; edge thickness shows
+        condition….
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="588" rx="8"/>
+    <text class="ttl" x="16" y="32">Tree-augmented naive Bayes</text>
+    <text class="sub" x="16" y="50">Each feature has the class and at most one other feature as parents</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="48.72" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Class</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="80.72" y="62" width="60.24" height="18"/>
+        <rect class="sw" x="82.72" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="100.72" y="75">Feature</text>
+    </g>
+    <g transform="translate(141.64 90)">
+        <g class="mk x0 eg e0 e1" tabindex="0" role="graphics-symbol" aria-label="fraud to amount_z">
+            <title>fraud to amount_z</title>
+            <path class="eh" d="M171.17 40C171.17 92 155.9 92 155.9 144"/>
+            <path class="ep et" d="M171.17 40C171.17 92 155.9 92 155.9 144" stroke-width="1.6"/>
+            <path class="ah" d="M155.9 144L151.14 134.08L160.66 134.08Z"/>
+        </g>
+        <g class="mk x1 eg e0 e2" tabindex="0" role="graphics-symbol" aria-label="fraud to velocity_1h">
+            <title>fraud to velocity_1h</title>
+            <path class="eh" d="M163.97 40C163.97 100 100.84 100 100.84 160C100.84 220 95.21 220 95.21 280"/>
+            <path class="ep et" d="M163.97 40C163.97 100 100.84 100 100.84 160C100.84 220 95.21 220 95.21 280"
+                  stroke-width="1.6"/>
+            <path class="ah" d="M95.21 280L90.45 270.08L99.97 270.08Z"/>
+        </g>
+        <g class="mk x2 eg e0 e3" tabindex="0" role="graphics-symbol" aria-label="fraud to channel">
+            <title>fraud to channel</title>
+            <path class="eh" d="M178.37 40C178.37 100 210.96 100 210.96 160C210.96 220 210.28 220 210.28 280"/>
+            <path class="ep et" d="M178.37 40C178.37 100 210.96 100 210.96 160C210.96 220 210.28 220 210.28 280"
+                  stroke-width="1.6"/>
+            <path class="ah" d="M210.28 280L205.52 270.08L215.04 270.08Z"/>
+        </g>
+        <g class="mk x3 eg e0 e4" tabindex="0" role="graphics-symbol" aria-label="fraud to merchant_risk">
+            <title>fraud to merchant_risk</title>
+            <path class="eh"
+                  d="M156.77 40C156.77 100 78.84 100 78.84 160C78.84 228 42.54 228 42.54 296C42.54 356 50.84 356 50.84 416"/>
+            <path class="ep et"
+                  d="M156.77 40C156.77 100 78.84 100 78.84 160C78.84 228 42.54 228 42.54 296C42.54 356 50.84 356 50.84 416"
+                  stroke-width="1.6"/>
+            <path class="ah" d="M50.84 416L46.08 406.08L55.6 406.08Z"/>
+        </g>
+        <g class="mk x4 eg e0 e5" tabindex="0" role="graphics-symbol" aria-label="fraud to account_age">
+            <title>fraud to account_age</title>
+            <path class="eh"
+                  d="M185.57 40C185.57 100 232.96 100 232.96 160C232.96 228 252.68 228 252.68 296C252.68 356 186.49 356 186.49 416"/>
+            <path class="ep et"
+                  d="M185.57 40C185.57 100 232.96 100 232.96 160C232.96 228 252.68 228 252.68 296C252.68 356 186.49 356 186.49 416"
+                  stroke-width="1.6"/>
+            <path class="ah" d="M186.49 416L181.73 406.08L191.25 406.08Z"/>
+        </g>
+        <g class="mk x5 eg e0 e6" tabindex="0" role="graphics-symbol" aria-label="fraud to geo_mismatch">
+            <title>fraud to geo_mismatch</title>
+            <path class="eh"
+                  d="M192.77 40C192.77 100 254.96 100 254.96 160C254.96 228 274.68 228 274.68 296C274.68 356 309.01 356 309.01 416"/>
+            <path class="ep et"
+                  d="M192.77 40C192.77 100 254.96 100 254.96 160C254.96 228 274.68 228 274.68 296C274.68 356 309.01 356 309.01 416"
+                  stroke-width="1.6"/>
+            <path class="ah" d="M309.01 416L304.25 406.08L313.77 406.08Z"/>
+        </g>
+        <g class="mk x6 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z to velocity_1h, Conditional…: 0.31">
+            <title>amount_z to velocity_1h, Conditional…: 0.31</title>
+            <path class="eh" d="M148.9 176C148.9 228 109.21 228 109.21 280"/>
+            <path class="ep et" d="M148.9 176C148.9 228 109.21 228 109.21 280" stroke-width="3.44"/>
+            <path class="ah" d="M109.21 280L103.35 267.88L115.07 267.88Z"/>
+            <text class="ant ctr" x="129.05" y="228">0.31</text>
+        </g>
+        <g class="mk x7 eg e1 e3" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z to channel, Conditional…: 0.12">
+            <title>amount_z to channel, Conditional…: 0.12</title>
+            <path class="eh" d="M162.9 176C162.9 228 196.28 228 196.28 280"/>
+            <path class="ep et" d="M162.9 176C162.9 228 196.28 228 196.28 280" stroke-width="1.88"/>
+            <path class="ah" d="M196.28 280L191.35 269.74L201.21 269.74Z"/>
+            <text class="ant ctr" x="179.59" y="228">0.12</text>
+        </g>
+        <g class="mk x8 eg e3 e4" tabindex="0" role="graphics-symbol"
+           aria-label="channel to merchant_risk, Conditional…: 0.27">
+            <title>channel to merchant_risk, Conditional…: 0.27</title>
+            <path class="eh" d="M196.28 312C196.28 364 64.84 364 64.84 416"/>
+            <path class="ep et" d="M196.28 312C196.28 364 64.84 364 64.84 416" stroke-width="3.11"/>
+            <path class="ah" d="M64.84 416L59.17 404.27L70.5 404.27Z"/>
+            <text class="ant ctr" x="130.56" y="364">0.27</text>
+        </g>
+        <g class="mk x9 eg e2 e5" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h to account_age, Conditional…: 0.44">
+            <title>velocity_1h to account_age, Conditional…: 0.44</title>
+            <path class="eh" d="M102.21 312C102.21 364 172.49 364 172.49 416"/>
+            <path class="ep et" d="M102.21 312C102.21 364 172.49 364 172.49 416" stroke-width="4.5"/>
+            <path class="ah" d="M172.49 416L165.99 402.6L178.99 402.6Z"/>
+            <text class="ant ctr" x="137.35" y="350">0.44</text>
+        </g>
+        <g class="mk x10 eg e3 e6" tabindex="0" role="graphics-symbol"
+           aria-label="channel to geo_mismatch, Conditional…: 0.18">
+            <title>channel to geo_mismatch, Conditional…: 0.18</title>
+            <path class="eh" d="M210.28 312C210.28 364 295.01 364 295.01 416"/>
+            <path class="ep et" d="M210.28 312C210.28 364 295.01 364 295.01 416" stroke-width="2.37"/>
+            <path class="ah" d="M295.01 416L289.79 405.15L300.24 405.15Z"/>
+            <text class="ant ctr" x="252.65" y="364">0.18</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j2 j3 j4 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="fraud, Class, Edges in: 0, out: 6">
+            <title>fraud, Class, Edges in: 0, out: 6</title>
+            <rect class="nb" x="146.77" y="8" width="56" height="32" rx="6"/>
+            <rect class="nt" x="146.77" y="8" width="56" height="32" rx="6"/>
+            <text class="lbl ctr mid" x="174.77" y="24">fraud</text>
+        </g>
+        <g class="mk n1 nd s2 j0 j2 j3" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z, Feature, Edges in: 1, out: 2">
+            <title>amount_z, Feature, Edges in: 1, out: 2</title>
+            <rect class="nb" x="117.84" y="144" width="76.12" height="32" rx="16"/>
+            <rect class="nt" x="117.84" y="144" width="76.12" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="155.9" y="160">amount_z</text>
+        </g>
+        <g class="mk n2 nd s2 j0 j1 j5" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h, Feature, Edges in: 2, out: 1">
+            <title>velocity_1h, Feature, Edges in: 2, out: 1</title>
+            <rect class="nb" x="59.54" y="280" width="85.33" height="32" rx="16"/>
+            <rect class="nt" x="59.54" y="280" width="85.33" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="102.21" y="296">velocity_1h</text>
+        </g>
+        <g class="mk n3 nd s2 j0 j1 j4 j6" tabindex="0" role="graphics-symbol"
+           aria-label="channel, Feature, Edges in: 2, out: 2">
+            <title>channel, Feature, Edges in: 2, out: 2</title>
+            <rect class="nb" x="170.87" y="280" width="64.81" height="32" rx="16"/>
+            <rect class="nt" x="170.87" y="280" width="64.81" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="203.28" y="296">channel</text>
+        </g>
+        <g class="mk n4 nd s2 j0 j3" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk, Feature, Edges in: 2, out: 0">
+            <title>merchant_risk, Feature, Edges in: 2, out: 0</title>
+            <rect class="nb" x="8" y="416" width="99.67" height="32" rx="16"/>
+            <rect class="nt" x="8" y="416" width="99.67" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="57.84" y="432">merchant_risk</text>
+        </g>
+        <g class="mk n5 nd s2 j0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="account_age, Feature, Edges in: 2, out: 0">
+            <title>account_age, Feature, Edges in: 2, out: 0</title>
+            <rect class="nb" x="133.67" y="416" width="91.63" height="32" rx="16"/>
+            <rect class="nt" x="133.67" y="416" width="91.63" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="179.49" y="432">account_age</text>
+        </g>
+        <g class="mk n6 nd s2 j0 j3" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch, Feature, Edges in: 2, out: 0">
+            <title>geo_mismatch, Feature, Edges in: 2, out: 0</title>
+            <rect class="nb" x="251.3" y="416" width="101.42" height="32" rx="16"/>
+            <rect class="nt" x="251.3" y="416" width="101.42" height="32" rx="16"/>
+            <text class="lbl ctr mid" x="302.01" y="432">geo_mismatch</text>
+        </g>
+    </g>
+    <text class="kn" x="141.64" y="565">thickness = conditional mutual information</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="315.17" y="169" width="124.43" height="27" rx="6"/>
+                <text class="tx b" x="325.17" y="187">fraud to amount_z</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="284.04" y="177" width="134.48" height="27" rx="6"/>
+                <text class="tx b" x="294.04" y="195">fraud to velocity_1h</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="346.3" y="177" width="112.09" height="27" rx="6"/>
+                <text class="tx b" x="356.3" y="195">fraud to channel</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="212.33" y="305" width="150.13" height="27" rx="6"/>
+                <text class="tx b" x="222.33" y="323">fraud to merchant_risk</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="394.46" y="305" width="141.35" height="27" rx="6"/>
+                <text class="tx b" x="404.46" y="323">fraud to account_age</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="416.46" y="305" width="152.03" height="27" rx="6"/>
+                <text class="tx b" x="426.46" y="323">fraud to geo_mismatch</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="280.69" y="296" width="162.08" height="44" rx="6"/>
+                <text class="tx b" x="290.69" y="314">amount_z to velocity_1h</text>
+                <text class="tx" x="290.69" y="331">Conditional…: 0.31</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="331.23" y="296" width="139.7" height="44" rx="6"/>
+                <text class="tx b" x="341.23" y="314">amount_z to channel</text>
+                <text class="tx" x="341.23" y="331">Conditional…: 0.12</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="282.2" y="432" width="165.39" height="44" rx="6"/>
+                <text class="tx b" x="292.2" y="450">channel to merchant_risk</text>
+                <text class="tx" x="292.2" y="467">Conditional…: 0.27</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="288.99" y="432" width="179" height="44" rx="6"/>
+                <text class="tx b" x="298.99" y="450">velocity_1h to account_age</text>
+                <text class="tx" x="298.99" y="467">Conditional…: 0.44</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="404.28" y="432" width="167.3" height="44" rx="6"/>
+                <text class="tx b" x="414.28" y="450">channel to geo_mismatch</text>
+                <text class="tx" x="414.28" y="467">Conditional…: 0.18</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="354.4" y="84" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="364.4" y="102">fraud</text>
+                <text class="tx" x="364.4" y="119">Class</text>
+                <text class="tx" x="364.4" y="136">Edges in: 0, out: 6</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="345.6" y="220" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="355.6" y="238">amount_z</text>
+                <text class="tx" x="355.6" y="255">Feature</text>
+                <text class="tx" x="355.6" y="272">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="296.51" y="356" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="306.51" y="374">velocity_1h</text>
+                <text class="tx" x="306.51" y="391">Feature</text>
+                <text class="tx" x="306.51" y="408">Edges in: 2, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="387.32" y="356" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="397.32" y="374">channel</text>
+                <text class="tx" x="397.32" y="391">Feature</text>
+                <text class="tx" x="397.32" y="408">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="259.31" y="492" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="269.31" y="510">merchant_risk</text>
+                <text class="tx" x="269.31" y="527">Feature</text>
+                <text class="tx" x="269.31" y="544">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="376.94" y="492" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="386.94" y="510">account_age</text>
+                <text class="tx" x="386.94" y="527">Feature</text>
+                <text class="tx" x="386.94" y="544">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="504.36" y="492" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="514.36" y="510">geo_mismatch</text>
+                <text class="tx" x="514.36" y="527">Feature</text>
+                <text class="tx" x="514.36" y="544">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+    </g>
+</svg>

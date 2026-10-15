@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.CaseWorkflowMacroExecution
 {
     [Description("Request to execute a case workflow macro against a case. The same shape is echoed back on success.")]

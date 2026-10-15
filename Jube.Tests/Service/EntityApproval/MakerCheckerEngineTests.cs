@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Service.EntityApproval;
+using Jube.Service.EntityApproval.Models;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -35,14 +37,13 @@ namespace Jube.Test.Service.EntityApproval
         : IClassFixture<ModelScaffoldFixture>
     {
         private const EntityApprovalKind XPath = EntityApprovalKind.EntityAnalysisModelRequestXPath;
-
         private string Maker => database.Seed.UserWithPermissionNoApproval;
-
         private static string Unique(string prefix) => $"{prefix}{Guid.NewGuid():N}"[..24];
 
         private async Task RunAsync(Func<ModelScaffold, Task> scenario)
         {
             int tenantRegistryId;
+
             await using (var dbContext = database.GetDbContext())
             {
                 tenantRegistryId = await dbContext.UserInTenant
@@ -72,10 +73,12 @@ namespace Jube.Test.Service.EntityApproval
         private async Task ForgetApprovalsAsync(ModelScaffold model)
         {
             await using var dbContext = database.GetDbContext();
+
             var xPathIds = await dbContext.EntityAnalysisModelRequestXpath
                 .Where(w => w.EntityAnalysisModelId == model.ModelId).Select(s => s.Id).ToListAsync();
             var listIds = await dbContext.EntityAnalysisModelList
                 .Where(w => w.EntityAnalysisModelGuid == model.ModelGuid).Select(s => s.Id).ToListAsync();
+
             var valueIds = await dbContext.EntityAnalysisModelListValue
                 .Where(w => listIds.Contains(w.EntityAnalysisModelListId ?? 0)).Select(s => s.Id).ToListAsync();
 
@@ -87,6 +90,7 @@ namespace Jube.Test.Service.EntityApproval
         private static Task DeleteApprovalsAsync(DbContext dbContext, EntityApprovalKind kind, List<int> ids)
         {
             var kindId = (int)kind;
+
             return dbContext.EntityApproval
                 .Where(w => w.EntityApprovalKindId == kindId && ids.Contains(w.EntityId ?? 0))
                 .DeleteAsync();
@@ -113,12 +117,14 @@ namespace Jube.Test.Service.EntityApproval
         {
             await using var dbContext = database.GetDbContext();
             var service = await CheckerServiceAsync(dbContext);
+
             return await service.StatusAsync(kind, entityId);
         }
 
         private async Task<int> FirstXPathIdAsync(ModelScaffold model)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelRequestXpath
                 .Where(w => w.EntityAnalysisModelId == model.ModelId && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id)
@@ -129,6 +135,7 @@ namespace Jube.Test.Service.EntityApproval
         private async Task<string> XPathNameAsync(int id)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.Id == id).Select(s => s.Name)
                 .FirstAsync();
         }
@@ -136,6 +143,7 @@ namespace Jube.Test.Service.EntityApproval
         private async Task<int> VersionOfAsync(int id)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.Id == id)
                 .Select(s => s.Version ?? 1)
                 .FirstAsync();
@@ -144,6 +152,7 @@ namespace Jube.Test.Service.EntityApproval
         private async Task<int> MakerInsertXPathAsync(ModelScaffold model, string name)
         {
             await using var dbContext = database.GetDbContext();
+
             var inserted = await new EntityAnalysisModelRequestXpathRepository(dbContext, Maker).InsertAsync(
                 new EntityAnalysisModelRequestXpath
                 {
@@ -155,6 +164,7 @@ namespace Jube.Test.Service.EntityApproval
                     Locked = 0,
                     Deleted = 0
                 });
+
             return inserted.Id;
         }
 
@@ -179,6 +189,7 @@ namespace Jube.Test.Service.EntityApproval
             var id = await MakerInsertXPathAsync(model, name);
             await CheckerApprovesAsync(XPath, id, 1);
             await SyncAsync(model);
+
             return (id, name);
         }
 
@@ -197,8 +208,10 @@ namespace Jube.Test.Service.EntityApproval
         private async Task<ModelSyncResult> SyncAsync(ModelScaffold model)
         {
             var result = await ModelSync.SyncAsync(fixture.Engine, model);
+
             result.ErrorRowsAdded.Should()
                 .Be(0, "a pending, rejected or refused change is not a synchronisation error");
+
             return result;
         }
 
@@ -357,6 +370,7 @@ namespace Jube.Test.Service.EntityApproval
         {
             var listName = Unique("ZzList");
             int listId;
+
             await using (var dbContext = database.GetDbContext())
             {
                 var list = await new EntityAnalysisModelListRepository(dbContext, Maker).InsertAsync(
@@ -368,12 +382,14 @@ namespace Jube.Test.Service.EntityApproval
                         Locked = 0,
                         Deleted = 0
                     });
+
                 listId = list.Id;
             }
 
             await CheckerApprovesAsync(EntityApprovalKind.EntityAnalysisModelList, listId, 1);
 
             var value = Unique("ZzVal");
+
             await using (var dbContext = database.GetDbContext())
             {
                 await new EntityAnalysisModelListValueRepository(dbContext, Maker).InsertAsync(
@@ -398,10 +414,12 @@ namespace Jube.Test.Service.EntityApproval
             await SyncAsync(model);
             EngineListValues(model, listName).Should().Contain(value);
         });
+
         [Fact]
         public async Task ALandlordsApprovedEditToTheModelsOwnEnableLogsFlagIsAppliedByTheEngineAsync()
         {
             int landlordTenantId;
+
             await using (var seedContext = database.GetDbContext())
             {
                 landlordTenantId = await seedContext.UserInTenant
@@ -421,6 +439,7 @@ namespace Jube.Test.Service.EntityApproval
                 await ModelSync.SyncAsync(fixture.Engine, model);
 
                 bool originalEnableLogs;
+
                 await using (var dbContext = database.GetDbContext())
                 {
                     var repository = new EntityAnalysisModelRepository(dbContext, database.Seed.LandlordUser);
@@ -431,10 +450,12 @@ namespace Jube.Test.Service.EntityApproval
                 }
 
                 await ModelSync.SyncAsync(fixture.Engine, model);
+
                 fixture.Engine.FindActiveModel(model.ModelGuid)!.Flags.EnableLogs.Should().Be(originalEnableLogs,
                     "the edit is pending and has not been approved yet");
 
                 int editedVersion;
+
                 await using (var dbContext = database.GetDbContext())
                 {
                     editedVersion = await dbContext.EntityAnalysisModel.Where(w => w.Id == model.ModelId)
@@ -445,19 +466,23 @@ namespace Jube.Test.Service.EntityApproval
                 {
                     var service = await EntityApprovalService.CreateAsync(dbContext, database.Seed.LandlordUser,
                         TestLog.NoOp, 1);
+
                     await service.ApproveAsync(EntityApprovalKind.EntityAnalysisModel, model.ModelId, editedVersion);
                 }
 
                 await ModelSync.SyncAsync(fixture.Engine, model);
+
                 fixture.Engine.FindActiveModel(model.ModelGuid)!.Flags.EnableLogs.Should().Be(!originalEnableLogs,
                     "a landlord's own approval of the model's own field should reach the running engine");
             }
             finally
             {
                 await using var dbContext = database.GetDbContext();
+
                 await dbContext.EntityApproval
                     .Where(w => w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModel
                                 && w.EntityId == model.ModelId).DeleteAsync();
+
                 await model.DisposeAsync();
             }
         }

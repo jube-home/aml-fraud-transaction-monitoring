@@ -19,9 +19,10 @@ namespace Jube.Case
 
     public class SendSms(DynamicEnvironment dynamicEnvironment, ILog log)
     {
-        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient httpClient = new HttpClient();
 
-        public async Task SendAsync(string notificationDestination, string notificationBody, CancellationToken token = default)
+        public async Task SendAsync(string notificationDestination, string notificationBody,
+            CancellationToken token = default)
         {
             if (String.IsNullOrWhiteSpace(notificationDestination) || String.IsNullOrWhiteSpace(notificationBody))
             {
@@ -29,8 +30,10 @@ namespace Jube.Case
             }
 
             var apiKey = dynamicEnvironment.AppSettings("ClickatellAPIKey");
+
             var sanitizedDestination = HttpUtility.UrlEncode(
                 notificationDestination.Replace("+", "").Replace(" ", ""));
+
             var encodedBody = HttpUtility.UrlEncode(notificationBody);
 
             var clickatellUrl =
@@ -38,7 +41,7 @@ namespace Jube.Case
 
             try
             {
-                using var response = await HttpClient.GetAsync(clickatellUrl, token).ConfigureAwait(false);
+                using var response = await httpClient.GetAsync(clickatellUrl, token).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);

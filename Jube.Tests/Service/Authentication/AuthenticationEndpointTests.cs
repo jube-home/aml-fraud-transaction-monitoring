@@ -11,7 +11,6 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Test.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +20,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.App.Code;
 using Jube.Dto.Authentication;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Validations.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -61,6 +62,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     {
         var host = await AuthApiHost.StartAsync(Log, clock ?? TimeProvider.System, Hash, mfa, negotiateScheme, env);
         hosts.Add(host);
+
         return host;
     }
 
@@ -144,8 +146,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
                                                                               !n.StartsWith("UserLogin") ||
                                                                               n.Contains("Password") ||
                                                                               n.Contains("Mfa"));
+
         typeof(ServiceToolCatalogue).GetMethod("AddAuthentication", BindingFlags.NonPublic | BindingFlags.Static)
             .Should().BeNull();
+
         typeof(AuthenticationLoginService).GetMethods().Should()
             .OnlyContain(m => m.GetCustomAttribute<ServiceOperationAttribute>() == null);
     }
@@ -206,8 +210,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         body.RootElement.EnumerateObject().Select(p => p.Name).Should().BeEquivalentTo("token", "expiration");
         response.Headers["Content-Type"].Should().StartWith("application/json");
         response.SetCookies.Select(c => c.Split('=')[0]).Should().Equal("authentication-jwt");
+
         response.SetCookies.Should().OnlyContain(c => c.Contains("path=/", StringComparison.OrdinalIgnoreCase)
                                                       && c.Contains("httponly", StringComparison.OrdinalIgnoreCase));
+
         response.Headers[SessionExpiry.HeaderName].Should().NotBeNullOrEmpty();
         response.Body.Should().NotContain("password").And.NotContain(user.StoredHash);
     }
@@ -220,6 +226,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var token = Token(await LoginAsync(host, user.Name, user.Password));
 
         var body = new { password = user.Password, newPassword = "weak" };
+
         var viaBearer = await host.PostAsync("/api/Authentication/ChangePassword", body,
             ("Authorization", $"Bearer {token}"));
         var viaCookie = await host.PostAsync("/api/Authentication/ChangePassword", body,
@@ -242,6 +249,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var env = TestDynamicEnvironmentFor("an-adequately-long-unit-test-signing-key-0123456789");
         var good = Token(await LoginAsync(host, user.Name, user.Password));
         var parts = good.Split('.');
+
         var token = kind switch
         {
             "none" => "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0." + parts[1] + ".",
@@ -314,6 +322,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var user = await AddUserAsync("AnonProceeds");
         var good = Token(await LoginAsync(host, user.Name, user.Password));
         var parts = good.Split('.');
+
         var token = kind switch
         {
             "none" => "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0." + parts[1] + ".",
@@ -327,6 +336,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
 
         var anonymous = await host.PostAsync("/api/Authentication/WirePasswordHash", new { userName = user.Name },
             ("Authorization", $"Bearer {token}"));
+
         var protectedRoute = await host.PostAsync("/api/Authentication/ChangePassword", new { password = "a" },
             ("Authorization", $"Bearer {token}"));
 
@@ -345,6 +355,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         TimeProvider? clock = null)
     {
         var context = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+
         return AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response, env, user, clock)
             .Token.Required();
     }
@@ -372,6 +383,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var host = await HostAsync();
         var reference = await AddUserAsync("WireRef");
         var referenceResponse = await LoginAsync(host, $"{Prefix}Ghost", reference.Password);
+
         var user = reason switch
         {
             "inactive" => await AddUserAsync("WireVariant", u => u.Active = 0),
@@ -436,8 +448,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var response = await LoginAsync(host, user.Name, user.Password, newPassword: "weak");
 
         response.Status.Should().Be(400);
+
         var errors = JObject.Parse(response.Body)["errors"].Required().ToObject<List<Dictionary<string, string>>>()
             .Required();
+
         errors.Should().OnlyContain(e => e.Keys.Single() == "errorMessage");
         errors.Select(e => e["errorMessage"]).Should().Contain("At least 12 characters");
         response.SetCookies.Should().BeEmpty();
@@ -450,6 +464,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     public async Task ValidationFailures_Are400_WithABodyMatchingTheLegacyNewtonsoftShapeAsync(string kind)
     {
         var host = await HostAsync();
+
         var dto = kind switch
         {
             "blank-user" => new AuthenticationRequestDto { UserName = " ", Password = "x" },
@@ -463,13 +478,16 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var legacy = JObject.Parse(JsonConvert.SerializeObject(
             await new AuthenticationRequestDtoValidator(
                 TestDynamicEnvironment.Create()).ValidateAsync(dto), legacyNewtonsoft));
+
         response.Status.Should().Be(400);
         var actual = JObject.Parse(response.Body);
         actual["isValid"].Required().Value<bool>().Should().BeFalse();
+
         actual["errors"].Required().Select(e => e["errorMessage"].Required().ToString()).Should()
             .BeEquivalentTo(legacy["errors"].Required().Select(e => e["errorMessage"].Required().ToString()));
         actual["errors"].Required().Select(e => e["propertyName"].Required().ToString()).Should()
             .BeEquivalentTo(legacy["errors"].Required().Select(e => e["propertyName"].Required().ToString()));
+
         actual.Properties().Select(p => p.Name).Should().BeEquivalentTo(legacy.Properties().Select(p => p.Name));
     }
 
@@ -482,9 +500,12 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var response = await LoginAsync(host, user.Name, user.Password);
 
         var actual = JObject.Parse(response.Body);
+
         var legacy = JObject.Parse(JsonConvert.SerializeObject(
             new AuthenticationResponseDto { Token = "t", Expiration = DateTime.UtcNow }, legacyNewtonsoft));
+
         actual.Properties().Select(p => p.Name).Should().BeEquivalentTo(legacy.Properties().Select(p => p.Name));
+
         actual["expiration"].Required().Value<DateTime>().ToUniversalTime()
             .Should().BeCloseTo(DateTime.UtcNow.AddMinutes(15), TimeSpan.FromSeconds(30));
     }
@@ -498,8 +519,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         var user = await AddUserAsync("E2eHidden");
 
         (await LoginAsync(host, user.Name, user.Password)).Status.Should().Be(404);
+
         (await host.PostAsync("/api/Authentication/WirePasswordHash", new { userName = user.Name })).Status
             .Should().Be(404);
+
         (await HistoryAsync()).Should().BeEmpty();
     }
 
@@ -604,6 +627,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
             new { password = user.Password, newPassword = "short" }, ("Authorization", $"Bearer {token}"));
 
         response.Status.Should().Be(400);
+
         JObject.Parse(response.Body)["errors"].Required()[0].Required()["errorMessage"].Required().Value<string>()
             .Should()
             .NotBeNullOrEmpty();
@@ -614,6 +638,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     {
         var host = await HostAsync(env: NegotiateOn);
         var user = await AddUserAsync("CpNeg");
+
         var token = IssueFor(user.Name,
             TestDynamicEnvironmentFor("an-adequately-long-unit-test-signing-key-0123456789"));
 
@@ -628,6 +653,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     public async Task ChangePassword_ForAValidTokenWhoseUserNoLongerExists_Is401WithNoDetailAsync()
     {
         var host = await HostAsync();
+
         var token = IssueFor($"{Prefix}Vanished",
             TestDynamicEnvironmentFor("an-adequately-long-unit-test-signing-key-0123456789"));
 
@@ -650,6 +676,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
                 { userName = user.Name, password = user.Password, remoteIp = "203.0.113.9" }),
             "application/json", ("User-Agent", Marker), ("X-Forwarded-For", "203.0.113.77"),
             ("X-Real-IP", "203.0.113.78"));
+
         await host.SendAsync("POST", "/api/Authentication/ByUserNamePassword",
             System.Text.Json.JsonSerializer.Serialize(new
                 { userName = user.Name, password = "wrong", remoteIp = "203.0.113.9" }),
@@ -674,7 +701,9 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
             "{", "not json", "[]", "\"text\"", "12", "true", "{\"userName\":\"a\",}", "\u0000", "  ",
             "{\"userName\":\"unterminated"
         };
+
         var data = new TheoryData<string, string>();
+
         foreach (var route in bodyRoutes)
         {
             foreach (var body in generic)
@@ -687,6 +716,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
                 : route.EndsWith("WirePasswordHash")
                     ? ["{\"userName\":5}", "{\"userName\":[\"x\"]}", "{\"userName\":{\"a\":1}}"]
                     : new[] { "{\"userName\":5}", "{\"userName\":[\"x\"]}", "{\"password\":{\"a\":1}}" };
+
             foreach (var body in typed)
             {
                 data.Add(route, body);
@@ -699,6 +729,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     public static TheoryData<string, string> NullBodies()
     {
         var data = new TheoryData<string, string>();
+
         foreach (var route in bodyRoutes)
         {
             foreach (var body in new[] { "", "null" })
@@ -714,8 +745,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     {
         var host = await HostAsync(env: route.EndsWith("ByNegotiateMfa") ? [NegotiateOn] : []);
         var user = await AddUserAsync("Binding");
+
         var token = IssueFor(user.Name,
             TestDynamicEnvironmentFor("an-adequately-long-unit-test-signing-key-0123456789"));
+
         return (host, user, token);
     }
 
@@ -892,6 +925,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     {
         var host = await HostAsync(env: NegotiateOn);
         var user = await AddUserAsync("NegJwt");
+
         var token = IssueFor(user.Name,
             TestDynamicEnvironmentFor("an-adequately-long-unit-test-signing-key-0123456789"));
 
@@ -949,8 +983,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         wrong.Status.Should().Be(401);
         wrong.SetCookies.Should().BeEmpty();
         missing.Status.Should().Be(400);
+
         JObject.Parse(missing.Body)["errors"].Required().Select(e => e["propertyName"].Required().ToString()).Should()
             .Contain("Mfa");
+
         right.Status.Should().Be(200);
     }
 

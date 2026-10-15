@@ -11,19 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Context;
-    using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Poco;
-
     public class CaseWorkflowRepository
     {
         private readonly DbContext dbContext;
@@ -34,6 +34,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -154,6 +155,13 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
+        public Task<CaseWorkflow> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflow.FirstOrDefaultAsync(w =>
+                w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public Task<CaseWorkflow> GetByIdIncludingDeletedAsync(int id, CancellationToken token = default)
         {
             return dbContext.CaseWorkflow.FirstOrDefaultAsync(w =>
@@ -176,6 +184,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 

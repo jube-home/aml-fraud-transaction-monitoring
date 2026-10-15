@@ -18,7 +18,8 @@ namespace Jube.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
     internal static class CaseWorkflowFormEntryByCaseKeyValueMapper
     {
         public static CaseWorkflowFormEntryByCaseKeyValueDto ToDto(
-            global::Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery.Dto source) => new()
+            global::Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery.
+                GetCaseWorkflowFormEntryByCaseKeyValueQueryDto source) => new()
         {
             Id = source.Id,
             CaseId = source.CaseId,
@@ -29,7 +30,8 @@ namespace Jube.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         };
 
         public static List<CaseWorkflowFormEntryByCaseKeyValueDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery.Dto> source) =>
+            IEnumerable<global::Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery.
+                GetCaseWorkflowFormEntryByCaseKeyValueQueryDto> source) =>
             source.Select(ToDto).ToList();
     }
 }

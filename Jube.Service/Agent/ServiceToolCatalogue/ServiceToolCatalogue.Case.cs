@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,26 +11,36 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.Case;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCase(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists active cases for the caller's tenant, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "CaseGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns a single active case by Id, scoped to the caller's tenant and role."),
-            new ServiceToolDescriptor(
-                "CaseCreateFromCaseKeyValue", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Raises a new case (or promotes an existing one) from a matching archived transaction; " +
-                "dispatches the target status's notification/webhook."),
-            new ServiceToolDescriptor(
-                "CaseUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Updates a case's closed status, lock, diary, rating and workflow status; a status change " +
-                "dispatches that status's notification/webhook.")
-        ]);
+        static partial void AddCase(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseList", OperationKind.Read, true, false,
+                    "Lists active cases for the caller's tenant, keyset-paged and capped.",
+                    CaseService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseGet", OperationKind.Read, true, false,
+                    "Returns a single active case by Id, scoped to the caller's tenant and role.",
+                    CaseService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseCreateFromCaseKeyValue", OperationKind.Write, false, false,
+                    "Raises a new case (or promotes an existing one) from a matching archived transaction; " +
+                    "dispatches the target status's notification/webhook.",
+                    CaseService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseUpdate", OperationKind.Write, true, false,
+                    "Updates a case's closed status, lock, diary, rating and workflow status; a status change " +
+                    "dispatches that status's notification/webhook.",
+                    CaseService.RequiredPermissions)
+            ]);
+        }
     }
 }

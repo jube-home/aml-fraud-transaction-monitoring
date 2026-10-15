@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -61,11 +62,13 @@ namespace Jube.Data.Repository
                 (w.EntityAnalysisModelList.Deleted == 0 || w.EntityAnalysisModelList.Deleted == null), token);
         }
 
-        public async Task<EntityAnalysisModelListCsvFileUpload> InsertAsync(EntityAnalysisModelListCsvFileUpload model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelListCsvFileUpload> InsertAsync(EntityAnalysisModelListCsvFileUpload model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.InheritedId = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -74,7 +77,8 @@ namespace Jube.Data.Repository
         {
             var existing = await dbContext.EntityAnalysisModelListCsvFileUpload
                 .FirstOrDefaultAsync(w => w.Id == model.Id
-                                          && w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                                          && w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId ==
+                                          tenantRegistryId
                                           && (w.EntityAnalysisModelList.Deleted == 0 ||
                                               w.EntityAnalysisModelList.Deleted == null), token);
 

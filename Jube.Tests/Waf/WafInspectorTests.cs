@@ -112,6 +112,7 @@ namespace Jube.Test.Waf
                     TargetScope = 7, MatchTimeoutMilliseconds = 50, Drop = 0, Active = 1
                 }
             ], []);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
 
             var result = inspector.Inspect(Request("/api/Test", Body("<script>alert(1)</script>")));
@@ -134,6 +135,7 @@ namespace Jube.Test.Waf
                 [
                     new WafException { Id = 1, Name = "trusted", RouteRegex = "^/api/Trusted", Active = 1 }
                 ]);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var attack = Body("<script>alert(1)</script>");
 
@@ -159,6 +161,7 @@ namespace Jube.Test.Waf
                         FieldRegex = @"\.narrative$", Active = 1
                     }
                 ]);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var attack = "<script>alert(1)</script>";
 
@@ -185,6 +188,7 @@ namespace Jube.Test.Waf
                         Id = 1, Name = "wrong-signature", RouteRegex = "^/api/Test", WafSignatureId = 999, Active = 1
                     }
                 ]);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
 
             inspector.Inspect(Request("/api/Test", Body("<script>alert(1)</script>"))).Blocked.Should().BeTrue();
@@ -201,6 +205,7 @@ namespace Jube.Test.Waf
                     TargetScope = (int)WafTargetScope.Body, MatchTimeoutMilliseconds = 50, Drop = 1, Active = 1
                 }
             ], []);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             const string attack = "<script>alert(1)</script>";
 
@@ -214,6 +219,7 @@ namespace Jube.Test.Waf
         public void ManySlowSignaturesTogetherStayWithinTheOverallInspectionBudget()
         {
             var signatures = new List<WafSignature>();
+
             for (var id = 1; id <= 40; id++)
             {
                 signatures.Add(new WafSignature
@@ -224,10 +230,12 @@ namespace Jube.Test.Waf
             }
 
             var registry = WafTestRuleSets.RegistryFor(signatures, []);
+
             var environment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["WafMaxInspectionMilliseconds"] = "200"
             });
+
             var inspector = new WafInspector(registry, environment);
             var evilInput = new string('a', 40) + "!";
 

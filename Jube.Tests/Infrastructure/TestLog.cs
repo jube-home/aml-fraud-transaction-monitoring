@@ -22,9 +22,7 @@ namespace Jube.Test.Infrastructure
     public sealed class TestLog(bool enabled = true) : ILog
     {
         public static readonly TestLog NoOp = new();
-
         private readonly ConcurrentQueue<Entry> entries = new();
-
         public IReadOnlyList<Entry> Entries => [.. entries];
 
         public sealed record Entry(string Level, string Message, Exception? Exception = null);
@@ -34,7 +32,6 @@ namespace Jube.Test.Infrastructure
         public bool IsWarnEnabled => enabled;
         public bool IsErrorEnabled => true;
         public bool IsFatalEnabled => true;
-
         public void Debug(object? message) => Capture("DEBUG", message);
         public void Debug(object? message, Exception? exception) => Capture("DEBUG", message, exception);
         public void DebugFormat(string format, params object?[]? args) => Capture("DEBUG", Format(format, args));

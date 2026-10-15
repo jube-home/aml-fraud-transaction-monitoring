@@ -49,6 +49,7 @@ namespace Jube.App.Endpoints.Query
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -56,10 +57,12 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ParserService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.ParseAsync(parseRuleRequestDto, token));
             }
             catch (NotAuthenticatedException)
@@ -92,6 +95,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

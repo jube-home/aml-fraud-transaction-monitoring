@@ -58,6 +58,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByCasesWorkflowGuid: entry guid={guid} user={user}");
@@ -65,10 +66,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await SessionCaseJournalService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var dto = await service.GetByCaseWorkflowGuidAsync(guid, token);
 
                 return dto is null
@@ -105,6 +108,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByCasesWorkflowGuid: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -115,6 +119,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -122,10 +127,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await SessionCaseJournalService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.CreateAsync(model, token));
             }
             catch (DtoValidationException ex)
@@ -167,6 +174,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

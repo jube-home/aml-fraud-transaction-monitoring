@@ -20,10 +20,38 @@ var validationFail = "There is invalid data in the form. Please check fields and
 var dateFields = [];
 var HasCreatedChildTables = 0;
 var LastScore = -1;
+var LastRelevance;
 var Params;
 var GetEndpointParams = {};
 var Guid;
 var interval;
+
+function EnsureSwitch($el) {
+    return $el.data("kendoSwitch") || $el.kendoSwitch().data("kendoSwitch");
+}
+
+function WireActiveToggle(instanceId) {
+    const widget = EnsureSwitch($("#Active"));
+    widget.unbind("change");
+    widget.bind("change", function (e) {
+        $.ajax({
+            url: endpoint + "/" + instanceId + "/active",
+            type: "PUT",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({active: e.checked})
+        }).done(function () {
+            $("#ErrorMessage").html("");
+        }).fail(function (xhr) {
+            widget.check(!e.checked);
+            $("#ErrorMessage").html(xhr.responseJSON && xhr.responseJSON.errors
+                ? xhr.responseJSON.errors.map(function (er) {
+                    return er.errorMessage;
+                }).join(" ")
+                : "The Active flag could not be updated.");
+        });
+    });
+}
 
 var anomalyProbability = $("#AnomalyProbability").kendoSlider({
     increaseButtonTitle: "Right",
@@ -34,6 +62,87 @@ var anomalyProbability = $("#AnomalyProbability").kendoSlider({
     smallStep: 0.01,
     largeStep: 0.05
 });
+
+var bootstrapTo = $("#BootstrapTo").kendoNumericTextBox({
+    format: "#",
+    decimals: 0,
+    min: 2,
+    value: 30000
+});
+
+var bootstrapWeightFactor = $("#BootstrapWeightFactor").kendoSlider({
+    increaseButtonTitle: "Right",
+    decreaseButtonTitle: "Left",
+    min: 0,
+    max: 1,
+    value: 1,
+    smallStep: 0.01,
+    largeStep: 0.1
+});
+
+var challengerModelBaseProbability = $("#ChallengerModelBaseProbability").kendoSlider({
+    increaseButtonTitle: "Right",
+    decreaseButtonTitle: "Left",
+    min: 0,
+    max: 1,
+    value: 0.1,
+    smallStep: 0.01,
+    largeStep: 0.1
+});
+
+var anomalyAlgorithmId = $("#AnomalyAlgorithmId").kendoDropDownList({
+    width: "420px",
+    dataTextField: "text",
+    dataValueField: "value",
+    dataSource: [
+        {text: "One Class Support Vector Machine (default)", value: 0},
+        {text: "Automatic", value: 100},
+        {text: "Isolation Forest", value: 1},
+        {text: "Histogram Based Outlier Score", value: 2},
+        {text: "Mahalanobis Distance", value: 3},
+        {text: "Robust Mahalanobis Distance", value: 4},
+        {text: "Principal Component Analysis", value: 5},
+        {text: "Gaussian Mixture", value: 6},
+        {text: "k Nearest Neighbour Distance", value: 7},
+        {text: "Local Outlier Factor", value: 8},
+        {text: "Marginal Likelihood", value: 9},
+        {text: "Feature Bagging Ensemble", value: 10},
+        {text: "Consensus Ensemble", value: 11}
+    ],
+    value: 0
+});
+
+var anomalyReduction = $("#AnomalyReduction").kendoDropDownList({
+    width: "340px",
+    dataTextField: "text",
+    dataValueField: "value",
+    dataSource: [
+        {text: "Default for the algorithm", value: "default"},
+        {text: "None", value: "none"},
+        {text: "Standard", value: "standard"},
+        {text: "Standard with principal components", value: "components"}
+    ],
+    value: "default"
+});
+
+var anomalyReductionPresets = {
+    none: {mode: "None", scaling: "None"},
+    standard: {mode: "Standard", scaling: "Robust"},
+    components: {mode: "Standard", scaling: "Robust", projection: "ParallelAnalysis"}
+};
+
+function anomalyReductionFromParameters(parameters) {
+    if (!parameters || !parameters.reduction) {
+        return "default";
+    }
+
+    const reduction = parameters.reduction;
+    if (reduction.projection && reduction.projection !== "None") {
+        return "components";
+    }
+
+    return reduction.mode === "Standard" ? "standard" : "none";
+}
 
 function generateGrid(gridData) {
     if (dateFields.length > 0) {
@@ -120,6 +229,35 @@ function generateModel(gridData) {
     return model;
 }
 
+function ModelTypeLabel(kind) {
+    if (!kind || kind === "ExhaustiveTopologyNetwork") {
+        return "Neural Network (evolved topology)";
+    }
+
+    return kind
+        .replace(/Pipeline$/, "")
+        .replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+function openTrialEvidence(trial) {
+    $("#TrialEvidenceEmpty").hide();
+    $("#TrialEvidencePanel").show();
+    $("#TrialEvidenceTitle").text(ModelTypeLabel(trial.kind) + " trial, score " +
+        (trial.score === null || trial.score === undefined ? "n/a" : trial.score));
+    loadExhaustiveChart("#TrialDiagramChart", "/api/Chart/Exhaustive/TrialDiagram/" + trial.id);
+
+    $.get("/api/GetExhaustiveSearchInstanceTrialInstanceDetail/" + trial.id, function (detail) {
+        if (detail && detail.evidence) {
+            $("#TrialEvidenceTree").show();
+            renderEvidenceTreeInto("#TrialEvidenceTree", detail.evidence);
+        } else {
+            $("#TrialEvidenceTree").hide().empty();
+        }
+    }).fail(function () {
+        $("#TrialEvidenceTree").hide().empty();
+    });
+}
+
 function CreateModelPerformanceTables() {
     // noinspection HtmlUnknownAttribute
     $("#grid").kendoGrid({
@@ -150,6 +288,9 @@ function CreateModelPerformanceTables() {
                             },
                             topologyComplexity: {
                                 type: "number"
+                            },
+                            kind: {
+                                type: "string"
                             }
                         }
                     }
@@ -171,10 +312,19 @@ function CreateModelPerformanceTables() {
                             data: JSON.stringify(
                                 {
                                     active: e.checked,
-                                    id: e.sender.element.attr(
-                                        "id")
+                                    id: parseInt(e.sender.element.attr("id"), 10)
                                 }
                             )
+                        }).done(function () {
+                            $("#ErrorMessage").html("");
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        }).fail(function (xhr) {
+                            e.sender.check(!e.checked);
+                            $("#ErrorMessage").html(xhr.responseJSON && xhr.responseJSON.errors
+                                ? xhr.responseJSON.errors.map(function (er) {
+                                    return er.errorMessage;
+                                }).join(" ")
+                                : "The promoted trial instance could not be updated.");
                         });
                     }
                 });
@@ -187,6 +337,13 @@ function CreateModelPerformanceTables() {
                 title: "Active"
             },
             {
+                field: "kind",
+                title: "Model Type",
+                template: function (item) {
+                    return kendo.htmlEncode(ModelTypeLabel(item.kind));
+                }
+            },
+            {
                 field: "createdDate",
                 title: "Created Date"
             },
@@ -197,6 +354,72 @@ function CreateModelPerformanceTables() {
             {
                 field: "topologyComplexity",
                 title: "Topology Complexity"
+            }
+        ]
+    });
+
+    $("#TrialsGrid").kendoGrid({
+        autoBind: false,
+        dataSource: {
+            transport: {
+                read: {
+                    url:
+                        "/api/GetExhaustiveSearchInstanceTrialInstanceListQuery/" +
+                        id,
+                    dataType: "json"
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            id: {
+                                type: "number"
+                            },
+                            createdDate: {
+                                type: "date"
+                            },
+                            kind: {
+                                type: "string"
+                            },
+                            score: {
+                                type: "number"
+                            },
+                            promoted: {
+                                type: "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        height: 500,
+        sortable: true,
+        selectable: "row",
+        change: function () {
+            const item = this.dataItem(this.select());
+            if (item) {
+                openTrialEvidence(item);
+            }
+        },
+        columns: [
+            {
+                field: "kind",
+                title: "Model Type",
+                template: function (item) {
+                    return kendo.htmlEncode(ModelTypeLabel(item.kind));
+                }
+            },
+            {
+                field: "createdDate",
+                title: "Created Date"
+            },
+            {
+                field: "score",
+                title: "Score"
+            },
+            {
+                field: "promoted",
+                title: "Promoted",
+                template: '#= promoted ? "Yes" : "No" #'
             }
         ]
     });
@@ -232,47 +455,36 @@ function CreateModelPerformanceTables() {
         },
         height: 500,
         detailInit: detailInitStatistics,
+        change: function () {
+            if (typeof exhaustiveStatisticsLoadDetail === "function") {
+                exhaustiveStatisticsLoadDetail();
+            }
+        },
+        selectable: "row",
         dataBound: function () {
 
             const grid = this;
+            if (typeof loadExhaustiveStatisticsGrid === "function") {
+                loadExhaustiveStatisticsGrid(grid, id);
+                return;
+            }
+
             $(".histogram").each(function () {
                 const chart = $(this);
-                const tr = chart.closest('tr');
-                const model = grid.dataItem(tr);
-                chart.kendoChart({
-                    legend: {
-                        visible: false
-                    },
-                    dataSource: {
-                        data: model.histogramValues
-                    },
-                    series: [
-                        {
-                            field: "frequency",
-                            name: "Frequency"
-                        }
-                    ],
-                    valueAxis: {
-                        labels: {
-                            format: "{0}"
-                        }
-                    },
-                    tooltip: {
-                        visible: true,
-                        template: "Bin: ${category} Frequency: ${value}"
-                    },
-                    categoryAxis: {
-                        field: "bin",
-                        visible: false
-                    }
-                });
+                const model = grid.dataItem(chart.closest('tr'));
+                loadExhaustiveChart(chart, "/api/Chart/Exhaustive/VariableHistogram/" + id + "/" + model.id);
             });
         },
         columns: [
             {
-                field: "name",
-                title: "Name",
-                width: "300px"
+                field: "categoricalSourceName",
+                title: "Source Field",
+                width: "160px"
+            },
+            {
+                field: "categoricalLevel",
+                title: "Level",
+                width: "120px"
             },
             {
                 template: '<div class="histogram" style="height:200px"></div>',
@@ -331,6 +543,49 @@ function CreateModelPerformanceTables() {
         ]
     });
 
+    function groupPrescriptionRowsByVariable(rows) {
+        const byId = {};
+        const order = [];
+        $.each(rows || [], function (_, row) {
+            let grouped = byId[row.id];
+            if (!grouped) {
+                grouped = {
+                    id: row.id,
+                    name: row.name,
+                    variableMean: row.variableMean,
+                    variableStandardDeviation: row.variableStandardDeviation,
+                    variableMaximum: row.variableMaximum,
+                    variableMinimum: row.variableMinimum,
+                    sensitivity: row.sensitivity,
+                    chartId: row.promotedTrialInstanceVariableId
+                };
+                byId[row.id] = grouped;
+                order.push(grouped);
+            } else if (row.positive === true) {
+                grouped.chartId = row.promotedTrialInstanceVariableId;
+            }
+
+            if (row.positive === true) {
+                grouped.positivePrescriptionMean = row.prescriptionMean;
+                grouped.positivePrescriptionStandardDeviation = row.prescriptionStandardDeviation;
+                grouped.positivePrescriptionMaximum = row.prescriptionMaximum;
+                grouped.positivePrescriptionMinimum = row.prescriptionMinimum;
+            } else if (row.positive === false) {
+                grouped.negativePrescriptionMean = row.prescriptionMean;
+                grouped.negativePrescriptionStandardDeviation = row.prescriptionStandardDeviation;
+                grouped.negativePrescriptionMaximum = row.prescriptionMaximum;
+                grouped.negativePrescriptionMinimum = row.prescriptionMinimum;
+            } else {
+                grouped.positivePrescriptionMean = row.prescriptionMean;
+                grouped.positivePrescriptionStandardDeviation = row.prescriptionStandardDeviation;
+                grouped.positivePrescriptionMaximum = row.prescriptionMaximum;
+                grouped.positivePrescriptionMinimum = row.prescriptionMinimum;
+            }
+        });
+
+        return order;
+    }
+
     function detailInit(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
@@ -340,50 +595,83 @@ function CreateModelPerformanceTables() {
                         url:
                             "/api/GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery/" +
                             e.data.id
-                    },
-                    schema: {
-                        model: {
-                            fields: {
-                                name: {
-                                    type: "string"
-                                },
-                                variableMean: {
-                                    type: "number"
-                                },
-                                variableStandardDeviation: {
-                                    type: "number"
-                                },
-                                variableMaximum: {
-                                    type: "number"
-                                },
-                                variableMinimum: {
-                                    type: "number"
-                                },
-                                prescriptionMean: {
-                                    type: "number"
-                                },
-                                prescriptionStandardDeviation: {
-                                    type: "number"
-                                },
-                                prescriptionMaximum: {
-                                    type: "number"
-                                },
-                                prescriptionMinimum: {
-                                    type: "number"
-                                },
-                                sensitivity: {
-                                    type: "number"
-                                }
+                    }
+                },
+                schema: {
+                    data: groupPrescriptionRowsByVariable,
+                    model: {
+                        fields: {
+                            name: {
+                                type: "string"
+                            },
+                            variableMean: {
+                                type: "number"
+                            },
+                            variableStandardDeviation: {
+                                type: "number"
+                            },
+                            variableMaximum: {
+                                type: "number"
+                            },
+                            variableMinimum: {
+                                type: "number"
+                            },
+                            positivePrescriptionMean: {
+                                type: "number"
+                            },
+                            positivePrescriptionStandardDeviation: {
+                                type: "number"
+                            },
+                            positivePrescriptionMaximum: {
+                                type: "number"
+                            },
+                            positivePrescriptionMinimum: {
+                                type: "number"
+                            },
+                            negativePrescriptionMean: {
+                                type: "number"
+                            },
+                            negativePrescriptionStandardDeviation: {
+                                type: "number"
+                            },
+                            negativePrescriptionMaximum: {
+                                type: "number"
+                            },
+                            negativePrescriptionMinimum: {
+                                type: "number"
+                            },
+                            sensitivity: {
+                                type: "number"
+                            },
+                            chartId: {
+                                type: "number"
                             }
                         }
                     }
                 }
             },
+            dataBound: function () {
+                const grid = this;
+                $(this.element).find(".histogram").each(function () {
+                    const chart = $(this);
+                    const model = grid.dataItem(chart.closest('tr'));
+                    loadExhaustiveChart(chart, "/api/Chart/Exhaustive/PrescriptionHistogram/" + e.data.id + "/" +
+                        model.chartId);
+                });
+                $(this.element).find(".prescriptionSummary").each(function () {
+                    const chart = $(this);
+                    const model = grid.dataItem(chart.closest('tr'));
+                    loadExhaustiveChart(chart, "/api/Chart/Exhaustive/PrescriptionSummary/" + e.data.id + "/" +
+                        model.chartId);
+                });
+            },
             columns: [
                 {
-                    field: "name",
-                    title: "Name",
-                    width: "200px"
+                    template: '<div style="display:flex;gap:8px;">' +
+                        '<div class="histogram" style="height:200px;flex:1;"></div>' +
+                        '<div class="prescriptionSummary" style="height:200px;flex:1;"></div>' +
+                        '</div>',
+                    width: 500
                 },
                 {
                     field: "variableMean",
@@ -406,23 +694,23 @@ function CreateModelPerformanceTables() {
                     width: "110px"
                 },
                 {
-                    field: "prescriptionMean",
-                    title: "Prescription Mean",
+                    field: "positivePrescriptionMean",
+                    title: "Positive Prescription Mean",
                     width: "110px"
                 },
                 {
-                    field: "prescriptionStandardDeviation",
-                    title: "Prescription Standard Deviation",
+                    field: "positivePrescriptionStandardDeviation",
+                    title: "Positive Prescription Standard Deviation",
                     width: "110px"
                 },
                 {
-                    field: "prescriptionMaximum",
-                    title: "Prescription Maximum",
+                    field: "negativePrescriptionMean",
+                    title: "Negative Prescription Mean",
                     width: "110px"
                 },
                 {
-                    field: "prescriptionMinimum",
-                    title: "Prescription Minimum",
+                    field: "negativePrescriptionStandardDeviation",
+                    title: "Negative Prescription Standard Deviation",
                     width: "110px"
                 },
                 {
@@ -497,73 +785,6 @@ function CreateModelPerformanceTables() {
         });
     }
 
-    $("#chart").kendoChart({
-        autoBind: false,
-        dataSource: {
-            transport: {
-                read: {
-                    url:
-                        "/api/GetExhaustiveSearchInstancePromotedTrialInstanceLearningCurveQuery/" +
-                        id,
-                    dataType: "json"
-                },
-                schema: {
-                    model: {
-                        fields: {
-                            createdDate: {
-                                type: "date"
-                            },
-                            score: {
-                                type: "number"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        title: {
-            text: "Learning Curve"
-        },
-        legend: {
-            visible: false
-        },
-        chartArea: {
-            height: 500
-        },
-        seriesDefaults: {
-            type: "line",
-            style: "smooth",
-            labels: {
-                visible: true,
-                format: "{0}%",
-                background: "transparent"
-            }
-        },
-        series: [
-            {
-                type: "line",
-                field: "score",
-                aggregate: "max",
-                categoryField: "createdDate"
-            }
-        ],
-        valueAxis: {
-            labels: {
-                format: "{0}"
-            },
-            line: {
-                visible: false
-            }
-        },
-        categoryAxis: {
-            majorGridLines: {
-                visible: false
-            },
-            baseUnit: "fit",
-            visible: false
-        }
-    });
-
     $("#tabstrip").kendoTabStrip({
         animation: {
             open: {
@@ -573,17 +794,47 @@ function CreateModelPerformanceTables() {
     });
 }
 
+var AutoRefreshDelayMs = 5000;
+
+function IsTerminalTrainingStatus(statusId) {
+    return statusId === 16 || statusId === 17 || statusId === 19 || statusId === 20 || statusId === undefined
+        || statusId === null || statusId > 20;
+}
+
+function StopAutoRefresh() {
+    if (interval) {
+        clearTimeout(interval);
+        interval = undefined;
+    }
+}
+
+function ScheduleAutoRefresh(statusId) {
+    StopAutoRefresh();
+    if (IsTerminalTrainingStatus(statusId)) {
+        return;
+    }
+
+    interval = setTimeout(function () {
+        RefreshModelSummary();
+    }, AutoRefreshDelayMs);
+}
+
 function RefreshModelSummary(force) {
     $.get("../api/ExhaustiveSearchInstance/" + id,
         function (data) {
             LoadModelSummery(data, force);
-        });
+        }).fail(function () {
+        ScheduleAutoRefresh(0);
+    });
 }
 
 function LoadModelSummery(data, force) {
     $('#Refresh').show();
     let stop = $('#Stop').show();
     let currentStatus = $('#CurrentStatus');
+    WireActiveToggle(data.id);
+    LockDataSource(!IsDataSourceEditable(data.statusId));
+    ScheduleAutoRefresh(data.statusId);
     switch (data.statusId) {
         case 0:
             currentStatus.text('Awaiting Server');
@@ -647,6 +898,10 @@ function LoadModelSummery(data, force) {
             currentStatus.text('Stopped');
             stop.data("kendoButton").enable(false);
             break;
+        case 20:
+            currentStatus.text('No data found for the configured data source');
+            stop.data("kendoButton").enable(false);
+            break;
         default:
             currentStatus.text('Stopped for reasons unexpected');
     }
@@ -661,6 +916,7 @@ function LoadModelSummery(data, force) {
     $('#TopologyComplexity').text(data.topologyComplexity);
     $('#ModelsSinceBest').text(data.modelsSinceBest);
     $('#Score').text(data.score);
+    $('#AnomalySummary').text(data.anomalySummary || '');
 
     if (data.score > LastScore || force) {
         LastScore = data.score;
@@ -673,188 +929,10 @@ function LoadModelSummery(data, force) {
         } else {
             $kpi.show();
             $tabstrip.show();
-            $("#RightChart").kendoChart({
-                title: {
-                    text: "Predicted vs. Actual"
-                },
-                dataSource: {
-                    transport: {
-                        read: {
-                            url:
-                                "api/GetExhaustiveSearchInstancePromotedTrialInstancePredictedActual/" +
-                                id,
-                            dataType: "json"
-                        }
-                    }
-                },
-                legend: {
-                    visible: false
-                },
-                seriesDefaults: {
-                    type: "scatter"
-                },
-                series: [
-                    {
-                        xField: "predicted",
-                        yField: "actual"
-                    }
-                ],
-                xAxis: {
-                    labels: {
-                        format: "{0}"
-                    },
-                    title: {
-                        text: "Predicted"
-                    }
-                },
-                yAxis: {
-                    labels: {
-                        format: "{0}"
-                    },
-                    title: {
-                        text: "Actual"
-                    }
-                }
-            });
-
-            $("#LeftChart").kendoChart({
-                autoBind: true,
-                dataSource: {
-                    transport: {
-                        read: {
-                            url:
-                                "/api/GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram/" +
-                                id,
-                            dataType: "json"
-                        },
-                        schema: {
-                            model: {
-                                fields: {
-                                    bin: {
-                                        type: "number"
-                                    },
-                                    frequency: {
-                                        type: "number"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                title: {
-                    text: "Errors"
-                },
-                legend: {
-                    visible: false
-                },
-                chartArea: {
-                    height: 500
-                },
-                series: [
-                    {
-                        field: "frequency",
-                        categoryField: "bin"
-                    }
-                ],
-                valueAxis: {
-                    labels: {
-                        format: "{0}"
-                    },
-                    line: {
-                        visible: false
-                    }
-                },
-                categoryAxis: {
-                    majorGridLines: {
-                        visible: false
-                    },
-                    baseUnit: "fit"
-                }
-            });
+            loadExhaustivePerformanceCharts(id);
+            initExhaustiveValueDetection(id);
+            loadExhaustiveNarrative(id);
         }
-
-        $("#Confusion").show();
-        $("#ROCChart").kendoChart({
-            title: {
-                text: "ROC"
-            },
-            dataSource: {
-                transport: {
-                    read: {
-                        url:
-                            "api/GetExhaustiveSearchInstancePromotedTrialInstanceRoc/" +
-                            id,
-                        dataType: "json"
-                    }
-                }
-            },
-            legend: {
-                visible: false
-            },
-            seriesDefaults: {
-                type: "scatterLine"
-            },
-            series: [
-                {
-                    xField: "fpr",
-                    yField: "tpr"
-                }
-            ],
-            xAxis: {
-                labels: {
-                    format: "{0}"
-                },
-                title: {
-                    text: "False Positive Rate"
-                }
-            },
-            yAxis: {
-                labels: {
-                    format: "{0}"
-                },
-                title: {
-                    text: "True Positive Rate"
-                }
-            }
-        });
-
-        $.get("api/GetExhaustiveSearchInstancePromotedTrialInstanceConfusion/" + id,
-            function (data) {
-                $("#TP").html(data.truePositive);
-                $("#FP").html(data.falsePositive);
-                $("#FN").html(data.falseNegative);
-                $("#TN").html(data.trueNegative);
-
-                $("#TPRowTotal").html(data.truePositiveRowTotal);
-                $("#TPColumnTotal").html(data.truePositiveColumnTotal);
-                $("#TPTableTotal").html(data.truePositiveTableTotal);
-
-                $("#FPRowTotal").html(data.falsePositiveRowTotal);
-                $("#FPColumnTotal").html(data.falsePositiveColumnTotal);
-                $("#FPTableTotal").html(data.falsePositiveTableTotal);
-
-                $("#FNRowTotal").html(data.falseNegativeRowTotal);
-                $("#FNColumnTotal").html(data.falseNegativeColumnTotal);
-                $("#FNTableTotal").html(data.falseNegativeTableTotal);
-
-                $("#TNRowTotal").html(data.trueNegativeRowTotal);
-                $("#TNColumnTotal").html(data.trueNegativeColumnTotal);
-                $("#TNTableTotal").html(data.trueNegativeTableTotal);
-
-                $("#TableTotal").html(data.tableTotal);
-
-                $("#PositiveRow").html(data.positiveRowTotal);
-                $("#PositiveColumn").html(data.positiveColumnTotal);
-
-                $("#NegativeRow").html(data.negativeRowTotal);
-                $("#NegativeColumn").html(data.negativeColumnTotal);
-
-                $("#PositiveRowTableTotal").html(data.positiveRowTableTotal);
-                $("#PositiveColumnTableTotal").html(data.positiveColumnTableTotal);
-
-                $("#NegativeRowTableTotal").html(data.negativeRowTableTotal);
-                $("#NegativeColumnTableTotal").html(data.negativeColumnTableTotal);
-            });
 
         BuildSliders(id, Guid);
 
@@ -871,7 +949,12 @@ function LoadModelSummery(data, force) {
             statistics.data("kendoGrid").dataSource.read();
         }
 
-        $("#chart").data("kendoChart").dataSource.read();
+        loadExhaustiveChart("#PromotionChart", "/api/Chart/Exhaustive/PromotionHistory/" + id);
+        loadExhaustiveChart("#chart", "/api/Chart/Exhaustive/LearningCurve/" + id);
+    }
+
+    if (HasCreatedChildTables === 1) {
+        $("#TrialsGrid").data("kendoGrid").dataSource.read();
     }
 }
 
@@ -901,7 +984,10 @@ function GetScore() {
 }
 
 function SetScore(data) {
-    $("#Simulation").text('Score: ' + data);
+    $("#Simulation").text('Score: ' + data.score);
+    LastRelevance = data.relevance;
+    loadExhaustiveChartWithBody("#TopologyChart", "/api/Chart/Exhaustive/Topology/" + id,
+        {nodeRelevance: data.nodeRelevance});
 }
 
 function sliderOnSlide(e) {
@@ -919,8 +1005,28 @@ function BuildSliders() {
     $.get('api/GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery/' + id,
         function (data) {
             if (data.length > 0) {
+                const categoricalGroups = {};
                 $.each(data, function (i, value) {
-                    if (!data.emptyRange) {
+                    if (value.categoricalSourceName) {
+                        let group = categoricalGroups[value.categoricalSourceName];
+                        if (!group) {
+                            group = {
+                                reference: value.categoricalReferenceLabel,
+                                labels: [{
+                                    text: value.categoricalReferenceLabel,
+                                    value: value.categoricalReferenceLabel
+                                }]
+                            };
+                            categoricalGroups[value.categoricalSourceName] = group;
+                        }
+                        group.labels.push({
+                            text: value.categoricalLevel,
+                            value: value.categoricalKind === 3 ? "" : value.categoricalLevel
+                        });
+                        return;
+                    }
+
+                    if (!value.emptyRange) {
                         const tb = $('<input>', {
                             type: 'text',
                             value: value.mean,
@@ -929,8 +1035,10 @@ function BuildSliders() {
                         });
 
                         const $tr = $('<tr>').append(
-                            $("<td style='vertical-align:top;width: 0;'>").text(value.name),
-                            $("<td style='width:80%;height:100px;vertical-align:top;'>").append(tb)
+                            $("<td style='vertical-align:top;width: 0;padding-top:12px;padding-bottom:12px;'>")
+                                .text(value.name),
+                            $("<td style='width:80%;height:100px;vertical-align:top;padding-top:12px;" +
+                                "padding-bottom:12px;'>").append(tb)
                         );
 
                         $("#SlidersPlaceholder").append($tr);
@@ -949,6 +1057,33 @@ function BuildSliders() {
                     }
                 });
 
+                $.each(categoricalGroups, function (source, group) {
+                    const select = $('<input>', {
+                        type: 'text',
+                        name: source
+                    });
+
+                    $("#SlidersPlaceholder").append($('<tr>').append(
+                        $("<td style='vertical-align:top;width: 0;padding-top:12px;padding-bottom:12px;'>")
+                            .text(source),
+                        $("<td style='width:80%;vertical-align:top;padding-top:12px;padding-bottom:12px;'>")
+                            .append(select)
+                    ));
+
+                    select.kendoDropDownList({
+                        dataSource: group.labels,
+                        dataTextField: "text",
+                        dataValueField: "value",
+                        value: group.reference,
+                        change: function (e) {
+                            MergeArray(source, e.sender.value());
+                            GetScore();
+                        }
+                    });
+
+                    Params[source] = group.reference;
+                });
+
                 $("#SlidersPlaceholder").resize();
 
                 GetScore();
@@ -961,15 +1096,30 @@ if (typeof id === "undefined") {
     $('#Refresh').hide();
     $('#Stop').hide();
     ReadyNew();
+    window.AskJoobySetPageContext?.("Exhaustive", "new", {[parentKeyName]: parentKey});
+    initExhaustiveDataSource();
+
+    $("#Bootstrap").prop("checked", true);
+    bootstrapTo.data("kendoNumericTextBox").value(30000);
+    bootstrapWeightFactor.data("kendoSlider").value(1);
+    challengerModelBaseProbability.data("kendoSlider").value(0.1);
 
     initExhaustiveFilterBuilder(parentKey);
     ExpandCollapseAnomaly();
     ExpandCollapseFilter();
+    ExpandCollapseBootstrap();
 
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("Exhaustive", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
+            initExhaustiveDataSource(data);
 
             const builderCoderData = {
                 filterTokens: data.filterTokens,
@@ -977,32 +1127,50 @@ if (typeof id === "undefined") {
             };
 
             const $anomaly = $("#Anomaly");
-            if (data.anomaly) {
-                $anomaly.data("kendoSwitch").check(true);
-            } else {
-                $anomaly.data("kendoSwitch").check(false);
-            }
+            EnsureSwitch($anomaly).check(!!data.anomaly);
 
             anomalyProbability.data("kendoSlider").value(data.anomalyProbability)
+            anomalyAlgorithmId.data("kendoDropDownList").value(data.anomalyAlgorithmId || 0);
 
-            const $filter = $("#Filter");
-            if (data.filter) {
-                $filter.data("kendoSwitch").check(true);
-            } else {
-                $filter.data("kendoSwitch").check(false);
+            let storedParameters = null;
+            if (data.anomalyParametersJson) {
+                try {
+                    storedParameters = JSON.parse(data.anomalyParametersJson);
+                } catch (e) {
+                    storedParameters = null;
+                }
             }
 
+            anomalyReduction.data("kendoDropDownList").value(anomalyReductionFromParameters(storedParameters));
+
+            const $filter = $("#Filter");
+            EnsureSwitch($filter).check(!!data.filter);
+
             const $reportTable = $("#ReportTable");
-            if (data.reportTable) {
-                $reportTable.data("kendoSwitch").check(true);
-            } else {
-                $reportTable.data("kendoSwitch").check(false);
+            EnsureSwitch($reportTable).check(!!data.reportTable);
+
+            const $bootstrap = $("#Bootstrap");
+            EnsureSwitch($bootstrap).check(!!data.bootstrap);
+            bootstrapTo.data("kendoNumericTextBox").value(data.bootstrapTo);
+            bootstrapWeightFactor.data("kendoSlider").value(
+                data.bootstrapWeightFactor === null || data.bootstrapWeightFactor === undefined
+                    ? 1
+                    : data.bootstrapWeightFactor);
+            challengerModelBaseProbability.data("kendoSlider").value(
+                data.challengerModelBaseProbability === null || data.challengerModelBaseProbability === undefined
+                    ? 0.1
+                    : data.challengerModelBaseProbability);
+
+            if (typeof SyncFilterRequiredForDataset === "function") {
+                SyncFilterRequiredForDataset();
             }
 
             ExpandCollapseAnomaly();
             ExpandCollapseFilter();
+            ExpandCollapseBootstrap();
 
-            initExhaustiveFilterBuilder(GetSelectedParentID(), builderCoderData);
+            initExhaustiveFilterBuilder(GetSelectedParentID(), builderCoderData,
+                ExhaustiveFilterCompletionsUrl(data.exhaustiveInstanceCsvId, data.exhaustiveInstanceJsonId));
 
             RefreshModelSummary();
             $("#Status").toggle();
@@ -1028,15 +1196,33 @@ function ExpandCollapseFilter() {
     }
 }
 
+function ExpandCollapseBootstrap() {
+    const $bootstrapTable = $("#BootstrapTable");
+    if ($('#Bootstrap').prop('checked')) {
+        $bootstrapTable.show();
+    } else {
+        $bootstrapTable.hide();
+    }
+}
+
 $("#Anomaly").kendoSwitch({
     change: function () {
         ExpandCollapseAnomaly();
+        if (typeof SyncFilterRequiredForDataset === "function") {
+            SyncFilterRequiredForDataset();
+        }
     }
 });
 
 $("#Filter").kendoSwitch({
     change: function () {
         ExpandCollapseFilter();
+    }
+});
+
+$("#Bootstrap").kendoSwitch({
+    change: function () {
+        ExpandCollapseBootstrap();
     }
 });
 
@@ -1050,7 +1236,7 @@ $(function () {
 });
 
 function GetData() {
-    let data = {};
+    let data = getExhaustiveDataSource();
 
     if ($('#Filter').prop('checked')) {
         const builderCoder = getExhaustiveFilter();
@@ -1060,8 +1246,24 @@ function GetData() {
         data["filterTokens"] = builderCoder.filterTokens;
     }
 
-    data["anomaly"] = $('#Anomaly').prop('checked');
-    data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
+    if ($('#Anomaly').prop('checked')) {
+        data["anomaly"] = true;
+        data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
+        data["anomalyAlgorithmId"] = anomalyAlgorithmId.data("kendoDropDownList").value() * 1;
+
+        const reductionChoice = anomalyReduction.data("kendoDropDownList").value();
+        if (reductionChoice !== "default") {
+            data["anomalyParametersJson"] = JSON.stringify({reduction: anomalyReductionPresets[reductionChoice]});
+        }
+    }
+
+    if ($('#Bootstrap').prop('checked')) {
+        data["bootstrap"] = true;
+        data["bootstrapTo"] = bootstrapTo.data("kendoNumericTextBox").value();
+        data["bootstrapWeightFactor"] = bootstrapWeightFactor.data("kendoSlider").value();
+    }
+
+    data["challengerModelBaseProbability"] = challengerModelBaseProbability.data("kendoSlider").value();
 
     return data;
 }
@@ -1095,7 +1297,9 @@ $(function () {
     addButton
         .click(function () {
             if (validator.validate()) {
-                Create(endpoint, GetData(), "id", parentKeyName, LoadModelSummery);
+                Create(endpoint, GetData(), "id", parentKeyName, function (data) {
+                    LoadModelSummery(data, true);
+                });
                 $("#Status").toggle();
             } else {
                 $("#ErrorMessage").html(validationFail);

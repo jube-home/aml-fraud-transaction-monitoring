@@ -1,40 +1,48 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Math
 {
-    using System;
-
     /// <summary>
-    ///   Absolute convergence criteria.
+    ///     Absolute convergence criteria.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   This class can be used to track progress and convergence
-    ///   of methods which rely on the absolute change of a value.
+    ///     This class can be used to track progress and convergence
+    ///     of methods which rely on the absolute change of a value.
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   // Create a new convergence criteria for a maximum of 10 iterations
     ///   var criteria = new AbsoluteConvergence(iterations: 10, tolerance: 0.1);
     /// 
@@ -59,104 +67,103 @@ namespace Accord.Math
     ///   double value = criteria.OldValue; // 1371.7333333
     /// </code>
     /// </example>
-    /// 
     public class AbsoluteConvergence : ISingleValueConvergence
     {
-
-        private double tolerance = 0;
         private int maxIterations = 100;
         private double newValue;
-
+        private double tolerance;
 
         /// <summary>
-        ///   Gets or sets the maximum change in the watched value
-        ///   after an iteration of the algorithm used to detect 
-        ///   convergence. Default is 0.
+        ///     Initializes a new instance of the <see cref="AbsoluteConvergence" /> class.
         /// </summary>
-        /// 
+        public AbsoluteConvergence()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AbsoluteConvergence" /> class.
+        /// </summary>
+        /// <param name="iterations">
+        ///     The maximum number of iterations which should be
+        ///     performed by the iterative algorithm. Setting to zero indicates there
+        ///     is no maximum number of iterations. Default is 0.
+        /// </param>
+        /// <param name="tolerance">
+        ///     The maximum change in the watched value
+        ///     after an iteration of the algorithm used to detect convergence.
+        ///     Default is 0.
+        /// </param>
+        /// <param name="startValue">
+        ///     The initial value for the <see cref="NewValue" /> and
+        ///     <see cref="OldValue" /> properties.
+        /// </param>
+        public AbsoluteConvergence(int iterations = 100, double tolerance = 0, double startValue = 0)
+        {
+            MaxIterations = iterations;
+            this.tolerance = tolerance;
+            newValue = startValue;
+        }
+
+        /// <summary>
+        ///     Gets the watched value before the iteration.
+        /// </summary>
+        public double OldValue { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the maximum change in the watched value
+        ///     after an iteration of the algorithm used to detect
+        ///     convergence. Default is 0.
+        /// </summary>
         public double Tolerance
         {
-            get { return tolerance; }
+            get => tolerance;
             set
             {
                 if (value < 0)
+                {
                     throw new ArgumentOutOfRangeException("value", "Tolerance should be positive.");
+                }
 
                 tolerance = value;
             }
         }
 
         /// <summary>
-        ///   Please use MaxIterations instead.
+        ///     Please use MaxIterations instead.
         /// </summary>
-        /// 
         [Obsolete("Please use MaxIterations instead.")]
         public int Iterations
         {
-            get { return MaxIterations; }
-            set { MaxIterations = value; }
+            get => MaxIterations;
+            set => MaxIterations = value;
         }
 
         /// <summary>
-        ///   Gets or sets the maximum number of iterations
-        ///   performed by the iterative algorithm. Default 
-        ///   is 100.
+        ///     Gets or sets the maximum number of iterations
+        ///     performed by the iterative algorithm. Default
+        ///     is 100.
         /// </summary>
-        /// 
         public int MaxIterations
         {
-            get { return maxIterations; }
+            get => maxIterations;
             set
             {
                 if (value < 0)
+                {
                     throw new ArgumentOutOfRangeException("value",
                         "The maximum number of iterations should be positive.");
+                }
 
                 maxIterations = value;
             }
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="AbsoluteConvergence"/> class.
+        ///     Gets or sets the watched value after the iteration.
         /// </summary>
-        /// 
-        public AbsoluteConvergence()
-        {
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="AbsoluteConvergence"/> class.
-        /// </summary>
-        /// 
-        /// <param name="iterations">The maximum number of iterations which should be
-        ///   performed by the iterative algorithm. Setting to zero indicates there
-        ///   is no maximum number of iterations. Default is 0.</param>
-        /// <param name="tolerance">The maximum change in the watched value
-        ///   after an iteration of the algorithm used to detect convergence.
-        ///   Default is 0.</param>
-        /// <param name="startValue">The initial value for the <see cref="NewValue"/> and
-        ///   <see cref="OldValue"/> properties.</param>
-        /// 
-        public AbsoluteConvergence(int iterations = 100, double tolerance = 0, double startValue = 0)
-        {
-            this.MaxIterations = iterations;
-            this.tolerance = tolerance;
-            this.newValue = startValue;
-        }
-
-        /// <summary>
-        ///   Gets the watched value before the iteration.
-        /// </summary>
-        /// 
-        public double OldValue { get; private set; }
-
-        /// <summary>
-        ///   Gets or sets the watched value after the iteration.
-        /// </summary>
-        /// 
         public double NewValue
         {
-            get { return newValue; }
+            get => newValue;
             set
             {
                 OldValue = newValue;
@@ -166,44 +173,46 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Gets or sets the current iteration number.
+        ///     Gets or sets the current iteration number.
         /// </summary>
-        /// 
         public int CurrentIteration { get; set; }
 
         /// <summary>
-        ///   Gets whether the algorithm has converged.
+        ///     Gets whether the algorithm has converged.
         /// </summary>
-        /// 
         public bool HasConverged
         {
             get
             {
                 if (maxIterations > 0 && CurrentIteration >= maxIterations)
+                {
                     return true;
+                }
 
                 if (tolerance > 0)
                 {
                     // Stopping criteria is likelihood convergence
-                    double delta = Math.Abs(OldValue - NewValue);
+                    var delta = System.Math.Abs(OldValue - NewValue);
 
                     if (delta <= tolerance)
+                    {
                         return true;
+                    }
                 }
 
                 // Check if we have reached an invalid or perfectly separable answer
-                if (Double.IsNaN(NewValue) || (Double.IsInfinity(OldValue) && Double.IsInfinity(NewValue)))
+                if (double.IsNaN(NewValue) || (double.IsInfinity(OldValue) && double.IsInfinity(NewValue)))
+                {
                     return true;
+                }
 
                 return false;
             }
         }
 
-
         /// <summary>
-        ///   Clears this instance.
+        ///     Clears this instance.
         /// </summary>
-        /// 
         public void Clear()
         {
             CurrentIteration = 0;

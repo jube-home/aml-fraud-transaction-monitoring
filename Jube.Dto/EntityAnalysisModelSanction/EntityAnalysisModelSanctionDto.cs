@@ -15,7 +15,10 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.EntityAnalysisModelSanction
 {
@@ -90,6 +93,10 @@ namespace Jube.Dto.EntityAnalysisModelSanction
         [FormField(Group = "Output", Order = 20, Widget = "switch")]
         [NewDefault(false)]
         public bool ResponsePayload { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this Sanction check participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

@@ -92,6 +92,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("DotNetRuntimeMetric", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

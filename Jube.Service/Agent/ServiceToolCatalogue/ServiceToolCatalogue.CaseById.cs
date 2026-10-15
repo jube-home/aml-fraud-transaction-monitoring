@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseById;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseById(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseByIdGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Gets one case by Id with its status colours, formatted payload and visible activations; records a case-viewed event.")
-        ]);
+        static partial void AddCaseById(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseByIdGet", OperationKind.Read, true, false,
+                    "Gets one case by Id with its status colours, formatted payload and visible activations; records a case-viewed event.",
+                    CaseByIdService.RequiredPermissions)
+            ]);
+        }
     }
 }

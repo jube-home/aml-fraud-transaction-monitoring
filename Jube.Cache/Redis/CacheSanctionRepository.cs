@@ -15,7 +15,7 @@ using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
 using Jube.Cache.Redis.Models;
 using Jube.Cache.Redis.Serialization;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using MessagePack;
 
@@ -83,10 +83,12 @@ namespace Jube.Cache.Redis
                     };
 
                     var ms = new MemoryStream();
+
                     await MessagePackSerializer.SerializeAsync(ms, sanction,
                             MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(
                                 false))
                         .ConfigureAwait(false);
+
                     await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray())
                         .ConfigureAwait(false);
                 }

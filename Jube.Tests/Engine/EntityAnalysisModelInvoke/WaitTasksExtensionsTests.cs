@@ -17,7 +17,7 @@ using FluentAssertions;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
@@ -58,6 +58,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Read.Should()
                 .NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Read
                 .SanctionsAsync.Should().BeNull();
         }
@@ -103,6 +104,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = async () => await context.WaitReadTasksAsync();
 
             await act.Should().NotThrowAsync();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Read
                 .SanctionsAsync.Should().BeNull();
         }
@@ -116,6 +118,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             await context.WaitReadTasksAsync();
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages.Should().NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages!.JoinReadTasks.Should()
                 .NotBeNull();
         }
@@ -140,6 +143,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Write.Should()
                 .NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Write
                 .CachePayloadUpsertAsync.Should().BeNull();
         }
@@ -161,6 +165,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var taskWrapperStats = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance
                 .TaskWrapperStats;
+
             var recorded = taskWrapperStats.EnumerateTasks().Should().ContainSingle().Subject;
             recorded.Name.Should().Be(taskType.ToString());
             recorded.Task.ComputeTimeMicroseconds.Should().Be(55);
@@ -176,6 +181,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = async () => await context.WaitWriteTasksAsync();
 
             await act.Should().NotThrowAsync();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats.Write
                 .CachePayloadUpsertAsync.Should().BeNull();
         }
@@ -189,6 +195,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = async () => await context.WaitWriteTasksAsync();
 
             await act.Should().NotThrowAsync();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.TaskWrapperStats
                 .EnumerateTasks().Should().BeEmpty();
         }
@@ -202,6 +209,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             await context.WaitWriteTasksAsync();
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages.Should().NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages!.JoinWriteTasks.Should()
                 .NotBeNull();
         }

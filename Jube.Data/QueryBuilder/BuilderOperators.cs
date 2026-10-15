@@ -13,6 +13,8 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+using Jube.Data.QueryBuilder.Models;
+
 namespace Jube.Data.QueryBuilder
 {
     using System;
@@ -37,7 +39,6 @@ namespace Jube.Data.QueryBuilder
         IReadOnlyDictionary<BuilderFieldType, Func<object, IReadOnlyList<object>, bool>> Evaluators)
     {
         public int Inputs => Arguments.Count;
-
         public IEnumerable<BuilderFieldType> ApplyTo => RuleTextTypes.Union(Evaluators.Keys).Distinct();
 
         public bool InMemoryCapable =>
@@ -135,34 +136,51 @@ namespace Jube.Data.QueryBuilder
 
         public static IReadOnlyList<BuilderOperator> For(BuilderFieldType type, BuilderTarget target)
         {
-            return All.Where(o => o.Supports(type, target)).ToList();
+            return [.. All.Where(o => o.Supports(type, target))];
+        }
+
+        public static IEnumerable<object> Many(object value)
+        {
+            return value switch
+            {
+                null => [],
+                string s => [s],
+                IEnumerable items => items.Cast<object>(),
+                _ => [valueArgument]
+            };
         }
 
         private static List<BuilderOperator> Build()
         {
             var operators = new List<BuilderOperator>();
             operators.AddRange(BasicOperators());
+
             operators.Add(new BuilderOperator(BuilderProfile.Has, "has", Lists,
                 [new BuilderArgument("field", BuilderArgumentKind.Field)], ".contains(?)", [BuilderFieldType.List],
                 Evaluate()));
+
             operators.AddRange(FieldComparisons());
             operators.AddRange(PipelineOperators());
             operators.AddRange(ExtensionOperators());
 
             var duplicate = operators.GroupBy(o => o.Type).FirstOrDefault(g => g.Count() > 1);
+
             if (duplicate != null)
             {
                 throw new InvalidOperationException($"The operator {duplicate.Key} is defined twice.");
             }
 
             var order = GroupOrder.ToList();
-            return operators
-                .Select((o, i) => (Operator: o, Index: i))
-                .OrderBy(x => order.IndexOf(x.Operator.Group))
-                .ThenBy(x => x.Operator.Group == Basic ? x.Index : 0)
-                .ThenBy(x => x.Operator.Label, StringComparer.OrdinalIgnoreCase)
-                .Select(x => x.Operator)
-                .ToList();
+
+            return
+            [
+                .. operators
+                    .Select((o, i) => (Operator: o, Index: i))
+                    .OrderBy(x => order.IndexOf(x.Operator.Group))
+                    .ThenBy(x => x.Operator.Group == Basic ? x.Index : 0)
+                    .ThenBy(x => x.Operator.Label, StringComparer.OrdinalIgnoreCase)
+                    .Select(x => x.Operator)
+            ];
         }
 
         private static IEnumerable<BuilderOperator> BasicOperators()
@@ -172,66 +190,87 @@ namespace Jube.Data.QueryBuilder
                 BuilderFieldType.String, BuilderFieldType.Integer, BuilderFieldType.Double,
                 BuilderFieldType.DateTime, BuilderFieldType.Boolean, BuilderFieldType.Guid
             ];
+
             BuilderFieldType[] equatable =
             [
                 BuilderFieldType.String, BuilderFieldType.Integer, BuilderFieldType.Double,
                 BuilderFieldType.DateTime, BuilderFieldType.Boolean
             ];
+
             BuilderArgument[] range =
                 [new("from", BuilderArgumentKind.Value), new("to", BuilderArgumentKind.Value)];
 
             yield return new BuilderOperator(BuilderProfile.Equal, "equal", Basic, [valueArgument], " = ?", equatable,
                 Evaluate(comparable, (v, a) => Compare(v, a[0]) == 0));
+
             yield return new BuilderOperator(BuilderProfile.NotEqual, "not equal", Basic, [valueArgument], " <> ?",
                 equatable, Evaluate(comparable, (v, a) => Compare(v, a[0]) != 0));
+
             yield return new BuilderOperator(BuilderProfile.In, "in", Basic, [valuesArgument],
                 ".MatchIn(?).ToBoolean()",
                 listable, Evaluate(listable, (v, a) => Many(a[0]).Any(x => Compare(v, x) == 0)));
+
             yield return new BuilderOperator(BuilderProfile.NotIn, "not in", Basic, [valuesArgument],
                 ".MatchNotIn(?).ToBoolean()", listable,
                 Evaluate(listable, (v, a) => !Many(a[0]).Any(x => Compare(v, x) == 0)));
+
             yield return new BuilderOperator(BuilderProfile.Less, "less", Basic, [valueArgument], " < ?",
                 numbersAndDates,
                 Evaluate(numbersAndDates, (v, a) => Compare(v, a[0]) < 0));
+
             yield return new BuilderOperator(BuilderProfile.LessOrEqual, "less or equal", Basic, [valueArgument],
                 " <= ?",
                 numbersAndDates, Evaluate(numbersAndDates, (v, a) => Compare(v, a[0]) <= 0));
+
             yield return new BuilderOperator(BuilderProfile.Greater, "greater", Basic, [valueArgument], " > ?",
                 numbersAndDates, Evaluate(numbersAndDates, (v, a) => Compare(v, a[0]) > 0));
+
             yield return new BuilderOperator(BuilderProfile.GreaterOrEqual, "greater or equal", Basic, [valueArgument],
                 " >= ?", numbersAndDates, Evaluate(numbersAndDates, (v, a) => Compare(v, a[0]) >= 0));
+
             yield return new BuilderOperator(BuilderProfile.Between, "between", Basic, range,
                 ".MatchInRange(?).ToBoolean()", numbersAndDates,
                 Evaluate(numbersAndDates, (v, a) => Compare(v, a[0]) >= 0 && Compare(v, a[1]) <= 0));
+
             yield return new BuilderOperator(BuilderProfile.NotBetween, "not between", Basic, range,
                 ".MatchInRange(?).ToBoolean() = False", numbersAndDates,
                 Evaluate(numbersAndDates, (v, a) => !(Compare(v, a[0]) >= 0 && Compare(v, a[1]) <= 0)));
+
             yield return new BuilderOperator(BuilderProfile.BeginsWith, "begins with", Basic, [valueArgument],
                 ".StartsWith(?)", strings,
                 Evaluate(strings, (v, a) => S(v).StartsWith(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.NotBeginsWith, "not begins with", Basic, [valueArgument],
                 ".StartsWith(?) = False", strings,
                 Evaluate(strings, (v, a) => !S(v).StartsWith(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.Contains, "contains", Basic, [valueArgument],
                 ".Contains(?)",
                 strings, Evaluate(strings, (v, a) => S(v).Contains(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.NotContains, "not contains", Basic, [valueArgument],
                 ".MatchContainsNone(?).ToBoolean()", strings,
                 Evaluate(strings, (v, a) => !S(v).Contains(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.EndsWith, "ends with", Basic, [valueArgument],
                 ".EndsWith(?)",
                 strings, Evaluate(strings, (v, a) => S(v).EndsWith(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.NotEndsWith, "not ends with", Basic, [valueArgument],
                 ".EndsWith(?) = False", strings,
                 Evaluate(strings, (v, a) => !S(v).EndsWith(S(a[0]), StringComparison.Ordinal)));
+
             yield return new BuilderOperator(BuilderProfile.IsEmpty, "is empty", Basic, [],
                 ".MatchIsNullOrEmpty().ToBoolean()", strings,
                 Evaluate(strings, (v, _) => string.IsNullOrEmpty(v as string)));
+
             yield return new BuilderOperator(BuilderProfile.IsNotEmpty, "is not empty", Basic, [],
                 ".MatchIsNotNullOrEmpty().ToBoolean()", strings,
                 Evaluate(strings, (v, _) => !string.IsNullOrEmpty(v as string)));
+
             yield return new BuilderOperator(BuilderProfile.IsNull, "is null", Basic, [],
                 ".MatchIsNull().ToBoolean()", strings, Evaluate(strings, (v, _) => v == null));
+
             yield return new BuilderOperator(BuilderProfile.IsNotNull, "is not null", Basic, [], ".IsNotNull()",
                 strings, Evaluate(strings, (v, _) => v != null));
         }
@@ -239,6 +278,7 @@ namespace Jube.Data.QueryBuilder
         private static IEnumerable<BuilderOperator> FieldComparisons()
         {
             BuilderArgument[] field = [new("field", BuilderArgumentKind.Field)];
+
             yield return new BuilderOperator("equal_field", "Equals another field", CompareToField, field, " = ?",
                 scalars, Evaluate());
             yield return new BuilderOperator("not_equal_field", "Does not equal another field", CompareToField,
@@ -258,6 +298,7 @@ namespace Jube.Data.QueryBuilder
             BuilderArgument[] none = [];
             BuilderArgument[] cidr = [new("CIDR range", BuilderArgumentKind.Text)];
             BuilderArgument[] path = [new("JSON path", BuilderArgumentKind.Text)];
+
             (string Type, string Label, string Group, BuilderArgument[] Arguments, string Method,
                 Func<string, IReadOnlyList<object>, bool> Test)[] definitions =
                 [
@@ -298,6 +339,7 @@ namespace Jube.Data.QueryBuilder
             foreach (var definition in definitions)
             {
                 var test = definition.Test;
+
                 yield return new BuilderOperator(definition.Type, definition.Label, definition.Group,
                     definition.Arguments,
                     "." + definition.Method + (definition.Arguments.Length == 0 ? "()" : "(?)"), strings,
@@ -322,14 +364,16 @@ namespace Jube.Data.QueryBuilder
             {
                 var name = family.Key.Name;
                 var shared = steps.Count(s => s.Name == name) != family.Count();
+
                 var key = (renamed.TryGetValue(name, out var rename) ? rename : Snake(name)) +
                           (shared ? "_" + Snake(family.Key.Group.Split(':')[0]) : string.Empty);
+
                 var arguments = family.First().Arguments;
                 var evaluators = family.ToDictionary(s => s.Receiver, s => Invoker(s.Method, s.Parameters));
 
                 yield return new BuilderOperator(key, Label(name), family.Key.Group, arguments,
                     ".Match" + name + (arguments.Count == 0 ? "()" : "(?)") + ".ToBoolean()",
-                    family.Select(s => s.Receiver).Distinct().ToList(), evaluators);
+                    [.. family.Select(s => s.Receiver).Distinct()], evaluators);
             }
         }
 
@@ -337,10 +381,12 @@ namespace Jube.Data.QueryBuilder
         {
             var receiver = parameters[0].ParameterType;
             var arguments = new List<BuilderArgument>();
+
             foreach (var parameter in parameters.Skip(1))
             {
                 var many = parameter.GetCustomAttribute<ParamArrayAttribute>() != null;
                 var type = many ? parameter.ParameterType.GetElementType()! : parameter.ParameterType;
+
                 BuilderArgumentKind? kind = type == receiver ? BuilderArgumentKind.Value
                     : type == typeof(double) ? BuilderArgumentKind.Number
                     : type == typeof(int) ? BuilderArgumentKind.Integer
@@ -348,6 +394,7 @@ namespace Jube.Data.QueryBuilder
                     : type == typeof(DateTime) ? BuilderArgumentKind.Date
                     : type == typeof(IEnumerable<string>) ? BuilderArgumentKind.List
                     : null;
+
                 if (kind == null)
                 {
                     return null;
@@ -374,9 +421,11 @@ namespace Jube.Data.QueryBuilder
             {
                 var call = new object[parameters.Length];
                 call[0] = To(value, parameters[0].ParameterType);
+
                 for (var i = 1; i < parameters.Length; i++)
                 {
                     var type = parameters[i].ParameterType;
+
                     if (type.IsArray)
                     {
                         var element = type.GetElementType()!;
@@ -511,12 +560,14 @@ namespace Jube.Data.QueryBuilder
             }
 
             var label = Capital(Words(name));
+
             return name == "Between" ? label + " (exclusive)" : label;
         }
 
         private static string Words(string name)
         {
             var parts = Regex.Matches(name, "[A-Z]?[a-z]+|[A-Z]+(?![a-z])|[0-9]+").Select(m => m.Value);
+
             return string.Join(" ",
                 parts.Select(p => words.TryGetValue(p, out var word) ? word : p.ToLowerInvariant()));
         }
@@ -529,6 +580,7 @@ namespace Jube.Data.QueryBuilder
         private static string Snake(string name)
         {
             var sb = new StringBuilder();
+
             for (var i = 0; i < name.Length; i++)
             {
                 if (char.IsUpper(name[i]) && i > 0 &&
@@ -549,17 +601,6 @@ namespace Jube.Data.QueryBuilder
             return test == null
                 ? new Dictionary<BuilderFieldType, Func<object, IReadOnlyList<object>, bool>>()
                 : types!.ToDictionary(t => t, _ => test);
-        }
-
-        public static IEnumerable<object> Many(object value)
-        {
-            return value switch
-            {
-                null => [],
-                string s => [s],
-                IEnumerable items => items.Cast<object>(),
-                _ => [valueArgument]
-            };
         }
 
         private static string S(object value)

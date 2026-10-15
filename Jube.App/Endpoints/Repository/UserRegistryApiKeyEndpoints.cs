@@ -64,6 +64,7 @@ namespace Jube.App.Endpoints.Repository
             CacheService cacheService, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByUserRegistryId/{userRegistryId}: entry user={user}");
@@ -71,11 +72,13 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await UserRegistryApiKeyService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment,
                     new UserRegistryApiKeyCacheInvalidator(cacheService), token);
+
                 return TypedResults.Ok(await service.GetByUserRegistryIdAsync(userRegistryId, token));
             }
             catch (NotAuthenticatedException)
@@ -108,6 +111,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByUserRegistryId/{userRegistryId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -118,6 +122,7 @@ namespace Jube.App.Endpoints.Repository
             CacheService cacheService, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -125,14 +130,17 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await UserRegistryApiKeyService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment,
                     new UserRegistryApiKeyCacheInvalidator(cacheService), token);
+
                 var created = await service.InsertAsync(model, token);
                 httpContext.Response.Headers.CacheControl = "no-store, no-cache";
                 httpContext.Response.Headers.Pragma = "no-cache";
+
                 return TypedResults.Ok(created);
             }
             catch (NotAuthenticatedException)
@@ -174,6 +182,7 @@ namespace Jube.App.Endpoints.Repository
             catch (KeyIntegrityException ex)
             {
                 log.Error($"POST {Base}: 400 (key integrity failure) user={user}", ex);
+
                 return TypedResults.BadRequest(ex.Message);
             }
             catch (OperationCanceledException)
@@ -188,6 +197,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -197,6 +207,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CacheService cacheService, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"DELETE {Base}/{id}: entry user={user}");
@@ -204,12 +215,15 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await UserRegistryApiKeyService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment,
                     new UserRegistryApiKeyCacheInvalidator(cacheService), token);
+
                 await service.DeleteAsync(id, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -251,6 +265,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

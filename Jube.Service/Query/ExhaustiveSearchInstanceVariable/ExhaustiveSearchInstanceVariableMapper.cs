@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery;
 using Jube.Dto.Query.ExhaustiveSearchInstanceVariable;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
@@ -18,30 +19,40 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
     internal static class ExhaustiveSearchInstanceVariableMapper
     {
         public static ExhaustiveSearchInstanceVariableDto ToDto(
-            global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery.Dto source) => new()
+            GetExhaustiveSearchInstanceVariableQueryDto source)
         {
-            Id = source.Id,
-            Mean = FiniteNumber.Of(source.Mean),
-            StandardDeviation = FiniteNumber.Of(source.StandardDeviation),
-            Name = source.Name,
-            Kurtosis = FiniteNumber.Of(source.Kurtosis),
-            Skewness = FiniteNumber.Of(source.Skewness),
-            Maximum = FiniteNumber.Of(source.Maximum),
-            Minimum = FiniteNumber.Of(source.Minimum),
-            Iqr = FiniteNumber.Of(source.Iqr),
-            NormalisationType = source.NormalisationType,
-            DistinctValues = source.DistinctValues,
-            Correlation = FiniteNumber.Of(source.Correlation),
-            CorrelationAbsRank = source.CorrelationAbsRank,
-            HistogramValues = source.HistogramValues.Select(h => new ExhaustiveSearchInstanceVariableHistogramValueDto
+            return new ExhaustiveSearchInstanceVariableDto
             {
-                Frequency = h.Frequency,
-                Bin = FiniteNumber.Of(h.Bin)
-            }).ToList()
-        };
+                Id = source.Id,
+                Mean = FiniteNumber.Of(source.Mean),
+                StandardDeviation = FiniteNumber.Of(source.StandardDeviation),
+                Name = source.Name,
+                ProcessingTypeId = source.ProcessingTypeId,
+                Kurtosis = FiniteNumber.Of(source.Kurtosis),
+                Skewness = FiniteNumber.Of(source.Skewness),
+                Maximum = FiniteNumber.Of(source.Maximum),
+                Minimum = FiniteNumber.Of(source.Minimum),
+                Iqr = FiniteNumber.Of(source.Iqr),
+                NormalisationType = source.NormalisationType,
+                DistinctValues = source.DistinctValues,
+                Correlation = FiniteNumber.Of(source.Correlation),
+                CorrelationAbsRank = source.CorrelationAbsRank,
+                CategoricalSourceName = source.CategoricalSourceName,
+                CategoricalKind = source.CategoricalKind,
+                CategoricalLevel = source.CategoricalLevel,
+                HistogramValues = source.HistogramValues.Select(h =>
+                    new ExhaustiveSearchInstanceVariableHistogramValueDto
+                    {
+                        Frequency = h.Frequency,
+                        Bin = FiniteNumber.Of(h.Bin)
+                    }).ToList()
+            };
+        }
 
         public static List<ExhaustiveSearchInstanceVariableDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery.Dto> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<GetExhaustiveSearchInstanceVariableQueryDto> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace Jube.App.Code
         public Task InitializeAsync(AuthenticationScheme scheme, HttpContext httpContextToInitiazeWith)
         {
             httpContext = httpContextToInitiazeWith;
+
             return Task.CompletedTask;
         }
 
@@ -35,12 +36,14 @@ namespace Jube.App.Code
         public Task ChallengeAsync(AuthenticationProperties properties)
         {
             httpContext.Response.StatusCode = 401;
+
             return Task.CompletedTask;
         }
 
         public Task ForbidAsync(AuthenticationProperties properties)
         {
             httpContext.Response.StatusCode = 403;
+
             return Task.CompletedTask;
         }
     }

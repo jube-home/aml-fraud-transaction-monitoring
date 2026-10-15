@@ -19,7 +19,7 @@ namespace Jube.Data.Repository
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
-    using Interface;
+    using Interfaces;
     using LinqToDB;
     using Poco;
 
@@ -27,18 +27,22 @@ namespace Jube.Data.Repository
     {
         public Task<int> InsertAsync(object arg, CancellationToken token = default)
         {
-            return dbContext.InsertWithInt32IdentityAsync((ExhaustiveSearchInstanceVariableHistogramAnomaly)arg, token: token);
+            return dbContext.InsertWithInt32IdentityAsync((ExhaustiveSearchInstanceVariableHistogramAnomaly)arg,
+                token: token);
         }
 
         public async Task<IEnumerable<ExhaustiveSearchInstanceVariableHistogramAnomaly>>
-            GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(int exhaustiveSearchInstanceVariableId, CancellationToken token = default)
+            GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(int exhaustiveSearchInstanceVariableId,
+                CancellationToken token = default)
         {
             return await dbContext.ExhaustiveSearchInstanceVariableHistogramAnomaly.Where(w =>
-                    w.ExhaustiveSearchInstanceVariableAnomalyId == exhaustiveSearchInstanceVariableId)
+                    w.ExhaustiveSearchInstanceVariableAnomaly.ExhaustiveSearchInstanceVariableId ==
+                    exhaustiveSearchInstanceVariableId)
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceVariableHistogramAnomaly
                 .Where(d =>

@@ -66,6 +66,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                     var value = LookupFromTheLocalCacheOfDictionaryKeyValuePairs(entityAnalysisModel,
                         entityAnalysisModelInstanceEntryPayload, log, kvpDictionary, i);
+
                     AddToResponsesIfNotAdded(entityAnalysisModel, entityAnalysisModelInstanceEntryPayload, log,
                         kvpDictionary, value, i);
                 }
@@ -111,6 +112,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             EntityAnalysisModelDictionary kvpDictionary, int i)
         {
             double value;
+
             if (entityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(kvpDictionary.DataName, out var valueCache))
             {
                 if (log.IsInfoEnabled)

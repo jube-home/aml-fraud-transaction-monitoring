@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.Icons;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddIcons(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "IconsGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the icon files available to the user interface.")
-        ]);
+        static partial void AddIcons(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "IconsGet", OperationKind.Read, true, false,
+                    "Lists the icon files available to the user interface.",
+                    IconsService.RequiredPermissions)
+            ]);
+        }
     }
 }

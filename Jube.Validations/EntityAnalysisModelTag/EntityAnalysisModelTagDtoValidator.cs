@@ -49,6 +49,7 @@ namespace Jube.Validations.EntityAnalysisModelTag
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelTagResources.NameAlreadyExists])

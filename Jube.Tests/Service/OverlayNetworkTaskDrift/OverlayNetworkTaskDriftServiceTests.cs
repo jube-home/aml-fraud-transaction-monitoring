@@ -85,6 +85,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -238,6 +239,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, instance);

@@ -11,8 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-// ReSharper disable UnusedMember.Global
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+// ReSharper disable UnusedMember.Global
+
 namespace Jube.Dto.Authentication
 {
     public class AuthenticationRequestDto

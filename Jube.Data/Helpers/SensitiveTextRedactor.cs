@@ -64,6 +64,7 @@ namespace Jube.Data.Helpers
                 result = keyValue.Replace(result, Mask);
                 result = urlUserInfo.Replace(result, m => m.Groups["scheme"].Value + Mask);
                 result = bearerToken.Replace(result, m => m.Groups["key"].Value + Mask);
+
                 return jwt.Replace(result, Mask);
             }
             catch (RegexMatchTimeoutException)
@@ -81,6 +82,7 @@ namespace Jube.Data.Helpers
 
             var tokens = command.Split(' ');
             var name = tokens[0].ToUpperInvariant();
+
             switch (name)
             {
                 case "AUTH":

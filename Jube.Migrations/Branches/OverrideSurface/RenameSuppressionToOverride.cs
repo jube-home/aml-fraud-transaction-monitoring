@@ -18,7 +18,7 @@ namespace Jube.Migrations.Branches.OverrideSurface
     [Migration(20263107460000)]
     public class RenameSuppressionToOverride : Migration
     {
-        private static readonly (string From, string To)[] Tables =
+        private static readonly (string From, string To)[] tables =
         [
             ("EntityAnalysisModelSuppression", "EntityAnalysisModelOverride"),
             ("EntityAnalysisModelSuppressionVersion", "EntityAnalysisModelOverrideVersion"),
@@ -27,7 +27,7 @@ namespace Jube.Migrations.Branches.OverrideSurface
                 "EntityAnalysisModelActivationRuleOverrideVersion")
         ];
 
-        private static readonly string[] EnableTables =
+        private static readonly string[] enableTables =
         [
             "EntityAnalysisModelRequestXpath",
             "EntityAnalysisModelRequestXpathVersion",
@@ -37,7 +37,7 @@ namespace Jube.Migrations.Branches.OverrideSurface
 
         public override void Up()
         {
-            foreach (var (from, to) in Tables)
+            foreach (var (from, to) in tables)
             {
                 RenameColumn(from, "SuppressionKey", "OverrideKey");
                 RenameColumn(from, "SuppressionKeyValue", "OverrideKeyValue");
@@ -46,7 +46,7 @@ namespace Jube.Migrations.Branches.OverrideSurface
                 RenameTable(from, to);
             }
 
-            foreach (var table in EnableTables)
+            foreach (var table in enableTables)
             {
                 RenameColumn(table, "EnableSuppression", "EnableOverride");
             }

@@ -11,11 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System.Linq;
 using FluentAssertions;
 using Jube.Cache;
 using Jube.Cache.Observability;
-using Jube.Data.Repository;
 using Jube.Test.Infrastructure;
 using StackExchange.Redis;
 using Xunit;
@@ -80,6 +80,7 @@ namespace Jube.Test.Cache
             CacheDiagnostics.Record("test-wrapper", () => policy.ShouldRetry(0, 10));
 
             var record = RedisConnectionEventCapture.DrainAll().Single();
+
             record.TransactionsImpacted.Should().BeGreaterThanOrEqualTo(1,
                 "ShouldRetry ran inside our own CacheDiagnostics.Record wrapper, which guarantees at least " +
                 "one in-flight call for its whole duration");
@@ -96,6 +97,7 @@ namespace Jube.Test.Cache
                 CallCount++;
                 LastCurrentRetryCount = currentRetryCount;
                 LastTimeElapsedMilliseconds = timeElapsedMillisecondsSinceLastRetry;
+
                 return shouldRetry;
             }
         }

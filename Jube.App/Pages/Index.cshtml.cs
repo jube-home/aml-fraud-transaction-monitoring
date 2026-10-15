@@ -11,18 +11,31 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.App.Code;
+using Jube.AskJooby.Security;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Jube.App.Pages
 {
-    public class IndexModel : PageModel
+    using DynamicEnvironment;
+
+    public class IndexModel(DynamicEnvironment dynamicEnvironment, ILog log) : PageModel
     {
         public IActionResult OnGet()
         {
             if (User.Identity is { IsAuthenticated: false })
             {
                 return LocalRedirect("/Account/Login");
+            }
+
+            var permissionValidation = new PermissionValidation(
+                dynamicEnvironment.AppSettings("ConnectionString"), User.Identity?.Name, log);
+
+            if (permissionValidation.Landlord || permissionValidation.Validate([AskJoobyPermissions.Access]))
+            {
+                return LocalRedirect("/AskJooby");
             }
 
             return Page();

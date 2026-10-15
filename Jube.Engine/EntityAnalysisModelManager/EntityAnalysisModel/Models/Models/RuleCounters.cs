@@ -20,7 +20,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     {
         private readonly Lock lockActivationCounterDate = new Lock();
         private DateTime activationCounterDate;
-
         public long ActivationCounter;
         public long ForcedActivationCounter;
         public long EvaluationCounter;

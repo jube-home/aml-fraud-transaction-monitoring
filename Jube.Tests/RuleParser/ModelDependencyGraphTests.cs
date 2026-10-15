@@ -16,6 +16,7 @@ using FluentAssertions;
 using Jube.Data.Query.Models;
 using Jube.Parser;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -93,8 +94,10 @@ namespace Jube.Test.RuleParser
             var graph = Graph();
 
             graph.DependentsOf(ModelEntityKind.List, "HighRisk").Select(d => d.Dependent).Should().Equal(gateway);
+
             graph.DependentsOf(ModelEntityKind.TtlCounter, 7).Single().Kind.Should()
                 .Be(ModelDependencyKind.TtlCounterIncrement);
+
             graph.DependentsOf(ModelEntityKind.CaseWorkflow, "Fraud").Single().Dependent.Should().Be(activation);
         }
 
@@ -155,6 +158,7 @@ namespace Jube.Test.RuleParser
         public void TheBuilderJoinsRuleTextAndStructuredReferencesIntoOneGraph()
         {
             var inputs = new ModelDependencyInputsDto();
+
             inputs.Entities.AddRange([
                 new ModelDependencyEntityDto { Kind = "RequestXPath", Id = 1, Name = "Amount", Active = true },
                 new ModelDependencyEntityDto { Kind = "RequestXPath", Id = 2, Name = "Country", Active = true },
@@ -162,12 +166,14 @@ namespace Jube.Test.RuleParser
                 new ModelDependencyEntityDto { Kind = "GatewayRule", Id = 4, Name = "Gate", Active = true },
                 new ModelDependencyEntityDto { Kind = "TtlCounter", Id = 5, Name = "PerCountry", Active = true }
             ]);
+
             inputs.RuleTexts.Add(new ModelDependencyRuleTextDto
             {
                 Kind = "GatewayRule", Id = 4, RuleParseType = RuleParse.GatewayRule,
                 Text = "If (Payload.Amount > 1 And List.HighRiskTerms.Contains(Payload.Missing)) Then\n" +
                        "   Return True\nEnd If"
             });
+
             inputs.References.Add(new ModelDependencyReferenceDto
             {
                 DependentKind = "TtlCounter", DependentId = 5, Kind = "TtlCounterDataName", Namespace = "Payload",

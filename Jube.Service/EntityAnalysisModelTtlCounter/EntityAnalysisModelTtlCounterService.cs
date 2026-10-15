@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,17 +14,18 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.EntityAnalysisModelTtlCounter;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
-using Jube.Dto.EntityAnalysisModelTtlCounter;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelTtlCounter;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.Parser.Dependency;
 using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelTtlCounter;
 using log4net;
@@ -42,6 +43,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         private static readonly int[] readByModelPermissions = [12, 17];
         private static readonly int[] writePermissions = [12];
         private readonly ILog auditLog;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelTtlCounterRepository repository;
@@ -49,7 +51,6 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
-        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelTtlCounterDtoValidator validator;
 
         private EntityAnalysisModelTtlCounterService(DbContext dbContext, string userName, int tenantRegistryId,
@@ -64,11 +65,18 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelTtlCounterRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelTtlCounterDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> ReadByModelPermissions => readByModelPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<EntityAnalysisModelTtlCounterService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -122,6 +130,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.List: entry user={userName}");
@@ -130,9 +139,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelTtlCounter.List");
+
                 var dtos = EntityAnalysisModelTtlCounterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.List: {dtos.Count} rows user={userName}");
@@ -148,6 +159,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.List: cancelled user={userName}");
@@ -174,6 +186,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -183,9 +196,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             try
             {
                 EnsurePermitted(readByModelPermissions, "EntityAnalysisModelTtlCounter.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelTtlCounterMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -202,6 +217,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -213,9 +229,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelTtlCounter.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -232,6 +250,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "ListByEntityAnalysisModelGuid",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -242,9 +261,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             {
                 EnsurePermitted(readByModelPermissions,
                     "EntityAnalysisModelTtlCounter.ListByEntityAnalysisModelGuid");
+
                 var dtos = EntityAnalysisModelTtlCounterMapper.ToDto(await repository
                     .GetByEntityAnalysisModelGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -261,6 +282,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -272,9 +294,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelTtlCounter.ListByEntityAnalysisModelGuid: unexpected failure guid={guid} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -289,6 +313,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Get: entry id={id} user={userName}");
@@ -298,6 +323,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelTtlCounter.Get");
                 var ttlCounter = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (ttlCounter == null)
                 {
                     if (log.IsDebugEnabled)
@@ -310,6 +336,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 }
 
                 op.Entity(ttlCounter.Id);
+
                 return EntityAnalysisModelTtlCounterMapper.ToDto(ttlCounter);
             }
             catch (ForbiddenException)
@@ -320,6 +347,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.Get: cancelled id={id} user={userName}");
@@ -331,6 +359,69 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelTtlCounter.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one TTL Counter by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("EntityAnalysisModelTtlCounterGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<EntityAnalysisModelTtlCounterDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the TTL Counter.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelTtlCounter.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "EntityAnalysisModelTtlCounter.GetByGuid");
+                var ttlCounter = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (ttlCounter == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"EntityAnalysisModelTtlCounter.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(ttlCounter.Id);
+
+                return EntityAnalysisModelTtlCounterMapper.ToDto(ttlCounter);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelTtlCounter.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error($"EntityAnalysisModelTtlCounter.GetByGuid: unexpected failure guid={guid} user={userName}",
+                    ex);
+
                 throw;
             }
         }
@@ -347,7 +438,9 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -378,6 +471,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.ListPaged: cancelled user={userName}");
@@ -403,6 +497,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.FilterFields: entry user={userName}");
@@ -414,6 +509,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelTtlCounterDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -453,6 +549,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -461,10 +558,13 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelTtlCounter.Filter");
+
                 var rows = EntityAnalysisModelTtlCounterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -502,6 +602,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Count: entry groupBy={groupBy} user={userName}");
@@ -510,10 +611,13 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelTtlCounter.Count");
+
                 var rows = EntityAnalysisModelTtlCounterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -544,6 +648,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Create: entry user={userName} name={model?.Name}");
@@ -555,6 +660,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 EnsurePermitted(writePermissions, "EntityAnalysisModelTtlCounter.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -594,6 +700,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.Create: cancelled user={userName}");
@@ -604,8 +711,10 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelTtlCounter.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -620,6 +729,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Validate: entry id={model?.Id} user={userName}");
@@ -632,6 +742,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -663,6 +774,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Update: entry id={model?.Id} user={userName}");
@@ -674,6 +786,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 EnsurePermitted(writePermissions, "EntityAnalysisModelTtlCounter.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -686,6 +799,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 }
 
                 TtlCounterPoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(EntityAnalysisModelTtlCounterMapper.ToPoco(model), token)
@@ -732,6 +846,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.Update: cancelled id={model?.Id} user={userName}");
@@ -742,9 +857,11 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelTtlCounter.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -761,6 +878,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTtlCounter", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTtlCounter.Delete: entry id={id} user={userName}");
@@ -773,6 +891,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 try
                 {
                     var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                     if (existing != null)
                     {
                         var dependents = await deleteValidator
@@ -780,6 +899,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                                 new ModelEntityDelete(ModelEntityKind.TtlCounter, id, existing.EntityAnalysisModelId),
                                 token)
                             .ConfigureAwait(false);
+
                         if (!dependents.IsValid)
                         {
                             throw new DtoValidationException(dependents);
@@ -825,6 +945,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTtlCounter.Delete: cancelled id={id} user={userName}");

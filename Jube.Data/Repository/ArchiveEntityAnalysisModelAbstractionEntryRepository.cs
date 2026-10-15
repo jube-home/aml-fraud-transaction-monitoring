@@ -21,9 +21,11 @@ namespace Jube.Data.Repository
 
     public class ArchiveEntityAnalysisModelAbstractionEntryRepository(DbContext dbContext)
     {
-        public async Task<ArchiveEntityAnalysisModelAbstractionEntry> InsertAsync(ArchiveEntityAnalysisModelAbstractionEntry model, CancellationToken token = default)
+        public async Task<ArchiveEntityAnalysisModelAbstractionEntry> InsertAsync(
+            ArchiveEntityAnalysisModelAbstractionEntry model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
     }

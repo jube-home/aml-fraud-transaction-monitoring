@@ -2,98 +2,95 @@
 // AForge.NET framework
 // http://www.aforgenet.com/framework/
 //
-// Copyright © AForge.NET, 2007-2012
+// Copyright Â© AForge.NET, 2007-2012
 // contacts@aforgenet.com
 //
 
+using System;
+
 namespace Accord.Neuro
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    /// Threshold activation function.
+    ///     Threshold activation function.
     /// </summary>
-    ///
-    /// <remarks><para>The class represents threshold activation function with
-    /// the next expression:
-    /// <code lang="none">
+    /// <remarks>
+    ///     <para>
+    ///         The class represents threshold activation function with
+    ///         the next expression:
+    ///         <code lang="none">
     /// f(x) = 1, if x >= 0, otherwise 0
     /// </code>
-    /// </para>
-    /// 
-    /// <para>Output range of the function: <b>[0, 1]</b>.</para>
-    /// 
-    /// <para>Functions graph:</para>
-    /// <img src="..\images\neuro\threshold.bmp" width="242" height="172" />
+    ///     </para>
+    ///     <para>Output range of the function: <b>[0, 1]</b>.</para>
+    ///     <para>Functions graph:</para>
+    ///     <img src="..\images\neuro\threshold.bmp" width="242" height="172" />
     /// </remarks>
-    ///
     [Serializable]
     public class ThresholdFunction : IActivationFunction, ICloneable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ThresholdFunction"/> class.
+        ///     Initializes a new instance of the <see cref="ThresholdFunction" /> class.
         /// </summary>
-        public ThresholdFunction( ) { }
+        public ThresholdFunction()
+        {
+        }
 
         /// <summary>
-        /// Calculates function value.
+        ///     Calculates function value.
         /// </summary>
-        ///
         /// <param name="x">Function input value.</param>
-        /// 
         /// <returns>Function output value, <i>f(x)</i>.</returns>
-        ///
-        /// <remarks>The method calculates function value at point <paramref name="x"/>.</remarks>
-        ///
-        public double Function( double x )
+        /// <remarks>The method calculates function value at point <paramref name="x" />.</remarks>
+        public double Function(double x)
         {
-            return ( x >= 0 ) ? 1 : 0;
+            return x >= 0 ? 1 : 0;
         }
 
         /// <summary>
-        /// Calculates function derivative (not supported).
+        ///     Calculates function derivative (not supported).
         /// </summary>
-        /// 
         /// <param name="x">Input value.</param>
-        /// 
         /// <returns>Always returns 0.</returns>
-        /// 
-        /// <remarks><para><note>The method is not supported, because it is not possible to
-        /// calculate derivative of the function.</note></para></remarks>
-        ///
-        public double Derivative( double x )
+        /// <remarks>
+        ///     <para>
+        ///         <note>
+        ///             The method is not supported, because it is not possible to
+        ///             calculate derivative of the function.
+        ///         </note>
+        ///     </para>
+        /// </remarks>
+        public double Derivative(double x)
         {
             return 0;
         }
 
         /// <summary>
-        /// Calculates function derivative (not supported).
+        ///     Calculates function derivative (not supported).
         /// </summary>
-        /// 
         /// <param name="y">Input value.</param>
-        /// 
         /// <returns>Always returns 0.</returns>
-        /// 
-        /// <remarks><para><note>The method is not supported, because it is not possible to
-        /// calculate derivative of the function.</note></para></remarks>
-        /// 
-        public double Derivative2( double y )
+        /// <remarks>
+        ///     <para>
+        ///         <note>
+        ///             The method is not supported, because it is not possible to
+        ///             calculate derivative of the function.
+        ///         </note>
+        ///     </para>
+        /// </remarks>
+        public double Derivative2(double y)
         {
             return 0;
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
-        public object Clone( )
+        public object Clone()
         {
-            return new ThresholdFunction( );
+            return new ThresholdFunction();
         }
     }
 }

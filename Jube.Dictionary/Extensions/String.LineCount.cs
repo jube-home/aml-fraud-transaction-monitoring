@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static int LineCount(this string? @this)
         {
             var value = @this ?? "";
+
             return value.Length == 0 ? 0 : value.Split(["\r\n", "\r", "\n"], StringSplitOptions.None).Length;
         }
     }

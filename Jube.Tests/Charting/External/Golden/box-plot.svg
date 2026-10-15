@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-cdfaf187-t jc-cdfaf187-d">
+    <title id="jc-cdfaf187-t">Amount by channel</title>
+    <desc id="jc-cdfaf187-d">Box plot of 4 groups: Card present median 79.24; Card not present median 120.7; Transfer
+        median 390.4; ATM median 198.6.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Amount by channel</text>
+    <line class="gl" x1="64.22" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="56.22" y="364">-100</text>
+    <line class="gl" x1="64.22" y1="328.89" x2="624" y2="328.89"/>
+    <text class="tk end mid" x="56.22" y="328.89">0</text>
+    <line class="gl" x1="64.22" y1="293.78" x2="624" y2="293.78"/>
+    <text class="tk end mid" x="56.22" y="293.78">100</text>
+    <line class="gl" x1="64.22" y1="258.67" x2="624" y2="258.67"/>
+    <text class="tk end mid" x="56.22" y="258.67">200</text>
+    <line class="gl" x1="64.22" y1="223.56" x2="624" y2="223.56"/>
+    <text class="tk end mid" x="56.22" y="223.56">300</text>
+    <line class="gl" x1="64.22" y1="188.44" x2="624" y2="188.44"/>
+    <text class="tk end mid" x="56.22" y="188.44">400</text>
+    <line class="gl" x1="64.22" y1="153.33" x2="624" y2="153.33"/>
+    <text class="tk end mid" x="56.22" y="153.33">500</text>
+    <line class="gl" x1="64.22" y1="118.22" x2="624" y2="118.22"/>
+    <text class="tk end mid" x="56.22" y="118.22">600</text>
+    <line class="gl" x1="64.22" y1="83.11" x2="624" y2="83.11"/>
+    <text class="tk end mid" x="56.22" y="83.11">700</text>
+    <line class="gl" x1="64.22" y1="48" x2="624" y2="48"/>
+    <text class="tk end mid" x="56.22" y="48">800</text>
+    <line class="ax" x1="64.22" y1="364" x2="624" y2="364"/>
+    <text class="tk ctr" x="134.19" y="380">Card present</text>
+    <text class="tk ctr" x="274.14" y="380">Card not present</text>
+    <text class="tk ctr" x="414.08" y="380">Transfer</text>
+    <text class="tk ctr" x="554.03" y="380">ATM</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Card present, Maximum: 143.5, Upper quartile: 95.94, Median: 79.24, Lower quartile: 62, Minimum: 14.19, Outliers: 4, Observations: 302">
+            <title>Card present, Maximum: 143.5, Upper quartile: 95.94, Median: 79.24, Lower quartile: 62, Minimum:
+                14.19, Outliers: 4, Observations: 302
+            </title>
+            <rect class="box m" x="85.21" y="295.2" width="97.96" height="11.92" rx="2"/>
+            <path class="wh"
+                  d="M134.19 278.51L134.19 295.2M134.19 307.12L134.19 323.91M109.7 278.51L158.68 278.51M109.7 323.91L158.68 323.91"/>
+            <line class="med" x1="85.21" y1="301.07" x2="183.17" y2="301.07"/>
+            <circle class="out" cx="134.19" cy="330.75" r="3"/>
+            <circle class="out" cx="134.19" cy="276.4" r="3"/>
+            <circle class="out" cx="134.19" cy="251.64" r="3"/>
+            <circle class="out" cx="134.19" cy="237.6" r="3"/>
+            <g class="tt">
+                <rect class="tb" x="68.27" y="124.51" width="131.84" height="146" rx="6"/>
+                <text class="tx b" x="78.27" y="142.51">Card present</text>
+                <text class="tx" x="78.27" y="159.51">Maximum: 143.5</text>
+                <text class="tx" x="78.27" y="176.51">Upper quartile: 95.94</text>
+                <text class="tx" x="78.27" y="193.51">Median: 79.24</text>
+                <text class="tx" x="78.27" y="210.51">Lower quartile: 62</text>
+                <text class="tx" x="78.27" y="227.51">Minimum: 14.19</text>
+                <text class="tx" x="78.27" y="244.51">Outliers: 4</text>
+                <text class="tx" x="78.27" y="261.51">Observations: 302</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Card not present, Maximum: 223, Upper quartile: 146.4, Median: 120.7, Lower quartile: 94.81, Minimum: 17.47, Outliers: 5, Observations: 301">
+            <title>Card not present, Maximum: 223, Upper quartile: 146.4, Median: 120.7, Lower quartile: 94.81, Minimum:
+                17.47, Outliers: 5, Observations: 301
+            </title>
+            <rect class="box m" x="225.16" y="277.49" width="97.96" height="18.1" rx="2"/>
+            <path class="wh"
+                  d="M274.14 250.58L274.14 277.49M274.14 295.6L274.14 322.75M249.65 250.58L298.63 250.58M249.65 322.75L298.63 322.75"/>
+            <line class="med" x1="225.16" y1="286.52" x2="323.12" y2="286.52"/>
+            <circle class="out" cx="274.14" cy="324.41" r="3"/>
+            <circle class="out" cx="274.14" cy="250.04" r="3"/>
+            <circle class="out" cx="274.14" cy="248.33" r="3"/>
+            <circle class="out" cx="274.14" cy="243.03" r="3"/>
+            <circle class="out" cx="274.14" cy="213.02" r="3"/>
+            <g class="tt">
+                <rect class="tb" x="206.48" y="96.58" width="135.32" height="146" rx="6"/>
+                <text class="tx b" x="216.48" y="114.58">Card not present</text>
+                <text class="tx" x="216.48" y="131.58">Maximum: 223</text>
+                <text class="tx" x="216.48" y="148.58">Upper quartile: 146.4</text>
+                <text class="tx" x="216.48" y="165.58">Median: 120.7</text>
+                <text class="tx" x="216.48" y="182.58">Lower quartile: 94.81</text>
+                <text class="tx" x="216.48" y="199.58">Minimum: 17.47</text>
+                <text class="tx" x="216.48" y="216.58">Outliers: 5</text>
+                <text class="tx" x="216.48" y="233.58">Observations: 301</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Transfer, Maximum: 682.7, Upper quartile: 470.5, Median: 390.4, Lower quartile: 315.7, Minimum: 88.4, Outliers: 5, Observations: 300">
+            <title>Transfer, Maximum: 682.7, Upper quartile: 470.5, Median: 390.4, Lower quartile: 315.7, Minimum: 88.4,
+                Outliers: 5, Observations: 300
+            </title>
+            <rect class="box m" x="365.1" y="163.69" width="97.96" height="54.34" rx="2"/>
+            <path class="wh"
+                  d="M414.08 89.17L414.08 163.69M414.08 218.03L414.08 297.85M389.59 89.17L438.57 89.17M389.59 297.85L438.57 297.85"/>
+            <line class="med" x1="365.1" y1="191.82" x2="463.06" y2="191.82"/>
+            <circle class="out" cx="414.08" cy="327.58" r="3"/>
+            <circle class="out" cx="414.08" cy="308.65" r="3"/>
+            <circle class="out" cx="414.08" cy="302.87" r="3"/>
+            <circle class="out" cx="414.08" cy="72.5" r="3"/>
+            <circle class="out" cx="414.08" cy="49.3" r="3"/>
+            <g class="tt">
+                <rect class="tb" x="346.42" y="97.17" width="135.32" height="146" rx="6"/>
+                <text class="tx b" x="356.42" y="115.17">Transfer</text>
+                <text class="tx" x="356.42" y="132.17">Maximum: 682.7</text>
+                <text class="tx" x="356.42" y="149.17">Upper quartile: 470.5</text>
+                <text class="tx" x="356.42" y="166.17">Median: 390.4</text>
+                <text class="tx" x="356.42" y="183.17">Lower quartile: 315.7</text>
+                <text class="tx" x="356.42" y="200.17">Minimum: 88.4</text>
+                <text class="tx" x="356.42" y="217.17">Outliers: 5</text>
+                <text class="tx" x="356.42" y="234.17">Observations: 300</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="ATM, Maximum: 272.4, Upper quartile: 219.3, Median: 198.6, Lower quartile: 174.6, Minimum: 129.1, Observations: 300">
+            <title>ATM, Maximum: 272.4, Upper quartile: 219.3, Median: 198.6, Lower quartile: 174.6, Minimum: 129.1,
+                Observations: 300
+            </title>
+            <rect class="box m" x="505.05" y="251.9" width="97.96" height="15.67" rx="2"/>
+            <path class="wh"
+                  d="M554.03 233.26L554.03 251.9M554.03 267.57L554.03 283.54M529.54 233.26L578.52 233.26M529.54 283.54L578.52 283.54"/>
+            <line class="med" x1="505.05" y1="259.17" x2="603.01" y2="259.17"/>
+            <g class="tt">
+                <rect class="tb" x="486.37" y="96.26" width="135.32" height="129" rx="6"/>
+                <text class="tx b" x="496.37" y="114.26">ATM</text>
+                <text class="tx" x="496.37" y="131.26">Maximum: 272.4</text>
+                <text class="tx" x="496.37" y="148.26">Upper quartile: 219.3</text>
+                <text class="tx" x="496.37" y="165.26">Median: 198.6</text>
+                <text class="tx" x="496.37" y="182.26">Lower quartile: 174.6</text>
+                <text class="tx" x="496.37" y="199.26">Minimum: 129.1</text>
+                <text class="tx" x="496.37" y="216.26">Observations: 300</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="0" y="0" transform="translate(24 206) rotate(-90)">Amount</text>
+</svg>

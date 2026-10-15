@@ -127,6 +127,7 @@ namespace Jube.Test.Service.OpenTelemetryLogCounter
             createdIds.Add(saved.Id);
 
             var newName = UniqueName("Updated");
+
             var updateDto = new OpenTelemetryLogCounterDto
             {
                 Id = saved.Id,

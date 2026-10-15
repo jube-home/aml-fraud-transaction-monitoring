@@ -56,7 +56,7 @@ namespace Jube.Data.Repository
                 .Select(e => e.ScriptHash)
                 .ToListAsync(token);
 
-            return new HashSet<string>(scriptHashes);
+            return [.. scriptHashes];
         }
     }
 }

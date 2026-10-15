@@ -72,6 +72,10 @@ namespace Jube.Migrations.Branches.AbstractionCalculationCoderOnly
             }
         }
 
+        public override void Down()
+        {
+        }
+
         private static void ConvertTable(IDbConnection connection, IDbTransaction transaction, string table,
             bool deactivateUnconverted)
         {
@@ -80,12 +84,14 @@ namespace Jube.Migrations.Branches.AbstractionCalculationCoderOnly
             using (var select = connection.CreateCommand())
             {
                 select.Transaction = transaction;
+
                 select.CommandText = $"select \"Id\", \"AbstractionCalculationTypeId\", " +
                                      "\"EntityAnalysisModelAbstractionNameLeft\", " +
                                      "\"EntityAnalysisModelAbstractionNameRight\" " +
                                      $"from \"{table}\" where \"AbstractionCalculationTypeId\" in (1, 2, 3, 4)";
 
                 using var reader = select.ExecuteReader();
+
                 while (reader.Read())
                 {
                     rows.Add(new Row(
@@ -102,6 +108,7 @@ namespace Jube.Migrations.Branches.AbstractionCalculationCoderOnly
                 update.Transaction = transaction;
 
                 var deactivate = deactivateUnconverted && !conversion.Converted;
+
                 update.CommandText = $"update \"{table}\" set \"FunctionScript\" = @script" +
                                      (deactivate ? ", \"Active\" = 0" : string.Empty) +
                                      " where \"Id\" = @id";
@@ -119,16 +126,6 @@ namespace Jube.Migrations.Branches.AbstractionCalculationCoderOnly
                 update.Parameters.Add(id);
 
                 update.ExecuteNonQuery();
-            }
-        }
-
-        public override void Down()
-        {
-            foreach (var table in new[] { CalculationTable, VersionTable })
-            {
-                Create.Column("EntityAnalysisModelAbstractionNameLeft").OnTable(table).AsString().Nullable();
-                Create.Column("EntityAnalysisModelAbstractionNameRight").OnTable(table).AsString().Nullable();
-                Create.Column("AbstractionCalculationTypeId").OnTable(table).AsByte().Nullable();
             }
         }
     }

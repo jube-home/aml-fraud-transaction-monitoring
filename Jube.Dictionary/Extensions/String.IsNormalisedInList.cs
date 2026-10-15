@@ -12,6 +12,7 @@
  */
 
 using Jube.Dictionary.Fuzzy;
+using Jube.Dictionary.Fuzzy.Models;
 
 namespace Jube.Dictionary.Extensions
 {

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelActivationRuleOverrideQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelActivationRuleOverrideQuery;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelActivationRuleOverrideQuery;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
     public sealed class EntityAnalysisModelActivationRuleOverrideQueryService
     {
         private static readonly int[] permissions = [2];
-
         private readonly ILog auditLog;
-        private readonly global::Jube.Data.Query.GetEntityAnalysisModelActivationRuleOverrideQuery query;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly GetEntityAnalysisModelActivationRuleOverrideQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -51,9 +51,12 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetEntityAnalysisModelActivationRuleOverrideQuery(dbContext,
+
+            query = new GetEntityAnalysisModelActivationRuleOverrideQuery(dbContext,
                 userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelActivationRuleOverrideQueryService> CreateAsync(DbContext dbContext,
             string? userName,
@@ -125,6 +128,7 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverrideQuery", "Get", userName,
                 tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -135,11 +139,13 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverrideQuery.Get");
                 token.ThrowIfCancellationRequested();
+
                 var dtos = EntityAnalysisModelActivationRuleOverrideQueryMapper.ToDto(await query
                     .ExecuteAsync(entityAnalysisModelGuid, overrideKey ?? string.Empty,
                         overrideKeyValue ?? string.Empty, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -161,8 +167,10 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverrideQuery.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

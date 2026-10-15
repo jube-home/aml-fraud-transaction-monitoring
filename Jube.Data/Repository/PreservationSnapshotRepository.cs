@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class PreservationSnapshotRepository
     {
         private readonly DbContext dbContext;
@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -89,6 +90,13 @@ namespace Jube.Data.Repository
             return dbContext.PreservationSnapshot.FirstOrDefaultAsync(
                 w => w.Id == id && w.TenantRegistryId == tenantRegistryId
                                 && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<PreservationSnapshot> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.PreservationSnapshot.FirstOrDefaultAsync(
+                w => w.Guid == guid && w.TenantRegistryId == tenantRegistryId
+                                    && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)

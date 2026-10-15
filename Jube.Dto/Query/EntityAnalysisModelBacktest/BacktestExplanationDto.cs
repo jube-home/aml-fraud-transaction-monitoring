@@ -14,7 +14,10 @@
 using System.ComponentModel;
 using Jube.Dto.Validation;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
@@ -26,11 +29,8 @@ namespace Jube.Dto.Query.EntityAnalysisModelBacktest
         public bool Valid { get; set; }
 
         [Description("The transaction.")] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
-
         [Description("Its entry key value.")] public string? EntryKeyValue { get; set; }
-
         [Description("Its reference date.")] public DateTime? ReferenceDate { get; set; }
-
         [Description("Its live tags.")] public List<string> Tags { get; set; } = [];
 
         [Description("Whether the filter kept it.")]

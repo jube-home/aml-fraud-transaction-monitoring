@@ -27,7 +27,6 @@ namespace Jube.App.Pages.Model.Frame
         private const int PagePermission = 17;
         private const int IntegrityPermission = 60;
         private const int BacktestPermission = 61;
-
         private readonly PermissionValidation permissionValidation;
         private readonly string userName;
 
@@ -44,21 +43,20 @@ namespace Jube.App.Pages.Model.Frame
         }
 
         public bool CanBacktest { get; private set; }
-
         public bool CanCheckIntegrity { get; private set; }
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
+            if (!permissionValidation.Validate([
                     PagePermission
-                }))
+                ]))
             {
                 return Forbid();
             }
 
             CanBacktest = permissionValidation.Validate([BacktestPermission]);
             CanCheckIntegrity = permissionValidation.Validate([IntegrityPermission]);
+
             return new PageResult();
         }
     }

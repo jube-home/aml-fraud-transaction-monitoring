@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelDictionaryKvp;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,49 +24,67 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpList", OperationKind.Read, true, false,
-                    "Lists Key Value Pairs for the caller's tenant, keyset-paged and capped."),
+                    "Lists Key Value Pairs for the caller's tenant, keyset-paged and capped.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Dictionary KVPs may use."),
+                    "Lists the fields a query builder JSON filter over Dictionary KVPs may use.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpFilter", OperationKind.Read, true, false,
-                    "Returns the Dictionary KVPs matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Dictionary KVPs matching query builder JSON, keyset-paged and capped.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpCount", OperationKind.Read, true, false,
-                    "Counts the Dictionary KVPs matching query builder JSON, optionally grouped by a field."),
+                    "Counts the Dictionary KVPs matching query builder JSON, optionally grouped by a field.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpGet", OperationKind.Read, true, false,
                     "Returns one Key Value Pair, matched on the parent Dictionary's id, scoped to the caller's " +
-                    "tenant."),
+                    "tenant.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpGetByGuid", OperationKind.Read, true, false,
+                    "Returns one Key Value Pair, matched on the parent Dictionary's id, scoped to the caller's " +
+                    "tenant.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpGetByEntityAnalysisModelDictionaryId", OperationKind.Read,
                     true, false,
                     "Lists the Key Value Pairs belonging to a given Dictionary, ordered by Id, scoped to the " +
-                    "caller's tenant."),
+                    "caller's tenant.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpCreate", OperationKind.Write, false, false,
                     "Registers a Key Value Pair under a Dictionary in the caller's tenant; calling twice creates " +
-                    "two."),
+                    "two.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpValidate", OperationKind.Read, true, false,
-                    "Validates a Dictionary KVP without saving it and returns every failure."),
+                    "Validates a Dictionary KVP without saving it and returns every failure.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpUpdate", OperationKind.Write, true, false,
-                    "Updates a Key Value Pair in the caller's tenant by id."),
+                    "Updates a Key Value Pair in the caller's tenant by id.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Key Value Pair in the caller's tenant by id."),
+                    "Soft-deletes a Key Value Pair in the caller's tenant by id.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpUploadCsv", OperationKind.Write, false, false,
                     "Imports CSV files of key,value[,deleteExpiryDate] lines into a Dictionary in the caller's " +
                     "tenant; existing keys are updated, lines that fail are skipped, and one upload record is " +
-                    "written per file."),
+                    "written per file.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpResubmit", OperationKind.Write, false, false,
-                    "Resubmits a rejected Key Value Pair for approval again, unchanged, opening a fresh approval cycle."),
+                    "Resubmits a rejected Key Value Pair for approval again, unchanged, opening a fresh approval cycle.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpRetract", OperationKind.Write, false, false,
-                    "Retracts a rejected Key Value Pair, restoring it to its last approved version without a new approval cycle.")
+                    "Retracts a rejected Key Value Pair, restoring it to its last approved version without a new approval cycle.",
+                    EntityAnalysisModelDictionaryKvpService.RequiredPermissions)
             ]);
         }
     }

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidLei(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();
+
             if (value.Length != 20 || !value.All(char.IsAsciiLetterOrDigit) || !char.IsAsciiDigit(value[18]) ||
                 !char.IsAsciiDigit(value[19]))
             {
@@ -25,6 +26,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var remainder = 0;
+
             foreach (var c in value)
             {
                 var digits = char.IsAsciiDigit(c) ? c - '0' : c - 'A' + 10;

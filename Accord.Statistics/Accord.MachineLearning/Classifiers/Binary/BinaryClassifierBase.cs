@@ -1,34 +1,43 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics;
 
 namespace Accord.MachineLearning
 {
-    using Accord.Math;
-    using Accord.Statistics;
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    /// Base class for binary classifiers.
+    ///     Base class for binary classifiers.
     /// </summary>
     /// <typeparam name="TInput">The data type for the input data. Default is double[].</typeparam>
     [Serializable]
@@ -36,14 +45,13 @@ namespace Accord.MachineLearning
         ClassifierBase<TInput, bool>,
         IBinaryClassifier<TInput>
     {
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryClassifierBase{TInput}"/> class.
+        ///     Initializes a new instance of the <see cref="BinaryClassifierBase{TInput}" /> class.
         /// </summary>
         public BinaryClassifierBase()
         {
-            this.NumberOfOutputs = 1;
-            this.NumberOfClasses = 2;
+            NumberOfOutputs = 1;
+            NumberOfClasses = 2;
         }
 
         // Input
@@ -57,6 +65,7 @@ namespace Accord.MachineLearning
         {
             return Decide(input).ToZeroOne();
         }
+
         int IMulticlassClassifier<TInput>.Decide(TInput input)
         {
             return ToMulticlass<int>().Decide(input);
@@ -66,6 +75,7 @@ namespace Accord.MachineLearning
         {
             return ToMulticlass<int>().Decide(input);
         }
+
         bool[] IClassifier<TInput, bool[]>.Decide(TInput input)
         {
             return Decide(input, new bool[NumberOfOutputs]);
@@ -80,8 +90,6 @@ namespace Accord.MachineLearning
         {
             return ToMulticlass().Decide(input, new double[NumberOfOutputs]);
         }
-
-
 
         // Input[]
 
@@ -110,75 +118,71 @@ namespace Accord.MachineLearning
             return ToMulticlass().Decide(input, create<int>(input));
         }
 
-
-
-
         // Input, result
 
         /// <summary>
-        /// Computes class-label decisions for the given <paramref name="input" />.
+        ///     Computes class-label decisions for the given <paramref name="input" />.
         /// </summary>
-        /// <param name="input">The input vectors that should be classified as
-        /// any of the <see cref="ITransform.NumberOfOutputs" /> possible classes.</param>
+        /// <param name="input">
+        ///     The input vectors that should be classified as
+        ///     any of the <see cref="ITransform.NumberOfOutputs" /> possible classes.
+        /// </param>
         /// <param name="result">The location where to store the class-labels.</param>
         /// <returns>
-        /// A set of class-labels that best describe the <paramref name="input" />
-        /// vectors according to this classifier.
+        ///     A set of class-labels that best describe the <paramref name="input" />
+        ///     vectors according to this classifier.
         /// </returns>
         public bool[] Decide(TInput input, bool[] result)
         {
-            return Vector.OneHot<bool>(Decide(input), result);
+            return Vector.OneHot(Decide(input), result);
         }
 
         int[] IMultilabelClassifier<TInput, int[]>.Decide(TInput input, int[] result)
         {
-            return Vector.OneHot<int>(Decide(input), result);
+            return Vector.OneHot(Decide(input), result);
         }
 
         double[] IMultilabelClassifier<TInput, double[]>.Decide(TInput input, double[] result)
         {
-            return Vector.OneHot<double>(Decide(input), result);
+            return Vector.OneHot(Decide(input), result);
         }
-
-
 
         // Input[], result[]
 
         int[] IClassifier<TInput, int>.Decide(TInput[] input, int[] result)
         {
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 result[i] = Decide(input[i]).ToZeroOne();
+            }
+
             return result;
         }
 
         double[] IClassifier<TInput, double>.Decide(TInput[] input, double[] result)
         {
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 result[i] = Decide(input[i]).ToZeroOne();
+            }
+
             return result;
         }
 
-        
         bool[][] IClassifier<TInput, bool[]>.Decide(TInput[] input, bool[][] result)
         {
-            return Jagged.OneHot<bool>(Decide(input), result);
+            return Jagged.OneHot(Decide(input), result);
         }
-
 
         int[][] IClassifier<TInput, int[]>.Decide(TInput[] input, int[][] result)
         {
-            return Jagged.OneHot<int>(Decide(input), result);
+            return Jagged.OneHot(Decide(input), result);
         }
 
         double[][] IClassifier<TInput, double[]>.Decide(TInput[] input, double[][] result)
         {
-            return Jagged.OneHot<double>(Decide(input), result);
+            return Jagged.OneHot(Decide(input), result);
         }
-
-
-
-
-
 
         // Transform
 
@@ -187,24 +191,20 @@ namespace Accord.MachineLearning
             return ((IClassifier<TInput, int>)this).Decide(input);
         }
 
-        
         double ICovariantTransform<TInput, double>.Transform(TInput input)
         {
             return ((IClassifier<TInput, double>)this).Decide(input);
         }
 
-        
         double[] ICovariantTransform<TInput, double>.Transform(TInput[] input)
         {
             return Transform(input, new double[input.Length]);
         }
 
-        
         double[] ICovariantTransform<TInput, double[]>.Transform(TInput input)
         {
             return Transform(input, create<double>(input));
         }
-
 
         int[] ICovariantTransform<TInput, int>.Transform(TInput[] input)
         {
@@ -236,141 +236,91 @@ namespace Accord.MachineLearning
             return Transform(input, create<int>(input));
         }
 
-
-
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
-
-        virtual public bool[] Transform(TInput input, bool[] result)
-        {
-            return Decide(input, result);
-        }
-
-        /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
-        /// </summary>
-        /// <param name="input">The input data to which the transformation should be applied.</param>
-        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
-        /// <returns>
-        /// The output generated by applying this transformation to the given input.
-        /// </returns>
-
-        virtual public int[] Transform(TInput input, int[] result)
+        public virtual int[] Transform(TInput[] input, int[] result)
         {
             return ToMulticlass().Decide(input, result);
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
-
-        virtual public double[] Transform(TInput input, double[] result)
+        public virtual double[] Transform(TInput[] input, double[] result)
         {
             return ToMulticlass().Decide(input, result);
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
-        virtual public int[] Transform(TInput[] input, int[] result)
+        public virtual bool[][] Transform(TInput[] input, bool[][] result)
         {
             return ToMulticlass().Decide(input, result);
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
-
-        virtual public double[] Transform(TInput[] input, double[] result)
+        public virtual int[][] Transform(TInput[] input, int[][] result)
         {
             return ToMulticlass().Decide(input, result);
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
-
-        virtual public bool[][] Transform(TInput[] input, bool[][] result)
+        public virtual double[][] Transform(TInput[] input, double[][] result)
         {
             return ToMulticlass().Decide(input, result);
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
-        /// </summary>
-        /// <param name="input">The input data to which the transformation should be applied.</param>
-        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
-        /// <returns>
-        /// The output generated by applying this transformation to the given input.
-        /// </returns>
-
-        virtual public int[][] Transform(TInput[] input, int[][] result)
-        {
-            return ToMulticlass().Decide(input, result);
-        }
-
-        /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
-        /// </summary>
-        /// <param name="input">The input data to which the transformation should be applied.</param>
-        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
-        /// <returns>
-        /// The output generated by applying this transformation to the given input.
-        /// </returns>
-
-        virtual public double[][] Transform(TInput[] input, double[][] result)
-        {
-            return ToMulticlass().Decide(input, result);
-        }
-
-
-
-        /// <summary>
-        /// Views this instance as a multi-class classifier,
-        /// giving access to more advanced methods, such as the prediction
-        /// of integer labels.
+        ///     Views this instance as a multi-class classifier,
+        ///     giving access to more advanced methods, such as the prediction
+        ///     of integer labels.
         /// </summary>
         /// <returns>
-        /// This instance seen as an <see cref="IMulticlassClassifier{TInput}" />.
+        ///     This instance seen as an <see cref="IMulticlassClassifier{TInput}" />.
         /// </returns>
         public IMulticlassClassifier<TInput> ToMulticlass()
         {
-            return (IMulticlassClassifier<TInput>)this;
+            return this;
         }
 
         /// <summary>
-        /// Views this instance as a multi-class classifier,
-        /// giving access to more advanced methods, such as the prediction
-        /// of integer labels.
+        ///     Views this instance as a multi-class classifier,
+        ///     giving access to more advanced methods, such as the prediction
+        ///     of integer labels.
         /// </summary>
         /// <returns>
-        /// This instance seen as an <see cref="IMulticlassClassifier{TInput}" />.
+        ///     This instance seen as an <see cref="IMulticlassClassifier{TInput}" />.
         /// </returns>
         public IMulticlassClassifier<TInput, T> ToMulticlass<T>()
         {
@@ -378,17 +328,55 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        /// Views this instance as a multi-label classifier,
-        /// giving access to more advanced methods, such as the prediction
-        /// of one-hot vectors.
+        ///     Views this instance as a multi-label classifier,
+        ///     giving access to more advanced methods, such as the prediction
+        ///     of one-hot vectors.
         /// </summary>
         /// <returns>
-        /// This instance seen as an <see cref="IMultilabelLikelihoodClassifier{TInput}" />.
+        ///     This instance seen as an <see cref="IMultilabelLikelihoodClassifier{TInput}" />.
         /// </returns>
         public IMultilabelClassifier<TInput> ToMultilabel()
         {
-            return (IMultilabelClassifier<TInput>)this;
+            return this;
+        }
+
+        /// <summary>
+        ///     Applies the transformation to an input, producing an associated output.
+        /// </summary>
+        /// <param name="input">The input data to which the transformation should be applied.</param>
+        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
+        /// <returns>
+        ///     The output generated by applying this transformation to the given input.
+        /// </returns>
+        public virtual bool[] Transform(TInput input, bool[] result)
+        {
+            return Decide(input, result);
+        }
+
+        /// <summary>
+        ///     Applies the transformation to an input, producing an associated output.
+        /// </summary>
+        /// <param name="input">The input data to which the transformation should be applied.</param>
+        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
+        /// <returns>
+        ///     The output generated by applying this transformation to the given input.
+        /// </returns>
+        public virtual int[] Transform(TInput input, int[] result)
+        {
+            return ToMulticlass().Decide(input, result);
+        }
+
+        /// <summary>
+        ///     Applies the transformation to an input, producing an associated output.
+        /// </summary>
+        /// <param name="input">The input data to which the transformation should be applied.</param>
+        /// <param name="result">A location to store the output, avoiding unnecessary memory allocations.</param>
+        /// <returns>
+        ///     The output generated by applying this transformation to the given input.
+        /// </returns>
+        public virtual double[] Transform(TInput input, double[] result)
+        {
+            return ToMulticlass().Decide(input, result);
         }
     }
-
 }

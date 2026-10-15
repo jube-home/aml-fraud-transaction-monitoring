@@ -17,6 +17,11 @@ using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
 using log4net;
 using RabbitMQ.Client;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
     public class Services

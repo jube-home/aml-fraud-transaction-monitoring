@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.CaptureQueueHealth;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -27,7 +30,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "data was silently discarded because a queue hit capacity -- the first thing to check when " +
                     "an expected event or warning seems to be missing. Not scoped to any tenant. Also accepts " +
                     "samplePercentage (0-100) to draw an unbiased random subset of matching rows instead of the " +
-                    "most recent ones."));
+                    "most recent ones.", CaptureQueueHealthService.RequiredPermissions,
+                    CaptureQueueHealthService.RequiresLandlord));
         }
     }
 }

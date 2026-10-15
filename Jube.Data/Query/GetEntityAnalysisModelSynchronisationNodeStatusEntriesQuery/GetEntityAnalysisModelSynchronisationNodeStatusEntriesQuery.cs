@@ -29,6 +29,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntries
         public GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }

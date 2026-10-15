@@ -13,6 +13,7 @@
 
 using FluentValidation.Results;
 using Jube.Dto.Authentication;
+using Jube.Service.Authentication.Models;
 
 namespace Jube.Service.Authentication
 {

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static string CardIssuerPrefix(this string? @this, int length)
         {
             var digits = new string((@this ?? "").Where(c => c is not (' ' or '-')).ToArray());
+
             if (length is < 1 or > 11 || digits.Length < length || !digits.All(char.IsAsciiDigit))
             {
                 return "";

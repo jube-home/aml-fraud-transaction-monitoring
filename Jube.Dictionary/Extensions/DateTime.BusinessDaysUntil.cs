@@ -23,6 +23,7 @@ namespace Jube.Dictionary.Extensions
             var end = other.Date;
 
             var sign = 1;
+
             if (end < start)
             {
                 (start, end) = (end, start);
@@ -30,6 +31,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var businessDays = 0;
+
             for (var date = start.AddDays(1); date <= end; date = date.AddDays(1))
             {
                 if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)

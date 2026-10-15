@@ -30,34 +30,35 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
             UpdateEntityAnalysisModelGatewayRule();
             UpdateEntityAnalysisModelGatewayRuleVersion();
         }
-        
+
+        public override void Down()
+        {
+        }
+
         private void UpdateEntityAnalysisModelGatewayRuleVersion()
         {
-
             Alter.Table("EntityAnalysisModelGatewayRuleVersion").AddColumn("EvaluationCounter").AsInt64().Nullable();
         }
-        
+
         private void UpdateEntityAnalysisModelGatewayRule()
         {
-
             Alter.Table("EntityAnalysisModelGatewayRule").AddColumn("EvaluationCounter").AsInt64().Nullable();
         }
-        
+
         private void UpdateEntityAnalysisModelActivationRuleVersion()
         {
-
             Alter.Table("EntityAnalysisModelActivationRuleVersion").AddColumn("EvaluationCounter").AsInt64().Nullable();
         }
-        
+
         private void UpdateEntityAnalysisModelActivationRule()
         {
-
             Alter.Table("EntityAnalysisModelActivationRule").AddColumn("EvaluationCounter").AsInt64().Nullable();
         }
 
         private void UpdateEntityAnalysisModelProcessingCounter()
         {
-            Alter.Table("EntityAnalysisModelProcessingCounter").AddColumn("ModelTotalResponseTime").AsInt64().Nullable();
+            Alter.Table("EntityAnalysisModelProcessingCounter").AddColumn("ModelTotalResponseTime").AsInt64()
+                .Nullable();
         }
 
         private void MigrateIntToDoubleForCacheTtlCounterEntryRemovalBatchEntry()
@@ -86,7 +87,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
             Alter.Table("EntityAnalysisModelTtlCounterVersion").AddColumn("ResolutionInterval").AsString().Nullable();
             Alter.Table("EntityAnalysisModelTtlCounterVersion").AddColumn("TtlCounterDataValue").AsString().Nullable();
             Alter.Table("EntityAnalysisModelTtlCounterVersion").AddColumn("EnableSum").AsByte().Nullable();
-
         }
 
         private void UpdateEntityAnalysisModelRequestXpathVersion()
@@ -116,11 +116,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                 .OnColumn("EntityAnalysisModelId").Ascending()
                 .OnColumn("CacheIndexId").Ascending()
                 .WithOptions().Unique();
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

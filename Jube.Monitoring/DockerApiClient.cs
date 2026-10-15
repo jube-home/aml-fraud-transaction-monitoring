@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System.Net.Sockets;
 using System.Text;
 using Jube.Data.Repository;
@@ -30,10 +31,12 @@ namespace Jube.Monitoring
                 ConnectCallback = async (_, cancellationToken) =>
                 {
                     var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+
                     try
                     {
                         await socket.ConnectAsync(new UnixDomainSocketEndPoint(dockerSocketPath), cancellationToken)
                             .ConfigureAwait(false);
+
                         return new NetworkStream(socket, true);
                     }
                     catch
@@ -59,30 +62,35 @@ namespace Jube.Monitoring
         public async Task<JArray?> GetContainersAsync()
         {
             var text = await GetStringAsync("/containers/json?all=true").ConfigureAwait(false);
+
             return text == null ? null : JArray.Parse(text);
         }
 
         public async Task<JObject?> GetContainerStatsAsync(string containerId)
         {
             var text = await GetStringAsync($"/containers/{containerId}/stats?stream=false").ConfigureAwait(false);
+
             return text == null ? null : JObject.Parse(text);
         }
 
         public async Task<JObject?> InspectContainerAsync(string containerId)
         {
             var text = await GetStringAsync($"/containers/{containerId}/json").ConfigureAwait(false);
+
             return text == null ? null : JObject.Parse(text);
         }
 
         public async Task<JObject?> GetInfoAsync()
         {
             var text = await GetStringAsync("/info").ConfigureAwait(false);
+
             return text == null ? null : JObject.Parse(text);
         }
 
         public async Task<bool> IsSwarmManagerAsync()
         {
             var info = await GetInfoAsync().ConfigureAwait(false);
+
             return (bool?)info?["Swarm"]?["ControlAvailable"] ?? false;
         }
 
@@ -93,19 +101,23 @@ namespace Jube.Monitoring
                 ["service"] = [serviceName],
                 ["desired-state"] = ["running"]
             });
+
             var text = await GetStringAsync($"/tasks?filters={Uri.EscapeDataString(filters)}").ConfigureAwait(false);
+
             return text == null ? null : JArray.Parse(text);
         }
 
         public async Task<JObject?> GetVersionAsync()
         {
             var text = await GetStringAsync("/version").ConfigureAwait(false);
+
             return text == null ? null : JObject.Parse(text);
         }
 
         public async Task<JObject?> GetSystemDfAsync()
         {
             var text = await GetStringAsync("/system/df").ConfigureAwait(false);
+
             return text == null ? null : JObject.Parse(text);
         }
 
@@ -113,11 +125,13 @@ namespace Jube.Monitoring
             string containerId, string since)
         {
             byte[]? raw;
+
             try
             {
                 using var response = await httpClient
                     .GetAsync($"/containers/{containerId}/logs?stdout=true&stderr=true&timestamps=true&since={since}")
                     .ConfigureAwait(false);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
@@ -134,11 +148,14 @@ namespace Jube.Monitoring
             using var stderrBytes = new MemoryStream();
 
             var offset = 0;
+
             while (offset + 8 <= raw.Length)
             {
                 var streamTypeByte = raw[offset];
+
                 var length = (raw[offset + 4] << 24) | (raw[offset + 5] << 16) | (raw[offset + 6] << 8) |
                              raw[offset + 7];
+
                 offset += 8;
 
                 if (length < 0 || offset + length > raw.Length)
@@ -151,6 +168,7 @@ namespace Jube.Monitoring
             }
 
             var results = new List<(ContainerLogStreamType StreamType, string Line)>();
+
             foreach (var line in Encoding.UTF8.GetString(stdoutBytes.ToArray())
                          .Split('\n', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -169,12 +187,14 @@ namespace Jube.Monitoring
         public async Task<List<JObject>?> GetEventsAsync(string since, string until)
         {
             var text = await GetStringAsync($"/events?since={since}&until={until}").ConfigureAwait(false);
+
             if (text == null)
             {
                 return null;
             }
 
             var results = new List<JObject>();
+
             foreach (var line in text.Split('\n', StringSplitOptions.RemoveEmptyEntries))
             {
                 try
@@ -195,6 +215,7 @@ namespace Jube.Monitoring
             try
             {
                 using var response = await httpClient.GetAsync(path).ConfigureAwait(false);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
@@ -206,6 +227,15 @@ namespace Jube.Monitoring
             {
                 return null;
             }
+        }
+
+        public async Task<(int StatusCode, string? ContentType, byte[] Body)> ProxyGetAsync(string pathAndQuery,
+            CancellationToken token)
+        {
+            using var response = await httpClient.GetAsync(pathAndQuery, token).ConfigureAwait(false);
+            var body = await response.Content.ReadAsByteArrayAsync(token).ConfigureAwait(false);
+
+            return ((int)response.StatusCode, response.Content.Headers.ContentType?.ToString(), body);
         }
     }
 }

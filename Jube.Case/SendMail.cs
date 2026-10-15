@@ -28,8 +28,10 @@ namespace Jube.Case
                 var smtpServer = new SmtpClient();
                 var eMail = new MailMessage();
                 smtpServer.UseDefaultCredentials = false;
+
                 smtpServer.Credentials = new NetworkCredential(dynamicEnvironment.AppSettings("SMTPUser"),
                     dynamicEnvironment.AppSettings("SMTPPassword"));
+
                 smtpServer.Port = Int32.Parse(dynamicEnvironment.AppSettings("SMTPPort"));
                 smtpServer.EnableSsl = true;
                 smtpServer.Host = dynamicEnvironment.AppSettings("SMTPHost");

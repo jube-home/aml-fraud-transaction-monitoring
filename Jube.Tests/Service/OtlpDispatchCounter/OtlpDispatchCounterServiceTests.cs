@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.Exceptions.OtlpDispatchCounter;
 using Jube.Service.OtlpDispatchCounter;
 using Jube.Service.Reactivity;
@@ -90,6 +90,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -202,13 +203,17 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "count", sortDirection: "asc");
+
             var ascendingMine = ascending.Rows
                 .Where(r => r.Id == lowId || r.Id == midId || r.Id == highId).ToList();
+
             ascendingMine.Select(r => r.Count).Should().Equal(10, 20, 30);
 
             var descending = await service.ListAsync(sortField: "count", sortDirection: "desc");
+
             var descendingMine = descending.Rows
                 .Where(r => r.Id == lowId || r.Id == midId || r.Id == highId).ToList();
+
             descendingMine.Select(r => r.Count).Should().Equal(30, 20, 10);
         }
 
@@ -252,6 +257,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
 
             var firstId = await CreateCounterAsync(dbContext, OtlpSignal.Traces,
                 createdDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, createdDate: DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -267,6 +273,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
         {
             await using var dbContext = fx.GetDbContext();
             var from = DateTime.UtcNow.AddMinutes(-1);
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateCounterAsync(dbContext, OtlpSignal.Traces);

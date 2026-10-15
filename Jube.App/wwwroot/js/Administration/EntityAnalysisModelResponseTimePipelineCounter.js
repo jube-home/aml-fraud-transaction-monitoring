@@ -85,6 +85,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("EntityAnalysisModelResponseTimePipelineCounter", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public VisualisationRegistryDatasourceSeriesRepository(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -40,11 +41,13 @@ namespace Jube.Data.Repository
 
         public Task<int> DeleteByVisualisationRegistryDatasourceIdAsync(int visualisationRegistryDatasourceId)
         {
-            return dbContext.VisualisationRegistryDatasourceSeries.DeleteAsync(d => d.VisualisationRegistryDatasourceId == visualisationRegistryDatasourceId);
+            return dbContext.VisualisationRegistryDatasourceSeries.DeleteAsync(d =>
+                d.VisualisationRegistryDatasourceId == visualisationRegistryDatasourceId);
         }
 
-        public async Task<IEnumerable<VisualisationRegistryDatasourceSeries>> GetByVisualisationRegistryDatasourceIdAsync(
-            int visualisationRegistryDatasourceId, CancellationToken token = default)
+        public async Task<IEnumerable<VisualisationRegistryDatasourceSeries>>
+            GetByVisualisationRegistryDatasourceIdAsync(
+                int visualisationRegistryDatasourceId, CancellationToken token = default)
         {
             return await dbContext.VisualisationRegistryDatasourceSeries
                 .Where(w => w.VisualisationRegistryDatasource.VisualisationRegistry.TenantRegistryId ==

@@ -52,7 +52,7 @@ namespace Jube.Test.RuleParser
         {
             EngineRuleWrapper.ActivationRule(Body).Text.Should().Be(Imports +
                                                                     "Imports Jube.HttpAdaptationProtocol\r\nPublic Class ActivationRule\r\n" +
-                                                                    "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean\r\n" +
+                                                                    "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),AdvancedAnalyticsAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean\r\n" +
                                                                     "Dim Matched as Boolean\r\nTry\r\n" + Body +
                                                                     "\r\n" + TryCatchTail);
         }

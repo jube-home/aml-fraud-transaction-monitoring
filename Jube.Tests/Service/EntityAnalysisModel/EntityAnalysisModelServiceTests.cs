@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModel;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModel;
@@ -30,6 +30,7 @@ using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
@@ -82,6 +83,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == id).DeleteAsync();
             }
         }
@@ -268,6 +270,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -276,6 +279,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -378,6 +382,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var dto = NewDto(name!);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelDto.Name) && e.ErrorCode == "NameNotEmpty");
         }
@@ -389,10 +394,12 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var originalCulture = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
                 var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(NewDto("")));
+
                 ex.Result.Errors.Should().Contain(e =>
                     e.PropertyName == nameof(EntityAnalysisModelDto.Name) && e.ErrorMessage == "Un nom est requis.");
             }
@@ -444,6 +451,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(name.ToUpperInvariant())));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -567,10 +575,12 @@ namespace Jube.Test.Service.EntityAnalysisModel
             dto.ImplicitAsyncTimeoutMilliseconds = 0;
 
             var originalCulture = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
                 var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
                 ex.Result.Errors.Should().Contain(e =>
                     e.ErrorCode == "ImplicitAsyncTimeoutMillisecondsRange" &&
                     e.ErrorMessage ==
@@ -1086,6 +1096,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         {
             var serviceChangeBus = new CapturingBus.CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1102,6 +1113,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         {
             var serviceChangeBus = new CapturingBus.CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1117,6 +1129,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelList", "EntityAnalysisModelGet", "EntityAnalysisModelCreate",

@@ -67,6 +67,7 @@ namespace Jube.Test.Cache.Redis
         {
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 ConnectionString, TestLog.NoOp);
+
             try
             {
                 _ = await dbContext.GetTable<CachePayloadLatestRemovalBatch>().Take(1).ToListAsync();
@@ -102,11 +103,13 @@ namespace Jube.Test.Cache.Redis
 
             await fake.HashSetAsync(referenceDateLatestHashKey, overriddenSearchKeyName,
                 overriddenEntryTimestamp.ToUnixTimeMilliSeconds());
+
             await fake.SortedSetAddAsync(overriddenSortedSetKey, "expired-account-value",
                 overriddenEntryTimestamp.ToUnixTimeMilliSeconds());
 
             await fake.HashSetAsync(referenceDateLatestHashKey, fallbackSearchKeyName,
                 fallbackEntryTimestamp.ToUnixTimeMilliSeconds());
+
             await fake.SortedSetAddAsync(fallbackSortedSetKey, "expired-ip-value",
                 fallbackEntryTimestamp.ToUnixTimeMilliSeconds());
 
@@ -114,20 +117,24 @@ namespace Jube.Test.Cache.Redis
                 searchKeys);
 
             var remainingOverridden = await fake.SortedSetRangeByScoreWithScoresAsync(overriddenSortedSetKey);
+
             remainingOverridden.Should().BeEmpty(
                 "AccountId's own 30-day override (referenceDate - 30d = 2023-12-02) is older than the " +
                 "seeded entry's 2023-06-01 timestamp, so it should be deleted under the override");
 
             var remainingFallback = await fake.SortedSetRangeByScoreWithScoresAsync(fallbackSortedSetKey);
+
             remainingFallback.Should().BeEmpty(
                 "IpAddress has no searchKeys override, so it should fall back to the flat global threshold " +
                 "(2023-01-01), which the seeded 2022-06-01 entry is older than");
 
             var batches = await dbContext.GetTable<CachePayloadLatestRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == model).ToListAsync();
+
             createdBatchIds.AddRange(batches.Select(b => b.Id));
 
             batches.Should().HaveCount(2, "one removal batch per expired search key");
+
             batches.Should().OnlyContain(b => b.ReferenceDate == referenceDate,
                 "the persisted audit ReferenceDate must always be the real referenceDate, never a threshold");
         }

@@ -1,60 +1,68 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Accord.Math
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Text;
-    using System.Text.RegularExpressions;
-
     /// <summary>
-    ///   Defines how matrices are formatted and displayed, depending on the
-    ///   chosen format representation.
+    ///     Defines how matrices are formatted and displayed, depending on the
+    ///     chosen format representation.
     /// </summary>
-    ///
     public class MatrixFormatter : ICustomFormatter
     {
-
         /// <summary>
-        ///   Converts the value of a specified object to an equivalent string
-        ///   representation using specified formatting information.
+        ///     Converts the value of a specified object to an equivalent string
+        ///     representation using specified formatting information.
         /// </summary>
         /// <param name="format">A format string containing formatting specifications.</param>
         /// <param name="arg">An object to format.</param>
         /// <param name="formatProvider">
-        ///   An <see cref="T:System.IFormatProvider"/> object that supplies
-        ///   format information about the current instance.</param>
+        ///     An <see cref="T:System.IFormatProvider" /> object that supplies
+        ///     format information about the current instance.
+        /// </param>
         /// <returns>
-        ///   The string representation of the value of <paramref name="arg"/>,
-        ///   formatted as specified by <paramref name="format"/> and
-        ///   <paramref name="formatProvider"/>.
+        ///     The string representation of the value of <paramref name="arg" />,
+        ///     formatted as specified by <paramref name="format" /> and
+        ///     <paramref name="formatProvider" />.
         /// </returns>
-        ///
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
-            IMatrixFormatProvider provider = formatProvider as IMatrixFormatProvider;
-            Array obj = arg as Array;
+            var provider = formatProvider as IMatrixFormatProvider;
+            var obj = arg as Array;
 
             // Check if the user has provided the correct format provider
             // for a matrix or if the argument is indeed an array (matrix)
@@ -62,20 +70,16 @@ namespace Accord.Math
             {
                 return Format(format, obj, provider);
             }
-            else
-            {
-                // No, it has not. Try to provide standard formatting for the type
-                return handleOtherFormats(format, arg, CultureInfo.CurrentCulture);
-            }
+
+            // No, it has not. Try to provide standard formatting for the type
+            return handleOtherFormats(format, arg, CultureInfo.CurrentCulture);
         }
 
-
-
         #region Static methods for output formatting
+
         /// <summary>
-        ///   Converts a jagged or multidimensional array into a <a cref="System.String">System.String</a> representation.
+        ///     Converts a jagged or multidimensional array into a <a cref="System.String">System.String</a> representation.
         /// </summary>
-        ///
         public static string Format(string format, Array matrix, IMatrixFormatProvider formatProvider)
         {
             // Initial argument checking
@@ -88,25 +92,25 @@ namespace Accord.Math
             string newline, elementFormat;
             if (!parseOptions(format, out newline, out elementFormat))
             {
-                throw new FormatException(String.Format("The format of '{0}' is invalid.", format));
+                throw new FormatException(string.Format("The format of '{0}' is invalid.", format));
             }
 
-            IFormatProvider culture = formatProvider.InnerProvider;
+            var culture = formatProvider.InnerProvider;
 
 
             // Retrieve matrix dimensions. If the matrix is a jagged array,
             //  we will compute the columns for each of the rows.
-            int rows = matrix.GetLength(0);
-            int cols = (matrix.Rank == 2) ? matrix.GetLength(1) : 0;
+            var rows = matrix.GetLength(0);
+            var cols = matrix.Rank == 2 ? matrix.GetLength(1) : 0;
 
 
             // Initialize the matrix construction
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append(formatProvider.FormatMatrixStart);
 
 
             // For each row
-            for (int i = 0; i < rows; i++)
+            for (var i = 0; i < rows; i++)
             {
                 // Start constructing the row
                 sb.Append(formatProvider.FormatRowStart);
@@ -114,8 +118,8 @@ namespace Accord.Math
                 // Construct the columns for the row
                 if (matrix.Rank == 1)
                 {
-                    Object obj = matrix.GetValue(i);
-                    Array row = obj as Array;
+                    var obj = matrix.GetValue(i);
+                    var row = obj as Array;
 
                     if (row == null)
                     {
@@ -124,15 +128,20 @@ namespace Accord.Math
                     else
                     {
                         #region Process row for jagged arrays
+
                         cols = row.Length;
 
                         // For each column
-                        for (int j = 0; j < cols; j++)
+                        for (var j = 0; j < cols; j++)
                         {
                             sb.Append(handleOtherFormats(elementFormat, row.GetValue(j), culture));
 
-                            if (j < cols - 1) sb.Append(formatProvider.FormatColDelimiter);
+                            if (j < cols - 1)
+                            {
+                                sb.Append(formatProvider.FormatColDelimiter);
+                            }
                         }
+
                         #endregion
                     }
                 }
@@ -141,12 +150,16 @@ namespace Accord.Math
                     #region Process row for multidimensional arrays
 
                     // For each column
-                    for (int j = 0; j < cols; j++)
+                    for (var j = 0; j < cols; j++)
                     {
                         sb.Append(handleOtherFormats(elementFormat, matrix.GetValue(i, j), culture));
 
-                        if (j < cols - 1) sb.Append(formatProvider.FormatColDelimiter);
+                        if (j < cols - 1)
+                        {
+                            sb.Append(formatProvider.FormatColDelimiter);
+                        }
                     }
+
                     #endregion
                 }
 
@@ -154,7 +167,10 @@ namespace Accord.Math
                 sb.Append(formatProvider.FormatRowEnd);
 
                 // Check if we are still in the middle of the row
-                if (i < rows - 1) sb.Append(formatProvider.FormatRowDelimiter);
+                if (i < rows - 1)
+                {
+                    sb.Append(formatProvider.FormatRowDelimiter);
+                }
             }
 
             // Finalize constructing the matrix
@@ -163,17 +179,19 @@ namespace Accord.Math
 
             // Finally, perform post-processing such as replacing user
             // selected newlines or presenting the output in just one line.
-            String str = sb.ToString();
+            var str = sb.ToString();
             str = str.Replace("\n", newline);
 
-            if (String.IsNullOrEmpty(newline))
+            if (string.IsNullOrEmpty(newline))
+            {
                 str = Regex.Replace(str, " +", " ");
+            }
 
             return str;
         }
 
         /// <summary>
-        ///   Parses a format string containing the format options for the matrix representation.
+        ///     Parses a format string containing the format options for the matrix representation.
         /// </summary>
         private static bool parseOptions(string format, out string newline, out string elementFormat)
         {
@@ -183,18 +201,18 @@ namespace Accord.Math
             // "{0:Mrn,g}"  -> multiline with \r\n new line character (Windows) and number format g
             // "{0:Ms,g}"   -> single line and number format g
 
-            if (String.IsNullOrEmpty(format))
+            if (string.IsNullOrEmpty(format))
             {
                 newline = Environment.NewLine;
-                elementFormat = String.Empty;
+                elementFormat = string.Empty;
                 return true;
             }
 
-            string[] options = format.Split(',');
+            var options = format.Split(',');
 
             if (options.Length == 1)
             {
-                elementFormat = String.Empty;
+                elementFormat = string.Empty;
 
                 switch (options[0])
                 {
@@ -211,7 +229,7 @@ namespace Accord.Math
                         return true;
 
                     case "Ms":
-                        newline = String.Empty;
+                        newline = string.Empty;
                         return true;
 
                     default:
@@ -237,55 +255,54 @@ namespace Accord.Math
                         newline = "\r\n"; break;
 
                     case "Ms":
-                        newline = String.Empty; break;
+                        newline = string.Empty; break;
 
                     default:
-                        newline = String.Empty;
+                        newline = string.Empty;
                         return false;
                 }
 
                 return true;
             }
 
-            newline = String.Empty;
+            newline = string.Empty;
             elementFormat = format;
             return false;
         }
 
         /// <summary>
-        ///   Handles formatting for objects other than matrices.
+        ///     Handles formatting for objects other than matrices.
         /// </summary>
         private static string handleOtherFormats(string format, object arg, IFormatProvider culture)
         {
             try
             {
-                IFormattable obj = arg as IFormattable;
+                var obj = arg as IFormattable;
                 if (obj != null)
                 {
                     return obj.ToString(format, culture);
                 }
-                else if (arg != null)
+
+                if (arg != null)
                 {
                     return arg.ToString();
                 }
             }
             catch (FormatException e)
             {
-                throw new FormatException(String.Format("The format of '{0}' is invalid.", format), e);
+                throw new FormatException(string.Format("The format of '{0}' is invalid.", format), e);
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         #endregion
 
-
-
         #region Static methods for input parsing
+
         /// <summary>
-        ///   Converts a matrix represented in a System.String into a jagged array.
+        ///     Converts a matrix represented in a System.String into a jagged array.
         /// </summary>
-        ///
         public static double[][] ParseJagged(string str, IMatrixFormatProvider provider)
         {
             // remove excess spaces
@@ -296,35 +313,47 @@ namespace Accord.Math
             str = str.Remove(str.Length - provider.ParseMatrixEnd.Length, provider.ParseMatrixEnd.Length);
 
             // Now split rows
-            string[] strRows = str.Split(new string[] { provider.ParseRowDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-            List<double[]> rows = new List<double[]>();
+            var strRows = str.Split(new[] { provider.ParseRowDelimiter },
+                StringSplitOptions.RemoveEmptyEntries);
+            var rows = new List<double[]>();
 
-            foreach (string strRow in strRows)
+            foreach (var strRow in strRows)
             {
-                string row = strRow.Trim();
+                var row = strRow.Trim();
 
                 // Remove starting and trailing tokens
                 if (row.StartsWith(provider.ParseRowStart, StringComparison.Ordinal))
+                {
                     row = row.Remove(0, provider.ParseRowStart.Length);
+                }
+
                 if (row.EndsWith(provider.ParseRowEnd, StringComparison.Ordinal))
+                {
                     row = row.Remove(row.Length - provider.ParseRowEnd.Length, provider.ParseRowEnd.Length);
+                }
 
                 // Now split rows values
-                string[] strCols = row.Split(new string[] { provider.ParseColDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-                List<double> values = new List<double>();
+                var strCols = row.Split(new[] { provider.ParseColDelimiter },
+                    StringSplitOptions.RemoveEmptyEntries);
+                var values = new List<double>();
 
-                foreach (string strCol in strCols)
+                foreach (var strCol in strCols)
                 {
-                    string col = Regex.Replace(strCol, @"\s", String.Empty);
+                    var col = Regex.Replace(strCol, @"\s", string.Empty);
 
                     // Remove starting and trailing tokens
                     if (col.StartsWith(provider.ParseColStart, StringComparison.Ordinal))
+                    {
                         col = col.Remove(0, provider.ParseColStart.Length);
+                    }
+
                     if (col.EndsWith(provider.ParseColEnd, StringComparison.Ordinal))
+                    {
                         col = col.Remove(col.Length - provider.ParseColEnd.Length, provider.ParseColEnd.Length);
+                    }
 
                     // finally, parse the value and store
-                    values.Add(Double.Parse(col, provider.InnerProvider));
+                    values.Add(double.Parse(col, provider.InnerProvider));
                 }
 
                 rows.Add(values.ToArray());
@@ -334,16 +363,13 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Converts a matrix represented in a System.String into a multi-dimensional array.
+        ///     Converts a matrix represented in a System.String into a multi-dimensional array.
         /// </summary>
-        ///
         public static double[,] ParseMultidimensional(string str, IMatrixFormatProvider provider)
         {
-            return Matrix.ToMatrix(ParseJagged(str, provider));
+            return ParseJagged(str, provider).ToMatrix();
         }
 
         #endregion
-
-
     }
 }

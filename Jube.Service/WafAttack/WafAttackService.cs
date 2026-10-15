@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,7 +17,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.WafAttack;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.WafAttack;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +30,6 @@ namespace Jube.Service.WafAttack
     public sealed class WafAttackService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -54,6 +53,9 @@ namespace Jube.Service.WafAttack
             this.permissionValidation = permissionValidation;
             repository = new WafAttackRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => [];
+        public static bool RequiresLandlord => true;
 
         public static Task<WafAttackService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -137,12 +139,16 @@ namespace Jube.Service.WafAttack
         {
             using var op = OperationScope.Start("WafAttack", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"WafAttack.List: entry take={clampedTake} user={userName}");
@@ -168,6 +174,7 @@ namespace Jube.Service.WafAttack
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"WafAttack.List: {dtos.Count} rows user={userName}");
@@ -183,6 +190,7 @@ namespace Jube.Service.WafAttack
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"WafAttack.List: cancelled user={userName}");

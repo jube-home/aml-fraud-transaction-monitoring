@@ -92,6 +92,7 @@ namespace Jube.Test.HttpAdaptationProtocol.Parsing
             var adaptation = "3,5".ParseAdaptationResponse(log);
 
             adaptation.Value.Should().BeNull();
+
             adaptation.Error.Should()
                 .Be(
                     "The HTTP Adaptation endpoint returned a response body that could not be parsed as a bare number or a protocol Adaptation object.");
@@ -107,6 +108,7 @@ namespace Jube.Test.HttpAdaptationProtocol.Parsing
             adaptation.Error.Should()
                 .Be(
                     "The HTTP Adaptation endpoint returned a response body that could not be parsed as a bare number or a protocol Adaptation object.");
+
             adaptation.Value.Should().BeNull();
             log.Entries.Should().ContainSingle(e => e.Level == "WARN");
         }

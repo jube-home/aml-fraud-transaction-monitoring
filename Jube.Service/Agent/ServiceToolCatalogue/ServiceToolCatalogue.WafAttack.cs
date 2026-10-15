@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.WafAttack;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -24,7 +27,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "100000, with optional date-range and substring search (MatchedValue/Route/SignatureName/" +
                     "Category/MatchedField/UserName/RemoteIp) filters. Not scoped to any Model or tenant. Also " +
                     "accepts samplePercentage (0-100) to draw an unbiased random subset of matching rows instead " +
-                    "of the most recent ones."));
+                    "of the most recent ones.",
+                    WafAttackService.RequiredPermissions, WafAttackService.RequiresLandlord));
         }
     }
 }

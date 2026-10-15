@@ -12,6 +12,9 @@
  */
 
 using FluentValidation;
+using Jube.Analytics.Anomaly;
+using Jube.Analytics.Anomaly.Models;
+using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.ExhaustiveSearchInstance;
 using Jube.Resources;
@@ -24,7 +27,7 @@ namespace Jube.Validations.ExhaustiveSearchInstance
         private const int MaxNameLength = 256;
 
         public ExhaustiveSearchInstanceDtoValidator(ExhaustiveSearchInstanceRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser, ExhaustiveInstanceDatasetRepository? datasetRepository = null)
         {
             Include(new FiniteNumberValidator<ExhaustiveSearchInstanceDto>());
 
@@ -51,16 +54,92 @@ namespace Jube.Validations.ExhaustiveSearchInstance
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
 
+            RuleFor(p => p.DataSourceId)
+                .Must(v => v is null || (v is >= 0 and <= 255 && Enum.IsDefined((ExhaustiveDataSource)(byte)v.Value)))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.DataSourceInvalid])
+                .WithErrorCode("DataSourceInvalid");
+
+            RuleFor(p => p.CalibrationMethod)
+                .Must(v => v is null or "automatic" or "platt" or "isotonic" or "beta")
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.CalibrationMethodInvalid])
+                .WithErrorCode("CalibrationMethodInvalid");
+
+            RuleFor(p => p)
+                .Must(p => p.ExhaustiveInstanceCsvId.HasValue || p.ExhaustiveInstanceJsonId.HasValue)
+                .WithName(nameof(ExhaustiveSearchInstanceDto.ExhaustiveInstanceCsvId))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.DatasetRequired])
+                .WithErrorCode("DatasetRequired")
+                .When(p => p.DataSourceId == (int)ExhaustiveDataSource.UploadedDataset);
+
+            RuleFor(p => p)
+                .Must(p => !(p.ExhaustiveInstanceCsvId.HasValue && p.ExhaustiveInstanceJsonId.HasValue))
+                .WithName(nameof(ExhaustiveSearchInstanceDto.ExhaustiveInstanceCsvId))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.DatasetAmbiguous])
+                .WithErrorCode("DatasetAmbiguous")
+                .When(p => p.DataSourceId == (int)ExhaustiveDataSource.UploadedDataset);
+
+            RuleFor(p => p)
+                .MustAsync(async (p, cancellation) =>
+                {
+                    if (datasetRepository == null)
+                    {
+                        return false;
+                    }
+
+                    return p.ExhaustiveInstanceCsvId.HasValue
+                        ? await datasetRepository.IsConfirmedAsync(DatasetKind.Csv, p.ExhaustiveInstanceCsvId.Value,
+                            cancellation)
+                        : await datasetRepository.IsConfirmedAsync(DatasetKind.Json,
+                            p.ExhaustiveInstanceJsonId.GetValueOrDefault(), cancellation);
+                })
+                .WithName(nameof(ExhaustiveSearchInstanceDto.ExhaustiveInstanceCsvId))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.DatasetNotFound])
+                .WithErrorCode("DatasetNotFound")
+                .When(p => p.DataSourceId == (int)ExhaustiveDataSource.UploadedDataset
+                           && p.ExhaustiveInstanceCsvId.HasValue != p.ExhaustiveInstanceJsonId.HasValue);
+
+            RuleFor(p => p)
+                .Must(p => !p.ExhaustiveInstanceCsvId.HasValue && !p.ExhaustiveInstanceJsonId.HasValue)
+                .WithName(nameof(ExhaustiveSearchInstanceDto.ExhaustiveInstanceCsvId))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.DatasetNotPermitted])
+                .WithErrorCode("DatasetNotPermitted")
+                .When(p => p.DataSourceId != (int)ExhaustiveDataSource.UploadedDataset);
+
             RuleFor(p => p.AnomalyProbability)
                 .InclusiveBetween(0, 1)
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.AnomalyProbabilityRange])
                 .WithErrorCode("AnomalyProbabilityRange")
-                .When(w => w.Anomaly);
+                .When(w => w.Anomaly && IsOneClassSvm(w));
+
+            RuleFor(p => p.AnomalyProbability)
+                .Must((dto, probability) => ContaminationAcceptable(dto, probability))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.AnomalyContaminationRange])
+                .WithErrorCode("AnomalyContaminationRange")
+                .When(w => w.Anomaly && !IsOneClassSvm(w));
+
+            RuleFor(p => p.AnomalyAlgorithmId)
+                .Must(id => !id.HasValue || Enum.IsDefined(typeof(AnomalyAlgorithm), id.Value))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.AnomalyAlgorithmInvalid])
+                .WithErrorCode("AnomalyAlgorithmInvalid");
+
+            RuleFor(p => p.AnomalyParametersJson)
+                .Must(json => string.IsNullOrWhiteSpace(json) ||
+                              AnomalyParameters.TryParse(json, out _, out _))
+                .WithMessage((_, json) => string.Format(
+                    localiser[ExhaustiveSearchInstanceResources.AnomalyParametersInvalid],
+                    ParameterErrors(json)))
+                .WithErrorCode("AnomalyParametersInvalid");
+
+            RuleFor(p => p.BaseRate)
+                .Must(v => v is null || (v > 0 && v < 1))
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.BaseRateRange])
+                .WithErrorCode("BaseRateRange");
 
             RuleFor(p => p.FilterJson)
                 .NotEmpty()
@@ -72,6 +151,11 @@ namespace Jube.Validations.ExhaustiveSearchInstance
                 .Must(JsonText.IsAcceptable)
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterJsonInvalid])
                 .WithErrorCode("FilterJsonInvalid");
+
+            RuleFor(p => p.CategoricalOptionsJson)
+                .Must(JsonText.IsAcceptable)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.CategoricalOptionsInvalid])
+                .WithErrorCode("CategoricalOptionsInvalid");
 
             RuleFor(p => p.FilterSql)
                 .NotEmpty()
@@ -94,6 +178,28 @@ namespace Jube.Validations.ExhaustiveSearchInstance
                 .Must(FilterSqlText.IsAcceptableTokens)
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterTokensInvalid])
                 .WithErrorCode("FilterTokensInvalid");
+        }
+
+        private static bool IsOneClassSvm(ExhaustiveSearchInstanceDto dto)
+        {
+            return !dto.AnomalyAlgorithmId.HasValue || dto.AnomalyAlgorithmId.Value == 0;
+        }
+
+        private static bool ContaminationAcceptable(ExhaustiveSearchInstanceDto dto, double probability)
+        {
+            if (!string.IsNullOrWhiteSpace(dto.AnomalyParametersJson) &&
+                AnomalyParameters.TryParse(dto.AnomalyParametersJson, out var parameters, out _) &&
+                parameters.Contamination.HasValue)
+            {
+                return true;
+            }
+
+            return probability > 0 && probability <= 0.5;
+        }
+
+        private static string ParameterErrors(string? json)
+        {
+            return AnomalyParameters.TryParse(json, out _, out var errors) ? string.Empty : string.Join(" ", errors);
         }
     }
 }

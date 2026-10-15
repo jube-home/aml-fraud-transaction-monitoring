@@ -41,6 +41,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                     return (world, new ArrangedSubject("VisualisationRegistryRole", registryGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return await new Data.Repository.VisualisationRegistryRepository(dbContext, userName)
                             .GetByGuidActiveOnlyAsync(registryGuid) != null;
                     }));
@@ -48,6 +49,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                     return (world, new ArrangedSubject("VisualisationRegistryRole", registryGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.VisualisationRegistryRepository(dbContext, userName)
                             .GetByShowInDirectoryActiveOrderByIdDescAsync()).Any(w => w.Guid == registryGuid);
                     }));
@@ -67,9 +69,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                     Name = name, Guid = childGuid, VisualisationRegistryId = registryId, Active = 1, Locked = 0,
                     Deleted = 0, Version = 1, CreatedUser = Fx.Seed.UserWithPermission, CreatedDate = DateTime.UtcNow
                 });
+
                 return (world, new ArrangedSubject("VisualisationRegistryDatasourceRole", childGuid, async userName =>
                 {
                     await using var dbContext = Fx.GetDbContext();
+
                     return (await new Data.Repository.VisualisationRegistryDatasourceRepository(dbContext, userName)
                         .GetByVisualisationRegistryIdActiveOnlyAsync(registryId)).Any(w => w.Guid == childGuid);
                 }));
@@ -80,9 +84,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                 Name = name, Guid = childGuid, VisualisationRegistryId = registryId, Active = 1, Locked = 0,
                 Deleted = 0, Version = 1, CreatedUser = Fx.Seed.UserWithPermission, CreatedDate = DateTime.UtcNow
             });
+
             return (world, new ArrangedSubject("VisualisationRegistryParameterRole", childGuid, async userName =>
             {
                 await using var dbContext = Fx.GetDbContext();
+
                 return (await new Data.Repository.VisualisationRegistryParameterRepository(dbContext, userName)
                     .GetByVisualisationRegistryIdActiveOnlyAsync(registryId)).Any(w => w.Guid == childGuid);
             }));

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,29 +11,44 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentMigrator.Runner;
 using Jube.App.Code;
+using Jube.App.Code.AskJooby;
+using Jube.App.Code.Interfaces;
+using Jube.App.Code.Models;
 using Jube.App.Code.ServiceChange;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
-using Jube.App.Endpoints.VersionHistory;
+using Jube.App.Endpoints.AdvancedAnalytics;
 using Jube.App.Endpoints.Mocks;
 using Jube.App.Endpoints.Query;
 using Jube.App.Endpoints.Repository;
+using Jube.App.Endpoints.VersionHistory;
 using Jube.App.Middlewares;
 using Jube.App.Middlewares.Extensions;
 using Jube.App.Middlewares.Models;
+using Jube.AskJooby.Agents;
+using Jube.AskJooby.Guidance;
+using Jube.AskJooby.Guidance.Interfaces;
+using Jube.AskJooby.Observability;
+using Jube.AskJooby.Routing.Interfaces;
+using Jube.AskJooby.Security;
+using Jube.AskJooby.Security.Models;
 using Jube.Cache;
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Callback;
@@ -47,17 +62,23 @@ using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
-using Jube.ResilientNpgsqlConnection;
-using Jube.Service.Authentication;
 using Jube.HttpHeaders;
 using Jube.Migrations.Baseline;
+using Jube.ResilientNpgsqlConnection;
+using Jube.AskJooby.Tools.OpenCorporates.Interfaces;
+using Jube.AskJooby.Tools.WebSearch.Interfaces;
+using Jube.AskJooby.Tools.WebSearch.Models;
+using Jube.Service.AskJoobyOpenCorporates;
+using Jube.Service.AskJoobyRagChunk;
+using Jube.Service.AskJoobyRagChunk.Interfaces;
+using Jube.Service.AskJoobyWebSearch;
+using Jube.Service.Authentication;
 using Jube.Service.Observability;
 using Jube.Service.Observability.OtlpDispatchCounters;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.TaskCancellation;
 using Jube.TaskCancellation.Interfaces;
-using log4net;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -65,12 +86,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Npgsql;
+using OpenAI;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -79,6 +102,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using RabbitMQ.Client;
 using StackExchange.Redis;
+using log4net;
 
 namespace Jube.App
 {
@@ -130,6 +154,11 @@ namespace Jube.App
             AddDataProtection(services, dynamicEnvironment);
             AddSwagger(services);
             AddSingletonForServiceChangeBus(services, dynamicEnvironment, cacheService, serviceChangeStreamRegistry);
+            AddSingletonForAskJoobyAgentGuidanceExchange(services);
+            AddSingletonForAskJoobyTurnTracker(services);
+            AddSingletonForAskJooby(services, dynamicEnvironment, log);
+            AddSingletonForAskJoobyWebSearch(services, dynamicEnvironment, log);
+            AddSingletonForAskJoobyOpenCorporates(services, dynamicEnvironment, log);
 
             AddOpenTelemetry(services, dynamicEnvironment, cacheService, openTelemetryExcludeCache, log,
                 taskCoordinator);
@@ -153,6 +182,361 @@ namespace Jube.App
             WriteWelcomeMessageToConsole();
         }
 
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            try
+            {
+                if (dynamicEnvironment.AppSettings("UseForwardedHeaders")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+                {
+                    var startupOptions = new ForwardedHeadersOptions
+                    {
+                        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                    };
+
+                    startupOptions.KnownIPNetworks.Clear();
+                    startupOptions.KnownProxies.Clear();
+
+                    app.UseForwardedHeaders(startupOptions);
+                }
+
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                }
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseExceptionHandler("/Error")
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder =>
+                        appBuilder
+                            .UseHsts()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseHttpsRedirection()
+                );
+
+                app.UseMiddleware<RequestHardeningMiddleware>();
+                app.UseRouting();
+
+                app.UseRequestLocalization(new RequestLocalizationOptions()
+                    .SetDefaultCulture("en")
+                    .AddSupportedCultures("en")
+                    .AddSupportedUICultures("en"));
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+                app.UseMiddleware<EmptyBodyGuardMiddleware>();
+                app.UseMiddleware<WafMiddleware>();
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseMiddleware<GlobalHttpRateLimitMiddleware>()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseMiddleware<TokenRefreshMiddleware>()
+                );
+
+                var lifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
+
+                app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") &&
+                                       lifetime.ApplicationStopping.IsCancellationRequested,
+                    branch => branch.UseConditionalConnectionCloseWhenStopping());
+
+                app.UseWhen(context => context.Request.Path.StartsWithSegments("/Account"), appBuilder =>
+                {
+                    appBuilder.Use(async (context, next) =>
+                    {
+                        context.Response.OnStarting(() =>
+                        {
+                            context.Response.Headers["Cache-Control"] = "no-store";
+                            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+
+                            return Task.CompletedTask;
+                        });
+
+                        await next.Invoke();
+                    });
+                });
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseStatusCodePages(context =>
+
+                    {
+                        var request = context.HttpContext.Request;
+                        var response = context.HttpContext.Response;
+
+                        if (response.StatusCode != (int)HttpStatusCode.Unauthorized)
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        if (!request.Path.StartsWithSegments("/api"))
+                        {
+                            response.Redirect(
+                                $"/Account/Login?RedirectUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
+                        }
+
+                        return Task.CompletedTask;
+                    })
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseResponseHttpHeadersMiddleware()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.RequestTrackingMiddleware()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseStaticFiles()
+                );
+
+                app.UseWhen(
+                    httpContext => httpContext.Request.Path.StartsWithSegments("/swagger",
+                        StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseMiddleware<SwaggerAuthenticationMiddleware>()
+                );
+
+                app.UseWhen(
+                    httpContext => httpContext.Request.Path.Equals("/swagger/swagger-initializer.js",
+                        StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.Run(context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status404NotFound;
+
+                        return Task.CompletedTask;
+                    })
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseSwagger()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jube API v1");
+                    })
+                );
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapRazorPages();
+                    endpoints.MapControllers();
+                    endpoints.MapEntityAnalysisModelEndpoints();
+                    endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
+                    endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
+                    endpoints.MapEntityAnalysisModelInlineScriptEndpoints();
+                    endpoints.MapEntityAnalysisModelGatewayRuleEndpoints();
+                    endpoints.MapEntityAnalysisModelSanctionEndpoints();
+                    endpoints.MapEntityAnalysisModelTagEndpoints();
+                    endpoints.MapEntityApprovalEndpoints();
+                    endpoints.MapVersionHistoryEndpoints();
+                    endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
+                    endpoints.MapEntityAnalysisModelIntegrityEndpoints();
+                    endpoints.MapQueryBuilderEndpoints();
+                    endpoints.MapEntityAnalysisModelEngineStateEndpoints();
+                    endpoints.MapEntityAnalysisModelDependencyGraphEndpoints();
+                    endpoints.MapEntityAnalysisModelDependencyEndpoints();
+                    endpoints.MapEntityAnalysisModelBacktestEndpoints();
+                    endpoints.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
+                    endpoints.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
+                    endpoints.MapApplicationLogEntryEndpoints();
+                    endpoints.MapWafAttackEndpoints();
+                    endpoints.MapDotNetRuntimeMetricEndpoints();
+                    endpoints.MapPostgresMetricEndpoints();
+                    endpoints.MapRedisMetricEndpoints();
+                    endpoints.MapRedisSlowOperationEndpoints();
+                    endpoints.MapRedisConnectionMultiplexerMetricEndpoints();
+                    endpoints.MapPostgresTableStatisticsEndpoints();
+                    endpoints.MapPostgresIndexStatisticsEndpoints();
+                    endpoints.MapPostgresReplicationStatusEndpoints();
+                    endpoints.MapPostgresLogEntryEndpoints();
+                    endpoints.MapContainerLogEntryEndpoints();
+                    endpoints.MapDockerEventEndpoints();
+                    endpoints.MapRedisSentinelStatusEndpoints();
+                    endpoints.MapRedisSentinelEventEndpoints();
+                    endpoints.MapModelInvokeWarningEndpoints();
+                    endpoints.MapArchiverStagePerformanceCounterEndpoints();
+                    endpoints.MapCaseCreationStagePerformanceCounterEndpoints();
+                    endpoints.MapCaseCreationWarningEndpoints();
+                    endpoints.MapArchiverWarningEndpoints();
+                    endpoints.MapCaptureQueueHealthEndpoints();
+                    endpoints.MapRedisConnectionEventEndpoints();
+                    endpoints.MapRedisCallCounterEndpoints();
+                    endpoints.MapEtcdMemberStatusEndpoints();
+                    endpoints.MapPatroniMemberStatusEndpoints();
+                    endpoints.MapEtcdClusterEventEndpoints();
+                    endpoints.MapPatroniClusterEventEndpoints();
+                    endpoints.MapDockerContainerMetricEndpoints();
+                    endpoints.MapDockerHostMetricEndpoints();
+                    endpoints.MapHaProxyServerStatusEndpoints();
+                    endpoints.MapHaProxyReachabilityProbeEndpoints();
+                    endpoints.MapOverlayNetworkTaskDriftEndpoints();
+                    endpoints.MapOpenTelemetryMetricEndpoints();
+                    endpoints.MapOpenTelemetryLogCounterEndpoints();
+                    endpoints.MapOpenTelemetryExcludeEndpoints();
+                    endpoints.MapOtlpDispatchCounterEndpoints();
+                    endpoints.MapUserLoginEndpoints();
+                    endpoints.MapUserLogoutEndpoints();
+                    endpoints.MapActivationWatcherEndpoints();
+                    endpoints.MapWatcherStreamEndpoints();
+                    endpoints.MapServiceChangeStreamEndpoints();
+                    endpoints.MapPostgresActivityEndpoints();
+                    endpoints.MapPostgresStatementStatisticsEndpoints();
+                    endpoints.MapEntityAnalysisModelAbstractionRuleEndpoints();
+                    endpoints.MapEntityAnalysisModelAbstractionCalculationEndpoints();
+                    endpoints.MapEntityAnalysisModelHttpAdaptationEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceEndpoints();
+                    endpoints.MapExhaustiveInstanceDatasetEndpoints();
+                    endpoints.MapAdvancedAnalyticsInstanceEndpoints();
+                    endpoints.MapAdvancedAnalyticsModelEndpoints();
+                    endpoints.MapChartsEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleEndpoints();
+                    endpoints.MapEntityAnalysisInlineScriptEndpoints();
+                    endpoints.MapEntityAnalysisModelTtlCounterEndpoints();
+                    endpoints.MapEntityAnalysisModelListEndpoints();
+                    endpoints.MapEntityAnalysisModelListValueEndpoints();
+                    endpoints.MapEntityAnalysisModelDictionaryEndpoints();
+                    endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
+                    endpoints.MapEntityAnalysisModelOverrideEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleOverrideEndpoints();
+                    endpoints.MapEntityAnalysisModelReprocessingRuleEndpoints();
+                    endpoints.MapEntityAnalysisModelReprocessingRuleInstanceEndpoints();
+                    endpoints.MapHttpProcessingCounterEndpoints();
+                    endpoints.MapEntityAnalysisAsynchronousQueueBalanceEndpoints();
+                    endpoints.MapEntityAnalysisModelAsynchronousQueueBalanceEndpoints();
+                    endpoints.MapEntityAnalysisModelProcessingCounterEndpoints();
+                    endpoints.MapArchiveEndpoints();
+                    endpoints.MapCaseEndpoints();
+                    endpoints.MapCaseFileEndpoints();
+                    endpoints.MapCaseNoteEndpoints();
+                    endpoints.MapCaseWorkflowEndpoints();
+                    endpoints.MapCaseWorkflowActionEndpoints();
+                    endpoints.MapCaseWorkflowActionRoleEndpoints();
+                    endpoints.MapCaseWorkflowDisplayEndpoints();
+                    endpoints.MapCaseWorkflowDisplayRoleEndpoints();
+                    endpoints.MapCaseWorkflowFilterEndpoints();
+                    endpoints.MapCaseWorkflowFilterRoleEndpoints();
+                    endpoints.MapCaseWorkflowFormEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryValueEndpoints();
+                    endpoints.MapCaseWorkflowFormRoleEndpoints();
+                    endpoints.MapCaseWorkflowMacroEndpoints();
+                    endpoints.MapCaseWorkflowMacroRoleEndpoints();
+                    endpoints.MapCaseWorkflowPriorityEndpoints();
+                    endpoints.MapCaseWorkflowRoleEndpoints();
+                    endpoints.MapCaseWorkflowStatusEndpoints();
+                    endpoints.MapCaseWorkflowStatusRoleEndpoints();
+                    endpoints.MapCaseWorkflowXPathEndpoints();
+                    endpoints.MapCaseWorkflowXPathRoleEndpoints();
+                    endpoints.MapEntityAnalysisModelRoleEndpoints();
+                    endpoints.MapEntityAnalysisModelSynchronisationScheduleEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceEndpoints();
+                    endpoints.MapPermissionSpecificationEndpoints();
+                    endpoints.MapRoleRegistryEndpoints();
+                    endpoints.MapRoleRegistryPermissionEndpoints();
+                    endpoints.MapSanctionEntrySourceEndpoints();
+                    endpoints.MapTenantRegistryEndpoints();
+                    endpoints.MapUserInTenantEndpoints();
+                    endpoints.MapUserRegistryEndpoints();
+                    endpoints.MapUserRegistryApiKeyEndpoints();
+                    endpoints.MapVisualisationRegistryEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceRoleEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceSeriesEndpoints();
+                    endpoints.MapVisualisationRegistryParameterEndpoints();
+                    endpoints.MapVisualisationRegistryParameterRoleEndpoints();
+                    endpoints.MapVisualisationRegistryRoleEndpoints();
+                    endpoints.MapCaseByCaseKeyValueEndpoints();
+                    endpoints.MapCaseByIdEndpoints();
+                    endpoints.MapCaseBySessionCaseSearchCompileEndpoints();
+                    endpoints.MapCaseEventByCaseKeyValueEndpoints();
+                    endpoints.MapCaseJournalEndpoints();
+                    endpoints.MapCaseNoteByCaseKeyValueEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleOverrideQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelSampleEndpoints();
+                    endpoints.MapEntityAnalysisModelOverrideQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
+                    endpoints.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
+                    endpoints.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceConfusionEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceLearningCurveEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstancePredictedActualEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceQueryEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotionHistoryEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceRocEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceTrialInstanceListQueryEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableVarianceEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceVariableEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceCommandExecutionEndpoints();
+                    endpoints.MapTreeChildrenEndpoints();
+                    endpoints.MapSessionCaseJournalEndpoints();
+                    endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
+                    endpoints.MapPreservationEndpoints();
+                    endpoints.MapPreservationSnapshotEndpoints();
+                    endpoints.MapReadyEndpoints();
+                    endpoints.MapAuthenticationEndpoints();
+
+                    if (!"False".Equals(dynamicEnvironment.AppSettings("EnableMockEndpoints"),
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        endpoints.MapMockHttpAdaptationEndpoints();
+                        endpoints.MapMockRsaMfaEndpoints();
+                    }
+
+                    endpoints.MapInvokeEndpoints();
+                    endpoints.MapCompletionsEndpoints();
+                    endpoints.MapIconsEndpoints();
+                    endpoints.MapParserEndpoints();
+                    endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
+                    endpoints.MapCaseWorkflowMacroExecutionEndpoints();
+                    endpoints.MapAskJoobyConversationEndpoints();
+                    endpoints.MapAskJoobyStreamEndpoints();
+                    endpoints.MapAskJoobyFileEndpoints();
+                    endpoints.MapSessionEndpoints();
+                });
+
+                _ = StartEngineInBackgroundAsync(app, log);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error in App Configure as {ex}");
+            }
+        }
+
         private static void AddSingletonForServiceChangeBus(IServiceCollection services,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, CacheService cacheService,
             ServiceChangeStreamRegistry serviceChangeStreamRegistry)
@@ -161,6 +545,7 @@ namespace Jube.App
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 services.AddSingleton<IServiceChangeBus, NullServiceChangeBus>();
+
                 return;
             }
 
@@ -173,10 +558,329 @@ namespace Jube.App
             {
                 var payload = JsonSerializer.Serialize(change);
                 serviceChangeStreamRegistry.Dispatch(change.TenantRegistryId, payload);
+
                 return Task.CompletedTask;
             });
 
             services.AddSingleton(serviceChangeBus);
+        }
+
+        private static void AddSingletonForAskJooby(IServiceCollection services,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            var endpoint = dynamicEnvironment.AppSettings("AskJoobyApiEndpoint");
+            var apiKey = dynamicEnvironment.AppSettings("AskJoobyApiKey");
+            var model = dynamicEnvironment.AppSettings("AskJoobyModel");
+            var embeddingModel = dynamicEnvironment.AppSettings("AskJoobyEmbeddingModel");
+
+            if (string.IsNullOrWhiteSpace(endpoint) && string.IsNullOrWhiteSpace(model)
+                                                    && string.IsNullOrWhiteSpace(embeddingModel))
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn("AskJooby: no AskJoobyApiEndpoint/AskJoobyModel/AskJoobyEmbeddingModel " +
+                             "configured -- no backend inference engine has been specified for AskJooby. " +
+                             "Falling back to a local Ollama OpenAI-compatible default " +
+                             "(http://localhost:11434/v1) that this deployment almost certainly does not " +
+                             "have. Set these AppSettings to point AskJooby at a real OpenAI-compatible " +
+                             "inference endpoint (e.g. OpenRouter, OVHcloud AI Endpoints).");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(endpoint))
+            {
+                endpoint = "http://localhost:11434/v1";
+            }
+
+            if (string.IsNullOrWhiteSpace(model))
+            {
+                model = AgentFactory.DefaultModel;
+            }
+
+            if (string.IsNullOrWhiteSpace(embeddingModel))
+            {
+                embeddingModel = "baai/bge-m3";
+            }
+
+            var openAiClient = BuildOpenAiClient(endpoint, apiKey);
+
+            var mainChatClient = new UserQueryGuardChatClient(openAiClient.GetChatClient(model).AsIChatClient());
+            services.AddSingleton<IChatClient>(mainChatClient);
+
+            var validationModel = dynamicEnvironment.AppSettings("AskJoobyValidationModel");
+
+            var (validationEndpoint, validationApiKey) = EmbeddingApiBackendVariables(dynamicEnvironment,
+                "AskJoobyValidationApiEndpoint", "AskJoobyValidationApiKey", endpoint, apiKey);
+
+            var validationSharesTheChatBackend =
+                SameBackendTest(validationEndpoint, validationApiKey, endpoint, apiKey);
+
+            IChatClient validationChatClient;
+
+            if (validationSharesTheChatBackend
+                && (string.IsNullOrWhiteSpace(validationModel)
+                    || validationModel.Equals(model, StringComparison.OrdinalIgnoreCase)))
+            {
+                validationChatClient = mainChatClient;
+
+                services.AddKeyedSingleton(
+                    "validation", (sp, _) => sp.GetRequiredService<IChatClient>());
+            }
+            else
+            {
+                var validationClient = validationSharesTheChatBackend
+                    ? openAiClient
+                    : BuildOpenAiClient(validationEndpoint, validationApiKey);
+
+                validationChatClient = new UserQueryGuardChatClient(
+                    validationClient.GetChatClient(
+                            string.IsNullOrWhiteSpace(validationModel) ? model : validationModel)
+                        .AsIChatClient());
+
+                services.AddKeyedSingleton("validation", validationChatClient);
+            }
+
+            var analysisEnabled = !"False".Equals(dynamicEnvironment.AppSettings("AskJoobyEnableAiAnalysis"),
+                StringComparison.OrdinalIgnoreCase);
+
+            if (!analysisEnabled)
+            {
+                services.AddKeyedSingleton(
+                    "analysis", (sp, _) => sp.GetRequiredService<IChatClient>());
+            }
+            else
+            {
+                var analysisModel = dynamicEnvironment.AppSettings("AskJoobyAiAnalysisModel");
+
+                var (analysisEndpoint, analysisApiKey) = EmbeddingApiBackendVariables(dynamicEnvironment,
+                    "AskJoobyAiAnalysisApiEndpoint", "AskJoobyAiAnalysisApiKey", endpoint, apiKey);
+
+                var analysisSharesTheChatBackend =
+                    SameBackendTest(analysisEndpoint, analysisApiKey, endpoint, apiKey);
+
+                if (analysisSharesTheChatBackend
+                    && (string.IsNullOrWhiteSpace(analysisModel)
+                        || analysisModel.Equals(model, StringComparison.OrdinalIgnoreCase)))
+                {
+                    services.AddKeyedSingleton(
+                        "analysis", (sp, _) => sp.GetRequiredService<IChatClient>());
+                }
+                else
+                {
+                    var analysisClient = analysisSharesTheChatBackend
+                        ? openAiClient
+                        : BuildOpenAiClient(analysisEndpoint, analysisApiKey);
+
+                    IChatClient analysisChatClient = new UserQueryGuardChatClient(
+                        analysisClient.GetChatClient(
+                                string.IsNullOrWhiteSpace(analysisModel) ? model : analysisModel)
+                            .AsIChatClient());
+
+                    services.AddKeyedSingleton("analysis", analysisChatClient);
+                }
+
+                WarnOnRouteInEndpoint(log, "AskJoobyAiAnalysisApiEndpoint", analysisEndpoint, "chat/completions");
+            }
+
+            var chatInputPromptInjectionMainThreshold = float.TryParse(
+                dynamicEnvironment.AppSettings("AskJoobyChatInputPromptInjectionMainThreshold"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedThreshold)
+                ? parsedThreshold
+                : 0.97f;
+
+            var chatInputTopicBoundaryEnabled = "True".Equals(
+                dynamicEnvironment.AppSettings("AskJoobyEnableChatInputTopicBoundary"),
+                StringComparison.OrdinalIgnoreCase);
+
+            AskJoobyInjectionGuard.Configure(new AskJoobyInjectionGuardSettings(
+                validationChatClient, chatInputPromptInjectionMainThreshold, chatInputTopicBoundaryEnabled));
+
+            var (embeddingEndpoint, embeddingApiKey) = EmbeddingApiBackendVariables(dynamicEnvironment,
+                "AskJoobyEmbeddingApiEndpoint", "AskJoobyEmbeddingApiKey", endpoint, apiKey);
+
+            WarnOnInheritedKey(log, "AskJoobyEmbeddingApiKey", "AskJoobyEmbeddingApiEndpoint",
+                embeddingEndpoint, embeddingApiKey, endpoint, apiKey);
+
+            WarnOnRouteInEndpoint(log, "AskJoobyApiEndpoint", endpoint, "chat/completions");
+            WarnOnRouteInEndpoint(log, "AskJoobyEmbeddingApiEndpoint", embeddingEndpoint, "embeddings");
+            WarnOnRouteInEndpoint(log, "AskJoobyValidationApiEndpoint", validationEndpoint, "chat/completions");
+
+            var embeddingClient = SameBackendTest(embeddingEndpoint, embeddingApiKey, endpoint, apiKey)
+                ? openAiClient
+                : BuildOpenAiClient(embeddingEndpoint, embeddingApiKey);
+
+            services.AddSingleton(
+                embeddingClient.GetEmbeddingClient(embeddingModel).AsIEmbeddingGenerator());
+
+            var rerankerEndpoint = dynamicEnvironment.AppSettings("AskJoobyRerankerApiEndpoint");
+            var rerankerModel = dynamicEnvironment.AppSettings("AskJoobyRerankerModel");
+
+            if (!string.IsNullOrWhiteSpace(rerankerEndpoint) && !string.IsNullOrWhiteSpace(rerankerModel))
+            {
+                var rerankerApiKey = dynamicEnvironment.AppSettings("AskJoobyRerankerApiKey");
+
+                WarnOnInheritedKey(log, "AskJoobyRerankerApiKey", "AskJoobyRerankerApiEndpoint",
+                    rerankerEndpoint, string.IsNullOrWhiteSpace(rerankerApiKey) ? apiKey : rerankerApiKey,
+                    endpoint, apiKey);
+
+                services.AddSingleton<IRagReranker>(new BgeReranker(
+                    new HttpClient(), rerankerEndpoint,
+                    string.IsNullOrWhiteSpace(rerankerApiKey) ? apiKey : rerankerApiKey,
+                    rerankerModel, log));
+            }
+            else if (log.IsInfoEnabled)
+            {
+                log.Info("AskJooby: no AskJoobyRerankerApiEndpoint is configured, so retrieval runs in one "
+                         + "stage. A cross encoder reranker matters more now that queries are embedded "
+                         + "without a task instruction, because it is the stage that reads the query as "
+                         + "written against the passage as written.");
+            }
+
+            services.AddSingleton<IAgentRoutingLedger,
+                LoggingAgentRoutingLedger>();
+
+            services.AddHostedService<RoutingExemplarWarmupService>();
+        }
+
+        private static void AddSingletonForAskJoobyWebSearch(IServiceCollection services,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            if (!AskJoobyConversationServiceFactory.Flag(dynamicEnvironment, "EnableWebSearch"))
+            {
+                return;
+            }
+
+            var apiKey = dynamicEnvironment.AppSettings("AskJoobyWebSearchApiKey");
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn("AskJooby: EnableWebSearch is True but AskJoobyWebSearchApiKey is not set, so "
+                             + "the web search tool is not registered.");
+                }
+
+                return;
+            }
+
+            var providerSetting = dynamicEnvironment.AppSettings("AskJoobyWebSearchProvider");
+
+            var provider = Enum.TryParse<WebSearchProviderType>(providerSetting, true, out var parsedProvider)
+                ? parsedProvider
+                : WebSearchProviderType.Tavily;
+
+            switch (provider)
+            {
+                case WebSearchProviderType.Tavily:
+                    var endpoint = dynamicEnvironment.AppSettings("AskJoobyWebSearchApiEndpoint");
+
+                    services.AddSingleton<IWebSearchClient>(
+                        new TavilyWebSearchClient(new HttpClient(), endpoint, apiKey));
+
+                    break;
+                default:
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"AskJooby: AskJoobyWebSearchProvider '{providerSetting}' is not a known "
+                                 + "WebSearchProviderType, so the web search tool is not registered.");
+                    }
+
+                    break;
+            }
+        }
+
+        private static void AddSingletonForAskJoobyOpenCorporates(IServiceCollection services,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            if (!AskJoobyConversationServiceFactory.Flag(dynamicEnvironment, "EnableOpenCorporates"))
+            {
+                return;
+            }
+
+            var apiKey = dynamicEnvironment.AppSettings("AskJoobyOpenCorporatesApiKey");
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn("AskJooby: EnableOpenCorporates is True but AskJoobyOpenCorporatesApiKey is not "
+                             + "set, so the OpenCorporates tool is not registered.");
+                }
+
+                return;
+            }
+
+            var endpoint = dynamicEnvironment.AppSettings("AskJoobyOpenCorporatesApiEndpoint");
+
+            services.AddSingleton<IOpenCorporatesClient>(new OpenCorporatesClient(new HttpClient(), endpoint, apiKey));
+        }
+
+        private static (string Endpoint, string ApiKey) EmbeddingApiBackendVariables(
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, string endpointKey, string apiKeyKey,
+            string defaultEndpoint, string defaultApiKey)
+        {
+            var roleEndpoint = dynamicEnvironment.AppSettings(endpointKey);
+            var roleApiKey = dynamicEnvironment.AppSettings(apiKeyKey);
+
+            return (string.IsNullOrWhiteSpace(roleEndpoint) ? defaultEndpoint : roleEndpoint,
+                string.IsNullOrWhiteSpace(roleApiKey) ? defaultApiKey : roleApiKey);
+        }
+
+        private static void WarnOnRouteInEndpoint(ILog log, string key, string endpoint, string route)
+        {
+            var trimmed = endpoint?.TrimEnd('/');
+
+            if (string.IsNullOrWhiteSpace(trimmed)
+                || !trimmed.EndsWith("/" + route, StringComparison.OrdinalIgnoreCase)
+                || !log.IsWarnEnabled)
+            {
+                return;
+            }
+
+            log.Warn($"AskJooby: {key} is set to {endpoint}, which already carries the /{route} route. These "
+                     + $"settings are base addresses and the client appends /{route} itself, so every call "
+                     + $"will be sent to {trimmed}/{route} and answered with an HTTP 400 that says nothing "
+                     + $"about the doubled path. Set {key} to {trimmed[..^(route.Length + 1)]} instead.");
+        }
+
+        private static void WarnOnInheritedKey(ILog log, string apiKeyKey, string endpointKey,
+            string roleEndpoint, string roleApiKey, string chatEndpoint, string chatApiKey)
+        {
+            if (string.Equals(Host(roleEndpoint), Host(chatEndpoint), StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(roleApiKey, chatApiKey, StringComparison.Ordinal)
+                || !log.IsWarnEnabled)
+            {
+                return;
+            }
+
+            log.Warn($"AskJooby: {endpointKey} is {roleEndpoint}, which is a different provider from the "
+                     + $"chat endpoint {chatEndpoint}, but no {apiKeyKey} is set so the chat provider's key "
+                     + $"will be sent there. Expect an HTTP 401 on the first call. Set {apiKeyKey} to a "
+                     + $"credential for {roleEndpoint}.");
+        }
+
+        private static string Host(string endpoint)
+        {
+            return Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) ? uri.Host : endpoint ?? string.Empty;
+        }
+
+        private static bool SameBackendTest(string endpoint, string apiKey, string otherEndpoint, string otherApiKey)
+        {
+            return string.Equals(endpoint, otherEndpoint, StringComparison.OrdinalIgnoreCase)
+                   && string.Equals(apiKey, otherApiKey, StringComparison.Ordinal);
+        }
+
+        private static OpenAIClient BuildOpenAiClient(string endpoint, string apiKey)
+        {
+            var credential = new ApiKeyCredential(
+                string.IsNullOrWhiteSpace(apiKey) ? "not-needed" : apiKey);
+
+            var options = new OpenAIClientOptions { Endpoint = new Uri(endpoint) };
+
+            options.AddPolicy(new ModelAffinityPolicy(),
+                PipelinePosition.PerCall);
+
+            return new OpenAIClient(credential, options);
         }
 
         private static Uri BuildOtlpEndpoint(string backendEndpoint, string path)
@@ -194,6 +898,7 @@ namespace Jube.App
             };
 
             var endpoint = BuildOtlpEndpoint(backendEndpoint, path);
+
             if (endpoint == null)
             {
                 return options;
@@ -201,6 +906,7 @@ namespace Jube.App
 
             options.Protocol = OtlpExportProtocol.HttpProtobuf;
             options.Endpoint = endpoint;
+
             return options;
         }
 
@@ -294,6 +1000,7 @@ namespace Jube.App
                     await Task.Delay(flushIntervalMilliseconds, token).ConfigureAwait(false);
 
                     var snapshot = OtlpDispatchCounters.TakeSnapshot();
+
                     if (snapshot.Count == 0)
                     {
                         continue;
@@ -319,6 +1026,7 @@ namespace Jube.App
 
                     await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                         dynamicEnvironment.AppSettings("ConnectionString"), log);
+
                     var repository = new OtlpDispatchCounterRepository(dbContext);
                     await repository.BulkCopyAsync(models, token).ConfigureAwait(false);
                 }
@@ -366,6 +1074,7 @@ namespace Jube.App
         {
             var taskCoordinator = new TaskCoordinator(cancellationTokenProvider, log);
             services.AddSingleton(taskCoordinator);
+
             return taskCoordinator;
         }
 
@@ -373,6 +1082,7 @@ namespace Jube.App
         {
             ICancellationTokenProvider cancellationTokenProvider = new CancellationTokenProvider();
             services.AddSingleton(cancellationTokenProvider);
+
             return cancellationTokenProvider;
         }
 
@@ -402,6 +1112,7 @@ namespace Jube.App
             Console.WriteLine(@"");
             Console.WriteLine(
                 @"The default endpoint for posting example transaction payload is https://<ASPNETCORE_URLS Environment Variable>/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc/.Example JSON payload is available in the documentation via at https://jube-home.github.io/aml-transaction-monitoring/Configuration/Models/Models/.");
+
             Console.WriteLine();
         }
 
@@ -413,6 +1124,7 @@ namespace Jube.App
                 options.MaxAge = TimeSpan.FromDays(365);
                 options.IncludeSubDomains = true;
             });
+
             services.AddAuthorization();
             services.AddLocalization();
             services.AddRazorPages();
@@ -424,6 +1136,7 @@ namespace Jube.App
             services.AddHostedService<WafRegistryRefreshService>();
             services.AddHostedService<WafAttackFlushService>();
             services.AddHttpContextAccessor();
+
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver
@@ -431,6 +1144,7 @@ namespace Jube.App
                     NamingStrategy = new CamelCaseNamingStrategy()
                 };
             });
+
             services.AddMvc();
 
             services.AddEndpointsApiExplorer();
@@ -492,6 +1206,7 @@ namespace Jube.App
                     Title = "Jube.App.Api",
                     Version = "v1"
                 });
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -510,6 +1225,7 @@ namespace Jube.App
                     Description =
                         "Enter your API key.  Obtain this by creating an API Key under a user in the application."
                 });
+
                 c.CustomSchemaIds(type => type.FullName);
                 c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
             });
@@ -612,6 +1328,7 @@ namespace Jube.App
 
                             log.Debug(
                                 $"Redirecting to Entra ID. Redirect URI constructed by app: {context.ProtocolMessage.RedirectUri}");
+
                             return Task.CompletedTask;
                         },
 
@@ -636,10 +1353,13 @@ namespace Jube.App
                             {
                                 log.Error(
                                     "OAuth ticket parsing aborted: No usable identity claim found in Principal payload.");
+
                                 await LogOAuthFailureAsync(dynamicEnvironment, log, null, null, oauthRemoteIp,
                                     oauthLocalIp, oauthUserAgent, 7,
                                     "No usable identity claim found in principal payload.");
+
                                 context?.Fail("OAuth ticket contained no usable identity claim.");
+
                                 return;
                             }
 
@@ -647,6 +1367,7 @@ namespace Jube.App
                                 $"Parsed username '{userName}' from claims token. Validating user in database registry.");
 
                             DbContext dbContext;
+
                             try
                             {
                                 dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -657,9 +1378,12 @@ namespace Jube.App
                                 log.Error(
                                     $"Critical exception establishing database context for '{userName}': {ex.Message}",
                                     ex);
+
                                 await LogOAuthFailureAsync(dynamicEnvironment, log, null, userName, oauthRemoteIp,
                                     oauthLocalIp, oauthUserAgent, 10, ex.Message);
+
                                 context.Fail("Internal server error validating identity.");
+
                                 return;
                             }
 
@@ -672,9 +1396,12 @@ namespace Jube.App
                                 {
                                     log.Warn(
                                         $"Authentication Denied: User '{userName}' does not exist in Jube database.");
+
                                     await LogOAuthFailureAsync(dynamicEnvironment, log, dbContext, userName,
                                         oauthRemoteIp, oauthLocalIp, oauthUserAgent, 1, null);
+
                                     context.Fail("User does not exist in Jube.");
+
                                     return;
                                 }
 
@@ -682,9 +1409,12 @@ namespace Jube.App
                                 {
                                     log.Warn(
                                         $"Authentication Denied: User '{userName}' exists but account status is inactive (Active flag: {userRegistry.Active}).");
+
                                     await LogOAuthFailureAsync(dynamicEnvironment, log, dbContext, userName,
                                         oauthRemoteIp, oauthLocalIp, oauthUserAgent, 2, null);
+
                                     context.Fail("User does not exist in Jube.");
+
                                     return;
                                 }
 
@@ -710,6 +1440,7 @@ namespace Jube.App
                                     if (Uri.TryCreate(forcedRedirect, UriKind.Absolute, out var forcedUri))
                                     {
                                         targetRedirectUri = forcedUri.ToString();
+
                                         log.Info(
                                             $"OAuthForceRedirect override active. Redirect target forced to: {targetRedirectUri}");
                                     }
@@ -717,6 +1448,7 @@ namespace Jube.App
                                     {
                                         log.Warn(
                                             $"OAuthForceRedirect value '{forcedRedirect}' is not a valid absolute URI. Ignoring override.");
+
                                         targetRedirectUri = context.Properties?.RedirectUri ?? "/";
                                     }
                                 }
@@ -751,8 +1483,10 @@ namespace Jube.App
                                 log.Error(
                                     $"Critical exception during User OIDC Post-Ticket Processing for '{userName}': {ex.Message}",
                                     ex);
+
                                 await LogOAuthFailureAsync(dynamicEnvironment, log, dbContext, userName,
                                     oauthRemoteIp, oauthLocalIp, oauthUserAgent, 10, ex.Message);
+
                                 context.Fail("Internal server error validating identity.");
                             }
                             finally
@@ -785,6 +1519,7 @@ namespace Jube.App
                     dynamicEnvironment.AppSettings("ConnectionString"), log);
 
                 var userLoginRepository = new UserLoginRepository(dbContext, userName);
+
                 await userLoginRepository.InsertAsync(new UserLogin
                 {
                     RemoteIp = remoteIp,
@@ -841,10 +1576,12 @@ namespace Jube.App
         {
             var openTelemetryExcludeCache =
                 new OpenTelemetryExcludeCache(dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             _ = taskCoordinator.RunAsync("OpenTelemetryExcludeCacheTask",
                 _ => openTelemetryExcludeCache.StartAsync(taskCoordinator.CancellationToken));
 
             services.AddSingleton(openTelemetryExcludeCache);
+
             return openTelemetryExcludeCache;
         }
 
@@ -856,10 +1593,12 @@ namespace Jube.App
             {
                 ExcludeCache = openTelemetryExcludeCache
             };
+
             _ = taskCoordinator.RunAsync("LogCounterRuleCacheTask",
                 _ => logCounterRuleCache.StartAsync(taskCoordinator.CancellationToken));
 
             services.AddSingleton(logCounterRuleCache);
+
             return logCounterRuleCache;
         }
 
@@ -868,6 +1607,7 @@ namespace Jube.App
         {
             var implicitAsyncInvocationTracker = new ImplicitAsyncInvocationTracker(log);
             services.AddSingleton(implicitAsyncInvocationTracker);
+
             return implicitAsyncInvocationTracker;
         }
 
@@ -875,6 +1615,7 @@ namespace Jube.App
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
         {
             IConnection rabbitMqConnection = null;
+
             if (dynamicEnvironment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 rabbitMqConnection = ConnectToRabbitMqChannel(services, log, dynamicEnvironment.AppSettings("AMQPUri"),
@@ -907,7 +1648,18 @@ namespace Jube.App
         {
             var serviceChangeStreamRegistry = new ServiceChangeStreamRegistry(log);
             services.AddSingleton(serviceChangeStreamRegistry);
+
             return serviceChangeStreamRegistry;
+        }
+
+        private static void AddSingletonForAskJoobyAgentGuidanceExchange(IServiceCollection services)
+        {
+            services.AddSingleton<IAgentGuidanceExchange>(new AgentGuidanceExchange());
+        }
+
+        private static void AddSingletonForAskJoobyTurnTracker(IServiceCollection services)
+        {
+            services.AddSingleton<IAskJoobyTurnTracker>(new AskJoobyTurnTracker());
         }
 
         private static WatcherStreamRegistry AddSingletonForWatcherStreamRegistry(IServiceCollection services,
@@ -915,6 +1667,7 @@ namespace Jube.App
         {
             var watcherStreamRegistry = new WatcherStreamRegistry(log);
             services.AddSingleton(watcherStreamRegistry);
+
             return watcherStreamRegistry;
         }
 
@@ -996,6 +1749,7 @@ namespace Jube.App
 
             services.AddSingleton(log);
             services.AddSingleton(dynamicEnvironment);
+
             return dynamicEnvironment;
         }
 
@@ -1003,12 +1757,14 @@ namespace Jube.App
         {
             var jsonSerializationHelper = new JsonSerializationHelper();
             services.AddSingleton(jsonSerializationHelper);
+
             return jsonSerializationHelper;
         }
 
         private static void ValidateConnectionToPostgres(string connectionString, ILog log)
         {
             const int retryConnectionToPostgres = 10;
+
             for (var i = 0; i < retryConnectionToPostgres; i++)
             {
                 try
@@ -1050,6 +1806,7 @@ namespace Jube.App
             string amqpUrl, TimeSpan heartbeat)
         {
             const int retryRabbitMqConnection = 10;
+
             for (var i = 0; i < retryRabbitMqConnection; i++)
             {
                 try
@@ -1061,11 +1818,13 @@ namespace Jube.App
                     }
 
                     var uri = new Uri(amqpUrl);
+
                     var rabbitMqConnectionFactory = new ConnectionFactory
                     {
                         Uri = uri,
                         RequestedHeartbeat = heartbeat
                     };
+
                     var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
                     services.AddSingleton(rabbitMqConnection);
 
@@ -1113,6 +1872,7 @@ namespace Jube.App
             bool backlogFailFast)
         {
             const int retryRedisConnectionRetry = 10;
+
             for (var i = 0; i < retryRedisConnectionRetry; i++)
             {
                 try
@@ -1155,347 +1915,6 @@ namespace Jube.App
             throw new Exception($"Could not connect to Redis after {retryRedisConnectionRetry} attempts.");
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
-        {
-            try
-            {
-                if (dynamicEnvironment.AppSettings("UseForwardedHeaders")
-                    .Equals("True", StringComparison.OrdinalIgnoreCase))
-                {
-                    var startupOptions = new ForwardedHeadersOptions
-                    {
-                        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                    };
-
-                    startupOptions.KnownIPNetworks.Clear();
-                    startupOptions.KnownProxies.Clear();
-
-                    app.UseForwardedHeaders(startupOptions);
-                }
-
-                if (env.IsDevelopment())
-                {
-                    app.UseDeveloperExceptionPage();
-                }
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseExceptionHandler("/Error")
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder =>
-                        appBuilder
-                            .UseHsts()
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseHttpsRedirection()
-                );
-
-                app.UseMiddleware<RequestHardeningMiddleware>();
-                app.UseRouting();
-
-                app.UseRequestLocalization(new RequestLocalizationOptions()
-                    .SetDefaultCulture("en")
-                    .AddSupportedCultures("en")
-                    .AddSupportedUICultures("en"));
-
-                app.UseAuthentication();
-                app.UseAuthorization();
-                app.UseMiddleware<EmptyBodyGuardMiddleware>();
-                app.UseMiddleware<WafMiddleware>();
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseMiddleware<GlobalHttpRateLimitMiddleware>()
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseMiddleware<TokenRefreshMiddleware>()
-                );
-
-                var lifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
-                app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") &&
-                                       lifetime.ApplicationStopping.IsCancellationRequested,
-                    branch => branch.UseConditionalConnectionCloseWhenStopping());
-
-                app.UseWhen(context => context.Request.Path.StartsWithSegments("/Account"), appBuilder =>
-                {
-                    appBuilder.Use(async (context, next) =>
-                    {
-                        context.Response.OnStarting(() =>
-                        {
-                            context.Response.Headers["Cache-Control"] = "no-store";
-                            context.Response.Headers["Referrer-Policy"] = "no-referrer";
-                            return Task.CompletedTask;
-                        });
-
-                        await next.Invoke();
-                    });
-                });
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseStatusCodePages(context =>
-
-                    {
-                        var request = context.HttpContext.Request;
-                        var response = context.HttpContext.Response;
-
-                        if (response.StatusCode != (int)HttpStatusCode.Unauthorized)
-                        {
-                            return Task.CompletedTask;
-                        }
-
-                        if (!request.Path.StartsWithSegments("/api"))
-                        {
-                            response.Redirect(
-                                $"/Account/Login?RedirectUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
-                        }
-
-                        return Task.CompletedTask;
-                    })
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseResponseHttpHeadersMiddleware()
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.RequestTrackingMiddleware()
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseStaticFiles()
-                );
-
-                app.UseWhen(
-                    httpContext => httpContext.Request.Path.StartsWithSegments("/swagger",
-                        StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseMiddleware<SwaggerAuthenticationMiddleware>()
-                );
-
-                app.UseWhen(
-                    httpContext => httpContext.Request.Path.Equals("/swagger/swagger-initializer.js",
-                        StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.Run(context =>
-                    {
-                        context.Response.StatusCode = StatusCodes.Status404NotFound;
-                        return Task.CompletedTask;
-                    })
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseSwagger()
-                );
-
-                app.UseWhen(
-                    httpContext =>
-                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseSwaggerUI(c =>
-                    {
-                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jube API v1");
-                    })
-                );
-
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapRazorPages();
-                    endpoints.MapControllers();
-                    endpoints.MapEntityAnalysisModelEndpoints();
-                    endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
-                    endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
-                    endpoints.MapEntityAnalysisModelInlineScriptEndpoints();
-                    endpoints.MapEntityAnalysisModelGatewayRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelSanctionEndpoints();
-                    endpoints.MapEntityAnalysisModelTagEndpoints();
-                    endpoints.MapEntityApprovalEndpoints();
-                    endpoints.MapVersionHistoryEndpoints();
-                    endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelIntegrityEndpoints();
-                    endpoints.MapQueryBuilderEndpoints();
-                    endpoints.MapEntityAnalysisModelEngineStateEndpoints();
-                    endpoints.MapEntityAnalysisModelDependencyGraphEndpoints();
-                    endpoints.MapEntityAnalysisModelDependencyEndpoints();
-                    endpoints.MapEntityAnalysisModelBacktestEndpoints();
-                    endpoints.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
-                    endpoints.MapApplicationLogEntryEndpoints();
-                    endpoints.MapWafAttackEndpoints();
-                    endpoints.MapDotNetRuntimeMetricEndpoints();
-                    endpoints.MapPostgresMetricEndpoints();
-                    endpoints.MapRedisMetricEndpoints();
-                    endpoints.MapRedisSlowOperationEndpoints();
-                    endpoints.MapRedisConnectionMultiplexerMetricEndpoints();
-                    endpoints.MapPostgresTableStatisticsEndpoints();
-                    endpoints.MapPostgresIndexStatisticsEndpoints();
-                    endpoints.MapPostgresReplicationStatusEndpoints();
-                    endpoints.MapPostgresLogEntryEndpoints();
-                    endpoints.MapContainerLogEntryEndpoints();
-                    endpoints.MapDockerEventEndpoints();
-                    endpoints.MapRedisSentinelStatusEndpoints();
-                    endpoints.MapRedisSentinelEventEndpoints();
-                    endpoints.MapModelInvokeWarningEndpoints();
-                    endpoints.MapArchiverStagePerformanceCounterEndpoints();
-                    endpoints.MapCaseCreationStagePerformanceCounterEndpoints();
-                    endpoints.MapCaseCreationWarningEndpoints();
-                    endpoints.MapArchiverWarningEndpoints();
-                    endpoints.MapCaptureQueueHealthEndpoints();
-                    endpoints.MapRedisConnectionEventEndpoints();
-                    endpoints.MapRedisCallCounterEndpoints();
-                    endpoints.MapEtcdMemberStatusEndpoints();
-                    endpoints.MapPatroniMemberStatusEndpoints();
-                    endpoints.MapEtcdClusterEventEndpoints();
-                    endpoints.MapPatroniClusterEventEndpoints();
-                    endpoints.MapDockerContainerMetricEndpoints();
-                    endpoints.MapDockerHostMetricEndpoints();
-                    endpoints.MapHaProxyServerStatusEndpoints();
-                    endpoints.MapHaProxyReachabilityProbeEndpoints();
-                    endpoints.MapOverlayNetworkTaskDriftEndpoints();
-                    endpoints.MapOpenTelemetryMetricEndpoints();
-                    endpoints.MapOpenTelemetryLogCounterEndpoints();
-                    endpoints.MapOpenTelemetryExcludeEndpoints();
-                    endpoints.MapOtlpDispatchCounterEndpoints();
-                    endpoints.MapUserLoginEndpoints();
-                    endpoints.MapUserLogoutEndpoints();
-                    endpoints.MapActivationWatcherEndpoints();
-                    endpoints.MapWatcherStreamEndpoints();
-                    endpoints.MapServiceChangeStreamEndpoints();
-                    endpoints.MapPostgresActivityEndpoints();
-                    endpoints.MapPostgresStatementStatisticsEndpoints();
-                    endpoints.MapEntityAnalysisModelAbstractionRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelAbstractionCalculationEndpoints();
-                    endpoints.MapEntityAnalysisModelHttpAdaptationEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleEndpoints();
-                    endpoints.MapEntityAnalysisInlineScriptEndpoints();
-                    endpoints.MapEntityAnalysisModelTtlCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelListEndpoints();
-                    endpoints.MapEntityAnalysisModelListValueEndpoints();
-                    endpoints.MapEntityAnalysisModelDictionaryEndpoints();
-                    endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
-                    endpoints.MapEntityAnalysisModelOverrideEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleOverrideEndpoints();
-                    endpoints.MapEntityAnalysisModelReprocessingRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelReprocessingRuleInstanceEndpoints();
-                    endpoints.MapHttpProcessingCounterEndpoints();
-                    endpoints.MapEntityAnalysisAsynchronousQueueBalanceEndpoints();
-                    endpoints.MapEntityAnalysisModelAsynchronousQueueBalanceEndpoints();
-                    endpoints.MapEntityAnalysisModelProcessingCounterEndpoints();
-                    endpoints.MapArchiveEndpoints();
-                    endpoints.MapCaseEndpoints();
-                    endpoints.MapCaseFileEndpoints();
-                    endpoints.MapCaseNoteEndpoints();
-                    endpoints.MapCaseWorkflowEndpoints();
-                    endpoints.MapCaseWorkflowActionEndpoints();
-                    endpoints.MapCaseWorkflowActionRoleEndpoints();
-                    endpoints.MapCaseWorkflowDisplayEndpoints();
-                    endpoints.MapCaseWorkflowDisplayRoleEndpoints();
-                    endpoints.MapCaseWorkflowFilterEndpoints();
-                    endpoints.MapCaseWorkflowFilterRoleEndpoints();
-                    endpoints.MapCaseWorkflowFormEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryValueEndpoints();
-                    endpoints.MapCaseWorkflowFormRoleEndpoints();
-                    endpoints.MapCaseWorkflowMacroEndpoints();
-                    endpoints.MapCaseWorkflowMacroRoleEndpoints();
-                    endpoints.MapCaseWorkflowPriorityEndpoints();
-                    endpoints.MapCaseWorkflowRoleEndpoints();
-                    endpoints.MapCaseWorkflowStatusEndpoints();
-                    endpoints.MapCaseWorkflowStatusRoleEndpoints();
-                    endpoints.MapCaseWorkflowXPathEndpoints();
-                    endpoints.MapCaseWorkflowXPathRoleEndpoints();
-                    endpoints.MapEntityAnalysisModelRoleEndpoints();
-                    endpoints.MapEntityAnalysisModelSynchronisationScheduleEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceEndpoints();
-                    endpoints.MapPermissionSpecificationEndpoints();
-                    endpoints.MapRoleRegistryEndpoints();
-                    endpoints.MapRoleRegistryPermissionEndpoints();
-                    endpoints.MapSanctionEntrySourceEndpoints();
-                    endpoints.MapTenantRegistryEndpoints();
-                    endpoints.MapUserInTenantEndpoints();
-                    endpoints.MapUserRegistryEndpoints();
-                    endpoints.MapUserRegistryApiKeyEndpoints();
-                    endpoints.MapVisualisationRegistryEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceRoleEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceSeriesEndpoints();
-                    endpoints.MapVisualisationRegistryParameterEndpoints();
-                    endpoints.MapVisualisationRegistryParameterRoleEndpoints();
-                    endpoints.MapVisualisationRegistryRoleEndpoints();
-                    endpoints.MapCaseByCaseKeyValueEndpoints();
-                    endpoints.MapCaseByIdEndpoints();
-                    endpoints.MapCaseBySessionCaseSearchCompileEndpoints();
-                    endpoints.MapCaseEventByCaseKeyValueEndpoints();
-                    endpoints.MapCaseJournalEndpoints();
-                    endpoints.MapCaseNoteByCaseKeyValueEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleOverrideQueryEndpoints();
-                    endpoints.MapEntityAnalysisModelSampleEndpoints();
-                    endpoints.MapEntityAnalysisModelOverrideQueryEndpoints();
-                    endpoints.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
-                    endpoints.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
-                    endpoints.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceConfusionEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceLearningCurveEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstancePredictedActualEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceQueryEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceRocEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableVarianceEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceVariableEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceCommandExecutionEndpoints();
-                    endpoints.MapTreeChildrenEndpoints();
-                    endpoints.MapSessionCaseJournalEndpoints();
-                    endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
-                    endpoints.MapPreservationEndpoints();
-                    endpoints.MapPreservationSnapshotEndpoints();
-                    endpoints.MapReadyEndpoints();
-                    endpoints.MapAuthenticationEndpoints();
-                    if (!"False".Equals(dynamicEnvironment.AppSettings("EnableMockEndpoints"),
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        endpoints.MapMockHttpAdaptationEndpoints();
-                        endpoints.MapMockRsaMfaEndpoints();
-                    }
-
-                    endpoints.MapInvokeEndpoints();
-                    endpoints.MapCompletionsEndpoints();
-                    endpoints.MapIconsEndpoints();
-                    endpoints.MapParserEndpoints();
-                    endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
-                    endpoints.MapCaseWorkflowMacroExecutionEndpoints();
-                });
-
-                _ = StartEngineInBackgroundAsync(app, log);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Error in App Configure as {ex}");
-            }
-        }
-
         private static async Task StartEngineInBackgroundAsync(IApplicationBuilder app, ILog log)
         {
             try
@@ -1512,6 +1931,7 @@ namespace Jube.App
             CacheService cacheService, ILog log)
         {
             string connectionString;
+
             if (dynamicEnvironment.AppSettings("MigrationConnectionString") != null)
             {
                 connectionString = dynamicEnvironment.AppSettings("MigrationConnectionString");

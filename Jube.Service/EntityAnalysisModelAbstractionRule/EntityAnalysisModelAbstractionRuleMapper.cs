@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 : new EntityAnalysisModelAbstractionRuleDto
                 {
                     Id = abstractionRule.Id,
+                    Guid = abstractionRule.Guid,
                     EntityAnalysisModelId = abstractionRule.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = abstractionRule.Name,
                     Active = abstractionRule.Active == 1,

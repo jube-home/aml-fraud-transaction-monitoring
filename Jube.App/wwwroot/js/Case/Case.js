@@ -699,6 +699,14 @@ function SetOutCase(data) {
         CaseId = data.id;
         CaseWorkflowGuid = data.caseWorkflowGuid;
 
+        window.AskJoobySetPageContext?.("Case", "edit", {
+            id: data.id,
+            caseKey: data.caseKey,
+            caseKeyValue: data.caseKeyValue,
+            entityAnalysisModelId: data.entityAnalysisModelId,
+            caseWorkflowGuid: data.caseWorkflowGuid
+        });
+
         const $caseStatusColour = $('#CaseStatusColour');
         switch (data.lastClosedStatus) {
             case 0:
@@ -1181,7 +1189,7 @@ function SetOutCase(data) {
         if (data.enableVisualisation) {
             ShowParams = false;
             VisualisationRegistryGuid = data.visualisationRegistryGuid;
-            InitVisualisation();
+            InitVisualisation(true);
         }
     }
 }

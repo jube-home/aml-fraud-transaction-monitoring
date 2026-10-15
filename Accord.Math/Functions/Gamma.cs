@@ -41,56 +41,62 @@
 //   moshier@na-net.ornl.gov
 //
 
+using System;
+
 namespace Accord.Math
 {
-    using Accord.Math.Random;
-    using System;
-
     /// <summary>
-    ///   Gamma Γ(x) functions.
+    ///     Gamma Γ(x) functions.
     /// </summary>
-    ///  
     /// <remarks>
-    /// <para>
-    ///   In mathematics, the gamma function (represented by the capital Greek 
-    ///   letter Γ) is an extension of the factorial function, with its argument
-    ///   shifted down by 1, to real and complex numbers. That is, if <c>n</c> is
-    ///   a positive integer:</para>
-    /// <code>
+    ///     <para>
+    ///         In mathematics, the gamma function (represented by the capital Greek
+    ///         letter Γ) is an extension of the factorial function, with its argument
+    ///         shifted down by 1, to real and complex numbers. That is, if <c>n</c> is
+    ///         a positive integer:
+    ///     </para>
+    ///     <code>
     ///   Γ(n) = (n-1)!</code>
-    /// <para>
-    ///   The gamma function is defined for all complex numbers except the negative
-    ///   integers and zero. For complex numbers with a positive real part, it is 
-    ///   defined via an improper integral that converges:</para>
-    /// <code>
+    ///     <para>
+    ///         The gamma function is defined for all complex numbers except the negative
+    ///         integers and zero. For complex numbers with a positive real part, it is
+    ///         defined via an improper integral that converges:
+    ///     </para>
+    ///     <code>
     ///          ∞
     ///   Γ(z) = ∫  t^(z-1)e^(-t) dt
     ///          0
-    /// </code>     
-    /// <para>
-    ///   This integral function is extended by analytic continuation to all 
-    ///   complex numbers except the non-positive integers (where the function 
-    ///   has simple poles), yielding the meromorphic function we call the gamma
-    ///   function.</para>
-    /// <para>
-    ///   The gamma function is a component in various probability-distribution 
-    ///   functions, and as such it is applicable in the fields of probability 
-    ///   and statistics, as well as combinatorics.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       Wikipedia contributors, "Gamma function,". Wikipedia, The Free 
-    ///       Encyclopedia. Available at: http://en.wikipedia.org/wiki/Gamma_function 
-    ///       </description></item>
-    ///     <item><description>
-    ///       Cephes Math Library, http://www.netlib.org/cephes/ </description></item>
-    ///   </list></para>
+    /// </code>
+    ///     <para>
+    ///         This integral function is extended by analytic continuation to all
+    ///         complex numbers except the non-positive integers (where the function
+    ///         has simple poles), yielding the meromorphic function we call the gamma
+    ///         function.
+    ///     </para>
+    ///     <para>
+    ///         The gamma function is a component in various probability-distribution
+    ///         functions, and as such it is applicable in the fields of probability
+    ///         and statistics, as well as combinatorics.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     Wikipedia contributors, "Gamma function,". Wikipedia, The Free
+    ///                     Encyclopedia. Available at: http://en.wikipedia.org/wiki/Gamma_function
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     Cephes Math Library, http://www.netlib.org/cephes/
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   double x = 0.17;
     ///   
     ///   // Compute main Gamma function and variants
@@ -101,7 +107,7 @@ namespace Accord.Math
     ///   double stir = Gamma.Stirling(x);  // 24.040352622960743
     ///   double psi = Gamma.Digamma(x);    // -6.2100942259248626
     ///   double tri = Gamma.Trigamma(x);   // 35.915302055854525
-    ///
+    /// 
     ///   double a = 4.2;
     ///   
     ///   // Compute the incomplete regularized Gamma functions P and Q:
@@ -109,10 +115,8 @@ namespace Accord.Math
     ///   double upper = Gamma.UpperIncomplete(a, x); // 0.9999843149269364
     /// </code>
     /// </example>
-    /// 
     public static class Gamma
     {
-
         /// <summary>Maximum gamma on the machine.</summary>
         public const double GammaMax = 171.624376956302725; // TODO: Rename to Max
 
@@ -139,446 +143,22 @@ namespace Accord.Math
             1.00000000000000000320E0
         };
 
-        /// <summary>
-        ///   Gamma function of the specified value.
-        /// </summary>
-        /// 
-        public static double Function(double x)
-        {
-            double p, z;
-
-            double q = System.Math.Abs(x);
-
-            if (q > 33.0)
-            {
-                if (x < 0.0)
-                {
-                    p = System.Math.Floor(q);
-
-                    if (p == q)
-                        throw new OverflowException();
-
-                    z = q - p;
-                    if (z > 0.5)
-                    {
-                        p += 1.0;
-                        z = q - p;
-                    }
-                    z = q * System.Math.Sin(System.Math.PI * z);
-
-                    if (z == 0.0)
-                        throw new OverflowException();
-
-                    z = System.Math.Abs(z);
-                    z = System.Math.PI / (z * Stirling(q));
-
-                    return -z;
-                }
-                else
-                {
-                    return Stirling(x);
-                }
-            }
-
-            z = 1.0;
-            while (x >= 3.0)
-            {
-                x -= 1.0;
-                z *= x;
-            }
-
-            while (x < 0.0)
-            {
-                if (x == 0.0)
-                {
-                    throw new ArithmeticException();
-                }
-                else if (x > -1.0E-9)
-                {
-                    return (z / ((1.0 + 0.5772156649015329 * x) * x));
-                }
-                z /= x;
-                x += 1.0;
-            }
-
-            while (x < 2.0)
-            {
-                if (x == 0.0)
-                {
-                    throw new ArithmeticException();
-                }
-                else if (x < 1.0E-9)
-                {
-                    return (z / ((1.0 + 0.5772156649015329 * x) * x));
-                }
-
-                z /= x;
-                x += 1.0;
-            }
-
-            if ((x == 2.0) || (x == 3.0))
-                return z;
-
-            x -= 2.0;
-            p = Special.Polevl(x, gamma_P, 6);
-            q = Special.Polevl(x, gamma_Q, 7);
-            return z * p / q;
-
-        }
-
-        /// <summary>
-        ///   Multivariate Gamma function
-        /// </summary>
-        /// 
-        public static double Multivariate(double x, int p)
-        {
-            if (p < 1)
-                throw new ArgumentOutOfRangeException("p",
-                    "Parameter p must be higher than 1.");
-
-            if (p == 1)
-                return Function(x);
-
-
-            double prod = Math.Pow(Math.PI, (1 / 4.0) * p * (p - 1));
-
-            for (int i = 0; i < p; i++)
-                prod *= Function(x - 0.5 * i);
-
-            return prod;
-        }
-
-        /// <summary>
-        ///   Digamma function.
-        /// </summary>
-        /// 
-        public static double Digamma(double x)
-        {
-            if (x == 0)
-                return Double.NegativeInfinity;
-            if (x < 0)
-                return Digamma(1 - x) + Math.PI / Math.Tan(-Math.PI * x);
-
-            double s = 0;
-            double w = 0;
-            double y = 0;
-            double z = 0;
-            double nz = 0;
-
-            bool negative = false;
-
-            if (x <= 0.0)
-            {
-                negative = true;
-                double q = x;
-                double p = (int)System.Math.Floor(q);
-
-                if (p == q)
-                    throw new OverflowException("Function computation resulted in arithmetic overflow.");
-
-                nz = q - p;
-
-                if (nz != 0.5)
-                {
-                    if (nz > 0.5)
-                    {
-                        p = p + 1.0;
-                        nz = q - p;
-                    }
-                    nz = Math.PI / Math.Tan(System.Math.PI * nz);
-                }
-                else
-                {
-                    nz = 0.0;
-                }
-
-                x = 1.0 - x;
-            }
-
-            if (x <= 10.0 & x == Math.Floor(x))
-            {
-                y = 0.0;
-                int n = (int)Math.Floor(x);
-                for (int i = 1; i <= n - 1; i++)
-                {
-                    w = i;
-                    y = y + 1.0 / w;
-                }
-                y = y - 0.57721566490153286061;
-            }
-            else
-            {
-                s = x;
-                w = 0.0;
-
-                while (s < 10.0)
-                {
-                    w = w + 1.0 / s;
-                    s = s + 1.0;
-                }
-
-                if (s < 1.0E17)
-                {
-                    z = 1.0 / (s * s);
-
-                    double polv = 8.33333333333333333333E-2;
-                    polv = polv * z - 2.10927960927960927961E-2;
-                    polv = polv * z + 7.57575757575757575758E-3;
-                    polv = polv * z - 4.16666666666666666667E-3;
-                    polv = polv * z + 3.96825396825396825397E-3;
-                    polv = polv * z - 8.33333333333333333333E-3;
-                    polv = polv * z + 8.33333333333333333333E-2;
-                    y = z * polv;
-                }
-                else
-                {
-                    y = 0.0;
-                }
-                y = Math.Log(s) - 0.5 / s - y - w;
-            }
-
-            if (negative == true)
-            {
-                y = y - nz;
-            }
-
-            return y;
-        }
-
-        /// <summary>
-        ///   Trigamma function.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   This code has been adapted from the FORTRAN77 and subsequent
-        ///   C code by B. E. Schneider and John Burkardt. The code had been
-        ///   made public under the GNU LGPL license.
-        /// </remarks>
-        /// 
-        public static double Trigamma(double x)
-        {
-            if (x < 0)
-            {
-                double v = Math.PI / Math.Sin(-Math.PI * x);
-                return -Trigamma(1 - x) + v * v;
-            }
-
-
-            double a = 0.0001;
-            double b = 5.0;
-            double b2 = 0.1666666667;
-            double b4 = -0.03333333333;
-            double b6 = 0.02380952381;
-            double b8 = -0.03333333333;
-            double value;
-            double y;
-            double z;
-
-            // Check the input.
-            if (x <= 0.0)
-            {
-                throw new ArgumentException("The input parameter x must be positive.", "x");
-            }
-
-            z = x;
-
-            // Use small value approximation if X <= A.
-            if (x <= a)
-            {
-                value = 1.0 / x / x;
-                return value;
-            }
-
-            // Increase argument to ( X + I ) >= B.
-            value = 0.0;
-
-            while (z < b)
-            {
-                value = value + 1.0 / z / z;
-                z = z + 1.0;
-            }
-
-            // Apply asymptotic formula if argument is B or greater.
-            y = 1.0 / z / z;
-
-            value = value + 0.5 *
-                y + (1.0
-              + y * (b2
-              + y * (b4
-              + y * (b6
-              + y * b8)))) / z;
-
-            return value;
-        }
-
         private static readonly double[] STIR =
         {
-                7.87311395793093628397E-4,
+            7.87311395793093628397E-4,
             -2.29549961613378126380E-4,
             -2.68132617805781232825E-3,
-                3.47222221605458667310E-3,
-                8.33333333333482257126E-2,
+            3.47222221605458667310E-3,
+            8.33333333333482257126E-2
         };
-
-        /// <summary>
-        ///   Gamma function as computed by Stirling's formula.
-        /// </summary>
-        /// 
-        public static double Stirling(double x)
-        {
-            double MAXSTIR = 143.01608;
-
-            double w = 1.0 / x;
-            double y = Math.Exp(x);
-
-            w = 1.0 + w * Special.Polevl(w, STIR, 4);
-
-            if (x > MAXSTIR)
-            {
-                double v = Math.Pow(x, 0.5 * x - 0.25);
-
-                if (Double.IsPositiveInfinity(v) && Double.IsPositiveInfinity(y))
-                {
-                    // lim x -> inf { (x^(0.5*x - 0.25)) * (x^(0.5*x - 0.25) / exp(x))  }
-                    y = Double.PositiveInfinity;
-                }
-                else
-                {
-                    y = v * (v / y);
-                }
-            }
-            else
-            {
-                y = System.Math.Pow(x, x - 0.5) / y;
-            }
-
-            y = Constants.Sqrt2PI * y * w;
-            return y;
-        }
-
-        /// <summary>
-        ///   Upper incomplete regularized Gamma function Q
-        ///   (a.k.a the incomplete complemented Gamma function)
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   This function is equivalent to Q(x) = Γ(s, x) / Γ(s).
-        /// </remarks>
-        /// 
-        public static double UpperIncomplete(double a, double x)
-        {
-            const double big = 4.503599627370496e15;
-            const double biginv = 2.22044604925031308085e-16;
-            double ans, ax, c, yc, r, t, y, z;
-            double pk, pkm1, pkm2, qk, qkm1, qkm2;
-
-            if (x <= 0 || a <= 0)
-                return 1.0;
-
-            if (x < 1.0 || x < a)
-                return 1.0 - LowerIncomplete(a, x);
-
-            if (Double.IsPositiveInfinity(x))
-                return 0;
-
-            ax = a * Math.Log(x) - x - Log(a);
-
-            if (ax < -Constants.LogMax)
-                return 0.0;
-
-            ax = Math.Exp(ax);
-
-            // continued fraction
-            y = 1.0 - a;
-            z = x + y + 1.0;
-            c = 0.0;
-            pkm2 = 1.0;
-            qkm2 = x;
-            pkm1 = x + 1.0;
-            qkm1 = z * x;
-            ans = pkm1 / qkm1;
-
-            do
-            {
-                c += 1.0;
-                y += 1.0;
-                z += 2.0;
-                yc = y * c;
-                pk = pkm1 * z - pkm2 * yc;
-                qk = qkm1 * z - qkm2 * yc;
-                if (qk != 0)
-                {
-                    r = pk / qk;
-                    t = Math.Abs((ans - r) / r);
-                    ans = r;
-                }
-                else
-                    t = 1.0;
-
-                pkm2 = pkm1;
-                pkm1 = pk;
-                qkm2 = qkm1;
-                qkm1 = qk;
-                if (Math.Abs(pk) > big)
-                {
-                    pkm2 *= biginv;
-                    pkm1 *= biginv;
-                    qkm2 *= biginv;
-                    qkm1 *= biginv;
-                }
-            } while (t > Constants.DoubleEpsilon);
-
-            return ans * ax;
-        }
-
-        /// <summary>
-        ///   Lower incomplete regularized gamma function P
-        ///   (a.k.a. the incomplete Gamma function).
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   This function is equivalent to P(x) = γ(s, x) / Γ(s).
-        /// </remarks>
-        /// 
-        public static double LowerIncomplete(double a, double x)
-        {
-            if (a <= 0)
-                return 1.0;
-
-            if (x <= 0)
-                return 0.0;
-
-            if (x > 1.0 && x > a)
-                return 1.0 - UpperIncomplete(a, x);
-
-            double ax = a * Math.Log(x) - x - Log(a);
-
-            if (ax < -Constants.LogMax)
-                return 0.0;
-
-            ax = Math.Exp(ax);
-
-            double r = a;
-            double c = 1.0;
-            double ans = 1.0;
-
-            do
-            {
-                r += 1.0;
-                c *= x / r;
-                ans += c;
-            } while (c / ans > Constants.DoubleEpsilon);
-
-            return ans * ax / a;
-        }
 
         private static readonly double[] log_A =
         {
-                8.11614167470508450300E-4,
+            8.11614167470508450300E-4,
             -5.95061904284301438324E-4,
-                7.93650340457716943945E-4,
+            7.93650340457716943945E-4,
             -2.77777777730099687205E-3,
-                8.33333333333331927722E-2
+            8.33333333333331927722E-2
         };
 
         private static readonly double[] log_B =
@@ -602,24 +182,477 @@ namespace Accord.Math
         };
 
         /// <summary>
-        ///   Natural logarithm of the gamma function.
+        ///     Gamma function of the specified value.
         /// </summary>
-        /// 
+        public static double Function(double x)
+        {
+            double p, z;
+
+            var q = System.Math.Abs(x);
+
+            if (q > 33.0)
+            {
+                if (x < 0.0)
+                {
+                    p = System.Math.Floor(q);
+
+                    if (p == q)
+                    {
+                        throw new OverflowException();
+                    }
+
+                    z = q - p;
+                    if (z > 0.5)
+                    {
+                        p += 1.0;
+                        z = q - p;
+                    }
+
+                    z = q * System.Math.Sin(System.Math.PI * z);
+
+                    if (z == 0.0)
+                    {
+                        throw new OverflowException();
+                    }
+
+                    z = System.Math.Abs(z);
+                    z = System.Math.PI / (z * Stirling(q));
+
+                    return -z;
+                }
+
+                return Stirling(x);
+            }
+
+            z = 1.0;
+            while (x >= 3.0)
+            {
+                x -= 1.0;
+                z *= x;
+            }
+
+            while (x < 0.0)
+            {
+                if (x == 0.0)
+                {
+                    throw new ArithmeticException();
+                }
+
+                if (x > -1.0E-9)
+                {
+                    return z / ((1.0 + 0.5772156649015329 * x) * x);
+                }
+
+                z /= x;
+                x += 1.0;
+            }
+
+            while (x < 2.0)
+            {
+                if (x == 0.0)
+                {
+                    throw new ArithmeticException();
+                }
+
+                if (x < 1.0E-9)
+                {
+                    return z / ((1.0 + 0.5772156649015329 * x) * x);
+                }
+
+                z /= x;
+                x += 1.0;
+            }
+
+            if (x == 2.0 || x == 3.0)
+            {
+                return z;
+            }
+
+            x -= 2.0;
+            p = Special.Polevl(x, gamma_P, 6);
+            q = Special.Polevl(x, gamma_Q, 7);
+            return z * p / q;
+        }
+
+        /// <summary>
+        ///     Multivariate Gamma function
+        /// </summary>
+        public static double Multivariate(double x, int p)
+        {
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException("p",
+                    "Parameter p must be higher than 1.");
+            }
+
+            if (p == 1)
+            {
+                return Function(x);
+            }
+
+
+            var prod = System.Math.Pow(System.Math.PI, 1 / 4.0 * p * (p - 1));
+
+            for (var i = 0; i < p; i++)
+            {
+                prod *= Function(x - 0.5 * i);
+            }
+
+            return prod;
+        }
+
+        /// <summary>
+        ///     Digamma function.
+        /// </summary>
+        public static double Digamma(double x)
+        {
+            if (x == 0)
+            {
+                return double.NegativeInfinity;
+            }
+
+            if (x < 0)
+            {
+                return Digamma(1 - x) + System.Math.PI / System.Math.Tan(-System.Math.PI * x);
+            }
+
+            double w;
+            double y;
+            double nz = 0;
+
+            var negative = false;
+
+            if (x <= 0.0)
+            {
+                negative = true;
+                var q = x;
+                double p = (int)System.Math.Floor(q);
+
+                if (p == q)
+                {
+                    throw new OverflowException("Function computation resulted in arithmetic overflow.");
+                }
+
+                nz = q - p;
+
+                if (nz != 0.5)
+                {
+                    if (nz > 0.5)
+                    {
+                        p = p + 1.0;
+                        nz = q - p;
+                    }
+
+                    nz = System.Math.PI / System.Math.Tan(System.Math.PI * nz);
+                }
+                else
+                {
+                    nz = 0.0;
+                }
+
+                x = 1.0 - x;
+            }
+
+            if ((x <= 10.0) & (x == System.Math.Floor(x)))
+            {
+                y = 0.0;
+                var n = (int)System.Math.Floor(x);
+                for (var i = 1; i <= n - 1; i++)
+                {
+                    w = i;
+                    y = y + 1.0 / w;
+                }
+
+                y = y - 0.57721566490153286061;
+            }
+            else
+            {
+                var s = x;
+                w = 0.0;
+
+                while (s < 10.0)
+                {
+                    w = w + 1.0 / s;
+                    s = s + 1.0;
+                }
+
+                if (s < 1.0E17)
+                {
+                    var z = 1.0 / (s * s);
+
+                    var polv = 8.33333333333333333333E-2;
+                    polv = polv * z - 2.10927960927960927961E-2;
+                    polv = polv * z + 7.57575757575757575758E-3;
+                    polv = polv * z - 4.16666666666666666667E-3;
+                    polv = polv * z + 3.96825396825396825397E-3;
+                    polv = polv * z - 8.33333333333333333333E-3;
+                    polv = polv * z + 8.33333333333333333333E-2;
+                    y = z * polv;
+                }
+                else
+                {
+                    y = 0.0;
+                }
+
+                y = System.Math.Log(s) - 0.5 / s - y - w;
+            }
+
+            if (negative)
+            {
+                y = y - nz;
+            }
+
+            return y;
+        }
+
+        /// <summary>
+        ///     Trigamma function.
+        /// </summary>
+        /// <remarks>
+        ///     This code has been adapted from the FORTRAN77 and subsequent
+        ///     C code by B. E. Schneider and John Burkardt. The code had been
+        ///     made public under the GNU LGPL license.
+        /// </remarks>
+        public static double Trigamma(double x)
+        {
+            if (x < 0)
+            {
+                var v = System.Math.PI / System.Math.Sin(-System.Math.PI * x);
+                return -Trigamma(1 - x) + v * v;
+            }
+
+
+            var a = 0.0001;
+            var b = 5.0;
+            var b2 = 0.1666666667;
+            var b4 = -0.03333333333;
+            var b6 = 0.02380952381;
+            var b8 = -0.03333333333;
+            double value;
+
+            // Check the input.
+            if (x <= 0.0)
+            {
+                throw new ArgumentException("The input parameter x must be positive.", "x");
+            }
+
+            var z = x;
+
+            // Use small value approximation if X <= A.
+            if (x <= a)
+            {
+                value = 1.0 / x / x;
+                return value;
+            }
+
+            // Increase argument to ( X + I ) >= B.
+            value = 0.0;
+
+            while (z < b)
+            {
+                value = value + 1.0 / z / z;
+                z = z + 1.0;
+            }
+
+            // Apply asymptotic formula if argument is B or greater.
+            var y = 1.0 / z / z;
+
+            value = value + 0.5 *
+                y + (1.0
+                     + y * (b2
+                            + y * (b4
+                                   + y * (b6
+                                          + y * b8)))) / z;
+
+            return value;
+        }
+
+        /// <summary>
+        ///     Gamma function as computed by Stirling's formula.
+        /// </summary>
+        public static double Stirling(double x)
+        {
+            var MAXSTIR = 143.01608;
+
+            var w = 1.0 / x;
+            var y = System.Math.Exp(x);
+
+            w = 1.0 + w * Special.Polevl(w, STIR, 4);
+
+            if (x > MAXSTIR)
+            {
+                var v = System.Math.Pow(x, 0.5 * x - 0.25);
+
+                if (double.IsPositiveInfinity(v) && double.IsPositiveInfinity(y))
+                {
+                    // lim x -> inf { (x^(0.5*x - 0.25)) * (x^(0.5*x - 0.25) / exp(x))  }
+                    y = double.PositiveInfinity;
+                }
+                else
+                {
+                    y = v * (v / y);
+                }
+            }
+            else
+            {
+                y = System.Math.Pow(x, x - 0.5) / y;
+            }
+
+            y = Constants.Sqrt2PI * y * w;
+            return y;
+        }
+
+        /// <summary>
+        ///     Upper incomplete regularized Gamma function Q
+        ///     (a.k.a the incomplete complemented Gamma function)
+        /// </summary>
+        /// <remarks>
+        ///     This function is equivalent to Q(x) = Γ(s, x) / Γ(s).
+        /// </remarks>
+        public static double UpperIncomplete(double a, double x)
+        {
+            const double big = 4.503599627370496e15;
+            const double biginv = 2.22044604925031308085e-16;
+            double t;
+
+            if (x <= 0 || a <= 0)
+            {
+                return 1.0;
+            }
+
+            if (x < 1.0 || x < a)
+            {
+                return 1.0 - LowerIncomplete(a, x);
+            }
+
+            if (double.IsPositiveInfinity(x))
+            {
+                return 0;
+            }
+
+            var ax = a * System.Math.Log(x) - x - Log(a);
+
+            if (ax < -Constants.LogMax)
+            {
+                return 0.0;
+            }
+
+            ax = System.Math.Exp(ax);
+
+            // continued fraction
+            var y = 1.0 - a;
+            var z = x + y + 1.0;
+            var c = 0.0;
+            var pkm2 = 1.0;
+            var qkm2 = x;
+            var pkm1 = x + 1.0;
+            var qkm1 = z * x;
+            var ans = pkm1 / qkm1;
+
+            do
+            {
+                c += 1.0;
+                y += 1.0;
+                z += 2.0;
+                var yc = y * c;
+                var pk = pkm1 * z - pkm2 * yc;
+                var qk = qkm1 * z - qkm2 * yc;
+                if (qk != 0)
+                {
+                    var r = pk / qk;
+                    t = System.Math.Abs((ans - r) / r);
+                    ans = r;
+                }
+                else
+                {
+                    t = 1.0;
+                }
+
+                pkm2 = pkm1;
+                pkm1 = pk;
+                qkm2 = qkm1;
+                qkm1 = qk;
+                if (System.Math.Abs(pk) > big)
+                {
+                    pkm2 *= biginv;
+                    pkm1 *= biginv;
+                    qkm2 *= biginv;
+                    qkm1 *= biginv;
+                }
+            } while (t > Constants.DoubleEpsilon);
+
+            return ans * ax;
+        }
+
+        /// <summary>
+        ///     Lower incomplete regularized gamma function P
+        ///     (a.k.a. the incomplete Gamma function).
+        /// </summary>
+        /// <remarks>
+        ///     This function is equivalent to P(x) = γ(s, x) / Γ(s).
+        /// </remarks>
+        public static double LowerIncomplete(double a, double x)
+        {
+            if (a <= 0)
+            {
+                return 1.0;
+            }
+
+            if (x <= 0)
+            {
+                return 0.0;
+            }
+
+            if (x > 1.0 && x > a)
+            {
+                return 1.0 - UpperIncomplete(a, x);
+            }
+
+            var ax = a * System.Math.Log(x) - x - Log(a);
+
+            if (ax < -Constants.LogMax)
+            {
+                return 0.0;
+            }
+
+            ax = System.Math.Exp(ax);
+
+            var r = a;
+            var c = 1.0;
+            var ans = 1.0;
+
+            do
+            {
+                r += 1.0;
+                c *= x / r;
+                ans += c;
+            } while (c / ans > Constants.DoubleEpsilon);
+
+            return ans * ax / a;
+        }
+
+        /// <summary>
+        ///     Natural logarithm of the gamma function.
+        /// </summary>
         public static double Log(double x)
         {
             if (x == 0)
-                return Double.PositiveInfinity;
+            {
+                return double.PositiveInfinity;
+            }
 
-            double p, q, w, z;
+            double p, q, z;
 
             if (x < -34.0)
             {
                 q = -x;
-                w = Log(q);
-                p = Math.Floor(q);
+                var w = Log(q);
+                p = System.Math.Floor(q);
 
                 if (p == q)
+                {
                     throw new OverflowException();
+                }
 
                 z = q - p;
                 if (z > 0.5)
@@ -627,12 +660,15 @@ namespace Accord.Math
                     p += 1.0;
                     z = p - q;
                 }
-                z = q * Math.Sin(System.Math.PI * z);
+
+                z = q * System.Math.Sin(System.Math.PI * z);
 
                 if (z == 0.0)
+                {
                     throw new OverflowException();
+                }
 
-                z = Constants.LogPI - Math.Log(z) - w;
+                z = Constants.LogPI - System.Math.Log(z) - w;
                 return z;
             }
 
@@ -644,43 +680,54 @@ namespace Accord.Math
                     x -= 1.0;
                     z *= x;
                 }
+
                 while (x < 2.0)
                 {
                     if (x == 0.0)
+                    {
                         throw new OverflowException();
+                    }
 
                     z /= x;
                     x += 1.0;
                 }
 
                 if (z < 0.0)
+                {
                     z = -z;
+                }
 
                 if (x == 2.0)
+                {
                     return System.Math.Log(z);
+                }
 
                 x -= 2.0;
 
                 p = x * Special.Polevl(x, log_B, 5) / Special.P1evl(x, log_C, 6);
 
-                return (Math.Log(z) + p);
+                return System.Math.Log(z) + p;
             }
 
             if (x > 2.556348e305)
+            {
                 throw new OverflowException();
+            }
 
-            q = (x - 0.5) * Math.Log(x) - x + 0.91893853320467274178;
+            q = (x - 0.5) * System.Math.Log(x) - x + 0.91893853320467274178;
 
             if (x > 1.0e8)
-                return (q);
+            {
+                return q;
+            }
 
             p = 1.0 / (x * x);
 
             if (x >= 1000.0)
             {
                 q += ((7.9365079365079365079365e-4 * p
-                    - 2.7777777777777777777778e-3) * p
-                    + 0.0833333333333333333333) / x;
+                       - 2.7777777777777777777778e-3) * p
+                      + 0.0833333333333333333333) / x;
             }
             else
             {
@@ -691,49 +738,62 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Natural logarithm of the multivariate Gamma function.
+        ///     Natural logarithm of the multivariate Gamma function.
         /// </summary>
-        /// 
         public static double Log(double x, int p)
         {
             if (p < 1)
+            {
                 throw new ArgumentOutOfRangeException("p", "Parameter p must be higher than 1.");
+            }
 
             if (p == 1)
+            {
                 return Log(x);
+            }
 
-            double sum = Constants.LogPI / p;
-            for (int i = 0; i < p; i++)
+            var sum = Constants.LogPI * (p * (p - 1) / 4.0);
+            for (var i = 0; i < p; i++)
+            {
                 sum += Log(x - 0.5 * i);
+            }
 
             return sum;
         }
 
         /// <summary>
-        ///   Inverse of the <see cref="LowerIncomplete"> 
-        ///   incomplete Gamma integral (LowerIncomplete, P)</see>.
+        ///     Inverse of the
+        ///     <see cref="LowerIncomplete">
+        ///         incomplete Gamma integral (LowerIncomplete, P)
+        ///     </see>
+        ///     .
         /// </summary>
-        /// 
         public static double InverseLowerIncomplete(double a, double y)
         {
             return inverse(a, 1 - y);
         }
 
         /// <summary>
-        ///   Inverse of the <see cref="UpperIncomplete">complemented 
-        ///   incomplete Gamma integral (UpperIncomplete, Q)</see>.
+        ///     Inverse of the
+        ///     <see cref="UpperIncomplete">
+        ///         complemented
+        ///         incomplete Gamma integral (UpperIncomplete, Q)
+        ///     </see>
+        ///     .
         /// </summary>
-        /// 
         public static double InverseUpperIncomplete(double a, double y)
         {
             return inverse(a, y);
         }
 
         /// <summary>
-        ///   Inverse of the <see cref="UpperIncomplete">complemented 
-        ///   incomplete Gamma integral (UpperIncomplete, Q)</see>.
+        ///     Inverse of the
+        ///     <see cref="UpperIncomplete">
+        ///         complemented
+        ///         incomplete Gamma integral (UpperIncomplete, Q)
+        ///     </see>
+        ///     .
         /// </summary>
-        /// 
         //[Obsolete("Please use InverseUpperIncomplete instead.")]
         public static double Inverse(double a, double y)
         {
@@ -743,27 +803,31 @@ namespace Accord.Math
         private static double inverse(double a, double y)
         {
             // bound the solution
-            double x0 = Double.MaxValue;
+            var x0 = double.MaxValue;
             double yl = 0;
             double x1 = 0;
-            double yh = 1.0;
-            double dithresh = 5.0 * Constants.DoubleEpsilon;
+            var yh = 1.0;
+            var dithresh = 5.0 * Constants.DoubleEpsilon;
 
             // approximation to inverse function
-            double d = 1.0 / (9.0 * a);
-            double yy = (1.0 - d - Normal.Inverse(y) * Math.Sqrt(d));
-            double x = a * yy * yy * yy;
+            var d = 1.0 / (9.0 * a);
+            var yy = 1.0 - d - Normal.Inverse(y) * System.Math.Sqrt(d);
+            var x = a * yy * yy * yy;
 
-            double lgm = Gamma.Log(a);
+            var lgm = Log(a);
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 if (x > x0 || x < x1)
+                {
                     goto ihalve;
+                }
 
-                yy = Gamma.UpperIncomplete(a, x);
+                yy = UpperIncomplete(a, x);
                 if (yy < yl || yy > yh)
+                {
                     goto ihalve;
+                }
 
                 if (yy < y)
                 {
@@ -777,15 +841,21 @@ namespace Accord.Math
                 }
 
                 // compute the derivative of the function at this point
-                d = (a - 1.0) * Math.Log(x) - x - lgm;
+                d = (a - 1.0) * System.Math.Log(x) - x - lgm;
                 if (d < -Constants.LogMax)
+                {
                     goto ihalve;
-                d = -Math.Exp(d);
+                }
+
+                d = -System.Math.Exp(d);
 
                 // compute the step to the next approximation of x
                 d = (yy - y) / d;
-                if (Math.Abs(d / x) < Constants.DoubleEpsilon)
+                if (System.Math.Abs(d / x) < Constants.DoubleEpsilon)
+                {
                     return x;
+                }
+
                 x = x - d;
             }
 
@@ -793,21 +863,24 @@ namespace Accord.Math
             ihalve:
 
             d = 0.0625;
-            if (x0 == Double.MaxValue)
+            if (x0 == double.MaxValue)
             {
                 if (x <= 0.0)
+                {
                     x = 1.0;
+                }
 
-                while (x0 == Double.MaxValue && !Double.IsNaN(x))
+                while (x0 == double.MaxValue && !double.IsNaN(x))
                 {
                     x = (1.0 + d) * x;
-                    yy = Gamma.UpperIncomplete(a, x);
+                    yy = UpperIncomplete(a, x);
                     if (yy < y)
                     {
                         x0 = x;
                         yl = yy;
                         break;
                     }
+
                     d = d + d;
                 }
             }
@@ -815,27 +888,35 @@ namespace Accord.Math
             d = 0.5;
             double dir = 0;
 
-            for (int i = 0; i < 400; i++)
+            for (var i = 0; i < 400; i++)
             {
-                double t = x1 + d * (x0 - x1);
+                var t = x1 + d * (x0 - x1);
 
-                if (Double.IsNaN(t))
+                if (double.IsNaN(t))
+                {
                     break;
+                }
 
                 x = t;
-                yy = Gamma.UpperIncomplete(a, x);
+                yy = UpperIncomplete(a, x);
                 lgm = (x0 - x1) / (x1 + x0);
 
-                if (Math.Abs(lgm) < dithresh)
+                if (System.Math.Abs(lgm) < dithresh)
+                {
                     break;
+                }
 
                 lgm = (yy - y) / y;
 
-                if (Math.Abs(lgm) < dithresh)
+                if (System.Math.Abs(lgm) < dithresh)
+                {
                     break;
+                }
 
                 if (x <= 0.0)
+                {
                     break;
+                }
 
                 if (yy >= y)
                 {
@@ -847,9 +928,14 @@ namespace Accord.Math
                         d = 0.5;
                     }
                     else if (dir > 1)
+                    {
                         d = 0.5 * d + 0.5;
+                    }
                     else
+                    {
                         d = (y - yl) / (yh - yl);
+                    }
+
                     dir += 1;
                 }
                 else
@@ -862,19 +948,24 @@ namespace Accord.Math
                         d = 0.5;
                     }
                     else if (dir < -1)
+                    {
                         d = 0.5 * d;
+                    }
                     else
+                    {
                         d = (y - yl) / (yh - yl);
+                    }
+
                     dir -= 1;
                 }
             }
 
-            if (x == 0.0 || Double.IsNaN(x))
+            if (x == 0.0 || double.IsNaN(x))
+            {
                 throw new ArithmeticException();
+            }
 
             return x;
         }
-
-
     }
 }

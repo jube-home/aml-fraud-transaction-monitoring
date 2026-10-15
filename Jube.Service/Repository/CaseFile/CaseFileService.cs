@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -12,15 +12,17 @@
  */
 
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseFile;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseFile;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Repository.CaseFile.Models;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -33,7 +35,6 @@ namespace Jube.Service.Repository.CaseFile
     {
         private const int MaxFileBytes = 25 * 1024 * 1024;
         private const int MaxFileNameLength = 255;
-
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
         private readonly CaseRepository caseRepository;
@@ -59,6 +60,8 @@ namespace Jube.Service.Repository.CaseFile
             repository = new RuleRepository(dbContext, userName);
             caseRepository = new CaseRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseFileService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -121,6 +124,7 @@ namespace Jube.Service.Repository.CaseFile
         {
             using var op = OperationScope.Start("CaseFile", "Upload", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseFile.Upload: entry caseId={caseId} user={userName}");
@@ -131,6 +135,7 @@ namespace Jube.Service.Repository.CaseFile
                 EnsurePermitted("CaseFile.Upload");
 
                 var failures = new List<ValidationFailure>();
+
                 if (string.IsNullOrWhiteSpace(caseKey))
                 {
                     failures.Add(new ValidationFailure(nameof(caseKey), strings[CaseFileResources.CaseKeyRequired])
@@ -161,6 +166,7 @@ namespace Jube.Service.Repository.CaseFile
                 }
 
                 var existingCase = await caseRepository.GetByIdActiveOnlyAsync(caseId, token).ConfigureAwait(false);
+
                 if (existingCase is null)
                 {
                     if (log.IsWarnEnabled)
@@ -243,6 +249,7 @@ namespace Jube.Service.Repository.CaseFile
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseFile.Upload: cancelled caseId={caseId} user={userName}");
@@ -267,6 +274,7 @@ namespace Jube.Service.Repository.CaseFile
         {
             using var op = OperationScope.Start("CaseFile", "Remove", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseFile.Remove: entry id={id} user={userName}");
@@ -300,6 +308,7 @@ namespace Jube.Service.Repository.CaseFile
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseFile.Remove: cancelled id={id} user={userName}");
@@ -319,6 +328,7 @@ namespace Jube.Service.Repository.CaseFile
         {
             using var op = OperationScope.Start("CaseFile", "Generate", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseFile.Generate: entry id={id} user={userName}");
@@ -327,6 +337,7 @@ namespace Jube.Service.Repository.CaseFile
             try
             {
                 EnsurePermitted("CaseFile.Generate");
+
                 var existingFile = await EnsureFileVisibleAsync("CaseFile.Generate", id, token)
                     .ConfigureAwait(false);
 
@@ -348,6 +359,7 @@ namespace Jube.Service.Repository.CaseFile
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseFile.Generate: cancelled id={id} user={userName}");
@@ -375,6 +387,7 @@ namespace Jube.Service.Repository.CaseFile
         {
             using var op = OperationScope.Start("CaseFile", "GetByCaseKeyValue", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseFile.GetByCaseKeyValue: entry key={key} user={userName}");
@@ -383,9 +396,11 @@ namespace Jube.Service.Repository.CaseFile
             try
             {
                 EnsurePermitted("CaseFile.GetByCaseKeyValue");
+
                 var dtos = CaseFileMapper.ToDto(
                     await repository.GetByCaseKeyValueActiveOnlyAsync(key, value, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 return dtos;
             }
             catch (ForbiddenException)
@@ -396,6 +411,7 @@ namespace Jube.Service.Repository.CaseFile
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseFile.GetByCaseKeyValue: cancelled key={key} user={userName}");
@@ -415,10 +431,12 @@ namespace Jube.Service.Repository.CaseFile
         {
             var candidate = (name ?? string.Empty).Replace('\\', '/');
             candidate = candidate[(candidate.LastIndexOf('/') + 1)..];
+
             var cleaned = new string(candidate
                 .Where(c => !char.IsControl(c) && c != '"' && c != '<' && c != '>' && c != '|' && c != ':' &&
                             c != '*' && c != '?' && c != '\u202E')
                 .ToArray()).Trim().TrimStart('.');
+
             if (cleaned.Length > MaxFileNameLength)
             {
                 cleaned = cleaned[..MaxFileNameLength];
@@ -430,7 +448,7 @@ namespace Jube.Service.Repository.CaseFile
         private static string SafeContentType(string? contentType)
         {
             if (string.IsNullOrWhiteSpace(contentType) || contentType.Length > 127 ||
-                !System.Text.RegularExpressions.Regex.IsMatch(contentType,
+                !Regex.IsMatch(contentType,
                     "^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*$"))
             {
                 return "application/octet-stream";
@@ -442,6 +460,7 @@ namespace Jube.Service.Repository.CaseFile
         private async Task<RulePoco> EnsureFileVisibleAsync(string op, int id, CancellationToken token)
         {
             var existingFile = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
             if (existingFile is null)
             {
                 if (log.IsWarnEnabled)
@@ -464,6 +483,7 @@ namespace Jube.Service.Repository.CaseFile
 
             var existingCase = await caseRepository.GetByIdActiveOnlyAsync(existingFile.CaseId.Value, token)
                 .ConfigureAwait(false);
+
             if (existingCase is null)
             {
                 if (log.IsWarnEnabled)

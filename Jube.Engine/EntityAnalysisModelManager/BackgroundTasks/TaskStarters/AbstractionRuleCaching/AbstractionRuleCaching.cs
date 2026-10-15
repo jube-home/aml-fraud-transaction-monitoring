@@ -40,6 +40,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), entityAnalysisModel.Services.Log);
+
             var abstractionRuleCachingCacheService = new AbstractionRuleCachingCacheService(entityAnalysisModel);
             var abstractionRuleCachingRepository = new AbstractionRuleCachingRepository(dbContext, entityAnalysisModel);
             var abstractionRuleCachingQueries = new AbstractionRuleCachingQueries(dbContext, entityAnalysisModel);
@@ -55,6 +56,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 }
 
                 var processedGroupingValues = 0;
+
                 foreach (var (key, value) in entityAnalysisModel.Snapshot.DistinctSearchKeys)
                 {
                     token.ThrowIfCancellationRequested();
@@ -68,6 +70,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                     }
 
                     var toDate = DateTime.UtcNow;
+
                     var entityAnalysisModelsSearchKeyCalculationInstanceId =
                         await abstractionRuleCachingRepository
                             .InsertEntityAnalysisModelsSearchKeyCalculationInstancesAsync(value, toDate, token)
@@ -146,6 +149,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                                 ExhaustiveAdaptation =
                                     new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .ExhaustiveModels.Count),
+                                AdvancedAnalyticsAdaptation =
+                                    new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
+                                        .AdvancedAnalyticsModels.Count),
                                 InvokeTaskPerformance = new InvokeTaskPerformance()
                             };
 
@@ -250,6 +256,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             }
 
                             processedGroupingValues += 1;
+
                             await abstractionRuleCachingRepository
                                 .UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesProcessedValuesCountAsync(
                                     entityAnalysisModelsSearchKeyCalculationInstanceId,
@@ -301,6 +308,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 CancellationToken token = default)
         {
             ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> values = null;
+
             try
             {
                 var logicHashMatches = new Dictionary<string, List<DictionaryNoBoxing<string>>>();
@@ -331,6 +339,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                         }
 
                         List<DictionaryNoBoxing<string>> matches;
+
                         if (logicHashMatches.TryGetValue(evaluateAbstractionRule.LogicHash, out var match))
                         {
                             matches = match;
@@ -353,6 +362,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                                 ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel.Snapshot, x,
                                     null,
                                     entityAnalysisModel.Services.Log));
+
                             logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
 
                             if (entityAnalysisModel.Services.Log.IsInfoEnabled)

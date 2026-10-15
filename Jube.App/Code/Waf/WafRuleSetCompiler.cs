@@ -28,9 +28,11 @@ namespace Jube.App.Code.Waf
             int maxMatchTimeoutMilliseconds, ILog log = null)
         {
             var compiledSignatures = new List<WafCompiledSignature>();
+
             foreach (var signature in signatures ?? [])
             {
                 var compiled = CompileSignature(signature, maxMatchTimeoutMilliseconds, log);
+
                 if (compiled != null)
                 {
                     compiledSignatures.Add(compiled);
@@ -38,9 +40,11 @@ namespace Jube.App.Code.Waf
             }
 
             var compiledExceptions = new List<WafCompiledException>();
+
             foreach (var exception in exceptions ?? [])
             {
                 var compiled = CompileException(exception, maxMatchTimeoutMilliseconds, log);
+
                 if (compiled != null)
                 {
                     compiledExceptions.Add(compiled);
@@ -60,6 +64,7 @@ namespace Jube.App.Code.Waf
 
             var regex = TryCompile(signature.Pattern, signature.MatchTimeoutMilliseconds, maxMatchTimeoutMilliseconds,
                 $"signature '{signature.Name}'", log);
+
             if (regex == null)
             {
                 return null;
@@ -86,16 +91,19 @@ namespace Jube.App.Code.Waf
 
             var routeRegex = TryCompile(exception.RouteRegex, null, maxMatchTimeoutMilliseconds,
                 $"exception '{exception.Name}' route", log);
+
             if (routeRegex == null)
             {
                 return null;
             }
 
             Regex fieldRegex = null;
+
             if (!string.IsNullOrEmpty(exception.FieldRegex))
             {
                 fieldRegex = TryCompile(exception.FieldRegex, null, maxMatchTimeoutMilliseconds,
                     $"exception '{exception.Name}' field", log);
+
                 if (fieldRegex == null)
                 {
                     return null;
@@ -116,6 +124,7 @@ namespace Jube.App.Code.Waf
             int maxMatchTimeoutMilliseconds, string description, ILog log)
         {
             var timeoutMilliseconds = requestedTimeoutMilliseconds ?? DefaultMatchTimeoutMilliseconds;
+
             if (timeoutMilliseconds <= 0 || timeoutMilliseconds > maxMatchTimeoutMilliseconds)
             {
                 timeoutMilliseconds = maxMatchTimeoutMilliseconds;
@@ -129,6 +138,7 @@ namespace Jube.App.Code.Waf
             catch (ArgumentException ex)
             {
                 log?.Error($"Waf: Ignoring {description} because its pattern did not compile: {ex.Message}");
+
                 return null;
             }
         }

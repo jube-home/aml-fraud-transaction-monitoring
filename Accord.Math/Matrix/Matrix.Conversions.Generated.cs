@@ -1,23 +1,33 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 // ======================================================================
@@ -28,6 +38,7 @@
 namespace Accord.Math
 {
     using System;
+    using System.Runtime.InteropServices;
     using System.CodeDom.Compiler;
     using Accord.Math;
     using System.Runtime.CompilerServices;
@@ -122,10 +133,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this int[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (short* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -144,10 +154,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this int[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (short* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -303,10 +312,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this int[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (float* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -325,10 +333,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this int[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (float* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -484,10 +491,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this int[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (double* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -506,10 +512,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this int[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (double* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -665,10 +670,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this int[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (long* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -687,10 +691,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this int[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (long* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -846,10 +849,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this int[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (byte* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -868,10 +870,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this int[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (byte* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -1027,10 +1028,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this int[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (sbyte* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -1049,10 +1049,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this int[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (sbyte* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -1208,10 +1207,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this int[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (decimal* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -1230,10 +1228,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this int[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (decimal* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -1389,10 +1386,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this int[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (bool* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -1411,10 +1407,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this int[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (bool* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -1920,10 +1915,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this int[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (Complex* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -1942,10 +1936,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this int[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (int* src = value)
-				fixed (Complex* dst = result)
+				Span<int> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -2101,10 +2094,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this short[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (int* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -2123,10 +2115,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this short[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (int* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -2282,10 +2273,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this short[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (float* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -2304,10 +2294,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this short[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (float* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -2463,10 +2452,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this short[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (double* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -2485,10 +2473,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this short[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (double* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -2644,10 +2631,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this short[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (long* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -2666,10 +2652,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this short[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (long* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -2825,10 +2810,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this short[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (byte* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -2847,10 +2831,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this short[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (byte* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -3006,10 +2989,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this short[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (sbyte* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -3028,10 +3010,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this short[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (sbyte* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -3187,10 +3168,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this short[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (decimal* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -3209,10 +3189,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this short[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (decimal* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -3368,10 +3347,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this short[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (bool* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -3390,10 +3368,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this short[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (bool* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -3899,10 +3876,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this short[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (Complex* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -3921,10 +3897,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this short[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (short* src = value)
-				fixed (Complex* dst = result)
+				Span<short> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -4080,10 +4055,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this float[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (int* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -4102,10 +4076,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this float[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (int* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -4261,10 +4234,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this float[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (short* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -4283,10 +4255,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this float[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (short* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -4442,10 +4413,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this float[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (double* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -4464,10 +4434,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this float[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (double* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -4623,10 +4592,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this float[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (long* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -4645,10 +4613,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this float[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (long* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -4804,10 +4771,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this float[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (byte* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -4826,10 +4792,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this float[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (byte* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -4985,10 +4950,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this float[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (sbyte* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -5007,10 +4971,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this float[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (sbyte* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -5166,10 +5129,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this float[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (decimal* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -5188,10 +5150,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this float[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (decimal* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -5347,10 +5308,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this float[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (bool* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -5369,10 +5329,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this float[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (bool* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -5878,10 +5837,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this float[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (Complex* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -5900,10 +5858,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this float[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (float* src = value)
-				fixed (Complex* dst = result)
+				Span<float> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -6059,10 +6016,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this double[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (int* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -6081,10 +6037,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this double[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (int* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -6240,10 +6195,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this double[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (short* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -6262,10 +6216,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this double[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (short* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -6421,10 +6374,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this double[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (float* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -6443,10 +6395,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this double[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (float* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -6602,10 +6553,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this double[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (long* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -6624,10 +6574,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this double[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (long* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -6783,10 +6732,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this double[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (byte* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -6805,10 +6753,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this double[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (byte* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -6964,10 +6911,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this double[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (sbyte* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -6986,10 +6932,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this double[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (sbyte* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -7145,10 +7090,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this double[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (decimal* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -7167,10 +7111,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this double[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (decimal* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -7326,10 +7269,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this double[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (bool* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -7348,10 +7290,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this double[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (bool* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -7857,10 +7798,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this double[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (Complex* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -7879,10 +7819,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this double[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (double* src = value)
-				fixed (Complex* dst = result)
+				Span<double> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -8038,10 +7977,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this long[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (int* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -8060,10 +7998,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this long[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (int* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -8219,10 +8156,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this long[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (short* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -8241,10 +8177,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this long[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (short* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -8400,10 +8335,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this long[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (float* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -8422,10 +8356,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this long[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (float* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -8581,10 +8514,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this long[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (double* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -8603,10 +8535,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this long[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (double* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -8762,10 +8693,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this long[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (byte* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -8784,10 +8714,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this long[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (byte* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -8943,10 +8872,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this long[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (sbyte* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -8965,10 +8893,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this long[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (sbyte* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -9124,10 +9051,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this long[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (decimal* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -9146,10 +9072,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this long[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (decimal* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -9305,10 +9230,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this long[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (bool* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -9327,10 +9251,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this long[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (bool* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -9836,10 +9759,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this long[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (Complex* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -9858,10 +9780,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this long[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (long* src = value)
-				fixed (Complex* dst = result)
+				Span<long> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -10017,10 +9938,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this byte[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (int* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -10039,10 +9959,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this byte[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (int* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -10198,10 +10117,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this byte[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (short* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -10220,10 +10138,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this byte[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (short* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -10379,10 +10296,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this byte[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (float* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -10401,10 +10317,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this byte[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (float* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -10560,10 +10475,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this byte[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (double* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -10582,10 +10496,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this byte[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (double* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -10741,10 +10654,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this byte[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (long* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -10763,10 +10675,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this byte[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (long* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -10922,10 +10833,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this byte[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (sbyte* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -10944,10 +10854,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this byte[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (sbyte* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -11103,10 +11012,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this byte[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (decimal* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -11125,10 +11033,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this byte[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (decimal* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -11284,10 +11191,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this byte[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (bool* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -11306,10 +11212,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this byte[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (bool* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -11815,10 +11720,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this byte[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (Complex* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -11837,10 +11741,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this byte[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (byte* src = value)
-				fixed (Complex* dst = result)
+				Span<byte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -11996,10 +11899,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this sbyte[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (int* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -12018,10 +11920,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this sbyte[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (int* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -12177,10 +12078,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this sbyte[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (short* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -12199,10 +12099,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this sbyte[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (short* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -12358,10 +12257,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this sbyte[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (float* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -12380,10 +12278,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this sbyte[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (float* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -12539,10 +12436,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this sbyte[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (double* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -12561,10 +12457,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this sbyte[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (double* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -12720,10 +12615,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this sbyte[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (long* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -12742,10 +12636,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this sbyte[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (long* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -12901,10 +12794,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this sbyte[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (byte* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -12923,10 +12815,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this sbyte[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (byte* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -13082,10 +12973,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this sbyte[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (decimal* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -13104,10 +12994,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this sbyte[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (decimal* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i];
@@ -13263,10 +13152,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this sbyte[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (bool* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -13285,10 +13173,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this sbyte[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (bool* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -13794,10 +13681,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this sbyte[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (Complex* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -13816,10 +13702,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this sbyte[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (sbyte* src = value)
-				fixed (Complex* dst = result)
+				Span<sbyte> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -13975,10 +13860,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this decimal[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (int* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -13997,10 +13881,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this decimal[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (int* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i];
@@ -14156,10 +14039,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this decimal[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (short* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -14178,10 +14060,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this decimal[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (short* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i];
@@ -14337,10 +14218,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this decimal[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (float* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -14359,10 +14239,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this decimal[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (float* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i];
@@ -14518,10 +14397,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this decimal[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (double* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -14540,10 +14418,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this decimal[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (double* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i];
@@ -14699,10 +14576,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this decimal[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (long* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -14721,10 +14597,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this decimal[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (long* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i];
@@ -14880,10 +14755,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this decimal[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (byte* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -14902,10 +14776,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this decimal[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (byte* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i];
@@ -15061,10 +14934,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this decimal[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (sbyte* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -15083,10 +14955,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this decimal[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (sbyte* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i];
@@ -15242,10 +15113,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this decimal[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (bool* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -15264,10 +15134,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this decimal[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (bool* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] != 0;
@@ -15773,10 +15642,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this decimal[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (Complex* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -15795,10 +15663,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this decimal[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (decimal* src = value)
-				fixed (Complex* dst = result)
+				Span<decimal> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Complex)src[i];
@@ -15954,10 +15821,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this bool[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (int* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int32)1 : (Int32)0;
@@ -15976,10 +15842,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this bool[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (int* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int32)1 : (Int32)0;
@@ -16135,10 +16000,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this bool[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (short* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int16)1 : (Int16)0;
@@ -16157,10 +16021,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this bool[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (short* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int16)1 : (Int16)0;
@@ -16316,10 +16179,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this bool[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (float* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Single)1 : (Single)0;
@@ -16338,10 +16200,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this bool[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (float* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Single)1 : (Single)0;
@@ -16497,10 +16358,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this bool[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (double* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Double)1 : (Double)0;
@@ -16519,10 +16379,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this bool[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (double* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Double)1 : (Double)0;
@@ -16678,10 +16537,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this bool[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (long* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int64)1 : (Int64)0;
@@ -16700,10 +16558,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this bool[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (long* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Int64)1 : (Int64)0;
@@ -16859,10 +16716,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this bool[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (byte* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Byte)1 : (Byte)0;
@@ -16881,10 +16737,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this bool[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (byte* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Byte)1 : (Byte)0;
@@ -17040,10 +16895,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this bool[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (sbyte* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (SByte)1 : (SByte)0;
@@ -17062,10 +16916,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this bool[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (sbyte* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (SByte)1 : (SByte)0;
@@ -17221,10 +17074,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this bool[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (decimal* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Decimal)1 : (Decimal)0;
@@ -17243,10 +17095,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this bool[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (decimal* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Decimal)1 : (Decimal)0;
@@ -17752,10 +17603,9 @@ namespace Accord.Math
 #endif
         public static Complex[,] ToComplex(this bool[,] value, Complex[,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (Complex* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Complex)1 : (Complex)0;
@@ -17774,10 +17624,9 @@ namespace Accord.Math
 #endif
         public static Complex[,,] ToComplex(this bool[,,] value, Complex[,,] result)
         {
-					unsafe
 			{
-				fixed (bool* src = value)
-				fixed (Complex* dst = result)
+				Span<bool> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<Complex> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i] ? (Complex)1 : (Complex)0;
@@ -21608,10 +21457,9 @@ namespace Accord.Math
 #endif
         public static int[,] ToInt32(this Complex[,] value, int[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (int* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i].Real;
@@ -21630,10 +21478,9 @@ namespace Accord.Math
 #endif
         public static int[,,] ToInt32(this Complex[,,] value, int[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (int* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<int> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int32)src[i].Real;
@@ -21789,10 +21636,9 @@ namespace Accord.Math
 #endif
         public static short[,] ToInt16(this Complex[,] value, short[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (short* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i].Real;
@@ -21811,10 +21657,9 @@ namespace Accord.Math
 #endif
         public static short[,,] ToInt16(this Complex[,,] value, short[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (short* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<short> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int16)src[i].Real;
@@ -21970,10 +21815,9 @@ namespace Accord.Math
 #endif
         public static float[,] ToSingle(this Complex[,] value, float[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (float* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i].Real;
@@ -21992,10 +21836,9 @@ namespace Accord.Math
 #endif
         public static float[,,] ToSingle(this Complex[,,] value, float[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (float* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<float> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Single)src[i].Real;
@@ -22151,10 +21994,9 @@ namespace Accord.Math
 #endif
         public static double[,] ToDouble(this Complex[,] value, double[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (double* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i].Real;
@@ -22173,10 +22015,9 @@ namespace Accord.Math
 #endif
         public static double[,,] ToDouble(this Complex[,,] value, double[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (double* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<double> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Double)src[i].Real;
@@ -22332,10 +22173,9 @@ namespace Accord.Math
 #endif
         public static long[,] ToInt64(this Complex[,] value, long[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (long* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i].Real;
@@ -22354,10 +22194,9 @@ namespace Accord.Math
 #endif
         public static long[,,] ToInt64(this Complex[,,] value, long[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (long* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<long> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Int64)src[i].Real;
@@ -22513,10 +22352,9 @@ namespace Accord.Math
 #endif
         public static byte[,] ToByte(this Complex[,] value, byte[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (byte* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i].Real;
@@ -22535,10 +22373,9 @@ namespace Accord.Math
 #endif
         public static byte[,,] ToByte(this Complex[,,] value, byte[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (byte* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<byte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Byte)src[i].Real;
@@ -22694,10 +22531,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,] ToSByte(this Complex[,] value, sbyte[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (sbyte* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i].Real;
@@ -22716,10 +22552,9 @@ namespace Accord.Math
 #endif
         public static sbyte[,,] ToSByte(this Complex[,,] value, sbyte[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (sbyte* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<sbyte> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, sbyte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (SByte)src[i].Real;
@@ -22875,10 +22710,9 @@ namespace Accord.Math
 #endif
         public static decimal[,] ToDecimal(this Complex[,] value, decimal[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (decimal* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i].Real;
@@ -22897,10 +22731,9 @@ namespace Accord.Math
 #endif
         public static decimal[,,] ToDecimal(this Complex[,,] value, decimal[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (decimal* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<decimal> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = (Decimal)src[i].Real;
@@ -23056,10 +22889,9 @@ namespace Accord.Math
 #endif
         public static bool[,] ToBoolean(this Complex[,] value, bool[,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (bool* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i].Real != 0;
@@ -23078,10 +22910,9 @@ namespace Accord.Math
 #endif
         public static bool[,,] ToBoolean(this Complex[,,] value, bool[,,] result)
         {
-					unsafe
 			{
-				fixed (Complex* src = value)
-				fixed (bool* dst = result)
+				Span<Complex> src = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, Complex>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+				Span<bool> dst = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, bool>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
 				{
 					for (int i = 0; i < value.Length; i++)
 						dst[i] = src[i].Real != 0;

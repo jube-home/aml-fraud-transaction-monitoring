@@ -86,6 +86,7 @@ namespace Jube.Test.Cache.Redis
                 new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
             await repository.UpsertReferenceDateAsync(1, modelGuid,
                 new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             var result = await repository.GetReferenceDateAsync(1, modelGuid);
 
             result.Should().Be(new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc));

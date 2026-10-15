@@ -208,6 +208,7 @@ $.get("/api/RoleRegistry",
             wirePasswordHash.value(true);
 
             ReadyNew();
+            window.AskJoobySetPageContext?.("UserRegistry", "new", null);
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
@@ -223,6 +224,12 @@ $.get("/api/RoleRegistry",
                     addKey.show();
 
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("UserRegistry", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     }

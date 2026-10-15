@@ -37,6 +37,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                     var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                         context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
                     try
                     {
                         if (context.Services.Log.IsDebugEnabled)
@@ -143,6 +144,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private async Task<IEnumerable<ExpiredCase>> GetExpiredCasesPendingAsync(DbContext dbContext)
         {
             var expiredCases = new List<ExpiredCase>();
+
             try
             {
                 var repository = new CaseRepository(dbContext);

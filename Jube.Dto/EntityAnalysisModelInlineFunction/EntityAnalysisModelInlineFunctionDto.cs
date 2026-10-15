@@ -16,6 +16,11 @@ using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 using EditorAttribute = Jube.Dto.Forms.EditorAttribute;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.EntityAnalysisModelInlineFunction
 {
     [FormEndpoint("EntityAnalysisModelInlineFunction")]
@@ -65,6 +70,10 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
         [FormField(Group = "Behaviour", Order = 20, Widget = "switch")]
         [NewDefault(false)]
         public bool ResponsePayload { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this field participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

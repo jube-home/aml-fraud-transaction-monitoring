@@ -1,61 +1,70 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Models.Markov
 {
-    using System;
-
     /// <summary>
-    ///   Common interface for sequence classifiers using <see cref="IHiddenMarkovModel">
-    ///   hidden Markov models</see>.
+    ///     Common interface for sequence classifiers using
+    ///     <see cref="IHiddenMarkovModel">
+    ///         hidden Markov models
+    ///     </see>
+    ///     .
     /// </summary>
-    ///
     [Obsolete("Please use IMulticlassClassifier from Accord.MachineLearning namespace.")]
     public interface IHiddenMarkovClassifier
     {
-
         /// <summary>
-        ///   Computes the most likely class for a given sequence.
+        ///     Gets the number of classes which can be recognized by this classifier.
         /// </summary>
-        /// 
-        /// <param name="sequence">The sequence of observations.</param>
-        /// <param name="responsibilities">The class responsibilities (or
-        /// the probability of the sequence to belong to each class). When
-        /// using threshold models, the sum of the probabilities will not
-        /// equal one, and the amount left was the threshold probability.
-        /// If a threshold model is not being used, the array should sum to
-        /// one.</param>
-        /// 
-        /// <returns>Return the label of the given sequence, or -1 if it has
-        /// been rejected.</returns>
-        /// 
-        int Compute(Array sequence, out double[] responsibilities);
-
-        /// <summary>
-        ///   Gets the number of classes which can be recognized by this classifier.
-        /// </summary>
-        /// 
         int Classes { get; }
 
+        /// <summary>
+        ///     Computes the most likely class for a given sequence.
+        /// </summary>
+        /// <param name="sequence">The sequence of observations.</param>
+        /// <param name="responsibilities">
+        ///     The class responsibilities (or
+        ///     the probability of the sequence to belong to each class). When
+        ///     using threshold models, the sum of the probabilities will not
+        ///     equal one, and the amount left was the threshold probability.
+        ///     If a threshold model is not being used, the array should sum to
+        ///     one.
+        /// </param>
+        /// <returns>
+        ///     Return the label of the given sequence, or -1 if it has
+        ///     been rejected.
+        /// </returns>
+        int Compute(Array sequence, out double[] responsibilities);
     }
-
 }

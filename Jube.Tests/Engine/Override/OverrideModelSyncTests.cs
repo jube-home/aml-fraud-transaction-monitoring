@@ -66,6 +66,7 @@ namespace Jube.Test.Engine.Override
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>()
                     .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -73,6 +74,7 @@ namespace Jube.Test.Engine.Override
         private async Task<(int Id, Guid Guid)> CreateModelAsync(DbContext dbContext)
         {
             var modelGuid = Guid.NewGuid();
+
             var saved = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModel
             {
                 Name = $"ZzTestOverrideModel{Guid.NewGuid():N}"[..40],
@@ -84,6 +86,7 @@ namespace Jube.Test.Engine.Override
 
             createdModelIdsForCleanup.Add(saved);
             createdModelGuidsForCleanup.Add(modelGuid);
+
             return (saved, modelGuid);
         }
 
@@ -100,7 +103,8 @@ namespace Jube.Test.Engine.Override
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain>
+                        { [modelId] = model }
                 }
             };
 
@@ -162,6 +166,7 @@ namespace Jube.Test.Engine.Override
             var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides.Should().ContainKey("CardFingerprint");
+
             overrides["CardFingerprint"].Keys.Should().BeEquivalentTo(["cdb7", "aaaa", "bbbb"],
                 "every suppressed value against the key must survive synchronisation, not only the last row");
         }
@@ -263,6 +268,7 @@ namespace Jube.Test.Engine.Override
 
             await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
+
             await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "QuietRule");
 
@@ -285,6 +291,7 @@ namespace Jube.Test.Engine.Override
             var (modelId, modelGuid) = await CreateModelAsync(dbContext);
 
             await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7");
+
             await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
 
@@ -296,6 +303,7 @@ namespace Jube.Test.Engine.Override
 
             overrideBinding.KindFor("BlacklistCard").Should().Be(EntityAnalysisModelOverrideKind.Force,
                 "a force override must not be masked by an all activation rules suppression");
+
             overrideBinding.KindFor("AnyOtherRule").Should().Be(EntityAnalysisModelOverrideKind.Suppress);
         }
 

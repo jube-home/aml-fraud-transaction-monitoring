@@ -1,57 +1,79 @@
-﻿// Accord Neural Net Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Random;
+using Accord.Neuro.Networks;
+using Accord.Neuro.Neurons;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Neuro.ActivationFunctions
 {
-    using System;
-    using AForge;
-    using Accord.Neuro.Neurons;
-    using Accord.Neuro.Networks;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Math.Random;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Bernoulli stochastic activation function.
+    ///     Bernoulli stochastic activation function.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The Bernoulli activation function can be used to create <see cref="StochasticNeuron">
-    ///   Stochastic Neurons</see>, which can in turn be used to create <see cref="DeepBeliefNetwork">
-    ///   Deep Belief Networks</see> and <see cref="RestrictedBoltzmannMachine">Restricted Boltzmann
-    ///   Machines</see>. The use of a Bernoulli function is indicated when the inputs of a problem
-    ///   are discrete, it is, are either 0 or 1. When the inputs are continuous, the use of a
-    ///   <see cref="GaussianFunction"/> might be more indicated.</para>
-    /// <para>
-    ///   As a <see cref="IStochasticFunction">stochastic activation function</see>, the Bernoulli
-    ///   function is able to generate values following a statistic probability distribution. In
-    ///   this case, the Bernoulli function follows a <see cref="BernoulliDistribution">Bernoulli
-    ///   distribution</see> with its <see cref="BernoulliDistribution.Mean">mean</see> given by
-    ///   the output of this class' <see cref="Function">sigmoidal function</see>.</para>
+    ///     <para>
+    ///         The Bernoulli activation function can be used to create
+    ///         <see cref="StochasticNeuron">
+    ///             Stochastic Neurons
+    ///         </see>
+    ///         , which can in turn be used to create
+    ///         <see cref="DeepBeliefNetwork">
+    ///             Deep Belief Networks
+    ///         </see>
+    ///         and
+    ///         <see cref="RestrictedBoltzmannMachine">
+    ///             Restricted Boltzmann
+    ///             Machines
+    ///         </see>
+    ///         . The use of a Bernoulli function is indicated when the inputs of a problem
+    ///         are discrete, it is, are either 0 or 1. When the inputs are continuous, the use of a
+    ///         <see cref="GaussianFunction" /> might be more indicated.
+    ///     </para>
+    ///     <para>
+    ///         As a <see cref="IStochasticFunction">stochastic activation function</see>, the Bernoulli
+    ///         function is able to generate values following a statistic probability distribution. In
+    ///         this case, the Bernoulli function follows a
+    ///         <see cref="BernoulliDistribution">
+    ///             Bernoulli
+    ///             distribution
+    ///         </see>
+    ///         with its <see cref="BernoulliDistribution.Mean">mean</see> given by
+    ///         the output of this class' <see cref="Function">sigmoidal function</see>.
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    ///   <code>
+    ///     <code>
     ///   // Create a Bernoulli function with sigmoid's alpha = 1
     ///   BernoulliFunction function = new BernoulliFunction();
     ///   
@@ -78,144 +100,130 @@ namespace Accord.Neuro.ActivationFunctions
     ///   double e = function.Derivative2(y: 0.5986876); // 0.240260
     ///   </code>
     /// </example>
-    /// 
-    /// <seealso cref="BernoulliDistribution"/>
-    /// <seealso cref="GaussianFunction"/>
-    /// <seealso cref="DeepBeliefNetwork"/>
-    /// 
+    /// <seealso cref="BernoulliDistribution" />
+    /// <seealso cref="GaussianFunction" />
+    /// <seealso cref="DeepBeliefNetwork" />
     [Serializable]
     public class BernoulliFunction : IStochasticFunction
     {
-
         private double alpha; // sigmoid's alpha value
 
         /// <summary>
-        ///   Sigmoid's alpha value.
+        ///     Initializes a new instance of the <see cref="BernoulliFunction" /> class.
         /// </summary>
-        /// 
-        /// <remarks><para>The value determines steepness of the function. Increasing value of
-        /// this property changes sigmoid to look more like a threshold function. Decreasing
-        /// value of this property makes sigmoid to be very smooth (slowly growing from its
-        /// minimum value to its maximum value).</para>
-        ///
-        /// <para>Default value is set to <b>1</b>.</para>
-        /// </remarks>
-        /// 
-        public double Alpha
-        {
-            get { return alpha; }
-            set { alpha = value; }
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="BernoulliFunction"/> class.
-        /// </summary>
-        /// 
         /// <param name="alpha">Sigmoid's alpha value. Default is 1.</param>
-        /// 
         public BernoulliFunction(double alpha)
         {
             this.alpha = alpha;
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BernoulliFunction"/> class.
+        ///     Initializes a new instance of the <see cref="BernoulliFunction" /> class.
         /// </summary>
-        /// 
         public BernoulliFunction()
-            : this(alpha: 1) { }
-
-
-        /// <summary>
-        /// Calculates function value.
-        /// </summary>
-        ///
-        /// <param name="x">Function input value.</param>
-        /// 
-        /// <returns>Function output value, <i>f(x)</i>.</returns>
-        ///
-        /// <remarks>The method calculates function value at point <paramref name="x"/>.</remarks>
-        ///
-        public double Function(double x)
+            : this(1)
         {
-            return (1 / (1 + Math.Exp(-alpha * x)));
         }
 
         /// <summary>
-        ///   Samples a value from the function given a input value.
+        ///     Sigmoid's alpha value.
         /// </summary>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         The value determines steepness of the function. Increasing value of
+        ///         this property changes sigmoid to look more like a threshold function. Decreasing
+        ///         value of this property makes sigmoid to be very smooth (slowly growing from its
+        ///         minimum value to its maximum value).
+        ///     </para>
+        ///     <para>Default value is set to <b>1</b>.</para>
+        /// </remarks>
+        public double Alpha
+        {
+            get => alpha;
+            set => alpha = value;
+        }
+
+        /// <summary>
+        ///     Calculates function value.
+        /// </summary>
         /// <param name="x">Function input value.</param>
-        /// 
+        /// <returns>Function output value, <i>f(x)</i>.</returns>
+        /// <remarks>The method calculates function value at point <paramref name="x" />.</remarks>
+        public double Function(double x)
+        {
+            return 1 / (1 + System.Math.Exp(-alpha * x));
+        }
+
+        /// <summary>
+        ///     Samples a value from the function given a input value.
+        /// </summary>
+        /// <param name="x">Function input value.</param>
         /// <returns>Draws a random value from the function.</returns>
-        /// 
         public double Generate(double x)
         {
-            double y = Function(x);
+            var y = Function(x);
             return y > Generator.Random.NextDouble() ? 1 : 0;
         }
 
-
-
         /// <summary>
-        ///   Samples a value from the function given a function output value.
+        ///     Samples a value from the function given a function output value.
         /// </summary>
-        /// 
-        /// <param name="y">The function output value. This is the value which was obtained
-        /// with the help of the <see cref="IActivationFunction.Function(double)"/> method.</param>
-        /// 
-        /// <remarks><para>The method calculates the same output value as the
-        /// <see cref="Generate"/> method, but it takes not the input <b>x</b> value
-        /// itself, but the function value, which was calculated previously with help
-        /// of the <see cref="IActivationFunction.Function(double)"/> method.</para>
+        /// <param name="y">
+        ///     The function output value. This is the value which was obtained
+        ///     with the help of the <see cref="IActivationFunction.Function(double)" /> method.
+        /// </param>
+        /// <remarks>
+        ///     <para>
+        ///         The method calculates the same output value as the
+        ///         <see cref="Generate" /> method, but it takes not the input <b>x</b> value
+        ///         itself, but the function value, which was calculated previously with help
+        ///         of the <see cref="IActivationFunction.Function(double)" /> method.
+        ///     </para>
         /// </remarks>
-        /// 
         /// <returns>Draws a random value from the function.</returns>
-        /// 
         public double Generate2(double y)
         {
             return y > Generator.Random.NextDouble() ? 1 : 0;
         }
 
         /// <summary>
-        /// Calculates function derivative.
+        ///     Calculates function derivative.
         /// </summary>
-        /// 
         /// <param name="x">Function input value.</param>
-        /// 
         /// <returns>Function derivative, <i>f'(x)</i>.</returns>
-        /// 
-        /// <remarks>The method calculates function derivative at point <paramref name="x"/>.</remarks>
-        ///
+        /// <remarks>The method calculates function derivative at point <paramref name="x" />.</remarks>
         public double Derivative(double x)
         {
-            double y = Function(x);
+            var y = Function(x);
 
-            return (alpha * y * (1 - y));
+            return alpha * y * (1 - y);
         }
 
         /// <summary>
-        /// Calculates function derivative.
+        ///     Calculates function derivative.
         /// </summary>
-        /// 
-        /// <param name="y">Function output value - the value, which was obtained
-        /// with the help of <see cref="Function"/> method.</param>
-        /// 
+        /// <param name="y">
+        ///     Function output value - the value, which was obtained
+        ///     with the help of <see cref="Function" /> method.
+        /// </param>
         /// <returns>Function derivative, <i>f'(x)</i>.</returns>
-        /// 
-        /// <remarks><para>The method calculates the same derivative value as the
-        /// <see cref="Derivative"/> method, but it takes not the input <b>x</b> value
-        /// itself, but the function value, which was calculated previously with
-        /// the help of <see cref="Function"/> method.</para>
-        /// 
-        /// <para><note>Some applications require as function value, as derivative value,
-        /// so they can save the amount of calculations using this method to calculate derivative.</note></para>
+        /// <remarks>
+        ///     <para>
+        ///         The method calculates the same derivative value as the
+        ///         <see cref="Derivative" /> method, but it takes not the input <b>x</b> value
+        ///         itself, but the function value, which was calculated previously with
+        ///         the help of <see cref="Function" /> method.
+        ///     </para>
+        ///     <para>
+        ///         <note>
+        ///             Some applications require as function value, as derivative value,
+        ///             so they can save the amount of calculations using this method to calculate derivative.
+        ///         </note>
+        ///     </para>
         /// </remarks>
-        /// 
         public double Derivative2(double y)
         {
-            return (alpha * y * (1 - y));
+            return alpha * y * (1 - y);
         }
-
     }
 }

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsDaylightSavingTimeIn(this DateTime @this, string? zoneId)
         {
             var zone = TimeZoneSupport.Find(zoneId);
+
             return zone is not null && zone.IsDaylightSavingTime(DateTime.SpecifyKind(@this, DateTimeKind.Utc));
         }
     }

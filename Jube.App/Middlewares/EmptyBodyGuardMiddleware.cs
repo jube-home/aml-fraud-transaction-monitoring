@@ -36,6 +36,7 @@ namespace Jube.App.Middlewares
             }
 
             var accepts = endpointMetadata?.GetMetadata<IAcceptsMetadata>();
+
             if (accepts != null
                 && accepts.ContentTypes.Any(c => c.Contains("json", StringComparison.OrdinalIgnoreCase))
                 && (HttpMethods.IsPost(request.Method) || HttpMethods.IsPut(request.Method)
@@ -44,6 +45,7 @@ namespace Jube.App.Middlewares
                 && request.ContentLength == 0)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
                 return;
             }
 
@@ -56,20 +58,25 @@ namespace Jube.App.Middlewares
                 if (request.ContentLength > MaxInspectedBodyBytes)
                 {
                     context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+
                     return;
                 }
 
                 request.EnableBuffering(bufferThreshold: 30 * 1024, bufferLimit: MaxInspectedBodyBytes + 32 * 1024L);
+
                 using var memory = new MemoryStream(request.ContentLength.HasValue
                     ? (int)request.ContentLength.Value
                     : 0);
+
                 var chunk = new byte[16 * 1024];
                 int count;
+
                 while ((count = await request.Body.ReadAsync(chunk.AsMemory(), context.RequestAborted)) > 0)
                 {
                     if (memory.Length + count > MaxInspectedBodyBytes)
                     {
                         context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+
                         return;
                     }
 
@@ -78,15 +85,18 @@ namespace Jube.App.Middlewares
 
                 request.Body.Position = 0;
                 var body = memory.GetBuffer().AsSpan(0, (int)memory.Length);
+
                 if (request.ContentLength is null && memory.Length == 0)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
                     return;
                 }
 
                 if (ContainsNul(body) || HasNonFiniteNumber(body))
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
                     return;
                 }
             }
@@ -102,6 +112,7 @@ namespace Jube.App.Middlewares
             {
                 var reader = new Utf8JsonReader(body,
                     new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.Number

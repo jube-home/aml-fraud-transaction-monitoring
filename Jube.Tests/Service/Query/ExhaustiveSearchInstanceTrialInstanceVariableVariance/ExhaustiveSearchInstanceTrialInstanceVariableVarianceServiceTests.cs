@@ -52,7 +52,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdVariableIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -63,10 +62,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
                 .Where(w => createdCollinearityIds.Contains(w.Id)).DeleteAsync();
             await dbContext.ExhaustiveSearchInstanceVariable
                 .Where(w => createdVariableIds.Contains(w.Id)).DeleteAsync();
+
             foreach (var id in createdSearchInstanceIds)
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -75,6 +76,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -115,6 +117,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
                     StatusId = 0
                 });
             createdSearchInstanceIds.Add(searchInstance.Id);
+
             return searchInstance.Id;
         }
 
@@ -134,6 +137,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
                     VariableSequence = 1
                 });
             createdVariableIds.Add(id);
+
             return id;
         }
 
@@ -155,6 +159,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
         {
             var searchInstanceId = await InsertSearchInstanceAsync(dbContext, createdUser);
             var subjectId = await InsertVariableAsync(dbContext, searchInstanceId, Nm("Subject"));
+
             foreach (var (name, correlation, rank) in correlations)
             {
                 var testId = await InsertVariableAsync(dbContext, searchInstanceId, name);
@@ -186,6 +191,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -194,6 +200,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -234,8 +241,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
             var first = Nm("R1");
             var second = Nm("R2");
             var third = Nm("R3");
+
             var variableId = await SeedAsync(dbContext, fx.Seed.UserWithPermission,
                 (third, 0.1, 3), (first, 0.9, 1), (second, -0.5, 2));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(variableId);
@@ -251,12 +260,15 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
             var kept = Nm("Kept");
             var gone = Nm("Gone");
             var variableId = await SeedAsync(dbContext, fx.Seed.UserWithPermission, (kept, 0.5, 1), (gone, 0.9, 2));
+
             var goneVariableId = await dbContext.ExhaustiveSearchInstanceVariable.Where(w => w.Name == gone)
                 .Select(s => s.Id).SingleAsync();
+
             await dbContext.ExhaustiveSearchInstanceVariableMultiCollinearity
                 .Where(w => w.ExhaustiveSearchInstanceVariableId == variableId
                             && w.TestExhaustiveSearchInstanceVariableId == goneVariableId)
                 .Set(w => w.Deleted, (byte?)1).UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(variableId)).Select(r => r.Name).Should().Equal(kept);
@@ -411,6 +423,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableV
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var variableId = await SeedAsync(dbContext, fx.Seed.UserWithPermission, (Nm("T"), 0.5, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,28 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelIntegrity;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelIntegrity(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelIntegrityModels", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists the tenant's models that can be checked."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelIntegrityCheck", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Checks a model's dependencies, compilation, configuration and engine state; returns coded findings."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelIntegrityEngineState", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns what the engine instances have loaded and started for a model."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelIntegrityGraph", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns a model's dependency graph as nodes and edges, optionally centred on one entity.")
-        ]);
+        static partial void AddEntityAnalysisModelIntegrity(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelIntegrityModels", OperationKind.Read, true,
+                    false,
+                    "Lists the tenant's models that can be checked.",
+                    EntityAnalysisModelIntegrityService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelIntegrityCheck", OperationKind.Read, true,
+                    false,
+                    "Checks a model's dependencies, compilation, configuration and engine state; returns coded findings.",
+                    EntityAnalysisModelIntegrityService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelIntegrityEngineState", OperationKind.Read, true,
+                    false,
+                    "Returns what the engine instances have loaded and started for a model.",
+                    EntityAnalysisModelIntegrityService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelIntegrityGraph", OperationKind.Read, true,
+                    false,
+                    "Returns a model's dependency graph as nodes and edges, optionally centred on one entity.",
+                    EntityAnalysisModelIntegrityService.RequiredPermissions)
+            ]);
+        }
     }
 }

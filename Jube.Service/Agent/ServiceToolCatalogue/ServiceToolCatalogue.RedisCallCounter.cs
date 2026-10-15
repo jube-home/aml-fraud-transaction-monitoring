@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.RedisCallCounter;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -28,7 +31,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Redis load is coming from by area of the system. Supports optional date-range and " +
                     "substring search (Call) filters, not scoped to any tenant. Also accepts samplePercentage " +
                     "(0-100) to draw an unbiased random subset of matching rows instead of the most recent " +
-                    "ones."));
+                    "ones.", RedisCallCounterService.RequiredPermissions, RedisCallCounterService.RequiresLandlord));
         }
     }
 }

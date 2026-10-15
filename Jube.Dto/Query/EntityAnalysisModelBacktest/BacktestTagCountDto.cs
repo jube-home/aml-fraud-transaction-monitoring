@@ -13,6 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("A tag found on the transactions the backtest ran over and how many had it.")]

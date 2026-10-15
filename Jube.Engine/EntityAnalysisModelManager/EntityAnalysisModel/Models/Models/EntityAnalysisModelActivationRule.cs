@@ -11,21 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Jube.Dictionary;
+using Jube.HttpAdaptationProtocol;
+using log4net;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using Dictionary;
-    using log4net;
-    using Adaptation = HttpAdaptationProtocol.Adaptation;
-
     public class EntityAnalysisModelActivationRule
     {
         public delegate bool Match(DictionaryNoBoxing<string> data, PooledDictionary<string, double> ttlCounter,
             PooledDictionary<string, double> abstraction,
             PooledDictionary<string, Adaptation> httpAdaptation,
             PooledDictionary<string, double> exhaustiveAdaptation,
+            PooledDictionary<string, double> advancedAnalyticsAdaptation,
             Dictionary<string, List<string>> list,
             PooledDictionary<string, double> calculation,
             PooledDictionary<string, double> sanctions,
@@ -34,7 +35,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
             ILog log);
 
         public RuleCounters Counters { get; set; } = new();
-
         public long ActivationCounter => Counters.ActivationCounter;
         public long ForcedActivationCounter => Counters.ForcedActivationCounter;
         public long EvaluationCounter => Counters.EvaluationCounter;

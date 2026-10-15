@@ -14,6 +14,7 @@
 using System;
 using FluentAssertions;
 using Jube.DynamicEnvironment.Logging;
+using Jube.DynamicEnvironment.Logging.Models;
 using Xunit;
 
 namespace Jube.Test.DynamicEnvironment

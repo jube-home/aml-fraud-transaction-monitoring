@@ -64,6 +64,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                 var itemStopwatch = Stopwatch.StartNew();
                 var startBytes = GC.GetAllocatedBytesForCurrentThread();
+
                 try
                 {
                     var calculationDouble = CalculationFromRule(context, entityAnalysisModelAbstractionCalculation);
@@ -100,6 +101,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     itemStopwatch.Stop();
                     var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
                     items[entityAnalysisModelAbstractionCalculation.Name] = new TaskPerformance(
                         (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                         Math.Max(allocated, 0));

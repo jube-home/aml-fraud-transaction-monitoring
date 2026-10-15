@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
 {
     using System;
@@ -26,8 +31,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
     {
         public ConcurrentQueue<CreateCase> PendingCases = new ConcurrentQueue<CreateCase>();
         public ConcurrentQueue<Context> PendingEntityInvoke = new ConcurrentQueue<Context>();
-        public ConcurrentQueue<ActivationWatcher> PersistToActivationWatcher { get; } = new ConcurrentQueue<ActivationWatcher>();
+
+        public ConcurrentQueue<ActivationWatcher> PersistToActivationWatcher { get; } =
+            new ConcurrentQueue<ActivationWatcher>();
+
         public ConcurrentQueue<Notification> PendingNotifications { get; set; }
-        public ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> Callbacks { get; } = new ConcurrentDictionary<Guid, TaskCompletionSource<Callback>>();
+
+        public ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> Callbacks { get; } =
+            new ConcurrentDictionary<Guid, TaskCompletionSource<Callback>>();
     }
 }

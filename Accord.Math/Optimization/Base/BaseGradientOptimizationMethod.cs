@@ -1,108 +1,111 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Differentiation;
 
 namespace Accord.Math.Optimization
 {
-    using Differentiation;
-    using System;
-    using Accord.Compat;
-    using System.Threading;
-
     /// <summary>
-    ///   Base class for gradient-based optimization methods.
+    ///     Base class for gradient-based optimization methods.
     /// </summary>
-    /// 
     public abstract class BaseGradientOptimizationMethod : BaseOptimizationMethod
     {
-
         /// <summary>
-        ///   Gets or sets a function returning the gradient
-        ///   vector of the function to be optimized for a
-        ///   given value of its free parameters.
+        ///     Initializes a new instance of the <see cref="BaseGradientOptimizationMethod" /> class.
         /// </summary>
-        /// 
-        /// <value>The gradient function.</value>
-        /// 
-        public Func<double[], double[]> Gradient { get; set; }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseGradientOptimizationMethod"/> class.
-        /// </summary>
-        /// 
         protected BaseGradientOptimizationMethod()
-            : base()
         {
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseGradientOptimizationMethod"/> class.
+        ///     Initializes a new instance of the <see cref="BaseGradientOptimizationMethod" /> class.
         /// </summary>
-        /// 
         /// <param name="numberOfVariables">The number of free parameters in the optimization problem.</param>
-        /// 
         protected BaseGradientOptimizationMethod(int numberOfVariables)
             : base(numberOfVariables)
         {
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseGradientOptimizationMethod"/> class.
+        ///     Initializes a new instance of the <see cref="BaseGradientOptimizationMethod" /> class.
         /// </summary>
-        /// 
         /// <param name="numberOfVariables">The number of free parameters in the optimization problem.</param>
         /// <param name="function">The objective function whose optimum values should be found.</param>
-        /// <param name="gradient">The gradient of the objective <paramref name="function"/>.</param>
-        /// 
+        /// <param name="gradient">The gradient of the objective <paramref name="function" />.</param>
         protected BaseGradientOptimizationMethod(int numberOfVariables,
             Func<double[], double> function, Func<double[], double[]> gradient)
             : base(numberOfVariables, function)
         {
             if (gradient == null)
+            {
                 throw new ArgumentNullException("gradient");
+            }
 
-            this.Gradient = gradient;
+            Gradient = gradient;
         }
 
         /// <summary>
-        ///   Finds the maximum value of a function. The solution vector
-        ///   will be made available at the <see cref="IOptimizationMethod{TInput, TOutput}.Solution"/> property.
+        ///     Gets or sets a function returning the gradient
+        ///     vector of the function to be optimized for a
+        ///     given value of its free parameters.
         /// </summary>
-        /// 
-        /// <returns>Returns <c>true</c> if the method converged to a <see cref="IOptimizationMethod{TInput, TOutput}.Solution"/>.
-        ///   In this case, the found value will also be available at the <see cref="IOptimizationMethod{TInput, TOutput}.Value"/>
-        ///   property.</returns>
-        ///  
+        /// <value>The gradient function.</value>
+        public Func<double[], double[]> Gradient { get; set; }
+
+        /// <summary>
+        ///     Finds the maximum value of a function. The solution vector
+        ///     will be made available at the <see cref="IOptimizationMethod{TInput, TOutput}.Solution" /> property.
+        /// </summary>
+        /// <returns>
+        ///     Returns <c>true</c> if the method converged to a <see cref="IOptimizationMethod{TInput, TOutput}.Solution" />.
+        ///     In this case, the found value will also be available at the
+        ///     <see cref="IOptimizationMethod{TInput, TOutput}.Value" />
+        ///     property.
+        /// </returns>
         public override bool Maximize()
         {
             if (Gradient == null)
-                this.Gradient = FiniteDifferences.Gradient(Function, NumberOfVariables);
+            {
+                Gradient = FiniteDifferences.Gradient(Function, NumberOfVariables);
+            }
 
             NonlinearObjectiveFunction.CheckGradient(Gradient, Solution);
 
             var g = Gradient;
 
-            Gradient = (x) => g(x).Multiply(-1);
+            Gradient = x => g(x).Multiply(-1);
 
-            bool success = base.Maximize();
+            var success = base.Maximize();
 
             Gradient = g;
 
@@ -110,23 +113,25 @@ namespace Accord.Math.Optimization
         }
 
         /// <summary>
-        ///   Finds the minimum value of a function. The solution vector
-        ///   will be made available at the <see cref="IOptimizationMethod{TInput, TOutput}.Solution"/> property.
+        ///     Finds the minimum value of a function. The solution vector
+        ///     will be made available at the <see cref="IOptimizationMethod{TInput, TOutput}.Solution" /> property.
         /// </summary>
-        /// 
-        /// <returns>Returns <c>true</c> if the method converged to a <see cref="IOptimizationMethod{TInput, TOutput}.Solution"/>.
-        ///   In this case, the found value will also be available at the <see cref="IOptimizationMethod{TInput, TOutput}.Value"/>
-        ///   property.</returns>
-        ///  
+        /// <returns>
+        ///     Returns <c>true</c> if the method converged to a <see cref="IOptimizationMethod{TInput, TOutput}.Solution" />.
+        ///     In this case, the found value will also be available at the
+        ///     <see cref="IOptimizationMethod{TInput, TOutput}.Value" />
+        ///     property.
+        /// </returns>
         public override bool Minimize()
         {
             if (Gradient == null)
-                this.Gradient = FiniteDifferences.Gradient(Function, NumberOfVariables);
+            {
+                Gradient = FiniteDifferences.Gradient(Function, NumberOfVariables);
+            }
 
             NonlinearObjectiveFunction.CheckGradient(Gradient, Solution);
 
             return base.Minimize();
         }
-
     }
 }

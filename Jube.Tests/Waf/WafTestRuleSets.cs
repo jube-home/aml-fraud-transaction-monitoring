@@ -41,6 +41,7 @@ namespace Jube.Test.Waf
         {
             var signatures = new List<WafSignature>();
             var id = 1;
+
             foreach (var (name, category, pattern) in seededSignatures)
             {
                 signatures.Add(new WafSignature
@@ -63,6 +64,7 @@ namespace Jube.Test.Waf
         {
             var registry = new WafRegistry();
             registry.Update(WafRuleSetCompiler.Compile(signatures, exceptions, 100));
+
             return registry;
         }
     }

@@ -23,8 +23,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using Jube.Engine.EntityAnalysisModelManager.Helpers;
     using Jube.Engine.Models;
-    using Parser;
     using Parser.Compiler;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelAbstractionCalculationExtensions
     {
@@ -160,6 +160,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                                 var hasRuleScript = false;
+
                                 if (record.FunctionScript != null)
                                 {
                                     var parsedRule = new ParsedRule
@@ -167,6 +168,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         OriginalRuleText = record.FunctionScript,
                                         ErrorSpans = []
                                     };
+
                                     parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                     parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -174,6 +176,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     {
                                         entityAnalysisModelAbstractionCalculation.FunctionScript =
                                             parsedRule.ParsedRuleText;
+
                                         hasRuleScript = true;
 
                                         if (context.Services.Log.IsDebugEnabled)
@@ -193,6 +196,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             ParsedRuleText = entityAnalysisModelAbstractionCalculation.FunctionScript,
                                             ErrorSpans = []
                                         }, true);
+
                                     var activationRuleScript = new StringBuilder(wrappedRule.ParsedRuleText);
 
                                     if (context.Services.Log.IsDebugEnabled)
@@ -225,7 +229,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             entityAnalysisModelAbstractionCalculation.FunctionCalculationCompile
                                                 .GetType(
                                                     "CalculationRule");
+
                                         var methodInfo = classType.GetMethod("Match");
+
                                         entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate =
                                             (EntityAnalysisModelAbstractionCalculation.Match)Delegate.CreateDelegate(
                                                 typeof(EntityAnalysisModelAbstractionCalculation.Match), methodInfo);
@@ -249,6 +255,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         }
 
                                         var compile = new Compile();
+
                                         compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                         [
                                             Path.Combine(
@@ -277,7 +284,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             var classType =
                                                 entityAnalysisModelAbstractionCalculation.FunctionCalculationCompile
                                                     .GetType("CalculationRule");
+
                                             var methodInfo = classType.GetMethod("Match");
+
                                             entityAnalysisModelAbstractionCalculation
                                                     .FunctionCalculationCompileDelegate =
                                                 (EntityAnalysisModelAbstractionCalculation.Match)
@@ -287,6 +296,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                             context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
                                                 compile.CompiledAssembly);
+
                                             context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
                                                 new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
                                                     compile.CompiledAssemblyBinary, activationRuleScript.ToString()));

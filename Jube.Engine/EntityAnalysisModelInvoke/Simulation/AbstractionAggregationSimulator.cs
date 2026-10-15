@@ -24,9 +24,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using Context.Extensions.AbstractionRulesWithSearchKeys;
     using Dictionary;
     using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+    using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
     using log4net;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using Parser;
+    using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+    using Parser.Models;
 
     public sealed record AbstractionSettings(
         int Id,
@@ -114,10 +115,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 searchKey.TtlInterval, searchKey.TtlIntervalValue, referenceDate);
 
             List<DictionaryNoBoxing<string>> matches;
+
             try
             {
                 var match = await RuleRunner.Sandbox
                     .GetDelegateAsync<EntityAnalysisModelAbstractionRule.Match>(parsed, token).ConfigureAwait(false);
+
                 matches = await RuleRunner.Sandbox
                     .RunAsync(() => documents.FindAll(d => match(d, current.Lists, current.Kvp, log)), token)
                     .ConfigureAwait(false);

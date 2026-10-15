@@ -36,6 +36,7 @@ namespace Jube.Dictionary.Extensions
             var s2Matches = new bool[s2.Length];
 
             var matches = 0;
+
             for (var i = 0; i < s1.Length; i++)
             {
                 var start = Math.Max(0, i - matchDistance);
@@ -62,6 +63,7 @@ namespace Jube.Dictionary.Extensions
 
             var transpositions = 0;
             var k = 0;
+
             for (var i = 0; i < s1.Length; i++)
             {
                 if (!s1Matches[i])
@@ -90,6 +92,7 @@ namespace Jube.Dictionary.Extensions
 
             var maxPrefix = Math.Min(4, Math.Min(s1.Length, s2.Length));
             var prefixLength = 0;
+
             for (var i = 0; i < maxPrefix; i++)
             {
                 if (s1[i] != s2[i])

@@ -76,6 +76,7 @@ namespace Jube.Test.Service.UserLogin
             {
                 var tenantAId = await dbContext.UserInTenant.Where(u => u.User == fx.Seed.UserWithPermission)
                     .Select(u => u.TenantRegistryId).FirstAsync();
+
                 await dbContext.InsertAsync(new Data.Poco.UserInTenant
                     { User = createdUser, TenantRegistryId = tenantAId }).ConfigureAwait(false);
             }
@@ -284,10 +285,12 @@ namespace Jube.Test.Service.UserLogin
 
             var ascending = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.CreatedUser).Should().BeInAscendingOrder();
 
             var descending = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.CreatedUser).Should().BeInDescendingOrder();
         }
 
@@ -303,6 +306,7 @@ namespace Jube.Test.Service.UserLogin
             await CreateSampleAsync(dbContext, $"{prefix}A", 0, 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: ascendingKeyword);
 
@@ -318,6 +322,7 @@ namespace Jube.Test.Service.UserLogin
             await CreateSampleAsync(dbContext, $"{prefix}B", 0, 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: "garbage");
 

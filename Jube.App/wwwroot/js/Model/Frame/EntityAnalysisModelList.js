@@ -61,10 +61,17 @@ if (typeof id === "undefined") {
     $("#FilesDiv").hide();
     $("#ListValuesDiv").hide();
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelList", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelList", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
             LoadFiles();
             LoadList();
         });

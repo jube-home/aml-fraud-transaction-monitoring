@@ -45,7 +45,6 @@ namespace Jube.Test.Service.Query.Parser
                 NullLoggerFactory.Instance);
 
         private const string ValidGatewayRule = "If (Payload.ParserAmount > 0) Then\n   Return True\nEnd If";
-
         private readonly List<int> createdExhaustiveIds = [];
         private readonly List<int> createdHttpAdaptationIds = [];
         private readonly List<int> createdInlineFunctionIds = [];
@@ -55,7 +54,6 @@ namespace Jube.Test.Service.Query.Parser
         private readonly List<int> createdRoleRegistryIds = [];
         private readonly List<int> createdTenantRegistryIds = [];
         private readonly List<string> createdUserNames = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -66,6 +64,7 @@ namespace Jube.Test.Service.Query.Parser
 
             await dbContext.EntityAnalysisModelInlineScript.Where(w => createdModelInlineScriptIds.Contains(w.Id))
                 .DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisInlineScript>()
                 .Where(w => createdInlineScriptIds.Contains(w.Id)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelInlineFunction>()
@@ -74,6 +73,7 @@ namespace Jube.Test.Service.Query.Parser
                 .Where(w => createdHttpAdaptationIds.Contains(w.Id)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
                 .Where(w => createdExhaustiveIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => modelIds.Contains(w.EntityAnalysisModelId))
                 .DeleteAsync();
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
@@ -110,6 +110,7 @@ namespace Jube.Test.Service.Query.Parser
             createdTenantRegistryIds.Add(tenantRegistryId);
 
             var roleRegistryGuid = Guid.NewGuid();
+
             var roleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleRegistryGuid,
@@ -132,6 +133,7 @@ namespace Jube.Test.Service.Query.Parser
             }
 
             var userName = $"{DatabaseFixture.Prefix}PrsUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -142,6 +144,7 @@ namespace Jube.Test.Service.Query.Parser
                 Active = 1, PasswordLocked = 0, Deleted = 0, Version = 1,
                 CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
@@ -184,6 +187,7 @@ namespace Jube.Test.Service.Query.Parser
             params (string Name, int DataTypeId)[] xpaths)
         {
             var (user, tenant) = await CreateUserAsync(dbContext, 26);
+
             return (user, await CreateModelAsync(dbContext, tenant, xpaths));
         }
 
@@ -204,8 +208,10 @@ namespace Jube.Test.Service.Query.Parser
         public async Task UnmappedAndNoTenantUsersAreNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, $"{DatabaseFixture.Prefix}NoSuchUser"));
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -399,6 +405,7 @@ namespace Jube.Test.Service.Query.Parser
         {
             await using var dbContext = fx.GetDbContext();
             var (user, modelId) = await PermittedUserWithModelAsync(dbContext);
+
             var scriptId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisInlineScript
             {
                 Name = $"{DatabaseFixture.Prefix}PrsScript",
@@ -406,6 +413,7 @@ namespace Jube.Test.Service.Query.Parser
                 LanguageId = 2, Compiled = 1, CreatedDate = DateTime.UtcNow
             });
             createdInlineScriptIds.Add(scriptId);
+
             createdModelInlineScriptIds.Add(await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelInlineScript
                 {
@@ -414,6 +422,7 @@ namespace Jube.Test.Service.Query.Parser
                     Version = 1, Guid = Guid.NewGuid(), CreatedDate = DateTime.UtcNow,
                     CreatedUser = DatabaseFixture.Prefix
                 }));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             var result =
@@ -427,6 +436,7 @@ namespace Jube.Test.Service.Query.Parser
         {
             await using var dbContext = fx.GetDbContext();
             var (user, modelId) = await PermittedUserWithModelAsync(dbContext);
+
             createdHttpAdaptationIds.Add(await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelHttpAdaptation
                 {
@@ -441,6 +451,7 @@ namespace Jube.Test.Service.Query.Parser
                     Version = 1, Guid = Guid.NewGuid(), CreatedDate = DateTime.UtcNow,
                     CreatedUser = DatabaseFixture.Prefix
                 }));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             var known = await service.ParseAsync(Req(modelId,

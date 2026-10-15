@@ -14,7 +14,7 @@
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
 using Jube.Extensions;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using StackExchange.Redis;
 
@@ -51,6 +51,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey = $"ReferenceDate:{tenantRegistryId}";
                     var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+
                     var redisValue = await resilientRedisResilientRedisDatabase
                         .HashGetAsync(redisKey, redisHSetKey).ConfigureAwait(false);
 
@@ -79,6 +80,7 @@ namespace Jube.Cache.Redis
                     {
                         var redisKey = $"ReferenceDate:{tenantRegistryId}";
                         var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+
                         var redisValue = await resilientRedisResilientRedisDatabase
                             .HashGetAsync(redisKey, redisHSetKey, CommandFlags.PreferReplica).ConfigureAwait(false);
 

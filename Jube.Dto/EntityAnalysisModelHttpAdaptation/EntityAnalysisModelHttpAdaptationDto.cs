@@ -15,7 +15,10 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.EntityAnalysisModelHttpAdaptation
 {
@@ -65,6 +68,10 @@ namespace Jube.Dto.EntityAnalysisModelHttpAdaptation
         [Description("Legacy inherited-rule linkage, retained for backward compatibility. Not surfaced on the " +
                      "current page and not populated by it -- see the migration report.")]
         public int InheritedId { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this HTTP Adaptation participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

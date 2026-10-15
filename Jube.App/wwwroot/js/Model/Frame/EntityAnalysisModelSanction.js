@@ -84,6 +84,7 @@ $.get("/api/GetEntityAnalysisPotentialMultiPartStringNames" + "/" + parentKey,
 
         if (typeof id === "undefined") {
             ReadyNew();
+            window.AskJoobySetPageContext?.("EntityAnalysisModelSanction", "new", {[parentKeyName]: parentKey});
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
@@ -103,6 +104,12 @@ $.get("/api/GetEntityAnalysisPotentialMultiPartStringNames" + "/" + parentKey,
                     cacheValue.data("kendoNumericTextBox").value(data.cacheValue);
 
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("EntityAnalysisModelSanction", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     }

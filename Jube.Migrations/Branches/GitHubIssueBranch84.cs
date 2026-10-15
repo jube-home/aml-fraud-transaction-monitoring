@@ -20,6 +20,7 @@ namespace Jube.Migrations.Branches
     using Cache;
     using Cache.Redis.Serialization;
     using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
+    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
     using Dictionary;
     using DynamicEnvironment;
     using FluentMigrator;
@@ -43,9 +44,12 @@ namespace Jube.Migrations.Branches
             ChangeKeyNamesIfNeededOrMigrateDataToEnvelopeNoBoxing();
         }
 
+        public override void Down()
+        {
+        }
+
         private void CreateLocalCacheInstance()
         {
-
             Create.Table("LocalCacheInstance")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("Instance").AsString().Nullable()
@@ -66,7 +70,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateLocalCacheInstanceKey()
         {
-
             Create.Table("LocalCacheInstanceKey")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("LocalCacheInstanceId").AsInt32().Nullable()
@@ -92,7 +95,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateLocalCacheInstanceLru()
         {
-
             Create.Table("LocalCacheInstanceLru")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("LocalCacheInstanceId").AsInt32().Nullable()
@@ -119,7 +121,6 @@ namespace Jube.Migrations.Branches
 
         private void UpdateInlineScriptCodeForDictionaryNoBoxingAndDeprecatedAttributes()
         {
-
             var code = "Imports log4net\nI" +
                        "mports System\n" +
                        "Imports System.Collections.Generic\n" +
@@ -174,8 +175,10 @@ namespace Jube.Migrations.Branches
             var messagePackSerializerOptionsNew = MessagePackSerializerOptions.Standard
                 .WithResolver(
                     CompositeResolver.Create(new EnvelopeDictionaryNoBoxingStringMessagePackFormatter())
-                ).WithCompression(dynamicEnvironment.AppSettings("RedisMessagePackCompression").Equals("True", StringComparison.OrdinalIgnoreCase)
-                    ? MessagePackCompression.Lz4BlockArray : MessagePackCompression.None);
+                ).WithCompression(dynamicEnvironment.AppSettings("RedisMessagePackCompression")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase)
+                    ? MessagePackCompression.Lz4BlockArray
+                    : MessagePackCompression.None);
 
             foreach (var key in redisServers.SelectMany(redisServer => redisServer.Keys()))
             {
@@ -185,7 +188,8 @@ namespace Jube.Migrations.Branches
 
                     if (splits[0] == "Payload")
                     {
-                        if (CheckAndChangeKeyNameGivenNumberOfSplits(messagePackSerializerOptionsOld, messagePackSerializerOptionsNew,
+                        if (CheckAndChangeKeyNameGivenNumberOfSplits(messagePackSerializerOptionsOld,
+                                messagePackSerializerOptionsNew,
                                 splits, key, payloadLatestPrefix, journalPrefix))
                         {
                             continue;
@@ -210,8 +214,8 @@ namespace Jube.Migrations.Branches
 
         private void CorrectWrongGuidFormatInThePayloadCountHashSet(string[] splits)
         {
-
             var redisKeyPayloadCount = String.Join(":", splits);
+
             foreach (var hashEntry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(redisKeyPayloadCount))
             {
                 try
@@ -227,19 +231,25 @@ namespace Jube.Migrations.Branches
 
         private void RenameHashKeyForCorrectGuidFormat(HashEntry hashEntry, string redisKeyPayloadCount)
         {
-
             var guid = Guid.Parse(hashEntry.Name.ToString());
-            cacheService.ResilientRedisResilientRedisDatabase?.HashSet(redisKeyPayloadCount, guid.ToString("N"), hashEntry.Value);
+
+            cacheService.ResilientRedisResilientRedisDatabase?.HashSet(redisKeyPayloadCount, guid.ToString("N"),
+                hashEntry.Value);
+
             cacheService.ResilientRedisResilientRedisDatabase?.HashDelete(redisKeyPayloadCount, hashEntry.Name);
         }
 
-        private bool CheckAndChangeKeyNameGivenNumberOfSplits(MessagePackSerializerOptions messagePackSerializerOptionsOld,
-            MessagePackSerializerOptions messagePackSerializerOptionsNew, string[] splits, RedisKey key, string payloadLatestPrefix, string journalPrefix)
+        private bool CheckAndChangeKeyNameGivenNumberOfSplits(
+            MessagePackSerializerOptions messagePackSerializerOptionsOld,
+            MessagePackSerializerOptions messagePackSerializerOptionsNew, string[] splits, RedisKey key,
+            string payloadLatestPrefix, string journalPrefix)
         {
             switch (splits.Length)
             {
                 case 3:
-                    MigrateAllHashKeyValuesFromDictionaryToEnvelopeOfDictionaryNoBoxing(messagePackSerializerOptionsOld, messagePackSerializerOptionsNew, key);
+                    MigrateAllHashKeyValuesFromDictionaryToEnvelopeOfDictionaryNoBoxing(messagePackSerializerOptionsOld,
+                        messagePackSerializerOptionsNew, key);
+
                     return true;
                 case 4:
                     splits[0] = payloadLatestPrefix;
@@ -248,10 +258,12 @@ namespace Jube.Migrations.Branches
                     splits[0] = journalPrefix;
                     break;
             }
+
             return false;
         }
 
-        private void MigrateAllHashKeyValuesFromDictionaryToEnvelopeOfDictionaryNoBoxing(MessagePackSerializerOptions messagePackSerializerOptionsOld,
+        private void MigrateAllHashKeyValuesFromDictionaryToEnvelopeOfDictionaryNoBoxing(
+            MessagePackSerializerOptions messagePackSerializerOptionsOld,
             MessagePackSerializerOptions messagePackSerializerOptionsNew, RedisKey key)
         {
             foreach (var hashEntry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(key))
@@ -263,7 +275,8 @@ namespace Jube.Migrations.Branches
                         continue;
                     }
 
-                    MigrateHashKeyValueFromDictionaryToEnvelopeOfDictionaryNoBoxing(messagePackSerializerOptionsOld, messagePackSerializerOptionsNew, hashEntry, key);
+                    MigrateHashKeyValueFromDictionaryToEnvelopeOfDictionaryNoBoxing(messagePackSerializerOptionsOld,
+                        messagePackSerializerOptionsNew, hashEntry, key);
                 }
                 catch (Exception ex)
                 {
@@ -272,41 +285,48 @@ namespace Jube.Migrations.Branches
             }
         }
 
-        private void MigrateHashKeyValueFromDictionaryToEnvelopeOfDictionaryNoBoxing(MessagePackSerializerOptions messagePackSerializerOptionsOld,
+        private void MigrateHashKeyValueFromDictionaryToEnvelopeOfDictionaryNoBoxing(
+            MessagePackSerializerOptions messagePackSerializerOptionsOld,
             MessagePackSerializerOptions messagePackSerializerOptionsNew, HashEntry hashEntry, RedisKey key)
         {
             var oldKeyValuePairs = MessagePackSerializer.Deserialize<Dictionary<string, object>>(hashEntry.Value,
                 messagePackSerializerOptionsOld);
 
-            var bytes = SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(messagePackSerializerOptionsNew, oldKeyValuePairs);
+            var bytes = SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(messagePackSerializerOptionsNew,
+                oldKeyValuePairs);
 
             cacheService.ResilientRedisResilientRedisDatabase.HashSet(key, hashEntry.Name, bytes);
         }
 
-        private byte[] SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(MessagePackSerializerOptions messagePackSerializerOptions, Dictionary<string, object> oldKeyValuePairs)
+        private byte[] SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(
+            MessagePackSerializerOptions messagePackSerializerOptions, Dictionary<string, object> oldKeyValuePairs)
         {
             var ms = new MemoryStream();
+
             MessagePackSerializer.Serialize(ms, MapToEnvelopeForDictionaryNoBoxing(oldKeyValuePairs),
                 messagePackSerializerOptions);
+
             var bytes = ms.ToArray();
+
             return bytes;
         }
 
-        private static EnvelopeDictionaryNoBoxing<string> MapToEnvelopeForDictionaryNoBoxing(Dictionary<string, object> oldKeyValuePairs)
+        private static EnvelopeDictionaryNoBoxing<string> MapToEnvelopeForDictionaryNoBoxing(
+            Dictionary<string, object> oldKeyValuePairs)
         {
-
             var dictionaryNoBoxingWrapper = new EnvelopeDictionaryNoBoxing<string>
             {
                 Version = 1,
                 Data = MapToDictionaryNoBoxing(oldKeyValuePairs)
             };
+
             return dictionaryNoBoxingWrapper;
         }
 
         private static DictionaryNoBoxing<string> MapToDictionaryNoBoxing(Dictionary<string, object> oldKeyValuePairs)
         {
-
             var dictionaryNoBoxing = new DictionaryNoBoxing<string>(oldKeyValuePairs.Count);
+
             foreach (var oldKeyValuePair in oldKeyValuePairs)
             {
                 switch (oldKeyValuePair.Value)
@@ -331,12 +351,8 @@ namespace Jube.Migrations.Branches
                         break;
                 }
             }
+
             return dictionaryNoBoxing;
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

@@ -16,14 +16,14 @@ namespace Jube.Dictionary
     using System.Collections;
     using System.Runtime.CompilerServices;
     using Interfaces;
-    using Models;
 
-    public sealed class DictionaryNoBoxing<TKey> : IDictionaryNoBoxing<TKey>, IEnumerable<KeyValuePair<TKey, InternalValue>>,
+    public sealed class DictionaryNoBoxing<TKey> : IDictionaryNoBoxing<TKey>,
+        IEnumerable<KeyValuePair<TKey, InternalValue>>,
         IDisposable, ISized
         where TKey : notnull
     {
         private const int DefaultCapacity = 8;
-        private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
+        private static readonly EqualityComparer<TKey> keyComparer = EqualityComparer<TKey>.Default;
         private long estimatedSizeBytes;
         private TKey[] keys;
         private InternalValue[] values;
@@ -47,11 +47,13 @@ namespace Jube.Dictionary
             get
             {
                 var idx = IndexOfKey(key);
+
                 return idx >= 0 ? values[idx] : new InternalValue();
             }
             set
             {
                 var idx = IndexOfKey(key);
+
                 if (idx >= 0)
                 {
                     estimatedSizeBytes -= EstimateValueSize(in values[idx]);
@@ -107,6 +109,7 @@ namespace Jube.Dictionary
         public bool Remove(TKey key)
         {
             var idx = IndexOfKey(key);
+
             if (idx < 0)
             {
                 return false;
@@ -119,6 +122,7 @@ namespace Jube.Dictionary
 
             keys[Count - 1] = default(TKey)!;
             Count--;
+
             return true;
         }
 
@@ -126,13 +130,16 @@ namespace Jube.Dictionary
         public bool TryGetValue(TKey key, out InternalValue value)
         {
             var idx = IndexOfKey(key);
+
             if (idx >= 0)
             {
                 value = values[idx];
+
                 return true;
             }
 
             value = default(InternalValue);
+
             return false;
         }
 
@@ -167,6 +174,7 @@ namespace Jube.Dictionary
         {
             return GetEnumerator();
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -270,11 +278,12 @@ namespace Jube.Dictionary
         {
             for (var i = 0; i < Count; i++)
             {
-                if (KeyComparer.Equals(keys[i], key))
+                if (keyComparer.Equals(keys[i], key))
                 {
                     return i;
                 }
             }
+
             return -1;
         }
 
@@ -327,6 +336,7 @@ namespace Jube.Dictionary
             Count++;
 
             estimatedSizeBytes += EstimateKeySize(key) + EstimateValueSize(in value);
+
             return true;
         }
 
@@ -349,7 +359,7 @@ namespace Jube.Dictionary
         {
             return value.Type switch
             {
-                InternalValue.ValueType.String => value.AsString() is {} s ? sizeof(char) * (long)s.Length : 0,
+                InternalValue.ValueType.String => value.AsString() is { } s ? sizeof(char) * (long)s.Length : 0,
                 InternalValue.ValueType.Int => sizeof(int),
                 InternalValue.ValueType.Double => sizeof(double),
                 InternalValue.ValueType.Bool => sizeof(bool),
@@ -381,23 +391,18 @@ namespace Jube.Dictionary
             public bool MoveNext()
             {
                 index++;
+
                 return index < count;
             }
 
             public KeyValuePair<TKey, InternalValue> Current
             {
-                get
-                {
-                    return new KeyValuePair<TKey, InternalValue>(keys[index], values[index]);
-                }
+                get { return new KeyValuePair<TKey, InternalValue>(keys[index], values[index]); }
             }
 
             object IEnumerator.Current
             {
-                get
-                {
-                    return Current;
-                }
+                get { return Current; }
             }
 
             public void Reset()
@@ -405,7 +410,9 @@ namespace Jube.Dictionary
                 index = -1;
             }
 
-            public void Dispose() {}
+            public void Dispose()
+            {
+            }
         }
     }
 }

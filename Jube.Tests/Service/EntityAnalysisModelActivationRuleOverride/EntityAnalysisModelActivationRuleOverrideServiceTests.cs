@@ -29,8 +29,10 @@ using Jube.Service.Exceptions.EntityAnalysisModelActivationRuleOverride;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.Models;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -38,7 +40,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.Models;
 
 namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
 {
@@ -70,6 +71,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             {
                 await dbContext.GetTable<EntityAnalysisModelActivationRuleOverrideVersion>()
                     .Where(w => w.EntityAnalysisModelActivationRuleOverrideId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRuleOverride>()
                     .Where(w => w.Id == id).DeleteAsync();
             }
@@ -78,6 +80,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             {
                 await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
                     .Where(w => w.EntityAnalysisModelActivationRuleId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -86,6 +89,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -102,6 +106,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         private async Task<(int Id, Guid Guid)> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -112,6 +117,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -121,6 +127,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         {
             var repository = new EntityAnalysisModelActivationRuleRepository(dbContext, createdUser);
             var ruleName = name ?? $"{DatabaseFixture.Prefix}Rule{Guid.NewGuid():N}"[..40];
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModelActivationRule
             {
                 EntityAnalysisModelId = entityAnalysisModelId,
@@ -134,6 +141,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             }).ConfigureAwait(false);
 
             createdActivationRuleIds.Add(saved.Id);
+
             return ruleName;
         }
 
@@ -159,8 +167,10 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         {
             await using var dbContext = fx.GetDbContext();
             var (modelId, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var ruleName = await CreateActivationRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId,
                 enableOverride: 0, enableForce: 0);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var act = async () =>
@@ -196,8 +206,10 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         {
             await using var dbContext = fx.GetDbContext();
             var (modelId, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var ruleName = await CreateActivationRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId,
                 overrideKey: "AccountId");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var matching = NewDto(modelGuid, "AccountId", UniqueValue("KeyMatch"), ruleName);
@@ -376,12 +388,16 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(modelGuid, "IP", UniqueValue("Denied"), ruleName)));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync());
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.GetByEntityAnalysisModelGuidAsync(modelGuid));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.UpdateAsync(NewDto(modelGuid, "IP", UniqueValue("DeniedUpdate"), ruleName)));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
 
             var afterCount = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRuleOverride>()
@@ -411,6 +427,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -419,6 +436,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -475,6 +493,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             var dto = NewDto(modelGuid, key!, UniqueValue("BadKey"), ruleName);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelActivationRuleOverrideDto.OverrideKey) &&
                 e.ErrorCode == "OverrideKeyNotEmpty");
@@ -760,6 +779,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             await using var dbContext = fx.GetDbContext();
             var (modelId, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var ruleName = await CreateActivationRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -778,10 +798,12 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             await using var dbContext = fx.GetDbContext();
             var (modelId, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var ruleName = await CreateActivationRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelGuid, "IP", "", ruleName)));
 
@@ -794,6 +816,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleOverride
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelActivationRuleOverrideList",

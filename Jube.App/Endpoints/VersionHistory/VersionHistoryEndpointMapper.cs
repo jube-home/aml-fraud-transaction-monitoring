@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Service.Exceptions;
+using Jube.Service.Query.Interfaces;
 using Jube.Service.Query.VersionHistory;
 using log4net;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +47,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var row = await service.GetByIdAsync(id, token).ConfigureAwait(false);
+
                         return row is null
                             ? TypedResults.NotFound()
                             : TypedResults.Ok(VersionHistoryProjection.Project(row, fields));
@@ -58,6 +60,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var rows = await service.GetByParentIdAsync(parentId, token).ConfigureAwait(false);
+
                         return TypedResults.Ok(ProjectAll(rows, fields));
                     }, token))
                 .WithName($"{name}ByParent");
@@ -68,6 +71,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var rows = await service.GetByDateRangeAsync(parentId, from, to, token).ConfigureAwait(false);
+
                         return TypedResults.Ok(ProjectAll(rows, fields));
                     }, token))
                 .WithName($"{name}ByDateRange");
@@ -78,6 +82,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var row = await service.GetByIdAndDateRangeAsync(id, from, to, token).ConfigureAwait(false);
+
                         return row is null
                             ? TypedResults.NotFound()
                             : TypedResults.Ok(VersionHistoryProjection.Project(row, fields));
@@ -90,6 +95,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var row = await service.GetLatestAsync(parentId, token).ConfigureAwait(false);
+
                         return row is null
                             ? TypedResults.NotFound()
                             : TypedResults.Ok(VersionHistoryProjection.Project(row, fields));
@@ -102,6 +108,7 @@ namespace Jube.App.Endpoints.VersionHistory
                     RunAsync<TService, TVersion>(httpContext, log, dynamicEnvironment, localizers, async service =>
                     {
                         var changes = await service.CompareAsync(fromId, toId, token).ConfigureAwait(false);
+
                         return TypedResults.Ok(VersionHistoryProjection.Changes(changes, fields));
                     }, token))
                 .WithName($"{name}Compare");
@@ -136,11 +143,13 @@ namespace Jube.App.Endpoints.VersionHistory
             {
                 var service = await TService.CreateAsync(dbContext, user, log, localizers, token)
                     .ConfigureAwait(false);
+
                 return await action(service).ConfigureAwait(false);
             }
             catch (ServiceException ex) when (ex.Code is "NotAuthenticated" or "PermissionDenied")
             {
                 log.Warn($"{httpContext.Request.Path}: 403 ({ex.Code}) user={user}");
+
                 return TypedResults.Forbid();
             }
             catch (ServiceException ex)
@@ -154,6 +163,7 @@ namespace Jube.App.Endpoints.VersionHistory
             catch (Exception e)
             {
                 log.Error($"{httpContext.Request.Path}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

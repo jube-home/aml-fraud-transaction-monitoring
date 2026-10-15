@@ -13,23 +13,25 @@
 
 namespace Jube.ResilientRedisConnection
 {
+    using Interfaces;
     using log4net;
     using Polly;
     using StackExchange.Redis;
 
-    public class ResilientRedisConnection(IConnectionMultiplexer multiplexer, string connectionString, bool hsetOffload, ILog log)
+    public class ResilientRedisConnection(
+        IConnectionMultiplexer multiplexer,
+        string connectionString,
+        bool hsetOffload,
+        ILog log)
         : IDisposable
     {
+        private static readonly IAsyncPolicy noOpPolicy = Policy.NoOpAsync();
 
-        // NoOpAsync: satisfies ResilientRedisDatabase's IAsyncPolicy dependency without the
-        // circuit breaker / retry machinery. ExecuteAsync just invokes the delegate directly -
-        // no shared circuit state, no lock, no WrapAsync nesting, no extra Task layer per call.
-        // Connection-level resilience (reconnect, failover) is left to SE.Redis's multiplexer,
-        // which already handles it via ConnectRetry / ReconnectRetryPolicy / AbortOnConnectFail.
-        // the wrapper has been kept for future use and logging opportunities.
-        private static readonly IAsyncPolicy NoOpPolicy = Policy.NoOpAsync();
-        private readonly string connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-        private readonly IConnectionMultiplexer multiplexer = multiplexer ?? throw new ArgumentNullException(nameof(multiplexer));
+        private readonly string connectionString =
+            connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+
+        private readonly IConnectionMultiplexer multiplexer =
+            multiplexer ?? throw new ArgumentNullException(nameof(multiplexer));
 
         public void Dispose()
         {
@@ -38,7 +40,8 @@ namespace Jube.ResilientRedisConnection
 
         public IHybridResilientRedisDatabase GetDatabase(int db = -1)
         {
-            return new ResilientRedisDatabase(multiplexer.GetDatabase(db), NoOpPolicy, NoOpPolicy, connectionString, log, hsetOffload);
+            return new ResilientRedisDatabase(multiplexer.GetDatabase(db), noOpPolicy, noOpPolicy, connectionString,
+                log, hsetOffload);
         }
     }
 }

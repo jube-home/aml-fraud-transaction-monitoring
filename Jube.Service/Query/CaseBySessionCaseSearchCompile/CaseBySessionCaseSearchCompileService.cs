@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,12 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.CaseQuery;
+using Jube.Data.Query.CaseQuery.Dto;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseBySessionCaseSearchCompile;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseBySessionCaseSearchCompile;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,13 +32,12 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
     public sealed class CaseBySessionCaseSearchCompileService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly CaseEventRepository caseEventRepository;
         private readonly CaseRepository caseRepository;
-        private readonly global::Jube.Data.Query.CaseQuery.GetCaseBySessionCaseSearchCompileQuery query;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly GetCaseBySessionCaseSearchCompileQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -54,12 +55,15 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
 
-            query = new global::Jube.Data.Query.CaseQuery.GetCaseBySessionCaseSearchCompileQuery(dbContext, userName,
+            query = new GetCaseBySessionCaseSearchCompileQuery(dbContext, userName,
                 log,
                 dynamicEnvironment.AppSettings("ReportConnectionString") ?? dbContext.Connection.ConnectionString);
+
             caseEventRepository = new CaseEventRepository(dbContext, userName);
             caseRepository = new CaseRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseBySessionCaseSearchCompileService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -121,6 +125,7 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
         {
             using var op = OperationScope.Start("CaseBySessionCaseSearchCompile", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseBySessionCaseSearchCompile.Get: entry user={userName} guid={guid}");
@@ -131,7 +136,8 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
                 EnsurePermitted("CaseBySessionCaseSearchCompile.Get");
                 token.ThrowIfCancellationRequested();
 
-                global::Jube.Data.Query.CaseQuery.Dto.CaseQueryDto? value;
+                CaseQueryDto? value;
+
                 try
                 {
                     value = await query.ExecuteAsync(guid, token).ConfigureAwait(false);
@@ -163,6 +169,7 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
                 value.LockedUser = userName;
 
                 op.Rows(1);
+
                 return CaseBySessionCaseSearchCompileMapper.ToDto(value);
             }
             catch (ForbiddenException)

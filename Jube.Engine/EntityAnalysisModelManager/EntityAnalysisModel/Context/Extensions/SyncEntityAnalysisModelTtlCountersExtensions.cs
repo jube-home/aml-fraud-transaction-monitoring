@@ -51,6 +51,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelTtlCounters = new List<EntityAnalysisModelTtlCounter>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();

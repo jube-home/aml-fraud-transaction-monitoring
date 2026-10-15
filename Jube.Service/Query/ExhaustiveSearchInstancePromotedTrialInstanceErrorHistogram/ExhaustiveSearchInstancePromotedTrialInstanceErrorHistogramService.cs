@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,7 +30,6 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -53,6 +53,8 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramService> CreateAsync(
             DbContext dbContext, string? userName,
@@ -122,6 +124,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram", "Get",
                 userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -131,11 +134,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram.Get");
+
                 var dtos = ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramMapper.ToDto(
-                    await new global::Jube.Data.Query.
-                        GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(
-                            dbContext, userName).ExecuteAsync(exhaustiveSearchInstanceId, token).ConfigureAwait(false));
+                    await new GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(
+                        dbContext, userName).ExecuteAsync(exhaustiveSearchInstanceId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -157,9 +161,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorH
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

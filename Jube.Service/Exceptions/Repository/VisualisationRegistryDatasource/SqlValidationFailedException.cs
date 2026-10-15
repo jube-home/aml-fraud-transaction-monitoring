@@ -18,7 +18,6 @@ namespace Jube.Service.Exceptions.Repository.VisualisationRegistryDatasource
     public sealed class SqlValidationFailedException(string message, Exception inner) : ServiceException(message, inner)
     {
         public override string Code => "SqlValidationFailed";
-
         public ValidationResult Result { get; } = new([new ValidationFailure("SQL", message)]);
     }
 }

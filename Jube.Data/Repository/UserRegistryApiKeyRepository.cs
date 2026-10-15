@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -39,6 +40,7 @@ namespace Jube.Data.Repository
         public UserRegistryApiKeyRepository(DbContext dbContext)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }

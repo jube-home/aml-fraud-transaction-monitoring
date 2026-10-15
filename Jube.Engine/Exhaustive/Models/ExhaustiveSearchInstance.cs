@@ -11,12 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using Accord.Neuro;
+using Jube.Engine.Exhaustive.Calibration;
+using Jube.Engine.AdvancedAnalytics.Recall.Models;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.Exhaustive.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using Accord.Neuro;
-
     public class ExhaustiveSearchInstance
     {
         public string Name { get; set; }
@@ -25,6 +32,8 @@ namespace Jube.Engine.Exhaustive.Models
         public int Id { get; init; }
         public Guid Guid { get; init; }
         public ActivationNetwork TopologyNetwork { get; set; }
+        public AdvancedAnalyticsRecallModel ChallengerRecall { get; set; }
+        public ExhaustiveCalibration Calibration { get; set; } = ExhaustiveCalibration.Identity;
         public List<ExhaustiveSearchInstancePromotedTrialInstanceVariable> NetworkVariablesInOrder { get; } = [];
     }
 }

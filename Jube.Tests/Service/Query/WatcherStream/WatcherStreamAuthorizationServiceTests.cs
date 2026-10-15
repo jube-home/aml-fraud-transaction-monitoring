@@ -70,6 +70,7 @@ namespace Jube.Test.Service.Query.WatcherStream
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }

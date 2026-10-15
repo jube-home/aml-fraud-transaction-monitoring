@@ -13,6 +13,7 @@
 
 using FluentValidation;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityApproval;
 using Jube.Resources;
 using Microsoft.Extensions.Localization;

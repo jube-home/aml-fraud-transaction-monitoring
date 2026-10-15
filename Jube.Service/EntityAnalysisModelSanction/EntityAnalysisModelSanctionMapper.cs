@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 : new EntityAnalysisModelSanctionDto
                 {
                     Id = sanction.Id,
+                    Guid = sanction.Guid,
                     EntityAnalysisModelId = sanction.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = sanction.Name,
                     Active = sanction.Active == 1,

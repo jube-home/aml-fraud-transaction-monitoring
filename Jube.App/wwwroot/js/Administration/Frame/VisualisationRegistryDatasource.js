@@ -86,6 +86,7 @@ $.getScript('/js/ace/ace.js', function () {
         SetGroupDisplay();
         changeVisualisationType();
         ReadyNew();
+        window.AskJoobySetPageContext?.("VisualisationRegistryDatasource", "new", null);
     } else {
         $.get(endpoint + "/" + id,
             function (data) {
@@ -114,6 +115,12 @@ $.getScript('/js/ace/ace.js', function () {
                 SetGroupDisplay();
                 changeVisualisationType();
                 ReadyExisting(data);
+                window.AskJoobySetPageContext?.("VisualisationRegistryDatasource", "edit", {
+                    id: data.id,
+                    guid: data.guid,
+                    name: data.name,
+                    [parentKeyName]: parentKey
+                });
             });
     }
 });

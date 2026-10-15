@@ -42,6 +42,7 @@ namespace Jube.Data.Repository
             }
 
             var guids = records.Select(r => r.EntityAnalysisModelInstanceEntryGuid).Distinct().ToList();
+
             var existingByRecord = (await dbContext.ArchiveKey
                     .Where(w => guids.Contains(w.EntityAnalysisModelInstanceEntryGuid))
                     .ToListAsync(token).ConfigureAwait(false))
@@ -109,6 +110,11 @@ namespace Jube.Data.Repository
             }
         }
 
+        public Task BulkCopyAsync(List<ArchiveKey> models, CancellationToken token = default)
+        {
+            return dbContext.BulkCopyAsync(models, token);
+        }
+
         private static bool SameValue(ArchiveKey current, ArchiveKey replacement)
         {
             return current.KeyValueString == replacement.KeyValueString
@@ -136,11 +142,6 @@ namespace Jube.Data.Repository
                 Version = existing.Version,
                 EntityAnalysisModelsReprocessingRuleInstanceId = existing.EntityAnalysisModelsReprocessingRuleInstanceId
             };
-        }
-
-        public Task BulkCopyAsync(List<ArchiveKey> models, CancellationToken token = default)
-        {
-            return dbContext.BulkCopyAsync(models, token);
         }
     }
 }

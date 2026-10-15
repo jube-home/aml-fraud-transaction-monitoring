@@ -17,14 +17,15 @@ using System.Net;
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
 using Jube.Cache.Redis.Serialization;
-using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dictionary;
 using Jube.Extensions;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using log4net;
 using MessagePack;
 using StackExchange.Redis;
@@ -123,6 +124,7 @@ namespace Jube.Cache.Redis
                     var sortedSet = $"{entityAnalysisModelInstanceEntryGuid:N}";
 
                     var bytes = ms.ToArray();
+
                     var tasks = new List<Task>
                     {
                         resilientRedisResilientRedisDatabase.HashSetAsync(keyPayload, hSetKey, bytes),
@@ -142,8 +144,10 @@ namespace Jube.Cache.Redis
                     {
                         var redisKeyPayloadCount = $"PayloadCount:{tenantRegistryId}";
                         var redisKeyPayloadBytes = $"PayloadBytes:{tenantRegistryId}";
+
                         tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadCount,
                             entityAnalysisModelGuid.ToString("N"), 1));
+
                         tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadBytes,
                             entityAnalysisModelGuid.ToString("N"), bytes.Length));
                     }
@@ -241,8 +245,10 @@ namespace Jube.Cache.Redis
                     swUnpack.Restart();
                     result[keyStr] = Unpack(cached);
                     swUnpack.Stop();
+
                     Interlocked.Add(ref localCacheForPayloadKey.UnpackResponseTime,
                         (int)(swUnpack.ElapsedTicks * 1000000 / Stopwatch.Frequency));
+
                     continue;
                 }
 
@@ -256,9 +262,11 @@ namespace Jube.Cache.Redis
             }
 
             var swRedis = Stopwatch.StartNew();
+
             var fetched = await resilientRedisResilientRedisDatabase
                 .HashGetAsync(keyPayload, missedKeys.ToArray())
                 .ConfigureAwait(false);
+
             swRedis.Stop();
             CacheDiagnostics.Record("CachePayloadRepository.GetPayloadBatchAsync", swRedis.Elapsed);
 
@@ -275,6 +283,7 @@ namespace Jube.Cache.Redis
             }
 
             var unpackTime = 0L;
+
             for (var i = 0; i < missedKeys.Count; i++)
             {
                 if (!fetched[i].HasValue)
@@ -329,6 +338,7 @@ namespace Jube.Cache.Redis
 
                 var dbContext =
                     DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+
                 try
                 {
                     var cachePayloadRemovalBatchRepository = new CachePayloadRemovalBatchRepository(dbContext);
@@ -348,6 +358,7 @@ namespace Jube.Cache.Redis
                                  !token.IsCancellationRequested))
                     {
                         redisValuesToDelete.Add(new RedisValue(expiredSortedSetEntry.Element.ToString()));
+
                         bulkInsertEntries.Add(new CachePayloadRemovalBatchEntry
                         {
                             CachePayloadRemovalBatchId = cachePayloadRemovalBatch.Id,
@@ -389,6 +400,7 @@ namespace Jube.Cache.Redis
                     }
 
                     var completedTasks = await Task.WhenAll(tasks).ConfigureAwait(false);
+
                     var cachePayloadRemovalBatchResponseTimeRepository =
                         new CachePayloadRemovalBatchResponseTimeRepository(dbContext);
 
@@ -428,6 +440,7 @@ namespace Jube.Cache.Redis
                 ResponseTime = s.Sum(a => a.ComputeTime),
                 CachePayloadRemovalBatchId = cachePayloadRemovalBatch.Id
             }).ToList();
+
             return groupByComputeTime;
         }
 
@@ -479,6 +492,7 @@ namespace Jube.Cache.Redis
                 postgresConnectionString, log, localCacheFill, localCache, localCacheBytes,
                 messagePackCompression, storePayloadCountsAndBytes, publishSubscribe, maxLruAge,
                 activationRuleIdempotency);
+
             await repository.FullyInitializeAsync(token).ConfigureAwait(false);
 
             return repository;
@@ -552,10 +566,12 @@ namespace Jube.Cache.Redis
                 try
                 {
                     var localCacheInstanceKeyRepository = new LocalCacheInstanceKeyRepository(dbContext);
+
                     await UpdateAllLocalCacheInstanceKeysAsync(localCacheInstanceKeyRepository, token)
                         .ConfigureAwait(false);
 
                     var localCacheInstanceLruRepository = new LocalCacheInstanceLruRepository(dbContext);
+
                     await InsertLocalCacheInstanceLruAsync(localCacheInstanceLruRepository, token)
                         .ConfigureAwait(false);
 
@@ -710,6 +726,7 @@ namespace Jube.Cache.Redis
                 SubscribeToHashSet();
                 SubscribeToHashRemove();
             }
+
             return;
 
             void SubscribeToHashSet()
@@ -804,6 +821,7 @@ namespace Jube.Cache.Redis
             {
                 var dbContext =
                     DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+
                 try
                 {
                     var localCacheInstanceRepository = new LocalCacheInstanceRepository(dbContext);
@@ -813,6 +831,7 @@ namespace Jube.Cache.Redis
                         await localCacheInstanceRepository.FinishFillAsync(localCacheInstance.Id, 0, 0,
                             lruCacheConcurrentSizedDictionary.Count, lruCacheConcurrentSizedDictionary.TotalSize,
                             token);
+
                         return;
                     }
 
@@ -825,6 +844,7 @@ namespace Jube.Cache.Redis
                     await localCacheInstanceRepository.StartFillAsync(localCacheInstance.Id, token);
 
                     var entityAnalysisModelRepository = new EntityAnalysisModelRepository(dbContext);
+
                     foreach (var entityAnalysisModel in await entityAnalysisModelRepository.GetAsync(token)
                                  .ConfigureAwait(false))
                     {
@@ -839,6 +859,7 @@ namespace Jube.Cache.Redis
                         {
                             long hotKeyPosition = 0;
                             var olderThanCutoff = false;
+
                             while (true)
                             {
                                 token.ThrowIfCancellationRequested();
@@ -908,6 +929,7 @@ namespace Jube.Cache.Redis
                                                     localCacheForPayloadKey,
                                                     journalEntry.ToString(), hashEntry
                                                 );
+
                                                 bytes += hashEntry.Length();
                                                 count += 1;
                                             }
@@ -929,6 +951,7 @@ namespace Jube.Cache.Redis
 
                                             await FinishFillInLocalCacheInstanceRepositoryAsync(
                                                 localCacheInstanceRepository, count, bytes, token);
+
                                             return;
                                         }
 
@@ -978,6 +1001,7 @@ namespace Jube.Cache.Redis
             CancellationToken token = default)
         {
             var gCMemoryInfoForFinishFill = GC.GetGCMemoryInfo();
+
             return localCacheInstanceRepository.FinishFillAsync(localCacheInstance.Id, count, bytes,
                 gCMemoryInfoForFinishFill.HeapSizeBytes, gCMemoryInfoForFinishFill.TotalCommittedBytes, token);
         }
@@ -987,6 +1011,7 @@ namespace Jube.Cache.Redis
             CancellationToken token = default)
         {
             var gCMemoryInfoForUpdateFill = GC.GetGCMemoryInfo();
+
             return localCacheInstanceRepository.UpdateFillAsync(localCacheInstance.Id,
                 count, bytes, lruCacheConcurrentSizedDictionary.Count,
                 lruCacheConcurrentSizedDictionary.TotalSize,
@@ -1074,6 +1099,7 @@ namespace Jube.Cache.Redis
         {
             var redisKeyPayloadJournal =
                 $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{sortedSetEntry.Element}";
+
             var redisValuesForRedisKeyPayloadJournalToDelete = await resilientRedisResilientRedisDatabase
                 .SetMembersAsync(redisKeyPayloadJournal).ConfigureAwait(false);
 
@@ -1082,10 +1108,12 @@ namespace Jube.Cache.Redis
                 var redisJournalKey = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{redisJournalValue}";
                 var keyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
                 var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+
                 var eventHashRemovePattern =
                     $"HashRemove:{hostName()}:{localCacheInstanceGuidString}:{keyPayload}";
 
                 DeleteFromLocalCache(keyPayload, sortedSetEntry.Element.ToString(), false);
+
                 AppendSetRemovalTasksAndPublishEvent(tasks, sortedSetEntry, redisJournalKey, redisKeyPayloadJournal,
                     lruJournalKey, redisJournalValue, eventHashRemovePattern);
             }
@@ -1147,6 +1175,7 @@ namespace Jube.Cache.Redis
             if (subscription)
             {
                 Interlocked.Increment(ref localCacheInstanceKey.HashRemoveSubscription);
+
                 if (!removed)
                 {
                     Interlocked.Increment(ref localCacheInstanceKey.HashRemoveSubscriptionMiss);
@@ -1155,6 +1184,7 @@ namespace Jube.Cache.Redis
             else
             {
                 Interlocked.Increment(ref localCacheInstanceKey.HashRemove);
+
                 if (!removed)
                 {
                     Interlocked.Increment(ref localCacheInstanceKey.HashRemoveMiss);
@@ -1171,6 +1201,7 @@ namespace Jube.Cache.Redis
 
             var hashSetKeyEntry = new LocalCacheInstanceKey(lruCacheConcurrentSizedDictionary);
             localCacheInstanceKeys.TryAdd(payloadKey, hashSetKeyEntry);
+
             return hashSetKeyEntry;
         }
 
@@ -1183,8 +1214,10 @@ namespace Jube.Cache.Redis
                 try
                 {
                     var redisKeyJournal = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}:{value}";
+
                     var redisKeyPayloadJournal =
                         $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelInstanceEntryGuid:N}";
+
                     var valuePayloadGuid = $"{entityAnalysisModelInstanceEntryGuid:N}";
 
                     await Task.WhenAll(

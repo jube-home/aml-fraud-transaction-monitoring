@@ -70,6 +70,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             await dbContext.GetTable<CacheTtlCounterEntryRemovalBatchResponseTime>()
                 .Where(w => batchIds.Contains(w.CacheTtlCounterEntryRemovalBatchId)).DeleteAsync();
+
             await dbContext.CacheTtlCounterEntryRemovalBatchEntry
                 .Where(w => batchIds.Contains(w.CacheTtlCounterEntryRemovalBatchId)).DeleteAsync();
             await dbContext.CacheTtlCounterEntryRemovalBatch
@@ -79,6 +80,7 @@ namespace Jube.Test.Engine.TtlCounter
         private static EntityAnalysisModelDomain NewModel(int tenantRegistryId)
         {
             var cacheService = TestCacheService.Create(out _);
+
             return new EntityAnalysisModelDomain
             {
                 Started = true,
@@ -99,15 +101,16 @@ namespace Jube.Test.Engine.TtlCounter
         private static int ResolveFastPollMilliseconds()
         {
             var productionDefault = int.Parse(TestDynamicEnvironment.Create().AppSettings("WaitTtlCounterDecrement"));
+
             return Math.Max(50, productionDefault / 5);
         }
-
 
         [Fact]
         public async Task OnlineAggregationCountExcludesAnEntryOnceItAgesPastTheIntervalAsync()
         {
             var tenant = 910001;
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -117,27 +120,33 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1,
                 OnlineAggregation = true
             };
+
             const string dataValue = "ACC-ONLINE-COUNT";
             var incrementedAt = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
 
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, 1, incrementedAt);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, incrementedAt, 1);
 
             var windowStartNow = TtlCounterExtensions.ApplyTtlCounterInterval(incrementedAt,
                 counter.TtlCounterInterval, counter.TtlCounterValue);
+
             var sumNow = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAggregationPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid,
                     counter.TtlCounterDataName, dataValue, windowStartNow, incrementedAt);
             sumNow.Should().Be(1, "the increment is still within its one-minute window");
 
             var oneMinuteLater = incrementedAt.AddMinutes(1).AddSeconds(1);
+
             var windowStartLater = TtlCounterExtensions.ApplyTtlCounterInterval(oneMinuteLater,
                 counter.TtlCounterInterval, counter.TtlCounterValue);
+
             var sumLater = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAggregationPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid,
                     counter.TtlCounterDataName, dataValue, windowStartLater, oneMinuteLater);
+
             sumLater.Should().Be(0,
                 "the entry has aged out of the online-aggregation window after a full interval has elapsed");
         }
@@ -147,6 +156,7 @@ namespace Jube.Test.Engine.TtlCounter
         {
             var tenant = 910002;
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -158,6 +168,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterDataValue = "Amount",
                 OnlineAggregation = true
             };
+
             const string dataValue = "MER-ONLINE-SUM";
             var firstAt = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
             var secondAt = firstAt.AddSeconds(20);
@@ -172,14 +183,17 @@ namespace Jube.Test.Engine.TtlCounter
 
             var windowStart = TtlCounterExtensions.ApplyTtlCounterInterval(secondAt, counter.TtlCounterInterval,
                 counter.TtlCounterValue);
+
             var sumBothWithinWindow = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAggregationPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid,
                     counter.TtlCounterDataName, dataValue, windowStart, secondAt);
             sumBothWithinWindow.Should().Be(58.0, "both sum increments (40.25 + 17.75) are still within the window");
 
             var oneMinuteAfterSecond = secondAt.AddMinutes(1).AddSeconds(1);
+
             var windowStartLater = TtlCounterExtensions.ApplyTtlCounterInterval(oneMinuteAfterSecond,
                 counter.TtlCounterInterval, counter.TtlCounterValue);
+
             var sumAfterBothExpired = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAggregationPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid,
                     counter.TtlCounterDataName, dataValue, windowStartLater, oneMinuteAfterSecond);
@@ -191,6 +205,7 @@ namespace Jube.Test.Engine.TtlCounter
         {
             var tenant = 910003;
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -200,6 +215,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1,
                 OnlineAggregation = true
             };
+
             const string dataValue = "ACC-PARTIAL";
             var oldAt = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
             var newAt = oldAt.AddSeconds(50);
@@ -207,10 +223,13 @@ namespace Jube.Test.Engine.TtlCounter
 
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, 1, oldAt);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, oldAt, 1);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, 1, newAt);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, newAt, 1);
 
@@ -231,6 +250,7 @@ namespace Jube.Test.Engine.TtlCounter
         {
             var tenant = 910004;
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -240,19 +260,23 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1,
                 OnlineAggregation = true
             };
+
             const string dataValue = "ACC-BOUNDARY";
             var now = new DateTime(2025, 1, 1, 12, 1, 0, DateTimeKind.Utc);
+
             var windowStart = TtlCounterExtensions.ApplyTtlCounterInterval(now, counter.TtlCounterInterval,
                 counter.TtlCounterValue);
 
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, 1, windowStart);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, dataValue, counter.Guid, windowStart, 1);
 
             var sum = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAggregationPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid,
                     counter.TtlCounterDataName, dataValue, windowStart, now);
+
             sum.Should().Be(1,
                 "an entry exactly on the window's lower boundary must be included (the read path is inclusive)");
         }
@@ -262,6 +286,7 @@ namespace Jube.Test.Engine.TtlCounter
         {
             var tenant = 910005;
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -271,14 +296,18 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1,
                 OnlineAggregation = true
             };
+
             var at = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
 
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, "ACC-A", counter.Guid, 3, at);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, "ACC-A", counter.Guid, at, 3);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, "ACC-B", counter.Guid, 9, at);
+
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
                 tenant, model.Instance.Guid, counter.TtlCounterDataName, "ACC-B", counter.Guid, at, 9);
 
@@ -296,7 +325,6 @@ namespace Jube.Test.Engine.TtlCounter
             sumB.Should().Be(9, "ACC-B's aggregation must not include ACC-A's increment");
         }
 
-
         private async Task<(EntityAnalysisModelDomain model, EntityAnalysisModelTtlCounter counter,
                 CancellationTokenProvider cancellationTokenProvider, Task loopTask, CancellationTokenSource pumpCts,
                 Task pumpTask, int pollMs)>
@@ -304,6 +332,7 @@ namespace Jube.Test.Engine.TtlCounter
                 int ttlCounterValue, string dataName, string dataValue, double incrementValue, bool enableSum)
         {
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -318,6 +347,7 @@ namespace Jube.Test.Engine.TtlCounter
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
@@ -325,6 +355,7 @@ namespace Jube.Test.Engine.TtlCounter
             });
 
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -334,9 +365,11 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
 
@@ -353,12 +386,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -371,8 +406,10 @@ namespace Jube.Test.Engine.TtlCounter
             }, pumpCts.Token);
 
             await Task.Delay(pollMs * 2, pumpCts.Token);
+
             var stillPresentBeforeInterval = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
+
             stillPresentBeforeInterval.Should().Be(incrementValue,
                 "the configured interval has not elapsed yet, so the loop must not have touched it");
 
@@ -383,6 +420,7 @@ namespace Jube.Test.Engine.TtlCounter
             CancellationTokenSource pumpCts)
         {
             cancellationTokenProvider.Cancel();
+
             return pumpCts.CancelAsync();
         }
 
@@ -411,6 +449,7 @@ namespace Jube.Test.Engine.TtlCounter
             var stillExpired = await model.Services.CacheService.CacheTtlCounterEntryRepository
                 .GetAllExpiredByTtlCounterPreferReplicaAsync(tenant, model.Instance.Guid, counter.Guid, dataName,
                     DateTime.UtcNow, 100);
+
             stillExpired.Should().BeEmpty(
                 "the entry should have been removed from both the entry hash and the expiry index");
 
@@ -421,9 +460,11 @@ namespace Jube.Test.Engine.TtlCounter
                 .Where(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid)
                 .OrderByDescending(o => o.Id)
                 .FirstOrDefaultAsync();
+
             batch.Should().NotBeNull(
                 "the background administration loop should have recorded a removal batch -- the same table " +
                 "queried manually to confirm deprecation");
+
             batch!.FinishedDate.Should().NotBeNull("the batch should have completed, not been left hanging");
             batch.ExpiredHashSetCount.Should().Be(1);
 
@@ -473,8 +514,10 @@ namespace Jube.Test.Engine.TtlCounter
                 .SingleOrDefaultAsync();
             entry.Should().NotBeNull();
             entry!.Value.Should().Be(dataValue);
+
             entry.DecrementCount.Should().Be(incrementValue,
                 "the audit trail must record the summed amount, not a bare count of 1");
+
             entry.RevisedCount.Should().Be(0);
         }
 
@@ -492,6 +535,7 @@ namespace Jube.Test.Engine.TtlCounter
                     ttlCounterValueSeconds, dataName, dataValue, incrementValue, false);
 
             await Task.Delay(pollMs * 3);
+
             var stillPresent = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
 
@@ -504,6 +548,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
                 .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid);
             batchExists.Should().BeFalse("nothing has expired yet, so no removal batch should have been recorded");
@@ -518,6 +563,7 @@ namespace Jube.Test.Engine.TtlCounter
             const double incrementValue = 11;
 
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -531,12 +577,15 @@ namespace Jube.Test.Engine.TtlCounter
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -546,9 +595,11 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
 
@@ -559,12 +610,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -583,6 +636,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
+
             remaining.Should().Be(incrementValue,
                 "a Live Forever counter must never be decremented, however many real cycles the loop has run");
 
@@ -593,8 +647,10 @@ namespace Jube.Test.Engine.TtlCounter
 
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
                 .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: CancellationToken.None);
+
             batchExists.Should().BeFalse(
                 "the administration loop finds nothing expired for a Live Forever counter, so it never records " +
                 "a removal batch for it");
@@ -609,6 +665,7 @@ namespace Jube.Test.Engine.TtlCounter
             const double incrementValue = 3;
 
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -621,12 +678,15 @@ namespace Jube.Test.Engine.TtlCounter
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -636,11 +696,14 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, dataName, dataValue, counter.Guid, incrementValue, startedAt);
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
@@ -650,12 +713,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -687,6 +752,7 @@ namespace Jube.Test.Engine.TtlCounter
             const double incrementValue = 4;
 
             var model = NewModel(tenant);
+
             var shortCounter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -703,18 +769,22 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterInterval = "s",
                 TtlCounterValue = 15
             };
+
             createdCounterGuidsForCleanup.Add(shortCounter.Guid);
             createdCounterGuidsForCleanup.Add(longCounter.Guid);
             model.Snapshot.ModelTtlCounters.Add(shortCounter);
             model.Snapshot.ModelTtlCounters.Add(longCounter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -724,9 +794,11 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
 
@@ -743,12 +815,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -773,6 +847,7 @@ namespace Jube.Test.Engine.TtlCounter
                     longDataValue);
 
             shortRemaining.Should().Be(0, "the two-second counter's interval has elapsed and should be pruned");
+
             longRemaining.Should().Be(incrementValue,
                 "the fifteen-second counter on the same model must be left untouched in the same cycle");
         }
@@ -787,6 +862,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             var model = NewModel(tenant);
             model.Started = false;
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -799,12 +875,15 @@ namespace Jube.Test.Engine.TtlCounter
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -814,11 +893,14 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, dataName, dataValue, counter.Guid, incrementValue, startedAt);
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
@@ -828,12 +910,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -852,17 +936,18 @@ namespace Jube.Test.Engine.TtlCounter
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
+
             remaining.Should().Be(incrementValue,
                 "the model was never Started, so the administration loop's active-model filter must skip it " +
                 "entirely, however long its interval has elapsed for");
 
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
                 .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: CancellationToken.None);
             batchExists.Should().BeFalse("a model that was never started should never be processed at all");
         }
-
 
         [Theory]
         [InlineData("s", 1)]
@@ -885,6 +970,7 @@ namespace Jube.Test.Engine.TtlCounter
             const double incrementValue = 2;
 
             var model = NewModel(tenant);
+
             var counter = new EntityAnalysisModelTtlCounter
             {
                 Guid = Guid.NewGuid(),
@@ -897,12 +983,15 @@ namespace Jube.Test.Engine.TtlCounter
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var context = new BackgroundContext
             {
                 Services =
@@ -912,11 +1001,14 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             context.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, dataName, dataValue, counter.Guid, incrementValue, startedAt);
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
@@ -926,8 +1018,10 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             await Task.Delay(pollMs * 2);
+
             var stillPresent = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
+
             stillPresent.Should().Be(incrementValue,
                 $"a {ttlCounterValue}{ttlCounterInterval} interval has not elapsed yet at the original " +
                 "reference date");
@@ -942,6 +1036,7 @@ namespace Jube.Test.Engine.TtlCounter
                 "y" => startedAt.AddYears(ttlCounterValue).AddDays(1),
                 _ => startedAt
             };
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, jumpedReferenceDate);
 
@@ -952,6 +1047,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
+
             remaining.Should().Be(0,
                 $"a {ttlCounterValue}{ttlCounterInterval} counter must wind back once the reference date has " +
                 "jumped past its interval, regardless of the unit");

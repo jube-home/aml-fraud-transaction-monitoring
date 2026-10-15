@@ -21,6 +21,7 @@ namespace Jube.Dictionary.Extensions
         {
             var value = (@this ?? "").Trim().Replace('-', '+').Replace('_', '/');
             value = value.PadRight(value.Length + (4 - value.Length % 4) % 4, '=');
+
             return Encoding.UTF8.GetString(Convert.FromBase64String(value));
         }
     }

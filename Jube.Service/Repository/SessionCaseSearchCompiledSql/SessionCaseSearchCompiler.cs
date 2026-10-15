@@ -14,6 +14,7 @@
 using Jube.Data.Context;
 using Jube.Data.Reporting;
 using Jube.Data.Repository;
+using Jube.Service.Repository.SessionCaseSearchCompiledSql.Models;
 using log4net;
 using Newtonsoft.Json;
 
@@ -44,10 +45,12 @@ internal static class SessionCaseSearchCompiler
         };
 
         var filterJsonRule = JsonConvert.DeserializeObject<QueryBuilderRule>(filterJson ?? string.Empty);
+
         var filterRule = await ParserJsonToSqlCase
             .CreateAsync(filterJsonRule, dbContext, caseWorkflowGuid, userName, token).ConfigureAwait(false);
 
         var selectTokensRule = JsonConvert.DeserializeObject<QueryBuilderRule>(selectJson ?? string.Empty);
+
         var selectRule =
             await ParserJsonToSqlCase.CreateAsync(selectTokensRule, dbContext, caseWorkflowGuid, userName, token)
                 .ConfigureAwait(false);
@@ -60,6 +63,7 @@ internal static class SessionCaseSearchCompiler
         };
 
         var columnsOrder = new List<string>();
+
         foreach (var rule in selectRule.Rules)
         {
             if (rule.Field == null || rule.Id == null)
@@ -87,6 +91,7 @@ internal static class SessionCaseSearchCompiler
             };
 
             var direction = "ASC";
+
             if (rule.Value != direction)
             {
                 if (rule.Value == "DESC")
@@ -158,8 +163,10 @@ internal static class SessionCaseSearchCompiler
         try
         {
             using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
+
             await postgres.IntrospectAsync(model.SelectSqlSearch + " " + model.WhereSql + " " + model.OrderSql,
                 filterRule.Tokens, token).ConfigureAwait(false);
+
             model.Prepared = 1;
         }
         catch (Exception e)

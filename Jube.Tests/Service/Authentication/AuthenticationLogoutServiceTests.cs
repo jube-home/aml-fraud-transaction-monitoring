@@ -18,7 +18,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
 using Jube.Service.UserLogout;
+using Jube.Service.UserLogout.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
@@ -41,6 +43,7 @@ namespace Jube.Test.Service.Authentication
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.UserLogout.Where(w => w.CreatedUser != null && w.CreatedUser.EndsWith(tag)
                                                   || w.UserAgent != null && w.UserAgent.EndsWith(tag)
                                                   || w.RemoteIp != null && w.RemoteIp.EndsWith(tag)).DeleteAsync();
@@ -53,12 +56,14 @@ namespace Jube.Test.Service.Authentication
             await using var dbContext = fx.GetDbContext();
             var template = await dbContext.UserRegistry.FirstAsync(f => f.Name == fx.Seed.UserWithoutPermission);
             var tenant = await dbContext.UserInTenant.FirstAsync(f => f.User == fx.Seed.UserWithoutPermission);
+
             await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = template.RoleRegistryGuid, Name = name,
                 Email = $"{name}@example.invalid", Password = "not-used", Active = 1, PasswordLocked = 0, Deleted = 0,
                 Version = 1, CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
                 { User = name, TenantRegistryId = tenant.TenantRegistryId });
         }
@@ -73,6 +78,7 @@ namespace Jube.Test.Service.Authentication
         private async Task<DateTime?> TokensValidFromAsync(string name)
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.ExecuteAsync<DateTime?>(
                 "SELECT \"TokensValidFrom\" FROM \"UserRegistry\" WHERE \"Name\" = @name",
                 new DataParameter("name", name, DataType.NVarChar));
@@ -89,6 +95,7 @@ namespace Jube.Test.Service.Authentication
         public async Task AValidSession_RevokesTheUsersTokens_ClosesTheirHubsAndRecordsTheRowAsync()
         {
             await SeedUserAsync(User);
+
             try
             {
                 var aborted = new List<string>();
@@ -156,6 +163,7 @@ namespace Jube.Test.Service.Authentication
 
             outcome.Should().Be(LogoutOutcome.RevokeFailed);
             aborted.Should().Equal(User);
+
             log.Entries.Should().Contain(e => e.Level == "ERROR" && e.Message.Contains("could not revoke")
                                                                  && e.Exception != null &&
                                                                  e.Exception.Message == "database down");
@@ -165,6 +173,7 @@ namespace Jube.Test.Service.Authentication
         public async Task AFailingHubClose_IsLogged_AndDoesNotFailTheLogoutAsync()
         {
             await SeedUserAsync(User);
+
             try
             {
                 var log = new TestLog();
@@ -197,6 +206,7 @@ namespace Jube.Test.Service.Authentication
         public async Task ALogoutIsAuditedWithItsOutcomeAndSpanAsync()
         {
             await SeedUserAsync(User);
+
             try
             {
                 var audit = new TestLog();
@@ -237,6 +247,7 @@ namespace Jube.Test.Service.Authentication
             }
 
             await using var dbContext = fx.GetDbContext();
+
             (await dbContext.UserLogout.CountAsync(w =>
                     w.RemoteIp == address && w.OutcomeId == UserLogoutOutcome.NoSession))
                 .Should().Be(1);
@@ -250,6 +261,7 @@ namespace Jube.Test.Service.Authentication
         public async Task TheRecorder_ClipsLengthAndStripsControlCharactersAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var entry = new UserLogoutEntry($"{DatabaseFixture.Prefix}Clip{tag}",
                 UserLogoutReason.RevokedByAdministrator,
                 UserLogoutOutcome.Revoked, $"1.1.1.1{tag}", null, new string('u', 4000) + "\u0007\r\n" + tag,

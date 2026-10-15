@@ -17,6 +17,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -38,8 +39,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         private static RuleRunInputs Inputs(double amount)
         {
             var context = InvocationContextBuilder.Blank(1, fields, [], false, DateTime.UtcNow);
+
             InvocationContextBuilder.Overlay(context,
                 new Dictionary<string, string> { ["Payload.Amount"] = amount.ToString("R") });
+
             return RuleRunner.ToInputs(context, new Dictionary<string, List<string>>());
         }
 

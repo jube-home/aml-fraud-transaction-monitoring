@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
 {
     public class ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto
@@ -26,5 +30,9 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedA
 
         [Description("Prediction error for the row, calculated as Actual minus Predicted.")]
         public double Error { get; set; }
+
+        [Description("Raw (reverse-normalised) value of the requested continuous variable for this row, when a " +
+                     "variable was requested; null otherwise or when this row has no stored value for it.")]
+        public double? Value { get; set; }
     }
 }

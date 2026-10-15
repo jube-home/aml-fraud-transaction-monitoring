@@ -34,6 +34,7 @@ namespace Jube.App.Middlewares
             if (!IsEnabled())
             {
                 await next(context).ConfigureAwait(false);
+
                 return;
             }
 
@@ -55,6 +56,7 @@ namespace Jube.App.Middlewares
                 fields);
 
             WafInspectionResult result;
+
             try
             {
                 result = inspector.Inspect(request);
@@ -63,6 +65,7 @@ namespace Jube.App.Middlewares
             {
                 log.Error($"Waf: Inspection raised an error and the request has been allowed to continue as {ex}.");
                 await next(context).ConfigureAwait(false);
+
                 return;
             }
 
@@ -70,6 +73,7 @@ namespace Jube.App.Middlewares
             {
                 context.Response.Clear();
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
+
                 return;
             }
 
@@ -95,20 +99,24 @@ namespace Jube.App.Middlewares
         private async Task AddBodyAsync(HttpRequest request, List<WafFieldValue> fields)
         {
             var maxBytes = MaxInspectBytes();
+
             if (request.ContentLength is { } length && length > maxBytes)
             {
                 return;
             }
 
             request.EnableBuffering();
+
             try
             {
                 var bufferSize = request.ContentLength is { } knownLength
                     ? (int)Math.Min(knownLength, maxBytes)
                     : maxBytes;
+
                 var buffer = new byte[bufferSize];
                 var read = 0;
                 int count;
+
                 while (read < bufferSize
                        && (count = await request.Body.ReadAsync(buffer.AsMemory(read, bufferSize - read))
                            .ConfigureAwait(false)) > 0)
@@ -138,6 +146,7 @@ namespace Jube.App.Middlewares
             }
 
             var contentType = request.ContentType;
+
             return !string.IsNullOrEmpty(contentType)
                    && contentType.Contains("json", StringComparison.OrdinalIgnoreCase);
         }

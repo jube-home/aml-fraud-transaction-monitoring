@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -26,17 +26,13 @@ using Microsoft.Extensions.Localization;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve
 {
-    using LearningCurveQuery =
-        global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceLearningCurveQuery;
-
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly LearningCurveQuery query;
+        private readonly ExhaustiveSearchInstancePromotedTrialInstanceRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -54,8 +50,10 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearni
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new LearningCurveQuery(dbContext, userName);
+            repository = new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext, tenantRegistryId);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveService> CreateAsync(
             DbContext dbContext, string? userName,
@@ -125,6 +123,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearni
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve", "Get",
                 userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -134,9 +133,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearni
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve.Get");
+
                 var dtos = ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveMapper.ToDto(
-                    await query.ExecuteAsync(exhaustiveSearchInstanceId, token).ConfigureAwait(false));
+                    await repository.GetByExhaustiveSearchInstanceIdOrderByIdAscAsync(exhaustiveSearchInstanceId,
+                        token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -158,9 +160,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearni
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

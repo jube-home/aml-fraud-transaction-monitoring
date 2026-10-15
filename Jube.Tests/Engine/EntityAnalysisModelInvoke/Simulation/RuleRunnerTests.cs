@@ -17,7 +17,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Query.Models;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Parser;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.RuleParser;
 using Xunit;
@@ -46,6 +48,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             environment.HttpAdaptations = [];
             environment.ExhaustiveAdaptations = [];
             environment.ActivationRules = ["Earlier"];
+
             return environment;
         }
 
@@ -53,6 +56,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             double velocity = 0, bool earlier = false)
         {
             var context = InvocationContextBuilder.Blank(1, fields, [], false, DateTime.UtcNow);
+
             InvocationContextBuilder.Overlay(context, new Dictionary<string, string>
             {
                 ["Payload.Amount"] = amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -61,6 +65,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
                 ["Abstraction.Velocity"] = velocity.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 ["Activation.Earlier"] = earlier ? "true" : "false"
             }).Should().BeEmpty();
+
             return RuleRunner.ToInputs(context,
                 new Dictionary<string, List<string>> { ["HighRiskTerms"] = ["IR", "KP"] });
         }
@@ -69,7 +74,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var parsed = RuleParse.Execute(text, type, Environment(), TestLog.NoOp,
                 RuleParse.EngineReferences(type), engineWrap: true, reprocessing: reprocessing);
+
             parsed.Compiled.Should().BeTrue(parsed.Message);
+
             return parsed;
         }
 
@@ -103,8 +110,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
                 RuleParse.AbstractionRule);
 
             parsed.ClassName.Should().Be("AbstractionRule");
+
             (await RuleRunner.RunAsync(parsed, RuleParse.AbstractionRule, false, Inputs(1, "IR"))).Value.Should()
                 .Be(true);
+
             (await RuleRunner.RunAsync(parsed, RuleParse.AbstractionRule, false, Inputs(1))).Value.Should()
                 .Be(false);
         }
@@ -118,6 +127,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             (await RuleRunner.RunAsync(parsed, RuleParse.ActivationRule, false,
                 Inputs(1, count: 3, velocity: 6, earlier: true))).Value.Should().Be(true);
+
             (await RuleRunner.RunAsync(parsed, RuleParse.ActivationRule, false,
                 Inputs(1, count: 3, velocity: 6, earlier: false))).Value.Should().Be(false);
         }
@@ -145,6 +155,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var parsed = Parse("If (List.HighRiskTerms.Contains(Payload.Country)) Then\n   Return True\nEnd If",
                 RuleParse.GatewayRule);
+
             var inputsWithoutTheList = RuleRunner.ToInputs(
                 InvocationContextBuilder.Blank(1, fields, [], false, DateTime.UtcNow),
                 new Dictionary<string, List<string>>());

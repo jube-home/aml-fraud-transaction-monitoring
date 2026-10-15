@@ -1,0 +1,37 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Jube.Data.Query.AdvancedAnalyticsPreservationIterationsQuery
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Context;
+    using LinqToDB;
+    using Poco;
+
+    public class AdvancedAnalyticsPreservationIterationsQuery(DbContext dbContext, int tenantRegistryId)
+    {
+        public Task<List<AdvancedAnalyticsTrainingRunIteration>> ExecuteAsync(CancellationToken token = default)
+        {
+            return (from c in dbContext.AdvancedAnalyticsTrainingRunIteration
+                    join r in dbContext.AdvancedAnalyticsTrainingRun on c.AdvancedAnalyticsTrainingRunId equals r.Id
+                    where r.TenantRegistryId == tenantRegistryId && r.Deleted == 0 &&
+                          c.TenantRegistryId == tenantRegistryId
+                    orderby c.Id
+                    select c)
+                .ToListAsync(token);
+        }
+    }
+}

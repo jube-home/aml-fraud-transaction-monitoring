@@ -18,7 +18,9 @@ using System.Text;
 using FluentAssertions;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Engine.Helpers;
 using Jube.HttpAdaptationProtocol;
 using Newtonsoft.Json.Linq;
@@ -72,14 +74,19 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             context.EntryId.Should().Be("TX1");
             context.ReferenceDate.Should().Be(new DateTime(2026, 9, 1, 10, 0, 0, DateTimeKind.Utc));
+
             context.Values["Payload.Amount"].Should().Match<InvocationValue>(v =>
                 Math.Abs((double)v.Value - 12.5) < 0.0001 && v.Origin == InvocationValueOrigin.Extracted);
+
             context.Values["Payload.Country"].Should().Match<InvocationValue>(v =>
                 (string)v.Value == "GB" && v.Origin == InvocationValueOrigin.Default);
+
             context.Values["Payload.Opened"].Should().Match<InvocationValue>(v =>
                 (DateTime)v.Value == now.AddDays(-30) && v.Origin == InvocationValueOrigin.Default);
+
             context.Values["Payload.Count"].Should().Match<InvocationValue>(v =>
                 v.Value == null && v.Origin == InvocationValueOrigin.Unset && v.Note.Contains("not a valid integer"));
+
             context.Values["Payload.Card"].Note.Should().Contain("encrypts");
             context.Values["TTLCounter.PerAccount"].Origin.Should().Be(InvocationValueOrigin.Unset);
         }
@@ -95,6 +102,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
                 .Should().Be(InvocationStageStatus.NotComputed);
             context.Stages.Single(s => s.Stage == InvocationContextBuilder.HttpAdaptations).Status.Should()
                 .Be(InvocationStageStatus.Excluded);
+
             context.Stages.Where(s => s.Stage is "CaseCreation" or "Notifications" or "ArchiveStorage"
                     or "TtlCounterIncrements" or "ActivationWatcher")
                 .Should().HaveCount(5).And.OnlyContain(s => s.Status == InvocationStageStatus.Excluded);
@@ -116,6 +124,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             context.Values.Values.Where(v => v.Origin == InvocationValueOrigin.Default).Select(v => v.Field.Name)
                 .Should().BeEquivalentTo("Payload.Country", "Payload.Opened");
+
             context.Stages.Should().Contain(s => s.Status == InvocationStageStatus.NotComputed);
         }
 
@@ -138,17 +147,20 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             payload.Payload.TryAdd("Country", "FR");
 
             var json = BuildJsonResponses.BuildFullJson(payload, new JsonSerializationHelper().ArchiveJsonSerializer);
+
             var context = InvocationContextBuilder.FromArchive(7, Guid.NewGuid(),
                 JObject.Parse(Encoding.UTF8.GetString(json)), fields);
 
             context.EntryId.Should().Be("TX9");
             context.ReferenceDate.Should().Be(payload.ReferenceDate);
+
             context.Values.ToDictionary(k => k.Key, v => v.Value.Value).Should().Contain(new Dictionary<string, object>
             {
                 ["Payload.Amount"] = 99.5, ["Payload.Country"] = "FR", ["TTLCounter.PerAccount"] = 3d,
                 ["Abstraction.CountLastHour"] = 4d, ["Dictionary.Limit"] = 500d, ["HTTPAdaptation.Score"] = 0.75,
                 ["Activation.HighValue"] = true, ["Activation.Unmatched"] = false
             });
+
             context.Stages.Where(s => s.Status != InvocationStageStatus.Excluded).Should()
                 .OnlyContain(s => s.Status == InvocationStageStatus.FromArchive);
         }
@@ -184,8 +196,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             errors.Should().HaveCount(2).And.Contain(e => e.Contains("Payload.Nope"))
                 .And.Contain(e => e.Contains("valid integer"));
+
             context.Values["Abstraction.CountLastHour"].Should().Match<InvocationValue>(v =>
                 Math.Abs((double)v.Value - 6) < 0.0001 && v.Origin == InvocationValueOrigin.Overlay);
+
             context.Values["Payload.Opened"].Value.Should().Be(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc));
         }
 
@@ -206,6 +220,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         {
             InvocationContextBuilder.FormatValue(1.5).Should().Be("1.5");
             InvocationContextBuilder.FormatValue(true).Should().Be("true");
+
             InvocationContextBuilder.FormatValue(new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc)).Should()
                 .Be("2026-01-02T00:00:00.0000000Z");
         }

@@ -13,6 +13,11 @@
 
 using System.Collections.Generic;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance
 {
     public class InvokeStagePerformance
@@ -30,6 +35,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         public StageTiming<TaskPerformance> AbstractionRulesWithoutSearchKeys { get; set; }
         public StageTiming<TaskPerformance> AbstractionCalculations { get; set; }
         public StageTiming<TaskPerformance> ExhaustiveAdaptation { get; set; }
+        public StageTiming<TaskPerformance> AdvancedAnalyticsAdaptation { get; set; }
         public StageTiming<TaskPerformance> HttpAdaptation { get; set; }
         public StageTiming<ActivationRuleTiming> Activation { get; set; }
         public StageDuration JoinWriteTasks { get; set; }
@@ -101,6 +107,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
             if (ExhaustiveAdaptation != null)
             {
                 yield return (nameof(ExhaustiveAdaptation), ExhaustiveAdaptation);
+            }
+
+            if (AdvancedAnalyticsAdaptation != null)
+            {
+                yield return (nameof(AdvancedAnalyticsAdaptation), AdvancedAnalyticsAdaptation);
             }
 
             if (HttpAdaptation != null)

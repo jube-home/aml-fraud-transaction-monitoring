@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,49 +11,70 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseWorkflowAction;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowAction(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists Case Workflow Actions visible to the caller's tenant, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionFilterFields", OperationKind.Read, true, false,
-                "Lists the fields a query builder JSON filter over Case Workflow Actions may use."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionFilter", OperationKind.Read, true, false,
-                "Returns the Case Workflow Actions matching query builder JSON, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionCount", OperationKind.Read, true, false,
-                "Counts the Case Workflow Actions matching query builder JSON, optionally grouped by a field."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionListByWorkflowIdActiveOnly", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists active Case Workflow Actions for a parent Case Workflow that the caller holds a role " +
-                "grant on."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionListByWorkflowGuidActiveOnly", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists active Case Workflow Actions for a parent Case Workflow (by Guid) that the caller holds " +
-                "a role grant on."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns a single Case Workflow Action by Id."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionCreate", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Creates a Case Workflow Action; calling twice creates two."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionValidate", OperationKind.Read, true, false,
-                "Validates a Case Workflow Action without saving it and returns every failure."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Updates a Case Workflow Action; overwrites, writes a version-audit row."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowActionDelete", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Soft-deletes a Case Workflow Action; reversible only by direct database action.")
-        ]);
+        static partial void AddCaseWorkflowAction(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionList", OperationKind.Read, true, false,
+                    "Lists Case Workflow Actions visible to the caller's tenant, keyset-paged and capped.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Case Workflow Actions may use.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionFilter", OperationKind.Read, true, false,
+                    "Returns the Case Workflow Actions matching query builder JSON, keyset-paged and capped.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionCount", OperationKind.Read, true, false,
+                    "Counts the Case Workflow Actions matching query builder JSON, optionally grouped by a field.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionListByWorkflowIdActiveOnly", OperationKind.Read, true,
+                    false,
+                    "Lists active Case Workflow Actions for a parent Case Workflow that the caller holds a role " +
+                    "grant on.",
+                    CaseWorkflowActionService.ActiveOnlyPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionListByWorkflowGuidActiveOnly", OperationKind.Read, true,
+                    false,
+                    "Lists active Case Workflow Actions for a parent Case Workflow (by Guid) that the caller holds " +
+                    "a role grant on.",
+                    CaseWorkflowActionService.ActiveOnlyPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionGet", OperationKind.Read, true, false,
+                    "Returns a single Case Workflow Action by Id.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionGetByGuid", OperationKind.Read, true, false,
+                    "Returns a single Case Workflow Action by Id.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionCreate", OperationKind.Write, false, false,
+                    "Creates a Case Workflow Action; calling twice creates two.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionValidate", OperationKind.Read, true, false,
+                    "Validates a Case Workflow Action without saving it and returns every failure.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionUpdate", OperationKind.Write, true, false,
+                    "Updates a Case Workflow Action; overwrites, writes a version-audit row.",
+                    CaseWorkflowActionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowActionDelete", OperationKind.Delete, true, true,
+                    "Soft-deletes a Case Workflow Action; reversible only by direct database action.",
+                    CaseWorkflowActionService.RequiredPermissions)
+            ]);
+        }
     }
 }

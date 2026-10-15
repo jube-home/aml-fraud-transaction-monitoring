@@ -1,126 +1,120 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.MachineLearning;
+using Accord.Statistics.Models.Markov.Topology;
 
 namespace Accord.Statistics.Models.Markov.Learning
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Statistics.Distributions.Multivariate;
-    using Accord.MachineLearning;
-    using Accord.Statistics.Models.Markov.Topology;
-
     /// <summary>
-    ///   Base class for implementations of the Baum-Welch learning algorithm.
-    ///   This class cannot be instantiated.
+    ///     Base class for implementations of the Baum-Welch learning algorithm.
+    ///     This class cannot be instantiated.
     /// </summary>
-    /// 
     public abstract class BaseHiddenMarkovModelLearning<TModel, TObservation> : ParallelLearningBase
     {
         private int numberOfStates;
         private ITopology topology;
 
         /// <summary>
-        ///   Gets or sets the number of states to be used when this
-        ///   learning algorithm needs to create new models.
+        ///     Initializes a new instance of the <see cref="BaseHiddenMarkovModelLearning{TModel, TObservation}" /> class.
         /// </summary>
-        /// 
+        /// <param name="model">The model to be learned.</param>
+        public BaseHiddenMarkovModelLearning(TModel model)
+        {
+            Model = model;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="BaseHiddenMarkovModelLearning{TModel, TObservation}" /> class.
+        /// </summary>
+        public BaseHiddenMarkovModelLearning()
+        {
+        }
+
+        /// <summary>
+        ///     Gets or sets the number of states to be used when this
+        ///     learning algorithm needs to create new models.
+        /// </summary>
         /// <value>The number of states.</value>
-        /// 
         public int NumberOfStates
         {
-            get { return numberOfStates; }
+            get => numberOfStates;
             set
             {
                 numberOfStates = value;
-                this.topology = null;
+                topology = null;
             }
         }
 
         /// <summary>
-        ///   Gets or sets the state transition topology to be used when this learning 
-        ///   algorithm needs to create new models. Default is <see cref="Forward"/>.
+        ///     Gets or sets the state transition topology to be used when this learning
+        ///     algorithm needs to create new models. Default is <see cref="Forward" />.
         /// </summary>
-        /// 
         /// <value>The topology to be used when this learning algorithm needs to create a new model.</value>
-        /// 
         public ITopology Topology
         {
             get
             {
                 if (topology != null)
+                {
                     return topology;
+                }
 
                 if (numberOfStates == 0)
-                    throw new InvalidOperationException("No topology has been set and no NumberOfStates has been set. Please set at least one of those properties before continuing.");
+                {
+                    throw new InvalidOperationException(
+                        "No topology has been set and no NumberOfStates has been set. Please set at least one of those properties before continuing.");
+                }
 
-                this.topology = new Ergodic(numberOfStates);
-                return this.topology;
+                topology = new Ergodic(numberOfStates);
+                return topology;
             }
             set
             {
-                this.topology = value;
-                this.numberOfStates = value.States;
+                topology = value;
+                numberOfStates = value.States;
             }
         }
 
         /// <summary>
-        ///   Gets or sets the model being trained.
+        ///     Gets or sets the model being trained.
         /// </summary>
-        /// 
-        public TModel Model
-        {
-            get; set;
-        }
+        public TModel Model { get; set; }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseHiddenMarkovModelLearning{TModel, TObservation}"/> class.
+        ///     Creates an instance of the model to be learned. Inheritors of this abstract
+        ///     class must define this method so new models can be created from the training data.
         /// </summary>
-        /// 
-        /// <param name="model">The model to be learned.</param>
-        /// 
-        public BaseHiddenMarkovModelLearning(TModel model)
-        {
-            this.Model = model;
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseHiddenMarkovModelLearning{TModel, TObservation}"/> class.
-        /// </summary>
-        /// 
-        public BaseHiddenMarkovModelLearning()
-        {
-        }
-
-
-        /// <summary>
-        ///   Creates an instance of the model to be learned. Inheritors of this abstract 
-        ///   class must define this method so new models can be created from the training data.
-        /// </summary>
-        /// 
         protected abstract TModel Create(TObservation[][] x);
-
     }
 }

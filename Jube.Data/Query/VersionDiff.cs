@@ -22,13 +22,12 @@ namespace Jube.Data.Query
     public static class VersionDiff
     {
         private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
-
-        private static readonly IReadOnlySet<string> NoIgnoredFields = new HashSet<string>();
+        private static readonly IReadOnlySet<string> noIgnoredFields = new HashSet<string>();
 
         public static IReadOnlyList<VersionFieldChange> Compare<TVersion>(TVersion from, TVersion to)
             where TVersion : class
         {
-            return Compare(from, to, NoIgnoredFields);
+            return Compare(from, to, noIgnoredFields);
         }
 
         public static IReadOnlyList<VersionFieldChange> Compare(object from, object to,

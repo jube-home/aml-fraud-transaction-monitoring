@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 : new EntityAnalysisModelGatewayRuleDto
                 {
                     Id = gatewayRule.Id,
+                    Guid = gatewayRule.Guid,
                     EntityAnalysisModelId = gatewayRule.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = gatewayRule.Name,
                     Description = null,

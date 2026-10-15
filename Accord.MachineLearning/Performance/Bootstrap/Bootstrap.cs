@@ -1,162 +1,156 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Accord.MachineLearning.Performance;
+using Accord.Math;
+using Accord.Math.Random;
 
 namespace Accord.MachineLearning
 {
-    using System;
-    using System.Linq;
-    using Accord.Math;
-    using Accord.MachineLearning.Performance;
-    using Accord.Compat;
-    using System.Threading.Tasks;
-
     /// <summary>
-    ///   Obsolete. Please refer to <see cref="Bootstrap{TModel, TInput, TOutput}"/> instead.
+    ///     Obsolete. Please refer to <see cref="Bootstrap{TModel,TInput,TOutput}" /> instead.
     /// </summary>
-    /// 
     [Obsolete("Please refer to Bootstrap<TModel, TInput, TOutput> instead.")]
     public delegate BootstrapValues BootstrapFittingFunction(int[] trainingSamples, int[] validationSamples);
 
     /// <summary>
-    ///   Obsolete. Please use <see cref="Bootstrap{TModel, TInput, TOutput}"/> instead.
+    ///     Obsolete. Please use <see cref="Bootstrap{TModel, TInput, TOutput}" /> instead.
     /// </summary>
-    /// 
     [Obsolete("Please use Bootstrap<TModel, TInput, TOutput> instead.")]
     [Serializable]
     public class Bootstrap
     {
-
-        private int[][] subsampleIndices;
-
-        private int samples;
+        [NonSerialized] private BootstrapFittingFunction fitting;
         private bool parallel = true;
 
-        [NonSerialized]
-        BootstrapFittingFunction fitting;
-
         /// <summary>
-        ///   Gets the number B of bootstrap samplings
-        ///   to be drawn from the population dataset.
+        ///     Creates a new Bootstrap estimation algorithm.
         /// </summary>
-        /// 
-        public int B { get { return subsampleIndices.Length; } }
-
-        /// <summary>
-        ///   Gets the total number of samples in the population dataset.
-        /// </summary>
-        /// 
-        public int Samples { get { return samples; } }
-
-        /// <summary>
-        ///   Gets the bootstrap samples drawn from
-        ///   the population dataset as indices.
-        /// </summary>
-        /// 
-        public int[][] Subsamples { get { return subsampleIndices; } }
-
-
-        /// <summary>
-        ///   Gets or sets the model fitting function.
-        /// </summary>
-        /// <remarks>
-        ///   The fitting function should accept an array of integers containing the
-        ///   indexes for the training samples, an array of integers containing the
-        ///   indexes for the validation samples and should return information about
-        ///   the model fitted using those two subsets of the available data.
-        /// </remarks>
-        /// 
-        public BootstrapFittingFunction Fitting
-        {
-            get { return fitting; }
-            set { fitting = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets a value indicating whether to use parallel
-        ///   processing through the use of multiple threads or not.
-        ///   Default is true.
-        /// </summary>
-        /// 
-        /// <value><c>true</c> to use multiple threads; otherwise, <c>false</c>.</value>
-        /// 
-        public bool RunInParallel
-        {
-            get { return parallel; }
-            set { parallel = value; }
-        }
-
-        /// <summary>
-        ///   Creates a new Bootstrap estimation algorithm.
-        /// </summary>
-        /// 
         /// <param name="size">The size of the complete dataset.</param>
         /// <param name="subsamples">The number B of bootstrap resamplings to perform.</param>
-        /// 
         public Bootstrap(int size, int subsamples)
-            : this(size, subsamples, size) { }
+            : this(size, subsamples, size)
+        {
+        }
 
         /// <summary>
-        ///   Creates a new Bootstrap estimation algorithm.
+        ///     Creates a new Bootstrap estimation algorithm.
         /// </summary>
-        /// 
         /// <param name="size">The size of the complete dataset.</param>
         /// <param name="subsamples">The number B of bootstrap resamplings to perform.</param>
-        /// <param name="subsampleSize">The number of samples in each subsample. Default
-        ///   is to use the total number of samples in the population dataset.</param>.
-        /// 
+        /// <param name="subsampleSize">
+        ///     The number of samples in each subsample. Default
+        ///     is to use the total number of samples in the population dataset.
+        /// </param>
+        /// .
         public Bootstrap(int size, int subsamples, int subsampleSize)
         {
-            this.samples = size;
-            this.subsampleIndices = new int[subsamples][];
+            Samples = size;
+            Subsamples = new int[subsamples][];
 
-            this.subsampleIndices = Bootstrap.Samplings(size, subsamples, subsampleSize);
+            Subsamples = Samplings(size, subsamples, subsampleSize);
         }
 
         /// <summary>
-        ///   Creates a new Bootstrap estimation algorithm.
+        ///     Creates a new Bootstrap estimation algorithm.
         /// </summary>
-        /// 
         /// <param name="size">The size of the complete dataset.</param>
         /// <param name="resamplings">The indices of the bootstrap samplings.</param>
-        /// 
         public Bootstrap(int size, int[][] resamplings)
         {
-            this.samples = size;
-            this.subsampleIndices = resamplings;
+            Samples = size;
+            Subsamples = resamplings;
         }
 
         /// <summary>
-        ///   Gets the indices for the training and validation 
-        ///   sets for the specified validation fold index.
+        ///     Gets the number B of bootstrap samplings
+        ///     to be drawn from the population dataset.
         /// </summary>
-        /// 
+        public int B => Subsamples.Length;
+
+        /// <summary>
+        ///     Gets the total number of samples in the population dataset.
+        /// </summary>
+        public int Samples { get; }
+
+        /// <summary>
+        ///     Gets the bootstrap samples drawn from
+        ///     the population dataset as indices.
+        /// </summary>
+        public int[][] Subsamples { get; }
+
+        /// <summary>
+        ///     Gets or sets the model fitting function.
+        /// </summary>
+        /// <remarks>
+        ///     The fitting function should accept an array of integers containing the
+        ///     indexes for the training samples, an array of integers containing the
+        ///     indexes for the validation samples and should return information about
+        ///     the model fitted using those two subsets of the available data.
+        /// </remarks>
+        public BootstrapFittingFunction Fitting
+        {
+            get => fitting;
+            set => fitting = value;
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether to use parallel
+        ///     processing through the use of multiple threads or not.
+        ///     Default is true.
+        /// </summary>
+        /// <value><c>true</c> to use multiple threads; otherwise, <c>false</c>.</value>
+        public bool RunInParallel
+        {
+            get => parallel;
+            set => parallel = value;
+        }
+
+        /// <summary>
+        ///     Gets the indices for the training and validation
+        ///     sets for the specified validation fold index.
+        /// </summary>
         /// <param name="index">The index of the validation fold.</param>
         /// <param name="trainingSet">The indices for the observations in the training set.</param>
         /// <param name="validationSet">The indices for the observations in the validation set.</param>
-        /// 
         public void CreatePartitions(int index, out int[] trainingSet, out int[] validationSet)
         {
             if (index < 0 || index >= Subsamples.Length)
+            {
                 throw new ArgumentOutOfRangeException("index");
+            }
 
             // Create indices for the foldings
 
@@ -168,13 +162,14 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Computes the cross validation algorithm.
+        ///     Computes the cross validation algorithm.
         /// </summary>
-        /// 
         public BootstrapResult Compute()
         {
             if (Fitting == null)
+            {
                 throw new InvalidOperationException("Fitting function must have been previously defined.");
+            }
 
             var models = new BootstrapValues[Subsamples.Length];
 
@@ -193,7 +188,7 @@ namespace Accord.MachineLearning
             }
             else
             {
-                for (int i = 0; i < Subsamples.Length; i++)
+                for (var i = 0; i < Subsamples.Length; i++)
                 {
                     int[] trainingSet, validationSet;
 
@@ -209,50 +204,47 @@ namespace Accord.MachineLearning
             return new BootstrapResult(this, models);
         }
 
-
         /// <summary>
-        ///   Gets the number of instances in training and validation
-        ///   sets for the specified validation fold index.
+        ///     Gets the number of instances in training and validation
+        ///     sets for the specified validation fold index.
         /// </summary>
-        /// 
         /// <param name="index">The index of the bootstrap sample.</param>
         /// <param name="trainingCount">The number of instances in the training set.</param>
         /// <param name="validationCount">The number of instances in the validation set.</param>
-        /// 
         public void GetPartitionSize(int index, out int trainingCount, out int validationCount)
         {
-            if (index < 0 || index >= subsampleIndices.Length)
+            if (index < 0 || index >= Subsamples.Length)
+            {
                 throw new ArgumentOutOfRangeException("index");
+            }
 
-            trainingCount = subsampleIndices[index].Length;
+            trainingCount = Subsamples[index].Length;
 
-            validationCount = samples - trainingCount;
+            validationCount = Samples - trainingCount;
         }
 
-
         /// <summary>
-        ///   Draws the bootstrap samples from the population.
+        ///     Draws the bootstrap samples from the population.
         /// </summary>
-        /// 
         /// <param name="size">The size of the samples to be drawn.</param>
         /// <param name="resamplings">The number of samples to drawn.</param>
         /// <param name="subsampleSize">The size of the samples to be drawn.</param>
-        /// 
         /// <returns>The indices of the samples in the original set.</returns>
-        /// 
         public static int[][] Samplings(int size, int resamplings, int subsampleSize)
         {
             // Create samples with replacement
-            int[][] idx = new int[resamplings][];
+            var idx = new int[resamplings][];
 
             // For each fold to be created
-            for (int i = 0; i < idx.Length; i++)
+            for (var i = 0; i < idx.Length; i++)
             {
                 idx[i] = new int[subsampleSize];
 
                 // Generate a random sample (with replacement)
-                for (int j = 0; j < idx[i].Length; j++)
-                    idx[i][j] = Accord.Math.Random.Generator.Random.Next(0, size);
+                for (var j = 0; j < idx[i].Length; j++)
+                {
+                    idx[i][j] = Generator.Random.Next(0, size);
+                }
             }
 
             return idx;

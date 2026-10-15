@@ -16,6 +16,8 @@ namespace Jube.Preservation
     using Cryptography;
     using Data.Context;
     using Data.Poco;
+    using Data.Query.ApproveEntireModelQuery;
+    using Data.Query.RecoverOrphanedUsersQuery;
     using Data.Repository;
     using Exceptions;
     using System.Text;
@@ -132,6 +134,7 @@ namespace Jube.Preservation
             CancellationToken token = default)
         {
             var importRepository = new ImportRepository(dbContext, userName);
+
             var import = new Import
             {
                 Bytes = bytes,
@@ -149,136 +152,172 @@ namespace Jube.Preservation
 
                 var roleRegistryRepository = new RoleRegistryRepository(dbContext, import.TenantRegistryId);
                 var roleRegistryAcrossAllTenants = await roleRegistryRepository.GetAllTenantsAsync(token);
+
                 await roleRegistryRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                     import.Id, token);
 
                 var roleRegistryPermissionRepository =
                     new RoleRegistryPermissionRepository(dbContext, import.TenantRegistryId);
+
                 await roleRegistryPermissionRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelRepository =
                     new EntityAnalysisModelRepository(dbContext, import.TenantRegistryId);
+
                 var entityAnalysisModelsAcrossAllTenants =
                     await entityAnalysisModelRepository.GetAllTenantsAsync(token);
+
                 await entityAnalysisModelRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelRequestXPathRepository =
                     new EntityAnalysisModelRequestXpathRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelRequestXPathRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelInlineFunctionRepository =
                     new EntityAnalysisModelInlineFunctionRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelInlineFunctionRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelInlineScriptRepository =
                     new EntityAnalysisModelInlineScriptRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelInlineScriptRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelGatewayRuleRepository =
                     new EntityAnalysisModelGatewayRuleRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelGatewayRuleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelSanctionRepository =
                     new EntityAnalysisModelSanctionRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelSanctionRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelTagRepository =
                     new EntityAnalysisModelTagRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelTagRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelTtlCounterRepository =
                     new EntityAnalysisModelTtlCounterRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelTtlCounterRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelAbstractionRuleRepository =
                     new EntityAnalysisModelAbstractionRuleRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelAbstractionRuleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelAbstractionCalculationRepository =
                     new EntityAnalysisModelAbstractionCalculationRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelAbstractionCalculationRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                         import.Id, token);
 
                 var entityAnalysisModelHttpAdaptationRepository =
                     new EntityAnalysisModelHttpAdaptationRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelHttpAdaptationRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelActivationRuleRepository =
                     new EntityAnalysisModelActivationRuleRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelActivationRuleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowRepository = new CaseWorkflowRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                     import.Id, token);
 
                 var caseWorkflowXPathRepository = new CaseWorkflowXPathRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowXPathRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowStatusRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowFormRepository = new CaseWorkflowFormRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowFormRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                     import.Id, token);
 
                 var caseWorkflowActionRepository = new CaseWorkflowActionRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowActionRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowDisplayRepository =
                     new CaseWorkflowDisplayRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowDisplayRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowMacro = new CaseWorkflowMacroRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowMacro.DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                     import.Id, token);
 
                 var caseWorkflowFilterRepository = new CaseWorkflowFilterRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowFilterRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var exhaustiveSearchInstanceRepository =
                     new ExhaustiveSearchInstanceRepository(dbContext, import.TenantRegistryId);
+
                 await exhaustiveSearchInstanceRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId, import.Id, token)
                     .ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceDataRepository =
                     new ExhaustiveSearchInstanceDataRepository(dbContext);
+
                 await exhaustiveSearchInstanceDataRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token).ConfigureAwait(false);
 
+                var exhaustiveSearchInstanceCategoricalFieldRepository =
+                    new ExhaustiveSearchInstanceCategoricalFieldRepository(dbContext);
+
+                await exhaustiveSearchInstanceCategoricalFieldRepository
+                    .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                        import.TenantRegistryId,
+                        import.Id, token).ConfigureAwait(false);
+
                 var exhaustiveSearchInstanceTrialInstanceRepository =
                     new ExhaustiveSearchInstanceTrialInstanceRepository(dbContext);
+
                 await exhaustiveSearchInstanceTrialInstanceRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceVariableRepository =
                     new ExhaustiveSearchInstanceVariableRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceTrialInstanceVariableRepository =
                     new ExhaustiveSearchInstanceTrialInstanceVariableRepository(dbContext);
+
                 await exhaustiveSearchInstanceTrialInstanceVariableRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -287,6 +326,7 @@ namespace Jube.Preservation
                 var exhaustiveSearchInstancePromotedTrialInstanceRepository =
                     new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext,
                         import.TenantRegistryId);
+
                 await exhaustiveSearchInstancePromotedTrialInstanceRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -294,12 +334,22 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository =
                     new ExhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository(dbContext);
+
                 await exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository
+                    .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                        import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
+
+                var exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository =
+                    new ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository(
+                        dbContext);
+
+                await exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstancePromotedTrialInstanceRocRepository =
                     new ExhaustiveSearchInstancePromotedTrialInstanceRocRepository(dbContext);
+
                 await exhaustiveSearchInstancePromotedTrialInstanceRocRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -307,6 +357,7 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstanceTrialInstanceTopologyTrialRepository =
                     new ExhaustiveSearchInstanceTrialInstanceTopologyTrialRepository(dbContext);
+
                 await exhaustiveSearchInstanceTrialInstanceTopologyTrialRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -314,6 +365,7 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstanceTrialInstanceSensitivityRepository =
                     new ExhaustiveSearchInstanceTrialInstanceSensitivityRepository(dbContext);
+
                 await exhaustiveSearchInstanceTrialInstanceSensitivityRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -321,30 +373,42 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository =
                     new ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository(dbContext);
+
                 await exhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository =
                     new ExhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository(dbContext);
+
                 await exhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstancePromotedTrialInstanceVariableRepository =
                     new ExhaustiveSearchInstancePromotedTrialInstanceVariableRepository(dbContext);
+
                 await exhaustiveSearchInstancePromotedTrialInstanceVariableRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
 
+                var exhaustiveSearchInstancePrescriptionHistogramRepository =
+                    new ExhaustiveSearchInstancePrescriptionHistogramRepository(dbContext);
+
+                await exhaustiveSearchInstancePrescriptionHistogramRepository
+                    .DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId, token)
+                    .ConfigureAwait(false);
+
                 var exhaustiveSearchInstanceVariableAnomalyRepository =
                     new ExhaustiveSearchInstanceVariableAnomalyRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableAnomalyRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceVariableClassificationRepository =
                     new ExhaustiveSearchInstanceVariableClassificationRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableClassificationRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -352,6 +416,7 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstanceVariableHistogramRepository =
                     new ExhaustiveSearchInstanceVariableHistogramRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableHistogramRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -359,19 +424,29 @@ namespace Jube.Preservation
 
                 var exhaustiveSearchInstanceVariableHistogramClassificationRepository =
                     new ExhaustiveSearchInstanceVariableHistogramClassificationRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableHistogramClassificationRepository
+                    .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                        import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
+
+                var exhaustiveSearchInstanceVariableHistogramClassRepository =
+                    new ExhaustiveSearchInstanceVariableHistogramClassRepository(dbContext);
+
+                await exhaustiveSearchInstanceVariableHistogramClassRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceVariableHistogramAnomalyRepository =
                     new ExhaustiveSearchInstanceVariableHistogramAnomalyRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableHistogramAnomalyRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
                         import.Id, token).ConfigureAwait(false);
 
                 var exhaustiveSearchInstanceVariableMulticollinearityRepository =
-                    new ExhaustiveSearchInstanceVariableMultiColiniarityRepository(dbContext);
+                    new ExhaustiveSearchInstanceVariableMultiCollinearityRepository(dbContext);
+
                 await exhaustiveSearchInstanceVariableMulticollinearityRepository
                     .DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                         import.TenantRegistryId,
@@ -379,99 +454,150 @@ namespace Jube.Preservation
 
                 var entityAnalysisModelListRepository =
                     new EntityAnalysisModelListRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelListRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelListValueRepository =
                     new EntityAnalysisModelListValueRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelListValueRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token);
 
                 var entityAnalysisModelDictionaryRepository =
                     new EntityAnalysisModelDictionaryRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelDictionaryRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token);
 
                 var entityAnalysisModelDictionaryKvpRepository =
                     new EntityAnalysisModelDictionaryKvpRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelDictionaryKvpRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId,
                     import.Id, token);
 
+                await new AdvancedAnalyticsPreservation(dbContext, import.TenantRegistryId, userName)
+                    .DeleteExistingAsync(token).ConfigureAwait(false);
+
+                var exhaustiveInstanceDatasetRepository =
+                    new ExhaustiveInstanceDatasetRepository(dbContext, import.TenantRegistryId);
+
+                await exhaustiveInstanceDatasetRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token).ConfigureAwait(false);
+
+                var exhaustiveInstanceCsvIdMap = new Dictionary<int, int>();
+
+                foreach (var exhaustiveInstanceCsvExport in wrapper.Payload?.ExhaustiveInstanceCsv ?? [])
+                {
+                    var oldExhaustiveInstanceCsvId = exhaustiveInstanceCsvExport.Dataset!.Id;
+
+                    exhaustiveInstanceCsvIdMap[oldExhaustiveInstanceCsvId] = await exhaustiveInstanceDatasetRepository
+                        .InsertImportedAsync(exhaustiveInstanceCsvExport.Dataset,
+                            exhaustiveInstanceCsvExport.Rows ?? [], import.Id, false, token).ConfigureAwait(false);
+                }
+
+                var exhaustiveInstanceJsonIdMap = new Dictionary<int, int>();
+
+                foreach (var exhaustiveInstanceJsonExport in wrapper.Payload?.ExhaustiveInstanceJson ?? [])
+                {
+                    var oldExhaustiveInstanceJsonId = exhaustiveInstanceJsonExport.Dataset!.Id;
+
+                    exhaustiveInstanceJsonIdMap[oldExhaustiveInstanceJsonId] = await exhaustiveInstanceDatasetRepository
+                        .InsertImportedAsync(exhaustiveInstanceJsonExport.Dataset,
+                            exhaustiveInstanceJsonExport.Rows ?? [], import.Id, false, token).ConfigureAwait(false);
+                }
+
                 var visualisationRegistryRepository =
                     new VisualisationRegistryRepository(dbContext, import.TenantRegistryId);
+
                 var visualisationRegistryAllTenants = await visualisationRegistryRepository.GetAllTenantsAsync(token);
+
                 await visualisationRegistryRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var visualisationRegistryDatasourceRepository =
                     new VisualisationRegistryDatasourceRepository(dbContext, import.TenantRegistryId);
+
                 await visualisationRegistryDatasourceRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var visualisationRegistryParameterRepository =
                     new VisualisationRegistryParameterRepository(dbContext, import.TenantRegistryId);
+
                 await visualisationRegistryParameterRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowRoleRepository = new CaseWorkflowRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId,
                     import.Id, token);
 
                 var caseWorkflowActionRoleRepository =
                     new CaseWorkflowActionRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowActionRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowDisplayRoleRepository =
                     new CaseWorkflowDisplayRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowDisplayRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowFilterRoleRepository =
                     new CaseWorkflowFilterRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowFilterRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowFormRoleRepository =
                     new CaseWorkflowFormRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowFormRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowMacroRoleRepository =
                     new CaseWorkflowMacroRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowMacroRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowStatusRoleRepository =
                     new CaseWorkflowStatusRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowStatusRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var caseWorkflowXPathRoleRepository =
                     new CaseWorkflowXPathRoleRepository(dbContext, import.TenantRegistryId);
+
                 await caseWorkflowXPathRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var visualisationRegistryRoleRepository =
                     new VisualisationRegistryRoleRepository(dbContext, import.TenantRegistryId);
+
                 await visualisationRegistryRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelRoleRepository =
                     new EntityAnalysisModelRoleRepository(dbContext, import.TenantRegistryId);
+
                 await entityAnalysisModelRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var visualisationRegistryDatasourceRoleRepository =
                     new VisualisationRegistryDatasourceRoleRepository(dbContext, import.TenantRegistryId);
+
                 await visualisationRegistryDatasourceRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var visualisationRegistryParameterRoleRepository =
                     new VisualisationRegistryParameterRoleRepository(dbContext, import.TenantRegistryId);
+
                 await visualisationRegistryParameterRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
@@ -547,6 +673,7 @@ namespace Jube.Preservation
                             {
                                 visualisationRegistryDatasourceRekey.TryAdd(visualisationRegistryDatasource.Guid,
                                     Guid.NewGuid());
+
                                 visualisationRegistryDatasource.Guid =
                                     visualisationRegistryDatasourceRekey[visualisationRegistryDatasource.Guid];
                             }
@@ -565,6 +692,7 @@ namespace Jube.Preservation
                             {
                                 visualisationRegistryParameterRekey.TryAdd(visualisationRegistryParameter.Guid,
                                     Guid.NewGuid());
+
                                 visualisationRegistryParameter.Guid =
                                     visualisationRegistryParameterRekey[visualisationRegistryParameter.Guid];
                             }
@@ -576,11 +704,13 @@ namespace Jube.Preservation
                 }
 
                 var importedEntityAnalysisModelIds = new List<int>();
+                var entityAnalysisModelIdMap = new Dictionary<int, int>();
 
                 if (wrapper.Payload?.EntityAnalysisModel != null)
                 {
                     foreach (var oldEntityAnalysisModel in wrapper.Payload.EntityAnalysisModel)
                     {
+                        var oldEntityAnalysisModelId = oldEntityAnalysisModel.Id;
                         var rekey = false;
 
                         var existsAnywhere =
@@ -608,6 +738,8 @@ namespace Jube.Preservation
                         var newEntityAnalysisModel =
                             await entityAnalysisModelRepository.InsertAsync(oldEntityAnalysisModel, token);
 
+                        entityAnalysisModelIdMap[oldEntityAnalysisModelId] = newEntityAnalysisModel.Id;
+
                         importedEntityAnalysisModelIds.Add(newEntityAnalysisModel.Id);
 
                         foreach (var entityAnalysisModelRequestXpath in oldEntityAnalysisModel
@@ -620,6 +752,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelRequestXpathRekey.TryAdd(entityAnalysisModelRequestXpath.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelRequestXpath.Guid =
                                     entityAnalysisModelRequestXpathRekey[entityAnalysisModelRequestXpath.Guid];
                             }
@@ -638,6 +771,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelInlineFunctionRekey.TryAdd(entityAnalysisModelInlineFunction.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelInlineFunction.Guid =
                                     entityAnalysisModelInlineFunctionRekey[entityAnalysisModelInlineFunction.Guid];
                             }
@@ -656,6 +790,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelInlineScriptRekey.TryAdd(entityAnalysisModelInlineScript.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelInlineScript.Guid =
                                     entityAnalysisModelInlineScriptRekey[entityAnalysisModelInlineScript.Guid];
                             }
@@ -674,6 +809,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelGatewayRuleRekey.TryAdd(entityAnalysisModelGatewayRule.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelGatewayRule.Guid =
                                     entityAnalysisModelGatewayRuleRekey[entityAnalysisModelGatewayRule.Guid];
                             }
@@ -692,6 +828,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelSanctionRekey.TryAdd(entityAnalysisModelSanction.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelSanction.Guid =
                                     entityAnalysisModelSanctionRekey[entityAnalysisModelSanction.Guid];
                             }
@@ -724,6 +861,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelTtlCounterRekey.TryAdd(entityAnalysisModelTtlCounter.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelTtlCounter.Guid =
                                     entityAnalysisModelTtlCounterRekey[entityAnalysisModelTtlCounter.Guid];
                             }
@@ -742,6 +880,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelAbstractionRuleRekey.TryAdd(entityAnalysisModelAbstractionRule.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelAbstractionRule.Guid =
                                     entityAnalysisModelAbstractionRuleRekey[entityAnalysisModelAbstractionRule.Guid];
                             }
@@ -761,6 +900,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelAbstractionCalculationsRekey.TryAdd(
                                     entityAnalysisModelAbstractionCalculations.Guid, Guid.NewGuid());
+
                                 entityAnalysisModelAbstractionCalculations.Guid =
                                     entityAnalysisModelAbstractionCalculationsRekey[
                                         entityAnalysisModelAbstractionCalculations.Guid];
@@ -780,6 +920,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelHttpAdaptationRekey.TryAdd(entityAnalysisModelHttpAdaptation.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelHttpAdaptation.Guid =
                                     entityAnalysisModelHttpAdaptationRekey[entityAnalysisModelHttpAdaptation.Guid];
                             }
@@ -797,10 +938,41 @@ namespace Jube.Preservation
                                     newEntityAnalysisModel.Id;
                                 entityAnalysisModelExhaustiveSearchInstance.ImportId = import.Id;
 
+                                if (entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceCsvId.HasValue)
+                                {
+                                    entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceCsvId =
+                                        exhaustiveInstanceCsvIdMap.TryGetValue(
+                                            entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceCsvId.Value,
+                                            out var remappedExhaustiveInstanceCsvId)
+                                            ? remappedExhaustiveInstanceCsvId
+                                            : null;
+
+                                    if (entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceCsvId == null)
+                                    {
+                                        entityAnalysisModelExhaustiveSearchInstance.DataSourceId = 0;
+                                    }
+                                }
+
+                                if (entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceJsonId.HasValue)
+                                {
+                                    entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceJsonId =
+                                        exhaustiveInstanceJsonIdMap.TryGetValue(
+                                            entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceJsonId.Value,
+                                            out var remappedExhaustiveInstanceJsonId)
+                                            ? remappedExhaustiveInstanceJsonId
+                                            : null;
+
+                                    if (entityAnalysisModelExhaustiveSearchInstance.ExhaustiveInstanceJsonId == null)
+                                    {
+                                        entityAnalysisModelExhaustiveSearchInstance.DataSourceId = 0;
+                                    }
+                                }
+
                                 if (rekey)
                                 {
                                     entityAnalysisModelExhaustiveSearchInstanceRekey.TryAdd(
                                         entityAnalysisModelExhaustiveSearchInstance.Guid, Guid.NewGuid());
+
                                     entityAnalysisModelExhaustiveSearchInstance.Guid =
                                         entityAnalysisModelExhaustiveSearchInstanceRekey[
                                             entityAnalysisModelExhaustiveSearchInstance.Guid];
@@ -816,10 +988,63 @@ namespace Jube.Preservation
                                 {
                                     exhaustiveSearchInstanceData.ExhaustiveSearchInstanceId =
                                         entityAnalysisModelExhaustiveSearchInstanceId;
+
                                     exhaustiveSearchInstanceData.ImportId = import.Id;
 
                                     await exhaustiveSearchInstanceDataRepository
                                         .InsertAsync(exhaustiveSearchInstanceData, token).ConfigureAwait(false);
+                                }
+
+                                var exhaustiveSearchInstanceCategoricalFieldIdMap = new Dictionary<int, int>();
+
+                                foreach (var exhaustiveSearchInstanceCategoricalField in
+                                         entityAnalysisModelExhaustiveSearchInstance
+                                             .ExhaustiveSearchInstanceCategoricalField)
+                                {
+                                    var oldExhaustiveSearchInstanceCategoricalFieldId =
+                                        exhaustiveSearchInstanceCategoricalField.Id;
+
+                                    exhaustiveSearchInstanceCategoricalField.ExhaustiveSearchInstanceId =
+                                        entityAnalysisModelExhaustiveSearchInstanceId;
+
+                                    exhaustiveSearchInstanceCategoricalField.ImportId = import.Id;
+
+                                    var exhaustiveSearchInstanceCategoricalFieldId =
+                                        await exhaustiveSearchInstanceCategoricalFieldRepository
+                                            .InsertAsync(exhaustiveSearchInstanceCategoricalField, token)
+                                            .ConfigureAwait(false);
+
+                                    exhaustiveSearchInstanceCategoricalFieldIdMap[
+                                            oldExhaustiveSearchInstanceCategoricalFieldId] =
+                                        exhaustiveSearchInstanceCategoricalFieldId;
+                                }
+
+                                var exhaustiveSearchInstanceVariableIdMap = new Dictionary<int, int>();
+
+                                foreach (var exhaustiveSearchInstanceVariable in
+                                         entityAnalysisModelExhaustiveSearchInstance.ExhaustiveSearchInstanceVariable)
+                                {
+                                    var oldExhaustiveSearchInstanceVariableId = exhaustiveSearchInstanceVariable.Id;
+
+                                    exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceId =
+                                        entityAnalysisModelExhaustiveSearchInstanceId;
+
+                                    exhaustiveSearchInstanceVariable.ImportId = import.Id;
+
+                                    exhaustiveSearchInstanceVariable.CategoricalFieldId =
+                                        exhaustiveSearchInstanceVariable.CategoricalFieldId.HasValue
+                                        && exhaustiveSearchInstanceCategoricalFieldIdMap.TryGetValue(
+                                            exhaustiveSearchInstanceVariable.CategoricalFieldId.Value,
+                                            out var remappedCategoricalFieldIdForVariable)
+                                            ? remappedCategoricalFieldIdForVariable
+                                            : null;
+
+                                    var exhaustiveSearchInstanceVariableId =
+                                        await exhaustiveSearchInstanceVariableRepository.InsertAsync(
+                                            exhaustiveSearchInstanceVariable, token).ConfigureAwait(false);
+
+                                    exhaustiveSearchInstanceVariableIdMap[oldExhaustiveSearchInstanceVariableId] =
+                                        exhaustiveSearchInstanceVariableId;
                                 }
 
                                 foreach (var exhaustiveSearchInstanceTrialInstance in
@@ -828,6 +1053,7 @@ namespace Jube.Preservation
                                 {
                                     exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId =
                                         entityAnalysisModelExhaustiveSearchInstanceId;
+
                                     exhaustiveSearchInstanceTrialInstance.ImportId = import.Id;
 
                                     var exhaustiveSearchInstanceTrialInstanceId =
@@ -841,7 +1067,18 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstanceTrialInstanceVariable
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstanceTrialInstanceVariable.ImportId = import.Id;
+
+                                        exhaustiveSearchInstanceTrialInstanceVariable.ExhaustiveSearchInstanceVariableId
+                                            = exhaustiveSearchInstanceTrialInstanceVariable
+                                                  .ExhaustiveSearchInstanceVariableId.HasValue
+                                              && exhaustiveSearchInstanceVariableIdMap.TryGetValue(
+                                                  exhaustiveSearchInstanceTrialInstanceVariable
+                                                      .ExhaustiveSearchInstanceVariableId.Value,
+                                                  out var remappedVariableIdForTrialInstanceVariable)
+                                                ? remappedVariableIdForTrialInstanceVariable
+                                                : null;
 
                                         var exhaustiveSearchInstanceTrialInstanceVariableId =
                                             (await exhaustiveSearchInstanceTrialInstanceVariableRepository.InsertAsync(
@@ -855,6 +1092,7 @@ namespace Jube.Preservation
                                             exhaustiveSearchInstancePromotedTrialInstanceSensitivity
                                                     .ExhaustiveSearchInstanceTrialInstanceVariableId =
                                                 exhaustiveSearchInstanceTrialInstanceVariableId;
+
                                             exhaustiveSearchInstancePromotedTrialInstanceSensitivity.ImportId =
                                                 import.Id;
 
@@ -871,12 +1109,27 @@ namespace Jube.Preservation
                                             exhaustiveSearchInstancePromotedTrialInstanceVariable
                                                     .ExhaustiveSearchInstanceTrialInstanceVariableId =
                                                 exhaustiveSearchInstanceTrialInstanceVariableId;
+
                                             exhaustiveSearchInstancePromotedTrialInstanceVariable.ImportId = import.Id;
 
-                                            await exhaustiveSearchInstancePromotedTrialInstanceVariableRepository
-                                                .InsertAsync(
-                                                    exhaustiveSearchInstancePromotedTrialInstanceVariable, token)
-                                                .ConfigureAwait(false);
+                                            var exhaustiveSearchInstancePromotedTrialInstanceVariableId =
+                                                (await exhaustiveSearchInstancePromotedTrialInstanceVariableRepository
+                                                    .InsertAsync(
+                                                        exhaustiveSearchInstancePromotedTrialInstanceVariable, token)
+                                                    .ConfigureAwait(false)).Id;
+
+                                            foreach (var exhaustiveSearchInstancePrescriptionHistogram in
+                                                     exhaustiveSearchInstancePromotedTrialInstanceVariable
+                                                         .ExhaustiveSearchInstancePrescriptionHistogram ?? [])
+                                            {
+                                                exhaustiveSearchInstancePrescriptionHistogram
+                                                        .ExhaustiveSearchInstancePromotedTrialInstanceVariableId =
+                                                    exhaustiveSearchInstancePromotedTrialInstanceVariableId;
+
+                                                await exhaustiveSearchInstancePrescriptionHistogramRepository
+                                                    .InsertAsync(exhaustiveSearchInstancePrescriptionHistogram, token)
+                                                    .ConfigureAwait(false);
+                                            }
                                         }
                                     }
 
@@ -887,6 +1140,7 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstancePromotedTrialInstance
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstancePromotedTrialInstance.ImportId = import.Id;
 
                                         await exhaustiveSearchInstancePromotedTrialInstanceRepository.InsertAsync(
@@ -900,13 +1154,47 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstancePromotedTrialInstancePredictedActual
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstancePromotedTrialInstancePredictedActual.ImportId =
                                             import.Id;
 
-                                        await exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository
-                                            .InsertAsync(
-                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActual, token)
-                                            .ConfigureAwait(false);
+                                        var exhaustiveSearchInstancePromotedTrialInstancePredictedActualId =
+                                            (await
+                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository
+                                                    .InsertAsync(
+                                                        exhaustiveSearchInstancePromotedTrialInstancePredictedActual,
+                                                        token)
+                                                    .ConfigureAwait(false)).Id;
+
+                                        foreach (var
+                                                     exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                 in exhaustiveSearchInstancePromotedTrialInstancePredictedActual
+                                                     .ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue)
+                                        {
+                                            exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                    .ExhaustiveSearchInstancePromotedTrialInstancePredictedActualId =
+                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActualId;
+
+                                            exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                .ImportId = import.Id;
+
+                                            exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                    .ExhaustiveSearchInstanceVariableId =
+                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                    .ExhaustiveSearchInstanceVariableId.HasValue
+                                                && exhaustiveSearchInstanceVariableIdMap.TryGetValue(
+                                                    exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue
+                                                        .ExhaustiveSearchInstanceVariableId.Value,
+                                                    out var remappedVariableIdForPredictedActualVariableValue)
+                                                    ? remappedVariableIdForPredictedActualVariableValue
+                                                    : null;
+
+                                            await
+                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository
+                                                    .InsertAsync(
+                                                        exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue,
+                                                        token).ConfigureAwait(false);
+                                        }
                                     }
 
                                     foreach (var exhaustiveSearchInstancePromotedTrialInstanceRoc in
@@ -916,6 +1204,7 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstancePromotedTrialInstanceRoc
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstancePromotedTrialInstanceRoc.ImportId = import.Id;
 
                                         await exhaustiveSearchInstancePromotedTrialInstanceRocRepository.InsertAsync(
@@ -930,6 +1219,7 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstanceTrialInstanceTopologyTrial
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstanceTrialInstanceTopologyTrial.ImportId = import.Id;
 
                                         await exhaustiveSearchInstanceTrialInstanceTopologyTrialRepository.InsertAsync(
@@ -944,7 +1234,19 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstanceTrialInstanceSensitivity
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstanceTrialInstanceSensitivity.ImportId = import.Id;
+
+                                        exhaustiveSearchInstanceTrialInstanceSensitivity
+                                                .ExhaustiveSearchInstanceVariableId
+                                            = exhaustiveSearchInstanceTrialInstanceSensitivity
+                                                  .ExhaustiveSearchInstanceVariableId.HasValue
+                                              && exhaustiveSearchInstanceVariableIdMap.TryGetValue(
+                                                  exhaustiveSearchInstanceTrialInstanceSensitivity
+                                                      .ExhaustiveSearchInstanceVariableId.Value,
+                                                  out var remappedVariableIdForTrialInstanceSensitivity)
+                                                ? remappedVariableIdForTrialInstanceSensitivity
+                                                : null;
 
                                         await exhaustiveSearchInstanceTrialInstanceSensitivityRepository.InsertAsync(
                                                 exhaustiveSearchInstanceTrialInstanceSensitivity, token)
@@ -958,6 +1260,7 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstanceTrialInstanceActivationFunctionTrial
                                                 .ExhaustiveSearchInstanceTrialInstanceId =
                                             exhaustiveSearchInstanceTrialInstanceId;
+
                                         exhaustiveSearchInstanceTrialInstanceActivationFunctionTrial.ImportId =
                                             import.Id;
 
@@ -972,31 +1275,46 @@ namespace Jube.Preservation
                                          entityAnalysisModelExhaustiveSearchInstance
                                              .ExhaustiveSearchInstanceVariable)
                                 {
-                                    exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceId =
-                                        entityAnalysisModelExhaustiveSearchInstanceId;
-                                    exhaustiveSearchInstanceVariable.ImportId = import.Id;
-
                                     var exhaustiveSearchInstanceVariableId =
-                                        await exhaustiveSearchInstanceVariableRepository.InsertAsync(
-                                            exhaustiveSearchInstanceVariable, token).ConfigureAwait(false);
+                                        exhaustiveSearchInstanceVariableIdMap[exhaustiveSearchInstanceVariable.Id];
 
                                     foreach (var exhaustiveSearchInstanceVariableHistogram in
                                              exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableHistogram)
                                     {
                                         exhaustiveSearchInstanceVariableHistogram.ExhaustiveSearchInstanceVariableId =
                                             exhaustiveSearchInstanceVariableId;
+
                                         exhaustiveSearchInstanceVariableHistogram.ImportId = import.Id;
 
                                         await exhaustiveSearchInstanceVariableHistogramRepository.InsertAsync(
                                             exhaustiveSearchInstanceVariableHistogram, token).ConfigureAwait(false);
                                     }
 
+                                    foreach (var exhaustiveSearchInstanceVariableHistogramClass in
+                                             exhaustiveSearchInstanceVariable
+                                                 .ExhaustiveSearchInstanceVariableHistogramClass)
+                                    {
+                                        exhaustiveSearchInstanceVariableHistogramClass
+                                                .ExhaustiveSearchInstanceVariableId =
+                                            exhaustiveSearchInstanceVariableId;
+
+                                        exhaustiveSearchInstanceVariableHistogramClass.ImportId = import.Id;
+
+                                        await exhaustiveSearchInstanceVariableHistogramClassRepository.InsertAsync(
+                                                exhaustiveSearchInstanceVariableHistogramClass, token)
+                                            .ConfigureAwait(false);
+                                    }
+
                                     foreach (var exhaustiveSearchInstanceVariableAnomaly in
                                              exhaustiveSearchInstanceVariable
                                                  .ExhaustiveSearchInstanceVariableAnomaly)
                                     {
+                                        var oldExhaustiveSearchInstanceVariableAnomalyId =
+                                            exhaustiveSearchInstanceVariableAnomaly.Id;
+
                                         exhaustiveSearchInstanceVariableAnomaly.ExhaustiveSearchInstanceVariableId =
                                             exhaustiveSearchInstanceVariableId;
+
                                         exhaustiveSearchInstanceVariableAnomaly.ImportId = import.Id;
 
                                         var exhaustiveSearchInstanceVariableAnomalyId =
@@ -1005,11 +1323,14 @@ namespace Jube.Preservation
 
                                         foreach (var exhaustiveSearchInstanceVariableHistogramAnomaly in
                                                  exhaustiveSearchInstanceVariable
-                                                     .ExhaustiveSearchInstanceVariableHistogramAnomaly)
+                                                     .ExhaustiveSearchInstanceVariableHistogramAnomaly.Where(w =>
+                                                         w.ExhaustiveSearchInstanceVariableAnomalyId ==
+                                                         oldExhaustiveSearchInstanceVariableAnomalyId))
                                         {
                                             exhaustiveSearchInstanceVariableHistogramAnomaly
                                                     .ExhaustiveSearchInstanceVariableAnomalyId =
                                                 exhaustiveSearchInstanceVariableAnomalyId;
+
                                             exhaustiveSearchInstanceVariableHistogramAnomaly.ImportId = import.Id;
 
                                             await exhaustiveSearchInstanceVariableHistogramAnomalyRepository
@@ -1023,8 +1344,12 @@ namespace Jube.Preservation
                                              exhaustiveSearchInstanceVariable
                                                  .ExhaustiveSearchInstanceVariableClassification)
                                     {
+                                        var oldExhaustiveSearchInstanceVariableClassificationId =
+                                            exhaustiveSearchInstanceVariableClassification.Id;
+
                                         exhaustiveSearchInstanceVariableClassification
                                             .ExhaustiveSearchInstanceVariableId = exhaustiveSearchInstanceVariableId;
+
                                         exhaustiveSearchInstanceVariableClassification.ImportId = import.Id;
 
                                         var exhaustiveSearchInstanceVariableClassificationId =
@@ -1034,11 +1359,14 @@ namespace Jube.Preservation
 
                                         foreach (var exhaustiveSearchInstanceVariableHistogramClassification in
                                                  exhaustiveSearchInstanceVariable
-                                                     .ExhaustiveSearchInstanceVariableHistogramClassification)
+                                                     .ExhaustiveSearchInstanceVariableHistogramClassification.Where(w =>
+                                                         w.ExhaustiveSearchInstanceVariableClassificationId ==
+                                                         oldExhaustiveSearchInstanceVariableClassificationId))
                                         {
                                             exhaustiveSearchInstanceVariableHistogramClassification
                                                     .ExhaustiveSearchInstanceVariableClassificationId =
                                                 exhaustiveSearchInstanceVariableClassificationId;
+
                                             exhaustiveSearchInstanceVariableHistogramClassification.ImportId =
                                                 import.Id;
 
@@ -1055,7 +1383,19 @@ namespace Jube.Preservation
                                     {
                                         exhaustiveSearchInstanceVariableMultiCollinearity
                                             .ExhaustiveSearchInstanceVariableId = exhaustiveSearchInstanceVariableId;
+
                                         exhaustiveSearchInstanceVariableMultiCollinearity.ImportId = import.Id;
+
+                                        exhaustiveSearchInstanceVariableMultiCollinearity
+                                                .TestExhaustiveSearchInstanceVariableId =
+                                            exhaustiveSearchInstanceVariableMultiCollinearity
+                                                .TestExhaustiveSearchInstanceVariableId.HasValue
+                                            && exhaustiveSearchInstanceVariableIdMap.TryGetValue(
+                                                exhaustiveSearchInstanceVariableMultiCollinearity
+                                                    .TestExhaustiveSearchInstanceVariableId.Value,
+                                                out var remappedTestVariableId)
+                                                ? remappedTestVariableId
+                                                : null;
 
                                         await exhaustiveSearchInstanceVariableMulticollinearityRepository.InsertAsync(
                                                 exhaustiveSearchInstanceVariableMultiCollinearity, token)
@@ -1081,6 +1421,7 @@ namespace Jube.Preservation
                             if (rekey)
                             {
                                 caseWorkflowRekey.TryAdd(oldEntityAnalysisModelCaseWorkflow.Guid, Guid.NewGuid());
+
                                 oldEntityAnalysisModelCaseWorkflow.Guid =
                                     caseWorkflowRekey[oldEntityAnalysisModelCaseWorkflow.Guid];
                             }
@@ -1128,6 +1469,7 @@ namespace Jube.Preservation
                                 if (rekey)
                                 {
                                     caseWorkflowsDisplayRekey.TryAdd(oldCaseWorkflowsDisplay.Guid, Guid.NewGuid());
+
                                     oldCaseWorkflowsDisplay.Guid =
                                         caseWorkflowsDisplayRekey[oldCaseWorkflowsDisplay.Guid];
                                 }
@@ -1207,6 +1549,7 @@ namespace Jube.Preservation
                             {
                                 entityAnalysisModelActivationRuleRekey.TryAdd(entityAnalysisModelActivationRule.Guid,
                                     Guid.NewGuid());
+
                                 entityAnalysisModelActivationRule.Guid =
                                     entityAnalysisModelActivationRuleRekey[entityAnalysisModelActivationRule.Guid];
                             }
@@ -1250,6 +1593,7 @@ namespace Jube.Preservation
                                 {
                                     entityAnalysisModelListRekey.TryAdd(oldEntityAnalysisModelList.Guid,
                                         Guid.NewGuid());
+
                                     oldEntityAnalysisModelList.Guid =
                                         entityAnalysisModelListRekey[oldEntityAnalysisModelList.Guid];
                                 }
@@ -1271,12 +1615,14 @@ namespace Jube.Preservation
                                 {
                                     entityAnalysisModelListValue.EntityAnalysisModelListId =
                                         newEntityAnalysisModelListId;
+
                                     entityAnalysisModelListValue.ImportId = import.Id;
 
                                     if (rekey)
                                     {
                                         entityAnalysisModelListValueRekey.TryAdd(entityAnalysisModelListValue.Guid,
                                             Guid.NewGuid());
+
                                         entityAnalysisModelListValue.Guid =
                                             entityAnalysisModelListValueRekey[entityAnalysisModelListValue.Guid];
                                     }
@@ -1304,6 +1650,7 @@ namespace Jube.Preservation
                                 {
                                     entityAnalysisModelDictionaryRekey.TryAdd(oldEntityAnalysisModelDictionary.Guid,
                                         Guid.NewGuid());
+
                                     oldEntityAnalysisModelDictionary.Guid =
                                         entityAnalysisModelDictionaryRekey[oldEntityAnalysisModelDictionary.Guid];
                                 }
@@ -1316,12 +1663,14 @@ namespace Jube.Preservation
                                 {
                                     oldEntityAnalysisModelDictionaryKvp.EntityAnalysisModelDictionaryId =
                                         newEntityAnalysisModelDictionaryId;
+
                                     oldEntityAnalysisModelDictionaryKvp.ImportId = import.Id;
 
                                     if (rekey)
                                     {
                                         entityAnalysisModelDictionaryKvpRekey.TryAdd(
                                             oldEntityAnalysisModelDictionaryKvp.Guid, Guid.NewGuid());
+
                                         oldEntityAnalysisModelDictionaryKvp.Guid =
                                             entityAnalysisModelDictionaryKvpRekey[
                                                 oldEntityAnalysisModelDictionaryKvp.Guid];
@@ -1335,12 +1684,19 @@ namespace Jube.Preservation
                     }
                 }
 
-                var entityApprovalRepository = new EntityApprovalRepository(dbContext);
+                if (wrapper.Payload?.AdvancedAnalytics != null)
+                {
+                    await new AdvancedAnalyticsPreservation(dbContext, import.TenantRegistryId, userName)
+                        .ImportAsync(wrapper.Payload.AdvancedAnalytics, entityAnalysisModelIdMap, token)
+                        .ConfigureAwait(false);
+                }
+
+                var approveEntireModelQuery = new ApproveEntireModelQuery(dbContext);
 
                 foreach (var importedEntityAnalysisModelId in importedEntityAnalysisModelIds)
                 {
-                    await entityApprovalRepository
-                        .ApproveEntireModelAsync(importedEntityAnalysisModelId, userName, token);
+                    await approveEntireModelQuery
+                        .ExecuteAsync(importedEntityAnalysisModelId, userName, token);
                 }
 
                 if (wrapper.Payload?.RoleRegistry != null)
@@ -1367,6 +1723,7 @@ namespace Jube.Preservation
                         {
                             var userRegistryRepositoryForRekey =
                                 new UserRegistryRepository(dbContext, import.TenantRegistryId);
+
                             if (await userRegistryRepositoryForRekey.AnyAsync(token))
                             {
                                 throw new UserRegistryRecordsExistOnRoleRegistryRekeyImportException();
@@ -1669,8 +2026,8 @@ namespace Jube.Preservation
                     }
                 }
 
-                var userRegistryRepositoryForRecoverOrphanedUsers = new UserRegistryRepository(dbContext, userName);
-                await userRegistryRepositoryForRecoverOrphanedUsers.RecoverOrphanedUsersAsync(token);
+                await new RecoverOrphanedUsersQuery(dbContext, import.TenantRegistryId, userName)
+                    .ExecuteAsync(token);
 
                 await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
                 import.CompletedDate = DateTime.UtcNow;
@@ -1694,6 +2051,7 @@ namespace Jube.Preservation
         public async Task<Export> ExportAsync(ExportOptions options, CancellationToken token = default)
         {
             var exportRepository = new ExportRepository(dbContext, userName);
+
             var export = new Export
             {
                 CreatedDate = DateTime.UtcNow,
@@ -1787,10 +2145,42 @@ namespace Jube.Preservation
                 {
                     var roleRegistryPermissionRepository =
                         new RoleRegistryPermissionRepository(dbContext, tenantRegistryId);
+
                     roleRegistry.RoleRegistryPermission =
                         await roleRegistryPermissionRepository
                             .GetByRoleRegistryIdOrderByIdAsync(roleRegistry.Id, token);
                 }
+            }
+
+            if (options.AdvancedAnalytics)
+            {
+                var advancedAnalyticsPreservation = new AdvancedAnalyticsPreservation(dbContext, tenantRegistryId,
+                    userName);
+
+                payload.AdvancedAnalytics = await advancedAnalyticsPreservation.ExportAsync(token)
+                    .ConfigureAwait(false);
+            }
+
+            if (options.Exhaustive)
+            {
+                var exhaustiveInstanceDatasetRepository =
+                    new ExhaustiveInstanceDatasetRepository(dbContext, tenantRegistryId);
+
+                payload.ExhaustiveInstanceCsv = (await exhaustiveInstanceDatasetRepository
+                        .GetForExportAsync(DatasetKind.Csv, token: token).ConfigureAwait(false))
+                    .Select(s => new ExhaustiveInstanceCsvExport
+                    {
+                        Dataset = (ExhaustiveInstanceCsv)s.Dataset,
+                        Rows = s.Rows.Cast<ExhaustiveInstanceCsvRow>().ToList()
+                    }).ToList();
+
+                payload.ExhaustiveInstanceJson = (await exhaustiveInstanceDatasetRepository
+                        .GetForExportAsync(DatasetKind.Json, token: token).ConfigureAwait(false))
+                    .Select(s => new ExhaustiveInstanceJsonExport
+                    {
+                        Dataset = (ExhaustiveInstanceJson)s.Dataset,
+                        Rows = s.Rows.Cast<ExhaustiveInstanceJsonRow>().ToList()
+                    }).ToList();
             }
 
             var entityAnalysisModelRepository = new EntityAnalysisModelRepository(dbContext, tenantRegistryId);
@@ -1800,48 +2190,56 @@ namespace Jube.Preservation
             {
                 var entityAnalysisModelRequestXPathRepository =
                     new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelRequestXpath
                     = await entityAnalysisModelRequestXPathRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelInlineFunctionRepository =
                     new EntityAnalysisModelInlineFunctionRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelInlineFunction
                     = await entityAnalysisModelInlineFunctionRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelInlineScriptRepository =
                     new EntityAnalysisModelInlineScriptRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelInlineScript
                     = await entityAnalysisModelInlineScriptRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelGatewayRuleRepository =
                     new EntityAnalysisModelGatewayRuleRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelGatewayRule
                     = await entityAnalysisModelGatewayRuleRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelSanctionRepository =
                     new EntityAnalysisModelSanctionRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelSanction
                     = await entityAnalysisModelSanctionRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelTagRepository =
                     new EntityAnalysisModelTagRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelTag
                     = await entityAnalysisModelTagRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelTtlCounterRepository =
                     new EntityAnalysisModelTtlCounterRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelTtlCounter
                     = await entityAnalysisModelTtlCounterRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 var entityAnalysisModelAbstractionRuleRepository =
                     new EntityAnalysisModelAbstractionRuleRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelAbstractionRule
                     = await entityAnalysisModelAbstractionRuleRepository
                         .GetByEntityAnalysisModelIdOrderByIdDescAsync(entityAnalysisModel.Id, token)
@@ -1849,6 +2247,7 @@ namespace Jube.Preservation
 
                 var entityAnalysisModelAbstractionCalculationRepository =
                     new EntityAnalysisModelAbstractionCalculationRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelAbstractionCalculation
                     = await entityAnalysisModelAbstractionCalculationRepository
                         .GetByEntityAnalysisModelIdOrderByIdDescAsync(entityAnalysisModel.Id, token)
@@ -1856,6 +2255,7 @@ namespace Jube.Preservation
 
                 var entityAnalysisModelHttpAdaptationRepository =
                     new EntityAnalysisModelHttpAdaptationRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelHttpAdaptation
                     = await entityAnalysisModelHttpAdaptationRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
@@ -1864,6 +2264,7 @@ namespace Jube.Preservation
                 {
                     var exhaustiveSearchInstanceRepository =
                         new ExhaustiveSearchInstanceRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModel.ExhaustiveSearchInstance
                         = await exhaustiveSearchInstanceRepository
                             .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token)
@@ -1873,12 +2274,22 @@ namespace Jube.Preservation
                     {
                         var exhaustiveSearchInstanceDataRepository =
                             new ExhaustiveSearchInstanceDataRepository(dbContext);
+
                         exhaustiveSearchInstance.ExhaustiveSearchInstanceData =
                             await exhaustiveSearchInstanceDataRepository.GetByExhaustiveSearchInstanceIdOrderByIdAsync(
                                 exhaustiveSearchInstance.Id, token).ConfigureAwait(false);
 
+                        var exhaustiveSearchInstanceCategoricalFieldRepository =
+                            new ExhaustiveSearchInstanceCategoricalFieldRepository(dbContext);
+
+                        exhaustiveSearchInstance.ExhaustiveSearchInstanceCategoricalField =
+                            await exhaustiveSearchInstanceCategoricalFieldRepository
+                                .GetByExhaustiveSearchInstanceIdOrderByIdAsync(
+                                    exhaustiveSearchInstance.Id, token).ConfigureAwait(false);
+
                         var exhaustiveSearchInstanceTrialInstanceRepository =
                             new ExhaustiveSearchInstanceTrialInstanceRepository(dbContext);
+
                         exhaustiveSearchInstance.ExhaustiveSearchInstanceTrialInstance =
                             await exhaustiveSearchInstanceTrialInstanceRepository
                                 .GetByExhaustiveSearchInstanceIdOrderByIdAsync(
@@ -1886,6 +2297,7 @@ namespace Jube.Preservation
 
                         var exhaustiveSearchInstanceVariableRepository =
                             new ExhaustiveSearchInstanceVariableRepository(dbContext);
+
                         exhaustiveSearchInstance.ExhaustiveSearchInstanceVariable =
                             await exhaustiveSearchInstanceVariableRepository
                                 .GetByExhaustiveSearchInstanceIdOrderByIdAsync(
@@ -1896,6 +2308,7 @@ namespace Jube.Preservation
                         {
                             var exhaustiveSearchInstanceTrialInstanceVariableRepository =
                                 new ExhaustiveSearchInstanceTrialInstanceVariableRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceTrialInstanceVariable =
                                 await exhaustiveSearchInstanceTrialInstanceVariableRepository
                                     .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(
@@ -1904,6 +2317,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstancePromotedTrialInstanceRepository =
                                 new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstancePromotedTrialInstance =
                                 await exhaustiveSearchInstancePromotedTrialInstanceRepository
                                     .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(
@@ -1912,6 +2326,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository =
                                 new ExhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance
                                     .ExhaustiveSearchInstancePromotedTrialInstancePredictedActual =
                                 await exhaustiveSearchInstancePromotedTrialInstancePredictedActualRepository
@@ -1919,15 +2334,34 @@ namespace Jube.Preservation
                                         exhaustiveSearchInstanceTrialInstance
                                             .Id, token).ConfigureAwait(false);
 
+                            var exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository =
+                                new ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository(
+                                    dbContext);
+
+                            foreach (var exhaustiveSearchInstancePromotedTrialInstancePredictedActual in
+                                     exhaustiveSearchInstanceTrialInstance
+                                         .ExhaustiveSearchInstancePromotedTrialInstancePredictedActual)
+                            {
+                                exhaustiveSearchInstancePromotedTrialInstancePredictedActual
+                                        .ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue =
+                                    await
+                                        exhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValueRepository
+                                            .GetByExhaustiveSearchInstancePromotedTrialInstancePredictedActualIdOrderByIdAsync(
+                                                exhaustiveSearchInstancePromotedTrialInstancePredictedActual.Id, token)
+                                            .ConfigureAwait(false);
+                            }
+
                             var exhaustiveSearchInstancePromotedTrialInstanceRocRepository =
                                 new ExhaustiveSearchInstancePromotedTrialInstanceRocRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstancePromotedTrialInstanceRoc =
                                 await exhaustiveSearchInstancePromotedTrialInstanceRocRepository
-                                    .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(exhaustiveSearchInstance
-                                        .Id, token);
+                                    .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(
+                                        exhaustiveSearchInstanceTrialInstance.Id, token);
 
                             var exhaustiveSearchInstanceTrialInstanceTopologyTrialRepository =
                                 new ExhaustiveSearchInstanceTrialInstanceTopologyTrialRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceTrialInstanceTopologyTrial =
                                 await exhaustiveSearchInstanceTrialInstanceTopologyTrialRepository
                                     .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(
@@ -1936,6 +2370,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstanceTrialInstanceSensitivityRepository =
                                 new ExhaustiveSearchInstanceTrialInstanceSensitivityRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceTrialInstanceSensitivity =
                                 await exhaustiveSearchInstanceTrialInstanceSensitivityRepository
                                     .GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(
@@ -1944,6 +2379,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository =
                                 new ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository(dbContext);
+
                             exhaustiveSearchInstanceTrialInstance
                                     .ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial =
                                 await exhaustiveSearchInstanceTrialInstanceActivationFunctionTrialRepository
@@ -1957,6 +2393,7 @@ namespace Jube.Preservation
                             {
                                 var exhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository =
                                     new ExhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository(dbContext);
+
                                 exhaustiveSearchInstanceTrialInstanceVariable
                                         .ExhaustiveSearchInstancePromotedTrialInstanceSensitivity =
                                     await exhaustiveSearchInstancePromotedTrialInstanceSensitivityRepository
@@ -1966,12 +2403,28 @@ namespace Jube.Preservation
 
                                 var exhaustiveSearchInstancePromotedTrialInstanceVariableRepository =
                                     new ExhaustiveSearchInstancePromotedTrialInstanceVariableRepository(dbContext);
+
                                 exhaustiveSearchInstanceTrialInstanceVariable
                                         .ExhaustiveSearchInstancePromotedTrialInstanceVariable =
                                     await exhaustiveSearchInstancePromotedTrialInstanceVariableRepository
                                         .GetByExhaustiveSearchInstanceTrialInstanceVariableIdOrderByIdAsync(
                                             exhaustiveSearchInstanceTrialInstanceVariable.Id, token)
                                         .ConfigureAwait(false);
+
+                                var exhaustiveSearchInstancePrescriptionHistogramRepository =
+                                    new ExhaustiveSearchInstancePrescriptionHistogramRepository(dbContext);
+
+                                foreach (var exhaustiveSearchInstancePromotedTrialInstanceVariable in
+                                         exhaustiveSearchInstanceTrialInstanceVariable
+                                             .ExhaustiveSearchInstancePromotedTrialInstanceVariable)
+                                {
+                                    exhaustiveSearchInstancePromotedTrialInstanceVariable
+                                            .ExhaustiveSearchInstancePrescriptionHistogram =
+                                        await exhaustiveSearchInstancePrescriptionHistogramRepository
+                                            .GetByPromotedTrialInstanceVariableIdOrderByIdAsync(
+                                                exhaustiveSearchInstancePromotedTrialInstanceVariable.Id, token)
+                                            .ConfigureAwait(false);
+                                }
                             }
                         }
 
@@ -1980,6 +2433,7 @@ namespace Jube.Preservation
                         {
                             var exhaustiveSearchInstanceVariableAnomalyRepository =
                                 new ExhaustiveSearchInstanceVariableAnomalyRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableAnomaly =
                                 await exhaustiveSearchInstanceVariableAnomalyRepository
                                     .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
@@ -1988,6 +2442,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstanceVariableClassificationRepository =
                                 new ExhaustiveSearchInstanceVariableClassificationRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableClassification =
                                 await exhaustiveSearchInstanceVariableClassificationRepository
                                     .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
@@ -1996,14 +2451,25 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstanceVariableHistogramRepository =
                                 new ExhaustiveSearchInstanceVariableHistogramRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableHistogram =
                                 await exhaustiveSearchInstanceVariableHistogramRepository
                                     .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
                                         exhaustiveSearchInstanceVariable
                                             .Id, token).ConfigureAwait(false);
 
+                            var exhaustiveSearchInstanceVariableHistogramClassRepository =
+                                new ExhaustiveSearchInstanceVariableHistogramClassRepository(dbContext);
+
+                            exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableHistogramClass =
+                                await exhaustiveSearchInstanceVariableHistogramClassRepository
+                                    .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
+                                        exhaustiveSearchInstanceVariable
+                                            .Id, token).ConfigureAwait(false);
+
                             var exhaustiveSearchInstanceVariableHistogramClassificationRepository =
                                 new ExhaustiveSearchInstanceVariableHistogramClassificationRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableHistogramClassification =
                                 await exhaustiveSearchInstanceVariableHistogramClassificationRepository
                                     .GetByExhaustiveSearchInstanceVariableIdAsync(exhaustiveSearchInstanceVariable
@@ -2011,6 +2477,7 @@ namespace Jube.Preservation
 
                             var exhaustiveSearchInstanceVariableHistogramAnomalyRepository =
                                 new ExhaustiveSearchInstanceVariableHistogramAnomalyRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableHistogramAnomaly =
                                 await exhaustiveSearchInstanceVariableHistogramAnomalyRepository
                                     .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
@@ -2018,7 +2485,8 @@ namespace Jube.Preservation
                                             .Id, token).ConfigureAwait(false);
 
                             var exhaustiveSearchInstanceVariableMulticollinearityRepository =
-                                new ExhaustiveSearchInstanceVariableMultiColiniarityRepository(dbContext);
+                                new ExhaustiveSearchInstanceVariableMultiCollinearityRepository(dbContext);
+
                             exhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceVariableMultiCollinearity =
                                 await exhaustiveSearchInstanceVariableMulticollinearityRepository
                                     .GetByExhaustiveSearchInstanceVariableIdOrderByIdAsync(
@@ -2030,11 +2498,13 @@ namespace Jube.Preservation
 
                 var entityAnalysisModelActivationRuleRepository =
                     new EntityAnalysisModelActivationRuleRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.EntityAnalysisModelActivationRule
                     = await entityAnalysisModelActivationRuleRepository
                         .GetByEntityAnalysisModelIdOrderByIdDescAsync(entityAnalysisModel.Id, token);
 
                 var caseWorkflowRepository = new CaseWorkflowRepository(dbContext, tenantRegistryId);
+
                 entityAnalysisModel.CaseWorkflow
                     = await caseWorkflowRepository.GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id,
                         token);
@@ -2044,40 +2514,47 @@ namespace Jube.Preservation
                 {
                     var caseWorkflowXPathRepository =
                         new CaseWorkflowXPathRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowXPath
                         = await caseWorkflowXPathRepository.GetByCasesWorkflowIdOrderByIdDescAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowStatusRepository =
                         new CaseWorkflowStatusRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowStatus
                         = await caseWorkflowStatusRepository.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowFormRepository = new CaseWorkflowFormRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowForm
                         = await caseWorkflowFormRepository.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowActionRepository =
                         new CaseWorkflowActionRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowAction
                         = await caseWorkflowActionRepository.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowDisplayRepository =
                         new CaseWorkflowDisplayRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowDisplay
                         = await caseWorkflowDisplayRepository.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowMacro = new CaseWorkflowMacroRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowMacro
                         = await caseWorkflowMacro.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
 
                     var caseWorkflowFilterRepository =
                         new CaseWorkflowFilterRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModelCaseWorkflowEntityAnalysisModel.CaseWorkflowFilter
                         = await caseWorkflowFilterRepository.GetByCasesWorkflowIdOrderByIdAsync(
                             entityAnalysisModelCaseWorkflowEntityAnalysisModel.Id, token);
@@ -2087,6 +2564,7 @@ namespace Jube.Preservation
                 {
                     var entityAnalysisModelListRepository =
                         new EntityAnalysisModelListRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModel.EntityAnalysisModelList
                         = await entityAnalysisModelListRepository
                             .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token)
@@ -2097,6 +2575,7 @@ namespace Jube.Preservation
                     {
                         var entityAnalysisModelListValueRepository =
                             new EntityAnalysisModelListValueRepository(dbContext, tenantRegistryId);
+
                         entityAnalysisModelListsEntityAnalysisModel.EntityAnalysisModelListValue
                             = await entityAnalysisModelListValueRepository
                                 .GetByEntityAnalysisModelListIdOrderByIdAsync(
@@ -2108,6 +2587,7 @@ namespace Jube.Preservation
                 {
                     var entityAnalysisModelDictionaryRepository =
                         new EntityAnalysisModelDictionaryRepository(dbContext, tenantRegistryId);
+
                     entityAnalysisModel.EntityAnalysisModelDictionary
                         = await entityAnalysisModelDictionaryRepository
                             .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token)
@@ -2118,6 +2598,7 @@ namespace Jube.Preservation
                     {
                         var entityAnalysisModelDictionaryKvpRepository =
                             new EntityAnalysisModelDictionaryKvpRepository(dbContext, tenantRegistryId);
+
                         entityAnalysisModelDictionaryEntityAnalysisModel
                                 .EntityAnalysisModelDictionaryKvp
                             = await entityAnalysisModelDictionaryKvpRepository
@@ -2131,18 +2612,21 @@ namespace Jube.Preservation
                 {
                     var visualisationRegistryRepository =
                         new VisualisationRegistryRepository(dbContext, tenantRegistryId);
+
                     payload.VisualisationRegistry = await visualisationRegistryRepository.GetOrderByIdAsync(token);
 
                     foreach (var visualisationRegistry in payload.VisualisationRegistry)
                     {
                         var visualisationRegistryDatasourceRepository =
                             new VisualisationRegistryDatasourceRepository(dbContext, tenantRegistryId);
+
                         visualisationRegistry.VisualisationRegistryDatasource
                             = await visualisationRegistryDatasourceRepository
                                 .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
 
                         var visualisationRegistryParameterRepository =
                             new VisualisationRegistryParameterRepository(dbContext, tenantRegistryId);
+
                         visualisationRegistry.VisualisationRegistryParameter
                             = await visualisationRegistryParameterRepository
                                 .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
@@ -2157,14 +2641,17 @@ namespace Jube.Preservation
             payload.EntityPermission.CaseWorkflowRole = await caseWorkflowRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowActionRoleRepository = new CaseWorkflowActionRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowActionRole =
                 await caseWorkflowActionRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowDisplayRoleRepository = new CaseWorkflowDisplayRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowDisplayRole =
                 await caseWorkflowDisplayRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowFilterRoleRepository = new CaseWorkflowFilterRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowFilterRole =
                 await caseWorkflowFilterRoleRepository.GetAllDescAsync(token);
 
@@ -2172,30 +2659,36 @@ namespace Jube.Preservation
             payload.EntityPermission.CaseWorkflowFormRole = await caseWorkflowFormRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowMacroRoleRepository = new CaseWorkflowMacroRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowMacroRole =
                 await caseWorkflowMacroRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowStatusRoleRepository = new CaseWorkflowStatusRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowStatusRole =
                 await caseWorkflowStatusRoleRepository.GetAllDescAsync(token);
 
             var caseWorkflowXPathRoleRepository = new CaseWorkflowXPathRoleRepository(dbContext, tenantRegistryId);
+
             payload.EntityPermission.CaseWorkflowXPathRole =
                 await caseWorkflowXPathRoleRepository.GetAllDescAsync(token);
 
             if (options.Visualisations)
             {
                 var visualisationRegistryRole = new VisualisationRegistryRoleRepository(dbContext, tenantRegistryId);
+
                 payload.EntityPermission.VisualisationRegistryRole =
                     await visualisationRegistryRole.GetAllDescAsync(token);
 
                 var visualisationRegistryParameterRole =
                     new VisualisationRegistryParameterRoleRepository(dbContext, tenantRegistryId);
+
                 payload.EntityPermission.VisualisationRegistryParameterRole =
                     await visualisationRegistryParameterRole.GetAllDescAsync(token);
 
                 var visualisationRegistryDatasourceRole =
                     new VisualisationRegistryDatasourceRoleRepository(dbContext, tenantRegistryId);
+
                 payload.EntityPermission.VisualisationRegistryDatasourceRole =
                     await visualisationRegistryDatasourceRole.GetAllDescAsync(token);
             }

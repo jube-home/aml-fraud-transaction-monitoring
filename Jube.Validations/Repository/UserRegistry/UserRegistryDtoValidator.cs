@@ -39,6 +39,7 @@ namespace Jube.Validations.Repository.UserRegistry
                 .MustAsync(async (dto, name, cancellation) =>
                 {
                     var existing = await repository.GetByNameAsync(name, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[UserRegistryResources.NameAlreadyExists])
@@ -48,6 +49,7 @@ namespace Jube.Validations.Repository.UserRegistry
                     if (dto.Id > 0)
                     {
                         var current = await repository.GetByIdAsync(dto.Id, cancellation);
+
                         if (current != null && string.Equals(current.Name, name, StringComparison.OrdinalIgnoreCase))
                         {
                             return true;
@@ -79,6 +81,7 @@ namespace Jube.Validations.Repository.UserRegistry
                 .MustAsync(async (roleRegistryGuid, cancellation) =>
                 {
                     var roles = await roleRegistryRepository.GetAsync(cancellation);
+
                     return roles.Any(r => r.Guid == roleRegistryGuid);
                 })
                 .WithMessage(_ => localiser[UserRegistryResources.RoleRegistryGuidNotFound])

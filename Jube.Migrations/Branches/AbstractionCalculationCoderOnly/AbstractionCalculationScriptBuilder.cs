@@ -81,6 +81,7 @@ namespace Jube.Migrations.Branches.AbstractionCalculationCoderOnly
             }
 
             var candidate = name.Trim().Replace(" ", "_");
+
             if (!safeName.IsMatch(candidate))
             {
                 return false;

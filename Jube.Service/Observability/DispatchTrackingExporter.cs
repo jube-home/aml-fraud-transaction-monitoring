@@ -34,6 +34,7 @@ namespace Jube.Service.Observability
             catch (Exception ex)
             {
                 stopwatch.Stop();
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn(
@@ -41,11 +42,13 @@ namespace Jube.Service.Observability
                 }
 
                 Record(false, itemCount, stopwatch.Elapsed.TotalMilliseconds);
+
                 return ExportResult.Failure;
             }
 
             stopwatch.Stop();
             Record(result == ExportResult.Success, itemCount, stopwatch.Elapsed.TotalMilliseconds);
+
             return result;
         }
 
@@ -79,6 +82,7 @@ namespace Jube.Service.Observability
             ServiceDiagnostics.OtlpDispatchCount.Add(1,
                 new KeyValuePair<string, object?>("signal", signal),
                 new KeyValuePair<string, object?>("outcome", success ? "success" : "failure"));
+
             ServiceDiagnostics.OtlpDispatchDuration.Record(elapsedMilliseconds,
                 new KeyValuePair<string, object?>("signal", signal));
 

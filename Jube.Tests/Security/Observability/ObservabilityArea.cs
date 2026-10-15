@@ -22,6 +22,5 @@ public sealed record ObservabilityArea(
     string? GuidFilter = null)
 {
     public string Route => $"/api/{Name}";
-
     public override string ToString() => Name;
 }

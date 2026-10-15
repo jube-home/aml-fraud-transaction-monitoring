@@ -1,56 +1,60 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using Accord.IO;
+using Accord.Math;
+using Accord.Statistics.Kernels;
+using Accord.Statistics.Links;
 
 namespace Accord.MachineLearning.VectorMachines
 {
-    using System;
-    using System.IO;
-    using Accord.IO;
-    using Accord.Math;
-    using System.Runtime.Serialization.Formatters.Binary;
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Links;
-    using Accord.Statistics.Models.Regression;
-    using System.Reflection;
-    using System.Runtime.Serialization;
-    using System.Security.Permissions;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Obsolete.
+    ///     Obsolete.
     /// </summary>
-    /// 
     [Serializable]
     [Obsolete("Please use SupportVectorMachine<TKernel>.")]
 #if !NETSTANDARD1_4
-    [SerializationBinder(typeof(KernelSupportVectorMachine.KernelSupportVectorMachineBinder))]
+    [SerializationBinder(typeof(KernelSupportVectorMachineBinder))]
 #endif
     public class KernelSupportVectorMachine :
         SupportVectorMachine<IKernel<double[]>>,
         ISupportVectorMachine<double[]>
     {
-
         /// <summary>
-        ///   Obsolete.
+        ///     Obsolete.
         /// </summary>
         public KernelSupportVectorMachine(IKernel<double[]> kernel, int inputs)
             : base(inputs, kernel)
@@ -58,7 +62,7 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
         /// <summary>
-        ///   Obsolete.
+        ///     Obsolete.
         /// </summary>
         public KernelSupportVectorMachine(IKernel kernel, int inputs)
             : base(inputs, kernel)
@@ -66,30 +70,47 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
         /// <summary>
-        ///   Obsolete.
+        ///     Obsolete.
         /// </summary>
         public new IKernel Kernel
         {
-            get { return (IKernel)base.Kernel; }
-            set { base.Kernel = value; }
+            get => (IKernel)base.Kernel;
+            set => base.Kernel = value;
         }
 
+        /// <summary>
+        ///     Obsolete.
+        /// </summary>
+        public override object Clone()
+        {
+            var clone = new KernelSupportVectorMachine(Kernel, NumberOfInputs);
+            clone.SupportVectors = Matrix.MemberwiseClone(SupportVectors);
+            clone.IsProbabilistic = IsProbabilistic;
+            clone.Weights = (double[])Weights.Clone();
+            clone.Threshold = Threshold;
+            return clone;
+        }
 
+        #region Serialization backwards compatibility
 
-#region Serialization backwards compatibility
 #if !NETSTANDARD1_4
         internal class KernelSupportVectorMachineBinder : SerializationBinder
         {
             public override Type BindToType(string assemblyName, string typeName)
             {
-                AssemblyName name = new AssemblyName(assemblyName);
+                var name = new AssemblyName(assemblyName);
 
                 if (name.Version < new Version(3, 1, 0))
                 {
                     if (typeName == "Accord.MachineLearning.VectorMachines.SupportVectorMachine")
+                    {
                         return typeof(SupportVectorMachine.SupportVectorMachine_2_13);
-                    else if (typeName == "Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine")
+                    }
+
+                    if (typeName == "Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine")
+                    {
                         return typeof(KernelSupportVectorMachine_2_13);
+                    }
                 }
 
                 return null;
@@ -103,19 +124,13 @@ namespace Accord.MachineLearning.VectorMachines
         internal class KernelSupportVectorMachine_2_13 : ISerializable
         {
             public int inputCount;
-            public double[][] supportVectors;
-            public double[] weights;
-            public double threshold;
-            public ILinkFunction linkFunction;
             public IKernel kernel;
+            public ILinkFunction linkFunction;
+            public double[][] supportVectors;
+            public double threshold;
+            public double[] weights;
 
-
-            [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
-            void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-            {
-            }
-
-            [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+            [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
             private KernelSupportVectorMachine_2_13(SerializationInfo info, StreamingContext context)
             {
                 info.GetValue("SupportVectorMachine+inputCount", out inputCount);
@@ -126,19 +141,24 @@ namespace Accord.MachineLearning.VectorMachines
                 info.GetValue("kernel", out kernel);
             }
 
+            [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+            void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+            }
+
             public static implicit operator KernelSupportVectorMachine(KernelSupportVectorMachine_2_13 obj)
             {
                 var svm = new KernelSupportVectorMachine(obj.kernel, obj.inputCount)
                 {
                     SupportVectors = obj.supportVectors,
                     Weights = obj.weights,
-                    Threshold = obj.threshold,
+                    Threshold = obj.threshold
                 };
 
                 var fn = obj.linkFunction as LogLinkFunction;
                 if (fn != null)
                 {
-                    svm.Weights.Multiply(fn.B, result: svm.Weights);
+                    svm.Weights.Multiply(fn.B, svm.Weights);
                     svm.Threshold = svm.Threshold * fn.B + fn.A;
                     svm.IsProbabilistic = true;
                 }
@@ -150,20 +170,7 @@ namespace Accord.MachineLearning.VectorMachines
 #pragma warning restore 0169
 #pragma warning restore 0649
 #endif
-#endregion
 
-        /// <summary>
-        ///   Obsolete.
-        /// </summary>
-        public override object Clone()
-        {
-            var clone = new KernelSupportVectorMachine(Kernel, NumberOfInputs);
-            clone.SupportVectors = SupportVectors.MemberwiseClone();
-            clone.IsProbabilistic = IsProbabilistic;
-            clone.Weights = (double[])Weights.Clone();
-            clone.Threshold = Threshold;
-            return clone;
-        }
+        #endregion
     }
-
 }

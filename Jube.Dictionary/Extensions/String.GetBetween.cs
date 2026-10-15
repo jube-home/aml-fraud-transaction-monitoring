@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
@@ -7,6 +8,7 @@ namespace Jube.Dictionary.Extensions
         public static string GetBetween(this string @this, string before, string after)
         {
             var beforeStartIndex = @this.IndexOf(before, StringComparison.Ordinal);
+
             if (beforeStartIndex == -1)
             {
                 return "";

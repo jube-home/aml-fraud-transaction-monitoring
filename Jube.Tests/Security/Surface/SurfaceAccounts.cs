@@ -29,10 +29,8 @@ public sealed class SurfaceAccounts(DatabaseFixture fx)
 {
     public const string Password = AuthenticationTestBase.DefaultPassword;
     public const string StrongNewPassword = "Another#Horse7stapler";
-
     private readonly string id = Guid.NewGuid().ToString("N")[..8];
     private int counter;
-
     public string Prefix => $"ZzTestSurf{id}";
     public string Marker => $"ZzTestSurfUA-{id}";
 
@@ -44,6 +42,7 @@ public sealed class SurfaceAccounts(DatabaseFixture fx)
         var template = await db.UserRegistry.FirstAsync(f => f.Name == fx.Seed.UserWithoutPermission);
         var tenant = await db.UserInTenant.FirstAsync(f => f.User == fx.Seed.UserWithoutPermission);
         var now = DateTime.UtcNow;
+
         var user = new UserRegistry
         {
             Guid = Guid.NewGuid(),
@@ -62,24 +61,29 @@ public sealed class SurfaceAccounts(DatabaseFixture fx)
             CreatedDate = now,
             CreatedUser = DatabaseFixture.Prefix
         };
+
         tweak?.Invoke(user);
         await db.InsertWithInt32IdentityAsync(user);
         await db.InsertAsync(new UserInTenant { User = name, TenantRegistryId = tenant.TenantRegistryId });
+
         return new SurfaceAccount(name, password);
     }
 
     public async Task<UserRegistry> ReloadAsync(SurfaceAccount account)
     {
         await using var db = fx.GetDbContext();
+
         return await db.UserRegistry.FirstAsync(f => f.Name == account.Name);
     }
 
     public async Task CleanupAsync()
     {
         await using var db = fx.GetDbContext();
+
         await db.UserLogin.Where(w =>
                 w.UserAgent == Marker || (w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix)))
             .DeleteAsync();
+
         try
         {
             await db.UserLogout.Where(w =>

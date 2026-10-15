@@ -122,22 +122,26 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringContainsAnyInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.Contains(x, StringComparison.Ordinal));
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.Contains(x, StringComparison.Ordinal));
         }
 
         internal static bool StringContainsAnyInListIgnoreCase(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringContainsAllInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.All(x => x is not null && v.Contains(x, StringComparison.Ordinal));
+            return v is not null && list is not null &&
+                   list.All(x => x is not null && v.Contains(x, StringComparison.Ordinal));
         }
 
         internal static bool StringContainsNoneInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && !list.Any(x => x is not null && v.Contains(x, StringComparison.Ordinal));
+            return v is not null && list is not null &&
+                   !list.Any(x => x is not null && v.Contains(x, StringComparison.Ordinal));
         }
 
         internal static bool StringStartsWith(string? v, string? prefix)
@@ -152,7 +156,8 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringStartsWithAnyInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.StartsWith(x, StringComparison.Ordinal));
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.StartsWith(x, StringComparison.Ordinal));
         }
 
         internal static bool StringMatches(string? v, string? pattern)
@@ -227,12 +232,12 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringIsValidIp(string? v)
         {
-            return !string.IsNullOrEmpty(v) && v.IsValidIP();
+            return !string.IsNullOrEmpty(v) && v.IsValidIp();
         }
 
         internal static bool StringIsNotValidIp(string? v)
         {
-            return string.IsNullOrEmpty(v) || !v.IsValidIP();
+            return string.IsNullOrEmpty(v) || !v.IsValidIp();
         }
 
         internal static bool StringIsValidIban(string? v)
@@ -277,22 +282,26 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringEmailDomainEqual(string? v, string? domain)
         {
-            return v is not null && domain is not null && string.Equals(v.EmailDomain(), domain, StringComparison.OrdinalIgnoreCase);
+            return v is not null && domain is not null &&
+                   string.Equals(v.EmailDomain(), domain, StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool StringEmailDomainIn(string? v, string[] domains)
         {
-            return v is not null && domains.Any(x => string.Equals(v.EmailDomain(), x, StringComparison.OrdinalIgnoreCase));
+            return v is not null &&
+                   domains.Any(x => string.Equals(v.EmailDomain(), x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringEmailDomainInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.Any(x => string.Equals(v.EmailDomain(), x, StringComparison.OrdinalIgnoreCase));
+            return v is not null && list is not null &&
+                   list.Any(x => string.Equals(v.EmailDomain(), x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringEmailAliasNormalisedEqual(string? v, string? other)
         {
-            return !string.IsNullOrEmpty(v) && !string.IsNullOrEmpty(other) && v.NormalizeEmailAlias() == other.NormalizeEmailAlias();
+            return !string.IsNullOrEmpty(v) && !string.IsNullOrEmpty(other) &&
+                   v.NormalizeEmailAlias() == other.NormalizeEmailAlias();
         }
 
         internal static bool StringSoundexEqual(string? v, string? other)
@@ -317,7 +326,8 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringEndsWithAnyInList(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.EndsWith(x, StringComparison.Ordinal));
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.EndsWith(x, StringComparison.Ordinal));
         }
 
         internal static bool StringContainsAllIgnoreCase(string? v, string[] values)
@@ -327,17 +337,20 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringContainsNoneIgnoreCase(string? v, string[] values)
         {
-            return v is not null && !values.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
+            return v is not null &&
+                   !values.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringContainsAllInListIgnoreCase(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && list.All(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
+            return v is not null && list is not null &&
+                   list.All(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringContainsNoneInListIgnoreCase(string? v, IEnumerable<string>? list)
         {
-            return v is not null && list is not null && !list.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
+            return v is not null && list is not null &&
+                   !list.Any(x => x is not null && v.Contains(x, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static bool StringContainsFuzzy(string? v, string? term, double threshold)
@@ -357,7 +370,8 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringLevenshteinAtMostAnyInList(string? v, IEnumerable<string>? list, int distance)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.LevenshteinDistance(x) <= distance);
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.LevenshteinDistance(x) <= distance);
         }
 
         internal static bool StringSimilarityAtLeastAnyInList(string? v, IEnumerable<string>? list, double threshold)
@@ -367,7 +381,8 @@ namespace Jube.Dictionary.Extensions
 
         internal static bool StringJaroWinklerAtLeastAnyInList(string? v, IEnumerable<string>? list, double threshold)
         {
-            return v is not null && list is not null && list.Any(x => x is not null && v.JaroWinklerSimilarity(x) >= threshold);
+            return v is not null && list is not null &&
+                   list.Any(x => x is not null && v.JaroWinklerSimilarity(x) >= threshold);
         }
 
         internal static bool StringSomehowInList(string? v, IEnumerable<string> list)
@@ -450,12 +465,14 @@ namespace Jube.Dictionary.Extensions
             return v.IsInitialsInList(list);
         }
 
-        internal static bool StringFuzzyScoreAtLeast(string? v, IEnumerable<string> list, double threshold, string? options)
+        internal static bool StringFuzzyScoreAtLeast(string? v, IEnumerable<string> list, double threshold,
+            string? options)
         {
             return v is not null && v.FuzzyBestScore(list, options) >= threshold;
         }
 
-        internal static bool StringFuzzyMatchCountAtLeast(string? v, IEnumerable<string> list, int count, string? options)
+        internal static bool StringFuzzyMatchCountAtLeast(string? v, IEnumerable<string> list, int count,
+            string? options)
         {
             return v is not null && v.FuzzyMatchCount(list, options) >= count;
         }

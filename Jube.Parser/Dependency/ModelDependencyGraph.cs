@@ -16,6 +16,7 @@ namespace Jube.Parser.Dependency
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Models;
 
     public sealed record ModelEntity(ModelEntityKind Kind, int Id, string Name, bool Active, bool Approved = true);
 
@@ -65,6 +66,7 @@ namespace Jube.Parser.Dependency
             ArgumentNullException.ThrowIfNull(references);
 
             this.entities = entities.ToList();
+
             var byKindAndName = this.entities
                 .GroupBy(e => (e.Kind, e.Name), e => e)
                 .ToDictionary(g => g.Key, g => g.OrderByDescending(e => e.Active).First());
@@ -145,6 +147,7 @@ namespace Jube.Parser.Dependency
         public IEnumerable<ModelEntity> Unreferenced(params ModelEntityKind[] kinds)
         {
             var referenced = dependencies.Where(d => d.Target != null).Select(d => d.Target).ToHashSet();
+
             return entities.Where(e => kinds.Contains(e.Kind) && !referenced.Contains(e));
         }
 

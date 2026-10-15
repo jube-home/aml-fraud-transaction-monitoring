@@ -11,10 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.Sanctions.Models
 {
-    using Data.Repository;
+    using Data.Repository.Models;
 
-    public sealed record SanctionEntryFileRejection(int RowNumber, string RawData,
+    public sealed record SanctionEntryFileRejection(
+        int RowNumber,
+        string RawData,
         SanctionEntryRejectionReason ReasonId);
 }

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidCardExpiryAsOf(this string? @this, DateTime asOf)
         {
             var parts = (@this ?? "").Split('/');
+
             if (parts.Length != 2 || !int.TryParse(parts[0], out var month) || !int.TryParse(parts[1], out var year) ||
                 month is < 1 or > 12)
             {

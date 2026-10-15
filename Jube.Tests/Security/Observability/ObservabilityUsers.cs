@@ -26,7 +26,6 @@ public sealed class ObservabilityUsers
     private static readonly SemaphoreSlim gate = new(1, 1);
     private static ObservabilityUsers? current;
     private static DatabaseFixture? owner;
-
     public string Only5 { get; private init; } = string.Empty;
     public string Only9 { get; private init; } = string.Empty;
     public string AllExcept27 { get; private init; } = string.Empty;
@@ -35,6 +34,7 @@ public sealed class ObservabilityUsers
     public static async Task<ObservabilityUsers> GetAsync(DatabaseFixture fx)
     {
         await gate.WaitAsync();
+
         try
         {
             if (current != null && ReferenceEquals(owner, fx))
@@ -44,6 +44,7 @@ public sealed class ObservabilityUsers
 
             owner = fx;
             current = await CreateAsync(fx);
+
             return current;
         }
         finally
@@ -56,14 +57,17 @@ public sealed class ObservabilityUsers
     {
         await using var db = fx.GetDbContext();
         var suffix = Guid.NewGuid().ToString("N")[..8];
+
         var tenantId = await db.UserInTenant.Where(w => w.User == fx.Seed.UserWithPermission)
             .Select(s => s.TenantRegistryId).FirstAsync();
+
         var everything = Enumerable.Range(1, 43).Where(s => s != 27).ToArray();
 
         async Task<string> MakeAsync(string label, int[] specs)
         {
             var roleGuid = Guid.NewGuid();
             var name = $"{DatabaseFixture.Prefix}Obs{label}{suffix}";
+
             // ReSharper disable once AccessToDisposedClosure
             var roleId = await db.InsertWithInt32IdentityAsync(new RoleRegistry
             {
@@ -77,6 +81,7 @@ public sealed class ObservabilityUsers
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             foreach (var spec in specs)
             {
                 // ReSharper disable once AccessToDisposedClosure
@@ -109,8 +114,10 @@ public sealed class ObservabilityUsers
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             // ReSharper disable once AccessToDisposedClosure
             await db.InsertAsync(new UserInTenant { User = name, TenantRegistryId = tenantId });
+
             return name;
         }
 

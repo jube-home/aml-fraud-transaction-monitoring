@@ -24,6 +24,7 @@ namespace Jube.Test.Dictionary.Extensions
         private static Flow<double> InState(FlowOutcome outcome)
         {
             var flow = 1d.Start();
+
             return outcome == FlowOutcome.Undecided ? flow : flow.Decide(outcome);
         }
 
@@ -390,6 +391,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void ParseDoubleIsCultureInvariant()
         {
             var original = System.Globalization.CultureInfo.CurrentCulture;
+
             try
             {
                 System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("de-DE");

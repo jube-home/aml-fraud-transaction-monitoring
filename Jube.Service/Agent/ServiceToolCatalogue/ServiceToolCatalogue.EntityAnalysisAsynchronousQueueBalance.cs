@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisAsynchronousQueueBalance;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -24,7 +27,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "capped at 100000, with optional date-range filters. Each row is a roughly one-minute " +
                     "interval's queue depth for asynchronous CaseCreation, Tagging and Notification " +
                     "dispatch. Not scoped to any tenant. Also accepts samplePercentage (0-100) to draw an " +
-                    "unbiased random subset of matching rows instead of the most recent ones."));
+                    "unbiased random subset of matching rows instead of the most recent ones.",
+                    EntityAnalysisAsynchronousQueueBalanceService.RequiredPermissions,
+                    EntityAnalysisAsynchronousQueueBalanceService.RequiresLandlord));
         }
     }
 }

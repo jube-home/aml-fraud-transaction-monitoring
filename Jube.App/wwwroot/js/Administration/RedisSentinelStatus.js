@@ -82,6 +82,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("RedisSentinelStatus", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

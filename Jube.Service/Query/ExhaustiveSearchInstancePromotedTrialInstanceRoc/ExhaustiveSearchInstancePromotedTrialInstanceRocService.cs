@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceRocQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceRocService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceRocQuery query;
+        private readonly GetExhaustiveSearchInstancePromotedTrialInstanceRocQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +50,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceRocQuery(
+
+            query = new GetExhaustiveSearchInstancePromotedTrialInstanceRocQuery(
                 dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceRocService> CreateAsync(
             DbContext dbContext, string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -117,6 +120,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstanceRoc", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -127,9 +131,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
             {
                 EnsurePermitted("ExhaustiveSearchInstancePromotedTrialInstanceRoc.Get");
                 token.ThrowIfCancellationRequested();
+
                 var dtos = ExhaustiveSearchInstancePromotedTrialInstanceRocMapper.ToDto(
                     await query.ExecuteAsync(exhaustiveSearchInstanceId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -151,8 +157,10 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstanceRoc.Get: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }

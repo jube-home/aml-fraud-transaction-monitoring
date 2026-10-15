@@ -1,0 +1,1264 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-72277f5a-t jc-72277f5a-d">
+    <title id="jc-72277f5a-t">Learning curve</title>
+    <desc id="jc-72277f5a-d">Learning curve with 2 series: Train, Validation. Y values range from 0.06057 to 0.958. 80
+        iterations.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Learning curve</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="46.32" height="18"/>
+        <rect class="sw" x="16" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="57">Train</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="78.32" y="44" width="72" height="18"/>
+        <rect class="sw" x="80.32" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="98.32" y="57">Validation</text>
+    </g>
+    <line class="gl" x1="57.18" y1="346" x2="624" y2="346"/>
+    <text class="tk end mid" x="49.18" y="346">0</text>
+    <line class="gl" x1="57.18" y1="291.2" x2="624" y2="291.2"/>
+    <text class="tk end mid" x="49.18" y="291.2">0.2</text>
+    <line class="gl" x1="57.18" y1="236.4" x2="624" y2="236.4"/>
+    <text class="tk end mid" x="49.18" y="236.4">0.4</text>
+    <line class="gl" x1="57.18" y1="181.6" x2="624" y2="181.6"/>
+    <text class="tk end mid" x="49.18" y="181.6">0.6</text>
+    <line class="gl" x1="57.18" y1="126.8" x2="624" y2="126.8"/>
+    <text class="tk end mid" x="49.18" y="126.8">0.8</text>
+    <line class="gl" x1="57.18" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="49.18" y="72">1.0</text>
+    <text class="tk ctr" x="57.18" y="362">0</text>
+    <text class="tk ctr" x="128.03" y="362">10</text>
+    <text class="tk ctr" x="198.89" y="362">20</text>
+    <text class="tk ctr" x="269.74" y="362">30</text>
+    <text class="tk ctr" x="340.59" y="362">40</text>
+    <text class="tk ctr" x="411.44" y="362">50</text>
+    <text class="tk ctr" x="482.3" y="362">60</text>
+    <text class="tk ctr" x="553.15" y="362">70</text>
+    <text class="tk ctr" x="624" y="362">80</text>
+    <line class="ax" x1="57.18" y1="346" x2="624" y2="346"/>
+    <g class="sr s0">
+        <path class="ln"
+              d="M64.27 99.03L71.35 111.63L78.44 123.56L85.52 134.84L92.61 145.51L99.69 155.6L106.78 165.15L113.86 174.18L120.95 182.73L128.03 190.81L135.12 198.46L142.2 205.69L149.29 212.53L156.37 219.01L163.46 225.13L170.54 230.92L177.63 236.4L184.71 241.58L191.8 246.48L198.89 251.12L205.97 255.51L213.06 259.66L220.14 263.58L227.23 267.3L234.31 270.81L241.4 274.13L248.48 277.28L255.57 280.25L262.65 283.06L269.74 285.72L276.82 288.24L283.91 290.62L290.99 292.87L298.08 295L305.16 297.02L312.25 298.93L319.33 300.73L326.42 302.44L333.5 304.05L340.59 305.58L347.68 307.02L354.76 308.39L361.85 309.68L368.93 310.9L376.02 312.06L383.1 313.15L390.19 314.19L397.27 315.17L404.36 316.09L411.44 316.97L418.53 317.8L425.61 318.58L432.7 319.32L439.78 320.02L446.87 320.69L453.95 321.31L461.04 321.91L468.12 322.47L475.21 323L482.3 323.5L489.38 323.98L496.47 324.43L503.55 324.85L510.64 325.26L517.72 325.64L524.81 326L531.89 326.34L538.98 326.66L546.06 326.96L553.15 327.25L560.23 327.53L567.32 327.78L574.4 328.03L581.49 328.26L588.57 328.48L595.66 328.68L602.74 328.88L609.83 329.06L616.91 329.24L624 329.4">
+            <title>Train</title>
+        </path>
+    </g>
+    <g class="sr s1">
+        <path class="ln"
+              d="M64.27 83.52L71.35 99.35L78.44 114.08L85.52 127.81L92.61 140.58L99.69 152.48L106.78 163.55L113.86 173.86L120.95 183.46L128.03 192.4L135.12 200.72L142.2 208.47L149.29 215.68L156.37 222.4L163.46 228.65L170.54 234.48L177.63 239.9L184.71 244.95L191.8 249.65L198.89 254.02L205.97 258.1L213.06 261.89L220.14 265.42L227.23 268.71L234.31 271.77L241.4 274.62L248.48 277.28L255.57 279.75L262.65 282.05L269.74 284.19L276.82 286.18L283.91 288.04L290.99 289.77L298.08 291.38L305.16 292.88L312.25 294.27L319.33 295.57L326.42 296.78L333.5 297.91L340.59 298.96L347.68 299.93L354.76 300.84L361.85 301.69L368.93 302.48L376.02 303.21L383.1 303.21L390.19 303.16L397.27 303.07L404.36 302.93L411.44 302.76L418.53 302.55L425.61 302.31L432.7 302.04L439.78 301.74L446.87 301.42L453.95 301.07L461.04 300.69L468.12 300.3L475.21 299.88L482.3 299.45L489.38 299L496.47 298.53L503.55 298.05L510.64 297.55L517.72 297.05L524.81 296.52L531.89 295.99L538.98 295.45L546.06 294.9L553.15 294.33L560.23 293.76L567.32 293.18L574.4 292.6L581.49 292.01L588.57 291.41L595.66 290.8L602.74 290.19L609.83 289.58L616.91 288.96L624 288.33">
+            <title>Validation</title>
+        </path>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 1, Train: 0.9014, Validation: 0.958">
+        <title>Iteration 1, Train: 0.9014, Validation: 0.958</title>
+        <rect class="hit" x="57.18" y="72" width="10.63" height="274"/>
+        <line class="vl" x1="64.27" y1="72" x2="64.27" y2="346"/>
+        <circle class="cx s0" cx="64.27" cy="99.03" r="4.5"/>
+        <circle class="cx s1" cx="64.27" cy="83.52" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="76.27" y="72" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="86.27" y="90">Iteration 1</text>
+            <rect class="tsw s0" x="86.27" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="100.27" y="107">Train: 0.9014</text>
+            <rect class="tsw s1" x="86.27" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="100.27" y="124">Validation: 0.958</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 2, Train: 0.8554, Validation: 0.9002">
+        <title>Iteration 2, Train: 0.8554, Validation: 0.9002</title>
+        <rect class="hit" x="67.81" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="71.35" y1="72" x2="71.35" y2="346"/>
+        <circle class="cx s0" cx="71.35" cy="111.63" r="4.5"/>
+        <circle class="cx s1" cx="71.35" cy="99.35" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="83.35" y="72" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="93.35" y="90">Iteration 2</text>
+            <rect class="tsw s0" x="93.35" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="107.35" y="107">Train: 0.8554</text>
+            <rect class="tsw s1" x="93.35" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="107.35" y="124">Validation: 0.9002</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 3, Train: 0.8118, Validation: 0.8464">
+        <title>Iteration 3, Train: 0.8118, Validation: 0.8464</title>
+        <rect class="hit" x="74.89" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="78.44" y1="72" x2="78.44" y2="346"/>
+        <circle class="cx s0" cx="78.44" cy="123.56" r="4.5"/>
+        <circle class="cx s1" cx="78.44" cy="114.08" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="90.44" y="84.08" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="100.44" y="102.08">Iteration 3</text>
+            <rect class="tsw s0" x="100.44" y="110.08" width="9" height="9" rx="2"/>
+            <text class="tx" x="114.44" y="119.08">Train: 0.8118</text>
+            <rect class="tsw s1" x="100.44" y="127.08" width="9" height="9" rx="2"/>
+            <text class="tx" x="114.44" y="136.08">Validation: 0.8464</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 4, Train: 0.7707, Validation: 0.7963">
+        <title>Iteration 4, Train: 0.7707, Validation: 0.7963</title>
+        <rect class="hit" x="81.98" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="85.52" y1="72" x2="85.52" y2="346"/>
+        <circle class="cx s0" cx="85.52" cy="134.84" r="4.5"/>
+        <circle class="cx s1" cx="85.52" cy="127.81" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="97.52" y="97.81" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="107.52" y="115.81">Iteration 4</text>
+            <rect class="tsw s0" x="107.52" y="123.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="121.52" y="132.81">Train: 0.7707</text>
+            <rect class="tsw s1" x="107.52" y="140.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="121.52" y="149.81">Validation: 0.7963</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 5, Train: 0.7317, Validation: 0.7497">
+        <title>Iteration 5, Train: 0.7317, Validation: 0.7497</title>
+        <rect class="hit" x="89.06" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="92.61" y1="72" x2="92.61" y2="346"/>
+        <circle class="cx s0" cx="92.61" cy="145.51" r="4.5"/>
+        <circle class="cx s1" cx="92.61" cy="140.58" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="104.61" y="110.58" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="114.61" y="128.58">Iteration 5</text>
+            <rect class="tsw s0" x="114.61" y="136.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="128.61" y="145.58">Train: 0.7317</text>
+            <rect class="tsw s1" x="114.61" y="153.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="128.61" y="162.58">Validation: 0.7497</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 6, Train: 0.6949, Validation: 0.7063">
+        <title>Iteration 6, Train: 0.6949, Validation: 0.7063</title>
+        <rect class="hit" x="96.15" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="99.69" y1="72" x2="99.69" y2="346"/>
+        <circle class="cx s0" cx="99.69" cy="155.6" r="4.5"/>
+        <circle class="cx s1" cx="99.69" cy="152.48" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="111.69" y="122.48" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="121.69" y="140.48">Iteration 6</text>
+            <rect class="tsw s0" x="121.69" y="148.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="135.69" y="157.48">Train: 0.6949</text>
+            <rect class="tsw s1" x="121.69" y="165.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="135.69" y="174.48">Validation: 0.7063</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 7, Train: 0.66, Validation: 0.6659">
+        <title>Iteration 7, Train: 0.66, Validation: 0.6659</title>
+        <rect class="hit" x="103.23" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="106.78" y1="72" x2="106.78" y2="346"/>
+        <circle class="cx s0" cx="106.78" cy="165.15" r="4.5"/>
+        <circle class="cx s1" cx="106.78" cy="163.55" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="118.78" y="133.55" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="128.78" y="151.55">Iteration 7</text>
+            <rect class="tsw s0" x="128.78" y="159.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="142.78" y="168.55">Train: 0.66</text>
+            <rect class="tsw s1" x="128.78" y="176.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="142.78" y="185.55">Validation: 0.6659</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 8, Train: 0.6271, Validation: 0.6282">
+        <title>Iteration 8, Train: 0.6271, Validation: 0.6282</title>
+        <rect class="hit" x="110.32" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="113.86" y1="72" x2="113.86" y2="346"/>
+        <circle class="cx s0" cx="113.86" cy="174.18" r="4.5"/>
+        <circle class="cx s1" cx="113.86" cy="173.86" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="125.86" y="143.86" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="135.86" y="161.86">Iteration 8</text>
+            <rect class="tsw s0" x="135.86" y="169.86" width="9" height="9" rx="2"/>
+            <text class="tx" x="149.86" y="178.86">Train: 0.6271</text>
+            <rect class="tsw s1" x="135.86" y="186.86" width="9" height="9" rx="2"/>
+            <text class="tx" x="149.86" y="195.86">Validation: 0.6282</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 9, Train: 0.5959, Validation: 0.5932">
+        <title>Iteration 9, Train: 0.5959, Validation: 0.5932</title>
+        <rect class="hit" x="117.4" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="120.95" y1="72" x2="120.95" y2="346"/>
+        <circle class="cx s0" cx="120.95" cy="182.73" r="4.5"/>
+        <circle class="cx s1" cx="120.95" cy="183.46" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="132.95" y="152.73" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="142.95" y="170.73">Iteration 9</text>
+            <rect class="tsw s0" x="142.95" y="178.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="156.95" y="187.73">Train: 0.5959</text>
+            <rect class="tsw s1" x="142.95" y="195.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="156.95" y="204.73">Validation: 0.5932</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 10, Train: 0.5664, Validation: 0.5606">
+        <title>Iteration 10, Train: 0.5664, Validation: 0.5606</title>
+        <rect class="hit" x="124.49" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="128.03" y1="72" x2="128.03" y2="346"/>
+        <circle class="cx s0" cx="128.03" cy="190.81" r="4.5"/>
+        <circle class="cx s1" cx="128.03" cy="192.4" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="140.03" y="160.81" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="150.03" y="178.81">Iteration 10</text>
+            <rect class="tsw s0" x="150.03" y="186.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="164.03" y="195.81">Train: 0.5664</text>
+            <rect class="tsw s1" x="150.03" y="203.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="164.03" y="212.81">Validation: 0.5606</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 11, Train: 0.5385, Validation: 0.5302">
+        <title>Iteration 11, Train: 0.5385, Validation: 0.5302</title>
+        <rect class="hit" x="131.58" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="135.12" y1="72" x2="135.12" y2="346"/>
+        <circle class="cx s0" cx="135.12" cy="198.46" r="4.5"/>
+        <circle class="cx s1" cx="135.12" cy="200.72" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="147.12" y="168.46" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="157.12" y="186.46">Iteration 11</text>
+            <rect class="tsw s0" x="157.12" y="194.46" width="9" height="9" rx="2"/>
+            <text class="tx" x="171.12" y="203.46">Train: 0.5385</text>
+            <rect class="tsw s1" x="157.12" y="211.46" width="9" height="9" rx="2"/>
+            <text class="tx" x="171.12" y="220.46">Validation: 0.5302</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 12, Train: 0.5121, Validation: 0.5019">
+        <title>Iteration 12, Train: 0.5121, Validation: 0.5019</title>
+        <rect class="hit" x="138.66" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="142.2" y1="72" x2="142.2" y2="346"/>
+        <circle class="cx s0" cx="142.2" cy="205.69" r="4.5"/>
+        <circle class="cx s1" cx="142.2" cy="208.47" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="154.2" y="175.69" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="164.2" y="193.69">Iteration 12</text>
+            <rect class="tsw s0" x="164.2" y="201.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="178.2" y="210.69">Train: 0.5121</text>
+            <rect class="tsw s1" x="164.2" y="218.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="178.2" y="227.69">Validation: 0.5019</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 13, Train: 0.4871, Validation: 0.4756">
+        <title>Iteration 13, Train: 0.4871, Validation: 0.4756</title>
+        <rect class="hit" x="145.75" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="149.29" y1="72" x2="149.29" y2="346"/>
+        <circle class="cx s0" cx="149.29" cy="212.53" r="4.5"/>
+        <circle class="cx s1" cx="149.29" cy="215.68" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="161.29" y="182.53" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="171.29" y="200.53">Iteration 13</text>
+            <rect class="tsw s0" x="171.29" y="208.53" width="9" height="9" rx="2"/>
+            <text class="tx" x="185.29" y="217.53">Train: 0.4871</text>
+            <rect class="tsw s1" x="171.29" y="225.53" width="9" height="9" rx="2"/>
+            <text class="tx" x="185.29" y="234.53">Validation: 0.4756</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 14, Train: 0.4635, Validation: 0.4511">
+        <title>Iteration 14, Train: 0.4635, Validation: 0.4511</title>
+        <rect class="hit" x="152.83" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="156.37" y1="72" x2="156.37" y2="346"/>
+        <circle class="cx s0" cx="156.37" cy="219.01" r="4.5"/>
+        <circle class="cx s1" cx="156.37" cy="222.4" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="168.37" y="189.01" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="178.37" y="207.01">Iteration 14</text>
+            <rect class="tsw s0" x="178.37" y="215.01" width="9" height="9" rx="2"/>
+            <text class="tx" x="192.37" y="224.01">Train: 0.4635</text>
+            <rect class="tsw s1" x="178.37" y="232.01" width="9" height="9" rx="2"/>
+            <text class="tx" x="192.37" y="241.01">Validation: 0.4511</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 15, Train: 0.4411, Validation: 0.4283">
+        <title>Iteration 15, Train: 0.4411, Validation: 0.4283</title>
+        <rect class="hit" x="159.92" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="163.46" y1="72" x2="163.46" y2="346"/>
+        <circle class="cx s0" cx="163.46" cy="225.13" r="4.5"/>
+        <circle class="cx s1" cx="163.46" cy="228.65" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="175.46" y="195.13" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="185.46" y="213.13">Iteration 15</text>
+            <rect class="tsw s0" x="185.46" y="221.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="199.46" y="230.13">Train: 0.4411</text>
+            <rect class="tsw s1" x="185.46" y="238.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="199.46" y="247.13">Validation: 0.4283</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 16, Train: 0.42, Validation: 0.407">
+        <title>Iteration 16, Train: 0.42, Validation: 0.407</title>
+        <rect class="hit" x="167" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="170.54" y1="72" x2="170.54" y2="346"/>
+        <circle class="cx s0" cx="170.54" cy="230.92" r="4.5"/>
+        <circle class="cx s1" cx="170.54" cy="234.48" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="182.54" y="200.92" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="192.54" y="218.92">Iteration 16</text>
+            <rect class="tsw s0" x="192.54" y="226.92" width="9" height="9" rx="2"/>
+            <text class="tx" x="206.54" y="235.92">Train: 0.42</text>
+            <rect class="tsw s1" x="192.54" y="243.92" width="9" height="9" rx="2"/>
+            <text class="tx" x="206.54" y="252.92">Validation: 0.407</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 17, Train: 0.4, Validation: 0.3872">
+        <title>Iteration 17, Train: 0.4, Validation: 0.3872</title>
+        <rect class="hit" x="174.09" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="177.63" y1="72" x2="177.63" y2="346"/>
+        <circle class="cx s0" cx="177.63" cy="236.4" r="4.5"/>
+        <circle class="cx s1" cx="177.63" cy="239.9" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="189.63" y="206.4" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="199.63" y="224.4">Iteration 17</text>
+            <rect class="tsw s0" x="199.63" y="232.4" width="9" height="9" rx="2"/>
+            <text class="tx" x="213.63" y="241.4">Train: 0.4</text>
+            <rect class="tsw s1" x="199.63" y="249.4" width="9" height="9" rx="2"/>
+            <text class="tx" x="213.63" y="258.4">Validation: 0.3872</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 18, Train: 0.3811, Validation: 0.3688">
+        <title>Iteration 18, Train: 0.3811, Validation: 0.3688</title>
+        <rect class="hit" x="181.17" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="184.71" y1="72" x2="184.71" y2="346"/>
+        <circle class="cx s0" cx="184.71" cy="241.58" r="4.5"/>
+        <circle class="cx s1" cx="184.71" cy="244.95" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="196.71" y="211.58" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="206.71" y="229.58">Iteration 18</text>
+            <rect class="tsw s0" x="206.71" y="237.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="220.71" y="246.58">Train: 0.3811</text>
+            <rect class="tsw s1" x="206.71" y="254.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="220.71" y="263.58">Validation: 0.3688</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 19, Train: 0.3632, Validation: 0.3517">
+        <title>Iteration 19, Train: 0.3632, Validation: 0.3517</title>
+        <rect class="hit" x="188.26" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="191.8" y1="72" x2="191.8" y2="346"/>
+        <circle class="cx s0" cx="191.8" cy="246.48" r="4.5"/>
+        <circle class="cx s1" cx="191.8" cy="249.65" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="203.8" y="216.48" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="213.8" y="234.48">Iteration 19</text>
+            <rect class="tsw s0" x="213.8" y="242.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="227.8" y="251.48">Train: 0.3632</text>
+            <rect class="tsw s1" x="213.8" y="259.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="227.8" y="268.48">Validation: 0.3517</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 20, Train: 0.3463, Validation: 0.3357">
+        <title>Iteration 20, Train: 0.3463, Validation: 0.3357</title>
+        <rect class="hit" x="195.34" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="198.89" y1="72" x2="198.89" y2="346"/>
+        <circle class="cx s0" cx="198.89" cy="251.12" r="4.5"/>
+        <circle class="cx s1" cx="198.89" cy="254.02" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="210.89" y="221.12" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="220.89" y="239.12">Iteration 20</text>
+            <rect class="tsw s0" x="220.89" y="247.12" width="9" height="9" rx="2"/>
+            <text class="tx" x="234.89" y="256.12">Train: 0.3463</text>
+            <rect class="tsw s1" x="220.89" y="264.12" width="9" height="9" rx="2"/>
+            <text class="tx" x="234.89" y="273.12">Validation: 0.3357</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 21, Train: 0.3303, Validation: 0.3208">
+        <title>Iteration 21, Train: 0.3303, Validation: 0.3208</title>
+        <rect class="hit" x="202.43" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="205.97" y1="72" x2="205.97" y2="346"/>
+        <circle class="cx s0" cx="205.97" cy="255.51" r="4.5"/>
+        <circle class="cx s1" cx="205.97" cy="258.1" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="217.97" y="225.51" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="227.97" y="243.51">Iteration 21</text>
+            <rect class="tsw s0" x="227.97" y="251.51" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.97" y="260.51">Train: 0.3303</text>
+            <rect class="tsw s1" x="227.97" y="268.51" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.97" y="277.51">Validation: 0.3208</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 22, Train: 0.3151, Validation: 0.307">
+        <title>Iteration 22, Train: 0.3151, Validation: 0.307</title>
+        <rect class="hit" x="209.51" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="213.06" y1="72" x2="213.06" y2="346"/>
+        <circle class="cx s0" cx="213.06" cy="259.66" r="4.5"/>
+        <circle class="cx s1" cx="213.06" cy="261.89" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="225.06" y="229.66" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="235.06" y="247.66">Iteration 22</text>
+            <rect class="tsw s0" x="235.06" y="255.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="249.06" y="264.66">Train: 0.3151</text>
+            <rect class="tsw s1" x="235.06" y="272.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="249.06" y="281.66">Validation: 0.307</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 23, Train: 0.3008, Validation: 0.2941">
+        <title>Iteration 23, Train: 0.3008, Validation: 0.2941</title>
+        <rect class="hit" x="216.6" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="220.14" y1="72" x2="220.14" y2="346"/>
+        <circle class="cx s0" cx="220.14" cy="263.58" r="4.5"/>
+        <circle class="cx s1" cx="220.14" cy="265.42" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="232.14" y="233.58" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="242.14" y="251.58">Iteration 23</text>
+            <rect class="tsw s0" x="242.14" y="259.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.14" y="268.58">Train: 0.3008</text>
+            <rect class="tsw s1" x="242.14" y="276.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.14" y="285.58">Validation: 0.2941</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 24, Train: 0.2872, Validation: 0.2821">
+        <title>Iteration 24, Train: 0.2872, Validation: 0.2821</title>
+        <rect class="hit" x="223.68" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="227.23" y1="72" x2="227.23" y2="346"/>
+        <circle class="cx s0" cx="227.23" cy="267.3" r="4.5"/>
+        <circle class="cx s1" cx="227.23" cy="268.71" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="239.23" y="237.3" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="249.23" y="255.3">Iteration 24</text>
+            <rect class="tsw s0" x="249.23" y="263.3" width="9" height="9" rx="2"/>
+            <text class="tx" x="263.23" y="272.3">Train: 0.2872</text>
+            <rect class="tsw s1" x="249.23" y="280.3" width="9" height="9" rx="2"/>
+            <text class="tx" x="263.23" y="289.3">Validation: 0.2821</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 25, Train: 0.2744, Validation: 0.2709">
+        <title>Iteration 25, Train: 0.2744, Validation: 0.2709</title>
+        <rect class="hit" x="230.77" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="234.31" y1="72" x2="234.31" y2="346"/>
+        <circle class="cx s0" cx="234.31" cy="270.81" r="4.5"/>
+        <circle class="cx s1" cx="234.31" cy="271.77" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="246.31" y="240.81" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="256.31" y="258.81">Iteration 25</text>
+            <rect class="tsw s0" x="256.31" y="266.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="270.31" y="275.81">Train: 0.2744</text>
+            <rect class="tsw s1" x="256.31" y="283.81" width="9" height="9" rx="2"/>
+            <text class="tx" x="270.31" y="292.81">Validation: 0.2709</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 26, Train: 0.2623, Validation: 0.2605">
+        <title>Iteration 26, Train: 0.2623, Validation: 0.2605</title>
+        <rect class="hit" x="237.85" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="241.4" y1="72" x2="241.4" y2="346"/>
+        <circle class="cx s0" cx="241.4" cy="274.13" r="4.5"/>
+        <circle class="cx s1" cx="241.4" cy="274.62" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="253.4" y="244.13" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="263.4" y="262.13">Iteration 26</text>
+            <rect class="tsw s0" x="263.4" y="270.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="277.4" y="279.13">Train: 0.2623</text>
+            <rect class="tsw s1" x="263.4" y="287.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="277.4" y="296.13">Validation: 0.2605</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 27, Train: 0.2508, Validation: 0.2508">
+        <title>Iteration 27, Train: 0.2508, Validation: 0.2508</title>
+        <rect class="hit" x="244.94" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="248.48" y1="72" x2="248.48" y2="346"/>
+        <circle class="cx s0" cx="248.48" cy="277.28" r="4.5"/>
+        <circle class="cx s1" cx="248.48" cy="277.28" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="260.48" y="247.28" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="270.48" y="265.28">Iteration 27</text>
+            <rect class="tsw s0" x="270.48" y="273.28" width="9" height="9" rx="2"/>
+            <text class="tx" x="284.48" y="282.28">Train: 0.2508</text>
+            <rect class="tsw s1" x="270.48" y="290.28" width="9" height="9" rx="2"/>
+            <text class="tx" x="284.48" y="299.28">Validation: 0.2508</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 28, Train: 0.24, Validation: 0.2418">
+        <title>Iteration 28, Train: 0.24, Validation: 0.2418</title>
+        <rect class="hit" x="252.02" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="255.57" y1="72" x2="255.57" y2="346"/>
+        <circle class="cx s0" cx="255.57" cy="280.25" r="4.5"/>
+        <circle class="cx s1" cx="255.57" cy="279.75" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="267.57" y="249.75" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="277.57" y="267.75">Iteration 28</text>
+            <rect class="tsw s0" x="277.57" y="275.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="291.57" y="284.75">Train: 0.24</text>
+            <rect class="tsw s1" x="277.57" y="292.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="291.57" y="301.75">Validation: 0.2418</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 29, Train: 0.2297, Validation: 0.2334">
+        <title>Iteration 29, Train: 0.2297, Validation: 0.2334</title>
+        <rect class="hit" x="259.11" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="262.65" y1="72" x2="262.65" y2="346"/>
+        <circle class="cx s0" cx="262.65" cy="283.06" r="4.5"/>
+        <circle class="cx s1" cx="262.65" cy="282.05" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="274.65" y="252.05" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="284.65" y="270.05">Iteration 29</text>
+            <rect class="tsw s0" x="284.65" y="278.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="298.65" y="287.05">Train: 0.2297</text>
+            <rect class="tsw s1" x="284.65" y="295.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="298.65" y="304.05">Validation: 0.2334</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 30, Train: 0.22, Validation: 0.2256">
+        <title>Iteration 30, Train: 0.22, Validation: 0.2256</title>
+        <rect class="hit" x="266.19" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="269.74" y1="72" x2="269.74" y2="346"/>
+        <circle class="cx s0" cx="269.74" cy="285.72" r="4.5"/>
+        <circle class="cx s1" cx="269.74" cy="284.19" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="281.74" y="254.19" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="291.74" y="272.19">Iteration 30</text>
+            <rect class="tsw s0" x="291.74" y="280.19" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.74" y="289.19">Train: 0.22</text>
+            <rect class="tsw s1" x="291.74" y="297.19" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.74" y="306.19">Validation: 0.2256</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 31, Train: 0.2108, Validation: 0.2183">
+        <title>Iteration 31, Train: 0.2108, Validation: 0.2183</title>
+        <rect class="hit" x="273.28" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="276.82" y1="72" x2="276.82" y2="346"/>
+        <circle class="cx s0" cx="276.82" cy="288.24" r="4.5"/>
+        <circle class="cx s1" cx="276.82" cy="286.18" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="288.82" y="256.18" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="298.82" y="274.18">Iteration 31</text>
+            <rect class="tsw s0" x="298.82" y="282.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="312.82" y="291.18">Train: 0.2108</text>
+            <rect class="tsw s1" x="298.82" y="299.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="312.82" y="308.18">Validation: 0.2183</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 32, Train: 0.2021, Validation: 0.2115">
+        <title>Iteration 32, Train: 0.2021, Validation: 0.2115</title>
+        <rect class="hit" x="280.37" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="283.91" y1="72" x2="283.91" y2="346"/>
+        <circle class="cx s0" cx="283.91" cy="290.62" r="4.5"/>
+        <circle class="cx s1" cx="283.91" cy="288.04" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="295.91" y="258.04" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="305.91" y="276.04">Iteration 32</text>
+            <rect class="tsw s0" x="305.91" y="284.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="319.91" y="293.04">Train: 0.2021</text>
+            <rect class="tsw s1" x="305.91" y="301.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="319.91" y="310.04">Validation: 0.2115</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 33, Train: 0.1939, Validation: 0.2052">
+        <title>Iteration 33, Train: 0.1939, Validation: 0.2052</title>
+        <rect class="hit" x="287.45" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="290.99" y1="72" x2="290.99" y2="346"/>
+        <circle class="cx s0" cx="290.99" cy="292.87" r="4.5"/>
+        <circle class="cx s1" cx="290.99" cy="289.77" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="302.99" y="259.77" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="312.99" y="277.77">Iteration 33</text>
+            <rect class="tsw s0" x="312.99" y="285.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="326.99" y="294.77">Train: 0.1939</text>
+            <rect class="tsw s1" x="312.99" y="302.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="326.99" y="311.77">Validation: 0.2052</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 34, Train: 0.1861, Validation: 0.1993">
+        <title>Iteration 34, Train: 0.1861, Validation: 0.1993</title>
+        <rect class="hit" x="294.54" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="298.08" y1="72" x2="298.08" y2="346"/>
+        <circle class="cx s0" cx="298.08" cy="295" r="4.5"/>
+        <circle class="cx s1" cx="298.08" cy="291.38" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="310.08" y="261.38" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="320.08" y="279.38">Iteration 34</text>
+            <rect class="tsw s0" x="320.08" y="287.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="334.08" y="296.38">Train: 0.1861</text>
+            <rect class="tsw s1" x="320.08" y="304.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="334.08" y="313.38">Validation: 0.1993</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 35, Train: 0.1788, Validation: 0.1939">
+        <title>Iteration 35, Train: 0.1788, Validation: 0.1939</title>
+        <rect class="hit" x="301.62" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="305.16" y1="72" x2="305.16" y2="346"/>
+        <circle class="cx s0" cx="305.16" cy="297.02" r="4.5"/>
+        <circle class="cx s1" cx="305.16" cy="292.88" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="317.16" y="262.88" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="327.16" y="280.88">Iteration 35</text>
+            <rect class="tsw s0" x="327.16" y="288.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="341.16" y="297.88">Train: 0.1788</text>
+            <rect class="tsw s1" x="327.16" y="305.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="341.16" y="314.88">Validation: 0.1939</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 36, Train: 0.1718, Validation: 0.1888">
+        <title>Iteration 36, Train: 0.1718, Validation: 0.1888</title>
+        <rect class="hit" x="308.71" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="312.25" y1="72" x2="312.25" y2="346"/>
+        <circle class="cx s0" cx="312.25" cy="298.93" r="4.5"/>
+        <circle class="cx s1" cx="312.25" cy="294.27" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="324.25" y="264.27" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="334.25" y="282.27">Iteration 36</text>
+            <rect class="tsw s0" x="334.25" y="290.27" width="9" height="9" rx="2"/>
+            <text class="tx" x="348.25" y="299.27">Train: 0.1718</text>
+            <rect class="tsw s1" x="334.25" y="307.27" width="9" height="9" rx="2"/>
+            <text class="tx" x="348.25" y="316.27">Validation: 0.1888</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 37, Train: 0.1652, Validation: 0.184">
+        <title>Iteration 37, Train: 0.1652, Validation: 0.184</title>
+        <rect class="hit" x="315.79" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="319.33" y1="72" x2="319.33" y2="346"/>
+        <circle class="cx s0" cx="319.33" cy="300.73" r="4.5"/>
+        <circle class="cx s1" cx="319.33" cy="295.57" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="331.33" y="265.57" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="341.33" y="283.57">Iteration 37</text>
+            <rect class="tsw s0" x="341.33" y="291.57" width="9" height="9" rx="2"/>
+            <text class="tx" x="355.33" y="300.57">Train: 0.1652</text>
+            <rect class="tsw s1" x="341.33" y="308.57" width="9" height="9" rx="2"/>
+            <text class="tx" x="355.33" y="317.57">Validation: 0.184</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 38, Train: 0.159, Validation: 0.1796">
+        <title>Iteration 38, Train: 0.159, Validation: 0.1796</title>
+        <rect class="hit" x="322.88" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="326.42" y1="72" x2="326.42" y2="346"/>
+        <circle class="cx s0" cx="326.42" cy="302.44" r="4.5"/>
+        <circle class="cx s1" cx="326.42" cy="296.78" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="338.42" y="266.78" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="348.42" y="284.78">Iteration 38</text>
+            <rect class="tsw s0" x="348.42" y="292.78" width="9" height="9" rx="2"/>
+            <text class="tx" x="362.42" y="301.78">Train: 0.159</text>
+            <rect class="tsw s1" x="348.42" y="309.78" width="9" height="9" rx="2"/>
+            <text class="tx" x="362.42" y="318.78">Validation: 0.1796</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 39, Train: 0.1531, Validation: 0.1755">
+        <title>Iteration 39, Train: 0.1531, Validation: 0.1755</title>
+        <rect class="hit" x="329.96" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="333.5" y1="72" x2="333.5" y2="346"/>
+        <circle class="cx s0" cx="333.5" cy="304.05" r="4.5"/>
+        <circle class="cx s1" cx="333.5" cy="297.91" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="345.5" y="267.91" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="355.5" y="285.91">Iteration 39</text>
+            <rect class="tsw s0" x="355.5" y="293.91" width="9" height="9" rx="2"/>
+            <text class="tx" x="369.5" y="302.91">Train: 0.1531</text>
+            <rect class="tsw s1" x="355.5" y="310.91" width="9" height="9" rx="2"/>
+            <text class="tx" x="369.5" y="319.91">Validation: 0.1755</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 40, Train: 0.1475, Validation: 0.1717">
+        <title>Iteration 40, Train: 0.1475, Validation: 0.1717</title>
+        <rect class="hit" x="337.05" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="340.59" y1="72" x2="340.59" y2="346"/>
+        <circle class="cx s0" cx="340.59" cy="305.58" r="4.5"/>
+        <circle class="cx s1" cx="340.59" cy="298.96" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="352.59" y="268.96" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="362.59" y="286.96">Iteration 40</text>
+            <rect class="tsw s0" x="362.59" y="294.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="376.59" y="303.96">Train: 0.1475</text>
+            <rect class="tsw s1" x="362.59" y="311.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="376.59" y="320.96">Validation: 0.1717</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 41, Train: 0.1423, Validation: 0.1681">
+        <title>Iteration 41, Train: 0.1423, Validation: 0.1681</title>
+        <rect class="hit" x="344.13" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="347.68" y1="72" x2="347.68" y2="346"/>
+        <circle class="cx s0" cx="347.68" cy="307.02" r="4.5"/>
+        <circle class="cx s1" cx="347.68" cy="299.93" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="359.68" y="269.93" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="369.68" y="287.93">Iteration 41</text>
+            <rect class="tsw s0" x="369.68" y="295.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="383.68" y="304.93">Train: 0.1423</text>
+            <rect class="tsw s1" x="369.68" y="312.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="383.68" y="321.93">Validation: 0.1681</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 42, Train: 0.1373, Validation: 0.1648">
+        <title>Iteration 42, Train: 0.1373, Validation: 0.1648</title>
+        <rect class="hit" x="351.22" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="354.76" y1="72" x2="354.76" y2="346"/>
+        <circle class="cx s0" cx="354.76" cy="308.39" r="4.5"/>
+        <circle class="cx s1" cx="354.76" cy="300.84" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="366.76" y="270.84" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="376.76" y="288.84">Iteration 42</text>
+            <rect class="tsw s0" x="376.76" y="296.84" width="9" height="9" rx="2"/>
+            <text class="tx" x="390.76" y="305.84">Train: 0.1373</text>
+            <rect class="tsw s1" x="376.76" y="313.84" width="9" height="9" rx="2"/>
+            <text class="tx" x="390.76" y="322.84">Validation: 0.1648</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 43, Train: 0.1326, Validation: 0.1617">
+        <title>Iteration 43, Train: 0.1326, Validation: 0.1617</title>
+        <rect class="hit" x="358.3" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="361.85" y1="72" x2="361.85" y2="346"/>
+        <circle class="cx s0" cx="361.85" cy="309.68" r="4.5"/>
+        <circle class="cx s1" cx="361.85" cy="301.69" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="373.85" y="271.69" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="383.85" y="289.69">Iteration 43</text>
+            <rect class="tsw s0" x="383.85" y="297.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="397.85" y="306.69">Train: 0.1326</text>
+            <rect class="tsw s1" x="383.85" y="314.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="397.85" y="323.69">Validation: 0.1617</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 44, Train: 0.1281, Validation: 0.1588">
+        <title>Iteration 44, Train: 0.1281, Validation: 0.1588</title>
+        <rect class="hit" x="365.39" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="368.93" y1="72" x2="368.93" y2="346"/>
+        <circle class="cx s0" cx="368.93" cy="310.9" r="4.5"/>
+        <circle class="cx s1" cx="368.93" cy="302.48" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="380.93" y="272.48" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="390.93" y="290.48">Iteration 44</text>
+            <rect class="tsw s0" x="390.93" y="298.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="404.93" y="307.48">Train: 0.1281</text>
+            <rect class="tsw s1" x="390.93" y="315.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="404.93" y="324.48">Validation: 0.1588</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 45, Train: 0.1239, Validation: 0.1562">
+        <title>Iteration 45, Train: 0.1239, Validation: 0.1562</title>
+        <rect class="hit" x="372.47" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="376.02" y1="72" x2="376.02" y2="346"/>
+        <circle class="cx s0" cx="376.02" cy="312.06" r="4.5"/>
+        <circle class="cx s1" cx="376.02" cy="303.21" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="388.02" y="273.21" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="398.02" y="291.21">Iteration 45</text>
+            <rect class="tsw s0" x="398.02" y="299.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="412.02" y="308.21">Train: 0.1239</text>
+            <rect class="tsw s1" x="398.02" y="316.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="412.02" y="325.21">Validation: 0.1562</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 46, Train: 0.1199, Validation: 0.1562">
+        <title>Iteration 46, Train: 0.1199, Validation: 0.1562</title>
+        <rect class="hit" x="379.56" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="383.1" y1="72" x2="383.1" y2="346"/>
+        <circle class="cx s0" cx="383.1" cy="313.15" r="4.5"/>
+        <circle class="cx s1" cx="383.1" cy="303.21" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="395.1" y="273.21" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="405.1" y="291.21">Iteration 46</text>
+            <rect class="tsw s0" x="405.1" y="299.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.1" y="308.21">Train: 0.1199</text>
+            <rect class="tsw s1" x="405.1" y="316.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.1" y="325.21">Validation: 0.1562</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 47, Train: 0.1161, Validation: 0.1564">
+        <title>Iteration 47, Train: 0.1161, Validation: 0.1564</title>
+        <rect class="hit" x="386.64" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="390.19" y1="72" x2="390.19" y2="346"/>
+        <circle class="cx s0" cx="390.19" cy="314.19" r="4.5"/>
+        <circle class="cx s1" cx="390.19" cy="303.16" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="402.19" y="273.16" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="412.19" y="291.16">Iteration 47</text>
+            <rect class="tsw s0" x="412.19" y="299.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="426.19" y="308.16">Train: 0.1161</text>
+            <rect class="tsw s1" x="412.19" y="316.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="426.19" y="325.16">Validation: 0.1564</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 48, Train: 0.1125, Validation: 0.1567">
+        <title>Iteration 48, Train: 0.1125, Validation: 0.1567</title>
+        <rect class="hit" x="393.73" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="397.27" y1="72" x2="397.27" y2="346"/>
+        <circle class="cx s0" cx="397.27" cy="315.17" r="4.5"/>
+        <circle class="cx s1" cx="397.27" cy="303.07" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="409.27" y="273.07" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="419.27" y="291.07">Iteration 48</text>
+            <rect class="tsw s0" x="419.27" y="299.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="433.27" y="308.07">Train: 0.1125</text>
+            <rect class="tsw s1" x="419.27" y="316.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="433.27" y="325.07">Validation: 0.1567</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 49, Train: 0.1092, Validation: 0.1572">
+        <title>Iteration 49, Train: 0.1092, Validation: 0.1572</title>
+        <rect class="hit" x="400.81" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="404.36" y1="72" x2="404.36" y2="346"/>
+        <circle class="cx s0" cx="404.36" cy="316.09" r="4.5"/>
+        <circle class="cx s1" cx="404.36" cy="302.93" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="416.36" y="272.93" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="426.36" y="290.93">Iteration 49</text>
+            <rect class="tsw s0" x="426.36" y="298.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="440.36" y="307.93">Train: 0.1092</text>
+            <rect class="tsw s1" x="426.36" y="315.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="440.36" y="324.93">Validation: 0.1572</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 50, Train: 0.106, Validation: 0.1578">
+        <title>Iteration 50, Train: 0.106, Validation: 0.1578</title>
+        <rect class="hit" x="407.9" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="411.44" y1="72" x2="411.44" y2="346"/>
+        <circle class="cx s0" cx="411.44" cy="316.97" r="4.5"/>
+        <circle class="cx s1" cx="411.44" cy="302.76" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="423.44" y="272.76" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="433.44" y="290.76">Iteration 50</text>
+            <rect class="tsw s0" x="433.44" y="298.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="447.44" y="307.76">Train: 0.106</text>
+            <rect class="tsw s1" x="433.44" y="315.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="447.44" y="324.76">Validation: 0.1578</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 51, Train: 0.1029, Validation: 0.1586">
+        <title>Iteration 51, Train: 0.1029, Validation: 0.1586</title>
+        <rect class="hit" x="414.99" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="418.53" y1="72" x2="418.53" y2="346"/>
+        <circle class="cx s0" cx="418.53" cy="317.8" r="4.5"/>
+        <circle class="cx s1" cx="418.53" cy="302.55" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="430.53" y="272.55" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="440.53" y="290.55">Iteration 51</text>
+            <rect class="tsw s0" x="440.53" y="298.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="454.53" y="307.55">Train: 0.1029</text>
+            <rect class="tsw s1" x="440.53" y="315.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="454.53" y="324.55">Validation: 0.1586</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 52, Train: 0.1001, Validation: 0.1594">
+        <title>Iteration 52, Train: 0.1001, Validation: 0.1594</title>
+        <rect class="hit" x="422.07" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="425.61" y1="72" x2="425.61" y2="346"/>
+        <circle class="cx s0" cx="425.61" cy="318.58" r="4.5"/>
+        <circle class="cx s1" cx="425.61" cy="302.31" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="437.61" y="272.31" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="447.61" y="290.31">Iteration 52</text>
+            <rect class="tsw s0" x="447.61" y="298.31" width="9" height="9" rx="2"/>
+            <text class="tx" x="461.61" y="307.31">Train: 0.1001</text>
+            <rect class="tsw s1" x="447.61" y="315.31" width="9" height="9" rx="2"/>
+            <text class="tx" x="461.61" y="324.31">Validation: 0.1594</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 53, Train: 0.09737, Validation: 0.1604">
+        <title>Iteration 53, Train: 0.09737, Validation: 0.1604</title>
+        <rect class="hit" x="429.16" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="432.7" y1="72" x2="432.7" y2="346"/>
+        <circle class="cx s0" cx="432.7" cy="319.32" r="4.5"/>
+        <circle class="cx s1" cx="432.7" cy="302.04" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="444.7" y="272.04" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="454.7" y="290.04">Iteration 53</text>
+            <rect class="tsw s0" x="454.7" y="298.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="468.7" y="307.04">Train: 0.09737</text>
+            <rect class="tsw s1" x="454.7" y="315.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="468.7" y="324.04">Validation: 0.1604</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 54, Train: 0.09481, Validation: 0.1615">
+        <title>Iteration 54, Train: 0.09481, Validation: 0.1615</title>
+        <rect class="hit" x="436.24" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="439.78" y1="72" x2="439.78" y2="346"/>
+        <circle class="cx s0" cx="439.78" cy="320.02" r="4.5"/>
+        <circle class="cx s1" cx="439.78" cy="301.74" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="451.78" y="271.74" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="461.78" y="289.74">Iteration 54</text>
+            <rect class="tsw s0" x="461.78" y="297.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="475.78" y="306.74">Train: 0.09481</text>
+            <rect class="tsw s1" x="461.78" y="314.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="475.78" y="323.74">Validation: 0.1615</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 55, Train: 0.09239, Validation: 0.1627">
+        <title>Iteration 55, Train: 0.09239, Validation: 0.1627</title>
+        <rect class="hit" x="443.33" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="446.87" y1="72" x2="446.87" y2="346"/>
+        <circle class="cx s0" cx="446.87" cy="320.69" r="4.5"/>
+        <circle class="cx s1" cx="446.87" cy="301.42" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="458.87" y="271.42" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="468.87" y="289.42">Iteration 55</text>
+            <rect class="tsw s0" x="468.87" y="297.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="482.87" y="306.42">Train: 0.09239</text>
+            <rect class="tsw s1" x="468.87" y="314.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="482.87" y="323.42">Validation: 0.1627</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 56, Train: 0.0901, Validation: 0.164">
+        <title>Iteration 56, Train: 0.0901, Validation: 0.164</title>
+        <rect class="hit" x="450.41" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="453.95" y1="72" x2="453.95" y2="346"/>
+        <circle class="cx s0" cx="453.95" cy="321.31" r="4.5"/>
+        <circle class="cx s1" cx="453.95" cy="301.07" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="465.95" y="271.07" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="475.95" y="289.07">Iteration 56</text>
+            <rect class="tsw s0" x="475.95" y="297.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="489.95" y="306.07">Train: 0.0901</text>
+            <rect class="tsw s1" x="475.95" y="314.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="489.95" y="323.07">Validation: 0.164</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 57, Train: 0.08793, Validation: 0.1653">
+        <title>Iteration 57, Train: 0.08793, Validation: 0.1653</title>
+        <rect class="hit" x="457.5" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="461.04" y1="72" x2="461.04" y2="346"/>
+        <circle class="cx s0" cx="461.04" cy="321.91" r="4.5"/>
+        <circle class="cx s1" cx="461.04" cy="300.69" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="473.04" y="270.69" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="483.04" y="288.69">Iteration 57</text>
+            <rect class="tsw s0" x="483.04" y="296.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.04" y="305.69">Train: 0.08793</text>
+            <rect class="tsw s1" x="483.04" y="313.69" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.04" y="322.69">Validation: 0.1653</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 58, Train: 0.08588, Validation: 0.1668">
+        <title>Iteration 58, Train: 0.08588, Validation: 0.1668</title>
+        <rect class="hit" x="464.58" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="468.12" y1="72" x2="468.12" y2="346"/>
+        <circle class="cx s0" cx="468.12" cy="322.47" r="4.5"/>
+        <circle class="cx s1" cx="468.12" cy="300.3" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="480.12" y="270.3" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="490.12" y="288.3">Iteration 58</text>
+            <rect class="tsw s0" x="490.12" y="296.3" width="9" height="9" rx="2"/>
+            <text class="tx" x="504.12" y="305.3">Train: 0.08588</text>
+            <rect class="tsw s1" x="490.12" y="313.3" width="9" height="9" rx="2"/>
+            <text class="tx" x="504.12" y="322.3">Validation: 0.1668</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 59, Train: 0.08394, Validation: 0.1683">
+        <title>Iteration 59, Train: 0.08394, Validation: 0.1683</title>
+        <rect class="hit" x="471.67" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="475.21" y1="72" x2="475.21" y2="346"/>
+        <circle class="cx s0" cx="475.21" cy="323" r="4.5"/>
+        <circle class="cx s1" cx="475.21" cy="299.88" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="487.21" y="269.88" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="497.21" y="287.88">Iteration 59</text>
+            <rect class="tsw s0" x="497.21" y="295.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="511.21" y="304.88">Train: 0.08394</text>
+            <rect class="tsw s1" x="497.21" y="312.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="511.21" y="321.88">Validation: 0.1683</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 60, Train: 0.08211, Validation: 0.1699">
+        <title>Iteration 60, Train: 0.08211, Validation: 0.1699</title>
+        <rect class="hit" x="478.75" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="482.3" y1="72" x2="482.3" y2="346"/>
+        <circle class="cx s0" cx="482.3" cy="323.5" r="4.5"/>
+        <circle class="cx s1" cx="482.3" cy="299.45" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="339.1" y="269.45" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="349.1" y="287.45">Iteration 60</text>
+            <rect class="tsw s0" x="349.1" y="295.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="363.1" y="304.45">Train: 0.08211</text>
+            <rect class="tsw s1" x="349.1" y="312.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="363.1" y="321.45">Validation: 0.1699</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 61, Train: 0.08037, Validation: 0.1715">
+        <title>Iteration 61, Train: 0.08037, Validation: 0.1715</title>
+        <rect class="hit" x="485.84" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="489.38" y1="72" x2="489.38" y2="346"/>
+        <circle class="cx s0" cx="489.38" cy="323.98" r="4.5"/>
+        <circle class="cx s1" cx="489.38" cy="299" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="346.18" y="269" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="356.18" y="287">Iteration 61</text>
+            <rect class="tsw s0" x="356.18" y="295" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.18" y="304">Train: 0.08037</text>
+            <rect class="tsw s1" x="356.18" y="312" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.18" y="321">Validation: 0.1715</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 62, Train: 0.07873, Validation: 0.1732">
+        <title>Iteration 62, Train: 0.07873, Validation: 0.1732</title>
+        <rect class="hit" x="492.92" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="496.47" y1="72" x2="496.47" y2="346"/>
+        <circle class="cx s0" cx="496.47" cy="324.43" r="4.5"/>
+        <circle class="cx s1" cx="496.47" cy="298.53" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="353.27" y="268.53" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="363.27" y="286.53">Iteration 62</text>
+            <rect class="tsw s0" x="363.27" y="294.53" width="9" height="9" rx="2"/>
+            <text class="tx" x="377.27" y="303.53">Train: 0.07873</text>
+            <rect class="tsw s1" x="363.27" y="311.53" width="9" height="9" rx="2"/>
+            <text class="tx" x="377.27" y="320.53">Validation: 0.1732</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 63, Train: 0.07718, Validation: 0.175">
+        <title>Iteration 63, Train: 0.07718, Validation: 0.175</title>
+        <rect class="hit" x="500.01" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="503.55" y1="72" x2="503.55" y2="346"/>
+        <circle class="cx s0" cx="503.55" cy="324.85" r="4.5"/>
+        <circle class="cx s1" cx="503.55" cy="298.05" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="367.07" y="268.05" width="124.48" height="61" rx="6"/>
+            <text class="tx b" x="377.07" y="286.05">Iteration 63</text>
+            <rect class="tsw s0" x="377.07" y="294.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="391.07" y="303.05">Train: 0.07718</text>
+            <rect class="tsw s1" x="377.07" y="311.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="391.07" y="320.05">Validation: 0.175</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 64, Train: 0.07571, Validation: 0.1768">
+        <title>Iteration 64, Train: 0.07571, Validation: 0.1768</title>
+        <rect class="hit" x="507.09" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="510.64" y1="72" x2="510.64" y2="346"/>
+        <circle class="cx s0" cx="510.64" cy="325.26" r="4.5"/>
+        <circle class="cx s1" cx="510.64" cy="297.55" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="367.44" y="267.55" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="377.44" y="285.55">Iteration 64</text>
+            <rect class="tsw s0" x="377.44" y="293.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="391.44" y="302.55">Train: 0.07571</text>
+            <rect class="tsw s1" x="377.44" y="310.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="391.44" y="319.55">Validation: 0.1768</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 65, Train: 0.07432, Validation: 0.1787">
+        <title>Iteration 65, Train: 0.07432, Validation: 0.1787</title>
+        <rect class="hit" x="514.18" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="517.72" y1="72" x2="517.72" y2="346"/>
+        <circle class="cx s0" cx="517.72" cy="325.64" r="4.5"/>
+        <circle class="cx s1" cx="517.72" cy="297.05" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="374.52" y="267.05" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="384.52" y="285.05">Iteration 65</text>
+            <rect class="tsw s0" x="384.52" y="293.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="398.52" y="302.05">Train: 0.07432</text>
+            <rect class="tsw s1" x="384.52" y="310.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="398.52" y="319.05">Validation: 0.1787</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 66, Train: 0.07301, Validation: 0.1806">
+        <title>Iteration 66, Train: 0.07301, Validation: 0.1806</title>
+        <rect class="hit" x="521.26" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="524.81" y1="72" x2="524.81" y2="346"/>
+        <circle class="cx s0" cx="524.81" cy="326" r="4.5"/>
+        <circle class="cx s1" cx="524.81" cy="296.52" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="381.61" y="266.52" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="391.61" y="284.52">Iteration 66</text>
+            <rect class="tsw s0" x="391.61" y="292.52" width="9" height="9" rx="2"/>
+            <text class="tx" x="405.61" y="301.52">Train: 0.07301</text>
+            <rect class="tsw s1" x="391.61" y="309.52" width="9" height="9" rx="2"/>
+            <text class="tx" x="405.61" y="318.52">Validation: 0.1806</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 67, Train: 0.07176, Validation: 0.1825">
+        <title>Iteration 67, Train: 0.07176, Validation: 0.1825</title>
+        <rect class="hit" x="528.35" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="531.89" y1="72" x2="531.89" y2="346"/>
+        <circle class="cx s0" cx="531.89" cy="326.34" r="4.5"/>
+        <circle class="cx s1" cx="531.89" cy="295.99" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="388.69" y="265.99" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="398.69" y="283.99">Iteration 67</text>
+            <rect class="tsw s0" x="398.69" y="291.99" width="9" height="9" rx="2"/>
+            <text class="tx" x="412.69" y="300.99">Train: 0.07176</text>
+            <rect class="tsw s1" x="398.69" y="308.99" width="9" height="9" rx="2"/>
+            <text class="tx" x="412.69" y="317.99">Validation: 0.1825</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 68, Train: 0.07059, Validation: 0.1845">
+        <title>Iteration 68, Train: 0.07059, Validation: 0.1845</title>
+        <rect class="hit" x="535.43" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="538.98" y1="72" x2="538.98" y2="346"/>
+        <circle class="cx s0" cx="538.98" cy="326.66" r="4.5"/>
+        <circle class="cx s1" cx="538.98" cy="295.45" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="395.78" y="265.45" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="405.78" y="283.45">Iteration 68</text>
+            <rect class="tsw s0" x="405.78" y="291.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.78" y="300.45">Train: 0.07059</text>
+            <rect class="tsw s1" x="405.78" y="308.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.78" y="317.45">Validation: 0.1845</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 69, Train: 0.06947, Validation: 0.1865">
+        <title>Iteration 69, Train: 0.06947, Validation: 0.1865</title>
+        <rect class="hit" x="542.52" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="546.06" y1="72" x2="546.06" y2="346"/>
+        <circle class="cx s0" cx="546.06" cy="326.96" r="4.5"/>
+        <circle class="cx s1" cx="546.06" cy="294.9" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="402.86" y="264.9" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="412.86" y="282.9">Iteration 69</text>
+            <rect class="tsw s0" x="412.86" y="290.9" width="9" height="9" rx="2"/>
+            <text class="tx" x="426.86" y="299.9">Train: 0.06947</text>
+            <rect class="tsw s1" x="412.86" y="307.9" width="9" height="9" rx="2"/>
+            <text class="tx" x="426.86" y="316.9">Validation: 0.1865</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 70, Train: 0.06842, Validation: 0.1886">
+        <title>Iteration 70, Train: 0.06842, Validation: 0.1886</title>
+        <rect class="hit" x="549.6" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="553.15" y1="72" x2="553.15" y2="346"/>
+        <circle class="cx s0" cx="553.15" cy="327.25" r="4.5"/>
+        <circle class="cx s1" cx="553.15" cy="294.33" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="409.95" y="264.33" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="419.95" y="282.33">Iteration 70</text>
+            <rect class="tsw s0" x="419.95" y="290.33" width="9" height="9" rx="2"/>
+            <text class="tx" x="433.95" y="299.33">Train: 0.06842</text>
+            <rect class="tsw s1" x="419.95" y="307.33" width="9" height="9" rx="2"/>
+            <text class="tx" x="433.95" y="316.33">Validation: 0.1886</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 71, Train: 0.06743, Validation: 0.1906">
+        <title>Iteration 71, Train: 0.06743, Validation: 0.1906</title>
+        <rect class="hit" x="556.69" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="560.23" y1="72" x2="560.23" y2="346"/>
+        <circle class="cx s0" cx="560.23" cy="327.53" r="4.5"/>
+        <circle class="cx s1" cx="560.23" cy="293.76" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="417.03" y="263.76" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="427.03" y="281.76">Iteration 71</text>
+            <rect class="tsw s0" x="427.03" y="289.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="441.03" y="298.76">Train: 0.06743</text>
+            <rect class="tsw s1" x="427.03" y="306.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="441.03" y="315.76">Validation: 0.1906</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 72, Train: 0.06648, Validation: 0.1928">
+        <title>Iteration 72, Train: 0.06648, Validation: 0.1928</title>
+        <rect class="hit" x="563.78" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="567.32" y1="72" x2="567.32" y2="346"/>
+        <circle class="cx s0" cx="567.32" cy="327.78" r="4.5"/>
+        <circle class="cx s1" cx="567.32" cy="293.18" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="424.12" y="263.18" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="434.12" y="281.18">Iteration 72</text>
+            <rect class="tsw s0" x="434.12" y="289.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="448.12" y="298.18">Train: 0.06648</text>
+            <rect class="tsw s1" x="434.12" y="306.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="448.12" y="315.18">Validation: 0.1928</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 73, Train: 0.06559, Validation: 0.1949">
+        <title>Iteration 73, Train: 0.06559, Validation: 0.1949</title>
+        <rect class="hit" x="570.86" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="574.4" y1="72" x2="574.4" y2="346"/>
+        <circle class="cx s0" cx="574.4" cy="328.03" r="4.5"/>
+        <circle class="cx s1" cx="574.4" cy="292.6" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="431.2" y="262.6" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="441.2" y="280.6">Iteration 73</text>
+            <rect class="tsw s0" x="441.2" y="288.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="455.2" y="297.6">Train: 0.06559</text>
+            <rect class="tsw s1" x="441.2" y="305.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="455.2" y="314.6">Validation: 0.1949</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 74, Train: 0.06475, Validation: 0.1971">
+        <title>Iteration 74, Train: 0.06475, Validation: 0.1971</title>
+        <rect class="hit" x="577.95" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="581.49" y1="72" x2="581.49" y2="346"/>
+        <circle class="cx s0" cx="581.49" cy="328.26" r="4.5"/>
+        <circle class="cx s1" cx="581.49" cy="292.01" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="438.29" y="262.01" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="448.29" y="280.01">Iteration 74</text>
+            <rect class="tsw s0" x="448.29" y="288.01" width="9" height="9" rx="2"/>
+            <text class="tx" x="462.29" y="297.01">Train: 0.06475</text>
+            <rect class="tsw s1" x="448.29" y="305.01" width="9" height="9" rx="2"/>
+            <text class="tx" x="462.29" y="314.01">Validation: 0.1971</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 75, Train: 0.06395, Validation: 0.1992">
+        <title>Iteration 75, Train: 0.06395, Validation: 0.1992</title>
+        <rect class="hit" x="585.03" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="588.57" y1="72" x2="588.57" y2="346"/>
+        <circle class="cx s0" cx="588.57" cy="328.48" r="4.5"/>
+        <circle class="cx s1" cx="588.57" cy="291.41" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="445.37" y="261.41" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="455.37" y="279.41">Iteration 75</text>
+            <rect class="tsw s0" x="455.37" y="287.41" width="9" height="9" rx="2"/>
+            <text class="tx" x="469.37" y="296.41">Train: 0.06395</text>
+            <rect class="tsw s1" x="455.37" y="304.41" width="9" height="9" rx="2"/>
+            <text class="tx" x="469.37" y="313.41">Validation: 0.1992</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 76, Train: 0.0632, Validation: 0.2015">
+        <title>Iteration 76, Train: 0.0632, Validation: 0.2015</title>
+        <rect class="hit" x="592.12" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="595.66" y1="72" x2="595.66" y2="346"/>
+        <circle class="cx s0" cx="595.66" cy="328.68" r="4.5"/>
+        <circle class="cx s1" cx="595.66" cy="290.8" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="452.46" y="260.8" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="462.46" y="278.8">Iteration 76</text>
+            <rect class="tsw s0" x="462.46" y="286.8" width="9" height="9" rx="2"/>
+            <text class="tx" x="476.46" y="295.8">Train: 0.0632</text>
+            <rect class="tsw s1" x="462.46" y="303.8" width="9" height="9" rx="2"/>
+            <text class="tx" x="476.46" y="312.8">Validation: 0.2015</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 77, Train: 0.06249, Validation: 0.2037">
+        <title>Iteration 77, Train: 0.06249, Validation: 0.2037</title>
+        <rect class="hit" x="599.2" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="602.74" y1="72" x2="602.74" y2="346"/>
+        <circle class="cx s0" cx="602.74" cy="328.88" r="4.5"/>
+        <circle class="cx s1" cx="602.74" cy="290.19" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="459.54" y="260.19" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="469.54" y="278.19">Iteration 77</text>
+            <rect class="tsw s0" x="469.54" y="286.19" width="9" height="9" rx="2"/>
+            <text class="tx" x="483.54" y="295.19">Train: 0.06249</text>
+            <rect class="tsw s1" x="469.54" y="303.19" width="9" height="9" rx="2"/>
+            <text class="tx" x="483.54" y="312.19">Validation: 0.2037</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 78, Train: 0.06181, Validation: 0.2059">
+        <title>Iteration 78, Train: 0.06181, Validation: 0.2059</title>
+        <rect class="hit" x="606.29" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="609.83" y1="72" x2="609.83" y2="346"/>
+        <circle class="cx s0" cx="609.83" cy="329.06" r="4.5"/>
+        <circle class="cx s1" cx="609.83" cy="289.58" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="466.63" y="259.58" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="476.63" y="277.58">Iteration 78</text>
+            <rect class="tsw s0" x="476.63" y="285.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="490.63" y="294.58">Train: 0.06181</text>
+            <rect class="tsw s1" x="476.63" y="302.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="490.63" y="311.58">Validation: 0.2059</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 79, Train: 0.06117, Validation: 0.2082">
+        <title>Iteration 79, Train: 0.06117, Validation: 0.2082</title>
+        <rect class="hit" x="613.37" y="72" width="7.09" height="274"/>
+        <line class="vl" x1="616.91" y1="72" x2="616.91" y2="346"/>
+        <circle class="cx s0" cx="616.91" cy="329.24" r="4.5"/>
+        <circle class="cx s1" cx="616.91" cy="288.96" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="473.71" y="258.96" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="483.71" y="276.96">Iteration 79</text>
+            <rect class="tsw s0" x="483.71" y="284.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.71" y="293.96">Train: 0.06117</text>
+            <rect class="tsw s1" x="483.71" y="301.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.71" y="310.96">Validation: 0.2082</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Iteration 80, Train: 0.06057, Validation: 0.2105">
+        <title>Iteration 80, Train: 0.06057, Validation: 0.2105</title>
+        <rect class="hit" x="620.46" y="72" width="3.54" height="274"/>
+        <line class="vl" x1="624" y1="72" x2="624" y2="346"/>
+        <circle class="cx s0" cx="624" cy="329.4" r="4.5"/>
+        <circle class="cx s1" cx="624" cy="288.33" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="480.8" y="258.33" width="131.2" height="61" rx="6"/>
+            <text class="tx b" x="490.8" y="276.33">Iteration 80</text>
+            <rect class="tsw s0" x="490.8" y="284.33" width="9" height="9" rx="2"/>
+            <text class="tx" x="504.8" y="293.33">Train: 0.06057</text>
+            <rect class="tsw s1" x="490.8" y="301.33" width="9" height="9" rx="2"/>
+            <text class="tx" x="504.8" y="310.33">Validation: 0.2105</text>
+        </g>
+    </g>
+    <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Best validation Log loss, 0.1562 at iteration 45">
+        <title>Best validation Log loss, 0.1562 at iteration 45</title>
+        <circle class="mkr m s1" cx="376.02" cy="303.21" r="6"/>
+        <g class="tt">
+            <rect class="tb" x="296.44" y="244.21" width="159.16" height="44" rx="6"/>
+            <text class="tx b" x="306.44" y="262.21">Best validation Log loss</text>
+            <text class="tx" x="306.44" y="279.21">0.1562 at iteration 45</text>
+        </g>
+    </g>
+    <text class="at ctr" x="340.59" y="380">Iteration</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 209) rotate(-90)">Log loss</text>
+</svg>

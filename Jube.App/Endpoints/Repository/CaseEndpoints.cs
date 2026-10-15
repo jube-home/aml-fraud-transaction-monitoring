@@ -76,6 +76,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -83,10 +84,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 return TypedResults.Ok(await service.GetAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -119,6 +122,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -129,6 +133,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -136,11 +141,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 var found = await service.GetByIdAsync(id, token);
+
                 return found is null ? TypedResults.NotFound() : TypedResults.Ok(found);
             }
             catch (NotAuthenticatedException)
@@ -173,6 +181,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -183,6 +192,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -190,10 +200,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 return TypedResults.Ok(await service.InsertAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -239,6 +251,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -249,6 +262,7 @@ namespace Jube.App.Endpoints.Repository
             Engine.Helpers.JsonSerializationHelper jsonSerializationHelper, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/CreateFromCaseKeyValue: entry user={user}");
@@ -256,10 +270,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 return TypedResults.Ok(await service.CreateFromCaseKeyValueAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -337,6 +353,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}/CreateFromCaseKeyValue: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -347,6 +364,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry id={model?.Id} user={user}");
@@ -354,10 +372,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 return TypedResults.Ok(await service.UpdateAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -421,6 +441,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

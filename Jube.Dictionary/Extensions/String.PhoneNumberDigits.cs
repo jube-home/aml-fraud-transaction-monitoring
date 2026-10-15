@@ -19,6 +19,7 @@ namespace Jube.Dictionary.Extensions
         {
             var value = (@this ?? "").Trim();
             var digits = new string(value.Where(char.IsAsciiDigit).ToArray());
+
             if (value.StartsWith("00") && digits.Length > 2)
             {
                 return "+" + digits.Substring(2);

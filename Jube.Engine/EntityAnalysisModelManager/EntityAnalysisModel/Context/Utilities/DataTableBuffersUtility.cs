@@ -20,12 +20,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
 
     public static class DataTableBuffersUtility
     {
-        public static void CreateIfNotExists(ILog log, EntityAnalysisModel entityAnalysisModel, DynamicEnvironment environment)
+        public static void CreateIfNotExists(ILog log, EntityAnalysisModel entityAnalysisModel,
+            DynamicEnvironment environment)
         {
             try
             {
                 int i;
                 var archiverPersistThreads = Int32.Parse(environment.AppSettings("ArchiverPersistThreads"));
+
                 for (i = 1; i <= archiverPersistThreads; i++)
                 {
                     if (entityAnalysisModel.Dependencies.BulkInsertMessageBuffers.Count == archiverPersistThreads)

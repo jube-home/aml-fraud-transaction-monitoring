@@ -23,11 +23,14 @@ namespace Jube.Data.Context
         public static DbContext GetResilientDbContextDataConnection(string connectionString, ILog log)
         {
             var builder = new LinqToDbConnectionOptionsBuilder();
+
             builder.UseConnectionFactory(
                 PostgreSQLTools.GetDataProvider(PostgreSQLVersion.v95),
                 () => new ResilientNpgsqlConnection(connectionString, log)
             );
+
             var connection = builder.Build<DbContext>();
+
             return new DbContext(connection);
         }
 
@@ -36,6 +39,7 @@ namespace Jube.Data.Context
             var builder = new LinqToDbConnectionOptionsBuilder();
             builder.UsePostgreSQL(connectionString);
             var connection = builder.Build<DbContext>();
+
             return new DbContext(connection);
         }
     }

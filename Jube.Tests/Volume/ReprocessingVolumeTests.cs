@@ -39,18 +39,15 @@ namespace Jube.Test.Volume
         private const long MaxHeapGrowthBytes = 128L * 1024 * 1024;
         private const int CommandTimeoutSeconds = 3600;
         private const int Threshold = 949;
-
         private static readonly DateTime start = new(2026, 1, 1, 0, 0, 0);
-
-        public Task InitializeAsync() => ClearAsync();
-
-        public Task DisposeAsync() => ClearAsync();
 
         private static DbContext Db()
         {
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(ModelScaffold.ConnectionString,
                 TestLog.NoOp);
+
             dbContext.CommandTimeout = CommandTimeoutSeconds;
+
             return dbContext;
         }
 
@@ -66,6 +63,7 @@ namespace Jube.Test.Volume
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
+
             return GC.GetTotalMemory(true);
         }
 
@@ -73,16 +71,19 @@ namespace Jube.Test.Volume
         {
             await using var dbContext = Db();
             var modelId = new DataParameter("m", fixture.Shared.ModelId);
+
             await dbContext.ExecuteAsync(
                 "DELETE FROM \"ArchiveKeyVersion\" v USING \"ArchiveKey\" k, \"Archive\" a WHERE v.\"ArchiveKeyId\" = " +
                 "k.\"Id\" AND k.\"EntityAnalysisModelInstanceEntryGuid\" = a.\"EntityAnalysisModelInstanceEntryGuid\" " +
                 "AND a.\"EntityAnalysisModelId\" = @m", modelId);
+
             await dbContext.ExecuteAsync(
                 "DELETE FROM \"ArchiveKey\" k USING \"Archive\" a WHERE k.\"EntityAnalysisModelInstanceEntryGuid\" = " +
                 "a.\"EntityAnalysisModelInstanceEntryGuid\" AND a.\"EntityAnalysisModelId\" = @m", modelId);
             await dbContext.ExecuteAsync(
                 "DELETE FROM \"ArchiveVersion\" v USING \"Archive\" a WHERE v.\"ArchiveId\" = a.\"Id\" AND " +
                 "a.\"EntityAnalysisModelId\" = @m", modelId);
+
             while (await dbContext.ExecuteAsync(
                        "DELETE FROM \"Archive\" WHERE \"Id\" IN (SELECT \"Id\" FROM \"Archive\" WHERE " +
                        "\"EntityAnalysisModelId\" = @m LIMIT 250000)", modelId) > 0)
@@ -92,6 +93,7 @@ namespace Jube.Test.Volume
             await dbContext.EntityAnalysisModelReprocessingRuleInstance
                 .Where(w => w.EntityAnalysisModelReprocessingRule.EntityAnalysisModelId == fixture.Shared.ModelId)
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModelReprocessingRule
                 .Where(w => w.EntityAnalysisModelId == fixture.Shared.ModelId).DeleteAsync();
         }
@@ -99,9 +101,11 @@ namespace Jube.Test.Volume
         private async Task SeedAsync(DbContext dbContext, long count)
         {
             const long batch = 500_000;
+
             for (long from = 1; from <= count; from += batch)
             {
                 var to = Math.Min(count, from + batch - 1);
+
                 await dbContext.ExecuteAsync(
                     "INSERT INTO \"Archive\" (\"Json\", \"EntityAnalysisModelInstanceEntryGuid\", \"EntryKeyValue\", " +
                     "\"EntityAnalysisModelId\", \"CreatedDate\", \"ReferenceDate\", \"ActivationRuleCount\", " +
@@ -117,6 +121,9 @@ namespace Jube.Test.Volume
             await dbContext.ExecuteAsync("ANALYZE \"Archive\"");
         }
 
+        public Task InitializeAsync() => ClearAsync();
+        public Task DisposeAsync() => ClearAsync();
+
         [Fact]
         public async Task ReprocessingProcessesEveryArchivedDocumentOnceUpdatesEveryMatchInBoundedMemoryAsync()
         {
@@ -126,6 +133,7 @@ namespace Jube.Test.Volume
             var seeding = Stopwatch.StartNew();
             await SeedAsync(dbContext, count);
             seeding.Stop();
+
             var expectedMatched = await dbContext.ExecuteAsync<long>(
                 "SELECT COUNT(*) FROM \"Archive\" WHERE \"EntityAnalysisModelId\" = @m AND " +
                 "(\"Json\"->'payload'->>'CurrencyAmount')::double precision > @t",
@@ -139,6 +147,7 @@ namespace Jube.Test.Volume
                 ReprocessingSample = 100, Active = 1, Deleted = 0, Priority = 1, Version = 1,
                 CreatedDate = DateTime.UtcNow, CreatedUser = "Load"
             });
+
             var instanceId = await dbContext.InsertWithInt32IdentityAsync(
                 new EntityAnalysisModelReprocessingRuleInstance
                 {
@@ -152,6 +161,7 @@ namespace Jube.Test.Volume
             var pageSizes = new List<int>();
             var heapSamples = new List<long>();
             var baseline = Heap();
+
             var starter = new ReprocessingTaskStarter(
                 fixture.Engine.Engine.Context.Tasks.EntityAnalysisModelManager.Context)
             {
@@ -160,6 +170,7 @@ namespace Jube.Test.Volume
                     fetchTimes.Add(page.Fetch.TotalMilliseconds);
                     processTimes.Add(page.Process.TotalMilliseconds);
                     pageSizes.Add(page.Documents);
+
                     if (page.Page % 20 == 0)
                     {
                         heapSamples.Add(Heap());
@@ -168,10 +179,12 @@ namespace Jube.Test.Volume
             };
 
             var stopwatch = Stopwatch.StartNew();
+
             var result = await starter.RunNextAsync(dbContext,
                 new KeyValuePair<int, global::Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.
                     EntityAnalysisModel>(
                     model.Instance.Id, model), CancellationToken.None);
+
             stopwatch.Stop();
             var peak = Math.Max(heapSamples.DefaultIfEmpty(baseline).Max(), Heap());
 
@@ -179,10 +192,12 @@ namespace Jube.Test.Volume
             var earlyFetch = fetchTimes.Skip(1).Take(decile).DefaultIfEmpty(0).Average();
             var lateFetch = fetchTimes.Skip(fetchTimes.Count - decile).DefaultIfEmpty(0).Average();
             var rowsPerSecond = count / Math.Max(stopwatch.Elapsed.TotalSeconds, 0.001);
+
             var updated = await dbContext.ExecuteAsync<long>(
                 "SELECT COUNT(*) FROM \"Archive\" WHERE \"EntityAnalysisModelId\" = @m AND " +
                 "\"EntityAnalysisModelsReprocessingRuleInstanceId\" = @i AND \"Version\" = 1",
                 new DataParameter("m", fixture.Shared.ModelId), new DataParameter("i", instanceId));
+
             var overUpdated = await dbContext.ExecuteAsync<long>(
                 "SELECT COUNT(*) FROM \"Archive\" WHERE \"EntityAnalysisModelId\" = @m AND \"Version\" > 1",
                 new DataParameter("m", fixture.Shared.ModelId));
@@ -208,12 +223,16 @@ namespace Jube.Test.Volume
             result.Sampled.Should().Be((int)count);
             result.Matched.Should().Be((int)expectedMatched);
             result.Errors.Should().Be(0);
+
             result.Pages.Should()
                 .Be((int)((count + ReprocessingVolumeFixture.BulkLimit - 1) / ReprocessingVolumeFixture.BulkLimit));
+
             pageSizes.Should().HaveCount(result.Pages);
             pageSizes.Sum().Should().Be((int)count);
+
             pageSizes.SkipLast(1).Should().OnlyContain(size => size == ReprocessingVolumeFixture.BulkLimit,
                 "every page but the last must be a full page, or keyset paging is skipping or repeating rows");
+
             updated.Should().Be(expectedMatched);
             overUpdated.Should().Be(0);
             (peak - baseline).Should().BeLessThan(MaxHeapGrowthBytes);

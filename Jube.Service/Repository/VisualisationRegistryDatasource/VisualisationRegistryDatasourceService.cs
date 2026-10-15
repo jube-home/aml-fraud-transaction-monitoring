@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,14 +13,16 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery;
 using Jube.Data.Repository;
-using Jube.Data.Validation;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.VisualisationRegistryDatasource;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Concurrency;
+using Jube.Service.DynamicSql;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryDatasource;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,6 +31,7 @@ using Jube.Validations.Repository.VisualisationRegistryDatasource;
 using log4net;
 using Microsoft.Extensions.Localization;
 using DatasourcePoco = Jube.Data.Poco.VisualisationRegistryDatasource;
+using DataSqlValidationFailedException = Jube.Data.Repository.Exceptions.SqlValidationFailedException;
 
 namespace Jube.Service.Repository.VisualisationRegistryDatasource
 {
@@ -67,9 +70,15 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             this.dynamicEnvironment = dynamicEnvironment;
             repository = new VisualisationRegistryDatasourceRepository(dbContext, userName);
             var visualisationRegistryRepository = new VisualisationRegistryRepository(dbContext, tenantRegistryId);
+
             validator = new VisualisationRegistryDatasourceDtoValidator(repository, visualisationRegistryRepository,
                 strings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadByParentPermissions => readByParentPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<VisualisationRegistryDatasourceService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -124,6 +133,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.List: entry user={userName}");
@@ -132,9 +142,11 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             try
             {
                 EnsurePermitted(listPermissions, "VisualisationRegistryDatasource.List");
+
                 var dtos = VisualisationRegistryDatasourceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.List: {dtos.Count} rows user={userName}");
@@ -150,6 +162,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.List: cancelled user={userName}");
@@ -176,6 +189,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "ListByVisualisationRegistryId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -186,10 +200,12 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             {
                 EnsurePermitted(readByParentPermissions,
                     "VisualisationRegistryDatasource.ListByVisualisationRegistryId");
+
                 var dtos = VisualisationRegistryDatasourceMapper.ToDto(await repository
                     .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistryId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -206,6 +222,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -217,9 +234,11 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryDatasource.ListByVisualisationRegistryId: unexpected failure visualisationRegistryId={visualisationRegistryId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -237,6 +256,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             using var op = OperationScope.Start("VisualisationRegistryDatasource",
                 "ListByVisualisationRegistryIdActiveOnly", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -247,10 +267,12 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             {
                 EnsurePermitted(readByParentPermissions,
                     "VisualisationRegistryDatasource.ListByVisualisationRegistryIdActiveOnly");
+
                 var dtos = VisualisationRegistryDatasourceMapper.ToDto(await repository
                     .GetByVisualisationRegistryIdActiveOnlyAsync(visualisationRegistryId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -267,6 +289,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -278,9 +301,11 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryDatasource.ListByVisualisationRegistryIdActiveOnly: unexpected failure visualisationRegistryId={visualisationRegistryId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -295,6 +320,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Get: entry id={id} user={userName}");
@@ -304,6 +330,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             {
                 EnsurePermitted(readPermissions, "VisualisationRegistryDatasource.Get");
                 var datasource = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (datasource == null)
                 {
                     if (log.IsDebugEnabled)
@@ -316,6 +343,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 }
 
                 op.Entity(datasource.Id);
+
                 return VisualisationRegistryDatasourceMapper.ToDto(datasource);
             }
             catch (ForbiddenException)
@@ -326,6 +354,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.Get: cancelled id={id} user={userName}");
@@ -337,6 +366,69 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             {
                 op.Error(ex);
                 log.Error($"VisualisationRegistryDatasource.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one Datasource by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("VisualisationRegistryDatasourceGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<VisualisationRegistryDatasourceDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Datasource.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryDatasource", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistryDatasource.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "VisualisationRegistryDatasource.GetByGuid");
+                var datasource = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (datasource == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"VisualisationRegistryDatasource.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(datasource.Id);
+
+                return VisualisationRegistryDatasourceMapper.ToDto(datasource);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"VisualisationRegistryDatasource.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error($"VisualisationRegistryDatasource.GetByGuid: unexpected failure guid={guid} user={userName}",
+                    ex);
+
                 throw;
             }
         }
@@ -354,7 +446,9 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -385,6 +479,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.ListPaged: cancelled user={userName}");
@@ -411,6 +506,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.FilterFields: entry user={userName}");
@@ -422,6 +518,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<VisualisationRegistryDatasourceDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -462,6 +559,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -471,10 +569,13 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             try
             {
                 EnsurePermitted(listPermissions, "VisualisationRegistryDatasource.Filter");
+
                 var rows = VisualisationRegistryDatasourceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -512,6 +613,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Count: entry groupBy={groupBy} user={userName}");
@@ -520,10 +622,13 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             try
             {
                 EnsurePermitted(listPermissions, "VisualisationRegistryDatasource.Count");
+
                 var rows = VisualisationRegistryDatasourceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -555,6 +660,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Create: entry user={userName} name={model?.Name}");
@@ -566,6 +672,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 EnsurePermitted(writePermissions, "VisualisationRegistryDatasource.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -578,18 +685,22 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 }
 
                 DatasourcePoco saved;
+
                 try
                 {
-                    saved = await UniqueViolation.GuardAsync(() => repository.InsertWithValidationAsync(
-                                VisualisationRegistryDatasourceMapper.ToPoco(model), log,
-                                dynamicEnvironment.AppSettings("ReportConnectionString") ??
-                                dbContext.Connection.ConnectionString,
-                                token),
+                    saved = await UniqueViolation.GuardAsync(() =>
+                                new CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery(dbContext,
+                                        tenantRegistryId, userName)
+                                    .ExecuteAsync(VisualisationRegistryDatasourceMapper.ToPoco(model), false, log,
+                                        dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                                        dbContext.Connection.ConnectionString,
+                                        AllowedTablesOrNullForDenyMode(),
+                                        token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
                         .ConfigureAwait(false);
                 }
-                catch (SqlValidationFailed ex)
+                catch (DataSqlValidationFailedException ex)
                 {
                     if (log.IsInfoEnabled)
                     {
@@ -631,6 +742,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.Create: cancelled user={userName}");
@@ -641,8 +753,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistryDatasource.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -658,6 +772,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Validate: entry id={model?.Id} user={userName}");
@@ -670,6 +785,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -702,6 +818,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Update: entry id={model?.Id} user={userName}");
@@ -713,6 +830,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 EnsurePermitted(writePermissions, "VisualisationRegistryDatasource.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -726,17 +844,22 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 DatasourcePoco saved;
                 var poco = VisualisationRegistryDatasourceMapper.ToPoco(model);
+
                 try
                 {
-                    saved = await UniqueViolation.GuardAsync(() => repository.UpdateWithValidationAsync(poco, log,
-                                dynamicEnvironment.AppSettings("ReportConnectionString") ??
-                                dbContext.Connection.ConnectionString,
-                                token),
+                    saved = await UniqueViolation.GuardAsync(() =>
+                                new CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery(dbContext,
+                                        tenantRegistryId, userName)
+                                    .ExecuteAsync(poco, true, log,
+                                        dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                                        dbContext.Connection.ConnectionString,
+                                        AllowedTablesOrNullForDenyMode(),
+                                        token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
                         .ConfigureAwait(false);
                 }
-                catch (SqlValidationFailed ex)
+                catch (DataSqlValidationFailedException ex)
                 {
                     if (log.IsInfoEnabled)
                     {
@@ -792,6 +915,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.Update: cancelled id={model?.Id} user={userName}");
@@ -802,9 +926,11 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryDatasource.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -820,6 +946,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasource", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasource.Delete: entry id={id} user={userName}");
@@ -865,6 +992,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryDatasource.Delete: cancelled id={id} user={userName}");
@@ -875,10 +1003,23 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistryDatasource.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
+        }
+
+        private IReadOnlyDictionary<string, string>? AllowedTablesOrNullForDenyMode()
+        {
+            if (!dynamicEnvironment.AppSettings("EnableVisualisationDatasourceTableAllowList")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            return DynamicSqlTableAccess.BuildAllowedTables(userName, permissionValidation.Validate);
         }
 
         private void EnsurePermitted(int[] specs, string op)

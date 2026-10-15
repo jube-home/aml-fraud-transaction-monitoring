@@ -1,0 +1,781 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 712 311" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-3743dfd2-t jc-3743dfd2-d">
+    <title id="jc-3743dfd2-t">Customer segments</title>
+    <desc id="jc-3743dfd2-d">Cluster centroid profile heatmap of 5 clusters across 9 features with a cluster size bar
+        for each; the largest is Everyday sp… with 5200 members.
+    </desc>
+    <rect class="bg" x="0" y="0" width="712" height="311" rx="8"/>
+    <text class="ttl" x="16" y="32">Customer segments</text>
+    <text class="sub" x="16" y="50">Standardised centroids of five k-means clusters</text>
+    <g transform="translate(22 66)">
+        <text class="kn" x="132.92" y="60.2" transform="rotate(-45 132.92 60.2)">amount_z</text>
+        <text class="kn" x="170.92" y="60.2" transform="rotate(-45 170.92 60.2)">velocity_1h</text>
+        <text class="kn" x="208.92" y="60.2" transform="rotate(-45 208.92 60.2)">merchant_risk</text>
+        <text class="kn" x="246.92" y="60.2" transform="rotate(-45 246.92 60.2)">geo_mismatch</text>
+        <text class="kn" x="284.92" y="60.2" transform="rotate(-45 284.92 60.2)">account_age</text>
+        <text class="kn" x="322.92" y="60.2" transform="rotate(-45 322.92 60.2)">night_time</text>
+        <text class="kn" x="360.92" y="60.2" transform="rotate(-45 360.92 60.2)">channel_atm</text>
+        <text class="kn" x="398.92" y="60.2" transform="rotate(-45 398.92 60.2)">balance_ratio</text>
+        <text class="kn" x="436.92" y="60.2" transform="rotate(-45 436.92 60.2)">tenure</text>
+        <text class="key" x="471.92" y="58.2">Size</text>
+        <text class="end mid" x="103.92" y="77.2">Everyday spenders</text>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on amount_z, Standardised value: -0.2, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on amount_z, Standardised value: -0.2, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d5" x="113.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="132.92" y="77.2">-0.2</text>
+            <g class="tt">
+                <rect class="tb" x="142.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="152.92" y="56.2">Everyday spenders on amount_z</text>
+                <text class="tx" x="152.92" y="73.2">Standardised value: -0.2</text>
+                <text class="tx" x="152.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="152.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on velocity_1h, Standardised value: -0.3, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on velocity_1h, Standardised value: -0.3, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d4" x="151.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt4" x="170.92" y="77.2">-0.3</text>
+            <g class="tt">
+                <rect class="tb" x="180.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="190.92" y="56.2">Everyday spenders on velocity_1h</text>
+                <text class="tx" x="190.92" y="73.2">Standardised value: -0.3</text>
+                <text class="tx" x="190.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="190.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on merchant_risk, Standardised value: -0.4, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on merchant_risk, Standardised value: -0.4, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d4" x="189.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt4" x="208.92" y="77.2">-0.4</text>
+            <g class="tt">
+                <rect class="tb" x="218.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="228.92" y="56.2">Everyday spenders on merchant_risk</text>
+                <text class="tx" x="228.92" y="73.2">Standardised value: -0.4</text>
+                <text class="tx" x="228.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="228.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on geo_mismatch, Standardised value: -0.5, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on geo_mismatch, Standardised value: -0.5, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d4" x="227.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt4" x="246.92" y="77.2">-0.5</text>
+            <g class="tt">
+                <rect class="tb" x="256.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="266.92" y="56.2">Everyday spenders on geo_mismatch</text>
+                <text class="tx" x="266.92" y="73.2">Standardised value: -0.5</text>
+                <text class="tx" x="266.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="266.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on account_age, Standardised value: 0.6, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on account_age, Standardised value: 0.6, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d6" x="265.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="284.92" y="77.2">0.6</text>
+            <g class="tt">
+                <rect class="tb" x="294.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="304.92" y="56.2">Everyday spenders on account_age</text>
+                <text class="tx" x="304.92" y="73.2">Standardised value: 0.6</text>
+                <text class="tx" x="304.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="304.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on night_time, Standardised value: -0.4, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on night_time, Standardised value: -0.4, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d4" x="303.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt4" x="322.92" y="77.2">-0.4</text>
+            <g class="tt">
+                <rect class="tb" x="332.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="342.92" y="56.2">Everyday spenders on night_time</text>
+                <text class="tx" x="342.92" y="73.2">Standardised value: -0.4</text>
+                <text class="tx" x="342.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="342.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on channel_atm, Standardised value: -0.2, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on channel_atm, Standardised value: -0.2, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d5" x="341.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="360.92" y="77.2">-0.2</text>
+            <g class="tt">
+                <rect class="tb" x="370.92" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="380.92" y="56.2">Everyday spenders on channel_atm</text>
+                <text class="tx" x="380.92" y="73.2">Standardised value: -0.2</text>
+                <text class="tx" x="380.92" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="380.92" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on balance_ratio, Standardised value: 0.1, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on balance_ratio, Standardised value: 0.1, Cluster size: 5200 (53.9%), Defining
+                features: account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d5" x="379.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="398.92" y="77.2">0.1</text>
+            <g class="tt">
+                <rect class="tb" x="112.24" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="122.24" y="56.2">Everyday spenders on balance_ratio</text>
+                <text class="tx" x="122.24" y="73.2">Standardised value: 0.1</text>
+                <text class="tx" x="122.24" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="122.24" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders on tenure, Standardised value: 0.5, Cluster size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders on tenure, Standardised value: 0.5, Cluster size: 5200 (53.9%), Defining features:
+                account_…, geo_mis…, tenure
+            </title>
+            <rect class="cell d6" x="417.92" y="64.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="436.92" y="77.2">0.5</text>
+            <g class="tt">
+                <rect class="tb" x="150.24" y="38.2" width="276.68" height="78" rx="6"/>
+                <text class="tx b" x="160.24" y="56.2">Everyday spenders on tenure</text>
+                <text class="tx" x="160.24" y="73.2">Standardised value: 0.5</text>
+                <text class="tx" x="160.24" y="90.2">Cluster size: 5200 (53.9%)</text>
+                <text class="tx" x="160.24" y="107.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Everyday spenders, Size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure">
+            <title>Everyday spenders, Size: 5200 (53.9%), Defining features: account_…, geo_mis…, tenure</title>
+            <rect class="hb" x="471.92" y="64.2" width="200" height="26"/>
+            <rect class="rb" x="471.92" y="69.2" width="130" height="16" rx="2"/>
+            <text class="tk mid" x="607.92" y="77.2">5200 · 54%</text>
+            <g class="tt">
+                <rect class="tb" x="315.24" y="47.2" width="276.68" height="61" rx="6"/>
+                <text class="tx b" x="325.24" y="65.2">Everyday spenders</text>
+                <text class="tx" x="325.24" y="82.2">Size: 5200 (53.9%)</text>
+                <text class="tx" x="325.24" y="99.2">Defining features: account_…, geo_mis…, tenure</text>
+            </g>
+        </g>
+        <text class="end mid" x="103.92" y="103.2">High rollers</text>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on amount_z, Standardised value: 1.6, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on amount_z, Standardised value: 1.6, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d8" x="113.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt8" x="132.92" y="103.2">1.6</text>
+            <g class="tt">
+                <rect class="tb" x="142.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="152.92" y="82.2">High rollers on amount_z</text>
+                <text class="tx" x="152.92" y="99.2">Standardised value: 1.6</text>
+                <text class="tx" x="152.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="152.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on velocity_1h, Standardised value: 0.4, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on velocity_1h, Standardised value: 0.4, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d6" x="151.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="170.92" y="103.2">0.4</text>
+            <g class="tt">
+                <rect class="tb" x="180.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="190.92" y="82.2">High rollers on velocity_1h</text>
+                <text class="tx" x="190.92" y="99.2">Standardised value: 0.4</text>
+                <text class="tx" x="190.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="190.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on merchant_risk, Standardised value: 0.2, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on merchant_risk, Standardised value: 0.2, Cluster size: 1800 (18.7%), Defining
+                features: amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d5" x="189.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="208.92" y="103.2">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="218.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="228.92" y="82.2">High rollers on merchant_risk</text>
+                <text class="tx" x="228.92" y="99.2">Standardised value: 0.2</text>
+                <text class="tx" x="228.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="228.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on geo_mismatch, Standardised value: 0.3, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on geo_mismatch, Standardised value: 0.3, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d6" x="227.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="246.92" y="103.2">0.3</text>
+            <g class="tt">
+                <rect class="tb" x="256.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="266.92" y="82.2">High rollers on geo_mismatch</text>
+                <text class="tx" x="266.92" y="99.2">Standardised value: 0.3</text>
+                <text class="tx" x="266.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="266.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on account_age, Standardised value: 0.9, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on account_age, Standardised value: 0.9, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d7" x="265.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt7" x="284.92" y="103.2">0.9</text>
+            <g class="tt">
+                <rect class="tb" x="294.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="304.92" y="82.2">High rollers on account_age</text>
+                <text class="tx" x="304.92" y="99.2">Standardised value: 0.9</text>
+                <text class="tx" x="304.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="304.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on night_time, Standardised value: -0.1, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on night_time, Standardised value: -0.1, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d5" x="303.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="322.92" y="103.2">-0.1</text>
+            <g class="tt">
+                <rect class="tb" x="332.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="342.92" y="82.2">High rollers on night_time</text>
+                <text class="tx" x="342.92" y="99.2">Standardised value: -0.1</text>
+                <text class="tx" x="342.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="342.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on channel_atm, Standardised value: 0.5, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on channel_atm, Standardised value: 0.5, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d6" x="341.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="360.92" y="103.2">0.5</text>
+            <g class="tt">
+                <rect class="tb" x="370.92" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="380.92" y="82.2">High rollers on channel_atm</text>
+                <text class="tx" x="380.92" y="99.2">Standardised value: 0.5</text>
+                <text class="tx" x="380.92" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="380.92" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on balance_ratio, Standardised value: 1.2, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on balance_ratio, Standardised value: 1.2, Cluster size: 1800 (18.7%), Defining
+                features: amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d8" x="379.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt8" x="398.92" y="103.2">1.2</text>
+            <g class="tt">
+                <rect class="tb" x="112.96" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="122.96" y="82.2">High rollers on balance_ratio</text>
+                <text class="tx" x="122.96" y="99.2">Standardised value: 1.2</text>
+                <text class="tx" x="122.96" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="122.96" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers on tenure, Standardised value: 1, Cluster size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers on tenure, Standardised value: 1, Cluster size: 1800 (18.7%), Defining features:
+                amount_z, balance_…, tenure
+            </title>
+            <rect class="cell d7" x="417.92" y="90.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt7" x="436.92" y="103.2">1</text>
+            <g class="tt">
+                <rect class="tb" x="150.96" y="64.2" width="275.96" height="78" rx="6"/>
+                <text class="tx b" x="160.96" y="82.2">High rollers on tenure</text>
+                <text class="tx" x="160.96" y="99.2">Standardised value: 1</text>
+                <text class="tx" x="160.96" y="116.2">Cluster size: 1800 (18.7%)</text>
+                <text class="tx" x="160.96" y="133.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 s0" tabindex="0" role="graphics-symbol"
+           aria-label="High rollers, Size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure">
+            <title>High rollers, Size: 1800 (18.7%), Defining features: amount_z, balance_…, tenure</title>
+            <rect class="hb" x="471.92" y="90.2" width="200" height="26"/>
+            <rect class="rb" x="471.92" y="95.2" width="45" height="16" rx="2"/>
+            <text class="tk mid" x="522.92" y="103.2">1800 · 19%</text>
+            <g class="tt">
+                <rect class="tb" x="230.96" y="73.2" width="275.96" height="61" rx="6"/>
+                <text class="tx b" x="240.96" y="91.2">High rollers</text>
+                <text class="tx" x="240.96" y="108.2">Size: 1800 (18.7%)</text>
+                <text class="tx" x="240.96" y="125.2">Defining features: amount_z, balance_…, tenure</text>
+            </g>
+        </g>
+        <text class="end mid" x="103.92" y="129.2">New and active</text>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on amount_z, Standardised value: 0.2, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on amount_z, Standardised value: 0.2, Cluster size: 1500 (15.6%), Defining features:
+                velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d5" x="113.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="132.92" y="129.2">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="142.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="152.92" y="108.2">New and active on amount_z</text>
+                <text class="tx" x="152.92" y="125.2">Standardised value: 0.2</text>
+                <text class="tx" x="152.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="152.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on velocity_1h, Standardised value: 1.4, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on velocity_1h, Standardised value: 1.4, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d8" x="151.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt8" x="170.92" y="129.2">1.4</text>
+            <g class="tt">
+                <rect class="tb" x="180.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="190.92" y="108.2">New and active on velocity_1h</text>
+                <text class="tx" x="190.92" y="125.2">Standardised value: 1.4</text>
+                <text class="tx" x="190.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="190.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on merchant_risk, Standardised value: 0.6, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on merchant_risk, Standardised value: 0.6, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d6" x="189.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="208.92" y="129.2">0.6</text>
+            <g class="tt">
+                <rect class="tb" x="218.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="228.92" y="108.2">New and active on merchant_risk</text>
+                <text class="tx" x="228.92" y="125.2">Standardised value: 0.6</text>
+                <text class="tx" x="228.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="228.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on geo_mismatch, Standardised value: 0.4, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on geo_mismatch, Standardised value: 0.4, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d6" x="227.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="246.92" y="129.2">0.4</text>
+            <g class="tt">
+                <rect class="tb" x="256.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="266.92" y="108.2">New and active on geo_mismatch</text>
+                <text class="tx" x="266.92" y="125.2">Standardised value: 0.4</text>
+                <text class="tx" x="266.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="266.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on account_age, Standardised value: -1.3, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on account_age, Standardised value: -1.3, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d2" x="265.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt2" x="284.92" y="129.2">-1.3</text>
+            <g class="tt">
+                <rect class="tb" x="294.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="304.92" y="108.2">New and active on account_age</text>
+                <text class="tx" x="304.92" y="125.2">Standardised value: -1.3</text>
+                <text class="tx" x="304.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="304.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on night_time, Standardised value: 0.3, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on night_time, Standardised value: 0.3, Cluster size: 1500 (15.6%), Defining features:
+                velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d6" x="303.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="322.92" y="129.2">0.3</text>
+            <g class="tt">
+                <rect class="tb" x="332.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="342.92" y="108.2">New and active on night_time</text>
+                <text class="tx" x="342.92" y="125.2">Standardised value: 0.3</text>
+                <text class="tx" x="342.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="342.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on channel_atm, Standardised value: 0.2, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on channel_atm, Standardised value: 0.2, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d5" x="341.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="360.92" y="129.2">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="370.92" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="380.92" y="108.2">New and active on channel_atm</text>
+                <text class="tx" x="380.92" y="125.2">Standardised value: 0.2</text>
+                <text class="tx" x="380.92" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="380.92" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on balance_ratio, Standardised value: -0.4, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on balance_ratio, Standardised value: -0.4, Cluster size: 1500 (15.6%), Defining
+                features: velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d4" x="379.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt4" x="398.92" y="129.2">-0.4</text>
+            <g class="tt">
+                <rect class="tb" x="111.88" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="121.88" y="108.2">New and active on balance_ratio</text>
+                <text class="tx" x="121.88" y="125.2">Standardised value: -0.4</text>
+                <text class="tx" x="121.88" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="121.88" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="New and active on tenure, Standardised value: -1.1, Cluster size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active on tenure, Standardised value: -1.1, Cluster size: 1500 (15.6%), Defining features:
+                velocity_…, account_…, tenure
+            </title>
+            <rect class="cell d3" x="417.92" y="116.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt3" x="436.92" y="129.2">-1.1</text>
+            <g class="tt">
+                <rect class="tb" x="149.88" y="90.2" width="277.04" height="78" rx="6"/>
+                <text class="tx b" x="159.88" y="108.2">New and active on tenure</text>
+                <text class="tx" x="159.88" y="125.2">Standardised value: -1.1</text>
+                <text class="tx" x="159.88" y="142.2">Cluster size: 1500 (15.6%)</text>
+                <text class="tx" x="159.88" y="159.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 s0" tabindex="0" role="graphics-symbol"
+           aria-label="New and active, Size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure">
+            <title>New and active, Size: 1500 (15.6%), Defining features: velocity_…, account_…, tenure</title>
+            <rect class="hb" x="471.92" y="116.2" width="200" height="26"/>
+            <rect class="rb" x="471.92" y="121.2" width="37.5" height="16" rx="2"/>
+            <text class="tk mid" x="515.42" y="129.2">1500 · 16%</text>
+            <g class="tt">
+                <rect class="tb" x="222.38" y="99.2" width="277.04" height="61" rx="6"/>
+                <text class="tx b" x="232.38" y="117.2">New and active</text>
+                <text class="tx" x="232.38" y="134.2">Size: 1500 (15.6%)</text>
+                <text class="tx" x="232.38" y="151.2">Defining features: velocity_…, account_…, tenu…</text>
+            </g>
+        </g>
+        <text class="end mid" x="103.92" y="155.2">Night owls</text>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on amount_z, Standardised value: 0.3, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on amount_z, Standardised value: 0.3, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d6" x="113.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="132.92" y="155.2">0.3</text>
+            <g class="tt">
+                <rect class="tb" x="142.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="152.92" y="134.2">Night owls on amount_z</text>
+                <text class="tx" x="152.92" y="151.2">Standardised value: 0.3</text>
+                <text class="tx" x="152.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="152.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on velocity_1h, Standardised value: 0.6, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on velocity_1h, Standardised value: 0.6, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d6" x="151.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="170.92" y="155.2">0.6</text>
+            <g class="tt">
+                <rect class="tb" x="180.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="190.92" y="134.2">Night owls on velocity_1h</text>
+                <text class="tx" x="190.92" y="151.2">Standardised value: 0.6</text>
+                <text class="tx" x="190.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="190.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on merchant_risk, Standardised value: 0.5, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on merchant_risk, Standardised value: 0.5, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d6" x="189.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt6" x="208.92" y="155.2">0.5</text>
+            <g class="tt">
+                <rect class="tb" x="218.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="228.92" y="134.2">Night owls on merchant_risk</text>
+                <text class="tx" x="228.92" y="151.2">Standardised value: 0.5</text>
+                <text class="tx" x="228.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="228.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on geo_mismatch, Standardised value: 0.2, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on geo_mismatch, Standardised value: 0.2, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d5" x="227.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="246.92" y="155.2">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="256.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="266.92" y="134.2">Night owls on geo_mismatch</text>
+                <text class="tx" x="266.92" y="151.2">Standardised value: 0.2</text>
+                <text class="tx" x="266.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="266.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on account_age, Standardised value: -0.2, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on account_age, Standardised value: -0.2, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d5" x="265.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="284.92" y="155.2">-0.2</text>
+            <g class="tt">
+                <rect class="tb" x="294.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="304.92" y="134.2">Night owls on account_age</text>
+                <text class="tx" x="304.92" y="151.2">Standardised value: -0.2</text>
+                <text class="tx" x="304.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="304.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on night_time, Standardised value: 1.9, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on night_time, Standardised value: 1.9, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d9" x="303.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt9" x="322.92" y="155.2">1.9</text>
+            <g class="tt">
+                <rect class="tb" x="332.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="342.92" y="134.2">Night owls on night_time</text>
+                <text class="tx" x="342.92" y="151.2">Standardised value: 1.9</text>
+                <text class="tx" x="342.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="342.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on channel_atm, Standardised value: 0.9, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on channel_atm, Standardised value: 0.9, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d7" x="341.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt7" x="360.92" y="155.2">0.9</text>
+            <g class="tt">
+                <rect class="tb" x="370.92" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="380.92" y="134.2">Night owls on channel_atm</text>
+                <text class="tx" x="380.92" y="151.2">Standardised value: 0.9</text>
+                <text class="tx" x="380.92" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="380.92" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on balance_ratio, Standardised value: -0.1, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on balance_ratio, Standardised value: -0.1, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d5" x="379.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="398.92" y="155.2">-0.1</text>
+            <g class="tt">
+                <rect class="tb" x="113.44" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="123.44" y="134.2">Night owls on balance_ratio</text>
+                <text class="tx" x="123.44" y="151.2">Standardised value: -0.1</text>
+                <text class="tx" x="123.44" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="123.44" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls on tenure, Standardised value: -0.2, Cluster size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls on tenure, Standardised value: -0.2, Cluster size: 900 (9.3%), Defining features:
+                night_time, channel_…, velocity_…
+            </title>
+            <rect class="cell d5" x="417.92" y="142.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt5" x="436.92" y="155.2">-0.2</text>
+            <g class="tt">
+                <rect class="tb" x="151.44" y="116.2" width="275.48" height="78" rx="6"/>
+                <text class="tx b" x="161.44" y="134.2">Night owls on tenure</text>
+                <text class="tx" x="161.44" y="151.2">Standardised value: -0.2</text>
+                <text class="tx" x="161.44" y="168.2">Cluster size: 900 (9.3%)</text>
+                <text class="tx" x="161.44" y="185.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Night owls, Size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…">
+            <title>Night owls, Size: 900 (9.3%), Defining features: night_time, channel_…, velocity_…</title>
+            <rect class="hb" x="471.92" y="142.2" width="200" height="26"/>
+            <rect class="rb" x="471.92" y="147.2" width="22.5" height="16" rx="2"/>
+            <text class="tk mid" x="500.42" y="155.2">900 · 9%</text>
+            <g class="tt">
+                <rect class="tb" x="208.94" y="125.2" width="275.48" height="61" rx="6"/>
+                <text class="tx b" x="218.94" y="143.2">Night owls</text>
+                <text class="tx" x="218.94" y="160.2">Size: 900 (9.3%)</text>
+                <text class="tx" x="218.94" y="177.2">Defining features: night_time, channel_…, velo…</text>
+            </g>
+        </g>
+        <text class="end mid" x="103.92" y="181.2">Suspicious</text>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on amount_z, Standardised value: 1.1, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on amount_z, Standardised value: 1.1, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d7" x="113.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt7" x="132.92" y="181.2">1.1</text>
+            <g class="tt">
+                <rect class="tb" x="142.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="152.92" y="160.2">Suspicious on amount_z</text>
+                <text class="tx" x="152.92" y="177.2">Standardised value: 1.1</text>
+                <text class="tx" x="152.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="152.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on velocity_1h, Standardised value: 2.1, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on velocity_1h, Standardised value: 2.1, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d10" x="151.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt10" x="170.92" y="181.2">2.1</text>
+            <g class="tt">
+                <rect class="tb" x="180.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="190.92" y="160.2">Suspicious on velocity_1h</text>
+                <text class="tx" x="190.92" y="177.2">Standardised value: 2.1</text>
+                <text class="tx" x="190.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="190.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on merchant_risk, Standardised value: 1.8, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on merchant_risk, Standardised value: 1.8, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d9" x="189.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt9" x="208.92" y="181.2">1.8</text>
+            <g class="tt">
+                <rect class="tb" x="218.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="228.92" y="160.2">Suspicious on merchant_risk</text>
+                <text class="tx" x="228.92" y="177.2">Standardised value: 1.8</text>
+                <text class="tx" x="228.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="228.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on geo_mismatch, Standardised value: 2.3, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on geo_mismatch, Standardised value: 2.3, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d10" x="227.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt10" x="246.92" y="181.2">2.3</text>
+            <g class="tt">
+                <rect class="tb" x="256.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="266.92" y="160.2">Suspicious on geo_mismatch</text>
+                <text class="tx" x="266.92" y="177.2">Standardised value: 2.3</text>
+                <text class="tx" x="266.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="266.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on account_age, Standardised value: -1.1, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on account_age, Standardised value: -1.1, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d3" x="265.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt3" x="284.92" y="181.2">-1.1</text>
+            <g class="tt">
+                <rect class="tb" x="294.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="304.92" y="160.2">Suspicious on account_age</text>
+                <text class="tx" x="304.92" y="177.2">Standardised value: -1.1</text>
+                <text class="tx" x="304.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="304.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on night_time, Standardised value: 1, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on night_time, Standardised value: 1, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d7" x="303.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt7" x="322.92" y="181.2">1</text>
+            <g class="tt">
+                <rect class="tb" x="332.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="342.92" y="160.2">Suspicious on night_time</text>
+                <text class="tx" x="342.92" y="177.2">Standardised value: 1</text>
+                <text class="tx" x="342.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="342.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on channel_atm, Standardised value: 1.4, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on channel_atm, Standardised value: 1.4, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d8" x="341.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt8" x="360.92" y="181.2">1.4</text>
+            <g class="tt">
+                <rect class="tb" x="370.92" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="380.92" y="160.2">Suspicious on channel_atm</text>
+                <text class="tx" x="380.92" y="177.2">Standardised value: 1.4</text>
+                <text class="tx" x="380.92" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="380.92" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on balance_ratio, Standardised value: -0.7, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on balance_ratio, Standardised value: -0.7, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d3" x="379.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt3" x="398.92" y="181.2">-0.7</text>
+            <g class="tt">
+                <rect class="tb" x="112.36" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="122.36" y="160.2">Suspicious on balance_ratio</text>
+                <text class="tx" x="122.36" y="177.2">Standardised value: -0.7</text>
+                <text class="tx" x="122.36" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="122.36" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious on tenure, Standardised value: -0.9, Cluster size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious on tenure, Standardised value: -0.9, Cluster size: 240 (2.5%), Defining features:
+                geo_mis…, velocity_…, merchant…
+            </title>
+            <rect class="cell d3" x="417.92" y="168.2" width="38" height="26"/>
+            <text class="lbl ctr mid dt3" x="436.92" y="181.2">-0.9</text>
+            <g class="tt">
+                <rect class="tb" x="150.36" y="142.2" width="276.56" height="78" rx="6"/>
+                <text class="tx b" x="160.36" y="160.2">Suspicious on tenure</text>
+                <text class="tx" x="160.36" y="177.2">Standardised value: -0.9</text>
+                <text class="tx" x="160.36" y="194.2">Cluster size: 240 (2.5%)</text>
+                <text class="tx" x="160.36" y="211.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Suspicious, Size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…">
+            <title>Suspicious, Size: 240 (2.5%), Defining features: geo_mis…, velocity_…, merchant…</title>
+            <rect class="hb" x="471.92" y="168.2" width="200" height="26"/>
+            <rect class="rb" x="471.92" y="173.2" width="6" height="16" rx="2"/>
+            <text class="tk mid" x="483.92" y="181.2">240 · 2%</text>
+            <g class="tt">
+                <rect class="tb" x="191.36" y="151.2" width="276.56" height="61" rx="6"/>
+                <text class="tx b" x="201.36" y="169.2">Suspicious</text>
+                <text class="tx" x="201.36" y="186.2">Size: 240 (2.5%)</text>
+                <text class="tx" x="201.36" y="203.2">Defining features: geo_mis…, velocity_…, merc…</text>
+            </g>
+        </g>
+        <text class="key" x="0" y="213.2">Standardised value</text>
+        <text class="kn" x="105.04" y="213.2">-2.3</text>
+        <rect class="cell d0" x="129.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d1" x="145.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d2" x="161.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d3" x="177.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d4" x="193.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d5" x="209.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d6" x="225.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d7" x="241.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d8" x="257.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d9" x="273.1" y="202.2" width="16" height="14"/>
+        <rect class="cell d10" x="289.1" y="202.2" width="16" height="14"/>
+        <text class="kn" x="311.1" y="213.2">+2.3</text>
+    </g>
+</svg>

@@ -14,6 +14,7 @@
 using System;
 using FluentAssertions;
 using Jube.Cache;
+using Jube.Cache.Models;
 using Xunit;
 
 namespace Jube.Test.Cache
@@ -62,6 +63,7 @@ namespace Jube.Test.Cache
             RedisSentinelEventCapture.TakeDroppedCount();
 
             const int maxQueueLength = 20000;
+
             for (var i = 0; i < maxQueueLength; i++)
             {
                 RedisSentinelEventCapture.Enqueue(NewRecord());

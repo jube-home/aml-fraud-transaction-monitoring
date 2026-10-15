@@ -296,6 +296,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void ALocalKindValueIsConvertedViaUniversalTimeForZoneSteps()
         {
             var local = new DateTime(2024, 3, 15, 14, 0, 0, DateTimeKind.Local);
+
             var expected = TimeZoneInfo.ConvertTimeFromUtc(local.ToUniversalTime(),
                 TimeZoneInfo.FindSystemTimeZoneById("Asia/Tokyo")).Hour;
 

@@ -48,6 +48,7 @@ namespace Jube.Validations.Repository.RoleRegistryPermission
                     var existing = await repository
                         .GetByRoleRegistryIdOrderByIdAsync(dto.RoleRegistryId, cancellation)
                         .ConfigureAwait(false);
+
                     return existing.All(e =>
                         e.Id == dto.Id || e.PermissionSpecificationId != permissionSpecificationId);
                 })

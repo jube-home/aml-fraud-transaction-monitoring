@@ -18,7 +18,7 @@ using FluentAssertions;
 using Jube.App.Code;
 using Jube.Data.Context;
 using Jube.Dto.Authentication;
-using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Microsoft.AspNetCore.Builder;
@@ -57,14 +57,17 @@ public sealed class AuthenticationRsaMfaLockoutTests(DatabaseFixture fx) : Authe
         mock = builder.Build();
         Jube.App.Endpoints.Mocks.MockRsaMfaEndpoints.MapMockRsaMfaEndpoints(mock);
         await mock.StartAsync();
+
         var endpoint = mock.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Required()
             .Addresses
             .Single() + "/api/mfa";
+
         var environment = TestDynamicEnvironment.Create(new Dictionary<string, string>
         {
             ["MultifactorAuthenticationEndpoint"] = endpoint,
             ["EnableMultifactorAuthentication"] = "True"
         });
+
         return new AuthService(db, environment, Log, Cookies, new RsaMfaVerifier(environment, Log), Hash, Clock, Audit);
     }
 
@@ -85,8 +88,10 @@ public sealed class AuthenticationRsaMfaLockoutTests(DatabaseFixture fx) : Authe
         }
 
         (await ReloadAsync(user)).PasswordLocked.Should().Be(1);
+
         (await service.ByUserNamePasswordAsync(Request("12345678"), Context())).Kind
             .Should().Be(AuthenticationOutcomeKind.Unauthorized);
+
         Cookies.Issued.Should().BeEmpty();
         AllLogText().Should().NotContain("12345678").And.NotContain("00000000");
     }

@@ -58,6 +58,7 @@ namespace Jube.App.Endpoints.Repository
             Engine.Helpers.JsonSerializationHelper jsonSerializationHelper, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -65,11 +66,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseWorkflowFormEntryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 var saved = await service.InsertAsync(model, token);
+
                 return TypedResults.Ok(saved);
             }
             catch (NotAuthenticatedException)
@@ -120,6 +124,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -130,6 +135,7 @@ namespace Jube.App.Endpoints.Repository
             Engine.Helpers.JsonSerializationHelper jsonSerializationHelper, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByCaseKeyValue: entry key={key} value={value} user={user}");
@@ -137,10 +143,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseWorkflowFormEntryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
                 return TypedResults.Ok(await service.GetByCaseKeyValueAsync(key, value, token));
             }
             catch (NotAuthenticatedException)
@@ -173,6 +181,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByCaseKeyValue: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

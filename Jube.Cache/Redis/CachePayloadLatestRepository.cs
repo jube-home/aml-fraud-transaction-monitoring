@@ -20,8 +20,9 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dictionary;
 using Jube.Extensions;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using log4net;
 using MessagePack;
 using StackExchange.Redis;
@@ -97,6 +98,7 @@ namespace Jube.Cache.Redis
                 async () =>
                 {
                     var values = new List<string>();
+
                     try
                     {
                         var redisKey = $"PayloadLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}";
@@ -132,6 +134,7 @@ namespace Jube.Cache.Redis
                 async () =>
                 {
                     var values = new List<string>();
+
                     try
                     {
                         var redisKey = $"PayloadLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}";
@@ -166,6 +169,7 @@ namespace Jube.Cache.Redis
                 async () =>
                 {
                     var values = new List<string>();
+
                     try
                     {
                         var redisKey = $"PayloadLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}";
@@ -200,6 +204,7 @@ namespace Jube.Cache.Redis
             try
             {
                 var ms = new MemoryStream();
+
                 await MessagePackSerializer.SerializeAsync(ms, cachePayloadLatest,
                         MessagePackSerializerOptionsHelper
                             .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true))
@@ -207,10 +212,13 @@ namespace Jube.Cache.Redis
 
                 var redisKeyPayloadLatest =
                     $"PayloadLatest:{tenantRegistryId.ToString()}:{entityAnalysisModelGuid:N}:{entryKey}";
+
                 var redisKeyReferenceDateLatest =
                     $"ReferenceDateLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entryKey}";
+
                 var redisKeyPayloadLatestReferenceDate =
                     $"ReferenceDateLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+
                 var redisHSetKey = $"{entryKeyValue}";
                 var referenceDateTimestamp = referenceDate.ToUnixTimeMilliSeconds();
                 var bytes = ms.ToArray();
@@ -243,10 +251,12 @@ namespace Jube.Cache.Redis
             {
                 var redisKey = $"ReferenceDateLatest:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{latestCount.Name}";
                 var searchKeyOverride = searchKeys?.FirstOrDefault(k => k.name == latestCount.Name);
+
                 var effectiveThreshold = searchKeyOverride is { name: not null }
                     ? ApplySearchKeyTtlInterval(referenceDate, searchKeyOverride.Value.interval,
                         searchKeyOverride.Value.intervalValue)
                     : thresholdReferenceDate;
+
                 var referenceDateTimestampThreshold = effectiveThreshold.ToUnixTimeMilliSeconds();
 
                 while (true)
@@ -272,10 +282,12 @@ namespace Jube.Cache.Redis
 
                     var dbContext =
                         DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+
                     try
                     {
                         var cachePayloadLatestRemovalBatchRepository =
                             new CachePayloadLatestRemovalBatchRepository(dbContext);
+
                         var cachePayloadLatestRemovalBatch = await cachePayloadLatestRemovalBatchRepository.InsertAsync(
                             new CachePayloadLatestRemovalBatch
                             {
@@ -300,6 +312,7 @@ namespace Jube.Cache.Redis
 
                         var redisValuesToDelete =
                             expiredSortedSetEntries.Select(s => new RedisValue(s.Element)).ToArray();
+
                         var cachePayloadLatestRemovalBatchEntryRepository =
                             new CachePayloadLatestRemovalBatchKeyEntryRepository(dbContext);
 
@@ -316,6 +329,7 @@ namespace Jube.Cache.Redis
                         };
 
                         var completedTasks = await Task.WhenAll(tasks).ConfigureAwait(false);
+
                         await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
                             TaskType.BulkInsertCachePayloadLatestRemovalBatchEntry,
                             async () =>
@@ -327,6 +341,7 @@ namespace Jube.Cache.Redis
                         // ReSharper disable once MethodSupportsCancellation
                         await cachePayloadLatestRemovalBatchResponseTimeRepository.BulkCopyAsync(
                             AggregateResponseTimesForBulkInsert(completedTasks, cachePayloadLatestRemovalBatch));
+
                         await cachePayloadLatestRemovalBatchRepository.FinishAsync(cachePayloadLatestRemovalBatch.Id);
                     }
                     catch (Exception ex)

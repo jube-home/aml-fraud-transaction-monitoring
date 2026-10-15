@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.RoleRegistry;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.RoleRegistry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -61,6 +62,9 @@ namespace Jube.Service.Repository.RoleRegistry
             repository = new RuleRepository(dbContext, userName);
             validator = new RoleRegistryDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<RoleRegistryService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -112,6 +116,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.List: entry user={userName}");
@@ -122,6 +127,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 EnsurePermitted("RoleRegistry.List", listPermissions);
                 var dtos = RoleRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"RoleRegistry.List: {dtos.Count} rows user={userName}");
@@ -159,6 +165,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.List: entry user={userName} take={take} afterId={afterId}");
@@ -168,10 +175,12 @@ namespace Jube.Service.Repository.RoleRegistry
             {
                 EnsurePermitted("RoleRegistry.List", listPermissions);
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = RoleRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -204,6 +213,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.FilterFields: entry user={userName}");
@@ -215,6 +225,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<RoleRegistryDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -254,6 +265,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -265,6 +277,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 var rows = RoleRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -301,6 +314,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Count: entry groupBy={groupBy} user={userName}");
@@ -312,6 +326,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 var rows = RoleRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -342,6 +357,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Get", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Get: entry id={id} user={userName}");
@@ -351,6 +367,7 @@ namespace Jube.Service.Repository.RoleRegistry
             {
                 EnsurePermitted("RoleRegistry.Get", permissions);
                 var dto = RoleRegistryMapper.ToDto(await repository.GetByIdAsync(id, token).ConfigureAwait(false));
+
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (dto is null && log.IsDebugEnabled)
                 {
@@ -377,12 +394,60 @@ namespace Jube.Service.Repository.RoleRegistry
             }
         }
 
+        [Description("Returns a single Role by Id, or null if it doesn't exist or isn't visible to the " +
+                     "caller's tenant.")]
+        [ServiceOperation("RoleRegistryGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<RoleRegistryDto?> GetByGuidAsync(
+            [Description("Server-assigned identifier of the Role.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("RoleRegistry", "GetByGuid", userName, tenantRegistryId, auditLog, log,
+                serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"RoleRegistry.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("RoleRegistry.GetByGuid", permissions);
+                var entity = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (entity is null && log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"RoleRegistry.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                }
+
+                return RoleRegistryMapper.ToDto(entity);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"RoleRegistry.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Role in the caller's tenant.")]
         [ServiceOperation("RoleRegistryCreate", OperationKind.Write, Idempotent = false)]
         public async Task<RoleRegistryDto> InsertAsync(RoleRegistryDto? model, CancellationToken token = default)
         {
             using var op = OperationScope.Start("RoleRegistry", "Insert", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Insert: entry user={userName} name={model?.Name}");
@@ -394,6 +459,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 EnsurePermitted("RoleRegistry.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -451,6 +517,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Validate", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Validate: entry id={model?.Id} user={userName}");
@@ -463,6 +530,7 @@ namespace Jube.Service.Repository.RoleRegistry
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -490,6 +558,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Update", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Update: entry id={model?.Id} user={userName}");
@@ -501,6 +570,7 @@ namespace Jube.Service.Repository.RoleRegistry
                 EnsurePermitted("RoleRegistry.Update", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -538,6 +608,7 @@ namespace Jube.Service.Repository.RoleRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"RoleRegistry.Update: id={model?.Id} not found, not visible, or locked " +
@@ -569,6 +640,7 @@ namespace Jube.Service.Repository.RoleRegistry
         {
             using var op = OperationScope.Start("RoleRegistry", "Delete", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RoleRegistry.Delete: entry id={id} user={userName}");
@@ -594,6 +666,7 @@ namespace Jube.Service.Repository.RoleRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"RoleRegistry.Delete: id={id} not found, not visible, or locked user={userName}");

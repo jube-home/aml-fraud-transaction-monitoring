@@ -34,6 +34,9 @@ bootstrap:
       # *permanently* dead standby's slot can hold before Postgres reclaims the space anyway.
       use_slots: true
       parameters:
+        # Raised from the default of 100. Must be identical on every member - Postgres refuses to
+        # start a standby whose max_connections is lower than the primary's. Changing it needs a restart.
+        max_connections: 1000
         # pg_stat_statements needs shared_preload_libraries + a restart to enable, and this section is
         # DCS-managed (bootstrap.dcs.postgresql.parameters) specifically so Patroni keeps the setting
         # identical across every cluster member rather than it drifting node-by-node. On an already-bootstrapped

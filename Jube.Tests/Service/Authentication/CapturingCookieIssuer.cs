@@ -15,19 +15,19 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Jube.Dto.Authentication;
-using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
 
 namespace Jube.Test.Service.Authentication;
 
 public sealed class CapturingCookieIssuer : IAuthenticationCookieIssuer
 {
     private readonly ConcurrentQueue<string> issued = new();
-
     public IReadOnlyList<string> Issued => [.. issued];
 
     public AuthenticationResponseDto Issue(string userName)
     {
         issued.Enqueue(userName);
+
         return new AuthenticationResponseDto { Token = $"token-for:{userName}", Expiration = DateTime.UtcNow };
     }
 }

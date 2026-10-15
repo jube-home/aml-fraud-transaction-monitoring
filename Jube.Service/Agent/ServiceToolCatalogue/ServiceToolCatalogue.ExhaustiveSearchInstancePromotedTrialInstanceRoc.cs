@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceRoc(List<ServiceToolDescriptor> tools) =>
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceRoc(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "ExhaustiveSearchInstancePromotedTrialInstanceRocGet", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Returns the ROC curve points (score, false positive rate, true positive rate) of an Exhaustive Search Instance's active promoted trial instance.")
+                    "ExhaustiveSearchInstancePromotedTrialInstanceRocGet", OperationKind.Read, true,
+                    false,
+                    "Returns the ROC curve points (score, false positive rate, true positive rate) of an Exhaustive Search Instance's active promoted trial instance.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceRocService.RequiredPermissions)
             ]);
+        }
     }
 }

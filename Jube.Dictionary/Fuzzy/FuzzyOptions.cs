@@ -13,6 +13,7 @@
 
 using System.Collections.Concurrent;
 using System.Globalization;
+using Jube.Dictionary.Fuzzy.Models;
 
 namespace Jube.Dictionary.Fuzzy
 {
@@ -20,10 +21,9 @@ namespace Jube.Dictionary.Fuzzy
     {
         private const int MaximumDistance = 10;
         private const int CacheLimit = 1024;
+        private static readonly ConcurrentDictionary<string, FuzzyOptions> cache = new(StringComparer.Ordinal);
 
-        private static readonly ConcurrentDictionary<string, FuzzyOptions> Cache = new(StringComparer.Ordinal);
-
-        private static readonly FuzzyAlgorithmSpec[] DefaultAlgorithms =
+        private static readonly FuzzyAlgorithmSpec[] defaultAlgorithms =
         [
             new(FuzzyAlgorithm.JaroWinkler, 0.92),
             new(FuzzyAlgorithm.TokenSort, 0.92)
@@ -31,27 +31,19 @@ namespace Jube.Dictionary.Fuzzy
 
         public static readonly FuzzyOptions Default = new()
         {
-            Algorithms = DefaultAlgorithms,
+            Algorithms = defaultAlgorithms,
             Normalisation = FuzzyNormalisation.Default,
             Canonical = "jarowinkler=0.92,tokensort=0.92"
         };
 
         public string? Error { get; init; }
-
-        public IReadOnlyList<FuzzyAlgorithmSpec> Algorithms { get; init; } = DefaultAlgorithms;
-
+        public IReadOnlyList<FuzzyAlgorithmSpec> Algorithms { get; init; } = defaultAlgorithms;
         public bool RequireAll { get; init; }
-
         public FuzzyNormalisation Normalisation { get; init; } = FuzzyNormalisation.Default;
-
         public bool Within { get; init; }
-
         public int MinLength { get; init; }
-
         public bool FirstLetter { get; init; }
-
         public string Canonical { get; init; } = "";
-
         public bool IsValid => Error is null;
 
         public static double DefaultThreshold(FuzzyAlgorithm algorithm)
@@ -72,6 +64,7 @@ namespace Jube.Dictionary.Fuzzy
         public static FuzzyOptions For(FuzzyAlgorithm algorithm, double threshold, bool within = false)
         {
             var valid = IsValidThreshold(algorithm, threshold);
+
             return new FuzzyOptions
             {
                 Algorithms = [new FuzzyAlgorithmSpec(algorithm, threshold)],
@@ -88,18 +81,19 @@ namespace Jube.Dictionary.Fuzzy
                 return Default;
             }
 
-            if (Cache.TryGetValue(text, out var cached))
+            if (cache.TryGetValue(text, out var cached))
             {
                 return cached;
             }
 
             var parsed = ParseUncached(text);
-            if (Cache.Count >= CacheLimit)
+
+            if (cache.Count >= CacheLimit)
             {
-                Cache.Clear();
+                cache.Clear();
             }
 
-            Cache[text] = parsed;
+            cache[text] = parsed;
 
             return parsed;
         }
@@ -143,7 +137,7 @@ namespace Jube.Dictionary.Fuzzy
             var firstLetter = false;
 
             foreach (var raw in text.Split([',', ';'], StringSplitOptions.RemoveEmptyEntries |
-                                                          StringSplitOptions.TrimEntries))
+                                                       StringSplitOptions.TrimEntries))
             {
                 var equals = raw.IndexOf('=');
                 var key = (equals < 0 ? raw : raw[..equals]).Trim().ToLowerInvariant();
@@ -152,6 +146,7 @@ namespace Jube.Dictionary.Fuzzy
                 if (TryAlgorithm(key, out var algorithm))
                 {
                     var threshold = DefaultThreshold(algorithm);
+
                     if (value is not null &&
                         !double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out threshold))
                     {
@@ -243,7 +238,7 @@ namespace Jube.Dictionary.Fuzzy
 
             if (algorithms.Count == 0)
             {
-                algorithms.AddRange(DefaultAlgorithms);
+                algorithms.AddRange(defaultAlgorithms);
             }
 
             var normalisation = new FuzzyNormalisation(ignoreCase, removeDiacritics, stripPunctuation, removeSpaces,
@@ -267,43 +262,54 @@ namespace Jube.Dictionary.Fuzzy
             {
                 case "exact":
                     algorithm = FuzzyAlgorithm.Exact;
+
                     return true;
                 case "levenshtein":
                 case "lev":
                     algorithm = FuzzyAlgorithm.Levenshtein;
+
                     return true;
                 case "damerau":
                 case "osa":
                     algorithm = FuzzyAlgorithm.Damerau;
+
                     return true;
                 case "similarity":
                 case "sim":
                     algorithm = FuzzyAlgorithm.Similarity;
+
                     return true;
                 case "jarowinkler":
                 case "jw":
                     algorithm = FuzzyAlgorithm.JaroWinkler;
+
                     return true;
                 case "dice":
                 case "bigram":
                     algorithm = FuzzyAlgorithm.Dice;
+
                     return true;
                 case "soundex":
                     algorithm = FuzzyAlgorithm.Soundex;
+
                     return true;
                 case "tokensort":
                 case "sort":
                     algorithm = FuzzyAlgorithm.TokenSort;
+
                     return true;
                 case "tokenset":
                 case "set":
                     algorithm = FuzzyAlgorithm.TokenSet;
+
                     return true;
                 case "initials":
                     algorithm = FuzzyAlgorithm.Initials;
+
                     return true;
                 default:
                     algorithm = default;
+
                     return false;
             }
         }

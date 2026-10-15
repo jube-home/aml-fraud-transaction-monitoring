@@ -12,16 +12,15 @@
  */
 
 using System.Collections.Concurrent;
+using Jube.Cache.Models;
 
 namespace Jube.Cache
 {
     public static class RedisConnectionEventCapture
     {
         private const int MaxQueueLength = 20000;
-
         private static readonly ConcurrentQueue<RedisConnectionEventCaptureRecord> queue = new();
         private static long droppedCount;
-
         public static int QueueDepth => queue.Count;
 
         public static long TakeDroppedCount()
@@ -39,6 +38,7 @@ namespace Jube.Cache
             if (queue.Count >= MaxQueueLength)
             {
                 Interlocked.Increment(ref droppedCount);
+
                 return;
             }
 

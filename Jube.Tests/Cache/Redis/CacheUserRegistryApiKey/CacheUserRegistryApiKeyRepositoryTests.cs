@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis.CacheUserRegistryApiKey;
 using Jube.Cache.Redis.CacheUserRegistryApiKey.Events;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using StackExchange.Redis;
 using Xunit;
@@ -32,6 +32,7 @@ namespace Jube.Test.Cache.Redis.CacheUserRegistryApiKey
             var fake = new FakeHybridResilientRedisDatabase();
             var log = new TestLog();
             var repository = new CacheUserRegistryApiKeyRepository(fake, log);
+
             return new CacheUserRegistryApiKeyRepositoryTestContext(fake, log, repository);
         }
 

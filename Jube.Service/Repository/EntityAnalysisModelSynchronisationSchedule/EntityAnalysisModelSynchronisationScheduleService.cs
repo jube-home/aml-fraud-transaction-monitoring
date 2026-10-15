@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -59,6 +60,8 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             repository = new ScheduleRepository(dbContext, userName);
             validator = new EntityAnalysisModelSynchronisationScheduleDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelSynchronisationScheduleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -117,6 +120,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "GetCurrent", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSynchronisationSchedule.GetCurrent: entry user={userName}");
@@ -126,6 +130,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             {
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.GetCurrent");
                 var schedulePoco = await repository.GetCurrentAsync(token).ConfigureAwait(false);
+
                 if (schedulePoco == null)
                 {
                     if (log.IsDebugEnabled)
@@ -138,6 +143,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                 }
 
                 op.Entity(schedulePoco.Id);
+
                 return EntityAnalysisModelSynchronisationScheduleMapper.ToDto(schedulePoco);
             }
             catch (ForbiddenException)
@@ -148,6 +154,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSynchronisationSchedule.GetCurrent: cancelled user={userName}");
@@ -158,8 +165,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelSynchronisationSchedule.GetCurrent: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -177,7 +186,9 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -208,6 +219,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSynchronisationSchedule.ListPaged: cancelled user={userName}");
@@ -218,8 +230,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelSynchronisationSchedule.ListPaged: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }
@@ -236,6 +250,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSynchronisationSchedule.FilterFields: entry user={userName}");
@@ -247,6 +262,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelSynchronisationScheduleDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -262,8 +278,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelSynchronisationSchedule.FilterFields: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }
@@ -288,6 +306,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -297,10 +316,13 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             try
             {
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Filter");
+
                 var rows = EntityAnalysisModelSynchronisationScheduleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -339,6 +361,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSynchronisationSchedule.Count: entry groupBy={groupBy} user={userName}");
@@ -347,10 +370,13 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             try
             {
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Count");
+
                 var rows = EntityAnalysisModelSynchronisationScheduleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -382,6 +408,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -394,6 +421,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -434,6 +462,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSynchronisationSchedule.Create: cancelled user={userName}");
@@ -444,8 +473,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelSynchronisationSchedule.Create: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -460,6 +491,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSynchronisationSchedule.Validate: entry id={model?.Id} user={userName}");
@@ -472,6 +504,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -487,8 +520,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelSynchronisationSchedule.Validate: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

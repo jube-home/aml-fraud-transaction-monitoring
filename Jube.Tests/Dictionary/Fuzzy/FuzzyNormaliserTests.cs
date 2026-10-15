@@ -13,6 +13,7 @@
 
 using FluentAssertions;
 using Jube.Dictionary.Fuzzy;
+using Jube.Dictionary.Fuzzy.Models;
 using Xunit;
 
 namespace Jube.Test.Dictionary.Fuzzy
@@ -163,6 +164,7 @@ namespace Jube.Test.Dictionary.Fuzzy
             {
                 RemoveTitles = true, RemoveCompanySuffixes = true
             });
+
             var twice = FuzzyNormaliser.Normalise(once, @default with
             {
                 RemoveTitles = true, RemoveCompanySuffixes = true

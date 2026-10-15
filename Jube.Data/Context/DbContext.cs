@@ -21,7 +21,6 @@ namespace Jube.Data.Context
     public class DbContext(LinqToDbConnectionOptions<DbContext> options) : DataConnection(options)
     {
         public ITable<ActivationWatcher> ActivationWatcher => GetTable<ActivationWatcher>();
-
         public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag => GetTable<EntityAnalysisModelTag>();
 
         public ITable<EntityAnalysisModelStagePerformanceCounter> EntityAnalysisModelStagePerformanceCounter =>
@@ -34,90 +33,86 @@ namespace Jube.Data.Context
             GetTable<CaseCreationStagePerformanceCounter>();
 
         public ITable<CaseCreationWarning> CaseCreationWarning => GetTable<CaseCreationWarning>();
-
         public ITable<ArchiverWarning> ArchiverWarning => GetTable<ArchiverWarning>();
-
         public ITable<CaptureQueueHealth> CaptureQueueHealth => GetTable<CaptureQueueHealth>();
-
         public ITable<HaProxyServerStatus> HaProxyServerStatus => GetTable<HaProxyServerStatus>();
-
         public ITable<HaProxyReachabilityProbe> HaProxyReachabilityProbe => GetTable<HaProxyReachabilityProbe>();
-
         public ITable<OverlayNetworkTaskDrift> OverlayNetworkTaskDrift => GetTable<OverlayNetworkTaskDrift>();
 
         public ITable<EntityAnalysisModelTaskPerformanceCounter> EntityAnalysisModelTaskPerformanceCounter =>
             GetTable<EntityAnalysisModelTaskPerformanceCounter>();
 
         public ITable<ApplicationLogEntry> ApplicationLogEntry => GetTable<ApplicationLogEntry>();
-
         public ITable<WafSignature> WafSignature => GetTable<WafSignature>();
-
         public ITable<WafException> WafException => GetTable<WafException>();
-
         public ITable<WafAttack> WafAttack => GetTable<WafAttack>();
-
         public ITable<DotNetRuntimeMetric> DotNetRuntimeMetric => GetTable<DotNetRuntimeMetric>();
-
         public ITable<PostgresMetric> PostgresMetric => GetTable<PostgresMetric>();
-
         public ITable<PostgresLogEntry> PostgresLogEntry => GetTable<PostgresLogEntry>();
-
         public ITable<ContainerLogEntry> ContainerLogEntry => GetTable<ContainerLogEntry>();
-
         public ITable<DockerEvent> DockerEvent => GetTable<DockerEvent>();
-
         public ITable<OpenTelemetryLogCounter> OpenTelemetryLogCounter => GetTable<OpenTelemetryLogCounter>();
+        public ITable<AskJoobyConversation> AskJoobyConversation => GetTable<AskJoobyConversation>();
+        public ITable<AskJoobyMessage> AskJoobyMessage => GetTable<AskJoobyMessage>();
+        public ITable<AskJoobyRun> AskJoobyRun => GetTable<AskJoobyRun>();
+        public ITable<AskJoobyRouting> AskJoobyRouting => GetTable<AskJoobyRouting>();
 
+        public ITable<AskJoobyAgentGuardRejection> AskJoobyAgentGuardRejection =>
+            GetTable<AskJoobyAgentGuardRejection>();
+
+        public ITable<AskJoobyAgentGuardRule> AskJoobyAgentGuardRule => GetTable<AskJoobyAgentGuardRule>();
+
+        public ITable<AskJoobyToolCall> AskJoobyToolCall => GetTable<AskJoobyToolCall>();
+        public ITable<AskJoobyWorkflowStep> AskJoobyWorkflowStep => GetTable<AskJoobyWorkflowStep>();
+        public ITable<AskJoobyErrata> AskJoobyErrata => GetTable<AskJoobyErrata>();
+        public ITable<AskJoobyCompaction> AskJoobyCompaction => GetTable<AskJoobyCompaction>();
+        public ITable<AskJoobyModelCall> AskJoobyModelCall => GetTable<AskJoobyModelCall>();
+        public ITable<AskJoobyEmbeddingCall> AskJoobyEmbeddingCall => GetTable<AskJoobyEmbeddingCall>();
+        public ITable<AskJoobyRerankCall> AskJoobyRerankCall => GetTable<AskJoobyRerankCall>();
+        public ITable<AskJoobyWebSearchCall> AskJoobyWebSearchCall => GetTable<AskJoobyWebSearchCall>();
+
+        public ITable<AskJoobyOpenCorporatesCall> AskJoobyOpenCorporatesCall =>
+            GetTable<AskJoobyOpenCorporatesCall>();
+
+        public ITable<AskJoobyEndpointFee> AskJoobyEndpointFee => GetTable<AskJoobyEndpointFee>();
+        public ITable<AskJoobyRerankFee> AskJoobyRerankFee => GetTable<AskJoobyRerankFee>();
+        public ITable<AskJoobyTurnCost> AskJoobyTurnCost => GetTable<AskJoobyTurnCost>();
+        public ITable<AskJoobyRagChunk> AskJoobyRagChunk => GetTable<AskJoobyRagChunk>();
+        public ITable<AskJoobyFile> AskJoobyFile => GetTable<AskJoobyFile>();
+        public ITable<AskJoobyMemory> AskJoobyMemory => GetTable<AskJoobyMemory>();
+        public ITable<AskJoobyDataCache> AskJoobyDataCache => GetTable<AskJoobyDataCache>();
+        public ITable<DynamicSqlQueryLog> DynamicSqlQueryLog => GetTable<DynamicSqlQueryLog>();
         public ITable<OpenTelemetryExclude> OpenTelemetryExclude => GetTable<OpenTelemetryExclude>();
-
         public ITable<OtlpDispatchCounter> OtlpDispatchCounter => GetTable<OtlpDispatchCounter>();
-
         public ITable<RedisMetric> RedisMetric => GetTable<RedisMetric>();
-
         public ITable<RedisSlowOperation> RedisSlowOperation => GetTable<RedisSlowOperation>();
 
         public ITable<RedisConnectionMultiplexerMetric> RedisConnectionMultiplexerMetric =>
             GetTable<RedisConnectionMultiplexerMetric>();
 
         public ITable<PostgresReplicationStatus> PostgresReplicationStatus => GetTable<PostgresReplicationStatus>();
-
         public ITable<RedisSentinelStatus> RedisSentinelStatus => GetTable<RedisSentinelStatus>();
-
         public ITable<EtcdMemberStatus> EtcdMemberStatus => GetTable<EtcdMemberStatus>();
-
         public ITable<PatroniMemberStatus> PatroniMemberStatus => GetTable<PatroniMemberStatus>();
-
         public ITable<DockerContainerMetric> DockerContainerMetric => GetTable<DockerContainerMetric>();
-
         public ITable<DockerHostMetric> DockerHostMetric => GetTable<DockerHostMetric>();
         public ITable<OpenTelemetryMetric> OpenTelemetryMetric => GetTable<OpenTelemetryMetric>();
-
         public ITable<EtcdClusterEvent> EtcdClusterEvent => GetTable<EtcdClusterEvent>();
-
         public ITable<PatroniClusterEvent> PatroniClusterEvent => GetTable<PatroniClusterEvent>();
-
         public ITable<RedisSentinelEvent> RedisSentinelEvent => GetTable<RedisSentinelEvent>();
-
         public ITable<ModelInvokeWarning> ModelInvokeWarning => GetTable<ModelInvokeWarning>();
-
         public ITable<RedisConnectionEvent> RedisConnectionEvent => GetTable<RedisConnectionEvent>();
-
         public ITable<RedisCallCounter> RedisCallCounter => GetTable<RedisCallCounter>();
 
         public ITable<EntityAnalysisModelResponseTimePipelineCounter> EntityAnalysisModelResponseTimePipelineCounter =>
             GetTable<EntityAnalysisModelResponseTimePipelineCounter>();
 
         public ITable<CaseWorkflowFormEntryValue> CaseWorkflowFormEntryValue => GetTable<CaseWorkflowFormEntryValue>();
-
         public ITable<CaseWorkflowFormEntry> CaseWorkflowFormEntry => GetTable<CaseWorkflowFormEntry>();
-
         public ITable<CaseFile> CaseFile => GetTable<CaseFile>();
-
         public ITable<UserLogin> UserLogin => GetTable<UserLogin>();
         public ITable<UserLogout> UserLogout => GetTable<UserLogout>();
-
         public ITable<CaseNote> CaseNote => GetTable<CaseNote>();
-
         public ITable<SessionCaseJournal> SessionCaseJournal => GetTable<SessionCaseJournal>();
 
         public ITable<SessionCaseSearchCompiledSql> SessionCaseSearchCompiledSql =>
@@ -153,17 +148,20 @@ namespace Jube.Data.Context
             GetTable<EntityAnalysisModelSynchronisationSchedule>();
 
         public ITable<ArchiveKey> ArchiveKey => GetTable<ArchiveKey>();
-
         public ITable<ArchiveKeyVersion> ArchiveKeyVersion => GetTable<ArchiveKeyVersion>();
-
         public ITable<ExhaustiveSearchInstance> ExhaustiveSearchInstance => GetTable<ExhaustiveSearchInstance>();
-
+        public ITable<ExhaustiveInstanceCsv> ExhaustiveInstanceCsv => GetTable<ExhaustiveInstanceCsv>();
+        public ITable<ExhaustiveInstanceCsvRow> ExhaustiveInstanceCsvRow => GetTable<ExhaustiveInstanceCsvRow>();
+        public ITable<ExhaustiveInstanceJson> ExhaustiveInstanceJson => GetTable<ExhaustiveInstanceJson>();
+        public ITable<ExhaustiveInstanceJsonRow> ExhaustiveInstanceJsonRow => GetTable<ExhaustiveInstanceJsonRow>();
         public ITable<UserRegistry> UserRegistry => GetTable<UserRegistry>();
-
         public ITable<Currency> Currency => GetTable<Currency>();
 
         public ITable<ExhaustiveSearchInstanceVariable> ExhaustiveSearchInstanceVariable =>
             GetTable<ExhaustiveSearchInstanceVariable>();
+
+        public ITable<ExhaustiveSearchInstanceCategoricalField> ExhaustiveSearchInstanceCategoricalField =>
+            GetTable<ExhaustiveSearchInstanceCategoricalField>();
 
         public ITable<ExhaustiveSearchInstanceVariableClassification> ExhaustiveSearchInstanceVariableClassification =>
             GetTable<ExhaustiveSearchInstanceVariableClassification>();
@@ -178,9 +176,9 @@ namespace Jube.Data.Context
             ExhaustiveSearchInstanceTrialInstanceVariablePrescription =>
             GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
 
-        public ITable<ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram>
-            ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram =>
-            GetTable<ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram>();
+        public ITable<ExhaustiveSearchInstancePrescriptionHistogram>
+            ExhaustiveSearchInstancePrescriptionHistogram =>
+            GetTable<ExhaustiveSearchInstancePrescriptionHistogram>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>
             ExhaustiveSearchInstancePromotedTrialInstanceSensitivity =>
@@ -200,6 +198,10 @@ namespace Jube.Data.Context
             ExhaustiveSearchInstancePromotedTrialInstancePredictedActual =>
             GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>();
 
+        public ITable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue>
+            ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue>();
+
         public ITable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>
             ExhaustiveSearchInstanceTrialInstanceTopologyTrial =>
             GetTable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>();
@@ -217,28 +219,19 @@ namespace Jube.Data.Context
             GetTable<ExhaustiveSearchInstanceVariableMultiCollinearity>();
 
         public ITable<HttpProcessingCounter> HttpProcessingCounter => GetTable<HttpProcessingCounter>();
-
         public ITable<Archive> Archive => GetTable<Archive>();
-
         public ITable<ArchiveTag> ArchiveTag => GetTable<ArchiveTag>();
-
         public ITable<HttpResponseHeader> HttpHeader => GetTable<HttpResponseHeader>();
-
         public ITable<ArchiveTagVersion> ArchiveTagVersion => GetTable<ArchiveTagVersion>();
-
         public ITable<ArchiveVersion> ArchiveVersion => GetTable<ArchiveVersion>();
-
         public ITable<MockArchive> MockArchive => GetTable<MockArchive>();
 
         public ITable<EntityAnalysisModelProcessingCounter> EntityAnalysisModelProcessingCounter =>
             GetTable<EntityAnalysisModelProcessingCounter>();
 
         public ITable<SanctionEntry> SanctionEntry => GetTable<SanctionEntry>();
-
         public ITable<SanctionEntrySource> SanctionEntrySource => GetTable<SanctionEntrySource>();
-
         public ITable<SanctionEntryImport> SanctionEntryImport => GetTable<SanctionEntryImport>();
-
         public ITable<SanctionEntryRejection> SanctionEntryRejection => GetTable<SanctionEntryRejection>();
 
         public ITable<EntityAnalysisModelSynchronisationError> EntityAnalysisModelSynchronisationError =>
@@ -252,35 +245,20 @@ namespace Jube.Data.Context
             GetTable<EntityAnalysisModelGatewayRuleCounterHistory>();
 
         public ITable<CaseWorkflow> CaseWorkflow => GetTable<CaseWorkflow>();
-
         public ITable<CaseEvent> CaseEvent => GetTable<CaseEvent>();
-
         public ITable<Case> Case => GetTable<Case>();
-
         public ITable<CaseWorkflowStatus> CaseWorkflowStatus => GetTable<CaseWorkflowStatus>();
-
         public ITable<CaseWorkflowXPath> CaseWorkflowXPath => GetTable<CaseWorkflowXPath>();
-
         public ITable<CaseWorkflowForm> CaseWorkflowForm => GetTable<CaseWorkflowForm>();
-
         public ITable<CaseWorkflowAction> CaseWorkflowAction => GetTable<CaseWorkflowAction>();
-
         public ITable<CaseWorkflowDisplay> CaseWorkflowDisplay => GetTable<CaseWorkflowDisplay>();
-
         public ITable<CaseWorkflowFilter> CaseWorkflowFilter => GetTable<CaseWorkflowFilter>();
-
         public ITable<CaseWorkflowMacro> CaseWorkflowMacro => GetTable<CaseWorkflowMacro>();
-
         public ITable<PermissionSpecification> PermissionSpecification => GetTable<PermissionSpecification>();
-
         public ITable<RoleRegistry> RoleRegistry => GetTable<RoleRegistry>();
-
         public ITable<RoleRegistryPermission> RoleRegistryPermission => GetTable<RoleRegistryPermission>();
-
         public ITable<UserInTenant> UserInTenant => GetTable<UserInTenant>();
-
         public ITable<UserInTenantSwitchLog> UserInTenantSwitchLog => GetTable<UserInTenantSwitchLog>();
-
         public ITable<EntityAnalysisModel> EntityAnalysisModel => GetTable<EntityAnalysisModel>();
 
         public ITable<EntityAnalysisModelGatewayRule> EntityAnalysisModelGatewayRule =>
@@ -316,7 +294,6 @@ namespace Jube.Data.Context
             GetTable<EntityAnalysisModelHttpAdaptation>();
 
         public ITable<TenantRegistry> TenantRegistry => GetTable<TenantRegistry>();
-
         public ITable<VisualisationRegistry> VisualisationRegistry => GetTable<VisualisationRegistry>();
 
         public ITable<VisualisationRegistryParameter> VisualisationRegistryParameter =>
@@ -359,7 +336,6 @@ namespace Jube.Data.Context
             GetTable<EntityAnalysisModelDictionaryKvp>();
 
         public ITable<RuleScriptToken> RuleScriptToken => GetTable<RuleScriptToken>();
-
         public ITable<DictionaryEvalExpression> DictionaryEvalExpression => GetTable<DictionaryEvalExpression>();
 
         public ITable<EntityAnalysisModelAbstractionRule> EntityAnalysisModelAbstractionRule =>
@@ -412,15 +388,10 @@ namespace Jube.Data.Context
             GetTable<EntityAnalysisModelDictionaryVersion>();
 
         public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion => GetTable<CaseWorkflowXPathVersion>();
-
         public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion => GetTable<CaseWorkflowFormVersion>();
-
         public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion => GetTable<CaseWorkflowActionVersion>();
-
         public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion => GetTable<CaseWorkflowDisplayVersion>();
-
         public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion => GetTable<CaseWorkflowMacroVersion>();
-
         public ITable<CaseWorkflowFilterVersion> CaseWorkflowFilterVersion => GetTable<CaseWorkflowFilterVersion>();
 
         public ITable<EntityAnalysisModelListValueVersion> EntityAnalysisModelListValueVersion =>
@@ -446,6 +417,10 @@ namespace Jube.Data.Context
             ExhaustiveSearchInstanceVariableHistogramAnomaly =>
             GetTable<ExhaustiveSearchInstanceVariableHistogramAnomaly>();
 
+        public ITable<ExhaustiveSearchInstanceVariableHistogramClass>
+            ExhaustiveSearchInstanceVariableHistogramClass =>
+            GetTable<ExhaustiveSearchInstanceVariableHistogramClass>();
+
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
             ExhaustiveSearchInstancePromotedTrialInstanceVariable =>
             GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
@@ -455,17 +430,11 @@ namespace Jube.Data.Context
 
         public ITable<Import> Import => GetTable<Import>();
         public ITable<PreservationSnapshot> PreservationSnapshot => GetTable<PreservationSnapshot>();
-
         public ITable<Export> Export => GetTable<Export>();
-
         public ITable<ExportPeek> ExportPeek => GetTable<ExportPeek>();
-
         public ITable<LocalCacheInstance> LocalCacheInstance => GetTable<LocalCacheInstance>();
-
         public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey => GetTable<LocalCacheInstanceKey>();
-
         public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru => GetTable<LocalCacheInstanceLru>();
-
         public ITable<HashCacheAssemblyInstance> HashCacheAssemblyInstance => GetTable<HashCacheAssemblyInstance>();
 
         public ITable<HashCacheAssemblyInstanceEntry> HashCacheAssemblyInstanceEntry =>
@@ -498,21 +467,13 @@ namespace Jube.Data.Context
             GetTable<CacheTtlCounterEntryRemovalBatchEntry>();
 
         public ITable<CaseWorkflowStatusRole> CaseWorkflowStatusRole => GetTable<CaseWorkflowStatusRole>();
-
         public ITable<CaseWorkflowRole> CaseWorkflowRole => GetTable<CaseWorkflowRole>();
-
         public ITable<CaseWorkflowMacroRole> CaseWorkflowMacroRole => GetTable<CaseWorkflowMacroRole>();
-
         public ITable<CaseWorkflowFormRole> CaseWorkflowFormRole => GetTable<CaseWorkflowFormRole>();
-
         public ITable<CaseWorkflowActionRole> CaseWorkflowActionRole => GetTable<CaseWorkflowActionRole>();
-
         public ITable<CaseWorkflowDisplayRole> CaseWorkflowDisplayRole => GetTable<CaseWorkflowDisplayRole>();
-
         public ITable<CaseWorkflowXPathRole> CaseWorkflowXPathRole => GetTable<CaseWorkflowXPathRole>();
-
         public ITable<EntityAnalysisModelRole> EntityAnalysisModelRole => GetTable<EntityAnalysisModelRole>();
-
         public ITable<VisualisationRegistryRole> VisualisationRegistryRole => GetTable<VisualisationRegistryRole>();
 
         public ITable<VisualisationRegistryDatasourceRole> VisualisationRegistryDatasourceRole =>
@@ -522,11 +483,41 @@ namespace Jube.Data.Context
             GetTable<VisualisationRegistryParameterRole>();
 
         public ITable<CaseWorkflowFilterRole> CaseWorkflowFilterRole => GetTable<CaseWorkflowFilterRole>();
-
         public ITable<UserRegistryApiKey> UserRegistryApiKey => GetTable<UserRegistryApiKey>();
-
         public ITable<SanctionStopToken> SanctionStopToken => GetTable<SanctionStopToken>();
-
         public ITable<EntityApproval> EntityApproval => GetTable<EntityApproval>();
+
+        public ITable<AdvancedAnalyticsInstance> AdvancedAnalyticsInstance =>
+            GetTable<AdvancedAnalyticsInstance>();
+
+        public ITable<AdvancedAnalyticsCache> AdvancedAnalyticsCache =>
+            GetTable<AdvancedAnalyticsCache>();
+
+        public ITable<AdvancedAnalyticsTrainedModel> AdvancedAnalyticsTrainedModel =>
+            GetTable<AdvancedAnalyticsTrainedModel>();
+
+        public ITable<AdvancedAnalyticsTrainedModelVersion> AdvancedAnalyticsTrainedModelVersion =>
+            GetTable<AdvancedAnalyticsTrainedModelVersion>();
+
+        public ITable<AdvancedAnalyticsTrainingRun> AdvancedAnalyticsTrainingRun =>
+            GetTable<AdvancedAnalyticsTrainingRun>();
+
+        public ITable<AdvancedAnalyticsTrainingRunStep> AdvancedAnalyticsTrainingRunStep =>
+            GetTable<AdvancedAnalyticsTrainingRunStep>();
+
+        public ITable<AdvancedAnalyticsTrainingRunTrial> AdvancedAnalyticsTrainingRunTrial =>
+            GetTable<AdvancedAnalyticsTrainingRunTrial>();
+
+        public ITable<AdvancedAnalyticsTrainingRunIteration> AdvancedAnalyticsTrainingRunIteration =>
+            GetTable<AdvancedAnalyticsTrainingRunIteration>();
+
+        public ITable<AdvancedAnalyticsTrainingRunVariable> AdvancedAnalyticsTrainingRunVariable =>
+            GetTable<AdvancedAnalyticsTrainingRunVariable>();
+
+        public ITable<AdvancedAnalyticsTrainingRunMetric> AdvancedAnalyticsTrainingRunMetric =>
+            GetTable<AdvancedAnalyticsTrainingRunMetric>();
+
+        public ITable<AdvancedAnalyticsTrainingRunCurvePoint> AdvancedAnalyticsTrainingRunCurvePoint =>
+            GetTable<AdvancedAnalyticsTrainingRunCurvePoint>();
     }
 }

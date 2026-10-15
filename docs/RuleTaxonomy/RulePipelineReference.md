@@ -51,6 +51,13 @@ Matched = TTLCounter.CardPaymentsLastHour.RequireGreater(5).Against(Payload.Curr
 Every test in the tables below exists for a plain `Double`, `Integer`, `String`, `DateTime` and `Boolean` value, and
 again on a pipeline, so the first step and the later steps are written the same way.
 
+A pipeline is written as an assignment to `Matched` rather than as a `Return`, and that is deliberate. Assigning lets
+execution carry on to the wrapper's own `Return Matched`, so a second pipeline further down can override the first and
+the last assignment wins. `Return True` does the opposite: it leaves the fragment at that point, so the first decision
+wins and nothing after it runs. Reach for `Return` where one condition settles the matter on its own, and for
+`Matched` where the rule accumulates. The distinction is set out in
+[Rule Authoring Methodology](RuleAuthoringMethodology.html#what-a-rule-fragment-is).
+
 The steps that only make sense once a pipeline exists cannot begin one: `Against`, `Label`, `OtherwiseMatch`,
 `OtherwiseReject`, `Reset`, `Fail`, `AddScore`, `AddScoreWhen`, `CapScore`, `MatchWhen`, `RejectWhen`, `BreakWhen`,
 `RequireThat`, `EnsureThat` and the score decisions. Begin with a test step, or with `Start()`, for example

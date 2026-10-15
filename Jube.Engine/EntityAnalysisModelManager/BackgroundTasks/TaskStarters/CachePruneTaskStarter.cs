@@ -126,10 +126,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             await context.Services.CacheService.CachePayloadLatestRepository.DeleteByReferenceDateAsync(
                 model.Instance.TenantRegistryId, model.Instance.Guid,
                 referenceDate.Value, thresholdReferenceDatePayload.Value, limit,
-                model.Snapshot.DistinctSearchKeys.Select(distinctSearchKey
-                    => (distinctSearchKey.Key,
-                        distinctSearchKey.Value.SearchKeyTtlInterval,
-                        distinctSearchKey.Value.SearchKeyTtlIntervalValue)).ToList()).ConfigureAwait(false);
+                [
+                    .. model.Snapshot.DistinctSearchKeys.Select(distinctSearchKey
+                        => (distinctSearchKey.Key,
+                            distinctSearchKey.Value.SearchKeyTtlInterval,
+                            distinctSearchKey.Value.SearchKeyTtlIntervalValue))
+                ]).ConfigureAwait(false);
 
             if (context.Services.Log.IsDebugEnabled)
             {
@@ -157,12 +159,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 'y' => referenceDate.Value.AddYears(model.Cache.CacheTtlIntervalValue * -1),
                 _ => referenceDate.Value.AddDays(model.Cache.CacheTtlIntervalValue * -1)
             };
+
             return thresholdReferenceDate;
         }
 
         internal int GetDeletionLimitOrDefaultIfNull()
         {
             var limit = 100;
+
             if (context.Services.DynamicEnvironment.AppSettings("CacheTtlDeleteLimit") != null)
             {
                 limit = int.Parse(context.Services.DynamicEnvironment.AppSettings("CacheTtlDeleteLimit"));

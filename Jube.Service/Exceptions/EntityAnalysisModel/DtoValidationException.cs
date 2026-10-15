@@ -11,22 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using FluentValidation.Results;
+
 namespace Jube.Service.Exceptions.EntityAnalysisModel
 {
-    using System.Linq;
-    using FluentValidation.Results;
-
     public sealed class DtoValidationException(ValidationResult result)
         : ServiceException(BuildMessage(result))
     {
         public override string Code => "ValidationFailed";
-
         public ValidationResult Result { get; } = result;
 
         private static string BuildMessage(ValidationResult result)
         {
             var first = result.Errors.FirstOrDefault();
-            
+
             return first != null
                 ? $"{first.PropertyName}: {first.ErrorMessage}"
                 : "Validation failed.";

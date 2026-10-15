@@ -26,42 +26,40 @@
 // under the LGPL 2.1 license and available at http://leon.bottou.org/projects/sgd
 //
 
+using System;
+using System.Collections;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Accord.Math;
+using Accord.Math.Optimization.Losses;
+using Accord.Statistics.Kernels;
+
 namespace Accord.MachineLearning.VectorMachines.Learning
 {
-    using Accord.Statistics.Kernels;
-    using System;
-    using Accord.Math;
-    using System.Diagnostics;
-    using System.Collections;
-    using Math.Optimization.Losses;
-    using Accord.Compat;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Runtime.CompilerServices;
-
     /// <summary>
-    ///   Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
+    ///     Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
     /// </summary>
-    /// 
-    /// <see cref="StochasticGradientDescent"/>
-    /// <see cref="SequentialMinimalOptimization{TKernel}"/>
-    /// <see cref="LinearNewtonMethod"/>
-    /// <see cref="LinearDualCoordinateDescent"/>
-    /// 
+    /// <see cref="StochasticGradientDescent" />
+    /// <see cref="SequentialMinimalOptimization{TKernel}" />
+    /// <see cref="LinearNewtonMethod" />
+    /// <see cref="LinearDualCoordinateDescent" />
     /// <example>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multiclass" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multilabel" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_nonlinear" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multiclass" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multilabel" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_nonlinear" />
     /// </example>
-    /// 
     public sealed class AveragedStochasticGradientDescent :
         BaseAveragedStochasticGradientDescent<
             SupportVectorMachine, Linear, double[], HingeLoss>
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine Create(int inputs, Linear kernel)
         {
@@ -69,40 +67,40 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        /// Inheritors should implement this function to produce a new instance
-        /// with the same characteristics of the current object.
+        ///     Inheritors should implement this function to produce a new instance
+        ///     with the same characteristics of the current object.
         /// </summary>
-        /// 
-        protected override BaseAveragedStochasticGradientDescent<SupportVectorMachine, Linear, double[], HingeLoss> InnerClone()
+        protected override BaseAveragedStochasticGradientDescent<SupportVectorMachine, Linear, double[], HingeLoss>
+            InnerClone()
         {
             return new AveragedStochasticGradientDescent();
         }
     }
 
     /// <summary>
-    ///   Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
+    ///     Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
     /// </summary>
-    /// 
-    /// <see cref="StochasticGradientDescent"/>
-    /// <see cref="SequentialMinimalOptimization{TKernel}"/>
-    /// <see cref="LinearNewtonMethod"/>
-    /// <see cref="LinearDualCoordinateDescent"/>
-    /// 
+    /// <see cref="StochasticGradientDescent" />
+    /// <see cref="SequentialMinimalOptimization{TKernel}" />
+    /// <see cref="LinearNewtonMethod" />
+    /// <see cref="LinearDualCoordinateDescent" />
     /// <example>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multiclass" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multilabel" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_nonlinear" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multiclass" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multilabel" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_nonlinear" />
     /// </example>
-    /// 
     public sealed class AveragedStochasticGradientDescent<TKernel> :
         BaseAveragedStochasticGradientDescent<
             SupportVectorMachine<TKernel>, TKernel, double[], HingeLoss>
         where TKernel : struct, ILinear
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine<TKernel> Create(int inputs, TKernel kernel)
         {
@@ -110,8 +108,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        /// Inheritors should implement this function to produce a new instance
-        /// with the same characteristics of the current object.
+        ///     Inheritors should implement this function to produce a new instance
+        ///     with the same characteristics of the current object.
         /// </summary>
         /// <returns>BaseAveragedStochasticGradientDescent&lt;SupportVectorMachine&lt;TKernel&gt;, TKernel, System.Double[]&gt;.</returns>
         protected override BaseAveragedStochasticGradientDescent<
@@ -122,13 +120,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
+    ///     Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
     /// </summary>
-    /// 
-    /// <see cref="StochasticGradientDescent"/>
-    /// <see cref="LinearNewtonMethod"/>
-    /// <see cref="LinearDualCoordinateDescent"/>
-    /// 
+    /// <see cref="StochasticGradientDescent" />
+    /// <see cref="LinearNewtonMethod" />
+    /// <see cref="LinearDualCoordinateDescent" />
     public sealed class AveragedStochasticGradientDescent<TKernel, TInput> :
         BaseAveragedStochasticGradientDescent<
             SupportVectorMachine<TKernel, TInput>, TKernel, TInput, HingeLoss>
@@ -139,25 +135,26 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 #endif
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
-        /// 
         /// <example>
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multiclass" />
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multilabel" />
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_nonlinear" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+        ///         region="doc_learn_multiclass" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+        ///         region="doc_learn_multilabel" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+        ///         region="doc_learn_nonlinear" />
         /// </example>
-        /// 
         protected override SupportVectorMachine<TKernel, TInput> Create(int inputs, TKernel kernel)
         {
             return new SupportVectorMachine<TKernel, TInput>(inputs, kernel);
         }
 
         /// <summary>
-        /// Inheritors should implement this function to produce a new instance
-        /// with the same characteristics of the current object.
+        ///     Inheritors should implement this function to produce a new instance
+        ///     with the same characteristics of the current object.
         /// </summary>
         /// <returns>BaseAveragedStochasticGradientDescent&lt;SupportVectorMachine&lt;TKernel, TInput&gt;, TKernel, TInput&gt;.</returns>
         protected override BaseAveragedStochasticGradientDescent<
@@ -168,19 +165,19 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
+    ///     Averaged Stochastic Gradient Descent (ASGD) for training linear support vector machines.
     /// </summary>
-    /// 
-    /// <see cref="StochasticGradientDescent"/>
-    /// <see cref="LinearNewtonMethod"/>
-    /// <see cref="LinearDualCoordinateDescent"/>
-    /// 
+    /// <see cref="StochasticGradientDescent" />
+    /// <see cref="LinearNewtonMethod" />
+    /// <see cref="LinearDualCoordinateDescent" />
     /// <example>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multiclass" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_multilabel" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs" region="doc_learn_nonlinear" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multiclass" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_multilabel" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\AveragedStochasticGradientDescentTest.cs"
+    ///         region="doc_learn_nonlinear" />
     /// </example>
-    /// 
     public sealed class AveragedStochasticGradientDescent<TKernel, TInput, TLoss> :
         BaseAveragedStochasticGradientDescent<
             SupportVectorMachine<TKernel, TInput>, TKernel, TInput, TLoss>
@@ -192,9 +189,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         where TLoss : struct, IDifferentiableLoss<bool, double, double>
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine<TKernel, TInput> Create(int inputs, TKernel kernel)
         {
@@ -202,8 +199,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        /// Inheritors should implement this function to produce a new instance
-        /// with the same characteristics of the current object.
+        ///     Inheritors should implement this function to produce a new instance
+        ///     with the same characteristics of the current object.
         /// </summary>
         /// <returns>BaseAveragedStochasticGradientDescent&lt;SupportVectorMachine&lt;TKernel, TInput&gt;, TKernel, TInput&gt;.</returns>
         protected override BaseAveragedStochasticGradientDescent<
@@ -214,25 +211,21 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Base class for Averaged Stochastic Gradient Descent algorithm implementations.
+    ///     Base class for Averaged Stochastic Gradient Descent algorithm implementations.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   The <see cref="IKernel"/> and <see cref="IDifferentiableLoss{TInput, TScore, TLoss}"/>
-    ///   are passed as generic parameters (constrained to be structs) because this is the only
-    ///   way to force the compiler to emit a separate native code for this class whose performance
-    ///   critical sections can be inlined.
+    ///     The <see cref="IKernel" /> and <see cref="IDifferentiableLoss{TInput, TScore, TLoss}" />
+    ///     are passed as generic parameters (constrained to be structs) because this is the only
+    ///     way to force the compiler to emit a separate native code for this class whose performance
+    ///     critical sections can be inlined.
     /// </remarks>
-    /// 
     /// <typeparam name="TModel">The type of the model being learned.</typeparam>
     /// <typeparam name="TKernel">The type of the kernel function to use.</typeparam>
     /// <typeparam name="TInput">The type of the input to consider.</typeparam>
     /// <typeparam name="TLoss">The type of the loss function to use.</typeparam>
-    /// 
-    /// <seealso cref="StochasticGradientDescent"/>
-    /// <seealso cref="AveragedStochasticGradientDescent"/>
-    /// <seealso cref="Accord.MachineLearning.BinaryLearningBase{TModel, TInput}" />
-    /// 
+    /// <seealso cref="StochasticGradientDescent" />
+    /// <seealso cref="AveragedStochasticGradientDescent" />
+    /// <seealso cref="BinaryLearningBase{TModel, TInput}" />
     public abstract class BaseAveragedStochasticGradientDescent<TModel, TKernel, TInput, TLoss> :
         BinaryLearningBase<TModel, TInput>, ICloneable
         where TModel : SupportVectorMachine<TKernel, TInput>
@@ -243,148 +236,117 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 #endif
         where TLoss : struct, IDifferentiableLoss<bool, double, double>
     {
+        private TKernel kernel;
 
-        TKernel kernel;
+        private double mu0 = 1;
+        private double tstart;
+        private double[] w;
+        private double wDivisor = 1;
+        private double wBias;
+        private double[] a;
+        private double aDivisor = 1;
+        private double wFraction;
+        private double aBias;
+        private double t;
 
-        double lambda = 1e-3;
-        double eta0;
-        double mu0 = 1;
-        double tstart;
-        double[] w;
-        double wDivisor = 1;
-        double wBias;
-        double[] a;
-        double aDivisor = 1;
-        double wFraction;
-        double aBias;
-        double t;
+        private int maxEtaEstimationSamples = 1000;
 
-        int maxEtaEstimationSamples = 1000;
+        private bool bias = true;
+        private bool regularizedBias;
 
-        bool bias = true;
-        bool regularizedBias = false;
+        private readonly RelativeConvergence convergence = new();
+        private TLoss loss;
 
-        RelativeConvergence convergence = new RelativeConvergence();
-        TLoss loss;
-
-        object syncObject = new object();
-
-        [NonSerialized]
-        private ParallelOptions parallelOptions = new ParallelOptions();
-
+        private readonly object syncObject = new();
 
         /// <summary>
-        ///   Gets or sets the kernel function use to create a 
-        ///   kernel Support Vector Machine.
+        ///     Gets or sets the kernel function use to create a
+        ///     kernel Support Vector Machine.
         /// </summary>
-        /// 
         public TKernel Kernel
         {
-            get { return kernel; }
-            set { this.kernel = value; }
+            get => kernel;
+            set => kernel = value;
         }
 
         /// <summary>
-        ///   Gets or sets the loss function to be used. 
-        ///   Default is to use the <see cref="LogisticLoss"/>.
+        ///     Gets or sets the loss function to be used.
+        ///     Default is to use the <see cref="LogisticLoss" />.
         /// </summary>
-        /// 
         public TLoss Loss
         {
-            get { return loss; }
-            set { loss = value; }
+            get => loss;
+            set => loss = value;
         }
 
         /// <summary>
-        ///   Gets or sets the learning rate for the SGD algorithm.
+        ///     Gets or sets the learning rate for the SGD algorithm.
         /// </summary>
-        /// 
-        public double LearningRate
-        {
-            get { return eta0; }
-            set { eta0 = value; }
-        }
+        public double LearningRate { get; set; }
 
         /// <summary>
-        ///   Gets or sets the number of iterations that should be
-        ///   performed by the algorithm when calling <see cref="Learn"/>.
-        ///   Default is 0 (iterate until convergence).
+        ///     Gets or sets the number of iterations that should be
+        ///     performed by the algorithm when calling <see cref="Learn" />.
+        ///     Default is 0 (iterate until convergence).
         /// </summary>
-        /// 
         public int MaxIterations
         {
-            get { return convergence.MaxIterations; }
-            set { convergence.MaxIterations = value; }
+            get => convergence.MaxIterations;
+            set => convergence.MaxIterations = value;
         }
 
         /// <summary>
-        ///   Please use MaxIterations instead.
+        ///     Please use MaxIterations instead.
         /// </summary>
-        /// 
         [Obsolete("Please use MaxIterations instead.")]
         public int Iterations
         {
-            get { return MaxIterations; }
-            set { MaxIterations = value; }
+            get => MaxIterations;
+            set => MaxIterations = value;
         }
 
         /// <summary>
-        ///   Gets or sets the current epoch counter.
+        ///     Gets or sets the current epoch counter.
         /// </summary>
-        /// 
-        public int CurrentEpoch
-        {
-            get { return convergence.CurrentIteration; }
-        }
+        public int CurrentEpoch => convergence.CurrentIteration;
 
         /// <summary>
-        ///   Gets or sets the parallelization options for this algorithm.
+        ///     Gets or sets the parallelization options for this algorithm.
         /// </summary>
-        /// 
-        public ParallelOptions ParallelOptions
-        {
-            get { return parallelOptions; }
-            set { parallelOptions = value; }
-        }
+        [field: NonSerialized]
+        public ParallelOptions ParallelOptions { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets a cancellation token that can be used
-        /// to cancel the algorithm while it is running.
+        ///     Gets or sets a cancellation token that can be used
+        ///     to cancel the algorithm while it is running.
         /// </summary>
-        /// 
         public override CancellationToken Token
         {
-            get { return ParallelOptions.CancellationToken; }
-            set { ParallelOptions.CancellationToken = value; }
+            get => ParallelOptions.CancellationToken;
+            set => ParallelOptions.CancellationToken = value;
         }
 
         /// <summary>
-        ///   Gets or sets the maximum relative change in the watched value
-        ///   after an iteration of the algorithm used to detect convergence.
-        ///   Default is 1e-3. If set to 0, the loss will not be computed 
-        ///   during learning and execution will be faster.
+        ///     Gets or sets the maximum relative change in the watched value
+        ///     after an iteration of the algorithm used to detect convergence.
+        ///     Default is 1e-3. If set to 0, the loss will not be computed
+        ///     during learning and execution will be faster.
         /// </summary>
-        /// 
         public double Tolerance
         {
-            get { return convergence.Tolerance; }
-            set { convergence.Tolerance = value; }
+            get => convergence.Tolerance;
+            set => convergence.Tolerance = value;
         }
 
         /// <summary>
-        ///   Gets or sets the lambda regularization term. Default is 0.5.
+        ///     Gets or sets the lambda regularization term. Default is 0.5.
         /// </summary>
-        /// 
-        public double Lambda
-        {
-            get { return lambda; }
-            set { lambda = value; }
-        }
+        public double Lambda { get; set; } = 1e-3;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseAveragedStochasticGradientDescent{TModel, TKernel, TInput, TLoss}"/> class.
+        ///     Initializes a new instance of the
+        ///     <see cref="BaseAveragedStochasticGradientDescent{TModel, TKernel, TInput, TLoss}" /> class.
         /// </summary>
-        /// 
         protected BaseAveragedStochasticGradientDescent()
         {
             MaxIterations = 0;
@@ -392,26 +354,23 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Creates an instance of the model to be learned. Inheritors
-        ///   of this abstract class must define this method so new models
-        ///   can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
-        /// 
         protected abstract TModel Create(int inputs, TKernel kernel);
 
-
         /// <summary>
-        ///   Renormalize the weights.
+        ///     Renormalize the weights.
         /// </summary>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        void renorm()
+        private void renorm()
         {
             if (wDivisor != 1.0 || aDivisor != 1.0 || wFraction != 0)
             {
-                for (int i = 0; i < w.Length; i++)
+                for (var i = 0; i < w.Length; i++)
                 {
                     a[i] = a[i] / aDivisor + w[i] * wFraction / aDivisor;
                     w[i] /= wDivisor;
@@ -424,62 +383,68 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Compute the norm of the weights.
+        ///     Compute the norm of the weights.
         /// </summary>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        double wnorm()
+        private double wnorm()
         {
-            double norm = w.Dot(w) / wDivisor / wDivisor;
+            var norm = w.Dot(w) / wDivisor / wDivisor;
             if (regularizedBias)
+            {
                 norm += wBias * wBias;
+            }
+
             return norm;
         }
 
         /// <summary>
-        ///   Compute the norm of the averaged weights.
+        ///     Compute the norm of the averaged weights.
         /// </summary>
-        /// 
 #if NET45 || NET46 || NET462 || NETSTANDARD2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        double anorm()
+        private double anorm()
         {
             renorm(); // this is simpler!
-            double norm = a.Dot(a);
+            var norm = a.Dot(a);
             if (regularizedBias)
+            {
                 norm += aBias * aBias;
+            }
+
             return norm;
         }
 
-
         /// <summary>
-        ///   Perform one iteration of the SGD algorithm with specified gains
+        ///     Perform one iteration of the SGD algorithm with specified gains
         /// </summary>
-        /// 
-        void trainOne(TInput x, bool y, double eta, double mu)
+        private void trainOne(TInput x, bool y, double eta, double mu)
         {
             // Renormalize if needed
             if (aDivisor > 1e5 || wDivisor > 1e5)
+            {
                 renorm();
+            }
 
             // Forward
-            double s = Kernel.Function(w, x) / wDivisor + wBias;
+            var s = Kernel.Function(w, x) / wDivisor + wBias;
 
             // SGD update for regularization term
-            wDivisor = wDivisor / (1 - eta * lambda);
+            wDivisor = wDivisor / (1 - eta * Lambda);
 
             // SGD update for loss term
-            double d = -loss.Derivative(y, s);
+            var d = -loss.Derivative(y, s);
 
-            double etd = eta * d * wDivisor;
+            var etd = eta * d * wDivisor;
             if (etd != 0)
-                Kernel.Product(etd, x, accumulate: w);
+            {
+                Kernel.Product(etd, x, w);
+            }
 
             // Averaging
-            if (mu >= 1) 
+            if (mu >= 1)
             {
                 a.Clear();
                 aDivisor = wDivisor;
@@ -488,7 +453,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             else if (mu > 0)
             {
                 if (etd != 0)
-                    Kernel.Product(-wFraction * etd, x, accumulate: a);
+                {
+                    Kernel.Product(-wFraction * etd, x, a);
+                }
+
                 aDivisor = aDivisor / (1 - mu);
                 wFraction = wFraction + mu * aDivisor / wDivisor;
             }
@@ -496,9 +464,12 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             // same for the bias
             if (bias)
             {
-                double etab = eta * 0.01;
+                var etab = eta * 0.01;
                 if (regularizedBias)
-                    wBias *= (1 - etab * lambda);
+                {
+                    wBias *= 1 - etab * Lambda;
+                }
+
                 wBias += etab * d;
                 aBias += mu * (wBias - aBias);
             }
@@ -509,24 +480,28 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 #endif
         private double score(TInput x)
         {
-            double s = Kernel.Function(a, x);
+            var s = Kernel.Function(a, x);
             if (wFraction != 0)
+            {
                 s += Kernel.Function(w, x) * wFraction;
+            }
+
             return s / aDivisor + aBias;
         }
 
-
-        double evaluateEta(TInput[] x, bool[] y, double eta)
+        private double evaluateEta(TInput[] x, bool[] y, double eta)
         {
             // take a copy of the current state
-            var clone = (BaseAveragedStochasticGradientDescent<TModel, TKernel, TInput, TLoss>)this.Clone();
+            var clone = (BaseAveragedStochasticGradientDescent<TModel, TKernel, TInput, TLoss>)Clone();
 
-            int nSamples = Math.Min(maxEtaEstimationSamples, x.Length);
+            var nSamples = System.Math.Min(maxEtaEstimationSamples, x.Length);
 
-            for (int i = 0; i < nSamples; i++)
-                clone.trainOne(x[i], y[i], eta, mu: 1.0);
+            for (var i = 0; i < nSamples; i++)
+            {
+                clone.trainOne(x[i], y[i], eta, 1.0);
+            }
 
-            double loss = clone.evaluateLoss(x, y, nSamples);
+            var loss = clone.evaluateLoss(x, y, nSamples);
             Trace.WriteLine(" - eta " + eta + " gives loss " + loss);
 
             return loss;
@@ -536,38 +511,46 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         {
             const int parallelization_threshold = 10000;
 
-            TLoss lossFunction = this.Loss;
+            var lossFunction = Loss;
             double loss = 0;
-            double cost = 0;
+            double cost;
 
             if (nSamples < parallelization_threshold)
             {
-                for (int i = 0; i < nSamples; i++)
-                    loss += lossFunction.Loss(y[i], this.score(x[i]));
+                for (var i = 0; i < nSamples; i++)
+                {
+                    loss += lossFunction.Loss(y[i], score(x[i]));
+                }
             }
             else
             {
                 Parallel.For(0, nSamples, ParallelOptions, () => 0.0,
-                    (i, o, s) => s + lossFunction.Loss(y[i], this.score(x[i])),
-                    (s) => { lock (syncObject) loss += s; });
+                    (i, o, s) => s + lossFunction.Loss(y[i], score(x[i])),
+                    s =>
+                    {
+                        lock (syncObject)
+                        {
+                            loss += s;
+                        }
+                    });
             }
 
             loss = -loss / x.Length;
-            cost = loss + 0.5 * lambda * wnorm();
+            cost = loss + 0.5 * Lambda * wnorm();
             Trace.WriteLine(" -- loss = " + loss);
             Trace.WriteLine(" -- cost = " + cost);
             return cost;
         }
 
-        void determineEta0(TInput[] x, bool[] y)
+        private void determineEta0(TInput[] x, bool[] y)
         {
             const double factor = 2.0;
 
             double loEta = 1;
-            double loCost = evaluateEta(x, y, loEta);
+            var loCost = evaluateEta(x, y, loEta);
 
-            double hiEta = loEta * factor;
-            double hiCost = evaluateEta(x, y, hiEta);
+            var hiEta = loEta * factor;
+            var hiCost = evaluateEta(x, y, hiEta);
 
             if (loCost < hiCost)
             {
@@ -590,28 +573,31 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 }
             }
 
-            eta0 = loEta;
+            LearningRate = loEta;
 
-            Trace.WriteLine(" - using eta0 = " + eta0);
+            Trace.WriteLine(" - using eta0 = " + LearningRate);
         }
 
-
         /// <summary>
-        /// Learns a model that can map the given inputs to the given outputs.
+        ///     Learns a model that can map the given inputs to the given outputs.
         /// </summary>
         /// <param name="x">The model inputs.</param>
         /// <param name="y">The desired outputs associated with each <paramref name="x">inputs</paramref>.</param>
         /// <param name="weights">The weight of importance for each input-output pair (if supported by the learning algorithm).</param>
         /// <returns>
-        /// A model that has learned how to produce <paramref name="y" /> given <paramref name="x" />.
+        ///     A model that has learned how to produce <paramref name="y" /> given <paramref name="x" />.
         /// </returns>
         public override TModel Learn(TInput[] x, bool[] y, double[] weights = null)
         {
             if (weights != null)
+            {
                 throw new ArgumentException("Not Supported Weights", "weights");
+            }
 
             if (Model == null)
+            {
                 Model = Create(SupportVectorLearningHelper.GetNumberOfInputs(Kernel, x), Kernel);
+            }
 
             if (w == null)
             {
@@ -619,11 +605,15 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 a = new double[Model.NumberOfInputs];
             }
 
-            if (eta0 == 0)
+            if (LearningRate == 0)
+            {
                 determineEta0(x, y);
+            }
 
-            if (this.tstart == 0)
-                this.tstart = Model.NumberOfInputs;
+            if (tstart == 0)
+            {
+                tstart = Model.NumberOfInputs;
+            }
 
             do
             {
@@ -632,10 +622,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 Trace.WriteLine(" - Learning");
                 var t1 = Stopwatch.StartNew();
 
-                for (int i = 0; i < x.Length; i++)
+                for (var i = 0; i < x.Length; i++)
                 {
-                    double eta = eta0 / Math.Pow(1 + lambda * eta0 * t, 0.75);
-                    double mu = (t <= tstart) ? 1.0 : mu0 / (1 + mu0 * (t - tstart));
+                    var eta = LearningRate / System.Math.Pow(1 + Lambda * LearningRate * t, 0.75);
+                    var mu = t <= tstart ? 1.0 : mu0 / (1 + mu0 * (t - tstart));
                     trainOne(x[i], y[i], eta, mu);
                     t++;
                 }
@@ -659,10 +649,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
                 // Check if it has converged
                 convergence.NewValue = loss;
-
             } while (!convergence.HasConverged);
 
-            Model.Weights = new double[] { 1.0 };
+            Model.Weights = new[] { 1.0 };
             Model.SupportVectors = new[] { kernel.CreateVector(w) };
             Model.Threshold = wBias;
 
@@ -670,7 +659,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
@@ -679,8 +668,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             clone.kernel = kernel;
 
-            clone.lambda = lambda;
-            clone.eta0 = eta0;
+            clone.Lambda = Lambda;
+            clone.LearningRate = LearningRate;
             clone.mu0 = mu0;
             clone.tstart = tstart;
             clone.w = w.Copy();
@@ -704,10 +693,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Inheritors should implement this function to produce a new instance
-        ///   with the same characteristics of the current object.
+        ///     Inheritors should implement this function to produce a new instance
+        ///     with the same characteristics of the current object.
         /// </summary>
-        /// 
         protected abstract BaseAveragedStochasticGradientDescent<TModel, TKernel, TInput, TLoss> InnerClone();
     }
 }

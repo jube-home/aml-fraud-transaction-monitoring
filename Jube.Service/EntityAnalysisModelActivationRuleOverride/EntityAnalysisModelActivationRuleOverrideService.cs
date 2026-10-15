@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,12 +14,13 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelActivationRuleOverride;
+using Jube.Dto.Filter;
 using Jube.Dto.Overrides;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelActivationRuleOverride;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -59,10 +60,13 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelActivationRuleOverrideRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelActivationRuleOverrideDtoValidator(
                 new EntityAnalysisModelRepository(dbContext, userName),
                 new EntityAnalysisModelActivationRuleRepository(dbContext, userName), strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelActivationRuleOverrideService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -120,6 +124,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.List: entry user={userName}");
@@ -128,9 +133,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             try
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.List");
+
                 var dtos = EntityAnalysisModelActivationRuleOverrideMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelActivationRuleOverride.List: {dtos.Count} rows user={userName}");
@@ -146,6 +153,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelActivationRuleOverride.List: cancelled user={userName}");
@@ -156,8 +164,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverride.List: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -173,6 +183,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride",
                 "ListByEntityAnalysisModelGuid", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -182,10 +193,12 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             try
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.ListByEntityAnalysisModelGuid");
+
                 var dtos = EntityAnalysisModelActivationRuleOverrideMapper.ToDto(await repository
                     .GetByEntityAnalysisModelGuidOrderByIdAsync(entityAnalysisModelGuid, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -202,6 +215,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -213,9 +227,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.ListByEntityAnalysisModelGuid: unexpected failure entityAnalysisModelGuid={entityAnalysisModelGuid} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -231,6 +247,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.Get: entry id={id} user={userName}");
@@ -240,6 +257,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Get");
                 var overrideRow = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (overrideRow == null)
                 {
                     if (log.IsDebugEnabled)
@@ -252,6 +270,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 }
 
                 op.Entity(overrideRow.Id);
+
                 return EntityAnalysisModelActivationRuleOverrideMapper.ToDto(overrideRow);
             }
             catch (ForbiddenException)
@@ -262,6 +281,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelActivationRuleOverride.Get: cancelled id={id} user={userName}");
@@ -272,9 +292,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.Get: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -292,7 +314,9 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "ListPaged",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -323,6 +347,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelActivationRuleOverride.ListPaged: cancelled user={userName}");
@@ -333,9 +358,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.ListPaged: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -353,6 +380,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "FilterFields",
                 userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.FilterFields: entry user={userName}");
@@ -364,6 +392,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelActivationRuleOverrideDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -379,9 +408,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.FilterFields: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -406,6 +437,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -415,10 +447,13 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             try
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Filter");
+
                 var rows = EntityAnalysisModelActivationRuleOverrideMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -434,8 +469,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverride.Filter: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -458,6 +495,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -467,10 +505,13 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             try
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Count");
+
                 var rows = EntityAnalysisModelActivationRuleOverrideMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -486,8 +527,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverride.Count: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -505,6 +548,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.Create: entry user={userName}");
@@ -516,6 +560,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.Create", model.OverrideKind);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -557,6 +602,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelActivationRuleOverride.Create: cancelled user={userName}");
@@ -567,8 +613,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverride.Create: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -587,6 +635,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -599,6 +648,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -614,8 +664,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelActivationRuleOverride.Validate: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -640,6 +692,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.Update: entry id={model.Id} user={userName}");
@@ -651,6 +704,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.Update", model.OverrideKind);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -664,6 +718,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 }
 
                 ActivationRuleOverridePoco saved;
+
                 try
                 {
                     saved = await repository
@@ -711,6 +766,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -722,9 +778,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.Update: unexpected failure id={model.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -747,6 +805,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride",
                 "UpdateDeleteExpiryDate", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -758,6 +817,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.UpdateDeleteExpiryDate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -771,6 +831,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 }
 
                 ActivationRuleOverridePoco saved;
+
                 try
                 {
                     saved = await repository.UpdateDeleteExpiryDateAsync(model.EntityAnalysisModelGuid,
@@ -819,6 +880,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -830,9 +892,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.UpdateDeleteExpiryDate: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -856,6 +920,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride",
                 "UpdateOverrideKind", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -865,10 +930,12 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             try
             {
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind");
+
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind",
                     model.OverrideKind);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -882,6 +949,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 }
 
                 ActivationRuleOverridePoco saved;
+
                 try
                 {
                     saved = await repository.UpdateOverrideKindAsync(model.EntityAnalysisModelGuid,
@@ -931,6 +999,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -942,9 +1011,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -961,6 +1032,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelActivationRuleOverride.Delete: entry id={id} user={userName}");
@@ -1007,6 +1079,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -1018,9 +1091,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelActivationRuleOverride.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }

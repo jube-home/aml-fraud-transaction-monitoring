@@ -1,106 +1,93 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Distributions.Fitting
 {
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Math;
-
     /// <summary>
-    ///   Options for Survival distributions.
+    ///     Options for Survival distributions.
     /// </summary>
-    /// 
     public class SurvivalOptions : IFittingOptions
     {
         /// <summary>
-        ///   Default survival estimation method. Returns <see cref="SurvivalEstimator.FlemingHarrington"/>.
+        ///     Default survival estimation method. Returns <see cref="SurvivalEstimator.FlemingHarrington" />.
         /// </summary>
-        /// 
         public const SurvivalEstimator DefaultSurvival = SurvivalEstimator.FlemingHarrington;
 
         /// <summary>
-        ///   Gets or sets the values for
-        ///   the right-censoring variable.
+        ///     Initializes a new instance of the <see cref="SurvivalOptions" /> class.
         /// </summary>
-        /// 
-        public SurvivalOutcome[] Outcome { get; set; }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="SurvivalOptions"/> class.
-        /// </summary>
-        /// 
         public SurvivalOptions()
         {
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///     Gets or sets the values for
+        ///     the right-censoring variable.
+        /// </summary>
+        public SurvivalOutcome[] Outcome { get; set; }
+
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
         public virtual object Clone()
         {
             return MemberwiseClone();
         }
-
     }
 
     /// <summary>
-    ///   Options for Empirical Hazard distributions.
+    ///     Options for Empirical Hazard distributions.
     /// </summary>
-    /// 
     public class EmpiricalHazardOptions : SurvivalOptions
     {
         /// <summary>
-        ///   Default hazard estimator. Returns <see cref="HazardEstimator.BreslowNelsonAalen"/>.
+        ///     Default hazard estimator. Returns <see cref="HazardEstimator.BreslowNelsonAalen" />.
         /// </summary>
-        /// 
         public const HazardEstimator DefaultEstimator = HazardEstimator.BreslowNelsonAalen;
 
         /// <summary>
-        ///   Default tie handling method. Returns <see cref="HazardTiesMethod.Efron"/>.
+        ///     Default tie handling method. Returns <see cref="HazardTiesMethod.Efron" />.
         /// </summary>
-        /// 
         public const HazardTiesMethod DefaultTies = HazardTiesMethod.Efron;
 
-
         /// <summary>
-        ///   Gets or sets the estimator to be used. Default is <see cref="HazardEstimator.BreslowNelsonAalen"/>.
+        ///     Initializes a new instance of the <see cref="EmpiricalHazardOptions" /> class.
         /// </summary>
-        /// 
-        public HazardEstimator Estimator { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the tie handling method to be used. Default is <see cref="HazardTiesMethod.Efron"/>.
-        /// </summary>
-        /// 
-        public HazardTiesMethod Ties { get; set; }
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="EmpiricalHazardOptions"/> class.
-        /// </summary>
-        /// 
         public EmpiricalHazardOptions()
         {
             Estimator = DefaultEstimator;
@@ -108,9 +95,8 @@ namespace Accord.Statistics.Distributions.Fitting
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="EmpiricalHazardOptions"/> class.
+        ///     Initializes a new instance of the <see cref="EmpiricalHazardOptions" /> class.
         /// </summary>
-        /// 
         public EmpiricalHazardOptions(HazardEstimator estimator, SurvivalOutcome[] output)
         {
             Estimator = estimator;
@@ -119,20 +105,18 @@ namespace Accord.Statistics.Distributions.Fitting
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="EmpiricalHazardOptions"/> class.
+        ///     Initializes a new instance of the <see cref="EmpiricalHazardOptions" /> class.
         /// </summary>
-        /// 
         public EmpiricalHazardOptions(HazardEstimator estimator, int[] output)
         {
             Estimator = estimator;
-            Outcome = output.To<SurvivalOutcome[]>();
+            Outcome = Matrix.To<SurvivalOutcome[]>(output);
             Ties = HazardTiesMethod.Breslow;
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="EmpiricalHazardOptions"/> class.
+        ///     Initializes a new instance of the <see cref="EmpiricalHazardOptions" /> class.
         /// </summary>
-        /// 
         public EmpiricalHazardOptions(HazardEstimator estimator, HazardTiesMethod ties, SurvivalOutcome[] outcome)
         {
             Estimator = estimator;
@@ -141,21 +125,30 @@ namespace Accord.Statistics.Distributions.Fitting
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="EmpiricalHazardOptions"/> class.
+        ///     Initializes a new instance of the <see cref="EmpiricalHazardOptions" /> class.
         /// </summary>
-        /// 
         public EmpiricalHazardOptions(HazardEstimator estimator, HazardTiesMethod ties, int[] output)
         {
             Estimator = estimator;
-            Outcome = output.To<SurvivalOutcome[]>();
+            Outcome = Matrix.To<SurvivalOutcome[]>(output);
             Ties = ties;
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///     Gets or sets the estimator to be used. Default is <see cref="HazardEstimator.BreslowNelsonAalen" />.
+        /// </summary>
+        public HazardEstimator Estimator { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the tie handling method to be used. Default is <see cref="HazardTiesMethod.Efron" />.
+        /// </summary>
+        public HazardTiesMethod Ties { get; set; }
+
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
         public override object Clone()
         {

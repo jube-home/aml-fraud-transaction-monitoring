@@ -32,52 +32,6 @@ namespace Jube.Data.Repository
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        private IQueryable<RedisCallCounter> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
-            double? samplePercentage)
-        {
-            var query = dbContext.RedisCallCounter.AsQueryable();
-
-            if (from.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate >= from.Value);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate <= to.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var lowerSearch = search.ToLower();
-                query = query.Where(w => w.Call != null && w.Call.ToLower().Contains(lowerSearch));
-            }
-
-            if (samplePercentage.HasValue)
-            {
-                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
-            }
-
-            return query;
-        }
-
-        private static IOrderedQueryable<RedisCallCounter> ApplySort(
-            IQueryable<RedisCallCounter> query, string sortField, string sortDirection)
-        {
-            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
-            return sortField switch
-            {
-                "call" => query.OrderByField(o => o.Call, descending),
-                "count" => query.OrderByField(o => o.Count, descending),
-                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
-                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
-                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
-                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
-                "instance" => query.OrderByField(o => o.Instance, descending),
-                _ => query.OrderByField(o => o.Id, true)
-            };
-        }
-
         public async Task<IEnumerable<RedisCallCounter>> GetLastAsync(int take, DateTime? from, DateTime? to,
             string search, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
@@ -122,6 +76,53 @@ namespace Jube.Data.Repository
                 ["minMicroseconds"] = minMicroseconds,
                 ["maxMicroseconds"] = maxMicroseconds
             });
+        }
+
+        private IQueryable<RedisCallCounter> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
+            double? samplePercentage)
+        {
+            var query = dbContext.RedisCallCounter.AsQueryable();
+
+            if (from.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate <= to.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.ToLower();
+                query = query.Where(w => w.Call != null && w.Call.ToLower().Contains(lowerSearch));
+            }
+
+            if (samplePercentage.HasValue)
+            {
+                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
+            }
+
+            return query;
+        }
+
+        private static IOrderedQueryable<RedisCallCounter> ApplySort(
+            IQueryable<RedisCallCounter> query, string sortField, string sortDirection)
+        {
+            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+            return sortField switch
+            {
+                "call" => query.OrderByField(o => o.Call, descending),
+                "count" => query.OrderByField(o => o.Count, descending),
+                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
+                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
+                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
+                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
+                "instance" => query.OrderByField(o => o.Instance, descending),
+                _ => query.OrderByField(o => o.Id, true)
+            };
         }
     }
 }

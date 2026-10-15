@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelResponseTimePipelineCounter;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -23,7 +26,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists per-minute Response Time Pipeline Counter rows for a Model, most recent first, capped at " +
                     "100000, with optional date-range and substring search (StageName) filters, scoped to the " +
                     "caller's tenant. Also accepts samplePercentage (0-100) to draw an unbiased random subset " +
-                    "of matching rows instead of the most recent ones."));
+                    "of matching rows instead of the most recent ones.",
+                    EntityAnalysisModelResponseTimePipelineCounterService.RequiredPermissions,
+                    EntityAnalysisModelResponseTimePipelineCounterService.RequiresLandlord));
         }
     }
 }

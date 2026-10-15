@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariable
 {
     [Description("One variable of an Exhaustive Search Instance with its distribution statistics and histogram.")]
@@ -28,6 +32,10 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariable
         public double StandardDeviation { get; set; }
 
         [Description("Name of the variable.")] public string? Name { get; set; }
+
+        [Description("Processing type the variable is currently read from at recall: Payload (1), Dictionary (2), " +
+                     "TtlCounter (3), Sanction (4), Abstraction (5) or AbstractionCalculation (6).")]
+        public byte ProcessingTypeId { get; set; }
 
         [Description("Kurtosis of the variable.")]
         public double Kurtosis { get; set; }
@@ -56,6 +64,16 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariable
 
         [Description("Rank of the variable by absolute correlation.")]
         public int CorrelationAbsRank { get; set; }
+
+        [Description("Source field of a categorical indicator variable, null for an ordinary variable.")]
+        public string? CategoricalSourceName { get; set; }
+
+        [Description(
+            "Kind of a categorical indicator variable: 1 level, 2 other, 3 missing, null for an ordinary variable.")]
+        public byte? CategoricalKind { get; set; }
+
+        [Description("Level label of a categorical indicator variable, null for an ordinary variable.")]
+        public string? CategoricalLevel { get; set; }
 
         [Description("Histogram of the variable.")]
         public List<ExhaustiveSearchInstanceVariableHistogramValueDto> HistogramValues { get; set; } = [];

@@ -53,6 +53,7 @@ namespace Jube.Data.Observability
         private static void Record(TraceInfo info)
         {
             string outcome;
+
             switch (info.TraceInfoStep)
             {
                 case TraceInfoStep.AfterExecute:

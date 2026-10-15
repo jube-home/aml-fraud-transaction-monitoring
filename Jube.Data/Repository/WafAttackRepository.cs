@@ -72,6 +72,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.MatchedValue != null && w.MatchedValue.ToLower().Contains(lowerSearch)) ||
                     (w.Route != null && w.Route.ToLower().Contains(lowerSearch)) ||
@@ -94,6 +95,7 @@ namespace Jube.Data.Repository
             string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "createdDate" => query.OrderByField(o => o.CreatedDate, descending),

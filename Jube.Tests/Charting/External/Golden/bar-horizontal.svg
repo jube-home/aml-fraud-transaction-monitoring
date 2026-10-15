@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-e9930737-t jc-e9930737-d">
+    <title id="jc-e9930737-t">Variable prescriptions</title>
+    <desc id="jc-e9930737-d">Bar chart with 1 series: Sensitivity. 8 categories, horizontal bars. Values range from
+        -0.18 to 0.42.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Variable prescriptions</text>
+    <text class="sub" x="16" y="50">Sensitivity of the winning model</text>
+    <line class="gl" x1="158.64" y1="66" x2="158.64" y2="364"/>
+    <line class="gl" x1="225.12" y1="66" x2="225.12" y2="364"/>
+    <line class="gl" x1="291.6" y1="66" x2="291.6" y2="364"/>
+    <line class="gl" x1="358.08" y1="66" x2="358.08" y2="364"/>
+    <line class="gl" x1="424.56" y1="66" x2="424.56" y2="364"/>
+    <line class="gl" x1="491.04" y1="66" x2="491.04" y2="364"/>
+    <line class="gl" x1="557.52" y1="66" x2="557.52" y2="364"/>
+    <line class="gl" x1="624" y1="66" x2="624" y2="364"/>
+    <text class="tk ctr" x="158.64" y="380">-0.2</text>
+    <text class="tk ctr" x="225.12" y="380">-0.1</text>
+    <text class="tk ctr" x="291.6" y="380">0</text>
+    <text class="tk ctr" x="358.08" y="380">0.1</text>
+    <text class="tk ctr" x="424.56" y="380">0.2</text>
+    <text class="tk ctr" x="491.04" y="380">0.3</text>
+    <text class="tk ctr" x="557.52" y="380">0.4</text>
+    <text class="tk ctr" x="624" y="380">0.5</text>
+    <line class="ax" x1="291.6" y1="66" x2="291.6" y2="364"/>
+    <text class="tk end mid" x="150.64" y="84.63">AmountBase</text>
+    <text class="tk end mid" x="150.64" y="121.88">MerchantCategoryRisk</text>
+    <text class="tk end mid" x="150.64" y="159.13">TransactionCountLastHour</text>
+    <text class="tk end mid" x="150.64" y="196.38">CountryMismatch</text>
+    <text class="tk end mid" x="150.64" y="233.63">DeviceAge</text>
+    <text class="tk end mid" x="150.64" y="270.88">NewPayee</text>
+    <text class="tk end mid" x="150.64" y="308.13">OverseasFlag</text>
+    <text class="tk end mid" x="150.64" y="345.38">TimeOfDay</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="AmountBase, Sensitivity: 0.42">
+            <title>AmountBase, Sensitivity: 0.42</title>
+            <path class="bar m"
+                  d="M291.6 70.66L566.82 70.66A4 4 0 0 1 570.82 74.66L570.82 94.59A4 4 0 0 1 566.82 98.59L291.6 98.59Z"/>
+            <g class="tt">
+                <rect class="tb" x="440.98" y="66" width="121.84" height="44" rx="6"/>
+                <text class="tx b" x="450.98" y="84">AmountBase</text>
+                <rect class="tsw s0" x="450.98" y="92" width="9" height="9" rx="2"/>
+                <text class="tx" x="464.98" y="101">Sensitivity: 0.42</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="576.82" y="84.63">0.42</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="MerchantCategoryRisk, Sensitivity: 0.31">
+            <title>MerchantCategoryRisk, Sensitivity: 0.31</title>
+            <path class="bar m"
+                  d="M291.6 107.91L493.69 107.91A4 4 0 0 1 497.69 111.91L497.69 131.84A4 4 0 0 1 493.69 135.84L291.6 135.84Z"/>
+            <g class="tt">
+                <rect class="tb" x="337.91" y="99.88" width="151.78" height="44" rx="6"/>
+                <text class="tx b" x="347.91" y="117.88">MerchantCategoryRisk</text>
+                <rect class="tsw s0" x="347.91" y="125.88" width="9" height="9" rx="2"/>
+                <text class="tx" x="361.91" y="134.88">Sensitivity: 0.31</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="503.69" y="121.88">0.31</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="TransactionCountLastHour, Sensitivity: 0.27">
+            <title>TransactionCountLastHour, Sensitivity: 0.27</title>
+            <path class="bar m"
+                  d="M291.6 145.16L467.1 145.16A4 4 0 0 1 471.1 149.16L471.1 169.09A4 4 0 0 1 467.1 173.09L291.6 173.09Z"/>
+            <g class="tt">
+                <rect class="tb" x="287.4" y="137.13" width="175.69" height="44" rx="6"/>
+                <text class="tx b" x="297.4" y="155.13">TransactionCountLastHour</text>
+                <rect class="tsw s0" x="297.4" y="163.13" width="9" height="9" rx="2"/>
+                <text class="tx" x="311.4" y="172.13">Sensitivity: 0.27</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="477.1" y="159.13">0.27</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="CountryMismatch, Sensitivity: 0.19">
+            <title>CountryMismatch, Sensitivity: 0.19</title>
+            <path class="bar m"
+                  d="M291.6 182.41L413.91 182.41A4 4 0 0 1 417.91 186.41L417.91 206.34A4 4 0 0 1 413.91 210.34L291.6 210.34Z"/>
+            <g class="tt">
+                <rect class="tb" x="425.91" y="174.38" width="121.89" height="44" rx="6"/>
+                <text class="tx b" x="435.91" y="192.38">CountryMismatch</text>
+                <rect class="tsw s0" x="435.91" y="200.38" width="9" height="9" rx="2"/>
+                <text class="tx" x="449.91" y="209.38">Sensitivity: 0.19</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="423.91" y="196.38">0.19</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="DeviceAge, Sensitivity: 0.11">
+            <title>DeviceAge, Sensitivity: 0.11</title>
+            <path class="bar m"
+                  d="M291.6 219.66L360.73 219.66A4 4 0 0 1 364.73 223.66L364.73 243.59A4 4 0 0 1 360.73 247.59L291.6 247.59Z"/>
+            <g class="tt">
+                <rect class="tb" x="372.73" y="211.63" width="121.84" height="44" rx="6"/>
+                <text class="tx b" x="382.73" y="229.63">DeviceAge</text>
+                <rect class="tsw s0" x="382.73" y="237.63" width="9" height="9" rx="2"/>
+                <text class="tx" x="396.73" y="246.63">Sensitivity: 0.11</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="370.73" y="233.63">0.11</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="NewPayee, Sensitivity: -0.04">
+            <title>NewPayee, Sensitivity: -0.04</title>
+            <path class="bar m"
+                  d="M291.6 256.91L269.01 256.91A4 4 0 0 0 265.01 260.91L265.01 280.84A4 4 0 0 0 269.01 284.84L291.6 284.84Z"/>
+            <g class="tt">
+                <rect class="tb" x="273.01" y="248.88" width="125.92" height="44" rx="6"/>
+                <text class="tx b" x="283.01" y="266.88">NewPayee</text>
+                <rect class="tsw s0" x="283.01" y="274.88" width="9" height="9" rx="2"/>
+                <text class="tx" x="297.01" y="283.88">Sensitivity: -0.04</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="297.6" y="270.88">-0.04</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="OverseasFlag, Sensitivity: -0.09">
+            <title>OverseasFlag, Sensitivity: -0.09</title>
+            <path class="bar m"
+                  d="M291.6 294.16L235.77 294.16A4 4 0 0 0 231.77 298.16L231.77 318.09A4 4 0 0 0 235.77 322.09L291.6 322.09Z"/>
+            <g class="tt">
+                <rect class="tb" x="239.77" y="286.13" width="125.92" height="44" rx="6"/>
+                <text class="tx b" x="249.77" y="304.13">OverseasFlag</text>
+                <rect class="tsw s0" x="249.77" y="312.13" width="9" height="9" rx="2"/>
+                <text class="tx" x="263.77" y="321.13">Sensitivity: -0.09</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="297.6" y="308.13">-0.09</text>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="TimeOfDay, Sensitivity: -0.18">
+            <title>TimeOfDay, Sensitivity: -0.18</title>
+            <path class="bar m"
+                  d="M291.6 331.41L175.94 331.41A4 4 0 0 0 171.94 335.41L171.94 355.34A4 4 0 0 0 175.94 359.34L291.6 359.34Z"/>
+            <g class="tt">
+                <rect class="tb" x="179.94" y="320" width="125.92" height="44" rx="6"/>
+                <text class="tx b" x="189.94" y="338">TimeOfDay</text>
+                <rect class="tsw s0" x="189.94" y="346" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.94" y="355">Sensitivity: -0.18</text>
+            </g>
+        </g>
+        <text class="lbl mid" x="297.6" y="345.38">-0.18</text>
+    </g>
+</svg>

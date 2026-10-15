@@ -24,6 +24,11 @@ using Jube.HttpAdaptationProtocol;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
 {
     using Adaptation = Adaptation;
@@ -66,10 +71,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         [JsonProperty(Order = 31)] public ResponseTimePipeline ResponseTimePipeline { get; set; }
         [JsonProperty(Order = 32)] public bool IsSampled { get; set; }
         [JsonProperty(Order = 33)] public bool ImplicitAsyncTimedOut { get; set; }
+        [JsonProperty(Order = 34)] public PooledDictionary<string, double> AdvancedAnalyticsAdaptation { get; set; }
+        [JsonProperty(Order = 35)] public PooledDictionary<string, Adaptation> ExhaustiveAdaptationDetail { get; set; }
+
+        [JsonProperty(Order = 36)]
+        public PooledDictionary<string, Adaptation> AdvancedAnalyticsAdaptationDetail { get; set; }
+
         [JsonIgnore] public byte[] ArchiveJson { get; set; }
         [JsonIgnore] public byte[] ResponseJson { get; set; }
         [JsonIgnore] public List<ArchiveKey> ArchiveKeys { get; set; }
-
         [JsonIgnore] public ReprocessingArchiveBatch ReprocessingArchiveBatch { get; set; }
         [JsonIgnore] public bool EnableRdbmsArchive { get; init; }
         [JsonIgnore] public int EntityAnalysisModelId { get; init; }

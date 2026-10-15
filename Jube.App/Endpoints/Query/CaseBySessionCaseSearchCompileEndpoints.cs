@@ -51,6 +51,7 @@ namespace Jube.App.Endpoints.Query
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{guid}: entry user={user}");
@@ -58,10 +59,12 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseBySessionCaseSearchCompileService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
                 return TypedResults.Ok(await service.GetAsync(guid, token));
             }
             catch (NotAuthenticatedException)
@@ -94,6 +97,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e) when (e is NullReferenceException or InvalidOperationException)
             {
                 log.Warn($"GET {Base}/{guid}: 404 (compiled search or case not visible) user={user}", e);
+
                 return TypedResults.NotFound();
             }
             catch (OperationCanceledException)
@@ -108,6 +112,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{guid}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

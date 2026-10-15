@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-slope" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-405123df-t jc-405123df-d">
+    <title id="jc-405123df-t">Fraud loss by channel</title>
+    <desc id="jc-405123df-d">Slope chart with 6 series: Card present, Card not present, Transfer, Cash, Cheque, Mobile.
+        Across 2 periods: 2024, 2025.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Fraud loss by channel</text>
+    <text class="sub" x="16" y="50">Millions</text>
+    <line class="gl" x1="136.4" y1="90" x2="136.4" y2="380"/>
+    <text class="ph ctr" x="136.4" y="82">2024</text>
+    <line class="gl" x1="507.6" y1="90" x2="507.6" y2="380"/>
+    <text class="ph ctr" x="507.6" y="82">2025</text>
+    <g class="sr s0">
+        <path class="ln" d="M136.4 257.24L507.6 287.82">
+            <title>Card present</title>
+        </path>
+        <path class="hl" d="M136.4 257.24L507.6 287.82"/>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card present, 2024: 4.2, Rank: 3 of 6">
+            <title>Card present, 2024: 4.2, Rank: 3 of 6</title>
+            <circle class="hit" cx="136.4" cy="257.24" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="257.24" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="181.74" width="107.27" height="61" rx="6"/>
+                <rect class="tsw s0" x="146.4" y="190.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="199.74">Card present</text>
+                <text class="tx" x="146.4" y="216.74">2024: 4.2</text>
+                <text class="tx" x="146.4" y="233.74">Rank: 3 of 6</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Card present, 2025: 3.1, Rank: 4 of 6, Change: -1.1">
+            <title>Card present, 2025: 3.1, Rank: 4 of 6, Change: -1.1</title>
+            <circle class="hit" cx="507.6" cy="287.82" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="287.82" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="400.33" y="195.32" width="107.27" height="78" rx="6"/>
+                <rect class="tsw s0" x="410.33" y="204.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="424.33" y="213.32">Card present</text>
+                <text class="tx" x="410.33" y="230.32">2025: 3.1</text>
+                <text class="tx" x="410.33" y="247.32">Rank: 4 of 6</text>
+                <text class="tx" x="410.33" y="264.32">Change: -1.1</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ln" d="M136.4 154.38L507.6 112.68">
+            <title>Card not present</title>
+        </path>
+        <path class="hl" d="M136.4 154.38L507.6 112.68"/>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Card not present, 2024: 7.9, Rank: 1 of 6">
+            <title>Card not present, 2024: 7.9, Rank: 1 of 6</title>
+            <circle class="hit" cx="136.4" cy="154.38" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="154.38" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="159.88" width="128.89" height="61" rx="6"/>
+                <rect class="tsw s1" x="146.4" y="168.88" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="177.88">Card not present</text>
+                <text class="tx" x="146.4" y="194.88">2024: 7.9</text>
+                <text class="tx" x="146.4" y="211.88">Rank: 1 of 6</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Card not present, 2025: 9.4, Rank: 1 of 6, Change: +1.5">
+            <title>Card not present, 2025: 9.4, Rank: 1 of 6, Change: +1.5</title>
+            <circle class="hit" cx="507.6" cy="112.68" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="112.68" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="378.71" y="118.18" width="128.89" height="78" rx="6"/>
+                <rect class="tsw s1" x="388.71" y="127.18" width="9" height="9" rx="2"/>
+                <text class="tx b" x="402.71" y="136.18">Card not present</text>
+                <text class="tx" x="388.71" y="153.18">2025: 9.4</text>
+                <text class="tx" x="388.71" y="170.18">Rank: 1 of 6</text>
+                <text class="tx" x="388.71" y="187.18">Change: +1.5</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <path class="ln" d="M136.4 221.1L507.6 184.96">
+            <title>Transfer</title>
+        </path>
+        <path class="hl" d="M136.4 221.1L507.6 184.96"/>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Transfer, 2024: 5.5, Rank: 2 of 6">
+            <title>Transfer, 2024: 5.5, Rank: 2 of 6</title>
+            <circle class="hit" cx="136.4" cy="221.1" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="221.1" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="145.6" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s2" x="146.4" y="154.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="163.6">Transfer</text>
+                <text class="tx" x="146.4" y="180.6">2024: 5.5</text>
+                <text class="tx" x="146.4" y="197.6">Rank: 2 of 6</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Transfer, 2025: 6.8, Rank: 2 of 6, Change: +1.3">
+            <title>Transfer, 2025: 6.8, Rank: 2 of 6, Change: +1.3</title>
+            <circle class="hit" cx="507.6" cy="184.96" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="184.96" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="416.8" y="92.46" width="90.8" height="78" rx="6"/>
+                <rect class="tsw s2" x="426.8" y="101.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="440.8" y="110.46">Transfer</text>
+                <text class="tx" x="426.8" y="127.46">2025: 6.8</text>
+                <text class="tx" x="426.8" y="144.46">Rank: 2 of 6</text>
+                <text class="tx" x="426.8" y="161.46">Change: +1.3</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s3">
+        <path class="ln" d="M136.4 312.84L507.6 335.08">
+            <title>Cash</title>
+        </path>
+        <path class="hl" d="M136.4 312.84L507.6 335.08"/>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Cash, 2024: 2.2, Rank: 5 of 6">
+            <title>Cash, 2024: 2.2, Rank: 5 of 6</title>
+            <circle class="hit" cx="136.4" cy="312.84" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="312.84" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="237.34" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s3" x="146.4" y="246.34" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="255.34">Cash</text>
+                <text class="tx" x="146.4" y="272.34">2024: 2.2</text>
+                <text class="tx" x="146.4" y="289.34">Rank: 5 of 6</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Cash, 2025: 1.4, Rank: 5 of 6, Change: -0.8">
+            <title>Cash, 2025: 1.4, Rank: 5 of 6, Change: -0.8</title>
+            <circle class="hit" cx="507.6" cy="335.08" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="335.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="419.92" y="242.58" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s3" x="429.92" y="251.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="443.92" y="260.58">Cash</text>
+                <text class="tx" x="429.92" y="277.58">2025: 1.4</text>
+                <text class="tx" x="429.92" y="294.58">Rank: 5 of 6</text>
+                <text class="tx" x="429.92" y="311.58">Change: -0.8</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s4">
+        <path class="ln" d="M136.4 321.18L507.6 337.86">
+            <title>Cheque</title>
+        </path>
+        <path class="hl" d="M136.4 321.18L507.6 337.86"/>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Cheque, 2024: 1.9, Rank: 6 of 6">
+            <title>Cheque, 2024: 1.9, Rank: 6 of 6</title>
+            <circle class="hit" cx="136.4" cy="321.18" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="321.18" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="245.68" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s4" x="146.4" y="254.68" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="263.68">Cheque</text>
+                <text class="tx" x="146.4" y="280.68">2024: 1.9</text>
+                <text class="tx" x="146.4" y="297.68">Rank: 6 of 6</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Cheque, 2025: 1.3, Rank: 6 of 6, Change: -0.6">
+            <title>Cheque, 2025: 1.3, Rank: 6 of 6, Change: -0.6</title>
+            <circle class="hit" cx="507.6" cy="337.86" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="337.86" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="419.92" y="245.36" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s4" x="429.92" y="254.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="443.92" y="263.36">Cheque</text>
+                <text class="tx" x="429.92" y="280.36">2025: 1.3</text>
+                <text class="tx" x="429.92" y="297.36">Rank: 6 of 6</text>
+                <text class="tx" x="429.92" y="314.36">Change: -0.6</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s5">
+        <path class="ln" d="M136.4 290.6L507.6 229.44">
+            <title>Mobile</title>
+        </path>
+        <path class="hl" d="M136.4 290.6L507.6 229.44"/>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Mobile, 2024: 3, Rank: 4 of 6">
+            <title>Mobile, 2024: 3, Rank: 4 of 6</title>
+            <circle class="hit" cx="136.4" cy="290.6" r="8.5"/>
+            <circle class="pt" cx="136.4" cy="290.6" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.4" y="215.1" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s5" x="146.4" y="224.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.4" y="233.1">Mobile</text>
+                <text class="tx" x="146.4" y="250.1">2024: 3</text>
+                <text class="tx" x="146.4" y="267.1">Rank: 4 of 6</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Mobile, 2025: 5.2, Rank: 3 of 6, Change: +2.2">
+            <title>Mobile, 2025: 5.2, Rank: 3 of 6, Change: +2.2</title>
+            <circle class="hit" cx="507.6" cy="229.44" r="8.5"/>
+            <circle class="pt" cx="507.6" cy="229.44" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="416.8" y="136.94" width="90.8" height="78" rx="6"/>
+                <rect class="tsw s5" x="426.8" y="145.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="440.8" y="154.94">Mobile</text>
+                <text class="tx" x="426.8" y="171.94">2025: 5.2</text>
+                <text class="tx" x="426.8" y="188.94">Rank: 3 of 6</text>
+                <text class="tx" x="426.8" y="205.94">Change: +2.2</text>
+            </g>
+        </g>
+    </g>
+    <text class="dl end mid" x="127.4" y="154.38">Card not present 7.9</text>
+    <text class="dl end mid" x="127.4" y="221.1">Transfer 5.5</text>
+    <text class="dl end mid" x="127.4" y="257.24">Card present 4.2</text>
+    <text class="dl end mid" x="127.4" y="290.6">Mobile 3</text>
+    <text class="dl end mid" x="127.4" y="310.51">Cash 2.2</text>
+    <text class="dl end mid" x="127.4" y="323.51">Cheque 1.9</text>
+    <text class="dl mid" x="516.6" y="112.68">9.4 Card not present</text>
+    <text class="dl mid" x="516.6" y="184.96">6.8 Transfer</text>
+    <text class="dl mid" x="516.6" y="229.44">5.2 Mobile</text>
+    <text class="dl mid" x="516.6" y="287.82">3.1 Card present</text>
+    <text class="dl mid" x="516.6" y="329.97">1.4 Cash</text>
+    <text class="dl mid" x="516.6" y="342.97">1.3 Cheque</text>
+</svg>

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Jube.Service.EntityApproval;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -40,6 +40,7 @@ namespace Jube.Test.Service.EntityApproval
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             tenantRegistryId = await dbContext.UserInTenant
                 .Where(w => w.User == fx.Seed.UserWithPermission)
                 .Select(s => s.TenantRegistryId)
@@ -52,17 +53,22 @@ namespace Jube.Test.Service.EntityApproval
 
             await dbContext.EntityApproval.Where(w => xPathIds.Contains(w.EntityId ?? 0)
                                                       && w.EntityApprovalKindId == (int)XPath).DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                 .Where(w => xPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => xPathIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         private async Task<int> SeedModelAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var model = new Jube.Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Note{Guid.NewGuid():N}"[..40],
@@ -75,8 +81,10 @@ namespace Jube.Test.Service.EntityApproval
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
+
             return model.Id;
         }
 
@@ -84,6 +92,7 @@ namespace Jube.Test.Service.EntityApproval
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"ZzNote{Guid.NewGuid():N}"[..20];
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = modelId,
@@ -98,6 +107,7 @@ namespace Jube.Test.Service.EntityApproval
                 CreatedUser = Maker
             });
             xPathIds.Add(id);
+
             return id;
         }
 

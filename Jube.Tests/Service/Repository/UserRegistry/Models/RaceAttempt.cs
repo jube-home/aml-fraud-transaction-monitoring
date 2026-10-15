@@ -13,6 +13,11 @@
 
 using System;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Test.Service.Repository.UserRegistry.Models
 {
     internal sealed record RaceAttempt(int? SavedId, Exception? Error);

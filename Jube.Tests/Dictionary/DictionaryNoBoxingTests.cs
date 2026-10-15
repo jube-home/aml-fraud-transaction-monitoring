@@ -18,7 +18,6 @@ using System.Linq;
 using FluentAssertions;
 using Jube.Dictionary;
 using Jube.Dictionary.Interfaces;
-using Jube.Dictionary.Models;
 using Xunit;
 
 namespace Jube.Test.Dictionary
@@ -124,6 +123,7 @@ namespace Jube.Test.Dictionary
         {
             using var dictionary = new DictionaryNoBoxing<string>();
             var built = new string(['K', 'e', 'y', 'A']);
+
             string.IsInterned(built).Should()
                 .BeNull("the runtime should not already have this freshly built string interned");
 
@@ -299,6 +299,7 @@ namespace Jube.Test.Dictionary
 
             dictionary.Count.Should()
                 .Be(2, "AddUnchecked bypasses the duplicate-key check that Add and TryAdd enforce");
+
             dictionary.Select(kv => kv.Value.AsString()).Should().Equal("AE", "GB");
         }
 
@@ -339,6 +340,7 @@ namespace Jube.Test.Dictionary
             }
 
             dictionary.Count.Should().Be(100);
+
             for (var i = 0; i < 100; i++)
             {
                 dictionary[$"key{i}"].AsInt().Should().Be(i);
@@ -367,6 +369,7 @@ namespace Jube.Test.Dictionary
             dictionary.Add("C", 3);
 
             var seen = new List<string>();
+
             foreach (var kv in dictionary)
             {
                 seen.Add($"{kv.Key}={kv.Value.AsInt()}");

@@ -20,7 +20,6 @@ namespace Jube.App.Code.Waf
     public static class WafAttackCapture
     {
         private const int MaxQueueLength = 20000;
-
         private static readonly ConcurrentQueue<WafAttackCaptureEntry> queue = new();
 
         public static void Enqueue(WafAttackCaptureEntry entry)

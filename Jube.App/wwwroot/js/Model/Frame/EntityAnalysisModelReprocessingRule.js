@@ -186,6 +186,7 @@ if (typeof id === "undefined") {
     $("#ListValuesDiv").hide();
     initBuilderCoder(2, parentKey);
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelReprocessingRule", "new", {[parentKeyName]: parentKey});
     reprocess.hide();
     $('#GridWrap').hide();
 } else {
@@ -211,6 +212,12 @@ if (typeof id === "undefined") {
             initBuilderCoder(2, parentKey, builderCoderData);
             GetInstances();
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelReprocessingRule", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
 
             reprocess.show();
             $('#GridWrap').show();

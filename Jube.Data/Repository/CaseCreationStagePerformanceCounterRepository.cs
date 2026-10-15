@@ -33,51 +33,6 @@ namespace Jube.Data.Repository
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        private IQueryable<CaseCreationStagePerformanceCounter> BuildFilteredQuery(DateTime? from, DateTime? to,
-            int? stageId, double? samplePercentage)
-        {
-            var query = dbContext.CaseCreationStagePerformanceCounter.AsQueryable();
-
-            if (from.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate >= from.Value);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate <= to.Value);
-            }
-
-            if (stageId.HasValue)
-            {
-                query = query.Where(w => w.StageId == stageId.Value);
-            }
-
-            if (samplePercentage.HasValue)
-            {
-                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
-            }
-
-            return query;
-        }
-
-        private static IOrderedQueryable<CaseCreationStagePerformanceCounter> ApplySort(
-            IQueryable<CaseCreationStagePerformanceCounter> query, string sortField, string sortDirection)
-        {
-            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
-            return sortField switch
-            {
-                "stageName" => query.OrderByField(o => o.StageId, descending),
-                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
-                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
-                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
-                "invokeCount" => query.OrderByField(o => o.InvokeCount, descending),
-                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
-                "instance" => query.OrderByField(o => o.Instance, descending),
-                _ => query.OrderByField(o => o.Id, true)
-            };
-        }
-
         public async Task<IEnumerable<CaseCreationStagePerformanceCounter>> GetLastAsync(int take, DateTime? from,
             DateTime? to, int? stageId, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
@@ -123,6 +78,52 @@ namespace Jube.Data.Repository
                 ["maxMicroseconds"] = maxMicroseconds,
                 ["invokeCount"] = invokeCount
             });
+        }
+
+        private IQueryable<CaseCreationStagePerformanceCounter> BuildFilteredQuery(DateTime? from, DateTime? to,
+            int? stageId, double? samplePercentage)
+        {
+            var query = dbContext.CaseCreationStagePerformanceCounter.AsQueryable();
+
+            if (from.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate <= to.Value);
+            }
+
+            if (stageId.HasValue)
+            {
+                query = query.Where(w => w.StageId == stageId.Value);
+            }
+
+            if (samplePercentage.HasValue)
+            {
+                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
+            }
+
+            return query;
+        }
+
+        private static IOrderedQueryable<CaseCreationStagePerformanceCounter> ApplySort(
+            IQueryable<CaseCreationStagePerformanceCounter> query, string sortField, string sortDirection)
+        {
+            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+            return sortField switch
+            {
+                "stageName" => query.OrderByField(o => o.StageId, descending),
+                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
+                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
+                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
+                "invokeCount" => query.OrderByField(o => o.InvokeCount, descending),
+                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
+                "instance" => query.OrderByField(o => o.Instance, descending),
+                _ => query.OrderByField(o => o.Id, true)
+            };
         }
     }
 }

@@ -20,6 +20,7 @@ using Jube.Data.Context;
 using Jube.Data.Query;
 using Jube.Service.Exceptions.Query.TreeChildren;
 using Jube.Service.Query.TreeChildren;
+using Jube.Service.Query.TreeChildren.Models;
 using Jube.Service.Reactivity.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Builder;
@@ -141,6 +142,7 @@ namespace Jube.App.Endpoints.Query
         {
             var user = httpContext.User.Identity?.Name;
             var route = $"GET {Base}/{node.Route}";
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"{route}: entry user={user}");
@@ -148,11 +150,13 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await TreeChildrenService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")));
+
                 return TypedResults.Ok(await run(service, token));
             }
             catch (NotAuthenticatedException)
@@ -185,6 +189,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"{route}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

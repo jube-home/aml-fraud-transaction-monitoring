@@ -47,6 +47,7 @@ namespace Jube.Test.Service.Filter
         {
             await using var dbContext = fx.GetDbContext();
             var repository = new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission);
+
             foreach (var (suffix, active) in new[] { ("A", 1), ("B", 1), ("C", 0) })
             {
                 var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
@@ -60,8 +61,10 @@ namespace Jube.Test.Service.Filter
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => createdModels.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModels.Contains(w.Id)).DeleteAsync();
         }
 
@@ -85,6 +88,7 @@ namespace Jube.Test.Service.Filter
 
             var first = await service.FilterAsync(ByMarker(), 2);
             var rest = await service.FilterAsync(ByMarker(), 2, first.Items[^1].Id);
+
             var active = await service.FilterAsync(
                 ByMarker(",{\"id\":\"Active\",\"operator\":\"equal\",\"value\":\"True\"}"));
 
@@ -143,6 +147,7 @@ namespace Jube.Test.Service.Filter
                 await service.FilterAsync("{\"rules\":[{\"id\":\"Nope\",\"operator\":\"equal\",\"value\":1}]}");
 
             result.Valid.Should().BeFalse();
+
             result.Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "FieldUnknown" && e.PropertyName == "$.rules[0].id");
         }

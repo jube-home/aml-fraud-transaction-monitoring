@@ -1,0 +1,72 @@
+{
+  "kind": "KModesClustererPipeline",
+  "schemaVersion": 1,
+  "inputCount": 4,
+  "variablesInOrder": [
+    "amount",
+    "velocity",
+    "merchant_risk",
+    "account_age"
+  ],
+  "payload": {
+    "fillValues": [
+      1.0,
+      1.0,
+      1.0,
+      4.0
+    ],
+    "modes": [
+      [
+        3.0,
+        3.0,
+        2.0,
+        4.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        4.0
+      ],
+      [
+        2.0,
+        2.0,
+        1.0,
+        4.0
+      ]
+    ],
+    "clusters": [
+      {
+        "index": 0,
+        "proportion": 0.3333333333333333,
+        "mode": [
+          3.0,
+          3.0,
+          2.0,
+          4.0
+        ]
+      },
+      {
+        "index": 1,
+        "proportion": 0.39814814814814814,
+        "mode": [
+          1.0,
+          1.0,
+          1.0,
+          4.0
+        ]
+      },
+      {
+        "index": 2,
+        "proportion": 0.26851851851851855,
+        "mode": [
+          2.0,
+          2.0,
+          1.0,
+          4.0
+        ]
+      }
+    ]
+  },
+  "calibrator": null
+}

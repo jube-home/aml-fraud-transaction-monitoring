@@ -48,6 +48,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         public async Task<RedisMetric> SampleAsync()
         {
             var server = await GetServerAsync().ConfigureAwait(false);
+
             if (server == null)
             {
                 return null;
@@ -78,6 +79,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
 
             long totalKeys = 0;
+
             foreach (var (key, value) in values)
             {
                 if (!key.StartsWith("db", StringComparison.OrdinalIgnoreCase))
@@ -87,6 +89,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
                 var keysField = value.Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .FirstOrDefault(f => f.StartsWith("keys=", StringComparison.OrdinalIgnoreCase));
+
                 if (keysField != null &&
                     long.TryParse(keysField.AsSpan("keys=".Length), NumberStyles.Integer,
                         CultureInfo.InvariantCulture, out var keyCount))
@@ -97,6 +100,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
             long? rdbLastSaveAgeSeconds = null;
             DateTime? lastBgSaveDate = null;
+
             if (values.TryGetValue("rdb_last_save_time", out var rdbLastSaveTimeRaw) &&
                 long.TryParse(rdbLastSaveTimeRaw, NumberStyles.Integer, CultureInfo.InvariantCulture,
                     out var rdbLastSaveTimeUnixSeconds))
@@ -106,6 +110,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
 
             var aofRewrites = GetLong("aof_rewrites");
+
             if (lastAofRewrites.HasValue && aofRewrites > lastAofRewrites.Value)
             {
                 lastKnownAofRewriteDate = DateTime.UtcNow;
@@ -117,6 +122,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var misses = GetLong("keyspace_misses");
 
             double? hitRatePercent = null;
+
             if (lastSample is { } last)
             {
                 var hitDelta = hits - last.Hits;
@@ -157,12 +163,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         public async Task<List<RedisSlowOperation>> SampleSlowOperationsAsync()
         {
             var server = await GetServerAsync().ConfigureAwait(false);
+
             if (server == null)
             {
                 return [];
             }
 
             var raw = await server.ExecuteAsync("SLOWLOG", "GET", "128").ConfigureAwait(false);
+
             if (raw.IsNull || (RedisResult[])raw is not { } entries)
             {
                 return [];
@@ -217,6 +225,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var lagByEndpoint = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 
             var server = await GetServerAsync().ConfigureAwait(false);
+
             if (server == null)
             {
                 return lagByEndpoint;
@@ -238,6 +247,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 foreach (var field in pair.Value.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     var kv = field.Split('=', 2);
+
                     if (kv.Length != 2)
                     {
                         continue;
@@ -256,6 +266,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                                 out var parsedLag)
                                 ? parsedLag
                                 : null;
+
                             break;
                     }
                 }
@@ -272,6 +283,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private async Task<IServer> GetServerAsync()
         {
             multiplexer ??= await ConnectionMultiplexer.ConnectAsync(BuildOptions()).ConfigureAwait(false);
+
             return multiplexer.GetServers().FirstOrDefault(s => s.IsConnected);
         }
 
@@ -279,6 +291,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             var options = ConfigurationOptions.Parse(connectionString);
             options.AllowAdmin = true;
+
             return options;
         }
     }

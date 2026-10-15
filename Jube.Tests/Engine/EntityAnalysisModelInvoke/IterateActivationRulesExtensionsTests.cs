@@ -23,9 +23,9 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 using Jube.HttpAdaptationProtocol;
+using Jube.Test.Engine.EntityAnalysisModelInvoke.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
-using Jube.Test.Engine.EntityAnalysisModelInvoke.Models;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
 using EntityAnalysisModel = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
@@ -83,7 +83,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 EnableReprocessing = enableReprocessing,
                 CaseWorkflowGuid = Guid.NewGuid(),
                 CaseWorkflowStatusGuid = Guid.NewGuid(),
-                ActivationRuleCompileDelegate = (_, _, _, _, _, _, _, _, _, _, _) => matched
+                ActivationRuleCompileDelegate = (_, _, _, _, _, _, _, _, _, _, _, _) => matched
             };
         }
 
@@ -192,8 +192,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideActivatesARuleThatWouldNotOtherwiseMatchAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
@@ -213,8 +215,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideBypassesActivationSamplingAsync()
         {
             var context = NewContext(0.99);
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
@@ -232,8 +236,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideOnlyAppliesToTheRuleItIsBoundToAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
@@ -253,8 +259,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForcedActivationIsMarkedForcedOnThePayloadAndCountedSeparatelyAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
@@ -266,8 +274,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             context.EntityAnalysisModelInstanceEntryPayload.Activation["BlacklistCard"].Forced.Should()
                 .BeTrue("the payload must record that the rule was forced rather than matched on its own logic");
+
             rule.ForcedActivationCounter.Should().Be(1,
                 "a forced activation is counted separately so a rule's match rate stays honest");
+
             rule.ActivationCounter.Should().Be(1);
         }
 
@@ -310,8 +320,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ARuleSuppressedAtTheModelLevelIsStillEvaluatedButNotCountedTowardsPrevailingAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+
             AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
@@ -326,6 +338,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             prevailingActivationRuleId.Should().BeNull();
 
             context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().ContainKey("SanctionedCountryRule");
+
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should()
                 .ContainSingle(k => k.Key == "SanctionedCountryRule");
         }
@@ -334,8 +347,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ARuleSuppressedAtTheRuleLevelViaAnotherModelsOverrideListIsNotCountedAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+
             AddOverride(context, "Country", "IR", "TargetedRule", EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
@@ -426,6 +441,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ActivatorDelegate = () => new object(),
                 ExecuteAsyncDelegate = (_, _) => Task.FromResult(true)
             };
+
             script.EntityAnalysisModelInlineScriptEvents.Add(new EntityAnalysisModelInlineScriptEvent
             {
                 EntityAnalysisModelInlineScriptEventType =
@@ -433,6 +449,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 Guid = rule.Guid,
                 Name = rule.Name
             });
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             var cacheService = TestCacheService.Create(out _);
 
@@ -458,6 +475,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ActivatorDelegate = () => new object(),
                 ExecuteAsyncDelegate = (_, _) => Task.FromResult(false)
             };
+
             script.EntityAnalysisModelInlineScriptEvents.Add(new EntityAnalysisModelInlineScriptEvent
             {
                 EntityAnalysisModelInlineScriptEventType =
@@ -465,6 +483,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 Guid = rule.Guid,
                 Name = rule.Name
             });
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             var cacheService = TestCacheService.Create(out _);
 
@@ -493,11 +512,36 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
+        public async Task AReprocessingEligibleRuleDoesNotCreateACaseDuringAReprocessingRunAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId = 99;
+            var rule = NewRule("CaseOnReprocess", true, enableCaseWorkflow: true, enableReprocessing: true);
+            context.EntityAnalysisModel.Snapshot.ModelActivationRules.Add(rule);
+            var cacheService = TestCacheService.Create(out _);
+
+            var (activationRuleCount, createCase, _, _) =
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            activationRuleCount.Should().Be(1,
+                "the rule opted into reprocessing, so it is evaluated and counted -- the suppression "
+                + "that applies to a rule without EnableReprocessing must not apply to this one");
+
+            (createCase is null).Should().BeTrue(
+                "reprocessing replays transactions that already happened, so a case raised from one is "
+                + "historic work landing in a live analyst queue at the rate the run matches. Notification, "
+                + "the activation watcher and TTL counters all guard on the reprocessing instance id and "
+                + "case creation must too");
+        }
+
+        [Fact]
         public async Task ATtlCounterIsStillIncrementedForAMatchedRuleEvenWhenSuppressedAtTheModelLevelAsync()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+
             AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", "1");
@@ -544,8 +588,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var failing = NewRule("FailingRule", true);
-            failing.ActivationRuleCompileDelegate = (_, _, _, _, _, _, _, _, _, _, _) =>
+
+            failing.ActivationRuleCompileDelegate = (_, _, _, _, _, _, _, _, _, _, _, _) =>
                 throw new InvalidOperationException("boom");
+
             var healthy = NewRule("HealthyRule", true);
             context.Snapshot.ModelActivationRules.Add(failing);
             context.Snapshot.ModelActivationRules.Add(healthy);

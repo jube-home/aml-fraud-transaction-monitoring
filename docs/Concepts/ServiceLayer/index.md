@@ -3,6 +3,7 @@ layout: default
 title: Service Layer & DTO Model
 nav_order: 12
 parent: Concepts
+has_children: true
 ---
 
 🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
@@ -15,11 +16,11 @@ Repository > Data Context (ORM) > Database`, with the DTO existing solely as the
 for a single MVC controller. The pattern is:
 `Endpoint (Minimal API) > Service > Repository > Data Context > Database`.
 
-The service layer is not just the controller's logic moved sideways. The DTO in front of it is doing considerably more
-work than it used to — it is the single declarative source that a generic, entity-agnostic UI and an Agentic AI tool
-host both read off directly, so that as little as possible of an entity's grouping, layout, validation, permission shape
-and AI-tool metadata has to be hand-written per entity ever again. This page explains that model. No MVC controllers
-exist: the repository, query, helper, authentication, mock and invoke areas are all minimal endpoints.
+The service layer is not just the controller's logic moved sideways. The DTO in front of it is not merely a request/
+response serialisation contract — it is the single declarative source that a generic, entity-agnostic UI and an Agentic
+AI tool host both read off directly, so that as little as possible of an entity's grouping, layout, validation,
+permission shape and AI-tool metadata has to be hand-written per entity ever again. This page explains that model. No
+MVC controllers exist: the repository, query, helper, authentication, mock and invoke areas are all minimal endpoints.
 
 ## Where the pieces live
 
@@ -125,7 +126,7 @@ use, and both properties (plus the sibling `RuleScriptTypeId`/`CoderRuleScript` 
 marked `[Editor("RuleBuilder")]` so the generic form defers the whole group to the bespoke rule-authoring control rather
 than rendering individual inputs.
 `EntityAnalysisModelSanctionDto` is a fourth `ITreeChild` adopter and a second real `[Lookup]` use, but with a shape
-`[Lookup]` wasn't originally designed for: its `MultipartStringDataName` field is a value-and-label-are-the-same-string
+outside what `[Lookup]` is designed for: its `MultipartStringDataName` field is a value-and-label-are-the-same-string
 picker against the (still unmigrated) `GetEntityAnalysisPotentialMultiPartStringNames` query, so `TextField` and
 `ValueField` both point at the same bare `value` property rather than an id/name pair —
 `[Lookup("/api/GetEntityAnalysisPotentialMultiPartStringNames", TextField = "value", ValueField = "value", ParentField = nameof(EntityAnalysisModelId))]`.

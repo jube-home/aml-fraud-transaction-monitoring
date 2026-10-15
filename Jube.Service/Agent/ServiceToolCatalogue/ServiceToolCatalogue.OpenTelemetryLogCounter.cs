@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.OpenTelemetryLogCounter;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -22,23 +25,32 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterList", OperationKind.Read, true, false,
                     "Lists every OpenTelemetryLogCounter rule (Name + Regex), most recent first. Not scoped " +
-                    "to any tenant."),
+                    "to any tenant.", OpenTelemetryLogCounterService.RequiredPermissions,
+                    OpenTelemetryLogCounterService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterGet", OperationKind.Read, true, false,
-                    "Returns one OpenTelemetryLogCounter rule by id."),
+                    "Returns one OpenTelemetryLogCounter rule by id.",
+                    OpenTelemetryLogCounterService.RequiredPermissions,
+                    OpenTelemetryLogCounterService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterCreate", OperationKind.Write, false, false,
                     "Registers a rule that increments an OpenTelemetry counter named Name whenever Regex " +
-                    "matches an incoming unstructured log line; calling twice creates two rows."),
+                    "matches an incoming unstructured log line; calling twice creates two rows.",
+                    OpenTelemetryLogCounterService.RequiredPermissions,
+                    OpenTelemetryLogCounterService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterValidate", OperationKind.Read, true, false,
-                    "Validates an Open Telemetry Log Counter without saving it and returns every failure."),
+                    "Validates an Open Telemetry Log Counter without saving it and returns every failure.",
+                    OpenTelemetryLogCounterService.RequiredPermissions,
+                    OpenTelemetryLogCounterService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterUpdate", OperationKind.Write, true, false,
-                    "Updates an existing rule in place."),
+                    "Updates an existing rule in place.", OpenTelemetryLogCounterService.RequiredPermissions,
+                    OpenTelemetryLogCounterService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a rule by id; it immediately stops being checked against incoming log lines.")
+                    "Soft-deletes a rule by id; it immediately stops being checked against incoming log lines.",
+                    OpenTelemetryLogCounterService.RequiredPermissions, OpenTelemetryLogCounterService.RequiresLandlord)
             ]);
         }
     }

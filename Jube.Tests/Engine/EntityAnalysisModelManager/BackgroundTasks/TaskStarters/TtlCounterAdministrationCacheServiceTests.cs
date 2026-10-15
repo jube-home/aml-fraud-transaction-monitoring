@@ -35,6 +35,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                     Log = TestLog.NoOp
                 }
             };
+
             return new TtlCounterAdministrationCacheService(model);
         }
 

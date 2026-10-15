@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Engine.Sanctions;
 using Jube.Engine.Sanctions.Models;
 using LinqToDB;
@@ -70,7 +71,7 @@ namespace Jube.Test.Infrastructure
                 CreatedDate = DateTime.UtcNow
             });
 
-            var entryRepository = new SanctionsEntryRepository(dbContext);
+            var entryRepository = new SanctionEntryRepository(dbContext);
             var rejectionRepository = new SanctionEntryRejectionRepository(dbContext);
 
             await using var stream = File.OpenRead("sdn.csv");
@@ -122,6 +123,7 @@ namespace Jube.Test.Infrastructure
 
             var import = await dbContext.SanctionEntryImport.FirstAsync(w => w.Id == ImportId)
                 .ConfigureAwait(false);
+
             import.EndDate = DateTime.UtcNow;
             import.TotalRows = ImportResult.TotalRows;
             import.InsertedCount = InsertedCount;

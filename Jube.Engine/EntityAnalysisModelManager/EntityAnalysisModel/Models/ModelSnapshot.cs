@@ -11,10 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
     using System;
     using System.Collections.Generic;
+    using AdvancedAnalytics.Models;
     using Exhaustive.Models;
     using Models;
     using Models.EntityAnalysisModelInlineScript;
@@ -34,6 +40,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<EntityModelGatewayRule> ModelGatewayRules { get; init; } = [];
         public List<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelAdaptations { get; init; } = [];
         public List<ExhaustiveSearchInstance> ExhaustiveModels { get; init; } = [];
+        public IReadOnlyList<AdvancedAnalyticsModel> AdvancedAnalyticsModels { get; init; } = [];
         public List<EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths { get; init; } = [];
 
         public List<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculations

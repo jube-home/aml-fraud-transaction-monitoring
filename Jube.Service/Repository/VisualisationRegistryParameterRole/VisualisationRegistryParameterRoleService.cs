@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.VisualisationRegistryParameterRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryParameterRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
     public sealed class VisualisationRegistryParameterRoleService
     {
         private static readonly int[] permissions = [32];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
             repository = new RuleRepository(dbContext, userName);
             validator = new VisualisationRegistryParameterRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<VisualisationRegistryParameterRoleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -115,6 +116,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
             using var op = OperationScope.Start("VisualisationRegistryParameterRole",
                 "ListByVisualisationRegistryParameterGuid", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug("VisualisationRegistryParameterRole.ListByVisualisationRegistryParameterGuid: entry " +
@@ -125,9 +127,11 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
             {
                 EnsurePermitted("VisualisationRegistryParameterRole.ListByVisualisationRegistryParameterGuid",
                     permissions);
+
                 var dtos = VisualisationRegistryParameterRoleMapper.ToDto(
                     await repository.GetByVisualisationRegistryGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug("VisualisationRegistryParameterRole.ListByVisualisationRegistryParameterGuid: " +
@@ -149,8 +153,10 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error("VisualisationRegistryParameterRole.ListByVisualisationRegistryParameterGuid: " +
                           $"unexpected failure guid={guid} user={userName}", ex);
+
                 throw;
             }
         }
@@ -162,6 +168,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
         {
             using var op = OperationScope.Start("VisualisationRegistryParameterRole", "Insert", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug("VisualisationRegistryParameterRole.Insert: entry user=" + userName +
@@ -175,6 +182,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
                 EnsurePermitted("VisualisationRegistryParameterRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -235,6 +243,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
         {
             using var op = OperationScope.Start("VisualisationRegistryParameterRole", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameterRole.Delete: entry id={id} user={userName}");
@@ -265,8 +274,10 @@ namespace Jube.Service.Repository.VisualisationRegistryParameterRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistryParameterRole.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }

@@ -18,21 +18,26 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Dto.Invoke;
 using Jube.Dto.Repository.Archive;
 using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
 using Jube.Resources;
 using Jube.Service.Exceptions.Invoke;
 using Jube.Service.Invoke;
+using Jube.Service.Repository.ExhaustiveInstanceDataset;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -41,6 +46,7 @@ namespace Jube.App.Endpoints
     public static class InvokeEndpoints
     {
         private const string Base = "/api/Invoke";
+        private const int MaxBoundaryLength = 200;
 
         private static readonly JsonSerializerSettings fallbackSettings = new()
         {
@@ -75,14 +81,24 @@ namespace Jube.App.Endpoints
             group.MapPost("ExhaustiveSearchInstance/{guid}",
                     (Func<HttpContext, Task<IResult>>)ExhaustiveSearchInstanceAsync)
                 .WithName("InvokeExhaustiveSearchInstance");
+
+            group.MapPost("ExhaustiveSearchInstance/{guid}/Batch",
+                    (Func<HttpContext, CancellationToken, Task<IResult>>)ExhaustiveSearchInstanceBatchAsync)
+                .DisableAntiforgery()
+                .WithName("InvokeExhaustiveSearchInstanceBatch");
+
+            group.MapPost("AdvancedAnalytics/{guid}",
+                    (Func<HttpContext, Task<IResult>>)AdvancedAnalyticsAsync)
+                .WithName("InvokeAdvancedAnalytics");
         }
 
         private static InvokeService CreateService(HttpContext httpContext)
         {
             var services = httpContext.RequestServices;
-            var dynamicEnvironment = services.GetRequiredService<global::Jube.DynamicEnvironment.DynamicEnvironment>();
+            var dynamicEnvironment = services.GetRequiredService<DynamicEnvironment.DynamicEnvironment>();
             var log = services.GetRequiredService<ILog>();
-            return new InvokeService(services.GetService<global::Jube.Engine.Engine>(),
+
+            return new InvokeService(services.GetService<Engine.Engine>(),
                 dynamicEnvironment,
                 log,
                 httpContext.User.Identity?.Name,
@@ -123,12 +139,14 @@ namespace Jube.App.Endpoints
         {
             var timeout = ParseInt(First(httpContext.Request.Query["timeout"]));
             var result = await CreateService(httpContext).CallbackAsync(guid, timeout, token).ConfigureAwait(false);
+
             return Write(httpContext, result);
         }
 
         private static IResult Sanction(HttpContext httpContext)
         {
             var query = httpContext.Request.Query;
+
             var request = new SanctionSearchRequestDto
             {
                 MultiPartString = FirstOrNull(First(query["multiPartString"])),
@@ -156,6 +174,7 @@ namespace Jube.App.Endpoints
 
             var maxBytes = MaxInvokeControllerRequestBytes(httpContext);
             ArchiveTagDto model;
+
             try
             {
                 model = await ReadBodyAsModelAsync<ArchiveTagDto>(httpContext, maxBytes).ConfigureAwait(false);
@@ -177,7 +196,8 @@ namespace Jube.App.Endpoints
         private static int MaxInvokeControllerRequestBytes(HttpContext httpContext)
         {
             var dynamicEnvironment = httpContext.RequestServices
-                .GetRequiredService<global::Jube.DynamicEnvironment.DynamicEnvironment>();
+                .GetRequiredService<DynamicEnvironment.DynamicEnvironment>();
+
             return int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"));
         }
 
@@ -192,25 +212,111 @@ namespace Jube.App.Endpoints
                     maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes),
                     httpContext.Request.ContentLength != null)
                 .ConfigureAwait(false);
+
             return Write(httpContext, result);
         }
 
         private static async Task<IResult> ExhaustiveSearchInstanceAsync(HttpContext httpContext)
         {
             var guid = httpContext.Request.RouteValues["guid"]?.ToString();
+
             var result = await CreateService(httpContext)
                 .ExhaustiveSearchInstanceAsync(guid, maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes))
                 .ConfigureAwait(false);
+
             return Write(httpContext, result);
+        }
+
+        private static async Task<IResult> AdvancedAnalyticsAsync(HttpContext httpContext)
+        {
+            var guid = httpContext.Request.RouteValues["guid"]?.ToString();
+
+            var result = await CreateService(httpContext)
+                .AdvancedAnalyticsAsync(guid, maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes))
+                .ConfigureAwait(false);
+
+            return Write(httpContext, result);
+        }
+
+        private static async Task<IResult> ExhaustiveSearchInstanceBatchAsync(HttpContext httpContext,
+            CancellationToken token)
+        {
+            var guid = httpContext.Request.RouteValues["guid"]?.ToString();
+            var request = httpContext.Request;
+
+            if (!MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaType)
+                || !mediaType.MediaType.Equals("multipart/form-data", StringComparison.OrdinalIgnoreCase))
+            {
+                return Results.StatusCode(StatusCodes.Status415UnsupportedMediaType);
+            }
+
+            var boundary = HeaderUtilities.RemoveQuotes(mediaType.Boundary).Value;
+
+            if (string.IsNullOrEmpty(boundary) || boundary.Length > MaxBoundaryLength)
+            {
+                return Results.BadRequest(new { code = "UploadRejected", message = "Invalid multipart boundary." });
+            }
+
+            var dynamicEnvironment = httpContext.RequestServices
+                .GetRequiredService<DynamicEnvironment.DynamicEnvironment>();
+
+            var bodyLimit = DatasetLimitsFactory.FromEnvironment(dynamicEnvironment).MaxBytes;
+
+            if (httpContext.Features.Get<IHttpMaxRequestBodySizeFeature>() is { IsReadOnly: false } sizeFeature)
+            {
+                sizeFeature.MaxRequestBodySize = bodyLimit;
+            }
+
+            var reader = new MultipartReader(boundary, request.Body)
+            {
+                BodyLengthLimit = bodyLimit, HeadersLengthLimit = 16 * 1024
+            };
+
+            try
+            {
+                while (await reader.ReadNextSectionAsync(token).ConfigureAwait(false) is { } section)
+                {
+                    if (!ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var disposition)
+                        || !disposition.DispositionType.Equals("form-data"))
+                    {
+                        continue;
+                    }
+
+                    var fileName = HeaderUtilities.RemoveQuotes(disposition.FileName).Value
+                                   ?? HeaderUtilities.RemoveQuotes(disposition.FileNameStar).Value;
+
+                    if (fileName == null)
+                    {
+                        continue;
+                    }
+
+                    var kind = fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase)
+                        ? DatasetKind.Json
+                        : DatasetKind.Csv;
+
+                    var result = await CreateService(httpContext)
+                        .ExhaustiveSearchInstanceBatchAsync(guid, kind, section.Body, token).ConfigureAwait(false);
+
+                    return Write(httpContext, result);
+                }
+            }
+            catch (Exception ex) when (ex is InvalidDataException or IOException or BadHttpRequestException)
+            {
+                return Results.BadRequest(new { code = "UploadRejected", message = "The request body is malformed." });
+            }
+
+            return Results.BadRequest(new { code = "UploadRejected", message = "A CSV or JSON file is required." });
         }
 
         private static async Task<MemoryStream> ReadBodyBoundedAsync(HttpContext httpContext, int maxBytes)
         {
             var ms = new MemoryStream();
             var buffer = new byte[8192];
+
             try
             {
                 int read;
+
                 while ((read = await httpContext.Request.Body.ReadAsync(buffer).ConfigureAwait(false)) > 0)
                 {
                     if (ms.Length + read > maxBytes)
@@ -232,6 +338,7 @@ namespace Jube.App.Endpoints
             }
 
             ms.Position = 0;
+
             return ms;
         }
 
@@ -258,6 +365,7 @@ namespace Jube.App.Endpoints
             }
 
             var mediaType = contentType.Split(';')[0].Trim();
+
             return mediaType.Equals("application/json", StringComparison.OrdinalIgnoreCase)
                    || mediaType.Equals("text/json", StringComparison.OrdinalIgnoreCase)
                    || (mediaType.StartsWith("application/", StringComparison.OrdinalIgnoreCase)

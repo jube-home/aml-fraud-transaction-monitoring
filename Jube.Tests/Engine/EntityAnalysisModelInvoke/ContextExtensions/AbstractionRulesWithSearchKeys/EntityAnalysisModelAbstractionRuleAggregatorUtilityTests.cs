@@ -17,15 +17,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Dictionary.Models;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Helpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
-
-// ReSharper disable LocalizableElement
 
 namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys
 {
@@ -59,6 +56,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         private static DictionaryNoBoxing<string> Doc(params (string Key, object Value)[] fields)
         {
             var document = new DictionaryNoBoxing<string>();
+
             foreach (var (key, value) in fields)
             {
                 switch (value)
@@ -91,6 +89,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
             {
                 [ruleId] = [.. documents]
             };
+
             return dictionary;
         }
 
@@ -274,6 +273,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         public void AggregateDistinctCountCountsUniqueValuesForTheSearchFunctionKey()
         {
             var rule = NewRule(2, "Country");
+
             var docs = new List<DictionaryNoBoxing<string>>
             {
                 Doc(("Country", "US")), Doc(("Country", "UK")), Doc(("Country", "US"))
@@ -326,6 +326,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         {
             var payload = NewPayload(Doc(("Status", "Active")));
             var rule = NewRule(12, "Status");
+
             var docs = new List<DictionaryNoBoxing<string>>
             {
                 Doc(("Status", "Active")), Doc(("Status", "Active")), Doc(("Status", "Inactive"))
@@ -442,6 +443,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         public void BuildValuesArrayReadsTheSearchFunctionKeyFromEachDocumentInOrder()
         {
             var rule = NewRule(3);
+
             var docs = new List<DictionaryNoBoxing<string>>
             {
                 Doc(("Amount", 10d)), Doc(("Amount", 20d)), Doc(("Amount", 30d))
@@ -457,6 +459,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         public void BuildValuesArraySubstitutesZeroRatherThanSkippingWhenADocumentLacksTheSearchFunctionKey()
         {
             var rule = NewRule(3);
+
             var docs = new List<DictionaryNoBoxing<string>>
             {
                 Doc(("Amount", 10d)), Doc(("Other", 99d)), Doc(("Amount", 30d))
@@ -724,8 +727,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
             var rule = NewRule(16, "EventDate", intervalType: "d");
 
             DateTime.TryParse(new InternalValue(currentRaw).ToString(), out var expectedCurrent);
+
             DateTimeOffset.TryParse(new InternalValue(testRaw).ToString(), CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal, out var expectedTestOffset);
+
             var expected =
                 DateHelper.DateDiff(DateHelper.DateInterval.Day, expectedTestOffset.UtcDateTime, expectedCurrent);
 
@@ -770,9 +775,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         {
             var rule = NewRule(16, enableOffset: true, offsetType: 1, offsetValue: 10,
                 searchFunctionKey: "EventDate", intervalType: "d");
+
             var matches = MatchesFor(rule.Id,
                 Doc(("EventDate", new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc))),
                 Doc(("EventDate", new DateTime(2024, 1, 2, 0, 0, 0, DateTimeKind.Utc))));
+
             var log = new TestLog();
 
             var result = EntityAnalysisModelAbstractionRuleAggregatorUtility.Aggregate(

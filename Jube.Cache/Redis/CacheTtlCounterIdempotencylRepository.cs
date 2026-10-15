@@ -13,7 +13,7 @@
 
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 
 namespace Jube.Cache.Redis
@@ -33,6 +33,7 @@ namespace Jube.Cache.Redis
                     {
                         var redisKey =
                             $"TtlCounterIdempotency:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{ttlCounterGuid:N}";
+
                         var redisJournal = $"IdempotencyJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
                         var redisSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
 
@@ -43,6 +44,7 @@ namespace Jube.Cache.Redis
 
                         await resilientRedisResilientRedisDatabase.SetAddAsync(redisKey, redisSetKey)
                             .ConfigureAwait(false);
+
                         await resilientRedisResilientRedisDatabase.SetAddAsync(redisJournal, $"{redisKey}")
                             .ConfigureAwait(false);
                     }

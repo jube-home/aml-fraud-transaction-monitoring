@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.VisualisationRegistryDatasourceSeries;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryDatasourceSeries;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +30,6 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
     public sealed class VisualisationRegistryDatasourceSeriesService
     {
         private static readonly int[] permissions = [28, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -53,6 +52,8 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<VisualisationRegistryDatasourceSeriesService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -118,6 +119,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
             using var op = OperationScope.Start("VisualisationRegistryDatasourceSeries",
                 "ListByVisualisationRegistryDatasourceId", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug("VisualisationRegistryDatasourceSeries.ListByVisualisationRegistryDatasourceId: entry " +
@@ -127,9 +129,11 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
             try
             {
                 EnsurePermitted("VisualisationRegistryDatasourceSeries.ListByVisualisationRegistryDatasourceId");
+
                 var dtos = VisualisationRegistryDatasourceSeriesMapper.ToDto(
                     await repository.GetByVisualisationRegistryDatasourceIdAsync(id, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug("VisualisationRegistryDatasourceSeries.ListByVisualisationRegistryDatasourceId: " +
@@ -151,8 +155,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error("VisualisationRegistryDatasourceSeries.ListByVisualisationRegistryDatasourceId: " +
                           $"unexpected failure id={id} user={userName}", ex);
+
                 throw;
             }
         }

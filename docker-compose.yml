@@ -46,39 +46,30 @@
         condition: service_started
       redis:
         condition: service_started
+      jube-r:
+        condition: service_started
     links:
       - redis
       - postgres
+      - jube-r
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5001
       - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - JWTKey=$DockerComposeJWTKey
       - ApiHmacKey=$DockerComposeApiHmacKey
-      - JempFileLegacyEncryptionFallback=True
       - RedisConnectionString=redis
-      - EnableExhaustiveTraining=True
-      - Landlord=True
-      - EnableReprocessing=True
       - EnableSanctionLoader=True
-      - CachePruneServer=True
-      - EnableTtlCounter=True
-      - EnableSearchKeyCache=True
-      - EnableCasesAutomation=True
-      - StreamingActivationWatcher=True
-      - EnableCallback=True
-      - EnablePublicInvokeController=True
       - PasswordHashingKey=$DockerComposePasswordHashingKey
-      - EnableMigration=True
       - Log4NetLogLevel=ERROR
       - ElementSymmetricEncryptionKey=$DockerComposeElementSymmetricEncryptionKey
-      - LocalCache=True
       - DOTNET_gcServer=1
       - DOTNET_gcConcurrent=1
       - DOTNET_GCConserveMemory=4
       - DOTNET_GCDynamicAdaptationMode=1
-      - EnableOpenTelemetry=False
       - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
+      - RServerUrl=http://jube-r:8080
+      - DockerMonitoringProxyUrl=http://jube-monitoring:8081
     ports:
       - "5001:5001"
     networks:
@@ -95,10 +86,12 @@
         condition: service_started
     environment:
       - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=5;
-      - DockerSocketPath=/var/run/docker.sock
-      - SampleIntervalSeconds=60
-      - EnableOpenTelemetry=False
       - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
+      # Only reachable on the compose network (no host port mapping below) -- jube-app/jube-engine call
+      # this for Docker container/host/event sampling and for the live DockerAdministrator agent tools,
+      # never docker.sock directly. This container-internal port is the one thing that changed about what
+      # this sidecar does: it answers GET /proxy?path=... with docker.sock's own response, nothing more.
+      - ASPNETCORE_URLS=http://+:8081
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -106,6 +99,25 @@
     build:
       context: .
       dockerfile: Jube.Monitoring/Dockerfile
+
+  jube-r:
+    image: jube.r
+    container_name: "jube-r"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 2g
+    cpus: 2
+    networks:
+      - default
+    build:
+      context: ./Jube.R
+      dockerfile: Dockerfile
 
   jube-otel-listener:
     image: jube.opentelemetrylistener

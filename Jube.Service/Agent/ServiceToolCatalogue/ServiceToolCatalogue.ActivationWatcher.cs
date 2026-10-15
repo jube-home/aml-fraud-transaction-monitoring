@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.ActivationWatcher;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddActivationWatcher(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ActivationWatcherReplay", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Replays ActivationWatcher rows created within a date range, scoped to the caller's tenant. " +
-                "Read-only.")
-        ]);
+        static partial void AddActivationWatcher(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ActivationWatcherReplay", OperationKind.Read, true, false,
+                    "Replays ActivationWatcher rows created within a date range, scoped to the caller's tenant. " +
+                    "Read-only.",
+                    ActivationWatcherService.RequiredPermissions)
+            ]);
+        }
     }
 }

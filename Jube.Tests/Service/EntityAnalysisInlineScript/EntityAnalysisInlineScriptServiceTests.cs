@@ -79,6 +79,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
         private async Task<int> CreateInlineScriptAsync(DbContext dbContext, string name)
         {
             var repository = new EntityAnalysisInlineScriptRepository(dbContext);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisInlineScript
             {
                 Name = name,
@@ -87,6 +88,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
             }).ConfigureAwait(false);
 
             createdInlineScriptIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -164,6 +166,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -172,6 +175,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -277,6 +281,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
@@ -301,6 +306,7 @@ namespace Jube.Test.Service.EntityAnalysisInlineScript
         public async Task ListAsyncClampsTakeAndPaginatesDeterministicallyAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             for (var i = 0; i < 3; i++)
             {
                 await CreateInlineScriptAsync(dbContext, UniqueName($"Page{i}"));

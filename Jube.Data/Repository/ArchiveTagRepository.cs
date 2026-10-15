@@ -30,12 +30,15 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
             try
             {
                 await LinqToDB.Data.DataConnectionExtensions.ExecuteAsync(dbContext,
                     "SELECT pg_advisory_xact_lock(hashtext(@guid))", token,
                     new LinqToDB.Data.DataParameter("guid", entityAnalysisModelInstanceEntryGuid.ToString()));
+
                 var archiveTags = new List<ArchiveTag>();
+
                 foreach (var tag in tags.Distinct())
                 {
                     var archiveTag = new ArchiveTag

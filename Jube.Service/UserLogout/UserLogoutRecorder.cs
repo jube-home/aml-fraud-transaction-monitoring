@@ -14,6 +14,7 @@
 using System.Collections.Concurrent;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Service.UserLogout.Models;
 using log4net;
 using UserLogoutPoco = Jube.Data.Poco.UserLogout;
 
@@ -68,6 +69,7 @@ namespace Jube.Service.UserLogout
         {
             using var timeout = new CancellationTokenSource(insertTimeout);
             int? tenantRegistryId = null;
+
             if (!string.IsNullOrEmpty(entry.UserName))
             {
                 tenantRegistryId = await UserInTenantRepository
@@ -99,6 +101,7 @@ namespace Jube.Service.UserLogout
 
             var now = (timeProvider ?? TimeProvider.System).GetUtcNow().UtcDateTime;
             var key = entry.RemoteIp ?? "-";
+
             if (lastNoSessionRow.Count >= MaxThrottledAddresses)
             {
                 foreach (var stale in lastNoSessionRow)
@@ -116,9 +119,11 @@ namespace Jube.Service.UserLogout
             }
 
             var allowed = false;
+
             lastNoSessionRow.AddOrUpdate(key, _ =>
             {
                 allowed = true;
+
                 return now;
             }, (_, last) =>
             {
@@ -128,6 +133,7 @@ namespace Jube.Service.UserLogout
                 }
 
                 allowed = true;
+
                 return now;
             });
 

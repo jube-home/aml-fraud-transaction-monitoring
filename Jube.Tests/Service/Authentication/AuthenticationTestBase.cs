@@ -21,6 +21,8 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
+using Jube.Service.Authentication.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
@@ -33,12 +35,10 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
 {
     public const string DefaultPassword = "Correct#Horse9battery";
     public const string HashKey = "unit-test-PasswordHashingKey";
-
     private Guid roleAGuid;
     private Guid roleBGuid;
     protected int TenantAId;
     protected int TenantBId;
-
     private string Id { get; } = Guid.NewGuid().ToString("N")[..8];
     protected string Prefix => $"ZzTestAuth{Id}";
     protected string Marker => $"ZzTestAuthUA-{Id}";
@@ -47,7 +47,6 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
     protected FastHashScheme Hash { get; } = new();
     protected CapturingCookieIssuer Cookies { get; } = new();
     private ScriptedMfa? mfa;
-
     protected ScriptedMfa Mfa => mfa.Required();
     protected TestLog Log { get; } = new();
     protected TestLog Audit { get; } = new();
@@ -65,9 +64,11 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
     public virtual async Task DisposeAsync()
     {
         await using var db = Fx.GetDbContext();
+
         await db.UserLogin.Where(w =>
                 w.UserAgent == Marker || (w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix)))
             .DeleteAsync();
+
         await db.UserInTenant.Where(w => w.User != null && w.User.StartsWith(Prefix)).DeleteAsync();
         await db.UserRegistry.Where(w => w.Name != null && w.Name.StartsWith(Prefix)).DeleteAsync();
         await db.RoleRegistry.Where(w => w.Name != null && w.Name.StartsWith(Prefix)).DeleteAsync();
@@ -86,11 +87,13 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
     private static async Task<Guid> InsertRoleAsync(DbContext db, string name, int tenantId)
     {
         var guid = Guid.NewGuid();
+
         await db.InsertWithInt32IdentityAsync(new RoleRegistry
         {
             Guid = guid, Name = name, Active = 1, Locked = 0, Deleted = 0, TenantRegistryId = tenantId, Version = 1,
             CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
         });
+
         return guid;
     }
 
@@ -107,9 +110,11 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
         string? storedHash = "\0default")
     {
         var name = exactName ?? $"{Prefix}{tag}";
+
         var hash = storedHash == "\0default"
             ? password == null ? null : FastHashScheme.Stored(password, HashKey)
             : storedHash;
+
         var user = new UserRegistry
         {
             Guid = Guid.NewGuid(),
@@ -128,10 +133,12 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
             CreatedDate = DateTime.UtcNow,
             CreatedUser = DatabaseFixture.Prefix
         };
+
         tweak?.Invoke(user);
 
         await using var db = Fx.GetDbContext();
         var id = await db.InsertWithInt32IdentityAsync(user);
+
         if (inTenant)
         {
             await db.InsertAsync(new UserInTenant
@@ -149,6 +156,7 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
     protected AuthService Service(DbContext db, IPasswordHashScheme scheme, params (string Key, string Value)[] env)
     {
         var dynamicEnvironment = TestDynamicEnvironment.Create(env.ToDictionary(e => e.Key, e => e.Value));
+
         return new AuthService(db, dynamicEnvironment, Log, Cookies, Mfa, scheme, Clock, Audit);
     }
 
@@ -165,18 +173,21 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
         await using var db = Fx.GetDbContext();
         var dto = new AuthenticationRequestDto { UserName = userName, Password = password };
         tweak?.Invoke(dto);
+
         return await Service(db, env).ByUserNamePasswordAsync(dto, Context(identity), token);
     }
 
     protected async Task<UserRegistry> ReloadAsync(TestUser user)
     {
         await using var db = Fx.GetDbContext();
+
         return await db.UserRegistry.FirstAsync(f => f.Id == user.Id);
     }
 
     protected async Task<List<global::Jube.Data.Poco.UserLogin>> HistoryAsync()
     {
         await using var db = Fx.GetDbContext();
+
         return await db.UserLogin.Where(w => w.UserAgent == Marker).OrderBy(o => o.Id).ToListAsync();
     }
 

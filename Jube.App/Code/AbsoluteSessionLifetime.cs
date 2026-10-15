@@ -47,6 +47,7 @@ namespace Jube.App.Code
             DateTimeOffset now)
         {
             var lifetime = From(dynamicEnvironment);
+
             return lifetime.HasValue
                    && long.TryParse(sessionStartMilliseconds, NumberStyles.Integer, CultureInfo.InvariantCulture,
                        out var started)

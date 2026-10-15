@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Helpers;
 using Jube.Data.Poco;
-using Jube.Dto.Payload;
 using LinqToDB;
 
 namespace Jube.Data.Repository
@@ -30,7 +29,25 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
+        }
+
+        public async Task<IEnumerable<DockerContainerMetric>> GetLastAsync(int take, DateTime? from, DateTime? to,
+            string search, double? samplePercentage, string sortField, string sortDirection,
+            CancellationToken token = default)
+        {
+            var query = BuildFilteredQuery(from, to, search, samplePercentage);
+
+            return await ApplySort(query, sortField, sortDirection)
+                .Take(take)
+                .ToListAsync(token).ConfigureAwait(false);
+        }
+
+        public Task<int> CountAsync(DateTime? from, DateTime? to, string search, double? samplePercentage,
+            CancellationToken token = default)
+        {
+            return BuildFilteredQuery(from, to, search, samplePercentage).CountAsync(token);
         }
 
         private IQueryable<DockerContainerMetric> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
@@ -51,6 +68,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Name != null && w.Name.ToLower().Contains(lowerSearch)) ||
                     (w.Image != null && w.Image.ToLower().Contains(lowerSearch)) ||
@@ -70,6 +88,7 @@ namespace Jube.Data.Repository
             IQueryable<DockerContainerMetric> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
@@ -95,85 +114,6 @@ namespace Jube.Data.Repository
                 "instance" => query.OrderByField(o => o.Instance, descending),
                 _ => query.OrderByField(o => o.Id, true)
             };
-        }
-
-        public async Task<IEnumerable<DockerContainerMetric>> GetLastAsync(int take, DateTime? from, DateTime? to,
-            string search, double? samplePercentage, string sortField, string sortDirection,
-            CancellationToken token = default)
-        {
-            var query = BuildFilteredQuery(from, to, search, samplePercentage);
-
-            return await ApplySort(query, sortField, sortDirection)
-                .Take(take)
-                .ToListAsync(token).ConfigureAwait(false);
-        }
-
-        public Task<int> CountAsync(DateTime? from, DateTime? to, string search, double? samplePercentage,
-            CancellationToken token = default)
-        {
-            return BuildFilteredQuery(from, to, search, samplePercentage).CountAsync(token);
-        }
-
-        public async Task<PayloadStatistics> GetStatisticsAsync(DateTime? from, DateTime? to, string search,
-            double? samplePercentage, int statisticsCap, CancellationToken token = default)
-        {
-            var query = BuildFilteredQuery(from, to, search, samplePercentage)
-                .OrderByDescending(o => o.Id)
-                .Take(statisticsCap);
-
-            var rows = await query.ToListAsync(token).ConfigureAwait(false);
-
-            var restartCount = rows.Select(s => (double)s.RestartCount.GetValueOrDefault())
-                .ToArray();
-
-            var cpuUsagePercent = rows.Where(w => w.CpuUsagePercent.HasValue)
-                .Select(s => s.CpuUsagePercent!.Value).ToArray();
-
-            var onlineCpus = rows.Where(w => w.OnlineCpus.HasValue)
-                .Select(s => (double)s.OnlineCpus!.Value).ToArray();
-
-            var memoryUsageBytes = rows.Where(w => w.MemoryUsageBytes.HasValue)
-                .Select(s => (double)s.MemoryUsageBytes!.Value).ToArray();
-
-            var memoryLimitBytes = rows.Where(w => w.MemoryLimitBytes.HasValue)
-                .Select(s => (double)s.MemoryLimitBytes!.Value).ToArray();
-
-            var memoryPercent = rows.Where(w => w.MemoryPercent.HasValue)
-                .Select(s => s.MemoryPercent!.Value).ToArray();
-
-            var networkRxBytes = rows.Where(w => w.NetworkRxBytes.HasValue)
-                .Select(s => (double)s.NetworkRxBytes!.Value).ToArray();
-
-            var networkTxBytes = rows.Where(w => w.NetworkTxBytes.HasValue)
-                .Select(s => (double)s.NetworkTxBytes!.Value).ToArray();
-
-            var blockReadBytes = rows.Where(w => w.BlockReadBytes.HasValue)
-                .Select(s => (double)s.BlockReadBytes!.Value).ToArray();
-
-            var blockWriteBytes = rows.Where(w => w.BlockWriteBytes.HasValue)
-                .Select(s => (double)s.BlockWriteBytes!.Value).ToArray();
-
-            var pidsCurrent = rows.Where(w => w.PidsCurrent.HasValue)
-                .Select(s => (double)s.PidsCurrent!.Value).ToArray();
-
-            var pidsLimit = rows.Where(w => w.PidsLimit.HasValue)
-                .Select(s => (double)s.PidsLimit!.Value).ToArray();
-
-            return SummaryStatistics.Build(new Dictionary<string, double[]>
-            {
-                ["restartCount"] = restartCount,
-                ["cpuUsagePercent"] = cpuUsagePercent,
-                ["onlineCpus"] = onlineCpus,
-                ["memoryUsageBytes"] = memoryUsageBytes,
-                ["memoryLimitBytes"] = memoryLimitBytes,
-                ["memoryPercent"] = memoryPercent,
-                ["networkRxBytes"] = networkRxBytes,
-                ["networkTxBytes"] = networkTxBytes,
-                ["blockReadBytes"] = blockReadBytes,
-                ["blockWriteBytes"] = blockWriteBytes,
-                ["pidsCurrent"] = pidsCurrent,
-                ["pidsLimit"] = pidsLimit
-            });
         }
     }
 }

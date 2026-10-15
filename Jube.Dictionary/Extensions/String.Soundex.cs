@@ -39,6 +39,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var letters = @this.Where(char.IsLetter).Select(char.ToUpperInvariant).ToArray();
+
             if (letters.Length == 0)
             {
                 return "";

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using FluentAssertions;
-using Jube.Dictionary.Models;
+using Jube.Dictionary;
 using Xunit;
 
 namespace Jube.Test.Dictionary.Models
@@ -234,6 +234,7 @@ namespace Jube.Test.Dictionary.Models
 
             (intFive == doubleFive).Should()
                 .BeFalse("Equals short-circuits on a Type mismatch before comparing values");
+
             intFive.Equals(doubleFive).Should().BeFalse();
         }
 

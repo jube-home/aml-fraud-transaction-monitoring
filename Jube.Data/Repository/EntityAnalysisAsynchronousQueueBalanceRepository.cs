@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Helpers;
 using Jube.Data.Poco;
-using Jube.Dto.Payload;
 using LinqToDB;
 
 namespace Jube.Data.Repository
@@ -53,6 +52,7 @@ namespace Jube.Data.Repository
             IQueryable<EntityAnalysisAsynchronousQueueBalance> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "instance" => query.OrderByField(o => o.Instance, descending),
@@ -79,39 +79,11 @@ namespace Jube.Data.Repository
             return BuildFilteredQuery(from, to, samplePercentage).CountAsync(token);
         }
 
-        public async Task<PayloadStatistics> GetStatisticsAsync(DateTime? from, DateTime? to, double? samplePercentage,
-            int statisticsCap, CancellationToken token = default)
-        {
-            var query = BuildFilteredQuery(from, to, samplePercentage)
-                .OrderByDescending(o => o.Id)
-                .Take(statisticsCap);
-
-            var rows = await query.ToListAsync(token).ConfigureAwait(false);
-
-            var caseCreation = rows.Select(s => (double)s.CaseCreation.GetValueOrDefault())
-                .ToArray();
-
-            var tagging = rows.Select(s => (double)s.Tagging.GetValueOrDefault())
-                .ToArray();
-
-            var notification = rows.Select(s => (double)s.Notification.GetValueOrDefault())
-                .ToArray();
-
-            var asynchronousEntityInvoke = rows.Select(_ => 0d).ToArray();
-
-            return SummaryStatistics.Build(new Dictionary<string, double[]>
-            {
-                ["caseCreation"] = caseCreation,
-                ["tagging"] = tagging,
-                ["notification"] = notification,
-                ["asynchronousEntityInvoke"] = asynchronousEntityInvoke
-            });
-        }
-
         public async Task<EntityAnalysisAsynchronousQueueBalance> InsertAsync(
             EntityAnalysisAsynchronousQueueBalance model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
     }

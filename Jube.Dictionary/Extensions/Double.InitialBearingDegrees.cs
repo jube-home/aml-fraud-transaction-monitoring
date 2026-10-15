@@ -29,6 +29,7 @@ namespace Jube.Dictionary.Extensions
             var y = Math.Sin(deltaLambda) * Math.Cos(phi2);
             var x = Math.Cos(phi1) * Math.Sin(phi2) - Math.Sin(phi1) * Math.Cos(phi2) * Math.Cos(deltaLambda);
             var degrees = Math.Atan2(y, x) * 180d / Math.PI;
+
             return (degrees + 360d) % 360d;
         }
     }

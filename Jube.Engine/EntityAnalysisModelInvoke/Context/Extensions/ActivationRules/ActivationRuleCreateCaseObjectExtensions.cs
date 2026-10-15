@@ -30,6 +30,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 return null;
             }
 
+            if (context.EntityAnalysisModelInstanceEntryPayload
+                .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+            {
+                context.TraceLog(
+                    $"activation rule guid {evaluateActivationRule.Guid} would have created a case for case workflow id {evaluateActivationRule.CaseWorkflowGuid} but will not, as this is reprocessing rule instance {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId} replaying a transaction that has already happened.");
+
+                return null;
+            }
+
             if (context.Environment.AppSettings("ActivationRuleIdempotency")
                 .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
@@ -83,6 +92,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             if (evaluateActivationRule.BypassSuspendSample > context.Random.NextDouble())
             {
                 createCase.SuspendBypass = true;
+
                 context.TraceLog(
                     $"case key is {evaluateActivationRule.CaseKey} has been selected for bypass.");
 
@@ -119,6 +129,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(evaluateActivationRule.CaseKey))
             {
                 createCase.CaseKey = evaluateActivationRule.CaseKey;
+
                 createCase.CaseKeyValue = context.EntityAnalysisModelInstanceEntryPayload
                     .Payload[evaluateActivationRule.CaseKey].ToString();
 

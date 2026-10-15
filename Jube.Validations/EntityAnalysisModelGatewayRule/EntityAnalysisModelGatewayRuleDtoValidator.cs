@@ -26,7 +26,6 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
     {
         private const int MaxNameLength = 256;
         private const int MaxRuleScriptLength = 65536;
-
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
 
         public EntityAnalysisModelGatewayRuleDtoValidator(EntityAnalysisModelGatewayRuleRepository repository,
@@ -58,6 +57,7 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.NameAlreadyExists])

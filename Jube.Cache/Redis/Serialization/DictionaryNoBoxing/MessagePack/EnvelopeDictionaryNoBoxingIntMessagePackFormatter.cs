@@ -12,8 +12,8 @@
  */
 
 using System.Buffers;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
 using Jube.Dictionary;
-using Jube.Dictionary.Models;
 using MessagePack;
 using MessagePack.Formatters;
 
@@ -37,6 +37,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
             if (value.Data == null)
             {
                 writer.WriteNil();
+
                 return;
             }
 
@@ -85,6 +86,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
             if (reader.TryReadNil())
             {
                 envelope.Data = null;
+
                 return envelope;
             }
 
@@ -101,6 +103,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case MessagePackType.Integer:
                     {
                         var l = reader.ReadInt64();
+
                         try
                         {
                             if (l > int.MaxValue || l < int.MinValue)
@@ -122,6 +125,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case MessagePackType.Float:
                     {
                         var d = reader.ReadDouble();
+
                         try
                         {
                             data.AddUnchecked(key, d);
@@ -136,6 +140,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case MessagePackType.Boolean:
                     {
                         var b = reader.ReadBoolean();
+
                         try
                         {
                             data.AddUnchecked(key, b);
@@ -150,6 +155,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case MessagePackType.String:
                     {
                         var s = reader.ReadString();
+
                         try
                         {
                             data.AddUnchecked(key, s);
@@ -164,9 +170,11 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case MessagePackType.Binary:
                     {
                         var byteSequence = reader.ReadBytes();
+
                         var bytes = byteSequence.HasValue
                             ? byteSequence.Value.ToArray()
                             : [];
+
                         try
                         {
                             data.AddUnchecked(key, new InternalValue(new Guid(bytes)));

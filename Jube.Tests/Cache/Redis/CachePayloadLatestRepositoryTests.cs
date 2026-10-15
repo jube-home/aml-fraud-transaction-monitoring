@@ -22,7 +22,7 @@ using Jube.Cache.Redis.Serialization;
 using Jube.Data.Poco;
 using Jube.Dictionary;
 using Jube.Extensions;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using Jube.Test.Infrastructure;
 using MessagePack;
 using StackExchange.Redis;
@@ -39,9 +39,34 @@ namespace Jube.Test.Cache.Redis
         {
             var bytes = await fake.HashGetAsync(hashKey, field);
             bytes.HasValue.Should().BeTrue($"expected a value at hash {hashKey} field {field}");
+
             return MessagePackSerializer.Deserialize<CachePayloadLatest>((byte[])bytes!,
                 MessagePackSerializerOptionsHelper
                     .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true));
+        }
+
+        private static Task InvokeBatchSortedSetRemoveAsync(FakeHybridResilientRedisDatabase fake, RedisKey key,
+            IEnumerable<RedisValue> values)
+        {
+            return CachePayloadLatestRepository.BatchSortedSetRemoveAsync(fake, key, values);
+        }
+
+        private static Task InvokeBatchHashDeleteAsync(FakeHybridResilientRedisDatabase fake, RedisKey key,
+            IEnumerable<RedisValue> fields)
+        {
+            return CachePayloadLatestRepository.BatchHashDeleteAsync(fake, key, fields);
+        }
+
+        private static Task SeedAsync(FakeHybridResilientRedisDatabase fake, string hashKey, string field,
+            DateTime updatedDate)
+        {
+            var cachePayloadLatest = new CachePayloadLatest { UpdatedDate = updatedDate };
+
+            var bytes = MessagePackSerializer.Serialize(cachePayloadLatest,
+                MessagePackSerializerOptionsHelper
+                    .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true));
+
+            return fake.HashSetAsync(hashKey, field, bytes);
         }
 
         [Fact]
@@ -72,6 +97,7 @@ namespace Jube.Test.Cache.Redis
 
             var referenceDateLatestSortedSetKey = $"ReferenceDateLatest:{tenant}:{model:N}:{entryKey}";
             var entries = await fake.SortedSetRangeByScoreWithScoresAsync(referenceDateLatestSortedSetKey);
+
             entries.Should().ContainSingle(e => e.Element.ToString() == entryKeyValue &&
                                                 (long)e.Score == referenceDate.ToUnixTimeMilliSeconds());
         }
@@ -207,22 +233,11 @@ namespace Jube.Test.Cache.Redis
             (await fake.HashLengthAsync(key)).Should().Be(0);
         }
 
-        private static Task InvokeBatchSortedSetRemoveAsync(FakeHybridResilientRedisDatabase fake, RedisKey key,
-            IEnumerable<RedisValue> values)
-        {
-            return CachePayloadLatestRepository.BatchSortedSetRemoveAsync(fake, key, values);
-        }
-
-        private static Task InvokeBatchHashDeleteAsync(FakeHybridResilientRedisDatabase fake, RedisKey key,
-            IEnumerable<RedisValue> fields)
-        {
-            return CachePayloadLatestRepository.BatchHashDeleteAsync(fake, key, fields);
-        }
-
         [Fact]
         public void AggregateResponseTimesForBulkInsertGroupsByTaskTypeAndSumsComputeTime()
         {
             var batch = new CachePayloadLatestRemovalBatch { Id = 42 };
+
             var tasks = new[]
             {
                 new TimedTaskResult(
@@ -236,22 +251,13 @@ namespace Jube.Test.Cache.Redis
             var result = CachePayloadLatestRepository.AggregateResponseTimesForBulkInsert(tasks, batch);
 
             result.Should().HaveCount(2);
+
             result.Should().ContainSingle(r =>
                 r.TaskTypeId == (int)TaskType.SortedSetRemoveReferenceDateLatest &&
                 r.ResponseTime == 150 && r.CachePayloadLatestRemovalBatchId == 42);
             result.Should().ContainSingle(r =>
                 r.TaskTypeId == (int)TaskType.HashDeletePayloadLatest &&
                 r.ResponseTime == 30 && r.CachePayloadLatestRemovalBatchId == 42);
-        }
-
-        private static Task SeedAsync(FakeHybridResilientRedisDatabase fake, string hashKey, string field,
-            DateTime updatedDate)
-        {
-            var cachePayloadLatest = new CachePayloadLatest { UpdatedDate = updatedDate };
-            var bytes = MessagePackSerializer.Serialize(cachePayloadLatest,
-                MessagePackSerializerOptionsHelper
-                    .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true));
-            return fake.HashSetAsync(hashKey, field, bytes);
         }
     }
 }

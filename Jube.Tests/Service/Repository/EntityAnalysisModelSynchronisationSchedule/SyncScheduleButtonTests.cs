@@ -41,12 +41,12 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             foreach (var id in createdIds)
             {
                 await dbContext.EntityAnalysisModelSynchronisationSchedule.Where(w => w.Id == id).DeleteAsync();
@@ -61,6 +61,7 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto
             {
                 ScheduleDate = picked
@@ -70,6 +71,7 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
             var current = await service.GetCurrentAsync();
             current.Should().NotBeNull();
             current!.Id.Should().Be(saved.Id, "the row just saved is the current schedule");
+
             return current.ScheduleDate;
         }
 

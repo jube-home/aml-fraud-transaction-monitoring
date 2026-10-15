@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-fd6e64cb-t jc-fd6e64cb-d">
+    <title id="jc-fd6e64cb-t">Alerts and confirmation rate</title>
+    <desc id="jc-fd6e64cb-d">Combination chart with 3 series: Alerts, Confirmed, Confirmation rate. 6 categories. Alerts
+        is drawn as columns. Confirmed is drawn as columns. Confirmation rate is drawn as lines on the secondary axis.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alerts and confirmation rate</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="50.4" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Alerts</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="82.4" y="44" width="73.32" height="18"/>
+        <rect class="sw" x="84.4" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="102.4" y="57">Confirmed</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="173.72" y="44" width="111.48" height="18"/>
+        <rect class="sw" x="175.72" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="193.72" y="57">Confirmation rate</text>
+    </g>
+    <line class="gl" x1="60.48" y1="364" x2="573.78" y2="364"/>
+    <text class="tk end mid" x="52.48" y="364">0</text>
+    <line class="gl" x1="60.48" y1="315.33" x2="573.78" y2="315.33"/>
+    <text class="tk end mid" x="52.48" y="315.33">100</text>
+    <line class="gl" x1="60.48" y1="266.67" x2="573.78" y2="266.67"/>
+    <text class="tk end mid" x="52.48" y="266.67">200</text>
+    <line class="gl" x1="60.48" y1="218" x2="573.78" y2="218"/>
+    <text class="tk end mid" x="52.48" y="218">300</text>
+    <line class="gl" x1="60.48" y1="169.33" x2="573.78" y2="169.33"/>
+    <text class="tk end mid" x="52.48" y="169.33">400</text>
+    <line class="gl" x1="60.48" y1="120.67" x2="573.78" y2="120.67"/>
+    <text class="tk end mid" x="52.48" y="120.67">500</text>
+    <line class="gl" x1="60.48" y1="72" x2="573.78" y2="72"/>
+    <text class="tk end mid" x="52.48" y="72">600</text>
+    <text class="tk mid" x="581.78" y="364">13%</text>
+    <text class="tk mid" x="581.78" y="305.6">14%</text>
+    <text class="tk mid" x="581.78" y="247.2">15%</text>
+    <text class="tk mid" x="581.78" y="188.8">16%</text>
+    <text class="tk mid" x="581.78" y="130.4">17%</text>
+    <text class="tk mid" x="581.78" y="72">18%</text>
+    <text class="at ctr" x="0" y="0" transform="translate(628 218) rotate(90)">Rate</text>
+    <line class="ax" x1="60.48" y1="364" x2="573.78" y2="364"/>
+    <text class="tk ctr" x="103.26" y="380">Jan</text>
+    <text class="tk ctr" x="188.81" y="380">Feb</text>
+    <text class="tk ctr" x="274.36" y="380">Mar</text>
+    <text class="tk ctr" x="359.91" y="380">Apr</text>
+    <text class="tk ctr" x="445.46" y="380">May</text>
+    <text class="tk ctr" x="531.01" y="380">Jun</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Jan, Alerts: 420">
+            <title>Jan, Alerts: 420</title>
+            <rect class="bar m" x="71.17" y="159.6" width="31.08" height="204.4" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="107.6" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="70.48" y="125.6">Jan</text>
+                <rect class="tsw s0" x="70.48" y="133.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.48" y="142.6">Alerts: 420</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Feb, Alerts: 380">
+            <title>Feb, Alerts: 380</title>
+            <rect class="bar m" x="156.72" y="179.07" width="31.08" height="184.93" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="125.74" y="127.07" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="135.74" y="145.07">Feb</text>
+                <rect class="tsw s0" x="135.74" y="153.07" width="9" height="9" rx="2"/>
+                <text class="tx" x="149.74" y="162.07">Alerts: 380</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Mar, Alerts: 510">
+            <title>Mar, Alerts: 510</title>
+            <rect class="bar m" x="242.27" y="115.8" width="31.08" height="248.2" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="211.29" y="123.8" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="221.29" y="141.8">Mar</text>
+                <rect class="tsw s0" x="221.29" y="149.8" width="9" height="9" rx="2"/>
+                <text class="tx" x="235.29" y="158.8">Alerts: 510</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Apr, Alerts: 470">
+            <title>Apr, Alerts: 470</title>
+            <rect class="bar m" x="327.82" y="135.27" width="31.08" height="228.73" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="296.84" y="83.27" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="306.84" y="101.27">Apr</text>
+                <rect class="tsw s0" x="306.84" y="109.27" width="9" height="9" rx="2"/>
+                <text class="tx" x="320.84" y="118.27">Alerts: 470</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="May, Alerts: 530">
+            <title>May, Alerts: 530</title>
+            <rect class="bar m" x="413.37" y="106.07" width="31.08" height="257.93" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="382.39" y="114.07" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="392.39" y="132.07">May</text>
+                <rect class="tsw s0" x="392.39" y="140.07" width="9" height="9" rx="2"/>
+                <text class="tx" x="406.39" y="149.07">Alerts: 530</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Jun, Alerts: 490">
+            <title>Jun, Alerts: 490</title>
+            <rect class="bar m" x="498.92" y="125.53" width="31.08" height="238.47" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="467.94" y="73.53" width="93.04" height="44" rx="6"/>
+                <text class="tx b" x="477.94" y="91.53">Jun</text>
+                <rect class="tsw s0" x="477.94" y="99.53" width="9" height="9" rx="2"/>
+                <text class="tx" x="491.94" y="108.53">Alerts: 490</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Jan, Confirmed: 60">
+            <title>Jan, Confirmed: 60</title>
+            <rect class="bar m" x="104.26" y="334.8" width="31.08" height="29.2" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="65.18" y="282.8" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="75.18" y="300.8">Jan</text>
+                <rect class="tsw s1" x="75.18" y="308.8" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.18" y="317.8">Confirmed: 60</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Feb, Confirmed: 52">
+            <title>Feb, Confirmed: 52</title>
+            <rect class="bar m" x="189.81" y="338.69" width="31.08" height="25.31" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="150.73" y="286.69" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="160.73" y="304.69">Feb</text>
+                <rect class="tsw s1" x="160.73" y="312.69" width="9" height="9" rx="2"/>
+                <text class="tx" x="174.73" y="321.69">Confirmed: 52</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Mar, Confirmed: 90">
+            <title>Mar, Confirmed: 90</title>
+            <rect class="bar m" x="275.36" y="320.2" width="31.08" height="43.8" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="236.28" y="268.2" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="246.28" y="286.2">Mar</text>
+                <rect class="tsw s1" x="246.28" y="294.2" width="9" height="9" rx="2"/>
+                <text class="tx" x="260.28" y="303.2">Confirmed: 90</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Apr, Confirmed: 71">
+            <title>Apr, Confirmed: 71</title>
+            <rect class="bar m" x="360.91" y="329.45" width="31.08" height="34.55" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="321.83" y="277.45" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="331.83" y="295.45">Apr</text>
+                <rect class="tsw s1" x="331.83" y="303.45" width="9" height="9" rx="2"/>
+                <text class="tx" x="345.83" y="312.45">Confirmed: 71</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="May, Confirmed: 95">
+            <title>May, Confirmed: 95</title>
+            <rect class="bar m" x="446.46" y="317.77" width="31.08" height="46.23" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="407.38" y="265.77" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="417.38" y="283.77">May</text>
+                <rect class="tsw s1" x="417.38" y="291.77" width="9" height="9" rx="2"/>
+                <text class="tx" x="431.38" y="300.77">Confirmed: 95</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Jun, Confirmed: 80">
+            <title>Jun, Confirmed: 80</title>
+            <rect class="bar m" x="532.01" y="325.07" width="31.08" height="38.93" rx="2"/>
+            <g class="tt">
+                <rect class="tb" x="464.54" y="273.07" width="109.24" height="44" rx="6"/>
+                <text class="tx b" x="474.54" y="291.07">Jun</text>
+                <rect class="tsw s1" x="474.54" y="299.07" width="9" height="9" rx="2"/>
+                <text class="tx" x="488.54" y="308.07">Confirmed: 80</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <path class="ln" d="M103.26 305.6L188.81 323.12L274.36 95.36L359.91 241.36L445.46 77.84L531.01 171.28">
+            <title>Confirmation rate</title>
+        </path>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Jan, Confirmation rate: 0.14">
+            <title>Jan, Confirmation rate: 0.14</title>
+            <circle class="hit" cx="103.26" cy="305.6" r="9"/>
+            <circle class="pt" cx="103.26" cy="305.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="247.6" width="157.24" height="44" rx="6"/>
+                <text class="tx b" x="70.48" y="265.6">Jan</text>
+                <rect class="tsw s2" x="70.48" y="273.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.48" y="282.6">Confirmation rate: 0.14</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Feb, Confirmation rate: 0.137">
+            <title>Feb, Confirmation rate: 0.137</title>
+            <circle class="hit" cx="188.81" cy="323.12" r="9"/>
+            <circle class="pt" cx="188.81" cy="323.12" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="106.82" y="265.12" width="163.96" height="44" rx="6"/>
+                <text class="tx b" x="116.82" y="283.12">Feb</text>
+                <rect class="tsw s2" x="116.82" y="291.12" width="9" height="9" rx="2"/>
+                <text class="tx" x="130.82" y="300.12">Confirmation rate: 0.137</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Mar, Confirmation rate: 0.176">
+            <title>Mar, Confirmation rate: 0.176</title>
+            <circle class="hit" cx="274.36" cy="95.36" r="9"/>
+            <circle class="pt" cx="274.36" cy="95.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="192.38" y="101.36" width="163.96" height="44" rx="6"/>
+                <text class="tx b" x="202.38" y="119.36">Mar</text>
+                <rect class="tsw s2" x="202.38" y="127.36" width="9" height="9" rx="2"/>
+                <text class="tx" x="216.38" y="136.36">Confirmation rate: 0.176</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Apr, Confirmation rate: 0.151">
+            <title>Apr, Confirmation rate: 0.151</title>
+            <circle class="hit" cx="359.91" cy="241.36" r="9"/>
+            <circle class="pt" cx="359.91" cy="241.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="277.92" y="183.36" width="163.96" height="44" rx="6"/>
+                <text class="tx b" x="287.92" y="201.36">Apr</text>
+                <rect class="tsw s2" x="287.92" y="209.36" width="9" height="9" rx="2"/>
+                <text class="tx" x="301.92" y="218.36">Confirmation rate: 0.151</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="May, Confirmation rate: 0.179">
+            <title>May, Confirmation rate: 0.179</title>
+            <circle class="hit" cx="445.46" cy="77.84" r="9"/>
+            <circle class="pt" cx="445.46" cy="77.84" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="363.48" y="83.84" width="163.96" height="44" rx="6"/>
+                <text class="tx b" x="373.48" y="101.84">May</text>
+                <rect class="tsw s2" x="373.48" y="109.84" width="9" height="9" rx="2"/>
+                <text class="tx" x="387.48" y="118.84">Confirmation rate: 0.179</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Jun, Confirmation rate: 0.163">
+            <title>Jun, Confirmation rate: 0.163</title>
+            <circle class="hit" cx="531.01" cy="171.28" r="9"/>
+            <circle class="pt" cx="531.01" cy="171.28" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="409.82" y="113.28" width="163.96" height="44" rx="6"/>
+                <text class="tx b" x="419.82" y="131.28">Jun</text>
+                <rect class="tsw s2" x="419.82" y="139.28" width="9" height="9" rx="2"/>
+                <text class="tx" x="433.82" y="148.28">Confirmation rate: 0.163</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="0" y="0" transform="translate(24 218) rotate(-90)">Alerts</text>
+</svg>

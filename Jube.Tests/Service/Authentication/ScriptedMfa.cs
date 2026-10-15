@@ -16,7 +16,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
 
 namespace Jube.Test.Service.Authentication;
 
@@ -24,7 +24,6 @@ public sealed class ScriptedMfa(TimeProvider clock) : IMfaVerifier
 {
     private readonly ConcurrentQueue<(string User, string Code, CancellationToken Token)> calls = new();
     private readonly Dictionary<(string, string), DateTimeOffset> valid = new();
-
     public Exception? Throw { get; set; }
     public IReadOnlyList<(string User, string Code, CancellationToken Token)> Calls => [.. calls];
 
@@ -36,6 +35,7 @@ public sealed class ScriptedMfa(TimeProvider clock) : IMfaVerifier
     public Task<bool> VerifyAsync(string userName, string code, CancellationToken token = default)
     {
         calls.Enqueue((userName, code, token));
+
         if (Throw != null)
         {
             throw Throw;
@@ -49,6 +49,7 @@ public sealed class ScriptedMfa(TimeProvider clock) : IMfaVerifier
         }
 
         valid.Remove((userName, code));
+
         return Task.FromResult(true);
     }
 }

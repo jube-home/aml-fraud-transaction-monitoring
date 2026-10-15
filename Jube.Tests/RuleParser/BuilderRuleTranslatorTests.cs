@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace Jube.Test.RuleParser
         {
             var parsed = BuilderProfile.Parse(json, fields, BuilderTarget.RuleText);
             parsed.Errors.Should().BeEmpty();
+
             return BuilderRuleTranslator.Translate(parsed.Group);
         }
 
@@ -129,6 +131,7 @@ namespace Jube.Test.RuleParser
         {
             var json =
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\",\"operator\":\"greater\",\"value\":1}]}";
+
             for (var i = 0; i < BuilderProfile.MaximumDepth; i++)
             {
                 json = "{\"condition\":\"AND\",\"rules\":[" + json + "]}";
@@ -174,6 +177,7 @@ namespace Jube.Test.RuleParser
                 RuleParse.EngineReferences(RuleParse.GatewayRule), engineWrap: true);
             var theirs = RuleParse.Execute(storedScript, RuleParse.GatewayRule, environment, TestLog.NoOp,
                 RuleParse.EngineReferences(RuleParse.GatewayRule), engineWrap: true);
+
             ours.Compiled.Should().BeTrue(ours.Message);
             theirs.Compiled.Should().BeTrue(theirs.Message);
 
@@ -182,11 +186,14 @@ namespace Jube.Test.RuleParser
                 new("Payload.Amount", "Payload", "double"), new("Payload.IP", "Payload", "string"),
                 new("Payload.ResponseCode", "Payload", "string")
             ];
+
             foreach (var (amount, ip, code) in new[] { ("0", "1.1.1.1", "0"), ("5", "9.9.9.9", "1") })
             {
                 var context = InvocationContextBuilder.Blank(1, contextFields, [], false, DateTime.UtcNow);
+
                 InvocationContextBuilder.Overlay(context, new Dictionary<string, string>
                     { ["Payload.Amount"] = amount, ["Payload.IP"] = ip, ["Payload.ResponseCode"] = code });
+
                 var inputs = RuleRunner.ToInputs(context,
                     new Dictionary<string, List<string>> { ["IPDenyList"] = ["9.9.9.9"], ["HighRiskTerms"] = [] });
 
@@ -204,6 +211,7 @@ namespace Jube.Test.RuleParser
             environment.RequestXPaths["Flag"] = new RuleParseEnvironmentRequestXPathDto { DataTypeId = 5 };
             environment.RequestXPaths["Count"] = new RuleParseEnvironmentRequestXPathDto { DataTypeId = 2 };
             environment.Tokens.AddRange(["StartsWith", "EndsWith"]);
+
             var texts = new[]
             {
                 "{\"condition\":\"OR\",\"rules\":[{\"id\":\"Payload.Country\",\"operator\":\"ends_with\",\"value\":\"B\"}," +
@@ -238,6 +246,7 @@ namespace Jube.Test.RuleParser
                 ("Payload.Opened", "datetime"), ("Payload.Flag", "boolean"), ("TTLCounter.PerAccount", "double"),
                 ("List.HighRisk", "list")
             ]);
+
             const string json =
                 "{\"condition\":\"AND\",\"rules\":[" +
                 "{\"id\":\"Payload.Amount\",\"field\":\"Payload.Amount\",\"type\":\"double\",\"input\":\"number\",\"operator\":\"greater\",\"value\":100}," +
@@ -251,6 +260,7 @@ namespace Jube.Test.RuleParser
                 "{\"id\":\"List.HighRisk\",\"field\":\"List.HighRisk\",\"type\":\"string\",\"input\":\"select\",\"operator\":\"has\",\"value\":\"Payload.Country\"}," +
                 "{\"id\":\"Payload.Amount\",\"field\":\"Payload.Amount\",\"type\":\"double\",\"input\":\"number\",\"operator\":\"is_just_below_any_threshold\",\"value\":[\"10\",\"1000, 10000\"]}" +
                 "],\"valid\":true}";
+
             var parsed = BuilderProfile.Parse(json, browserFields, BuilderTarget.RuleText);
             parsed.Errors.Should().BeEmpty();
 
@@ -270,13 +280,16 @@ namespace Jube.Test.RuleParser
             var inMemory = BuilderProfile.Parse(
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\",\"operator\":\"ratio_of_above\"," +
                 "\"value\":[\"Payload.Amount\",\"2\"]}]}", fields);
+
             var textField = BuilderProfile.Parse(
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Country\",\"operator\":\"equal\"," +
                 "\"value\":\"Payload.IP\"}]}", fields, BuilderTarget.RuleText);
 
             inMemory.Errors.Should().ContainSingle(e => e.Code == "ValueInvalid");
+
             Translate("{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Country\",\"operator\":\"equal\"," +
                       "\"value\":\"Payload.IP\"}]}").Should().Contain("Payload.Country = \"Payload.IP\"");
+
             textField.Errors.Should().BeEmpty();
         }
 
@@ -286,6 +299,7 @@ namespace Jube.Test.RuleParser
             Translate(
                     "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Country\",\"operator\":\"equal\",\"value\":\"a\\\"b\"}]}")
                 .Should().Be("If (Payload.Country = \"a\"\"b\") Then\n  Return True\nEnd If");
+
             BuilderProfile.Parse(
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Country\",\"operator\":\"equal\",\"value\":\"a\\nb\"}]}",
                 fields, BuilderTarget.RuleText).Errors.Should().ContainSingle(e => e.Code == "ValueInvalid");

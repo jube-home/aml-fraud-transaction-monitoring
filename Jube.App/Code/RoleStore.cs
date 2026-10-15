@@ -2,17 +2,19 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code.Models;
 using Microsoft.AspNetCore.Identity;
 
 #pragma warning disable 1998
@@ -21,11 +23,13 @@ namespace Jube.App.Code
 {
     public class RoleStore : IRoleStore<ApplicationRole>
     {
-        public async Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            /*using (var connection = new SqlConnection(_connectionString))
+                /*using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
                 role.Id = await connection.QuerySingleAsync<int>($@"INSERT INTO [ApplicationRole] ([Name], [NormalizedName])
@@ -33,14 +37,21 @@ namespace Jube.App.Code
                     SELECT CAST(SCOPE_IDENTITY() as int)", role);
             }*/
 
-            return IdentityResult.Success;
+                return Task.FromResult(IdentityResult.Success);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<IdentityResult>(exception);
+            }
         }
 
-        public async Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            /*using (var connection = new SqlConnection(_connectionString))
+                /*using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
                 await connection.ExecuteAsync($@"UPDATE [ApplicationRole] SET
@@ -49,20 +60,32 @@ namespace Jube.App.Code
                     WHERE [Id] = @{nameof(ApplicationRole.Id)}", role);
             }*/
 
-            return IdentityResult.Success;
+                return Task.FromResult(IdentityResult.Success);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<IdentityResult>(exception);
+            }
         }
 
-        public async Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            /*using (var connection = new SqlConnection(_connectionString))
+                /*using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
                 await connection.ExecuteAsync($"DELETE FROM [ApplicationRole] WHERE [Id] = @{nameof(ApplicationRole.Id)}", role);
             }*/
 
-            return IdentityResult.Success;
+                return Task.FromResult(IdentityResult.Success);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<IdentityResult>(exception);
+            }
         }
 
         public Task<string> GetRoleIdAsync(ApplicationRole role, CancellationToken cancellationToken)
@@ -78,6 +101,7 @@ namespace Jube.App.Code
         public Task SetRoleNameAsync(ApplicationRole role, string roleName, CancellationToken cancellationToken)
         {
             role.Name = roleName;
+
             return Task.FromResult(0);
         }
 
@@ -90,34 +114,37 @@ namespace Jube.App.Code
             CancellationToken cancellationToken)
         {
             role.NormalizedName = normalizedName;
+
             return Task.FromResult(0);
         }
 
-        public async Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        public Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            /*using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                await connection.OpenAsync(cancellationToken);
-                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>($@"SELECT * FROM [ApplicationRole]
-                    WHERE [Id] = @{nameof(roleId)}", new { roleId });
-            }*/
-            return null;
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Task.FromResult<ApplicationRole>(null);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<ApplicationRole>(exception);
+            }
         }
 
-        public async Task<ApplicationRole> FindByNameAsync(string normalizedRoleName,
+        public Task<ApplicationRole> FindByNameAsync(string normalizedRoleName,
             CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            /*using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                await connection.OpenAsync(cancellationToken);
-                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>($@"SELECT * FROM [ApplicationRole]
-                    WHERE [NormalizedName] = @{nameof(normalizedRoleName)}", new { normalizedRoleName });
-            }*/
-            return null;
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Task.FromResult<ApplicationRole>(null);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<ApplicationRole>(exception);
+            }
         }
 
         public void Dispose()

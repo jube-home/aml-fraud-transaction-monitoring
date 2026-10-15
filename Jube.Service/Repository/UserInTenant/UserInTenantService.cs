@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,7 +15,7 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Dto.Repository.UserInTenant;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.UserInTenant;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,14 +31,13 @@ namespace Jube.Service.Repository.UserInTenant
     {
         private const int MaxListTake = 200;
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
+        private readonly int callerTenantRegistryId;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
-        private readonly int callerTenantRegistryId;
         private readonly string userName;
         private readonly UserInTenantDtoValidator validator;
 
@@ -56,6 +55,9 @@ namespace Jube.Service.Repository.UserInTenant
             repository = new RuleRepository(dbContext, userName);
             validator = new UserInTenantDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<UserInTenantService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -107,6 +109,7 @@ namespace Jube.Service.Repository.UserInTenant
         {
             using var op = OperationScope.Start("UserInTenant", "List", userName, callerTenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserInTenant.List: entry user={userName}");
@@ -117,6 +120,7 @@ namespace Jube.Service.Repository.UserInTenant
                 EnsurePermitted("UserInTenant.List", permissions);
                 var dtos = UserInTenantMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserInTenant.List: {dtos.Count} rows user={userName}");
@@ -154,7 +158,9 @@ namespace Jube.Service.Repository.UserInTenant
         {
             using var op = OperationScope.Start("UserInTenant", "ListPaged", userName, callerTenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserInTenant.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
@@ -172,6 +178,7 @@ namespace Jube.Service.Repository.UserInTenant
                 var page = ordered.Take(clampedTake).ToList();
 
                 op.Rows(page.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserInTenant.ListPaged: {page.Count} rows user={userName}");
@@ -204,6 +211,7 @@ namespace Jube.Service.Repository.UserInTenant
         {
             using var op = OperationScope.Start("UserInTenant", "GetCurrentTenantRegistry", userName,
                 callerTenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserInTenant.GetCurrentTenantRegistry: entry user={userName}");
@@ -214,6 +222,7 @@ namespace Jube.Service.Repository.UserInTenant
                 EnsurePermitted("UserInTenant.GetCurrentTenantRegistry", permissions);
                 var entity = repository.GetCurrentTenantRegistry();
                 var dto = UserInTenantMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"UserInTenant.GetCurrentTenantRegistry: not found user={userName}");
@@ -250,6 +259,7 @@ namespace Jube.Service.Repository.UserInTenant
         {
             using var op = OperationScope.Start("UserInTenant", "Update", userName, callerTenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserInTenant.Update: entry tenantRegistryId={tenantRegistryId} user={userName}");
@@ -266,6 +276,7 @@ namespace Jube.Service.Repository.UserInTenant
                 };
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -300,6 +311,7 @@ namespace Jube.Service.Repository.UserInTenant
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"UserInTenant.Update: user={userName} not found, not visible, or locked");
@@ -315,8 +327,10 @@ namespace Jube.Service.Repository.UserInTenant
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"UserInTenant.Update: unexpected failure tenantRegistryId={tenantRegistryId} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }

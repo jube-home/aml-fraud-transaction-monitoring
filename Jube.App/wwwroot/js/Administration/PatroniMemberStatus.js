@@ -84,6 +84,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("PatroniMemberStatus", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

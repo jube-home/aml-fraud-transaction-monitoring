@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.Exceptions.RedisConnectionEvent;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
@@ -91,6 +91,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -191,6 +192,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
 
             await CreateEntryAsync(dbContext, RedisConnectionEventType.InternalError, endPoint: uniqueEndPoint,
                 origin: "ReadFromPipe");
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.InternalError, endPoint: "OtherHost:6379",
                 origin: "ReadFromPipe");
 
@@ -251,6 +253,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
 
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, twoHoursAgo,
                 $"{endPoint}Old");
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, justNow,
@@ -269,6 +272,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 3);
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
@@ -280,10 +284,12 @@ namespace Jube.Test.Service.RedisConnectionEvent
 
             var ascending = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.RetryCount).Should().Equal(1, 2, 3);
 
             var descending = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.RetryCount).Should().Equal(3, 2, 1);
         }
 
@@ -295,12 +301,14 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 2);
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: ascendingKeyword);
 
@@ -312,12 +320,14 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 1);
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 2);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: "banana");
 
@@ -329,8 +339,10 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             var firstId = await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed,
                 DateTime.UtcNow.AddMinutes(-30), endPoint);
+
             var secondId = await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed,
                 DateTime.UtcNow, endPoint);
 
@@ -347,6 +359,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, endPoint: endPoint);
@@ -388,6 +401,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
+
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 1);
 

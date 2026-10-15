@@ -1,92 +1,104 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Accord.MachineLearning.DecisionTrees
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Accord.MachineLearning.DecisionTrees;
-
     /// <summary>
-    ///   Tree enumeration method delegate.
+    ///     Tree enumeration method delegate.
     /// </summary>
-    /// 
     /// <returns>An enumerator traversing the tree.</returns>
-    /// 
     public delegate IEnumerator<DecisionNode> DecisionTreeTraversalMethod(DecisionNode node);
 
-
     /// <summary>
-    ///   Common traversal methods for n-ary trees.
+    ///     Common traversal methods for n-ary trees.
     /// </summary>
-    /// 
     public static class DecisionTreeTraversal
     {
         /// <summary>
-        ///   Breadth-first traversal method.
+        ///     Breadth-first traversal method.
         /// </summary>
-        /// 
         public static IEnumerator<DecisionNode> BreadthFirst(DecisionNode tree)
         {
             if (tree == null)
+            {
                 yield break;
+            }
 
             var queue = new Queue<DecisionNode>(new[] { tree });
 
             while (queue.Count != 0)
             {
-                DecisionNode current = queue.Dequeue();
+                var current = queue.Dequeue();
 
                 yield return current;
 
                 if (current.Branches != null)
                 {
                     foreach (var child in current.Branches)
+                    {
                         queue.Enqueue(child);
+                    }
                 }
             }
         }
 
         /// <summary>
-        ///   Depth-first traversal method.
+        ///     Depth-first traversal method.
         /// </summary>
-        /// 
         public static IEnumerator<DecisionNode> DepthFirst(DecisionNode tree)
         {
             if (tree == null)
+            {
                 yield break;
+            }
 
             var stack = new Stack<DecisionNode>(new[] { tree });
 
             while (stack.Count != 0)
             {
-                DecisionNode current = stack.Pop();
+                var current = stack.Pop();
 
                 yield return current;
 
                 if (current.Branches != null)
-                    for (int i = current.Branches.Count - 1; i >= 0; i--)
+                {
+                    for (var i = current.Branches.Count - 1; i >= 0; i--)
+                    {
                         stack.Push(current.Branches[i]);
+                    }
+                }
             }
         }
 
@@ -94,14 +106,19 @@ namespace Accord.MachineLearning.DecisionTrees
         {
             var parent = node.Parent;
 
-            if (parent == null) return null;
+            if (parent == null)
+            {
+                return null;
+            }
 
             // Get current node index
             int index;
             if (!cursors.TryGetValue(node, out index))
+            {
                 cursors[node] = index = 0;
+            }
 
-            int nextIndex = index + 1;
+            var nextIndex = index + 1;
             if (nextIndex < parent.Branches.Count)
             {
                 var sibling = parent.Branches[nextIndex];
@@ -113,25 +130,25 @@ namespace Accord.MachineLearning.DecisionTrees
         }
 
         /// <summary>
-        ///   Post-order tree traversal method.
+        ///     Post-order tree traversal method.
         /// </summary>
-        /// 
         /// <remarks>
-        ///   Adapted from John Cowan (1998) recommendation.
+        ///     Adapted from John Cowan (1998) recommendation.
         /// </remarks>
-        /// 
         public static IEnumerator<DecisionNode> PostOrder(DecisionNode tree)
         {
             var cursor = new Dictionary<DecisionNode, int>();
 
-            DecisionNode currentNode = tree;
+            var currentNode = tree;
 
             while (currentNode != null)
             {
                 // Move down to first child
                 DecisionNode nextNode = null;
                 if (currentNode.Branches != null)
+                {
                     nextNode = currentNode.Branches.FirstOrDefault();
+                }
 
                 if (nextNode != null)
                 {
@@ -155,9 +172,13 @@ namespace Accord.MachineLearning.DecisionTrees
 
                     // Move up
                     if (currentNode == nextNode)
+                    {
                         currentNode = null;
+                    }
                     else
+                    {
                         currentNode = currentNode.Parent;
+                    }
                 }
             }
         }

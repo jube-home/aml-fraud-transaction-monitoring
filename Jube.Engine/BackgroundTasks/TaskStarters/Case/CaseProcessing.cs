@@ -1,3 +1,17 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,16 +20,17 @@ using System.Threading.Tasks;
 using Jube.Case;
 using Jube.Data.Context;
 using Jube.Data.Poco;
-using Jube.Data.Query;
 using Jube.Data.Repository;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
+using Jube.Engine.Observability.Models;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Jube.Data.Query.GetExistingCasePriorityQuery;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 {
@@ -90,21 +105,27 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                 }
 
                 var existingCasePriorityLookupStopwatch = Stopwatch.StartNew();
+
                 var existing = await query
                     .ExecuteAsync(model.CaseWorkflowGuid, model.CaseKey, model.CaseKeyValue, token)
                     .ConfigureAwait(false);
+
                 var existingCasePriorityLookupDuration =
                     (long)(existingCasePriorityLookupStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                 CaseCreationStagePerformanceCounters.Instance.Record(
                     nameof(CaseCreationStage.ExistingCasePriorityLookup), existingCasePriorityLookupDuration);
+
                 EngineDiagnostics.CaseCreationStageDuration.Record(existingCasePriorityLookupDuration / 1000.0,
                     new KeyValuePair<string, object>("stage", nameof(CaseCreationStage.ExistingCasePriorityLookup)));
+
                 if (existingCasePriorityLookupDuration >= warnThresholdMicroseconds)
                 {
                     CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
                         DateTime.UtcNow, createCase.TenantRegistryId, createCase.EntityAnalysisModelInstanceEntryGuid,
                         createCase.CaseWorkflowGuid, createCase.CaseKey, createCase.CaseKeyValue,
                         CaseCreationStage.ExistingCasePriorityLookup, null, existingCasePriorityLookupDuration));
+
                     EngineDiagnostics.CaseCreationWarnCount.Add(1,
                         new KeyValuePair<string, object>("stage",
                             nameof(CaseCreationStage.ExistingCasePriorityLookup)));
@@ -115,6 +136,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 
                 var workflowStatusLookupAndPersistStopwatch = Stopwatch.StartNew();
                 CaseWorkflowStatus finalCasesWorkflowsStatus = null;
+
                 if (existing == null)
                 {
                     finalCasesWorkflowsStatus =
@@ -144,12 +166,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 
                 var workflowStatusLookupAndPersistDuration =
                     (long)(workflowStatusLookupAndPersistStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                 CaseCreationStagePerformanceCounters.Instance.Record(
                     nameof(CaseCreationStage.WorkflowStatusLookupAndPersist), workflowStatusLookupAndPersistDuration);
+
                 EngineDiagnostics.CaseCreationStageDuration.Record(
                     workflowStatusLookupAndPersistDuration / 1000.0,
                     new KeyValuePair<string, object>("stage",
                         nameof(CaseCreationStage.WorkflowStatusLookupAndPersist)));
+
                 if (workflowStatusLookupAndPersistDuration >= warnThresholdMicroseconds)
                 {
                     CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
@@ -157,12 +182,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                         createCase.CaseWorkflowGuid, createCase.CaseKey, createCase.CaseKeyValue,
                         CaseCreationStage.WorkflowStatusLookupAndPersist, null,
                         workflowStatusLookupAndPersistDuration));
+
                     EngineDiagnostics.CaseCreationWarnCount.Add(1,
                         new KeyValuePair<string, object>("stage",
                             nameof(CaseCreationStage.WorkflowStatusLookupAndPersist)));
                 }
 
                 var caseBytes = 0;
+
                 if (createCase.Json != null)
                 {
                     if (finalCasesWorkflowsStatus != null)
@@ -189,6 +216,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                                     context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationBody);
 
                                 var notification = new Notification(log, dynamicEnvironment);
+
                                 await notification.SendAsync(finalCasesWorkflowsStatus.NotificationTypeId ?? 1,
                                     notificationDestination,
                                     notificationSubject,
@@ -196,11 +224,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 
                                 var notificationDuration =
                                     (long)(notificationStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                                 CaseCreationStagePerformanceCounters.Instance.Record(
                                     nameof(CaseCreationStage.Notification), notificationDuration);
+
                                 EngineDiagnostics.CaseCreationStageDuration.Record(notificationDuration / 1000.0,
                                     new KeyValuePair<string, object>("stage",
                                         nameof(CaseCreationStage.Notification)));
+
                                 if (notificationDuration >= warnThresholdMicroseconds)
                                 {
                                     CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
@@ -208,6 +239,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                                         createCase.EntityAnalysisModelInstanceEntryGuid, createCase.CaseWorkflowGuid,
                                         createCase.CaseKey, createCase.CaseKeyValue, CaseCreationStage.Notification,
                                         notificationDestination, notificationDuration));
+
                                     EngineDiagnostics.CaseCreationWarnCount.Add(1,
                                         new KeyValuePair<string, object>("stage",
                                             nameof(CaseCreationStage.Notification)));
@@ -219,6 +251,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                                 var httpEndpointStopwatch = Stopwatch.StartNew();
 
                                 var endpoint = context.ReplaceTokens(finalCasesWorkflowsStatus.HttpEndpoint);
+
                                 if (finalCasesWorkflowsStatus.HttpEndpointTypeId == 1)
                                 {
                                     await SendHttpEndpoint.PostAsync(endpoint,
@@ -232,11 +265,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 
                                 var httpEndpointDuration =
                                     (long)(httpEndpointStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                                 CaseCreationStagePerformanceCounters.Instance.Record(
                                     nameof(CaseCreationStage.HttpEndpoint), httpEndpointDuration);
+
                                 EngineDiagnostics.CaseCreationStageDuration.Record(httpEndpointDuration / 1000.0,
                                     new KeyValuePair<string, object>("stage",
                                         nameof(CaseCreationStage.HttpEndpoint)));
+
                                 if (httpEndpointDuration >= warnThresholdMicroseconds)
                                 {
                                     CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
@@ -244,6 +280,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                                         createCase.EntityAnalysisModelInstanceEntryGuid, createCase.CaseWorkflowGuid,
                                         createCase.CaseKey, createCase.CaseKeyValue, CaseCreationStage.HttpEndpoint,
                                         endpoint, httpEndpointDuration));
+
                                     EngineDiagnostics.CaseCreationWarnCount.Add(1,
                                         new KeyValuePair<string, object>("stage",
                                             nameof(CaseCreationStage.HttpEndpoint)));
@@ -301,6 +338,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 
             jObject["caseWorkflowStatus"] = finalCasesWorkflowsStatus.Name;
             jObject.Remove("json");
+
             return jObject.ToString();
         }
     }

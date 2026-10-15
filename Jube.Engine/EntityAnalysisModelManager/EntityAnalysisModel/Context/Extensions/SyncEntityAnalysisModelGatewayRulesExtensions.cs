@@ -24,6 +24,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using Jube.Engine.Models;
     using Parser;
     using Parser.Compiler;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelGatewayRulesExtensions
     {
@@ -55,6 +56,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         .ConfigureAwait(false);
 
                     var shadowEntityModelGatewayRule = new List<EntityModelGatewayRule>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -192,6 +194,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                             var hasRuleScript = false;
+
                             if (record.BuilderRuleScript != null && modelGatewayRule.RuleScriptTypeId == 1)
                             {
                                 var parsedRule = new ParsedRule
@@ -199,6 +202,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     OriginalRuleText = record.BuilderRuleScript,
                                     ErrorSpans = []
                                 };
+
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                 parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -221,6 +225,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     OriginalRuleText = record.CoderRuleScript,
                                     ErrorSpans = []
                                 };
+
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                 parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -271,6 +276,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                 var classType = modelGatewayRule.GatewayRuleCompile.GetType("GatewayRule");
                                 var methodInfo = classType.GetMethod("Match");
+
                                 modelGatewayRule.GatewayRuleCompileDelegate =
                                     (EntityModelGatewayRule.Match)Delegate.CreateDelegate(
                                         typeof(EntityModelGatewayRule.Match), methodInfo);
@@ -295,6 +301,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
 
                                 var compile = new Compile();
+
                                 compile.CompileCode(gatewayRuleScript.ToString(), context.Services.Log,
                                 [
                                     Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
@@ -320,12 +327,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                     var classType = modelGatewayRule.GatewayRuleCompile.GetType("GatewayRule");
                                     var methodInfo = classType.GetMethod("Match");
+
                                     modelGatewayRule.GatewayRuleCompileDelegate =
                                         (EntityModelGatewayRule.Match)Delegate.CreateDelegate(
                                             typeof(EntityModelGatewayRule.Match), methodInfo);
+
                                     shadowEntityModelGatewayRule.Add(modelGatewayRule);
+
                                     context.Caching.HashCacheAssembly.TryAdd(gatewayRuleScriptHash,
                                         compile.CompiledAssembly);
+
                                     context.Caching.HashCacheAssemblyMetadata.TryAdd(gatewayRuleScriptHash,
                                         new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
                                             compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));

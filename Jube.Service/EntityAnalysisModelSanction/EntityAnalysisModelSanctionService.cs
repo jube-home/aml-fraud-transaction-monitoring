@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,17 +14,18 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.EntityAnalysisModelSanction;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
-using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelSanction;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.Parser.Dependency;
 using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelSanction;
 using log4net;
@@ -41,6 +42,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         private static readonly int[] readPermissions = [11];
         private static readonly int[] writePermissions = [11];
         private readonly ILog auditLog;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelSanctionRepository repository;
@@ -48,7 +50,6 @@ namespace Jube.Service.EntityAnalysisModelSanction
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
-        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelSanctionDtoValidator validator;
 
         private EntityAnalysisModelSanctionService(DbContext dbContext, string userName, int tenantRegistryId,
@@ -63,11 +64,17 @@ namespace Jube.Service.EntityAnalysisModelSanction
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelSanctionRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelSanctionDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<EntityAnalysisModelSanctionService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -121,6 +128,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.List: entry user={userName}");
@@ -129,9 +137,11 @@ namespace Jube.Service.EntityAnalysisModelSanction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.List");
+
                 var dtos = EntityAnalysisModelSanctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.List: {dtos.Count} rows user={userName}");
@@ -147,6 +157,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.List: cancelled user={userName}");
@@ -173,6 +184,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -182,9 +194,11 @@ namespace Jube.Service.EntityAnalysisModelSanction
             try
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelSanction.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelSanctionMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -201,6 +215,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -212,9 +227,11 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelSanction.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -229,6 +246,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Get: entry id={id} user={userName}");
@@ -238,6 +256,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelSanction.Get");
                 var sanction = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (sanction == null)
                 {
                     if (log.IsDebugEnabled)
@@ -250,6 +269,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 }
 
                 op.Entity(sanction.Id);
+
                 return EntityAnalysisModelSanctionMapper.ToDto(sanction);
             }
             catch (ForbiddenException)
@@ -260,6 +280,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.Get: cancelled id={id} user={userName}");
@@ -271,6 +292,66 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelSanction.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one Sanction check by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("EntityAnalysisModelSanctionGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<EntityAnalysisModelSanctionDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Sanction check.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSanction", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "EntityAnalysisModelSanction.GetByGuid");
+                var sanction = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (sanction == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"EntityAnalysisModelSanction.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(sanction.Id);
+
+                return EntityAnalysisModelSanctionMapper.ToDto(sanction);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelSanction.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSanction.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
                 throw;
             }
         }
@@ -287,7 +368,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -318,6 +401,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.ListPaged: cancelled user={userName}");
@@ -343,6 +427,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.FilterFields: entry user={userName}");
@@ -354,6 +439,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelSanctionDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -393,6 +479,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -401,10 +488,13 @@ namespace Jube.Service.EntityAnalysisModelSanction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.Filter");
+
                 var rows = EntityAnalysisModelSanctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -442,6 +532,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Count: entry groupBy={groupBy} user={userName}");
@@ -450,10 +541,13 @@ namespace Jube.Service.EntityAnalysisModelSanction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.Count");
+
                 var rows = EntityAnalysisModelSanctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -484,6 +578,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Create: entry user={userName} name={model?.Name}");
@@ -495,6 +590,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 EnsurePermitted(writePermissions, "EntityAnalysisModelSanction.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -534,6 +630,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.Create: cancelled user={userName}");
@@ -544,8 +641,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelSanction.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -560,6 +659,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Validate: entry id={model?.Id} user={userName}");
@@ -572,6 +672,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -603,6 +704,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Update: entry id={model?.Id} user={userName}");
@@ -614,6 +716,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 EnsurePermitted(writePermissions, "EntityAnalysisModelSanction.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -626,6 +729,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 }
 
                 SanctionPoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(EntityAnalysisModelSanctionMapper.ToPoco(model), token)
@@ -672,6 +776,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.Update: cancelled id={model?.Id} user={userName}");
@@ -682,9 +787,11 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelSanction.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -701,6 +808,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSanction.Delete: entry id={id} user={userName}");
@@ -713,6 +821,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 try
                 {
                     var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                     if (existing != null)
                     {
                         var dependents = await deleteValidator
@@ -720,6 +829,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                                 new ModelEntityDelete(ModelEntityKind.Sanction, id, existing.EntityAnalysisModelId),
                                 token)
                             .ConfigureAwait(false);
+
                         if (!dependents.IsValid)
                         {
                             throw new DtoValidationException(dependents);
@@ -765,6 +875,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelSanction.Delete: cancelled id={id} user={userName}");

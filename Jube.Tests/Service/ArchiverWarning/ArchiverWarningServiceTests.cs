@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,7 @@ namespace Jube.Test.Service.ArchiverWarning
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -81,6 +83,7 @@ namespace Jube.Test.Service.ArchiverWarning
         private async Task<(int Id, Guid Guid)> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -91,6 +94,7 @@ namespace Jube.Test.Service.ArchiverWarning
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -111,6 +115,7 @@ namespace Jube.Test.Service.ArchiverWarning
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -120,8 +125,10 @@ namespace Jube.Test.Service.ArchiverWarning
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             var modelName = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}";
+
             var firstId = await CreateWarningAsync(dbContext, modelGuid, modelName,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, modelGuid, modelName,
                 ArchiverStage.RdbmsArchiveWrite, 2000, DateTime.UtcNow);
 
@@ -249,6 +256,7 @@ namespace Jube.Test.Service.ArchiverWarning
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             var buildId = await CreateWarningAsync(dbContext, modelGuid, "Model");
+
             var rdbmsId = await CreateWarningAsync(dbContext, modelGuid, "Model",
                 ArchiverStage.RdbmsArchiveWrite);
 
@@ -302,11 +310,13 @@ namespace Jube.Test.Service.ArchiverWarning
 
             var ascending =
                 await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "asc");
+
             ascending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.DurationMicroseconds)
                 .Should().Equal(1000, 2000, 3000);
 
             var descending =
                 await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "desc");
+
             descending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.DurationMicroseconds)
                 .Should().Equal(3000, 2000, 1000);
         }
@@ -324,6 +334,7 @@ namespace Jube.Test.Service.ArchiverWarning
             var ids = new HashSet<int> { highId, lowId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(sortField: "durationMicroseconds",
                 sortDirection: ascendingKeyword);
 
@@ -352,8 +363,10 @@ namespace Jube.Test.Service.ArchiverWarning
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             var firstId = await CreateWarningAsync(dbContext, modelGuid, "Model",
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, modelGuid, "Model",
                 occurredDate: DateTime.UtcNow);
 
@@ -370,6 +383,7 @@ namespace Jube.Test.Service.ArchiverWarning
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateWarningAsync(dbContext, modelGuid, "Model");

@@ -65,6 +65,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/Import: entry user={user}");
@@ -72,13 +73,16 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             var streams = new List<Stream>();
+
             try
             {
                 var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
                     stringLocalizerFactory, serviceChangeBus, token);
 
                 var dtos = new List<PreservationImportFileDto>();
+
                 foreach (var file in files)
                 {
                     var stream = file.OpenReadStream();
@@ -87,6 +91,7 @@ namespace Jube.App.Endpoints.Repository
                 }
 
                 await service.ImportAsync(dtos, password, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -127,6 +132,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}/Import: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
             finally
@@ -142,9 +148,10 @@ namespace Jube.App.Endpoints.Repository
             HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token, bool exhaustive = false, bool lists = false,
-            bool dictionaries = false, bool visualisations = false)
+            bool dictionaries = false, bool visualisations = false, bool advancedAnalytics = false)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ExportPeek: entry user={user}");
@@ -152,12 +159,15 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var json = await service.ExportPeekAsync(exhaustive, lists, dictionaries,
-                    visualisations, token);
+                    visualisations, advancedAnalytics, token);
+
                 return TypedResults.Text(json, "application/json");
             }
             catch (NotAuthenticatedException)
@@ -190,6 +200,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ExportPeek: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -200,6 +211,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/Export: entry user={user}");
@@ -207,11 +219,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var export = await service.ExportAsync(model, token);
+
                 return TypedResults.File(export.EncryptedBytes, "application/octet-stream", export.FileName);
             }
             catch (NotAuthenticatedException)
@@ -244,6 +259,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}/Export: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

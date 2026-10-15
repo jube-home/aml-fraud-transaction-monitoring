@@ -24,6 +24,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryDatasourceRole;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.VisualisationRegistryDatasourceRole;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -47,7 +48,6 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
 
         private readonly List<int> createdDatasourceIds = [];
         private readonly List<int> createdRegistryIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -59,6 +59,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
 
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>()
                 .Where(w => datasourceGuids.Contains(w.VisualisationRegistryDatasourceGuid)).DeleteAsync();
+
             await dbContext.VisualisationRegistryDatasource.Where(w => createdDatasourceIds.Contains(w.Id))
                 .DeleteAsync();
             await dbContext.VisualisationRegistry.Where(w => createdRegistryIds.Contains(w.Id)).DeleteAsync();
@@ -88,6 +89,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             }).ConfigureAwait(false);
 
             createdRegistryIds.Add(registryId);
+
             return registryId;
         }
 
@@ -95,6 +97,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             string createdUser)
         {
             var datasourceGuid = Guid.NewGuid();
+
             var datasourceId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.VisualisationRegistryDatasource
                 {
@@ -110,6 +113,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
                 }).ConfigureAwait(false);
 
             createdDatasourceIds.Add(datasourceId);
+
             return datasourceGuid;
         }
 
@@ -117,6 +121,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             string userName)
         {
             var registryId = await CreateRegistryAsync(dbContext, tenantRegistryId, userName);
+
             return await CreateDatasourceAsync(dbContext, registryId, userName);
         }
 
@@ -126,6 +131,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
         private async Task<Guid> CreateDatasourceForUserAsync(DbContext dbContext, string userName)
         {
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, userName);
+
             return await CreateRegistryAndDatasourceAsync(dbContext, tenantRegistryId, userName);
         }
 
@@ -300,6 +306,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -336,6 +343,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var datasourceGuid = await CreateDatasourceForUserAsync(dbContext, fx.Seed.UserWithPermission);
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -366,6 +374,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var datasourceGuidB = await CreateDatasourceForUserAsync(dbContext, fx.Seed.UserTenantB);
             var roleRegistryGuidB = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserTenantB);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             await serviceB.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuidB,
@@ -385,11 +394,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var datasourceGuid = await CreateDatasourceForUserAsync(dbContext, fx.Seed.UserWithPermission);
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(saved.Id);
 
             var grants = await service.GetByVisualisationRegistryDatasourceGuidAsync(datasourceGuid);
@@ -405,6 +416,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -438,6 +450,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var datasourceGuidB = await CreateDatasourceForUserAsync(dbContext, fx.Seed.UserTenantB);
             var roleRegistryGuidB = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserTenantB);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             var savedB = await serviceB.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuidB,
@@ -485,6 +498,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
                 VisualisationRegistryDatasourceGuid = Guid.NewGuid(),
                 RoleRegistryGuid = Guid.NewGuid(),
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -499,8 +513,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
 
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
+
             await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -515,6 +531,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -527,6 +544,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
         public void CatalogueListsUniqueVisualisationRegistryDatasourceRoleToolNames()
         {
             var tools = ServiceToolCatalogue.All;
+
             var names = tools.Where(t => t.Name.StartsWith("VisualisationRegistryDatasourceRole"))
                 .Select(t => t.Name).ToList();
 
@@ -535,6 +553,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
                 "VisualisationRegistryDatasourceRoleCreate",
                 "VisualisationRegistryDatasourceRoleDelete",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
 
@@ -558,6 +577,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             });
 
             second.Id.Should().Be(first.Id);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>().CountAsync(w =>
                 w.VisualisationRegistryDatasourceGuid == datasourceGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -576,7 +596,9 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(first.Id);
+
             var again = await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -584,6 +606,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             });
 
             again.Id.Should().NotBe(first.Id, "a soft-deleted grant must not block granting again");
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>().CountAsync(w =>
                 w.VisualisationRegistryDatasourceGuid == datasourceGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -602,11 +625,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             var repeated = await service.InsertAsync(new VisualisationRegistryDatasourceRoleDto
             {
                 VisualisationRegistryDatasourceGuid = datasourceGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(repeated.Id);
 
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>().CountAsync(w =>
@@ -637,6 +662,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             });
 
             two.Id.Should().NotBe(one.Id);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>().CountAsync(w =>
                 w.VisualisationRegistryDatasourceGuid == datasourceGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -653,10 +679,12 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             var roleRegistryGuid = await GetRoleRegistryGuidAsync(dbContext, fx.Seed.UserWithPermission);
 
             var ids = new ConcurrentBag<int>();
+
             await Task.WhenAll(Enumerable.Range(0, 8).Select(async _ =>
             {
                 await using var raceContext = fx.GetDbContext();
                 var raceService = await BuildServiceAsync(raceContext, fx.Seed.UserWithPermission);
+
                 var saved = await raceService.InsertAsync(new VisualisationRegistryDatasourceRoleDto
                 {
                     VisualisationRegistryDatasourceGuid = datasourceGuid,
@@ -666,6 +694,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceRole
             }));
 
             ids.Distinct().Should().ContainSingle("every racing grant must resolve to the one live row");
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>().CountAsync(w =>
                 w.VisualisationRegistryDatasourceGuid == datasourceGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);

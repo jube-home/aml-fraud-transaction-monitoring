@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,18 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void
-            AddExhaustiveSearchInstancePromotedTrialInstanceConfusion(List<ServiceToolDescriptor> tools) =>
+            AddExhaustiveSearchInstancePromotedTrialInstanceConfusion(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "ExhaustiveSearchInstancePromotedTrialInstanceConfusionGet", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Returns the confusion matrix and derived ratios for the active promoted trial instance of an Exhaustive Search Instance.")
+                    "ExhaustiveSearchInstancePromotedTrialInstanceConfusionGet", OperationKind.Read, true,
+                    false,
+                    "Returns the confusion matrix and derived ratios for the active promoted trial instance of an Exhaustive Search Instance.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceConfusionService.RequiredPermissions)
             ]);
+        }
     }
 }

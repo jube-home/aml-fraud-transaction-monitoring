@@ -23,9 +23,11 @@ namespace Jube.Validations.Authentication
         {
             RuleFor(p => p.UserName).NotEmpty();
             RuleFor(p => p.Password).NotEmpty().When(w => !w.PasswordChangeState);
+
             RuleFor(p => p.Mfa).NotEmpty()
                 .When(_ => dynamicEnvironment.AppSettings("EnableMultifactorAuthentication")
                     .Equals("True", StringComparison.OrdinalIgnoreCase));
+
             RuleFor(p => p.NewPassword)
                 .NotEmpty().When(w => w.PasswordChangeState);
         }

@@ -1,0 +1,80 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using Jube.Engine.AdvancedAnalytics.Clustering.Models;
+
+namespace Jube.Engine.AdvancedAnalytics.Clustering
+{
+    public sealed class MiniBatchKMeansClustererOptions
+    {
+        public int Clusters { get; set; } = 3;
+        public int BatchSize { get; set; } = 100;
+        public int? InitializationBatchSize { get; set; }
+        public int NumberOfInitializations { get; set; } = 1;
+        public KMeansSeeding Seeding { get; set; } = KMeansSeeding.KMeansPlusPlus;
+        public int MaximumIterations { get; set; } = 100;
+        public double Tolerance { get; set; } = 1e-5;
+        public bool Standardise { get; set; } = true;
+        public double ValidationFraction { get; set; } = 0.2;
+        public double TestFraction { get; set; } = 0.2;
+        public int Seed { get; set; } = 1;
+
+        public void Validate()
+        {
+            if (Clusters < 1)
+            {
+                throw new ArgumentException("There must be at least one cluster.");
+            }
+
+            if (BatchSize < 1)
+            {
+                throw new ArgumentException("The batch size must be at least 1.");
+            }
+
+            if (InitializationBatchSize is { } value && value < Clusters)
+            {
+                throw new ArgumentException(
+                    "The initialization batch size, when given, must be at least the number of clusters.");
+            }
+
+            if (NumberOfInitializations < 1)
+            {
+                throw new ArgumentException("The number of initializations must be at least 1.");
+            }
+
+            if (MaximumIterations < 1)
+            {
+                throw new ArgumentException("Maximum iterations must be at least 1.");
+            }
+
+            if (!double.IsFinite(Tolerance) || Tolerance < 0)
+            {
+                throw new ArgumentException("Tolerance must be finite and not negative.");
+            }
+
+            foreach (var fraction in new[] { ValidationFraction, TestFraction })
+            {
+                if (!double.IsFinite(fraction) || fraction < 0 || fraction >= 1)
+                {
+                    throw new ArgumentException("Validation and test fractions must be between 0 and 1 (exclusive).");
+                }
+            }
+
+            if (ValidationFraction + TestFraction > 0.9)
+            {
+                throw new ArgumentException("Validation and test fractions together must not exceed 0.9.");
+            }
+        }
+    }
+}
