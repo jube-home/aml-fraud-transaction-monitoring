@@ -92,11 +92,11 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
         private static Task<EntityAnalysisModelDictionaryKvpService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null)
+            IServiceChangeBus? serviceChangeBus = null, int approvalsRequired = 1)
         {
             return EntityAnalysisModelDictionaryKvpService.CreateAsync(
                 dbContext, userName, log ?? TestLog.NoOp, localizers, serviceChangeBus ?? new NullServiceChangeBus(),
-                auditLog ?? TestLog.NoOp);
+                approvalsRequired, auditLog ?? TestLog.NoOp);
         }
 
         private async Task<int> CreateParentDictionaryAsync(DbContext dbContext, string createdUser)
@@ -212,6 +212,55 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             await service.UploadCsvAsync([File("three.csv", $"{key},3,not-a-date")], dictionaryId);
             (await KvpsAsync(dictionaryId)).Single().DeleteExpiryDate.Should().BeNull();
             (await UploadsAsync(dictionaryId)).Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task ReuploadingAnIdenticalKeyValueAndExpiryDateIsIgnoredAndOpensNoNewApprovalCycleAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = Key("Identical");
+            var expiry = DateTime.UtcNow.AddDays(5);
+
+            await service.UploadCsvAsync([File("one.csv", $"{key},1,{expiry:O}")], dictionaryId);
+            var afterFirst = (await KvpsAsync(dictionaryId)).Single();
+            afterFirst.Version.Should().Be(1);
+
+            var results = await service.UploadCsvAsync([File("two.csv", $"{key},1,{expiry:O}")], dictionaryId);
+
+            results[0].Records.Should().Be(1);
+            results[0].Errors.Should().Be(0);
+            var afterSecond = (await KvpsAsync(dictionaryId)).Single();
+            afterSecond.Version.Should().Be(1, "re-uploading an identical key/value/expiry must not bump the " +
+                                               "version or open a new approval cycle");
+            afterSecond.CreatedUser.Should().Be(afterFirst.CreatedUser);
+
+            var auditRows = await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
+                .CountAsync(w => w.EntityAnalysisModelDictionaryKvpId == afterSecond.Id);
+            auditRows.Should().Be(0, "nothing changed, so no audit snapshot should have been written");
+        }
+
+        [Fact]
+        public async Task UploadCsvDoesNotInsertARowWhoseKeyIsAwaitingDeletionApprovalAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = Key("PendingDeletion");
+
+            var saved = await service.InsertAsync(new EntityAnalysisModelDictionaryKvpDto
+            {
+                EntityAnalysisModelDictionaryId = dictionaryId, KvpKey = key, KvpValue = 1
+            });
+            await service.DeleteAsync(saved.Id);
+
+            var results = await service.UploadCsvAsync([File("pending.csv", $"{key},2")], dictionaryId);
+
+            results[0].Records.Should().Be(0, "the row was never inserted because its key is still occupied by " +
+                                              "the unresolved deletion");
+            (await KvpsAsync(dictionaryId)).Should().ContainSingle(k => k.Id == saved.Id,
+                "no second row for the same key should have been inserted");
         }
 
         [Fact]

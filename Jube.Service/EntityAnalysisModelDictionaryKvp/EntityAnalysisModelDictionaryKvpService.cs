@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
@@ -26,6 +27,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelDictionaryKvp;
+using FluentValidation.Results;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -50,11 +52,12 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly int approvalsRequired;
         private readonly EntityAnalysisModelDictionaryKvpDtoValidator validator;
 
         private EntityAnalysisModelDictionaryKvpService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            int approvalsRequired, IStringLocalizer strings)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -63,24 +66,27 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+            this.approvalsRequired = approvalsRequired < 1 ? ApprovalsRequiredResolver.Default : approvalsRequired;
             repository = new EntityAnalysisModelDictionaryKvpRepository(dbContext, userName);
             dictionaryRepository = new EntityAnalysisModelDictionaryRepository(dbContext, userName);
             uploadRepository = new EntityAnalysisModelDictionaryCsvFileUploadRepository(dbContext, userName);
             validator = new EntityAnalysisModelDictionaryKvpDtoValidator(
-                new EntityAnalysisModelDictionaryRepository(dbContext, userName), strings);
+                new EntityAnalysisModelDictionaryRepository(dbContext, userName), repository,
+                this.approvalsRequired, strings);
         }
 
         public static Task<EntityAnalysisModelDictionaryKvpService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, int approvalsRequired, CancellationToken token = default)
         {
-            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
+            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus, approvalsRequired,
                 LogManager.GetLogger("Jube.Audit"), token);
         }
 
         internal static async Task<EntityAnalysisModelDictionaryKvpService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, int approvalsRequired, ILog auditLog,
+            CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelDictionaryKvpResources));
 
@@ -114,7 +120,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelDictionaryKvpService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, approvalsRequired, strings);
         }
 
         [Description("Lists every Key Value Pair visible to the calling user's tenant. Unbounded -- intended for " +
@@ -512,9 +518,22 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository
-                    .InsertAsync(EntityAnalysisModelDictionaryKvpMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                DictionaryKvpPoco saved;
+                try
+                {
+                    saved = await repository
+                        .InsertAsync(EntityAnalysisModelDictionaryKvpMapper.ToPoco(model), token)
+                        .ConfigureAwait(false);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelDictionaryKvp.Create: raced a duplicate key user={userName}");
+                    }
+
+                    throw DuplicateKeyException();
+                }
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
@@ -616,6 +635,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                var modelId = model.Id;
                 EnsurePermitted("EntityAnalysisModelDictionaryKvp.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -623,7 +643,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 {
                     if (log.IsWarnEnabled)
                     {
-                        log.Warn($"EntityAnalysisModelDictionaryKvp.Update: validation failed id={model.Id} " +
+                        log.Warn($"EntityAnalysisModelDictionaryKvp.Update: validation failed id={modelId} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
@@ -642,10 +662,20 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelDictionaryKvp.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                            $"EntityAnalysisModelDictionaryKvp.Update: id={modelId} not found, deleted, expired, or not visible to tenant user={userName}");
                     }
 
                     throw new NotFoundException("The Key Value Pair was not found.", ex);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelDictionaryKvp.Update: id={modelId} raced a duplicate key user={userName}");
+                    }
+
+                    throw DuplicateKeyException();
                 }
 
                 op.Entity(saved.Id);
@@ -1054,6 +1084,14 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                                 ? ParseDeleteExpiryDate(splits[2])
                                 : null;
 
+                            if (existing == null && await repository.ExistsUnresolvedDeletionAsync(
+                                        entityAnalysisModelDictionaryId, 0, splits[0], approvalsRequired, token)
+                                    .ConfigureAwait(false))
+                            {
+                                throw new InvalidOperationException(
+                                    "The dictionary key is awaiting approval of its deletion.");
+                            }
+
                             if (existing == null)
                             {
                                 await repository.InsertAsync(new DictionaryKvpPoco
@@ -1066,14 +1104,19 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                             }
                             else
                             {
-                                existing.KvpValue = ParseFiniteValue(splits[1]);
+                                var newValue = ParseFiniteValue(splits[1]);
+                                var newExpiryDate =
+                                    deleteExpiryDateSpecified ? deleteExpiryDate : existing.DeleteExpiryDate;
+                                var unchanged = existing.KvpValue.HasValue &&
+                                                Math.Abs(existing.KvpValue.Value - newValue) < 1e-9 &&
+                                                SameExpiryDate(existing.DeleteExpiryDate, newExpiryDate);
 
-                                if (deleteExpiryDateSpecified)
+                                if (!unchanged)
                                 {
-                                    existing.DeleteExpiryDate = deleteExpiryDate;
+                                    existing.KvpValue = newValue;
+                                    existing.DeleteExpiryDate = newExpiryDate;
+                                    await repository.UpdateAsync(existing, token).ConfigureAwait(false);
                                 }
-
-                                await repository.UpdateAsync(existing, token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -1138,6 +1181,16 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 : null;
         }
 
+        private static bool SameExpiryDate(DateTime? stored, DateTime? requested)
+        {
+            if (stored is null || requested is null)
+            {
+                return stored is null && requested is null;
+            }
+
+            return Math.Abs((stored.Value - requested.Value).TotalSeconds) < 1;
+        }
+
         private void EnsurePermitted(string op)
         {
             if (permissionValidation.Validate(permissions))
@@ -1152,6 +1205,18 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
 
             throw new ForbiddenException(strings[EntityAnalysisModelDictionaryKvpResources.PermissionDenied],
                 permissions);
+        }
+
+        private DtoValidationException DuplicateKeyException()
+        {
+            return new DtoValidationException(new ValidationResult(
+            [
+                new ValidationFailure(nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey),
+                    strings[EntityAnalysisModelDictionaryKvpResources.KvpKeyDuplicate])
+                {
+                    ErrorCode = "KvpKeyDuplicate"
+                }
+            ]));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Jube.Migrations.Branches.MakerChecker
     [Migration(20260929120300)]
     public class BackfillEntityApprovalForExistingEntities : Migration
     {
-        private const string ApprovedBy = "Migration";
+        private const string ApprovedBy = "Administrator";
 
         public override void Up()
         {

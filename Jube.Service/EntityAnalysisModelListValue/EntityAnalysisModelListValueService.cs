@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
@@ -26,6 +27,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelListValue;
+using FluentValidation.Results;
 using LinqToDB.Data;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -50,11 +52,12 @@ namespace Jube.Service.EntityAnalysisModelListValue
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly int approvalsRequired;
         private readonly EntityAnalysisModelListValueDtoValidator validator;
 
         private EntityAnalysisModelListValueService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            int approvalsRequired, IStringLocalizer strings)
         {
             this.dbContext = dbContext;
             this.log = log;
@@ -64,24 +67,26 @@ namespace Jube.Service.EntityAnalysisModelListValue
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+            this.approvalsRequired = approvalsRequired < 1 ? ApprovalsRequiredResolver.Default : approvalsRequired;
             repository = new EntityAnalysisModelListValueRepository(dbContext, userName);
             parentRepository = new EntityAnalysisModelListRepository(dbContext, tenantRegistryId);
             uploadRepository = new EntityAnalysisModelListValueCsvFileUploadRepository(dbContext, userName);
             validator = new EntityAnalysisModelListValueDtoValidator(new EntityAnalysisModelListRepository(dbContext,
-                userName), strings);
+                userName), repository, this.approvalsRequired, strings);
         }
 
         public static Task<EntityAnalysisModelListValueService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, int approvalsRequired, CancellationToken token = default)
         {
-            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
+            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus, approvalsRequired,
                 LogManager.GetLogger("Jube.Audit"), token);
         }
 
         internal static async Task<EntityAnalysisModelListValueService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, int approvalsRequired, ILog auditLog,
+            CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelListValueResources));
 
@@ -113,7 +118,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelListValueService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, approvalsRequired, strings);
         }
 
         [Description("Lists every List Value visible to the calling user's tenant. Unbounded -- intended for the " +
@@ -510,8 +515,21 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository.InsertAsync(EntityAnalysisModelListValueMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                ListValuePoco saved;
+                try
+                {
+                    saved = await repository.InsertAsync(EntityAnalysisModelListValueMapper.ToPoco(model), token)
+                        .ConfigureAwait(false);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelListValue.Create: raced a duplicate value user={userName}");
+                    }
+
+                    throw DuplicateValueException();
+                }
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
@@ -613,6 +631,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                var modelId = model.Id;
                 EnsurePermitted("EntityAnalysisModelListValue.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -620,7 +639,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 {
                     if (log.IsWarnEnabled)
                     {
-                        log.Warn($"EntityAnalysisModelListValue.Update: validation failed id={model.Id} " +
+                        log.Warn($"EntityAnalysisModelListValue.Update: validation failed id={modelId} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
@@ -638,10 +657,20 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelListValue.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                            $"EntityAnalysisModelListValue.Update: id={modelId} not found, deleted, expired, or not visible to tenant user={userName}");
                     }
 
                     throw new NotFoundException("The List Value was not found.", ex);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelListValue.Update: id={modelId} raced a duplicate value user={userName}");
+                    }
+
+                    throw DuplicateValueException();
                 }
 
                 op.Entity(saved.Id);
@@ -1055,15 +1084,52 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 await dbContext.ExecuteAsync("SAVEPOINT csv_row", token).ConfigureAwait(false);
                 try
                 {
-                    await repository.InsertAsync(new ListValuePoco
-                    {
-                        EntityAnalysisModelListId = entityAnalysisModelListId,
-                        ListValue = splits[0],
-                        DeleteExpiryDate = splits.Length > 1 ? ParseDeleteExpiryDate(splits[1]) : null
-                    }, token).ConfigureAwait(false);
+                    var newExpiryDate = splits.Length > 1 ? ParseDeleteExpiryDate(splits[1]) : null;
 
-                    await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
-                    records += 1;
+                    var existing = await repository
+                        .GetByListIdAndValueAsync(entityAnalysisModelListId, splits[0], token)
+                        .ConfigureAwait(false);
+
+                    if (existing == null && await repository.ExistsUnresolvedDeletionAsync(
+                                entityAnalysisModelListId, 0, splits[0], approvalsRequired, token)
+                            .ConfigureAwait(false))
+                    {
+                        await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
+                        errors++;
+                        if (log.IsWarnEnabled)
+                        {
+                            log.Warn($"EntityAnalysisModelListValue.UploadCsv: rejected value awaiting " +
+                                     $"deletion approval entityAnalysisModelListId={entityAnalysisModelListId} " +
+                                     $"user={userName}");
+                        }
+                    }
+                    else if (existing == null)
+                    {
+                        await repository.InsertAsync(new ListValuePoco
+                        {
+                            EntityAnalysisModelListId = entityAnalysisModelListId,
+                            ListValue = splits[0],
+                            DeleteExpiryDate = newExpiryDate
+                        }, token).ConfigureAwait(false);
+
+                        await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
+                        records += 1;
+                    }
+                    else if (SameExpiryDate(existing.DeleteExpiryDate, newExpiryDate))
+                    {
+                        await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
+                        records += 1;
+                    }
+                    else
+                    {
+                        await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
+                        errors++;
+                        if (log.IsWarnEnabled)
+                        {
+                            log.Warn($"EntityAnalysisModelListValue.UploadCsv: rejected duplicate value " +
+                                     $"entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                        }
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -1133,6 +1199,16 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 : null;
         }
 
+        private static bool SameExpiryDate(DateTime? stored, DateTime? requested)
+        {
+            if (stored is null || requested is null)
+            {
+                return stored is null && requested is null;
+            }
+
+            return Math.Abs((stored.Value - requested.Value).TotalSeconds) < 1;
+        }
+
         private void EnsurePermitted(string op)
         {
             if (permissionValidation.Validate(permissions))
@@ -1147,6 +1223,18 @@ namespace Jube.Service.EntityAnalysisModelListValue
 
             throw new ForbiddenException(strings[EntityAnalysisModelListValueResources.PermissionDenied],
                 permissions);
+        }
+
+        private DtoValidationException DuplicateValueException()
+        {
+            return new DtoValidationException(new ValidationResult(
+            [
+                new ValidationFailure(nameof(EntityAnalysisModelListValueDto.ListValue),
+                    strings[EntityAnalysisModelListValueResources.ListValueDuplicate])
+                {
+                    ErrorCode = "ListValueDuplicate"
+                }
+            ]));
         }
     }
 }

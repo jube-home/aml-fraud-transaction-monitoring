@@ -25,6 +25,7 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelListValue;
 using Jube.Service.Agent.ServiceToolCatalogue;
+using Jube.Service.EntityApproval;
 using Jube.Service.Exceptions.EntityAnalysisModelListValue;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
@@ -108,11 +109,11 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
 
         private static Task<EntityAnalysisModelListValueService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null)
+            IServiceChangeBus? serviceChangeBus = null, int approvalsRequired = 1)
         {
             return EntityAnalysisModelListValueService.CreateAsync(
                 dbContext, userName, log ?? TestLog.NoOp, localizers, serviceChangeBus ?? new NullServiceChangeBus(),
-                auditLog ?? TestLog.NoOp);
+                approvalsRequired, auditLog ?? TestLog.NoOp);
         }
 
         private async Task<int> CreateParentListAsync(DbContext dbContext, string createdUser)
@@ -294,7 +295,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
 
             var ex = await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 EntityAnalysisModelListValueService.CreateAsync(dbContext, userName, log, localizers,
-                    new NullServiceChangeBus(), TestLog.NoOp));
+                    new NullServiceChangeBus(), 1, TestLog.NoOp));
 
             ex.Code.Should().Be("NotAuthenticated");
             log.Entries.Should().Contain(e => e.Level == "WARN");
@@ -435,6 +436,180 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             createdIds.Add(saved.Id);
 
             saved.DeleteExpiryDate.Should().BeCloseTo(expiry.UtcDateTime, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public async Task CreateDuplicateListValueInSameListIsRejectedWithErrorCodeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("Duplicate");
+
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(listId, value)));
+            ex.Result.Errors.Should().Contain(e =>
+                e.PropertyName == nameof(EntityAnalysisModelListValueDto.ListValue) &&
+                e.ErrorCode == "ListValueDuplicate");
+        }
+
+        [Fact]
+        public async Task CreateSameValueTextInDifferentListsIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listAId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var listBId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("CrossList");
+
+            var savedA = await service.InsertAsync(NewDto(listAId, value));
+            createdIds.Add(savedA.Id);
+
+            var savedB = await service.InsertAsync(NewDto(listBId, value));
+            createdIds.Add(savedB.Id);
+
+            savedB.ListValue.Should().Be(value);
+        }
+
+        [Fact]
+        public async Task CreateSameValueDifferentCaseIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("Case");
+
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+
+            var savedUpper = await service.InsertAsync(NewDto(listId, value.ToUpperInvariant()));
+            createdIds.Add(savedUpper.Id);
+
+            savedUpper.ListValue.Should().Be(value.ToUpperInvariant());
+        }
+
+        [Fact]
+        public async Task UpdateToAnotherRowsExistingValueIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var savedA = await service.InsertAsync(NewDto(listId, UniqueValue("ExistingA")));
+            createdIds.Add(savedA.Id);
+            var savedB = await service.InsertAsync(NewDto(listId, UniqueValue("ExistingB")));
+            createdIds.Add(savedB.Id);
+
+            var dto = NewDto(listId, savedA.ListValue);
+            dto.Id = savedB.Id;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ListValueDuplicate");
+        }
+
+        [Fact]
+        public async Task UpdateKeepingItsOwnUnchangedValueIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(listId, UniqueValue("SelfUpdate")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(listId, saved.ListValue);
+            dto.Id = saved.Id;
+
+            var updated = await service.UpdateAsync(dto);
+            updated.Version.Should().Be(2);
+        }
+
+        private Task<EntityApprovalService> CheckerServiceAsync(DbContext dbContext, string checkerUserName) =>
+            EntityApprovalService.CreateAsync(dbContext, checkerUserName, TestLog.NoOp, 1);
+
+        [Fact]
+        public async Task ReAddingTheSameValueAfterItsDeletionIsApprovedIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("Retired");
+
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+            var deletedVersion = (await ValuesAsync(dbContext, listId)).Single(v => v.Id == saved.Id).Version!.Value;
+
+            var checker = await CheckerServiceAsync(dbContext, fx.Seed.UserBothTenants);
+            await checker.ApproveAsync(EntityApprovalKind.EntityAnalysisModelListValue, saved.Id, deletedVersion);
+
+            var revived = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(revived.Id);
+
+            revived.ListValue.Should().Be(value);
+        }
+
+        [Fact]
+        public async Task CreateSameValueWhileItsDeletionIsAwaitingApprovalIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("PendingDeletion");
+
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(listId, value)));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ListValueDuplicate");
+        }
+
+        [Fact]
+        public async Task CreateSameValueAfterItsDeletionWasRejectedAndNotRetractedIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("RejectedDeletion");
+
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+            var deletedVersion = (await ValuesAsync(dbContext, listId)).Single(v => v.Id == saved.Id).Version!.Value;
+
+            var checker = await CheckerServiceAsync(dbContext, fx.Seed.UserBothTenants);
+            await checker.RejectAsync(EntityApprovalKind.EntityAnalysisModelListValue, saved.Id, deletedVersion,
+                "Keep it for now");
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(listId, value)));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ListValueDuplicate",
+                "the deletion was never approved, so the value is still occupied even though it was rejected");
+        }
+
+        [Fact]
+        public async Task RepositoryInsertRacingTheLiveUniqueIndexTranslatesToAnOrdinaryExceptionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var repository = new EntityAnalysisModelListValueRepository(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("RepoRace");
+
+            var first = await repository.InsertAsync(new Data.Poco.EntityAnalysisModelListValue
+                { EntityAnalysisModelListId = listId, ListValue = value });
+            createdIds.Add(first.Id);
+
+            var ex = await Record.ExceptionAsync(() => repository.InsertAsync(new Data.Poco.EntityAnalysisModelListValue
+                { EntityAnalysisModelListId = listId, ListValue = value }));
+
+            ex.Should().BeOfType<InvalidOperationException>(
+                "two inserts racing the live partial unique index must surface as a translated exception on the " +
+                "loser, never the raw Postgres unique-violation escaping to the caller as an unhandled 500");
         }
 
         [Fact]
@@ -999,6 +1174,102 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var value = (await ValuesAsync(dbContext, listId)).Should().ContainSingle().Subject;
             value.DeleteExpiryDate.Should().NotBeNull();
             value.DeleteExpiryDate.Required().Should().BeCloseTo(expiry, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public async Task UploadCsvIgnoresRowsThatFullyMatchAnExistingLiveValueAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var preExisting = UniqueValue("CsvPreExisting");
+            var saved = await service.InsertAsync(NewDto(listId, preExisting));
+            createdIds.Add(saved.Id);
+
+            var withinFile = UniqueValue("CsvWithinFile");
+            var brandNew = UniqueValue("CsvBrandNew");
+            var content = $"{preExisting}\n{withinFile}\n{brandNew}\n{withinFile}\n";
+
+            var results = await service.UploadCsvAsync(listId, [CsvFile("duplicates.csv", content)]);
+
+            results.Should().ContainSingle();
+            results[0].Records.Should().Be(4, "all four lines are fully satisfied -- two new inserts plus two " +
+                                              "that already matched exactly and were left alone");
+            results[0].Errors.Should().Be(0);
+            (await ValuesAsync(dbContext, listId)).Select(v => v.ListValue)
+                .Should().BeEquivalentTo([preExisting, withinFile, brandNew]);
+
+            var untouched = (await ValuesAsync(dbContext, listId)).Single(v => v.Id == saved.Id);
+            untouched.Version.Should().Be(1, "re-uploading an identical row must not open a new approval cycle");
+        }
+
+        [Fact]
+        public async Task UploadCsvRejectsRowWhoseValueIsAwaitingDeletionApprovalAsAnErrorAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var value = UniqueValue("CsvPendingDeletion");
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+
+            var results = await service.UploadCsvAsync(listId, [CsvFile("pending.csv", $"{value}\n")]);
+
+            results[0].Records.Should().Be(0);
+            results[0].Errors.Should().Be(1);
+            (await ValuesAsync(dbContext, listId)).Should().ContainSingle(v => v.Id == saved.Id,
+                "no second row for the same text should have been inserted");
+        }
+
+        [Fact]
+        public async Task UploadCsvRejectsSameValueWithADifferentExpiryDateAsAnErrorAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var value = UniqueValue("CsvConflictingExpiry");
+            var saved = await service.InsertAsync(NewDto(listId, value));
+            createdIds.Add(saved.Id);
+
+            var differentExpiry = DateTime.UtcNow.AddDays(10);
+            var content =
+                $"{value},{differentExpiry.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}\n";
+
+            var results = await service.UploadCsvAsync(listId, [CsvFile("conflict.csv", content)]);
+
+            results[0].Records.Should().Be(0);
+            results[0].Errors.Should().Be(1);
+            var unchanged = (await ValuesAsync(dbContext, listId)).Single(v => v.Id == saved.Id);
+            unchanged.DeleteExpiryDate.Should().BeNull("the conflicting row was rejected, not applied");
+            unchanged.Version.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UploadCsvIgnoresRowThatMatchesExistingValueAndExpiryDateAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var expiry = DateTime.UtcNow.AddDays(5);
+
+            var dto = NewDto(listId, UniqueValue("CsvSameExpiry"));
+            dto.DeleteExpiryDate = expiry;
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var content =
+                $"{dto.ListValue},{expiry.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}\n";
+
+            var results = await service.UploadCsvAsync(listId, [CsvFile("same-expiry.csv", content)]);
+
+            results[0].Records.Should().Be(1);
+            results[0].Errors.Should().Be(0);
+            var unchanged = (await ValuesAsync(dbContext, listId)).Single(v => v.Id == saved.Id);
+            unchanged.Version.Should().Be(1);
         }
 
         [Fact]

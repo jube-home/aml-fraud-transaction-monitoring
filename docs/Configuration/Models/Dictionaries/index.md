@@ -104,6 +104,13 @@ This applies to any field on the Key Value Pair entry, not only Delete Expiry Da
 rejected server-side. On rejection the entry is automatically re-opened for editing and highlighted in red, in addition
 to the message shown above the grid, making it clear exactly which entry needs correcting.
 
+A Key must be unique within its Dictionary: the server rejects an attempt to add a Key that already exists, exactly
+as above. Matching is case-sensitive and exact, consistent with how the Dictionary is looked up at run time. A Key is
+still considered to exist, and so still blocks a duplicate, for as long as its own deletion is sitting with a checker
+awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker: in both cases the rule
+engine continues to treat the pair as live until the deletion is actually approved, so the same Key cannot be re-added
+in the meantime. Once a deletion is approved, the same Key may be added again like any other new entry.
+
 Commit by clicking on the Tick icon:
 
 ![Image](TickConfirmButton.png)
@@ -143,6 +150,12 @@ A line whose key is empty, longer than 256 characters or contains a control char
 not in that format, is logged and skipped, and the remaining lines are still imported: the import is not atomic. The
 cells of the file are stored as data whatever they contain, including text that starts with `=`, `+`, `-` or `@`.
 
+If an uploaded line's Key, Value and Delete Expiry Date (where the column is present) all already match an existing
+entry exactly, nothing is written for that line and no new approval cycle is opened, so repeatedly uploading the same
+file is harmless. If the Key matches an entry that is still awaiting approval of its own deletion, or was rejected and
+has not yet been retracted or resubmitted by the maker, the line is skipped rather than inserted as a new entry: the
+Key is still considered to exist until that deletion is actually approved.
+
 The control to upload a file is the button Select Files:
 
 ![Image](SelectFilesButton.png)
@@ -156,4 +169,5 @@ process, adding each row as a new Dictionary Key Value pair:
 
 ![Image](MergedFileOnKey.png)
 
-In the event of a conflict on the key, as here, it will be updated, otherwise inserted.
+In the event of a conflict on the key, as here, it will be updated, otherwise inserted (subject to the uniqueness and
+pending-deletion rules described above).

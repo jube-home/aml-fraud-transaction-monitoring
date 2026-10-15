@@ -101,6 +101,16 @@ function createValueGrid(options) {
         });
     }
 
+    function dropResolvedDeadRows() {
+        const data = dataSource.data();
+        const kept = data.filter(function (row) {
+            return isVisible(row.id);
+        });
+        if (kept.length !== data.length) {
+            dataSource.data(kept);
+        }
+    }
+
     function loadStatus() {
         const seq = ++statusRequestSeq;
 
@@ -132,6 +142,7 @@ function createValueGrid(options) {
                     rows.forEach(function (row) {
                         statusById[row.entityId] = row;
                     });
+                    dropResolvedDeadRows();
                 });
             })
             .fail(function () {

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,59 @@ namespace Jube.Data.Repository
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
         }
 
+        public Task<bool> ExistsLiveDuplicateAsync(int entityAnalysisModelListId, int excludeId, string listValue,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelListValue.AnyAsync(w =>
+                (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                 !tenantRegistryId.HasValue)
+                && w.EntityAnalysisModelListId == entityAnalysisModelListId
+                && w.Id != excludeId
+                && (w.Deleted == 0 || w.Deleted == null)
+                && w.ListValue == listValue, token);
+        }
+
+        public Task<EntityAnalysisModelListValue> GetByListIdAndValueAsync(int entityAnalysisModelListId,
+            string listValue, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelListValue.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                 !tenantRegistryId.HasValue)
+                && w.EntityAnalysisModelListId == entityAnalysisModelListId && w.ListValue == listValue
+                && (w.Deleted == 0 || w.Deleted == null)
+                && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+        }
+
+        public async Task<bool> ExistsUnresolvedDeletionAsync(int entityAnalysisModelListId, int excludeId,
+            string listValue, int approvalsRequired, CancellationToken token = default)
+        {
+            var candidates = await dbContext.EntityAnalysisModelListValue
+                .Where(w =>
+                    (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                     !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelListId == entityAnalysisModelListId
+                    && w.Id != excludeId
+                    && w.Deleted == 1
+                    && w.ListValue == listValue)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            if (candidates.Count == 0)
+            {
+                return false;
+            }
+
+            var approvalRepository = tenantRegistryId.HasValue
+                ? new EntityApprovalRepository(dbContext, tenantRegistryId.Value)
+                : new EntityApprovalRepository(dbContext);
+
+            var approvals = await approvalRepository.GetRowsByKindAndEntityIdsAsync(
+                    EntityApprovalKind.EntityAnalysisModelListValue, candidates.Select(c => c.Id).ToList(), token)
+                .ConfigureAwait(false);
+
+            return candidates.Any(c => EntityApprovalResolver.EffectiveVersion(
+                approvals.Where(a => a.EntityId == c.Id), c.Version ?? 1, approvalsRequired) != c.Version);
+        }
+
         public async Task<EntityAnalysisModelListValue> InsertAsync(EntityAnalysisModelListValue model,
             CancellationToken token = default)
         {
@@ -102,7 +156,16 @@ namespace Jube.Data.Repository
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                throw new InvalidOperationException("A live value with this text already exists.", ex);
+            }
+
             return model;
         }
 
@@ -130,7 +193,14 @@ namespace Jube.Data.Repository
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
 
-            await dbContext.UpdateAsync(model, token: token);
+            try
+            {
+                await dbContext.UpdateAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                throw new InvalidOperationException("A live value with this text already exists.", ex);
+            }
 
             var mapper = new Mapper(new MapperConfiguration(
                 cfg => { cfg.CreateMap<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>(); },
