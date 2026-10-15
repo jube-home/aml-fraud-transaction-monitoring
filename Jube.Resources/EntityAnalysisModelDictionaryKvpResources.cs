@@ -19,6 +19,7 @@ namespace Jube.Resources
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string KvpKeyRequired = nameof(KvpKeyRequired);
         public const string KvpKeyMaxLength = nameof(KvpKeyMaxLength);
+        public const string KvpKeyDuplicate = nameof(KvpKeyDuplicate);
         public const string KvpValueRequired = nameof(KvpValueRequired);
         public const string EntityAnalysisModelDictionaryIdInvalid = nameof(EntityAnalysisModelDictionaryIdInvalid);
         public const string DeleteExpiryDateMustBeFuture = nameof(DeleteExpiryDateMustBeFuture);

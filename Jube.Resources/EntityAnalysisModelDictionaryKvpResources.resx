@@ -48,6 +48,9 @@
     <data name="KvpKeyMaxLength" xml:space="preserve">
     <value>The key must be {0} characters or fewer.</value>
   </data>
+    <data name="KvpKeyDuplicate" xml:space="preserve">
+    <value>This key already exists in the dictionary.</value>
+  </data>
     <data name="KvpValueRequired" xml:space="preserve">
     <value>Please enter a value for this dictionary.</value>
   </data>

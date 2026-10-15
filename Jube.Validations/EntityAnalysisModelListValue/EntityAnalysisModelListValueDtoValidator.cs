@@ -24,7 +24,7 @@ namespace Jube.Validations.EntityAnalysisModelListValue
         private const int MaxListValueLength = 512;
 
         public EntityAnalysisModelListValueDtoValidator(EntityAnalysisModelListRepository parentRepository,
-            IStringLocalizer localiser)
+            EntityAnalysisModelListValueRepository repository, int approvalsRequired, IStringLocalizer localiser)
         {
             RuleFor(p => p.EntityAnalysisModelListId)
                 .GreaterThan(0)
@@ -44,6 +44,16 @@ namespace Jube.Validations.EntityAnalysisModelListValue
                     string.Format(localiser[EntityAnalysisModelListValueResources.ListValueMaxLength],
                         MaxListValueLength))
                 .WithErrorCode("ListValueMaximumLength");
+
+            RuleFor(p => p.ListValue)
+                .MustAsync(async (model, value, cancellation) =>
+                    !await repository.ExistsLiveDuplicateAsync(model.EntityAnalysisModelListId, model.Id, value,
+                        cancellation) &&
+                    !await repository.ExistsUnresolvedDeletionAsync(model.EntityAnalysisModelListId, model.Id,
+                        value, approvalsRequired, cancellation))
+                .WithMessage(_ => localiser[EntityAnalysisModelListValueResources.ListValueDuplicate])
+                .WithErrorCode("ListValueDuplicate")
+                .When(p => !string.IsNullOrWhiteSpace(p.ListValue));
 
             RuleFor(p => p.DeleteExpiryDate)
                 .GreaterThan(_ => DateTimeOffset.UtcNow)

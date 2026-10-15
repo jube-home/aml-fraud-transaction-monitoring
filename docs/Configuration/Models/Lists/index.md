@@ -84,6 +84,14 @@ server-side, as is a List Value longer than 512 characters. On rejection the ent
 editing and highlighted in red, in addition to the message shown above the grid, making it clear exactly which entry
 needs correcting.
 
+A List Value must be unique within its List: the server rejects an attempt to add a value that already exists,
+exactly as above. Matching is case-sensitive and exact, consistent with how rules compare against the List at
+run time. A value is still considered to exist, and so still blocks a duplicate, for as long as its own deletion is
+sitting with a checker awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker:
+in both cases the rule engine continues to treat the value as live until the deletion is actually approved, so the
+same text cannot be re-added in the meantime. Once a deletion is approved, the same value may be added again like
+any other new entry.
+
 To update a List Value, click on the pen icon for the list value to be updated. Upon clicking the Pen icon:
 
 ![Image](EditButtonExistingListValue.png)
@@ -131,6 +139,14 @@ List Value never expires. A template CSV file, illustrating both a List Value wi
 Expiry Date, can be downloaded directly from the List page using the Download CSV Template link found next to the Select
 Files control. A blank value, one longer than 512 characters, or a line the database rejects is logged and skipped, and
 the remaining lines are still imported.
+
+The same uniqueness rule applies to an uploaded line as to a value added by hand. If a line's value and Delete Expiry
+Date both already match an existing entry exactly, the line is left alone: it is counted as imported, but nothing is
+written and no new approval cycle is opened, so repeatedly uploading the same file is harmless. If the value matches
+an existing entry but the Delete Expiry Date differs, or the value matches one still awaiting approval of its own
+deletion (or rejected and not yet retracted or resubmitted), the line is rejected as a duplicate and skipped, the same
+way a blank or over-long value is. List CSV upload only ever adds new values; unlike Dictionary, it never updates an
+existing entry.
 
 The control to upload a file is the button Select Files:
 

@@ -25,6 +25,7 @@ namespace Jube.Data.Repository
     using LinqToDB;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
+    using Query;
 
     public class EntityAnalysisModelDictionaryKvpRepository :
         VersionedApprovalRepository<EntityAnalysisModelDictionaryKvp, EntityAnalysisModelDictionaryKvpVersion>
@@ -106,6 +107,48 @@ namespace Jube.Data.Repository
                  !tenantRegistryId.HasValue)
                 && w.Id == id
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+        }
+
+        public Task<bool> ExistsLiveDuplicateAsync(int entityAnalysisModelDictionaryId, int excludeId, string kvpKey,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelDictionaryKvp.AnyAsync(w =>
+                (w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                 !tenantRegistryId.HasValue)
+                && w.EntityAnalysisModelDictionaryId == entityAnalysisModelDictionaryId
+                && w.Id != excludeId
+                && (w.Deleted == 0 || w.Deleted == null)
+                && w.KvpKey == kvpKey, token);
+        }
+
+        public async Task<bool> ExistsUnresolvedDeletionAsync(int entityAnalysisModelDictionaryId, int excludeId,
+            string kvpKey, int approvalsRequired, CancellationToken token = default)
+        {
+            var candidates = await dbContext.EntityAnalysisModelDictionaryKvp
+                .Where(w =>
+                    (w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                     !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelDictionaryId == entityAnalysisModelDictionaryId
+                    && w.Id != excludeId
+                    && w.Deleted == 1
+                    && w.KvpKey == kvpKey)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            if (candidates.Count == 0)
+            {
+                return false;
+            }
+
+            var approvalRepository = tenantRegistryId.HasValue
+                ? new EntityApprovalRepository(dbContext, tenantRegistryId.Value)
+                : new EntityApprovalRepository(dbContext);
+
+            var approvals = await approvalRepository.GetRowsByKindAndEntityIdsAsync(
+                    EntityApprovalKind.EntityAnalysisModelDictionaryKvp, candidates.Select(c => c.Id).ToList(), token)
+                .ConfigureAwait(false);
+
+            return candidates.Any(c => EntityApprovalResolver.EffectiveVersion(
+                approvals.Where(a => a.EntityId == c.Id), c.Version ?? 1, approvalsRequired) != c.Version);
         }
 
         public async Task<EntityAnalysisModelDictionaryKvp> InsertAsync(EntityAnalysisModelDictionaryKvp model,

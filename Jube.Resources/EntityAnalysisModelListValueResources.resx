@@ -48,6 +48,9 @@
     <data name="ListValueMaxLength" xml:space="preserve">
     <value>The value must be {0} characters or fewer.</value>
   </data>
+    <data name="ListValueDuplicate" xml:space="preserve">
+    <value>This value already exists in the list.</value>
+  </data>
     <data name="EntityAnalysisModelListIdInvalid" xml:space="preserve">
     <value>A valid List is required.</value>
   </data>

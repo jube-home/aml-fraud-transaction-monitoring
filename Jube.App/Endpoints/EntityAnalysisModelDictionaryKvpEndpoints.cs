@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Dto.EntityApproval;
 using Jube.Service.EntityAnalysisModelDictionaryKvp;
@@ -116,7 +117,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 if (!httpContext.Request.HasFormContentType)
                 {
@@ -260,7 +262,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.GetAsync(token);
                 return TypedResults.Ok(result);
             }
@@ -322,7 +325,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service
                     .GetByEntityAnalysisModelDictionaryIdAsync(entityAnalysisModelDictionaryId, token,
                         IncludeDeletedOf(httpContext));
@@ -383,7 +387,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.GetByIdAsync(id, token);
                 return TypedResults.Ok(result);
             }
@@ -437,7 +442,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.InsertAsync(model, token);
                 return TypedResults.Ok(result);
             }
@@ -500,7 +506,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.UpdateAsync(model, token);
                 return TypedResults.Ok(result);
             }
@@ -584,7 +591,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 await service.DeleteAsync(id.Value, token);
                 return TypedResults.Ok();
             }
@@ -648,7 +656,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.ResubmitAsync(id, body?.Note, token);
                 return TypedResults.Ok(result);
             }
@@ -721,7 +730,8 @@ namespace Jube.App.Endpoints
             try
             {
                 var service = await EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.RetractAsync(id, body?.Note, token);
                 return TypedResults.Ok(result);
             }

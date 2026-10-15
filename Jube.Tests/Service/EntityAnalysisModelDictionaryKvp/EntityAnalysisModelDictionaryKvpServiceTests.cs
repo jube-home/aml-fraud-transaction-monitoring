@@ -24,6 +24,7 @@ using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelDictionaryKvp;
+using Jube.Service.EntityApproval;
 using Jube.Service.Exceptions.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
@@ -102,11 +103,11 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
         private static Task<EntityAnalysisModelDictionaryKvpService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null)
+            IServiceChangeBus? serviceChangeBus = null, int approvalsRequired = 1)
         {
             return EntityAnalysisModelDictionaryKvpService.CreateAsync(
                 dbContext, userName, log ?? TestLog.NoOp, localizers, serviceChangeBus ?? new NullServiceChangeBus(),
-                auditLog ?? TestLog.NoOp);
+                approvalsRequired, auditLog ?? TestLog.NoOp);
         }
 
         private async Task<int> CreateParentDictionaryAsync(DbContext dbContext, string createdUser)
@@ -306,7 +307,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
             var ex = await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 EntityAnalysisModelDictionaryKvpService.CreateAsync(dbContext, userName, log, localizers,
-                    new NullServiceChangeBus(), TestLog.NoOp));
+                    new NullServiceChangeBus(), 1, TestLog.NoOp));
 
             ex.Code.Should().Be("NotAuthenticated");
             log.Entries.Should().Contain(e => e.Level == "WARN");
@@ -476,6 +477,122 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             createdIds.Add(saved.Id);
 
             saved.DeleteExpiryDate.Should().BeCloseTo(expiry.UtcDateTime, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public async Task CreateDuplicateKvpKeyInSameDictionaryIsRejectedWithErrorCodeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = UniqueKey("Duplicate");
+
+            var saved = await service.InsertAsync(NewDto(dictionaryId, key));
+            createdIds.Add(saved.Id);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(dictionaryId, key)));
+            ex.Result.Errors.Should().Contain(e =>
+                e.PropertyName == nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey) &&
+                e.ErrorCode == "KvpKeyDuplicate");
+        }
+
+        [Fact]
+        public async Task CreateSameKeyInDifferentDictionariesIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryAId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var dictionaryBId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = UniqueKey("CrossDictionary");
+
+            var savedA = await service.InsertAsync(NewDto(dictionaryAId, key));
+            createdIds.Add(savedA.Id);
+
+            var savedB = await service.InsertAsync(NewDto(dictionaryBId, key));
+            createdIds.Add(savedB.Id);
+
+            savedB.KvpKey.Should().Be(key);
+        }
+
+        [Fact]
+        public async Task UpdateToAnotherRowsExistingKeyIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var savedA = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ExistingA")));
+            createdIds.Add(savedA.Id);
+            var savedB = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ExistingB")));
+            createdIds.Add(savedB.Id);
+
+            var dto = NewDto(dictionaryId, savedA.KvpKey);
+            dto.Id = savedB.Id;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "KvpKeyDuplicate");
+        }
+
+        [Fact]
+        public async Task UpdateKeepingItsOwnUnchangedKeyIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("SelfUpdate")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(dictionaryId, saved.KvpKey, 2000);
+            dto.Id = saved.Id;
+
+            var updated = await service.UpdateAsync(dto);
+            updated.Version.Should().Be(2);
+        }
+
+        private Task<EntityApprovalService> CheckerServiceAsync(DbContext dbContext, string checkerUserName) =>
+            EntityApprovalService.CreateAsync(dbContext, checkerUserName, TestLog.NoOp, 1);
+
+        [Fact]
+        public async Task ReAddingTheSameKeyAfterItsDeletionIsApprovedIsAllowedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = UniqueKey("Retired");
+
+            var saved = await service.InsertAsync(NewDto(dictionaryId, key));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+            var deletedVersion = await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
+                .Where(w => w.Id == saved.Id).Select(s => s.Version!.Value).FirstAsync();
+
+            var checker = await CheckerServiceAsync(dbContext, fx.Seed.UserBothTenants);
+            await checker.ApproveAsync(EntityApprovalKind.EntityAnalysisModelDictionaryKvp, saved.Id,
+                deletedVersion);
+
+            var revived = await service.InsertAsync(NewDto(dictionaryId, key));
+            createdIds.Add(revived.Id);
+
+            revived.KvpKey.Should().Be(key);
+        }
+
+        [Fact]
+        public async Task CreateSameKeyWhileItsDeletionIsAwaitingApprovalIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var key = UniqueKey("PendingDeletion");
+
+            var saved = await service.InsertAsync(NewDto(dictionaryId, key));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(dictionaryId, key)));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "KvpKeyDuplicate");
         }
 
         [Fact]

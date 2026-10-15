@@ -25,6 +25,7 @@ namespace Jube.Validations.EntityAnalysisModelDictionaryKvp
         private const int MaxKvpKeyLength = 256;
 
         public EntityAnalysisModelDictionaryKvpDtoValidator(EntityAnalysisModelDictionaryRepository parentRepository,
+            EntityAnalysisModelDictionaryKvpRepository repository, int approvalsRequired,
             IStringLocalizer localiser)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelDictionaryKvpDto>());
@@ -49,6 +50,16 @@ namespace Jube.Validations.EntityAnalysisModelDictionaryKvp
                     string.Format(localiser[EntityAnalysisModelDictionaryKvpResources.KvpKeyMaxLength],
                         MaxKvpKeyLength))
                 .WithErrorCode("KvpKeyMaximumLength");
+
+            RuleFor(p => p.KvpKey)
+                .MustAsync(async (model, value, cancellation) =>
+                    !await repository.ExistsLiveDuplicateAsync(model.EntityAnalysisModelDictionaryId, model.Id,
+                        value, cancellation) &&
+                    !await repository.ExistsUnresolvedDeletionAsync(model.EntityAnalysisModelDictionaryId, model.Id,
+                        value, approvalsRequired, cancellation))
+                .WithMessage(_ => localiser[EntityAnalysisModelDictionaryKvpResources.KvpKeyDuplicate])
+                .WithErrorCode("KvpKeyDuplicate")
+                .When(p => !string.IsNullOrWhiteSpace(p.KvpKey));
 
             RuleFor(p => p.KvpValue)
                 .Must(v => v.HasValue)

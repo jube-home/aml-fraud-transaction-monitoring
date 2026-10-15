@@ -19,6 +19,7 @@ namespace Jube.Resources
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string ListValueRequired = nameof(ListValueRequired);
         public const string ListValueMaxLength = nameof(ListValueMaxLength);
+        public const string ListValueDuplicate = nameof(ListValueDuplicate);
         public const string EntityAnalysisModelListIdInvalid = nameof(EntityAnalysisModelListIdInvalid);
         public const string DeleteExpiryDateMustBeFuture = nameof(DeleteExpiryDateMustBeFuture);
         public const string ListNotFound = nameof(ListNotFound);

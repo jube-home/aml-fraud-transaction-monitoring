@@ -81,6 +81,12 @@ exact. The list or dictionary page shows a value approval panel, with each value
 reject controls for a checker. *Approve All Pending Values* approves every pending value of a parent in one action.
 Values refused on their own are reported and do not stop the others. Pending values are listed first.
 
+**A List Value or Dictionary KVP's text is unique within its parent while it exists.** A create or update, whether
+through the API or a CSV upload, is refused if the same text is already live. The check follows the same rule as
+effective version resolution above, not the raw deleted flag: a value whose deletion is still pending, or was rejected
+and has not been retracted or resubmitted, is still the entity's current approved-or-not state, so it still occupies
+the text. The same text becomes free to reuse only once a checker actually approves the deletion.
+
 **Preservation imports are approved by the importer.** An import stamps every entity it brings in as approved by the
 user who performed it. This bypasses the second approver by design, because importing is a privileged administrative
 action. An import takes effect on the importer's authority, whatever `ApprovalsRequired` is set to.
