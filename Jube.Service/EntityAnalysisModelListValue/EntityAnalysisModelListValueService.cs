@@ -27,6 +27,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelListValue;
+using FluentValidation.Results;
 using LinqToDB.Data;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -514,8 +515,21 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository.InsertAsync(EntityAnalysisModelListValueMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                ListValuePoco saved;
+                try
+                {
+                    saved = await repository.InsertAsync(EntityAnalysisModelListValueMapper.ToPoco(model), token)
+                        .ConfigureAwait(false);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelListValue.Create: raced a duplicate value user={userName}");
+                    }
+
+                    throw DuplicateValueException();
+                }
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
@@ -646,6 +660,16 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     }
 
                     throw new NotFoundException("The List Value was not found.", ex);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelListValue.Update: id={model.Id} raced a duplicate value user={userName}");
+                    }
+
+                    throw DuplicateValueException();
                 }
 
                 op.Entity(saved.Id);
@@ -1198,6 +1222,18 @@ namespace Jube.Service.EntityAnalysisModelListValue
 
             throw new ForbiddenException(strings[EntityAnalysisModelListValueResources.PermissionDenied],
                 permissions);
+        }
+
+        private DtoValidationException DuplicateValueException()
+        {
+            return new DtoValidationException(new ValidationResult(
+            [
+                new ValidationFailure(nameof(EntityAnalysisModelListValueDto.ListValue),
+                    strings[EntityAnalysisModelListValueResources.ListValueDuplicate])
+                {
+                    ErrorCode = "ListValueDuplicate"
+                }
+            ]));
         }
     }
 }

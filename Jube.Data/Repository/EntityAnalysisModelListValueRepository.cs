@@ -156,7 +156,16 @@ namespace Jube.Data.Repository
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                throw new InvalidOperationException("A live value with this text already exists.", ex);
+            }
+
             return model;
         }
 
@@ -184,7 +193,14 @@ namespace Jube.Data.Repository
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
 
-            await dbContext.UpdateAsync(model, token: token);
+            try
+            {
+                await dbContext.UpdateAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                throw new InvalidOperationException("A live value with this text already exists.", ex);
+            }
 
             var mapper = new Mapper(new MapperConfiguration(
                 cfg => { cfg.CreateMap<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>(); },

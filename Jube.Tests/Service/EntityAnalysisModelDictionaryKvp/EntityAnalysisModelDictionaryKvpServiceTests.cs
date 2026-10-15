@@ -596,6 +596,27 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         }
 
         [Fact]
+        public async Task RepositoryInsertRacingTheLiveUniqueIndexTranslatesToAnOrdinaryExceptionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var repository = new EntityAnalysisModelDictionaryKvpRepository(dbContext, fx.Seed.UserWithPermission);
+            var key = UniqueKey("RepoRace");
+
+            var first = await repository.InsertAsync(new Data.Poco.EntityAnalysisModelDictionaryKvp
+                { EntityAnalysisModelDictionaryId = dictionaryId, KvpKey = key, KvpValue = 1 });
+            createdIds.Add(first.Id);
+
+            var ex = await Record.ExceptionAsync(() => repository.InsertAsync(
+                new Data.Poco.EntityAnalysisModelDictionaryKvp
+                    { EntityAnalysisModelDictionaryId = dictionaryId, KvpKey = key, KvpValue = 2 }));
+
+            ex.Should().BeOfType<InvalidOperationException>(
+                "two inserts racing the live partial unique index must surface as a translated exception on the " +
+                "loser, never the raw Postgres unique-violation escaping to the caller as an unhandled 500");
+        }
+
+        [Fact]
         public async Task ExpiredValueDisappearsFromByDictionaryIdAsync()
         {
             await using var dbContext = fx.GetDbContext();

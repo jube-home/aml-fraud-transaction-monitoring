@@ -593,6 +593,26 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         }
 
         [Fact]
+        public async Task RepositoryInsertRacingTheLiveUniqueIndexTranslatesToAnOrdinaryExceptionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var repository = new EntityAnalysisModelListValueRepository(dbContext, fx.Seed.UserWithPermission);
+            var value = UniqueValue("RepoRace");
+
+            var first = await repository.InsertAsync(new Data.Poco.EntityAnalysisModelListValue
+                { EntityAnalysisModelListId = listId, ListValue = value });
+            createdIds.Add(first.Id);
+
+            var ex = await Record.ExceptionAsync(() => repository.InsertAsync(new Data.Poco.EntityAnalysisModelListValue
+                { EntityAnalysisModelListId = listId, ListValue = value }));
+
+            ex.Should().BeOfType<InvalidOperationException>(
+                "two inserts racing the live partial unique index must surface as a translated exception on the " +
+                "loser, never the raw Postgres unique-violation escaping to the caller as an unhandled 500");
+        }
+
+        [Fact]
         public async Task ExpiredValueDisappearsFromByListIdAsync()
         {
             await using var dbContext = fx.GetDbContext();

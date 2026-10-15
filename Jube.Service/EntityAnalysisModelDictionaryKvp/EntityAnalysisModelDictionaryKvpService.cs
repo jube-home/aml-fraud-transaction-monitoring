@@ -27,6 +27,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelDictionaryKvp;
+using FluentValidation.Results;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -517,9 +518,22 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository
-                    .InsertAsync(EntityAnalysisModelDictionaryKvpMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                DictionaryKvpPoco saved;
+                try
+                {
+                    saved = await repository
+                        .InsertAsync(EntityAnalysisModelDictionaryKvpMapper.ToPoco(model), token)
+                        .ConfigureAwait(false);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelDictionaryKvp.Create: raced a duplicate key user={userName}");
+                    }
+
+                    throw DuplicateKeyException();
+                }
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
@@ -651,6 +665,16 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     }
 
                     throw new NotFoundException("The Key Value Pair was not found.", ex);
+                }
+                catch (InvalidOperationException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelDictionaryKvp.Update: id={model.Id} raced a duplicate key user={userName}");
+                    }
+
+                    throw DuplicateKeyException();
                 }
 
                 op.Entity(saved.Id);
@@ -1180,6 +1204,18 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
 
             throw new ForbiddenException(strings[EntityAnalysisModelDictionaryKvpResources.PermissionDenied],
                 permissions);
+        }
+
+        private DtoValidationException DuplicateKeyException()
+        {
+            return new DtoValidationException(new ValidationResult(
+            [
+                new ValidationFailure(nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey),
+                    strings[EntityAnalysisModelDictionaryKvpResources.KvpKeyDuplicate])
+                {
+                    ErrorCode = "KvpKeyDuplicate"
+                }
+            ]));
         }
     }
 }
