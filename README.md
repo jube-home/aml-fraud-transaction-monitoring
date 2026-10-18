@@ -40,7 +40,7 @@ docker compose up -d
 ```
 
 1. **Change every value.** They are placeholders, not defaults. Make each key at least as long as the
-   example. [What each key does](https://jube-home.github.io/aml-fraud-transaction-monitoring/Concepts/EnvironmentVariables/).
+   example. [What each key does](https://www.jube.io/docs/Concepts/EnvironmentVariables/).
 2. **Open [localhost:5001](http://localhost:5001).** Sign in as `Administrator / Administrator` and change it on first
    login.
 
@@ -48,7 +48,7 @@ docker compose up -d
 OpenAI-compatible endpoint. Put $20 in a prepaid DigitalOcean account, paste in your inference key, set
 `DockerComposeEnableAskJooby=True`, and Ask Jooby is alive.
 
-**Ready for production?** The single-node stack is for evaluation; [Jube Cluster](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted/DeployingWithJubeCluster/) takes the same platform to
+**Ready for production?** The single-node stack is for evaluation; [Jube Cluster](https://www.jube.io/docs/GettingStarted/DeployingWithJubeCluster/) takes the same platform to
 scale. It is a highly available, quorum-based Docker Swarm cluster: multiple Jube instances behind HAProxy,
 PostgreSQL under Patroni and Redis under Sentinel, failing over automatically. Add capacity as volume grows, update
 online one member at a time, and recover to any point in time from continuous WAL archiving.
@@ -59,7 +59,7 @@ The Herd, the platform underneath, security, training and support all live in tw
 
 |                                                                                      |                                                                  |
 |--------------------------------------------------------------------------------------|------------------------------------------------------------------|
-| **[Documentation →](https://jube-home.github.io/aml-fraud-transaction-monitoring/)** | Install, configure and run Jube, from first login to production. |
+| **[Documentation →](https://www.jube.io/docs/)** | Install, configure and run Jube, from first login to production. |
 | **[jube.io →](https://jube.io/)**                                                    | Meet the Joobriks, see the platform, and talk to the developer.  |
 
 ## Licence
