@@ -105,6 +105,7 @@ function destroyNumeric() {
 if (typeof id === "undefined") {
     setDefaultValueStyle();
     ReadyNew();
+    window.AskJoobySetPageContext?.("VisualisationRegistryParameter", "new", null);
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -137,6 +138,12 @@ if (typeof id === "undefined") {
             }
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("VisualisationRegistryParameter", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 $(function () {

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-dot" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-92934756-t jc-92934756-d">
+    <title id="jc-92934756-t">Alert rate before and after tuning</title>
+    <desc id="jc-92934756-d">Dumbbell chart with 2 series: Before, After. Across 8 categories, values from 18 to 61.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alert rate before and after tuning</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="53.76" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Before</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="85.76" y="44" width="44.88" height="18"/>
+        <rect class="sw" x="87.76" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="105.76" y="57">After</text>
+    </g>
+    <line class="gl" x1="102.21" y1="72" x2="102.21" y2="346"/>
+    <text class="tk ctr" x="102.21" y="362">15</text>
+    <line class="gl" x1="206.57" y1="72" x2="206.57" y2="346"/>
+    <text class="tk ctr" x="206.57" y="362">25</text>
+    <line class="gl" x1="310.93" y1="72" x2="310.93" y2="346"/>
+    <text class="tk ctr" x="310.93" y="362">35</text>
+    <line class="gl" x1="415.28" y1="72" x2="415.28" y2="346"/>
+    <text class="tk ctr" x="415.28" y="362">45</text>
+    <line class="gl" x1="519.64" y1="72" x2="519.64" y2="346"/>
+    <text class="tk ctr" x="519.64" y="362">55</text>
+    <line class="gl" x1="624" y1="72" x2="624" y2="346"/>
+    <text class="tk ctr" x="624" y="362">65</text>
+    <line class="ax" x1="102.21" y1="72" x2="102.21" y2="346"/>
+    <text class="tk end mid" x="94.21" y="89.13">Italy</text>
+    <text class="tk end mid" x="94.21" y="123.38">France</text>
+    <text class="tk end mid" x="94.21" y="157.63">United Kingdom</text>
+    <text class="tk end mid" x="94.21" y="191.88">Poland</text>
+    <text class="tk end mid" x="94.21" y="226.13">Germany</text>
+    <text class="tk end mid" x="94.21" y="260.38">Sweden</text>
+    <text class="tk end mid" x="94.21" y="294.63">Spain</text>
+    <text class="tk end mid" x="94.21" y="328.88">Netherlands</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Italy, Before: 61, After: 44, Change: -17 (-27.9%)">
+        <title>Italy, Before: 61, After: 44, Change: -17 (-27.9%)</title>
+        <rect class="rowhl" x="102.21" y="72" width="521.79" height="34.25"/>
+        <path class="dbc" d="M404.85 89.13L582.26 89.13"/>
+        <circle class="pt sr s0" cx="582.26" cy="89.13" r="5.5"/>
+        <circle class="pt sr s1" cx="404.85" cy="89.13" r="5.5"/>
+        <text class="dl" x="591.26" y="93.13">61</text>
+        <text class="dl end" x="395.85" y="93.13">44</text>
+        <g class="tt">
+            <rect class="tb" x="436.02" y="72" width="134.24" height="78" rx="6"/>
+            <text class="tx b" x="446.02" y="90">Italy</text>
+            <rect class="tsw s0" x="446.02" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="460.02" y="107">Before: 61</text>
+            <rect class="tsw s1" x="446.02" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="460.02" y="124">After: 44</text>
+            <text class="tx" x="446.02" y="141">Change: -17 (-27.9%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="France, Before: 55, After: 41, Change: -14 (-25.5%)">
+        <title>France, Before: 55, After: 41, Change: -14 (-25.5%)</title>
+        <rect class="rowhl" x="102.21" y="106.25" width="521.79" height="34.25"/>
+        <path class="dbc" d="M373.54 123.38L519.64 123.38"/>
+        <circle class="pt sr s0" cx="519.64" cy="123.38" r="5.5"/>
+        <circle class="pt sr s1" cx="373.54" cy="123.38" r="5.5"/>
+        <text class="dl" x="528.64" y="127.38">55</text>
+        <text class="dl end" x="364.54" y="127.38">41</text>
+        <g class="tt">
+            <rect class="tb" x="373.4" y="84.38" width="134.24" height="78" rx="6"/>
+            <text class="tx b" x="383.4" y="102.38">France</text>
+            <rect class="tsw s0" x="383.4" y="110.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="397.4" y="119.38">Before: 55</text>
+            <rect class="tsw s1" x="383.4" y="127.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="397.4" y="136.38">After: 41</text>
+            <text class="tx" x="383.4" y="153.38">Change: -14 (-25.5%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="United Kingdom, Before: 42, After: 35, Change: -7 (-16.7%)">
+        <title>United Kingdom, Before: 42, After: 35, Change: -7 (-16.7%)</title>
+        <rect class="rowhl" x="102.21" y="140.5" width="521.79" height="34.25"/>
+        <path class="dbc" d="M310.93 157.63L383.98 157.63"/>
+        <circle class="pt sr s0" cx="383.98" cy="157.63" r="5.5"/>
+        <circle class="pt sr s1" cx="310.93" cy="157.63" r="5.5"/>
+        <text class="dl" x="392.98" y="161.63">42</text>
+        <text class="dl end" x="301.93" y="161.63">35</text>
+        <g class="tt">
+            <rect class="tb" x="395.98" y="118.63" width="127.52" height="78" rx="6"/>
+            <text class="tx b" x="405.98" y="136.63">United Kingdom</text>
+            <rect class="tsw s0" x="405.98" y="144.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.98" y="153.63">Before: 42</text>
+            <rect class="tsw s1" x="405.98" y="161.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="419.98" y="170.63">After: 35</text>
+            <text class="tx" x="405.98" y="187.63">Change: -7 (-16.7%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Poland, Before: 37, After: 30, Change: -7 (-18.9%)">
+        <title>Poland, Before: 37, After: 30, Change: -7 (-18.9%)</title>
+        <rect class="rowhl" x="102.21" y="174.75" width="521.79" height="34.25"/>
+        <path class="dbc" d="M258.75 191.88L331.8 191.88"/>
+        <circle class="pt sr s0" cx="331.8" cy="191.88" r="5.5"/>
+        <circle class="pt sr s1" cx="258.75" cy="191.88" r="5.5"/>
+        <text class="dl" x="340.8" y="195.88">37</text>
+        <text class="dl end" x="249.75" y="195.88">30</text>
+        <g class="tt">
+            <rect class="tb" x="343.8" y="152.88" width="127.52" height="78" rx="6"/>
+            <text class="tx b" x="353.8" y="170.88">Poland</text>
+            <rect class="tsw s0" x="353.8" y="178.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="367.8" y="187.88">Before: 37</text>
+            <rect class="tsw s1" x="353.8" y="195.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="367.8" y="204.88">After: 30</text>
+            <text class="tx" x="353.8" y="221.88">Change: -7 (-18.9%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Germany, Before: 31, After: 34, Change: +3 (+9.7%)">
+        <title>Germany, Before: 31, After: 34, Change: +3 (+9.7%)</title>
+        <rect class="rowhl" x="102.21" y="209" width="521.79" height="34.25"/>
+        <path class="dbc" d="M269.18 226.13L300.49 226.13"/>
+        <circle class="pt sr s0" cx="269.18" cy="226.13" r="5.5"/>
+        <circle class="pt sr s1" cx="300.49" cy="226.13" r="5.5"/>
+        <text class="dl" x="309.49" y="230.13">34</text>
+        <text class="dl end" x="260.18" y="230.13">31</text>
+        <g class="tt">
+            <rect class="tb" x="312.49" y="187.13" width="127.04" height="78" rx="6"/>
+            <text class="tx b" x="322.49" y="205.13">Germany</text>
+            <rect class="tsw s0" x="322.49" y="213.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="336.49" y="222.13">Before: 31</text>
+            <rect class="tsw s1" x="322.49" y="230.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="336.49" y="239.13">After: 34</text>
+            <text class="tx" x="322.49" y="256.13">Change: +3 (+9.7%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sweden, Before: 29, After: 22, Change: -7 (-24.1%)">
+        <title>Sweden, Before: 29, After: 22, Change: -7 (-24.1%)</title>
+        <rect class="rowhl" x="102.21" y="243.25" width="521.79" height="34.25"/>
+        <path class="dbc" d="M175.26 260.38L248.31 260.38"/>
+        <circle class="pt sr s0" cx="248.31" cy="260.38" r="5.5"/>
+        <circle class="pt sr s1" cx="175.26" cy="260.38" r="5.5"/>
+        <text class="dl" x="257.31" y="264.38">29</text>
+        <text class="dl end" x="166.26" y="264.38">22</text>
+        <g class="tt">
+            <rect class="tb" x="260.31" y="221.38" width="127.52" height="78" rx="6"/>
+            <text class="tx b" x="270.31" y="239.38">Sweden</text>
+            <rect class="tsw s0" x="270.31" y="247.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="284.31" y="256.38">Before: 29</text>
+            <rect class="tsw s1" x="270.31" y="264.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="284.31" y="273.38">After: 22</text>
+            <text class="tx" x="270.31" y="290.38">Change: -7 (-24.1%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Spain, Before: 23, After: 27, Change: +4 (+17.4%)">
+        <title>Spain, Before: 23, After: 27, Change: +4 (+17.4%)</title>
+        <rect class="rowhl" x="102.21" y="277.5" width="521.79" height="34.25"/>
+        <path class="dbc" d="M185.7 294.63L227.44 294.63"/>
+        <circle class="pt sr s0" cx="185.7" cy="294.63" r="5.5"/>
+        <circle class="pt sr s1" cx="227.44" cy="294.63" r="5.5"/>
+        <text class="dl" x="236.44" y="298.63">27</text>
+        <text class="dl end" x="176.7" y="298.63">23</text>
+        <g class="tt">
+            <rect class="tb" x="239.44" y="255.63" width="133.76" height="78" rx="6"/>
+            <text class="tx b" x="249.44" y="273.63">Spain</text>
+            <rect class="tsw s0" x="249.44" y="281.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="263.44" y="290.63">Before: 23</text>
+            <rect class="tsw s1" x="249.44" y="298.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="263.44" y="307.63">After: 27</text>
+            <text class="tx" x="249.44" y="324.63">Change: +4 (+17.4%)</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol"
+       aria-label="Netherlands, Before: 18, After: 25, Change: +7 (+38.9%)">
+        <title>Netherlands, Before: 18, After: 25, Change: +7 (+38.9%)</title>
+        <rect class="rowhl" x="102.21" y="311.75" width="521.79" height="34.25"/>
+        <path class="dbc" d="M133.52 328.88L206.57 328.88"/>
+        <circle class="pt sr s0" cx="133.52" cy="328.88" r="5.5"/>
+        <circle class="pt sr s1" cx="206.57" cy="328.88" r="5.5"/>
+        <text class="dl" x="215.57" y="332.88">25</text>
+        <text class="dl end" x="124.52" y="332.88">18</text>
+        <g class="tt">
+            <rect class="tb" x="218.57" y="268" width="133.76" height="78" rx="6"/>
+            <text class="tx b" x="228.57" y="286">Netherlands</text>
+            <rect class="tsw s0" x="228.57" y="294" width="9" height="9" rx="2"/>
+            <text class="tx" x="242.57" y="303">Before: 18</text>
+            <rect class="tsw s1" x="228.57" y="311" width="9" height="9" rx="2"/>
+            <text class="tx" x="242.57" y="320">After: 25</text>
+            <text class="tx" x="228.57" y="337">Change: +7 (+38.9%)</text>
+        </g>
+    </g>
+    <text class="at ctr" x="363.11" y="380">Alerts per 1,000</text>
+</svg>

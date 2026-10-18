@@ -19,7 +19,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static string RegexReplace(this string? @this, string pattern, string? replacement)
         {
-            return Regex.Replace(@this ?? "", pattern, replacement ?? "", RegexOptions.None, RegexSupport.MatchTimeout);
+            return Regex.Replace(@this ?? "", pattern, replacement ?? "", RegexOptions.None, RegexSupport.matchTimeout);
         }
     }
 }

@@ -46,6 +46,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 }
 
                 consumer = new EventingBasicConsumer(channel);
+
                 consumer.Received += (o, ea) =>
                 {
                     if (context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
@@ -57,7 +58,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     {
                         try
                         {
-
                             var bodyString = Encoding.UTF8.GetString(ea.Body.ToArray());
                             var notification = JsonConvert.DeserializeObject<Notification>(bodyString);
 
@@ -69,7 +69,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         }
                         catch (Exception ex)
                         {
-                            context.Services.Log.Error($"Notification Dispatch: Exception during async processing: {ex}");
+                            context.Services.Log.Error(
+                                $"Notification Dispatch: Exception during async processing: {ex}");
                         }
                     });
                 };
@@ -95,7 +96,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
             catch (OperationCanceledException ex)
             {
-                context.Services.Log.Info($"Graceful Cancellation StartNotificationsViaAmqp: has produced an error {ex}");
+                context.Services.Log.Info(
+                    $"Graceful Cancellation StartNotificationsViaAmqp: has produced an error {ex}");
             }
             catch (Exception ex)
             {

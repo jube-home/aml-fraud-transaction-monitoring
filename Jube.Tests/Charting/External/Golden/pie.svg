@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-99d0032b-t jc-99d0032b-d">
+    <title id="jc-99d0032b-t">Alerts by disposition</title>
+    <desc id="jc-99d0032b-d">Pie chart with 5 series: Confirmed, False positive, Under review, Escalated, Closed. Total
+        2110.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alerts by disposition</text>
+    <g class="lg s0">
+        <rect class="hit" x="527.2" y="48" width="73.32" height="18"/>
+        <rect class="sw" x="529.2" y="52" width="10" height="10" rx="2"/>
+        <text class="lgt" x="547.2" y="61">Confirmed</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="527.2" y="68" width="94.8" height="18"/>
+        <rect class="sw" x="529.2" y="72" width="10" height="10" rx="2"/>
+        <text class="lgt" x="547.2" y="81">False positive</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="527.2" y="88" width="89.64" height="18"/>
+        <rect class="sw" x="529.2" y="92" width="10" height="10" rx="2"/>
+        <text class="lgt" x="547.2" y="101">Under review</text>
+    </g>
+    <g class="lg s3">
+        <rect class="hit" x="527.2" y="108" width="72.24" height="18"/>
+        <rect class="sw" x="529.2" y="112" width="10" height="10" rx="2"/>
+        <text class="lgt" x="547.2" y="121">Escalated</text>
+    </g>
+    <g class="lg s4">
+        <rect class="hit" x="527.2" y="128" width="55.2" height="18"/>
+        <rect class="sw" x="529.2" y="132" width="10" height="10" rx="2"/>
+        <text class="lgt" x="547.2" y="141">Closed</text>
+    </g>
+    <g class="mk s0 sr" tabindex="0" role="graphics-symbol" aria-label="Confirmed, 320 (15.2%)">
+        <title>Confirmed, 320 (15.2%)</title>
+        <path class="sl m px11" d="M266.6 56A160 160 0 0 1 397.02 123.31L266.6 216Z"/>
+        <text class="lbl ctr mid on" x="315.03" y="122.16">15%</text>
+        <g class="tt">
+            <rect class="tb" x="278.98" y="48.26" width="92.64" height="44" rx="6"/>
+            <rect class="tsw s0" x="288.98" y="57.26" width="9" height="9" rx="2"/>
+            <text class="tx b" x="302.98" y="66.26">Confirmed</text>
+            <text class="tx" x="288.98" y="83.26">320 (15.2%)</text>
+        </g>
+    </g>
+    <g class="mk s1 sr" tabindex="0" role="graphics-symbol" aria-label="False positive, 1450 (68.7%)">
+        <title>False positive, 1450 (68.7%)</title>
+        <path class="sl m px26" d="M397.02 123.31A160 160 0 1 1 130.9 131.24L266.6 216Z"/>
+        <text class="lbl ctr mid on" x="269.74" y="321.55">69%</text>
+        <g class="tt">
+            <rect class="tb" x="212.71" y="289.94" width="115.41" height="44" rx="6"/>
+            <rect class="tsw s1" x="222.71" y="298.94" width="9" height="9" rx="2"/>
+            <text class="tx b" x="236.71" y="307.94">False positive</text>
+            <text class="tx" x="222.71" y="324.94">1450 (68.7%)</text>
+        </g>
+    </g>
+    <g class="mk s2 sr" tabindex="0" role="graphics-symbol" aria-label="Under review, 210 (10%)">
+        <title>Under review, 210 (10%)</title>
+        <path class="sl m px4" d="M130.9 131.24A160 160 0 0 1 206.2 67.84L266.6 216Z"/>
+        <text class="lbl ctr mid on" x="198.59" y="135.22">10%</text>
+        <g class="tt">
+            <rect class="tb" x="129.19" y="64.08" width="109.94" height="44" rx="6"/>
+            <rect class="tsw s2" x="139.19" y="73.08" width="9" height="9" rx="2"/>
+            <text class="tx b" x="153.19" y="82.08">Under review</text>
+            <text class="tx" x="139.19" y="99.08">210 (10%)</text>
+        </g>
+    </g>
+    <g class="mk s3 sr" tabindex="0" role="graphics-symbol" aria-label="Escalated, 90 (4.3%)">
+        <title>Escalated, 90 (4.3%)</title>
+        <path class="sl m px7" d="M206.2 67.84A160 160 0 0 1 247.59 57.13L266.6 216Z"/>
+        <g class="tt">
+            <rect class="tb" x="188.8" y="102.08" width="91.49" height="44" rx="6"/>
+            <rect class="tsw s3" x="198.8" y="111.08" width="9" height="9" rx="2"/>
+            <text class="tx b" x="212.8" y="120.08">Escalated</text>
+            <text class="tx" x="198.8" y="137.08">90 (4.3%)</text>
+        </g>
+    </g>
+    <g class="mk s4 sr" tabindex="0" role="graphics-symbol" aria-label="Closed, 40 (1.9%)">
+        <title>Closed, 40 (1.9%)</title>
+        <path class="sl m px8" d="M247.59 57.13A160 160 0 0 1 266.6 56L266.6 216Z"/>
+        <g class="tt">
+            <rect class="tb" x="222.27" y="98.23" width="73.43" height="44" rx="6"/>
+            <rect class="tsw s4" x="232.27" y="107.23" width="9" height="9" rx="2"/>
+            <text class="tx b" x="246.27" y="116.23">Closed</text>
+            <text class="tx" x="232.27" y="133.23">40 (1.9%)</text>
+        </g>
+    </g>
+</svg>

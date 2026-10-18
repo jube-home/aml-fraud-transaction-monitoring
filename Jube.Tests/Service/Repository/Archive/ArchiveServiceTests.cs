@@ -22,6 +22,7 @@ using Jube.Dto.Repository.Archive;
 using Jube.Service.Exceptions.Repository.Archive;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.Archive;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -60,9 +61,11 @@ namespace Jube.Test.Service.Repository.Archive
             {
                 var entryGuid = await dbContext.Archive.Where(a => a.Id == id)
                     .Select(a => (Guid?)a.EntityAnalysisModelInstanceEntryGuid).FirstOrDefaultAsync();
+
                 await dbContext.GetTable<Data.Poco.ArchiveTag>()
                     .Where(w => w.EntityAnalysisModelInstanceEntryGuid == entryGuid)
                     .DeleteAsync();
+
                 await dbContext.Archive.Where(w => w.Id == id).DeleteAsync();
             }
 
@@ -70,6 +73,7 @@ namespace Jube.Test.Service.Repository.Archive
             {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                     .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -85,6 +89,7 @@ namespace Jube.Test.Service.Repository.Archive
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -95,6 +100,7 @@ namespace Jube.Test.Service.Repository.Archive
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -102,6 +108,7 @@ namespace Jube.Test.Service.Repository.Archive
             object[]? initialTags = null)
         {
             var guid = Guid.NewGuid();
+
             var json = new JObject
             {
                 ["tag"] = new JArray(initialTags ?? [])
@@ -116,6 +123,7 @@ namespace Jube.Test.Service.Repository.Archive
             }).ConfigureAwait(false);
 
             createdArchiveIds.Add(id);
+
             return (id, guid);
         }
 
@@ -127,6 +135,7 @@ namespace Jube.Test.Service.Repository.Archive
             var (_, guid) = await CreateArchiveAsync(dbContext, modelId, ["Old"]);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.TagAsync(new ArchiveTagDto
             {
                 EntityAnalysisModelInstanceEntryGuid = guid,
@@ -146,6 +155,7 @@ namespace Jube.Test.Service.Repository.Archive
             var (_, guid) = await CreateArchiveAsync(dbContext, modelId);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.TagAsync(new ArchiveTagDto
             {
                 EntityAnalysisModelInstanceEntryGuid = guid,
@@ -167,6 +177,7 @@ namespace Jube.Test.Service.Repository.Archive
             var (_, guid) = await CreateArchiveAsync(dbContext, modelId, ["Existing"]);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.TagAsync(new ArchiveTagDto
             {
                 EntityAnalysisModelInstanceEntryGuid = guid,

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,12 +13,12 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 using Jube.Data.Repository;
-using Jube.Parser;
 using Jube.Dto.Query.Parser;
+using Jube.Parser;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.Parser;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Query.Parser
     public sealed class ParserService
     {
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -54,6 +53,8 @@ namespace Jube.Service.Query.Parser
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ParserService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -111,6 +112,7 @@ namespace Jube.Service.Query.Parser
         {
             using var op = OperationScope.Start("Parser", "Parse", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Parser.Parse: entry user={userName} model={request.EntityAnalysisModelId}");
@@ -119,6 +121,7 @@ namespace Jube.Service.Query.Parser
             try
             {
                 EnsurePermitted("Parser.Parse");
+
                 return await ParseCoreAsync(request, token).ConfigureAwait(false);
             }
             catch (ForbiddenException)
@@ -135,6 +138,7 @@ namespace Jube.Service.Query.Parser
             {
                 op.Error(ex);
                 log.Error(ex.ToString());
+
                 return new ParseRuleResultDto { Message = "Error" };
             }
         }

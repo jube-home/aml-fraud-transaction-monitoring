@@ -49,6 +49,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             var lowerFilter = filter.ToLower();
+
             return await dbContext.TenantRegistry.Where(w => w.Name.ToLower().Contains(lowerFilter)
                                                              && (w.Deleted == 0 || w.Deleted == null))
                 .ToListAsync(token);
@@ -60,6 +61,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 

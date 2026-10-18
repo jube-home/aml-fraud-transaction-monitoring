@@ -70,6 +70,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var stored = await cacheService.CacheReferenceDateRepository.GetReferenceDateAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid);
+
             stored.Should().Be(context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
         }
 
@@ -87,12 +88,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var second = NewContext(new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc), tenantRegistryId,
                 111);
+
             second.EntityAnalysisModel.Instance.Guid = modelGuid;
             await second.CheckIntegrityAndUpsertAsync(cacheService);
             await Task.WhenAll(second.PendingWriteTasks);
 
             var stored = await cacheService.CacheReferenceDateRepository.GetReferenceDateAsync(
                 tenantRegistryId, modelGuid);
+
             stored.Should().Be(new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc));
         }
 
@@ -110,13 +113,16 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var older = NewContext(new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc), tenantRegistryId,
                 222);
+
             older.EntityAnalysisModel.Instance.Guid = modelGuid;
             await older.CheckIntegrityAndUpsertAsync(cacheService);
+
             older.PendingWriteTasks.Should().BeEmpty(
                 "an older reference date must be rejected, not queued for upsert");
 
             var stored = await cacheService.CacheReferenceDateRepository.GetReferenceDateAsync(
                 tenantRegistryId, modelGuid);
+
             stored.Should().Be(new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc),
                 "the newer, already-stored reference date must survive an older out-of-order write attempt");
         }

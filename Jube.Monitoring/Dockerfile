@@ -1,10 +1,11 @@
-FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
 USER root
 RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 USER $APP_UID
 WORKDIR /app
+EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -19,6 +20,7 @@ COPY ["Jube.Extensions/Jube.Extensions.csproj", "Jube.Extensions/"]
 COPY ["Jube.Dictionary/Jube.Dictionary.csproj", "Jube.Dictionary/"]
 COPY ["Jube.TaskCancellation/Jube.TaskCancellation.csproj", "Jube.TaskCancellation/"]
 COPY ["Jube.ResilientNpgsql/Jube.ResilientNpgsql.csproj", "Jube.ResilientNpgsql/"]
+COPY ["Jube.Charting/Jube.Charting.csproj", "Jube.Charting/"]
 
 RUN dotnet restore "Jube.Monitoring/Jube.Monitoring.csproj"
 COPY . .

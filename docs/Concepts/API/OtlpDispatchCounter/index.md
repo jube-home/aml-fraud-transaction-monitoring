@@ -6,9 +6,6 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # OTLP Dispatch Counter
 
 Once `EnableOpenTelemetry` is on, this instance is itself sending data out over the network to whatever

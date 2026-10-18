@@ -23,9 +23,7 @@ namespace Jube.ResilientNpgsqlConnection
             TimeSpan.FromMilliseconds(DefaultWindowMilliseconds));
 
         private readonly ConcurrentDictionary<string, long> lastClear = new();
-
         public static PoolClearGate Shared => Volatile.Read(ref shared);
-
         public TimeSpan Window { get; } = window;
 
         public static void ConfigureShared(TimeSpan window)

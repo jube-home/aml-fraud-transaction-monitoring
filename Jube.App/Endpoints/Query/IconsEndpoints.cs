@@ -52,6 +52,7 @@ namespace Jube.App.Endpoints.Query
         {
             var route = $"GET {Base}";
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"{route}: entry user={user}");
@@ -59,10 +60,12 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await IconsService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, new WebRootIconFileSource(webHostEnvironment.WebRootPath), token);
+
                 return TypedResults.Ok(await service.GetAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -95,6 +98,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"{route}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

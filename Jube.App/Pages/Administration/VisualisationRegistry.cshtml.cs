@@ -27,22 +27,23 @@ namespace Jube.App.Pages.Administration
         private readonly PermissionValidation permissionValidation;
         private readonly string userName;
 
-        public VisualisationRegistry(ILog log, DynamicEnvironment dynamicEnvironment, IHttpContextAccessor httpContextAccessor)
+        public VisualisationRegistry(ILog log, DynamicEnvironment dynamicEnvironment,
+            IHttpContextAccessor httpContextAccessor)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
             {
                 userName = httpContextAccessor.HttpContext.User.Identity.Name;
             }
 
-            permissionValidation = new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
+            permissionValidation =
+                new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
         }
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
+            if (!permissionValidation.Validate([
                     31
-                }))
+                ]))
             {
                 return Forbid();
             }

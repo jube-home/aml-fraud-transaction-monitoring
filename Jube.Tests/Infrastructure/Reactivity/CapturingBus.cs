@@ -15,8 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure.Reactivity.Models;
 
 namespace Jube.Test.Infrastructure.Reactivity
@@ -28,6 +28,7 @@ namespace Jube.Test.Infrastructure.Reactivity
         public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
         {
             Published.Add(change);
+
             return Task.CompletedTask;
         }
 

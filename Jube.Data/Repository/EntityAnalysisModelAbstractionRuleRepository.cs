@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
+using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
 using Microsoft.Extensions.Logging.Abstractions;
+using Jube.Data.Helpers;
 
 namespace Jube.Data.Repository
 {
@@ -119,6 +122,13 @@ namespace Jube.Data.Repository
                 && w.Id == id, token);
         }
 
+        public Task<EntityAnalysisModelAbstractionRule> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelAbstractionRule.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<EntityAnalysisModelAbstractionRule> InsertAsync(EntityAnalysisModelAbstractionRule model,
             CancellationToken token = default)
         {
@@ -127,6 +137,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -183,59 +194,6 @@ namespace Jube.Data.Repository
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
         }
 
-        private async Task DeleteVersionedAsync(int id, CancellationToken token)
-        {
-            var existing = await dbContext.EntityAnalysisModelAbstractionRule
-                .FirstOrDefaultAsync(w =>
-                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && w.Id == id
-                    && (w.Locked == 0 || w.Locked == null)
-                    && (w.Deleted == 0 || w.Deleted == null), token);
-
-            if (existing == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            var mapper = new Mapper(new MapperConfiguration(
-                cfg =>
-                {
-                    cfg.CreateMap<EntityAnalysisModelAbstractionRule, EntityAnalysisModelAbstractionRuleVersion>();
-                },
-                NullLoggerFactory.Instance));
-
-            var audit = mapper.Map<EntityAnalysisModelAbstractionRuleVersion>(existing);
-            audit.EntityAnalysisModelAbstractionRuleId = existing.Id;
-
-            await dbContext.InsertAsync(audit, token: token);
-
-            var records = await dbContext.EntityAnalysisModelAbstractionRule
-                .Where(d =>
-                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && d.Id == id
-                    && (d.Locked == 0 || d.Locked == null)
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .Set(s => s.DeletedUser, userName)
-                .Set(s => s.Version, (existing.Version ?? 1) + 1)
-                .UpdateAsync(token);
-
-            if (records == 0)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            var deletedState = mapper.Map<EntityAnalysisModelAbstractionRuleVersion>(existing);
-            deletedState.EntityAnalysisModelAbstractionRuleId = existing.Id;
-            deletedState.Deleted = Convert.ToByte(1);
-            deletedState.DeletedDate = DateTime.UtcNow;
-            deletedState.DeletedUser = userName;
-            deletedState.Version = (existing.Version ?? 1) + 1;
-
-            await dbContext.InsertAsync(deletedState, token: token);
-        }
-
         public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
             CancellationToken token = default)
         {
@@ -287,6 +245,57 @@ namespace Jube.Data.Repository
                     nameof(EntityAnalysisModelAbstractionRuleVersion.EntityAnalysisModelAbstractionRuleId),
                     tenantRegistryId)
                 .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
+        }
+
+        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        {
+            var existing = await dbContext.EntityAnalysisModelAbstractionRule
+                .FirstOrDefaultAsync(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.Id == id
+                    && (w.Locked == 0 || w.Locked == null)
+                    && (w.Deleted == 0 || w.Deleted == null), token);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.CreateMap<EntityAnalysisModelAbstractionRule, EntityAnalysisModelAbstractionRuleVersion>();
+                },
+                NullLoggerFactory.Instance));
+
+            var audit = mapper.Map<EntityAnalysisModelAbstractionRuleVersion>(existing);
+            audit.EntityAnalysisModelAbstractionRuleId = existing.Id;
+            await dbContext.InsertAsync(audit, token: token);
+
+            var records = await dbContext.EntityAnalysisModelAbstractionRule
+                .Where(d =>
+                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Id == id
+                    && (d.Locked == 0 || d.Locked == null)
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .Set(s => s.DeletedUser, userName)
+                .Set(s => s.Version, (existing.Version ?? 1) + 1)
+                .UpdateAsync(token);
+
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var deletedState = mapper.Map<EntityAnalysisModelAbstractionRuleVersion>(existing);
+            deletedState.EntityAnalysisModelAbstractionRuleId = existing.Id;
+            deletedState.Deleted = Convert.ToByte(1);
+            deletedState.DeletedDate = DateTime.UtcNow;
+            deletedState.DeletedUser = userName;
+            deletedState.Version = (existing.Version ?? 1) + 1;
+            await dbContext.InsertAsync(deletedState, token: token);
         }
     }
 }

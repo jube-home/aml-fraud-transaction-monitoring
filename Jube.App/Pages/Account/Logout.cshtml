@@ -31,31 +31,29 @@
 </head>
 <body>
 <header>
-    <img alt="Jube" src="/images/logo-sad.png" style="width: 200px; padding-top: 3px;"/>
+    <img class="loginHeaderLogo" alt="Jube" src="/images/logo-sad.png"/>
 </header>
 <main role="main">
-    <br/>
-    <div class="topPaddedGeneral bottomPaddedGeneral">
-        @if (Model.LoggedOut || !Model.IsAuthenticated)
-        {
-            <p class="text-justify">
-                Jooby is sad you are leaving. Come back soon.
-            </p>
-            <p class="topPaddedGeneral">
-                <a href="/account/login">Login.</a>
-            </p>
-        }
-        else
-        {
-            <p class="text-justify">
-                Do you want to log out?
-            </p>
-            <p>
-                <button type="button" id="StayLoggedInButton">Stay logged in</button>
-                <button type="button" id="LogoutButton">Log out</button>
-            </p>
-            <p id="LogoutError" class="text-danger" style="display: none;"></p>
-        }
+    <div class="loginPage">
+        <div class="loginCard">
+            <img src="/images/logo-sad.png" alt="Jube" class="loginCardLogo"/>
+            @if (Model.LoggedOut || !Model.IsAuthenticated)
+            {
+                <p class="loginCardSubtitle">Jooby is sad you are leaving. Come back soon.</p>
+                <div class="loginCardActions">
+                    <a href="/account/login" class="loginPrimaryLink">Login</a>
+                </div>
+            }
+            else
+            {
+                <p class="loginCardSubtitle">Do you want to log out?</p>
+                <div class="loginCardActions">
+                    <button type="button" id="StayLoggedInButton">Stay logged in</button>
+                    <button type="button" id="LogoutButton">Log out</button>
+                </div>
+                <p id="LogoutError" class="text-danger loginErrorMessage" style="display: none;"></p>
+            }
+        </div>
     </div>
 </main>
 <script src="/js/Account/Logout.js"></script>

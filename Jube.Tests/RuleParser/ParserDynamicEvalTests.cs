@@ -14,7 +14,7 @@
 using System;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Parser;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -79,6 +79,7 @@ namespace Jube.Test.RuleParser
             EvalExpressionRegistry.Register("IsCorporateEmail", "!value.EndsWith(\"gmail.com\")", 5);
 
             var parser = new Parser.Parser(TestLog.NoOp, []);
+
             var parsed = parser.Parse(NewRule(
                 "If Payload(\"Email\").Eval(\"IsCorporateEmail\") Then\r\nEnd If"));
 
@@ -91,6 +92,7 @@ namespace Jube.Test.RuleParser
             Environment.SetEnvironmentVariable("EnableDynamicEval", "True");
 
             var parser = new Parser.Parser(TestLog.NoOp, []);
+
             var parsed = parser.Parse(NewRule(
                 "If Payload(\"Email\").Eval(\"Anything\") Then\r\nEnd If"));
 
@@ -105,6 +107,7 @@ namespace Jube.Test.RuleParser
             EvalExpressionRegistry.Register("Shout", "value.ToUpper()", 1);
 
             var parser = new Parser.Parser(TestLog.NoOp, []);
+
             var parsed = parser.Parse(NewRule(
                 "If Payload(\"Email\").IsCorporateEmail Then\r\n" +
                 "Return Payload(\"Name\").Shout\r\n" +
@@ -163,6 +166,7 @@ namespace Jube.Test.RuleParser
             EvalExpressionRegistry.Register("IsCorporateEmail", "!value.EndsWith(\"gmail.com\")", 5);
 
             var parser = new Parser.Parser(TestLog.NoOp, []);
+
             var parsed = parser.Parse(NewRule(
                 "If Payload(\"Name\").Contains(\"Richard\") AND Payload(\"Email\").IsCorporateEmail Then\r\nEnd If"));
 

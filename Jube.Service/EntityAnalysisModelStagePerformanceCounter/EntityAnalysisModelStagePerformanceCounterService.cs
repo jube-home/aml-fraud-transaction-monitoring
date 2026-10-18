@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,11 +13,13 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelStagePerformanceCounterListQuery;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelStagePerformanceCounter;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelStagePerformanceCounter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,12 +32,11 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
     public sealed class EntityAnalysisModelStagePerformanceCounterService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly EntityAnalysisModelStagePerformanceCounterRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -47,13 +48,16 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            repository = new EntityAnalysisModelStagePerformanceCounterRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<EntityAnalysisModelStagePerformanceCounterService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -140,12 +144,16 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelStagePerformanceCounter", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelStagePerformanceCounter.List: entry take={clampedTake} user={userName}");
@@ -155,28 +163,25 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
             {
                 EnsurePermitted("EntityAnalysisModelStagePerformanceCounter.List");
 
-                var rows = await repository
-                    .GetLastAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
-                        clampedSamplePercentage, sortField, sortDirection, token)
+                var result = await new GetEntityAnalysisModelStagePerformanceCounterListQuery(dbContext,
+                        tenantRegistryId)
+                    .ExecuteAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
+                        clampedSamplePercentage, MaxListTake, sortField, sortDirection, token)
                     .ConfigureAwait(false);
 
-                var dtos = rows.Select(r => new EntityAnalysisModelStagePerformanceCounterDto(
+                var dtos = result.Rows.Select(r => new EntityAnalysisModelStagePerformanceCounterDto(
                     r.Id, r.EntityAnalysisModelGuid, r.EntityAnalysisModelName, r.StageId.GetValueOrDefault(),
                     DescribeStage((InvokeStage)r.StageId.GetValueOrDefault()),
                     r.TotalMicroseconds.GetValueOrDefault(), r.MinMicroseconds.GetValueOrDefault(),
                     r.MaxMicroseconds.GetValueOrDefault(), r.InvokeCount.GetValueOrDefault(),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
-                var total = await repository
-                    .CountAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage, token)
-                    .ConfigureAwait(false);
+                var total = result.Total;
 
-                var statistics = await repository
-                    .GetStatisticsAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage,
-                        MaxListTake, token)
-                    .ConfigureAwait(false);
+                var statistics = result.Statistics;
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelStagePerformanceCounter.List: {dtos.Count} rows user={userName}");
@@ -192,6 +197,7 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelStagePerformanceCounter.List: cancelled user={userName}");

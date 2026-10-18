@@ -82,6 +82,7 @@ public sealed class CaseWorld
     {
         var world = new CaseWorld(fx);
         await world.BuildAsync();
+
         return world;
     }
 
@@ -118,6 +119,7 @@ public sealed class CaseWorld
     private async Task<Guid> VisualisationAsync(DbContext db, int tenantId, string user, string label)
     {
         var guid = Guid.NewGuid();
+
         await db.InsertWithInt32IdentityAsync(new Data.Poco.VisualisationRegistry
         {
             Name = $"ZzTestPenVis{label}{Tag}",
@@ -130,6 +132,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         return guid;
     }
 
@@ -155,6 +158,7 @@ public sealed class CaseWorld
     {
         var guid = Guid.NewGuid();
         archiveGuids.Add(guid);
+
         await db.InsertWithInt64IdentityAsync(new Data.Poco.Archive
         {
             Json = "{\"payload\":{\"AccountId\":\"ZzTestArchive" + label + Tag + "\"}}",
@@ -162,6 +166,7 @@ public sealed class CaseWorld
             EntityAnalysisModelId = modelId,
             CreatedDate = DateTime.UtcNow
         });
+
         return guid;
     }
 
@@ -169,6 +174,7 @@ public sealed class CaseWorld
         Guid statusRole, Guid childRole)
     {
         var repository = new EntityAnalysisModelRepository(db, user);
+
         var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
         {
             Name = $"ZzTestPenModel{label}{Tag}",
@@ -180,6 +186,7 @@ public sealed class CaseWorld
         modelIds.Add(model.Id);
 
         var workflowGuid = Guid.NewGuid();
+
         var workflowId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
         {
             Name = $"ZzTestPenWorkflow{label}{Tag}",
@@ -192,6 +199,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         await db.InsertAsync(new Data.Poco.CaseWorkflowRole
         {
             CaseWorkflowGuid = workflowGuid,
@@ -207,6 +215,7 @@ public sealed class CaseWorld
         var (status2Id, status2Guid) = await StatusAsync(db, user, label + "2", workflowId, statusRole, 2);
 
         var actionGuid = Guid.NewGuid();
+
         var actionId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowAction
         {
             Name = $"ZzTestPenAction{label}{Tag}",
@@ -221,6 +230,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         var actionRoleId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowActionRole
         {
             CaseWorkflowActionGuid = actionGuid,
@@ -233,6 +243,7 @@ public sealed class CaseWorld
         });
 
         var displayGuid = Guid.NewGuid();
+
         var displayId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowDisplay
         {
             Name = $"ZzTestPenDisplay{label}{Tag}",
@@ -246,6 +257,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         var displayRoleId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowDisplayRole
         {
             CaseWorkflowDisplayGuid = displayGuid,
@@ -258,6 +270,7 @@ public sealed class CaseWorld
         });
 
         var filterGuid = Guid.NewGuid();
+
         var filterId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowFilter
         {
             Name = $"ZzTestPenFilter{label}{Tag}",
@@ -274,6 +287,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         var filterRoleId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowFilterRole
         {
             CaseWorkflowFilterGuid = filterGuid,
@@ -288,6 +302,7 @@ public sealed class CaseWorld
         var caseKey = "AccountId";
         var caseKeyValue = $"ZzTestCaseValue{label}{Tag}";
         var entryGuid = Guid.NewGuid();
+
         var caseId = await db.InsertWithInt32IdentityAsync(new CasePoco
         {
             EntityAnalysisModelInstanceEntryGuid = entryGuid,
@@ -362,6 +377,7 @@ public sealed class CaseWorld
         Guid role, byte priority)
     {
         var guid = Guid.NewGuid();
+
         var id = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
         {
             Name = $"ZzTestPenStatus{label}{Tag}",
@@ -377,6 +393,7 @@ public sealed class CaseWorld
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
         });
+
         await db.InsertAsync(new Data.Poco.CaseWorkflowStatusRole
         {
             CaseWorkflowStatusGuid = guid,
@@ -387,12 +404,14 @@ public sealed class CaseWorld
             Deleted = 0,
             Version = 1
         });
+
         return (id, guid);
     }
 
     public async Task<CaseGraph> ExtraGraphAsync(string label, bool tenantB = false)
     {
         await using var db = fx.GetDbContext();
+
         return tenantB
             ? await GraphAsync(db, fx.Seed.UserTenantB, label, RoleB, RoleB, RoleB)
             : await GraphAsync(db, fx.Seed.UserWithPermission, label, RoleA, RoleA, RoleA);
@@ -401,6 +420,7 @@ public sealed class CaseWorld
     public async Task<int> ExtraCaseAsync(CaseGraph graph, string keyValue, Action<CasePoco>? shape = null)
     {
         await using var db = fx.GetDbContext();
+
         var row = new CasePoco
         {
             EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
@@ -416,25 +436,30 @@ public sealed class CaseWorld
             Rating = 1,
             Json = "{}"
         };
+
         shape?.Invoke(row);
+
         return await db.InsertWithInt32IdentityAsync(row);
     }
 
     public async Task<CasePoco?> LoadCaseAsync(int id)
     {
         await using var db = fx.GetDbContext();
+
         return await db.Case.Where(c => c.Id == id).FirstOrDefaultAsync();
     }
 
     public async Task<long> CountAsync(string table, string where, params DataParameter[] parameters)
     {
         await using var db = fx.GetDbContext();
+
         return await db.ExecuteAsync<long>($"SELECT COUNT(*) FROM \"{table}\" WHERE {where}", parameters);
     }
 
     public async Task<T> ScalarAsync<T>(string sql, params DataParameter[] parameters)
     {
         await using var db = fx.GetDbContext();
+
         return await db.ExecuteAsync<T>(sql, parameters);
     }
 
@@ -443,6 +468,7 @@ public sealed class CaseWorld
         await using var db = fx.GetDbContext();
         var models = modelIds.ToArray();
         var parts = new List<string>();
+
         foreach (var (table, filter) in new[]
                  {
                      ("Case",
@@ -475,7 +501,9 @@ public sealed class CaseWorld
                 c.CaseWorkflowStatusGuid,
                 c.Json, c.CaseKey, c.CaseKeyValue
             }).ToListAsync();
+
         parts.AddRange(casesState.OrderBy(c => c.Id).Select(c => JsonSerializer.Serialize(c)));
+
         return string.Join("|", parts);
     }
 
@@ -487,6 +515,7 @@ public sealed class CaseWorld
         const string wf = "(SELECT \"Id\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m))";
         const string wfg = "(SELECT \"Guid\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m))";
         const string cases = "(SELECT \"Id\" FROM \"Case\" WHERE \"CaseWorkflowGuid\" IN " + wfg + ")";
+
         string[] statements =
         [
             "DELETE FROM \"CaseWorkflowFormEntryValue\" WHERE \"CaseWorkflowFormEntryId\" IN (SELECT \"Id\" FROM \"CaseWorkflowFormEntry\" WHERE \"CaseId\" IN " +
@@ -531,6 +560,7 @@ public sealed class CaseWorld
             "DELETE FROM \"MockArchive\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
             "DELETE FROM \"EntityAnalysisModel\" WHERE \"Id\" = ANY(@m)"
         ];
+
         foreach (var statement in statements)
         {
             try

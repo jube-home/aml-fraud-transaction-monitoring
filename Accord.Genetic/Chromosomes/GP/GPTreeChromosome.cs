@@ -2,90 +2,54 @@
 // AForge.NET framework
 // http://www.aforgenet.com/framework/
 //
-// Copyright © AForge.NET, 2006-2011
+// Copyright Â© AForge.NET, 2006-2011
 // contacts@aforgenet.com
 //
 
+using System.Collections.Generic;
+using Accord.Math.Random;
+
 namespace Accord.Genetic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using AForge;
-    using Accord.Math.Random;
-
     /// <summary>
-    /// Tree chromosome represents a tree of genes, which is is used for
-    /// different tasks of Genetic Programming (GP).
+    ///     Tree chromosome represents a tree of genes, which is is used for
+    ///     different tasks of Genetic Programming (GP).
     /// </summary>
-    /// 
-    /// <remarks><para>This type of chromosome represents a tree, where each node
-    /// is represented by <see cref="GPTreeNode"/> containing <see cref="IGPGene"/>.
-    /// Depending on type of genes used to build the tree, it may represent different
-    /// types of expressions aimed to solve different type of tasks. For example, a
-    /// particular implementation of <see cref="IGPGene"/> interface may represent
-    /// simple algebraic operations and their arguments.
-    /// </para>
-    /// 
-    /// <para>See documentation to <see cref="IGPGene"/> implementations for additional
-    /// information about possible Genetic Programming trees.</para>
+    /// <remarks>
+    ///     <para>
+    ///         This type of chromosome represents a tree, where each node
+    ///         is represented by <see cref="GPTreeNode" /> containing <see cref="IGPGene" />.
+    ///         Depending on type of genes used to build the tree, it may represent different
+    ///         types of expressions aimed to solve different type of tasks. For example, a
+    ///         particular implementation of <see cref="IGPGene" /> interface may represent
+    ///         simple algebraic operations and their arguments.
+    ///     </para>
+    ///     <para>
+    ///         See documentation to <see cref="IGPGene" /> implementations for additional
+    ///         information about possible Genetic Programming trees.
+    ///     </para>
     /// </remarks>
-    /// 
     public class GPTreeChromosome : ChromosomeBase
     {
-        // tree root
-        private GPTreeNode root = new GPTreeNode();
-
         // maximum initial level of the tree
         private static int maxInitialLevel = 3;
+
         // maximum level of the tree
         private static int maxLevel = 5;
 
-        /// <summary>
-        /// Maximum initial level of genetic trees, [1, 25].
-        /// </summary>
-        /// 
-        /// <remarks><para>The property sets maximum possible initial depth of new
-        /// genetic programming tree. For example, if it is set to 1, then largest initial
-        /// tree may have a root and one level of children.</para>
-        /// 
-        /// <para>Default value is set to <b>3</b>.</para>
-        /// </remarks>
-        ///
-        public static int MaxInitialLevel
-        {
-            get { return maxInitialLevel; }
-            set { maxInitialLevel = Math.Max(1, Math.Min(25, value)); }
-        }
+        // tree root
+        private GPTreeNode root = new();
 
         /// <summary>
-        /// Maximum level of genetic trees, [1, 50].
+        ///     Initializes a new instance of the <see cref="GPTreeChromosome" /> class.
         /// </summary>
-        /// 
-        /// <remarks><para>The property sets maximum possible depth of 
-        /// genetic programming tree, which may be created with mutation and crossover operators.
-        /// This property guarantees that genetic programmin tree will never have
-        /// higher depth, than the specified value.</para>
-        /// 
-        /// <para>Default value is set to <b>5</b>.</para>
-        /// </remarks>
-        ///
-        public static int MaxLevel
-        {
-            get { return maxLevel; }
-            set { maxLevel = Math.Max(1, Math.Min(50, value)); }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GPTreeChromosome"/> class.
-        /// </summary>
-        /// 
         /// <param name="ancestor">A gene, which is used as generator for the genetic tree.</param>
-        /// 
-        /// <remarks><para>This constructor creates a randomly generated genetic tree,
-        /// which has all genes of the same type and properties as the specified <paramref name="ancestor"/>.
-        /// </para></remarks>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         This constructor creates a randomly generated genetic tree,
+        ///         which has all genes of the same type and properties as the specified <paramref name="ancestor" />.
+        ///     </para>
+        /// </remarks>
         public GPTreeChromosome(IGPGene ancestor)
         {
             // make the ancestor gene to be as temporary root of the tree
@@ -95,14 +59,15 @@ namespace Accord.Genetic
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GPTreeChromosome"/> class.
+        ///     Initializes a new instance of the <see cref="GPTreeChromosome" /> class.
         /// </summary>
-        /// 
         /// <param name="source">Source genetic tree to clone from.</param>
-        /// 
-        /// <remarks><para>This constructor creates new genetic tree as a copy of the
-        /// specified <paramref name="source"/> tree.</para></remarks>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         This constructor creates new genetic tree as a copy of the
+        ///         specified <paramref name="source" /> tree.
+        ///     </para>
+        /// </remarks>
         protected GPTreeChromosome(GPTreeChromosome source)
         {
             root = (GPTreeNode)source.root.Clone();
@@ -110,42 +75,77 @@ namespace Accord.Genetic
         }
 
         /// <summary>
-        /// Get string representation of the chromosome by providing its expression in
-        /// reverse polish notation (postfix notation).
+        ///     Maximum initial level of genetic trees, [1, 25].
         /// </summary>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         The property sets maximum possible initial depth of new
+        ///         genetic programming tree. For example, if it is set to 1, then largest initial
+        ///         tree may have a root and one level of children.
+        ///     </para>
+        ///     <para>Default value is set to <b>3</b>.</para>
+        /// </remarks>
+        public static int MaxInitialLevel
+        {
+            get => maxInitialLevel;
+            set => maxInitialLevel = System.Math.Max(1, System.Math.Min(25, value));
+        }
+
+        /// <summary>
+        ///     Maximum level of genetic trees, [1, 50].
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The property sets maximum possible depth of
+        ///         genetic programming tree, which may be created with mutation and crossover operators.
+        ///         This property guarantees that genetic programmin tree will never have
+        ///         higher depth, than the specified value.
+        ///     </para>
+        ///     <para>Default value is set to <b>5</b>.</para>
+        /// </remarks>
+        public static int MaxLevel
+        {
+            get => maxLevel;
+            set => maxLevel = System.Math.Max(1, System.Math.Min(50, value));
+        }
+
+        /// <summary>
+        ///     Get string representation of the chromosome by providing its expression in
+        ///     reverse polish notation (postfix notation).
+        /// </summary>
         /// <returns>Returns string representation of the genetic tree.</returns>
-        /// 
-        /// <remarks><para>The method returns string representation of the tree's root node
-        /// (see <see cref="GPTreeNode.ToString"/>).</para></remarks>
-        ///
+        /// <remarks>
+        ///     <para>
+        ///         The method returns string representation of the tree's root node
+        ///         (see <see cref="GPTreeNode.ToString" />).
+        ///     </para>
+        /// </remarks>
         public override string ToString()
         {
             return root.ToString();
         }
 
         /// <summary>
-        /// Generate random chromosome value.
+        ///     Generate random chromosome value.
         /// </summary>
-        /// 
-        /// <remarks><para>Regenerates chromosome's value using random number generator.</para>
+        /// <remarks>
+        ///     <para>Regenerates chromosome's value using random number generator.</para>
         /// </remarks>
-        ///
         public override void Generate()
         {
             var rand = Generator.Random;
 
             // randomize the root
             root.Gene.Generate();
-            
+
             // create children
             if (root.Gene.ArgumentsCount != 0)
             {
                 root.Children = new List<GPTreeNode>();
-                for (int i = 0; i < root.Gene.ArgumentsCount; i++)
+                for (var i = 0; i < root.Gene.ArgumentsCount; i++)
                 {
                     // create new child
-                    GPTreeNode child = new GPTreeNode();
+                    var child = new GPTreeNode();
                     Generate(child, rand.Next(maxInitialLevel));
                     // add the new child
                     root.Children.Add(child);
@@ -154,12 +154,10 @@ namespace Accord.Genetic
         }
 
         /// <summary>
-        /// Generate chromosome's subtree of specified level.
+        ///     Generate chromosome's subtree of specified level.
         /// </summary>
-        /// 
         /// <param name="node">Sub tree's node to generate.</param>
         /// <param name="level">Sub tree's level to generate.</param>
-        /// 
         protected void Generate(GPTreeNode node, int level)
         {
             // create gene for the node
@@ -178,10 +176,10 @@ namespace Accord.Genetic
             if (node.Gene.ArgumentsCount != 0)
             {
                 node.Children = new List<GPTreeNode>();
-                for (int i = 0; i < node.Gene.ArgumentsCount; i++)
+                for (var i = 0; i < node.Gene.ArgumentsCount; i++)
                 {
                     // create new child
-                    GPTreeNode child = new GPTreeNode();
+                    var child = new GPTreeNode();
                     Generate(child, level - 1);
                     // add the new child
                     node.Children.Add(child);
@@ -190,50 +188,52 @@ namespace Accord.Genetic
         }
 
         /// <summary>
-        /// Create new random chromosome with same parameters (factory method).
+        ///     Create new random chromosome with same parameters (factory method).
         /// </summary>
-        /// 
-        /// <remarks><para>The method creates new chromosome of the same type, but randomly
-        /// initialized. The method is useful as factory method for those classes, which work
-        /// with chromosome's interface, but not with particular chromosome type.</para></remarks>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         The method creates new chromosome of the same type, but randomly
+        ///         initialized. The method is useful as factory method for those classes, which work
+        ///         with chromosome's interface, but not with particular chromosome type.
+        ///     </para>
+        /// </remarks>
         public override IChromosome CreateNew()
         {
             return new GPTreeChromosome(root.Gene.Clone());
         }
 
         /// <summary>
-        /// Clone the chromosome.
+        ///     Clone the chromosome.
         /// </summary>
-        /// 
         /// <returns>Return's clone of the chromosome.</returns>
-        /// 
-        /// <remarks><para>The method clones the chromosome returning the exact copy of it.</para>
+        /// <remarks>
+        ///     <para>The method clones the chromosome returning the exact copy of it.</para>
         /// </remarks>
-        ///
         public override IChromosome Clone()
         {
             return new GPTreeChromosome(this);
         }
 
         /// <summary>
-        /// Mutation operator.
+        ///     Mutation operator.
         /// </summary>
-        /// 
-        /// <remarks><para>The method performs chromosome's mutation by regenerating tree's
-        /// randomly selected node.</para></remarks>
-        ///
+        /// <remarks>
+        ///     <para>
+        ///         The method performs chromosome's mutation by regenerating tree's
+        ///         randomly selected node.
+        ///     </para>
+        /// </remarks>
         public override void Mutate()
         {
             var rand = Generator.Random;
 
             // current tree level
-            int currentLevel = 0;
+            var currentLevel = 0;
 
             // current node
-            GPTreeNode node = root;
+            var node = root;
 
-            for (; ; )
+            for (;;)
             {
                 // regenerate node if it does not have children
                 if (node.Children == null)
@@ -249,12 +249,13 @@ namespace Accord.Genetic
                         // generate subtree
                         Generate(node, rand.Next(maxLevel - currentLevel));
                     }
+
                     break;
                 }
 
                 // if it is a function node, than we need to get a decision, about
                 // mutation point - the node itself or one of its children
-                int r = rand.Next(node.Gene.ArgumentsCount + 1);
+                var r = rand.Next(node.Gene.ArgumentsCount + 1);
 
                 if (r == node.Gene.ArgumentsCount)
                 {
@@ -270,7 +271,9 @@ namespace Accord.Genetic
                     {
                         // create children's list if it was absent
                         if (node.Children == null)
+                        {
                             node.Children = new List<GPTreeNode>();
+                        }
 
                         // check for missing or extra children
                         if (node.Children.Count != node.Gene.ArgumentsCount)
@@ -278,15 +281,16 @@ namespace Accord.Genetic
                             if (node.Children.Count > node.Gene.ArgumentsCount)
                             {
                                 // remove extra children
-                                node.Children.RemoveRange(node.Gene.ArgumentsCount, node.Children.Count - node.Gene.ArgumentsCount);
+                                node.Children.RemoveRange(node.Gene.ArgumentsCount,
+                                    node.Children.Count - node.Gene.ArgumentsCount);
                             }
                             else
                             {
                                 // add missing children
-                                for (int i = node.Children.Count; i < node.Gene.ArgumentsCount; i++)
+                                for (var i = node.Children.Count; i < node.Gene.ArgumentsCount; i++)
                                 {
                                     // create new child
-                                    GPTreeNode child = new GPTreeNode();
+                                    var child = new GPTreeNode();
                                     Generate(child, rand.Next(maxLevel - currentLevel));
                                     // add the new child
                                     node.Children.Add(child);
@@ -294,51 +298,53 @@ namespace Accord.Genetic
                             }
                         }
                     }
+
                     break;
                 }
 
                 // mutation goes further to one of the children
-                node = (GPTreeNode)node.Children[r];
+                node = node.Children[r];
                 currentLevel++;
             }
         }
 
         /// <summary>
-        /// Crossover operator.
+        ///     Crossover operator.
         /// </summary>
-        /// 
         /// <param name="pair">Pair chromosome to crossover with.</param>
-        /// 
-        /// <remarks><para>The method performs crossover between two chromosomes – interchanging
-        /// randomly selected sub trees.</para></remarks>
-        ///
+        /// <remarks>
+        ///     <para>
+        ///         The method performs crossover between two chromosomes â€“ interchanging
+        ///         randomly selected sub trees.
+        ///     </para>
+        /// </remarks>
         public override void Crossover(IChromosome pair)
         {
             var rand = Generator.Random;
-            GPTreeChromosome p = (GPTreeChromosome)pair;
+            var p = (GPTreeChromosome)pair;
 
             // check for correct pair
             if (p != null)
             {
                 // do we need to use root node for crossover ?
-                if ((root.Children == null) || (rand.Next(maxLevel) == 0))
+                if (root.Children == null || rand.Next(maxLevel) == 0)
                 {
                     // give the root to the pair and use pair's part as a new root
                     root = p.RandomSwap(root);
                 }
                 else
                 {
-                    GPTreeNode node = root;
+                    var node = root;
 
-                    for (; ; )
+                    for (;;)
                     {
                         // choose random child
-                        int r = rand.Next(node.Gene.ArgumentsCount);
-                        GPTreeNode child = (GPTreeNode)node.Children[r];
+                        var r = rand.Next(node.Gene.ArgumentsCount);
+                        var child = node.Children[r];
 
                         // swap the random node, if it is an end node or
                         // random generator "selected" this node
-                        if ((child.Children == null) || (rand.Next(maxLevel) == 0))
+                        if (child.Children == null || rand.Next(maxLevel) == 0)
                         {
                             // swap the node with pair's one
                             node.Children[r] = p.RandomSwap(child);
@@ -349,6 +355,7 @@ namespace Accord.Genetic
                         node = child;
                     }
                 }
+
                 // trim both of them
                 Trim(root, maxLevel);
                 Trim(p.root, maxLevel);
@@ -356,16 +363,16 @@ namespace Accord.Genetic
         }
 
         /// <summary>
-        /// Crossover helper routine - selects random node of chromosomes tree and
-        /// swaps it with specified node.
+        ///     Crossover helper routine - selects random node of chromosomes tree and
+        ///     swaps it with specified node.
         /// </summary>
         private GPTreeNode RandomSwap(GPTreeNode source)
         {
             var rand = Generator.Random;
-            GPTreeNode retNode = null;
+            GPTreeNode retNode;
 
             // swap root node ?
-            if ((root.Children == null) || (rand.Next(maxLevel) == 0))
+            if (root.Children == null || rand.Next(maxLevel) == 0)
             {
                 // replace current root and return it
                 retNode = root;
@@ -373,17 +380,17 @@ namespace Accord.Genetic
             }
             else
             {
-                GPTreeNode node = root;
+                var node = root;
 
-                for (; ; )
+                for (;;)
                 {
                     // choose random child
-                    int r = rand.Next(node.Gene.ArgumentsCount);
-                    GPTreeNode child = (GPTreeNode)node.Children[r];
+                    var r = rand.Next(node.Gene.ArgumentsCount);
+                    var child = node.Children[r];
 
                     // swap the random node, if it is an end node or
                     // random generator "selected" this node
-                    if ((child.Children == null) || (rand.Next(maxLevel) == 0))
+                    if (child.Children == null || rand.Next(maxLevel) == 0)
                     {
                         // swap the node with pair's one
                         retNode = child;
@@ -395,11 +402,12 @@ namespace Accord.Genetic
                     node = child;
                 }
             }
+
             return retNode;
         }
 
         /// <summary>
-        /// Trim tree node, so its depth does not exceed specified level.
+        ///     Trim tree node, so its depth does not exceed specified level.
         /// </summary>
         private static void Trim(GPTreeNode node, int level)
         {
@@ -416,7 +424,7 @@ namespace Accord.Genetic
                 else
                 {
                     // go further to children
-                    foreach (GPTreeNode n in node.Children)
+                    foreach (var n in node.Children)
                     {
                         Trim(n, level - 1);
                     }

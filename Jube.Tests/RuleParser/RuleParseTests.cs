@@ -56,6 +56,40 @@ namespace Jube.Test.RuleParser
         }
 
         [Fact]
+        public void MatchedIsRegisteredByTheParserRatherThanSuppliedByTheCaller()
+        {
+            var withoutSuppliedTokens = new RuleParseEnvironmentDto
+            {
+                Tokens = [],
+                RequestXPaths = new Dictionary<string, RuleParseEnvironmentRequestXPathDto>
+                {
+                    ["Amount"] = new() { DataTypeId = 3, Cache = true }
+                }
+            };
+
+            var result = RuleParse.Execute(
+                "If (Payload.Amount > 100) Then\n   Matched = True\nEnd If",
+                RuleParse.GatewayRule, withoutSuppliedTokens, TestLog.NoOp, RuleParse.DefaultReferences());
+
+            result.ErrorSpans.Should().BeEmpty(
+                "Matched is hardcoded alongside Return, so a fragment assigning it parses with no "
+                + "token registry of its own");
+
+            result.Compiled.Should().BeTrue();
+        }
+
+        [Fact]
+        public void AnUnregisteredNameIsStillRefused()
+        {
+            var result = RuleParse.Execute(
+                "If (Payload.Amount > 100) Then\n   Shutdown = True\nEnd If",
+                RuleParse.GatewayRule, Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
+            result.Compiled.Should().BeFalse();
+            result.ErrorSpans.Should().NotBeEmpty();
+        }
+
+        [Fact]
         public void UnknownFieldReturnsLocatedErrorSpans()
         {
             var result = RuleParse.Execute("If (Payload.Missing > 100) Then\n   Return True\nEnd If",
@@ -120,6 +154,7 @@ namespace Jube.Test.RuleParser
                 RuleParse.DefaultReferences()).Compiled.Should().BeTrue();
 
             environment.TtlCounters = null;
+
             RuleParse.Execute(rule, RuleParse.GatewayRule, environment, TestLog.NoOp,
                 RuleParse.DefaultReferences()).Compiled.Should().BeFalse();
         }
@@ -153,6 +188,7 @@ namespace Jube.Test.RuleParser
                 null);
 
             var compile = new Compile();
+
             compile.CompileCode(parsed.ParsedRuleText, TestLog.NoOp, RuleParse.DefaultReferences(),
                 Compile.Language.Vb, false);
 

@@ -94,6 +94,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
             try
             {
                 var repository = new ApplicationLogEntryRepository(dbContext);

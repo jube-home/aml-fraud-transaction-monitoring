@@ -11,10 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Service.EntityApproval
 {
-    using Data.Repository;
-    using Parser.Dependency;
+    using Parser.Dependency.Models;
 
     public static class EntityApprovalGraphKind
     {

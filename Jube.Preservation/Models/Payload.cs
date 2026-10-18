@@ -11,11 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Poco;
+using MessagePack;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Preservation.Models
 {
-    using Data.Poco;
-    using MessagePack;
-
     [MessagePackObject]
     public class Payload
     {
@@ -23,5 +28,9 @@ namespace Jube.Preservation.Models
         [Key(1)] public IEnumerable<VisualisationRegistry>? VisualisationRegistry { get; set; }
         [Key(2)] public EntityPermission? EntityPermission { get; set; }
         [Key(3)] public IEnumerable<RoleRegistry>? RoleRegistry { get; set; }
+        [Key(4)] public AdvancedAnalyticsPayload? AdvancedAnalytics { get; set; }
+        [Key(5)] public IEnumerable<ExhaustiveInstanceCsvExport>? ExhaustiveInstanceCsv { get; set; }
+        [Key(6)] public IEnumerable<ExhaustiveInstanceJsonExport>? ExhaustiveInstanceJson { get; set; }
+        [Key(7)] public IEnumerable<EntityApproval>? EntityApproval { get; set; }
     }
 }

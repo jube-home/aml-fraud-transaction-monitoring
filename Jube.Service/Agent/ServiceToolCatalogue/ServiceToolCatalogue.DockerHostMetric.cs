@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.DockerHostMetric;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -25,7 +28,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "sidecar, across every host, most recent first, capped at 100000, with optional date-range " +
                     "and substring search (Instance/OperatingSystem) filters, not scoped to any tenant. Also " +
                     "accepts samplePercentage (0-100) to draw an unbiased random subset of matching rows " +
-                    "instead of the most recent ones."));
+                    "instead of the most recent ones.", DockerHostMetricService.RequiredPermissions,
+                    DockerHostMetricService.RequiresLandlord));
         }
     }
 }

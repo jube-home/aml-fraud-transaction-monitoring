@@ -43,6 +43,7 @@ namespace Jube.App.Code.Waf
 
             using var timer = new PeriodicTimer(
                 ComputeWindow(dynamicEnvironment.AppSettings("WafFlushInterval"), intervalValue));
+
             while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
             {
                 try
@@ -76,12 +77,14 @@ namespace Jube.App.Code.Waf
         private async Task FlushAsync(CancellationToken token)
         {
             var drained = WafAttackCapture.DrainAll();
+
             if (drained.Count == 0)
             {
                 return;
             }
 
             var instance = Dns.GetHostName();
+
             var models = drained.Select(record => new WafAttack
             {
                 CreatedDate = record.CreatedDate,

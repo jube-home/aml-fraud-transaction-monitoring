@@ -11,13 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Data.Query.Models
 {
-    using Repository;
-
     public sealed record EntityApprovalRow(
         int EntityId,
         int EntityVersion,
         EntityApprovalState State,
-        string CreatedUser);
+        string CreatedUser,
+        string Note,
+        string ReturnedNote);
 }

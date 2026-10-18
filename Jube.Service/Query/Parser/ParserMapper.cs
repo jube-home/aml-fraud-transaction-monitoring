@@ -17,7 +17,7 @@ namespace Jube.Service.Query.Parser
 {
     internal static class ParserMapper
     {
-        internal static List<ParseRuleErrorSpanDto> ToDto(IEnumerable<global::Jube.Parser.ErrorSpan> errorSpans)
+        internal static List<ParseRuleErrorSpanDto> ToDto(IEnumerable<global::Jube.Parser.Models.ErrorSpan> errorSpans)
         {
             return errorSpans.Select(s => new ParseRuleErrorSpanDto
             {

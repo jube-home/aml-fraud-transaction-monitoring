@@ -71,8 +71,10 @@ namespace Jube.Test.RuleParser
         public void ADeeplyNestedRuleIsRefusedWithoutReachingTheCompiler(string label, string ruleText)
         {
             var stopwatch = Stopwatch.StartNew();
+
             var result = RuleParse.Execute(ruleText, RuleParse.GatewayRule, RuleParseTests.Environment(),
                 TestLog.NoOp, RuleParse.DefaultReferences());
+
             stopwatch.Stop();
 
             result.Compiled.Should().BeFalse(label);
@@ -146,11 +148,14 @@ namespace Jube.Test.RuleParser
         public void TheStructuredFuzzCorpusNeverReachesTheCompilerOrHangs(string ruleText, int ruleParseType)
         {
             var stopwatch = Stopwatch.StartNew();
+
             var result = RuleParse.Execute(ruleText, ruleParseType, RuleParseTests.Environment(),
                 TestLog.NoOp, RuleParse.DefaultReferences());
+
             stopwatch.Stop();
 
             stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(60));
+
             if (result.Compiled)
             {
                 result.ClassName.Should().NotBeNull();

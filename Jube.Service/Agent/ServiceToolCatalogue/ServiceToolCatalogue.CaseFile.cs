@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,19 +11,31 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseFile;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseFile(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseFileRemove", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Removes (soft-deletes) a file attached to a Case."),
-            new ServiceToolDescriptor(
-                "CaseFileListByCaseKeyValue", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the files attached to the Case for a given key field name and value, scoped to the " +
-                "caller's tenant and Case Workflow roles.")
-        ]);
+        static partial void AddCaseFile(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseFileRemove", OperationKind.Delete, true, true,
+                    "Removes (soft-deletes) a file attached to a Case.",
+                    CaseFileService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseFileListByCaseKeyValue", OperationKind.Read, true, false,
+                    "Lists the files attached to the Case for a given key field name and value, scoped to the " +
+                    "caller's tenant and Case Workflow roles.",
+                    CaseFileService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseFileUpload", OperationKind.Write, false, false,
+                    "Uploads and attaches a file to a Case in the caller's tenant.",
+                    CaseFileService.RequiredPermissions)
+            ]);
+        }
     }
 }

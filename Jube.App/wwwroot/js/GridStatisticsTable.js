@@ -11,11 +11,6 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-// Renders a grid's double-column summary statistics (Min/Max/Mean/Median/StdDev/10-bucket histogram) below
-// the main grid, one row per column. Mirrors the Exhaustive Adaptation results page's own pattern exactly
-// (Jube.App/wwwroot/js/Model/Frame/Exhaustive.js, the "#statistics" kendoGrid with a templated ".histogram"
-// column wired to a per-row kendoChart in dataBound) rather than a plain HTML table, so the histogram is a
-// real bar chart, not a text dump of bucket counts.
 function renderGridStatisticsTable(elementId, statistics) {
     const $container = $("#" + elementId);
     $container.empty();

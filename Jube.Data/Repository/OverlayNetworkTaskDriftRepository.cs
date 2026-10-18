@@ -88,6 +88,7 @@ namespace Jube.Data.Repository
             IQueryable<OverlayNetworkTaskDrift> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "serviceName" => query.OrderByField(o => o.ServiceName, descending),

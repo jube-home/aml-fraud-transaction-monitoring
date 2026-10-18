@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,39 +11,54 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.TenantRegistry;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddTenantRegistry(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "TenantRegistryList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists registered Tenants, Id-ascending, keyset-paged and capped. Landlord-only."),
-            new ServiceToolDescriptor(
-                "TenantRegistryFilterFields", OperationKind.Read, true, false,
-                "Lists the fields a query builder JSON filter over Tenant Registrys may use."),
-            new ServiceToolDescriptor(
-                "TenantRegistryFilter", OperationKind.Read, true, false,
-                "Returns the Tenant Registrys matching query builder JSON, keyset-paged and capped."),
-            new ServiceToolDescriptor(
-                "TenantRegistryCount", OperationKind.Read, true, false,
-                "Counts the Tenant Registrys matching query builder JSON, optionally grouped by a field."),
-            new ServiceToolDescriptor(
-                "TenantRegistryGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns a single Tenant by Id. Landlord-only."),
-            new ServiceToolDescriptor(
-                "TenantRegistryCreate", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Creates a Tenant; calling twice creates two. Landlord-only."),
-            new ServiceToolDescriptor(
-                "TenantRegistryValidate", OperationKind.Read, true, false,
-                "Validates a Tenant Registry without saving it and returns every failure."),
-            new ServiceToolDescriptor(
-                "TenantRegistryUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Updates a Tenant; overwrites, writes a version-audit row. Landlord-only."),
-            new ServiceToolDescriptor(
-                "TenantRegistryDelete", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Soft-deletes a Tenant; reversible only by direct database action. Landlord-only.")
-        ]);
+        static partial void AddTenantRegistry(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "TenantRegistryList", OperationKind.Read, true, false,
+                    "Lists registered Tenants, Id-ascending, keyset-paged and capped. Landlord-only.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Tenant Registrys may use.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryFilter", OperationKind.Read, true, false,
+                    "Returns the Tenant Registrys matching query builder JSON, keyset-paged and capped.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryCount", OperationKind.Read, true, false,
+                    "Counts the Tenant Registrys matching query builder JSON, optionally grouped by a field.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryGet", OperationKind.Read, true, false,
+                    "Returns a single Tenant by Id. Landlord-only.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryCreate", OperationKind.Write, false, false,
+                    "Creates a Tenant; calling twice creates two. Landlord-only.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryValidate", OperationKind.Read, true, false,
+                    "Validates a Tenant Registry without saving it and returns every failure.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryUpdate", OperationKind.Write, true, false,
+                    "Updates a Tenant; overwrites, writes a version-audit row. Landlord-only.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord),
+                new ServiceToolDescriptor(
+                    "TenantRegistryDelete", OperationKind.Delete, true, true,
+                    "Soft-deletes a Tenant; reversible only by direct database action. Landlord-only.",
+                    TenantRegistryService.RequiredPermissions, TenantRegistryService.RequiresLandlord)
+            ]);
+        }
     }
 }

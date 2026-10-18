@@ -11,8 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Models;
 using Jube.Cache.Observability;
-using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using log4net;
 using StackExchange.Redis;
 

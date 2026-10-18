@@ -27,7 +27,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync
     public class ImplicitAsyncInvocationTracker(ILog log) : IImplicitAsyncInvocationTracker
     {
         private readonly ConcurrentDictionary<Guid, (int EntityAnalysisModelId, DateTime StartedAt)> pending = new();
-
         public int PendingCount => pending.Count;
 
         public int PendingCountForModel(int entityAnalysisModelId)

@@ -18,6 +18,7 @@ using System.Threading;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -58,9 +59,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             context.TraceLog($"has created a Gateway Sample of {gatewaySample}.");
 
             var rulesCount = context.Snapshot.ModelGatewayRules.Count;
+
             for (var i = 0; i < rulesCount; i++)
             {
                 var gatewayRule = context.Snapshot.ModelGatewayRules[i];
+
                 try
                 {
                     context.TraceLog(
@@ -74,6 +77,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     IncrementEvaluationCounter(gatewayRule);
 
                     var matched = false;
+
                     var timed = TaskHelper.MeasureTimeAndMemoryAllocated(TaskType.Gateway, () =>
                     {
                         matched = gatewayRule.GatewayRuleCompileDelegate(
@@ -82,6 +86,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
                             context.Log);
                     });
+
                     items[gatewayRule.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
 
                     if (!matched)
@@ -90,6 +95,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     }
 
                     context.EntityAnalysisModelInstanceEntryPayload.MatchedGatewayRule = true;
+
                     context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit =
                         gatewayRule.MaxResponseElevation;
 

@@ -35,6 +35,7 @@ function LoadFiles() {
         },
         success: onSuccess,
         upload: function (e) {
+            AttachAntiforgeryHeader(e);
             e.data = {entityAnalysisModelDictionaryId: id};
         }
     });
@@ -86,12 +87,19 @@ function Ready() {
         $("#FilesDiv").hide();
         $("#ListValuesDiv").hide();
         ReadyNew();
+        window.AskJoobySetPageContext?.("EntityAnalysisModelDictionary", "new", {[parentKeyName]: parentKey});
     } else {
         $.get(endpoint + "/" + id,
             function (data) {
                 parentKey = data[parentKeyName];
                 dataName.data("kendoDropDownList").value(data.dataName);
                 ReadyExisting(data);
+                window.AskJoobySetPageContext?.("EntityAnalysisModelDictionary", "edit", {
+                    id: data.id,
+                    guid: data.guid,
+                    name: data.name,
+                    [parentKeyName]: parentKey
+                });
                 LoadFiles();
                 LoadList();
             });

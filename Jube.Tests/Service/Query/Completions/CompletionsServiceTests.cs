@@ -14,12 +14,17 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.Analytics.Datasets.Models;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.ExhaustiveInstanceDataset;
 using Jube.Dto.Query.Completions;
 using Jube.Resources;
 using Jube.Service.Agent.ServiceToolCatalogue;
@@ -27,16 +32,17 @@ using Jube.Service.Exceptions.Query.Completions;
 using Jube.Service.Query.Completions;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Repository.ExhaustiveInstanceDataset;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.Completions.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Query.Completions
 {
@@ -48,10 +54,15 @@ namespace Jube.Test.Service.Query.Completions
             new ResourceManagerStringLocalizerFactory(Options.Create(new LocalizationOptions()),
                 NullLoggerFactory.Instance);
 
+        private static readonly string[] names = ["bInt", "aString"];
+        private readonly List<int> createdDatasetIds = [];
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdWorkflowIds = [];
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
@@ -60,10 +71,19 @@ namespace Jube.Test.Service.Query.Completions
             await dbContext.EntityAnalysisModelRequestXpath.Where(w =>
                     w.EntityAnalysisModelId != null && createdModelIds.Contains(w.EntityAnalysisModelId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdWorkflowIds.Contains(w.Id)).DeleteAsync();
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
+
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
+
+            foreach (var id in createdDatasetIds)
+            {
+                await dbContext.ExhaustiveInstanceCsvRow.Where(w => w.DatasetId == id).DeleteAsync();
+                await dbContext.ExhaustiveInstanceCsv.Where(w => w.Id == id).DeleteAsync();
+            }
         }
 
         private static Task<CompletionsService> BuildServiceAsync(
@@ -89,9 +109,10 @@ namespace Jube.Test.Service.Query.Completions
             createdModelIds.Add(model.Id);
 
             var dataTypes = new[] { 1, 2, 3, 4, 5 };
+
             for (var i = 0; i < xpathNames.Length; i++)
             {
-                await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelRequestXpath
+                await dbContext.InsertAsync(new EntityAnalysisModelRequestXpath
                 {
                     EntityAnalysisModelId = model.Id,
                     Name = xpathNames[i],
@@ -104,7 +125,8 @@ namespace Jube.Test.Service.Query.Completions
             }
 
             var workflowGuid = Guid.NewGuid();
-            var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
+
+            var workflowId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
                 Guid = workflowGuid,
@@ -120,7 +142,39 @@ namespace Jube.Test.Service.Query.Completions
             return new Scenario(model.Id, workflowId, workflowGuid);
         }
 
-        private static readonly string[] names = ["bInt", "aString"];
+        private static Task<ExhaustiveInstanceDatasetService> BuildDatasetServiceAsync(DbContext dbContext,
+            string? userName)
+        {
+            return ExhaustiveInstanceDatasetService.CreateAsync(dbContext, userName, TestLog.NoOp, localizers,
+                new NullServiceChangeBus(), DatasetLimits.Default, TestLog.NoOp);
+        }
+
+        private async Task<ExhaustiveInstanceDatasetDto> ConfirmedDatasetAsync(DbContext dbContext, string userName)
+        {
+            var service = await BuildDatasetServiceAsync(dbContext, userName);
+            var csv = "Amount,Country,Fraud\n1,SE,0\n2,NO,1\n3,SE,0\n";
+
+            var uploaded = await service.UploadCsvAsync($"{DatabaseFixture.Prefix}Ds{Guid.NewGuid():N}"[..40],
+                "sample.csv", "text/csv", new MemoryStream(Encoding.UTF8.GetBytes(csv)));
+            createdDatasetIds.Add(uploaded.Id);
+
+            var confirmed = await service.ConfirmAsync(DatasetKind.Csv, new ExhaustiveInstanceDatasetMappingDto
+            {
+                Id = uploaded.Id,
+                Columns =
+                [
+                    .. uploaded.Columns.Select(c => new ExhaustiveInstanceDatasetMappingColumnDto
+                    {
+                        Index = c.Index,
+                        Include = c.Header == "Amount",
+                        Name = c.Name,
+                        ProcessingTypeId = 1
+                    })
+                ]
+            });
+
+            return confirmed;
+        }
 
         private static void AssertMapped(List<CompletionDto> dtos)
         {
@@ -166,6 +220,7 @@ namespace Jube.Test.Service.Query.Completions
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -174,6 +229,7 @@ namespace Jube.Test.Service.Query.Completions
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -203,6 +259,56 @@ namespace Jube.Test.Service.Query.Completions
             var byParse = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.GetByEntityAnalysisModelIdParseTypeIdAsync(1, 1));
             byParse.RequiredSpecifications.Should().BeEquivalentTo([8, 10, 13, 14, 17, 20, 26]);
+
+            var byDataset = await Assert.ThrowsAsync<ForbiddenException>(() =>
+                service.GetByExhaustiveInstanceDatasetAsync(DatasetKind.Csv, 1));
+            byDataset.RequiredSpecifications.Should().BeEquivalentTo([16]);
+        }
+
+        [Fact]
+        public async Task GetByExhaustiveInstanceDatasetReturnsCompletionsForEveryColumnAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dataset = await ConfirmedDatasetAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dtos = await service.GetByExhaustiveInstanceDatasetAsync(DatasetKind.Csv, dataset.Id);
+
+            dtos.Should().HaveCount(3);
+            dtos.Should().OnlyContain(d => d.Group == "Dataset" && d.Score == 1000);
+
+            var amount = dtos.Single(d => d.Name == "Dataset.Amount");
+            amount.Value.Should().Be("Dataset.Amount");
+            amount.DataType.Should().Be("double");
+            amount.Field.Should().Be("(\"Json\"-> 'values' ->> 'c0')::double precision");
+            amount.Meta.Should().Be("Dataset.Amount:double");
+            amount.XPath.Should().Be("dataset.Amount");
+
+            var country = dtos.Single(d => d.Name == "Dataset.Country");
+            country.DataType.Should().Be("string");
+            country.Field.Should().Be("(\"Json\"-> 'values' ->> 'c1')");
+        }
+
+        [Fact]
+        public async Task GetByExhaustiveInstanceDatasetThrowsNotFoundForUnconfirmedOrForeignOrMissingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var datasetService = await BuildDatasetServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var pending = await datasetService.UploadCsvAsync($"{DatabaseFixture.Prefix}Ds{Guid.NewGuid():N}"[..40],
+                "p.csv", "text/csv", new MemoryStream(Encoding.UTF8.GetBytes("A,B\n1,2\n")));
+            createdDatasetIds.Add(pending.Id);
+
+            var confirmed = await ConfirmedDatasetAsync(dbContext, fx.Seed.UserTenantB);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                service.GetByExhaustiveInstanceDatasetAsync(DatasetKind.Csv, pending.Id));
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                service.GetByExhaustiveInstanceDatasetAsync(DatasetKind.Csv, confirmed.Id));
+
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                service.GetByExhaustiveInstanceDatasetAsync(DatasetKind.Csv, int.MaxValue));
         }
 
         [Fact]
@@ -288,8 +394,10 @@ namespace Jube.Test.Service.Query.Completions
             var ex = await Assert.ThrowsAsync<CaseWorkflowNotFoundException>(() =>
                 service.GetByCaseWorkflowIdAsync(int.MaxValue));
             ex.Code.Should().Be("CaseWorkflowNotFound");
+
             await Assert.ThrowsAsync<CaseWorkflowNotFoundException>(() =>
                 service.GetByCaseWorkflowIdIncludingDeletedAsync(int.MaxValue));
+
             await Assert.ThrowsAsync<CaseWorkflowNotFoundException>(() =>
                 service.GetByCaseWorkflowGuidIncludingDeletedAsync(Guid.NewGuid()));
 
@@ -300,8 +408,10 @@ namespace Jube.Test.Service.Query.Completions
         public async Task DeletedWorkflowIsHiddenByIdButVisibleIncludingDeletedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission, names,
-                workflowDeleted: 1);
+                1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<CaseWorkflowNotFoundException>(() =>
@@ -335,6 +445,7 @@ namespace Jube.Test.Service.Query.Completions
 
             (await serviceB.GetByEntityAnalysisModelIdAsync(b.ModelId)).Should().ContainSingle()
                 .Which.Name.Should().Be("Payload.cOnlyB");
+
             (await serviceA.GetByEntityAnalysisModelIdAsync(a.ModelId)).Should().HaveCount(2);
         }
 
@@ -402,14 +513,17 @@ namespace Jube.Test.Service.Query.Completions
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission, names);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetByEntityAnalysisModelIdAsync(scenario.ModelId);
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 forbiddenService.GetByEntityAnalysisModelIdAsync(scenario.ModelId));
+
             await Assert.ThrowsAsync<CaseWorkflowNotFoundException>(() =>
                 service.GetByCaseWorkflowIdAsync(int.MaxValue));
 
@@ -423,10 +537,11 @@ namespace Jube.Test.Service.Query.Completions
 
             toolNames.Should().OnlyHaveUniqueItems();
             toolNames.Should().OnlyContain(n => !n.Contains('_'));
+
             toolNames.Should().Contain([
                 "CompletionsGetByCaseWorkflowId", "CompletionsGetByCaseWorkflowGuidIncludingDeleted",
                 "CompletionsGetByCaseWorkflowIdIncludingDeleted", "CompletionsGetByEntityAnalysisModelId",
-                "CompletionsGetByEntityAnalysisModelIdParseTypeId"
+                "CompletionsGetByEntityAnalysisModelIdParseTypeId", "CompletionsGetByExhaustiveInstanceDataset"
             ]);
         }
 
@@ -434,6 +549,7 @@ namespace Jube.Test.Service.Query.Completions
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

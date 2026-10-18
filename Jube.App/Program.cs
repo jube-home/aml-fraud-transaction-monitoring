@@ -39,6 +39,7 @@ namespace Jube.App
             };
 
             host.Run();
+
             return;
 
             void OnShutdown()
@@ -73,6 +74,7 @@ namespace Jube.App
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
                     webBuilder.ConfigureKestrel((context, options) =>
                     {
                         options.AddServerHeader = false;
@@ -80,8 +82,10 @@ namespace Jube.App
                         options.Limits.MinResponseDataRate = null;
                         options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
                         options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(30);
+
                         var maxConcurrentConnections =
                             ParseConnectionLimit(context.Configuration["MaxConcurrentConnections"]);
+
                         options.Limits.MaxConcurrentConnections = maxConcurrentConnections;
                         options.Limits.MaxConcurrentUpgradedConnections = maxConcurrentConnections;
                         options.Limits.Http2.MaxStreamsPerConnection = 100;

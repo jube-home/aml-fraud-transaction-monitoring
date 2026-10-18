@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Data.Repository.Models;
+using Jube.Data.Repository.Models.PostgresActivity;
 using Npgsql;
 
 namespace Jube.Data.Repository
@@ -57,7 +57,7 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task<List<PostgresActivityRow>> GetActivityAsync(CancellationToken token = default)
+        public Task<List<Row>> GetActivityAsync(CancellationToken token = default)
         {
             return WithConnectionAsync(() => GetActivityCoreAsync(token), token);
         }
@@ -95,16 +95,16 @@ namespace Jube.Data.Repository
             }
         }
 
-        private async Task<List<PostgresActivityRow>> GetActivityCoreAsync(CancellationToken token)
+        private async Task<List<Row>> GetActivityCoreAsync(CancellationToken token)
         {
-            var results = new List<PostgresActivityRow>();
+            var results = new List<Row>();
 
             await using var command = new NpgsqlCommand(ActivityQuery, connection);
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 
             while (await reader.ReadAsync(token).ConfigureAwait(false))
             {
-                results.Add(new PostgresActivityRow(
+                results.Add(new Row(
                     reader.GetInt32(0),
                     await ReadStringAsync(reader, 1, token),
                     await ReadStringAsync(reader, 2, token),

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,14 +31,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
 
-        private readonly global::Jube.Data.Query.
-            GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery
+        private readonly GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery
             query;
 
         private readonly IServiceChangeBus serviceChangeBus;
@@ -57,10 +56,13 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+
             query =
-                new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
+                new GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
                     dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionService> CreateAsync(
             DbContext dbContext, string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -126,6 +128,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription",
                 "Get", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -151,6 +154,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
                     }
 
                     op.Rows(0);
+
                     return [];
                 }
 
@@ -158,6 +162,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
                     await query.ExecuteAsync(exhaustiveSearchInstancePromotedTrialInstanceId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -179,9 +184,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

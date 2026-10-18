@@ -5,9 +5,6 @@ nav_order: 11
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Field Level Encryption
 
 Individual String fields extracted by [Request XPath](../../Configuration/Models/RequestXPath/index.html) or

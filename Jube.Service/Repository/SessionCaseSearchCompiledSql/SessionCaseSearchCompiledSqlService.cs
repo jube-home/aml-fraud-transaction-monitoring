@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,12 +14,13 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Data.Query.DynamicResultsSchema;
 using Jube.Data.Reporting;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.SessionCaseSearchCompiledSql;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.SessionCaseSearchCompiledSql;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -34,7 +35,6 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
     public sealed class SessionCaseSearchCompiledSqlService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly SessionCaseSearchCompiledSqlExecutionRepository executionRepository;
@@ -67,6 +67,8 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
             reportConnectionString = dynamicEnvironment.AppSettings("ReportConnectionString")
                                      ?? dbContext.Connection.ConnectionString;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<SessionCaseSearchCompiledSqlService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -119,13 +121,14 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
                      "reporting database and records an execution row (record count and response time) against " +
                      "the compiled search; a stale search is recompiled first. Fails as not found when the Guid is " +
                      "unknown or belongs to another user.")]
-        public async Task<DynamicResultSchemaDto> ExecuteByGuidAsync(
+        public async Task<DynamicResultsSchemaDto> ExecuteByGuidAsync(
             [Description("Guid of the compiled Session Case Search.")]
             Guid guid,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("SessionCaseSearchCompiledSql", "ExecuteByGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SessionCaseSearchCompiledSql.ExecuteByGuid: entry user={userName} guid={guid}");
@@ -137,6 +140,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
                 token.ThrowIfCancellationRequested();
 
                 var model = repository.GetByGuid(guid);
+
                 if (model == null)
                 {
                     throw new NotFoundException(strings[SessionCaseSearchCompiledSqlResources.NotFound]);
@@ -158,7 +162,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
 
                 sw.Stop();
 
-                await executionRepository.InsertAsync(new Data.Poco.SessionCaseSearchCompiledSqlExecution
+                await executionRepository.InsertAsync(new SessionCaseSearchCompiledSqlExecution
                 {
                     SessionCaseSearchCompiledSqlId = model.Id,
                     Records = value.Count,
@@ -166,7 +170,8 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
                 }, token).ConfigureAwait(false);
 
                 op.Rows(value.Count);
-                return DynamicResultSchema.Build(value);
+
+                return DynamicResultsSchema.Build(value);
             }
             catch (ForbiddenException)
             {
@@ -200,6 +205,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
         {
             using var op = OperationScope.Start("SessionCaseSearchCompiledSql", "GetLast", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SessionCaseSearchCompiledSql.GetLast: entry user={userName}");
@@ -211,15 +217,18 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
                 token.ThrowIfCancellationRequested();
 
                 var model = await repository.GetByLastAsync(token).ConfigureAwait(false);
+
                 if (model == null)
                 {
                     op.Rows(0);
+
                     return new SessionCaseSearchCompiledSqlDto { NotFound = true };
                 }
 
                 model = await CheckRebuildAsync(model, token).ConfigureAwait(false);
 
                 op.Rows(1);
+
                 return SessionCaseSearchCompiledSqlMapper.ToDto(model);
             }
             catch (ForbiddenException)
@@ -248,6 +257,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
         {
             using var op = OperationScope.Start("SessionCaseSearchCompiledSql", "Insert", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SessionCaseSearchCompiledSql.Insert: entry user={userName}");
@@ -259,6 +269,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
                 EnsurePermitted("SessionCaseSearchCompiledSql.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)

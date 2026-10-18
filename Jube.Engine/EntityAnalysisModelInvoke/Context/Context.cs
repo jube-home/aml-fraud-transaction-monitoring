@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using log4net;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context
@@ -27,12 +27,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context
 
     public class Context
     {
+        private readonly ModelSnapshot snapshot;
         public readonly List<Task<TimedTaskResult>> PendingReadTasks = [];
         public readonly List<Task<TimedTaskResult>> PendingWriteTasks = [];
         public long LastLogEntryElapsedMicroseconds;
         public long? StartBytesUsed { get; init; }
-        private readonly ModelSnapshot snapshot;
-
         public EntityAnalysisModel EntityAnalysisModel { get; init; }
 
         public ModelSnapshot Snapshot

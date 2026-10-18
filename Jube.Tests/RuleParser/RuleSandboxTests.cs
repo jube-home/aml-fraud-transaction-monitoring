@@ -21,6 +21,7 @@ using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Parser;
 using Jube.Parser.Compiler;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -33,7 +34,9 @@ namespace Jube.Test.RuleParser
         {
             var result = RuleParse.Execute($"If (Payload.Amount > {threshold}) Then\n   Return True\nEnd If",
                 RuleParse.GatewayRule, RuleParseTests.Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
             result.Compiled.Should().BeTrue(result.Message);
+
             return result;
         }
 
@@ -41,6 +44,7 @@ namespace Jube.Test.RuleParser
         {
             var data = new DictionaryNoBoxing<string>();
             data.TryAdd("Amount", amount);
+
             return match(data, new Dictionary<string, List<string>>(), new PooledDictionary<string, double>(),
                 TestLog.NoOp);
         }
@@ -101,6 +105,7 @@ namespace Jube.Test.RuleParser
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+
                 if (assembly.IsAlive)
                 {
                     await Task.Delay(50);
@@ -117,6 +122,7 @@ namespace Jube.Test.RuleParser
             Invoke(match, 150).Should().BeTrue();
             var assembly = new WeakReference(match.Method.DeclaringType!.Assembly);
             sandbox.Evict(parsed, typeof(EntityModelGatewayRule.Match)).Should().BeTrue();
+
             return assembly;
         }
 
@@ -124,11 +130,13 @@ namespace Jube.Test.RuleParser
         public async Task ARuleThatHasNotCompiledCannotBeLoadedAsync()
         {
             using var sandbox = new RuleSandbox();
+
             var parsedOnly = RuleParse.Execute("If (Payload.Amount > 1) Then\n   Return True\nEnd If",
                 RuleParse.GatewayRule, RuleParseTests.Environment(), TestLog.NoOp, null);
 
             await sandbox.Awaiting(s => s.GetDelegateAsync<EntityModelGatewayRule.Match>(parsedOnly))
                 .Should().ThrowAsync<InvalidOperationException>();
+
             sandbox.Count.Should().Be(0);
         }
 
@@ -140,6 +148,7 @@ namespace Jube.Test.RuleParser
             await sandbox.Awaiting(s => s.RunAsync(() =>
             {
                 SpinWait.SpinUntil(() => false, 1000);
+
                 return true;
             })).Should().ThrowAsync<TimeoutException>();
         }

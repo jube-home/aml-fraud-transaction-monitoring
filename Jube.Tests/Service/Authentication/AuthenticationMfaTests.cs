@@ -11,7 +11,6 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Test.Infrastructure;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -20,6 +19,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
 
@@ -40,6 +41,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
     private async Task<AuthenticationOutcome> NegotiateMfaAsync(string identityName, string? mfa)
     {
         await using var db = Fx.GetDbContext();
+
         return await Service(db, NegotiateOn, MfaOn).ByNegotiateMfaAsync(new AuthenticationRequestDto { Mfa = mfa },
             Context(new NegotiateIdentity(true, identityName)));
     }
@@ -190,6 +192,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
         (await ReloadAsync(user)).PasswordLocked.Should().Be(1);
         var providerCalls = Mfa.Calls.Count;
         AssertPlainOutcome(await NegotiateMfaAsync(user.Name, Code), AuthenticationOutcomeKind.Forbidden);
+
         await using (var db = Fx.GetDbContext())
         {
             AssertPlainOutcome(await Service(db, NegotiateOn, MfaOn)
@@ -199,6 +202,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
 
         AssertPlainOutcome(await LoginAsync(user.Name, user.Password, d => d.Mfa = Code, env: [MfaOn]),
             AuthenticationOutcomeKind.Unauthorized);
+
         Mfa.Calls.Count.Should().Be(providerCalls);
         (await HistoryAsync()).Count(h => h.FailureTypeId == 7).Should().Be(3);
     }
@@ -265,6 +269,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
                 default: u.Active = 0; break;
             }
         });
+
         Mfa.Allow(user.Name, Code);
 
         var outcome = await WithMfaAsync(user, user.Password, Code);

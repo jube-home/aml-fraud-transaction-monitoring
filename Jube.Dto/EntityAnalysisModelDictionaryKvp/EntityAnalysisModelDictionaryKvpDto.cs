@@ -15,7 +15,10 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
 {
@@ -47,6 +50,10 @@ namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
         [FormField(Group = "Value", Order = 30, Widget = "date")]
         [ListColumn(Order = 30, Title = "Delete Expiry Date")]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]

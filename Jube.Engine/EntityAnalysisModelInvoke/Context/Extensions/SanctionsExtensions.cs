@@ -22,6 +22,7 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.Sanctions;
 using Jube.Engine.Sanctions.Models;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -66,6 +67,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                 var itemStopwatch = Stopwatch.StartNew();
                 var startBytes = GC.GetAllocatedBytesForCurrentThread();
+
                 try
                 {
                     if (context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(entityAnalysisModelSanction
@@ -79,6 +81,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                         var sanction =
                             await LookupFromCacheAsync(context, cacheService, multiPartStringValue,
                                 entityAnalysisModelSanction).ConfigureAwait(false);
+
                         var foundCacheSanctionsAndNotExpired = false;
 
                         if (sanction != null)
@@ -142,6 +145,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     itemStopwatch.Stop();
                     var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
                     items[entityAnalysisModelSanction.Name] = new TaskPerformance(
                         (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                         Math.Max(allocated, 0));
@@ -157,6 +161,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 FindAllDistanceMatches(context, entityAnalysisModelSanction, multiPartStringValue);
 
             double? aggregateLevenshteinDistance = null;
+
             if (sanctionEntryReturns.Count == 0)
             {
                 context.TraceLog(
@@ -244,6 +249,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             context.TraceLog(
                 $"is evaluating Sanctions {entityAnalysisModelSanction.Name} and finished execute the fuzzy logic with a distance of {entityAnalysisModelSanction.Distance} and found {sanctionEntryReturns.Count} matches.");
+
             return sanctionEntryReturns;
         }
 
@@ -436,6 +442,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             context.TraceLog(
                 $"has extracted multi part string name value as {multiPartStringValue} and has found sanction as {sanction != null}.");
+
             return sanction;
         }
     }

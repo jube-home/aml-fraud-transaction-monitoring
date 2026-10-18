@@ -19,7 +19,6 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue.Models
     internal sealed class HookStream(Stream inner, Action onFirstRead) : Stream
     {
         private bool hooked;
-
         public override bool CanRead => inner.CanRead;
         public override bool CanSeek => inner.CanSeek;
         public override bool CanWrite => false;

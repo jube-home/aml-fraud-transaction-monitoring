@@ -33,6 +33,7 @@ function setEncryptionVisibility() {
 if (typeof id === "undefined") {
     initBuilderCoder(1, GetSelectedParentID());
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelInlineFunction", "new", {[parentKeyName]: parentKey});
     setEncryptionVisibility();
 } else {
     $.get(endpoint + "/" + id,
@@ -50,6 +51,12 @@ if (typeof id === "undefined") {
 
             initBuilderCoder(1, GetSelectedParentID(), builderCoderData);
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelInlineFunction", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
             setEncryptionVisibility();
         });
 }

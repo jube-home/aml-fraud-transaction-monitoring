@@ -18,10 +18,6 @@ namespace Jube.Engine.Observability
 {
     public static class RedisCommandMetricBridge
     {
-        private const string RedisActivitySourceName = "OpenTelemetry.Instrumentation.StackExchangeRedis";
-
-        private static ActivityListener listener;
-
         public static void Start()
         {
             listener?.Dispose();
@@ -37,6 +33,9 @@ namespace Jube.Engine.Observability
             ActivitySource.AddActivityListener(newListener);
             listener = newListener;
         }
+
+        private const string RedisActivitySourceName = "OpenTelemetry.Instrumentation.StackExchangeRedis";
+        private static ActivityListener listener;
 
         private static void Record(Activity activity)
         {

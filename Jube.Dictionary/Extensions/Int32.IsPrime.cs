@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 namespace Jube.Dictionary.Extensions
 {
     using Int32 = int;
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var sqrt = (Int32)Math.Sqrt(@this);
+
             for (var t = 3; t <= sqrt; t += 2)
             {
                 if (@this % t == 0)

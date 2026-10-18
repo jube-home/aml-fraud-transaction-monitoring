@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowFormRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
     public sealed class CaseWorkflowFormRoleService
     {
         private static readonly int[] permissions = [21];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowFormRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowFormRoleService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +111,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
         {
             using var op = OperationScope.Start("CaseWorkflowFormRole", "ListByCaseWorkflowFormGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormRole.ListByCaseWorkflowFormGuid: entry guid={guid} user={userName}");
@@ -118,9 +120,11 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
             try
             {
                 EnsurePermitted("CaseWorkflowFormRole.ListByCaseWorkflowFormGuid", permissions);
+
                 var dtos = CaseWorkflowFormRoleMapper.ToDto(
                     await repository.GetByCaseWorkflowFormGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowFormRole.ListByCaseWorkflowFormGuid: {dtos.Count} rows guid={guid} " +
@@ -142,8 +146,10 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowFormRole.ListByCaseWorkflowFormGuid: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -155,6 +161,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
         {
             using var op = OperationScope.Start("CaseWorkflowFormRole", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormRole.Insert: entry user={userName} " +
@@ -168,6 +175,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
                 EnsurePermitted("CaseWorkflowFormRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -228,6 +236,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormRole
         {
             using var op = OperationScope.Start("CaseWorkflowFormRole", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormRole.Delete: entry id={id} user={userName}");

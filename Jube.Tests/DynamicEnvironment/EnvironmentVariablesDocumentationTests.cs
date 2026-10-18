@@ -45,20 +45,24 @@ namespace Jube.Test.DynamicEnvironment
         private static string DocumentPath(params string[] relative)
         {
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
             while (directory != null && !Directory.Exists(Path.Combine(directory.FullName, "docs")))
             {
                 directory = directory.Parent;
             }
 
             var root = directory.Required().FullName;
+
             return Path.Combine([root, "docs", .. relative]);
         }
 
         private static Dictionary<string, string> CodeDefaults()
         {
             var environment = TestDynamicEnvironment.Create();
+
             var field = typeof(Jube.DynamicEnvironment.DynamicEnvironment).GetField("appSettings",
                 BindingFlags.Instance | BindingFlags.NonPublic).Required();
+
             var settings = (Dictionary<string, string>)field.GetValue(environment).Required();
 
             return new Dictionary<string, string>(settings, StringComparer.OrdinalIgnoreCase);
@@ -67,9 +71,11 @@ namespace Jube.Test.DynamicEnvironment
         private static Dictionary<string, string> DocumentedDefaults()
         {
             var rows = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
             foreach (var line in File.ReadAllLines(DocumentPath("Concepts", "EnvironmentVariables", "index.md")))
             {
                 var match = row.Match(line);
+
                 if (!match.Success || match.Groups["key"].Value is "Variable" or "Name")
                 {
                     continue;
@@ -84,6 +90,7 @@ namespace Jube.Test.DynamicEnvironment
         private static bool Same(string documented, string actual)
         {
             var real = string.IsNullOrEmpty(actual) ? "null" : actual;
+
             return string.Equals(documented, real, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -134,6 +141,7 @@ namespace Jube.Test.DynamicEnvironment
             var documented = DocumentedDefaults();
 
             undocumentedKeys.Where(key => documented.ContainsKey(key) || !code.ContainsKey(key)).Should().BeEmpty();
+
             defaultDiffers.Where(key => !documented.ContainsKey(key) || !code.ContainsKey(key) ||
                                         Same(documented[key], code[key])).Should().BeEmpty();
         }

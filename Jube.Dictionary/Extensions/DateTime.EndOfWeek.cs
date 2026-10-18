@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 namespace Jube.Dictionary.Extensions
 {
     using DateTime = DateTime;
@@ -10,6 +11,7 @@ namespace Jube.Dictionary.Extensions
         {
             var end = dt;
             var endDayOfWeek = startDayOfWeek - 1;
+
             if (endDayOfWeek < 0)
             {
                 endDayOfWeek = DayOfWeek.Saturday;

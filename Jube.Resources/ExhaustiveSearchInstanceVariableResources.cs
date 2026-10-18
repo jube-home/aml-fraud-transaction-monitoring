@@ -17,5 +17,8 @@ namespace Jube.Resources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
+        public const string NotFound = nameof(NotFound);
+        public const string ReallocateNameInvalid = nameof(ReallocateNameInvalid);
+        public const string ReallocateProcessingTypeInvalid = nameof(ReallocateProcessingTypeInvalid);
     }
 }

@@ -17,7 +17,7 @@ using Jube.HttpAdaptationProtocol;
 using Jube.HttpAdaptationProtocol.Calibration;
 using Jube.HttpAdaptationProtocol.Contribution;
 using Jube.HttpAdaptationProtocol.Journey;
-using Jube.HttpAdaptationProtocol.Model;
+using Jube.HttpAdaptationProtocol.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -230,8 +230,8 @@ namespace Jube.App.Endpoints.Mocks
                     Brier = 0.0412,
                     Intercept = -0.0113,
                     Slope = 0.9847,
-                    Band = new List<CalibrationBand>
-                    {
+                    Band =
+                    [
                         new CalibrationBand
                         {
                             Lower = 0.00,
@@ -240,6 +240,7 @@ namespace Jube.App.Endpoints.Mocks
                             Observed = 0.019,
                             Count = 152340
                         },
+
                         new CalibrationBand
                         {
                             Lower = 0.05,
@@ -248,7 +249,7 @@ namespace Jube.App.Endpoints.Mocks
                             Observed = 0.286,
                             Count = 4192
                         }
-                    }
+                    ]
                 },
                 // BaseValue + sum(Weight) reconstructs Value exactly: Exact is verified, not asserted.
                 Contribution = new ContributionSet
@@ -257,8 +258,8 @@ namespace Jube.App.Endpoints.Mocks
                     Method = ProtocolConstants.ContributionMethod.Coefficient,
                     Exact = true,
                     BaseValue = -0.0409,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Payload.SettlementAmount",
@@ -267,6 +268,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Payload,
                             HumanLabel = "Settlement amount"
                         },
+
                         new ContributionItem
                         {
                             Name = "Abstraction.ResponseCodeEqual0Volume",
@@ -275,7 +277,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Abstraction,
                             HumanLabel = "Approved response volume"
                         }
-                    }
+                    ]
                 }
             };
 
@@ -312,8 +314,8 @@ namespace Jube.App.Endpoints.Mocks
                     Brier = 0.0487,
                     Intercept = -0.0201,
                     Slope = 0.9612,
-                    Band = new List<CalibrationBand>
-                    {
+                    Band =
+                    [
                         new CalibrationBand
                         {
                             Lower = 0.40,
@@ -322,7 +324,7 @@ namespace Jube.App.Endpoints.Mocks
                             Observed = 0.598,
                             Count = 1103
                         }
-                    }
+                    ]
                 }
             };
 
@@ -391,8 +393,8 @@ namespace Jube.App.Endpoints.Mocks
                 },
                 Journey = new JourneyDescriptor
                 {
-                    Path = new List<JourneyNode>
-                    {
+                    Path =
+                    [
                         new JourneyNode
                         {
                             Feature = "Payload.SettlementAmount",
@@ -401,6 +403,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Payload,
                             HumanLabel = "Settlement amount above 5000"
                         },
+
                         new JourneyNode
                         {
                             Feature = "Abstraction.CountryRiskEqualHigh",
@@ -409,7 +412,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Abstraction,
                             HumanLabel = "Country risk is High"
                         }
-                    }
+                    ]
                 }
             };
 
@@ -457,8 +460,8 @@ namespace Jube.App.Endpoints.Mocks
                     Method = ProtocolConstants.ContributionMethod.Coefficient,
                     Exact = true,
                     BaseValue = -2.1102,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "TtlCounter.TransactionCount1Hour",
@@ -466,7 +469,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.TtlCounter,
                             HumanLabel = "Transactions in the last hour"
                         }
-                    }
+                    ]
                 }
             };
 
@@ -508,21 +511,22 @@ namespace Jube.App.Endpoints.Mocks
                     Method = ProtocolConstants.ContributionMethod.Coefficient,
                     Exact = true,
                     BaseValue = 0.02,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Payload.SettlementAmount",
                             Weight = 0.11,
                             Source = ProtocolConstants.Source.Payload
                         },
+
                         new ContributionItem
                         {
                             Name = "Dictionary.MerchantCategoryHighRisk",
                             Weight = -0.08,
                             Source = ProtocolConstants.Source.Dictionary
                         }
-                    }
+                    ]
                 }
             };
 
@@ -621,8 +625,8 @@ namespace Jube.App.Endpoints.Mocks
                     Space = ProtocolConstants.ContributionSpace.Relative,
                     Method = ProtocolConstants.ContributionMethod.BootstrapStrength,
                     Exact = false,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Abstraction.MerchantCategoryChanged -> Abstraction.FraudLikely",
@@ -632,7 +636,7 @@ namespace Jube.App.Endpoints.Mocks
                             HumanLabel =
                                 "Abstraction.MerchantCategoryChanged -> Abstraction.FraudLikely present in 94% of bootstrap samples"
                         }
-                    }
+                    ]
                 },
                 // Bayesian networks have no fired path in the Tree sense: null is correct, not a degradation.
                 Journey = null
@@ -662,15 +666,15 @@ namespace Jube.App.Endpoints.Mocks
                     Space = ProtocolConstants.ContributionSpace.Relative,
                     Method = ProtocolConstants.ContributionMethod.ArcStrength,
                     Exact = false,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Abstraction.MerchantCategoryChanged -> Abstraction.FraudLikely",
                             Weight = 6.21,
                             Source = ProtocolConstants.Source.Abstraction
                         }
-                    }
+                    ]
                 }
             };
 
@@ -705,15 +709,15 @@ namespace Jube.App.Endpoints.Mocks
                     Space = ProtocolConstants.ContributionSpace.Relative,
                     Method = ProtocolConstants.ContributionMethod.ConnectionWeight,
                     Exact = false,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Payload.SettlementAmount",
                             Weight = 0.41,
                             Source = ProtocolConstants.Source.Payload
                         }
-                    }
+                    ]
                 },
                 Journey = null
             };
@@ -751,8 +755,8 @@ namespace Jube.App.Endpoints.Mocks
                     Method = ProtocolConstants.ContributionMethod.Coefficient,
                     Exact = true,
                     BaseValue = 0.2,
-                    Items = new List<ContributionItem>
-                    {
+                    Items =
+                    [
                         new ContributionItem
                         {
                             Name = "Payload.AccountAgeDays",
@@ -760,12 +764,12 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Payload,
                             HumanLabel = "Account age under 24 hours"
                         }
-                    }
+                    ]
                 },
                 Journey = new JourneyDescriptor
                 {
-                    Path = new List<JourneyNode>
-                    {
+                    Path =
+                    [
                         new JourneyNode
                         {
                             Feature = "Payload.AccountAgeDays",
@@ -774,6 +778,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Payload,
                             HumanLabel = "Account age under 24 hours"
                         },
+
                         new JourneyNode
                         {
                             Feature = "Payload.SettlementAmount",
@@ -782,7 +787,7 @@ namespace Jube.App.Endpoints.Mocks
                             Source = ProtocolConstants.Source.Payload,
                             HumanLabel = "Settlement amount above 1000"
                         }
-                    }
+                    ]
                 }
             };
 

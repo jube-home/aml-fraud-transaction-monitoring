@@ -4,53 +4,55 @@ title: Welcome
 nav_order: 1
 ---
 
-![Image](logo.png)
+<p align="center">
+  <img src="banner.png" alt="Jube. Open-source agentic AI for transaction monitoring. Just ask Jooby." width="100%">
+</p>
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+# Jube
 
-# Introduction
+**Open-source agentic AI for transaction monitoring. “Just ask Jooby.”** Real-time AML and fraud monitoring, run by a
+Herd of AI agents called Joobriks, with outcomes a regulator can follow.
 
-Jube is open-source, real-time, Anti-Money Laundering and Fraud Detection Transaction Monitoring software. Jube empowers
-organizations with enterprise-grade monitoring capabilities through a powerful combination of real-time
-processing, artificial intelligence, and automated decision-making. Purpose-built for AML, fraud prevention and abuse
-detection, Jube delivers comprehensive case management in an open-source package.
+**Ask Jooby.** No menu to learn, no query language, no ticket to raise. Type the question the way you'd ask a colleague,
+and the Herd does the legwork, showing every step. 150+ Joobriks across five domains, 700+ real platform functions, and
+every step validated by the platform before anything reaches you.
 
-# Quickstart
+**The platform underneath.** Jube was real-time transaction monitoring long before Jooby arrived. Every Joobrik stands
+on it, and all of it is in the open: explainable ML, hybrid detection (rules, velocity and sanctions, plus supervised
+and unsupervised ML), real-time and horizontally scalable, case management, a rule builder compliance can edit,
+cloud-native and multi-tenant, on your infrastructure with no lock-in.
 
-A Docker Compose file is available—it is docker-compose.yml in the root directory—to quickly set up and orchestrate
-an installation of Jube, provided Docker is already
-installed. Via Docker Compose. Jube can be up and running in just a few minutes:
+## Quickstart
 
-This base install is for evaluation and development only - it is **not** intended for production use. It runs a
-single node with secrets passed as plain shell Environment Variables and Postgres connected as superuser.
-Production deployments should instead follow the
-[Deploying with Jube Cluster](GettingStarted/DeployingWithJubeCluster/index.md) documentation, which covers a
-load-balanced, highly available, clustered deployment with robust secret management.
+With Docker installed, Jube is a copy and paste away. It builds from source, so give the first start a few minutes.
 
-```shell
+```bash
 git clone https://github.com/jube-home/aml-fraud-transaction-monitoring
 cd aml-fraud-transaction-monitoring
-export DockerComposePostgresPassword='SuperSecretPasswordToChangeForPg'
+export DockerComposePostgresPassword='IMPORTANT:_ChangeThisKey_SuperSecretPasswordToChangeForPg'
 export DockerComposeJWTKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposeApiHmacKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposePasswordHashingKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposeElementSymmetricEncryptionKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
+export DockerComposeEnableAskJooby=False
+export DockerComposeAskJoobyApiKey='OPTIONAL_IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 docker compose up -d
 ```
 
-Waiting a few moments more will ensure that the embedded Kestrel web server is started correctly. In a web browser,
-navigate to the bound URL [https://localhost:5001/](https://localhost:5001/) as per the ASPNETCORE_URLS Environment
-Variable.
+1. **Change every value.** They are placeholders, not defaults. Make each key at least as long as the
+   example. [What each key does](Concepts/EnvironmentVariables/index.md).
+2. **Open [localhost:5001](http://localhost:5001).** Sign in as `Administrator / Administrator` and change it on first
+   login.
 
-The default username \ password combination is Administrator \ Administrator, although the password will be need to be
-changed on the first login.
+**Want Ask Jooby?** DigitalOcean Serverless Inference is the default provider, but it can be changed to any
+OpenAI-compatible endpoint. Put $20 in a prepaid DigitalOcean account, paste in your inference key, set
+`DockerComposeEnableAskJooby=True`, and Ask Jooby is alive.
 
-# Documentation
+**Ready for production?** The single-node stack is for evaluation; [Jube Cluster](GettingStarted/DeployingWithJubeCluster/index.md) takes the same platform to
+scale. It is a highly available, quorum-based Docker Swarm cluster: multiple Jube instances behind HAProxy,
+PostgreSQL under Patroni and Redis under Sentinel, failing over automatically. Add capacity as volume grows, update
+online one member at a time, and recover to any point in time from continuous WAL archiving.
 
-A more comprehensive installation guide is available in
-the [Getting Started](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted) of
-the [documentation](https://jube-home.github.io/aml-fraud-transaction-monitoring).
+## Licence
 
-# Licence
-
-Jube is licenced under AGPL-3.0-or-later.
+[AGPLv3](https://github.com/jube-home/aml-fraud-transaction-monitoring/blob/master/LICENSE).

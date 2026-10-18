@@ -18,9 +18,7 @@ namespace Jube.ResilientNpgsqlConnection
     public static class PgRetryBudget
     {
         public const int DefaultMaxRetries = 10;
-
         private static int shared = DefaultMaxRetries;
-
         public static int Shared => Volatile.Read(ref shared);
 
         public static void ConfigureShared(int maxRetries)

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -12,15 +12,18 @@
  */
 
 using System.ComponentModel;
+using Jube.Analytics.Datasets;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstanceVariable;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstanceVariable;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Validations.ExhaustiveSearchInstanceVariable;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -29,11 +32,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
     public sealed class ExhaustiveSearchInstanceVariableService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery query;
+        private readonly GetExhaustiveSearchInstanceVariableQuery query;
+        private readonly ExhaustiveSearchInstanceVariableRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +53,14 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableQuery(
+
+            query = new GetExhaustiveSearchInstanceVariableQuery(
                 dbContext, userName);
+
+            repository = new ExhaustiveSearchInstanceVariableRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstanceVariableService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -114,6 +122,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstanceVariable", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -123,10 +132,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstanceVariable.Get");
+
                 var dtos = ExhaustiveSearchInstanceVariableMapper.ToDto(
                     await query.ExecuteAsync(exhaustiveSearchInstanceId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ExhaustiveSearchInstanceVariable.Get: {dtos.Count} rows user={userName}");
@@ -148,6 +159,88 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceVariable
             {
                 op.Error(ex);
                 log.Error($"ExhaustiveSearchInstanceVariable.Get: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description(
+            "Reallocates a trained variable's live name and processing type, without retraining. Recall resolves " +
+            "variables by name and processing type only, so this changes what live field the network's fixed " +
+            "weight position reads at the next recall; the learned weight itself is unchanged, so retarget to a " +
+            "field with a similar scale and distribution to the one the model was trained on.")]
+        [ServiceOperation("ExhaustiveSearchInstanceVariableReallocate", OperationKind.Write)]
+        public async Task<ExhaustiveSearchInstanceVariableReallocateDto> ReallocateAsync(
+            [Description("Integer Id of the Exhaustive Search Instance Variable.")]
+            int id,
+            [Description("The new name and processing type.")]
+            ExhaustiveSearchInstanceVariableReallocateDto model, CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("ExhaustiveSearchInstanceVariable", "Reallocate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"ExhaustiveSearchInstanceVariable.Reallocate: entry user={userName} id={id}");
+            }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                EnsurePermitted("ExhaustiveSearchInstanceVariable.Reallocate");
+
+                var validator = new ExhaustiveSearchInstanceVariableReallocateDtoValidator(strings);
+                var result = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
+                if (!result.IsValid)
+                {
+                    throw new DtoValidationException(result);
+                }
+
+                var name = DatasetProcessingTypes.Prefix(model.ProcessingTypeId) + "." + model.Name;
+
+                var found = await repository.ReallocateAsync(id, tenantRegistryId, name,
+                    (byte)model.ProcessingTypeId, token).ConfigureAwait(false);
+
+                if (!found)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"ExhaustiveSearchInstanceVariable.Reallocate: {id} not found user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[ExhaustiveSearchInstanceVariableResources.NotFound]);
+                }
+
+                op.Rows(1);
+                op.Entity(id);
+                op.Updated();
+
+                return model;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("not_found");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"ExhaustiveSearchInstanceVariable.Reallocate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Request XPath
 
 When a request is received from a HTTP Endpoint for a model it should have data contained in the POST body as JSON, as

@@ -15,7 +15,10 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.EntityAnalysisModelActivationRule
 {
@@ -224,7 +227,8 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         [NewDefault(1)]
         public int NotificationTypeId { get; set; }
 
-        [Description("The destination address (email address or phone number) for the Notification.")]
+        [Description("The destination address (email address or phone number) for the Notification. " +
+                     "Required when EnableNotification is true.")]
         [FormField(Group = "Notification", Order = 30)]
         [VisibleWhen(nameof(EnableNotification), true)]
         public string? NotificationDestination { get; set; }
@@ -306,6 +310,10 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
                      "maintained. Read-only.")]
         [FormField(Group = "Activity", Order = 30, ReadOnly = true, Widget = "date")]
         public DateTimeOffset? ActivationCounterDate { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this Activation Rule participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

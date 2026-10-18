@@ -19,6 +19,8 @@ let dateFrom;
 let dateTo;
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("EntityAnalysisModelSample", "readonly", null);
+
     entityAnalysisModel = $("#EntityAnalysisModel").kendoDropDownList({
         dataTextField: 'name',
         dataValueField: 'guid',

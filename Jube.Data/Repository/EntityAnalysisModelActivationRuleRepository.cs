@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
+using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
 using Microsoft.Extensions.Logging.Abstractions;
+using Jube.Data.Helpers;
 
 namespace Jube.Data.Repository
 {
@@ -150,6 +153,13 @@ namespace Jube.Data.Repository
                 && w.Id == id, token);
         }
 
+        public Task<EntityAnalysisModelActivationRule> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelActivationRule.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<EntityAnalysisModelActivationRule> InsertAsync(EntityAnalysisModelActivationRule model,
             CancellationToken token = default)
         {
@@ -158,6 +168,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -284,6 +295,45 @@ namespace Jube.Data.Repository
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
         }
 
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelActivationRule
+                .Where(d =>
+                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelActivationRule>>
+            GetApprovedByEntityAnalysisModelIdInPriorityOrderAsync(
+                int entityAnalysisModelId, int approvalsRequired = 1,
+                CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelActivationRule
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelId == entityAnalysisModelId)
+                .Where(s => s.CaseWorkflowStatus.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
+                            s.CaseWorkflowStatus.CaseWorkflow.EntityAnalysisModel.Deleted == null)
+                .OrderBy(o => o.Priority)
+                .ThenByDescending(o => o.EnableResponseElevation)
+                .ThenByDescending(o => o.ResponseElevation)
+                .ThenByDescending(o => o.EnableCaseWorkflow)
+                .ThenBy(o => o.CaseWorkflowStatus.Priority)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModelActivationRule,
+                    EntityAnalysisModelActivationRuleVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModelActivationRule,
+                    nameof(EntityAnalysisModelActivationRuleVersion.EntityAnalysisModelActivationRuleId),
+                    tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
+        }
+
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
         {
             var existing = await dbContext.EntityAnalysisModelActivationRule
@@ -335,45 +385,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModelActivationRule
-                .Where(d =>
-                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
-        public async Task<IEnumerable<EntityAnalysisModelActivationRule>>
-            GetApprovedByEntityAnalysisModelIdInPriorityOrderAsync(
-                int entityAnalysisModelId, int approvalsRequired = 1,
-                CancellationToken token = default)
-        {
-            var current = await dbContext.EntityAnalysisModelActivationRule
-                .Where(w =>
-                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && w.EntityAnalysisModelId == entityAnalysisModelId)
-                .Where(s => s.CaseWorkflowStatus.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
-                            s.CaseWorkflowStatus.CaseWorkflow.EntityAnalysisModel.Deleted == null)
-                .OrderBy(o => o.Priority)
-                .ThenByDescending(o => o.EnableResponseElevation)
-                .ThenByDescending(o => o.ResponseElevation)
-                .ThenByDescending(o => o.EnableCaseWorkflow)
-                .ThenBy(o => o.CaseWorkflowStatus.Priority)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return await new GetApprovedEntityQuery<EntityAnalysisModelActivationRule,
-                    EntityAnalysisModelActivationRuleVersion>(dbContext,
-                    EntityApprovalKind.EntityAnalysisModelActivationRule,
-                    nameof(EntityAnalysisModelActivationRuleVersion.EntityAnalysisModelActivationRuleId),
-                    tenantRegistryId)
-                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

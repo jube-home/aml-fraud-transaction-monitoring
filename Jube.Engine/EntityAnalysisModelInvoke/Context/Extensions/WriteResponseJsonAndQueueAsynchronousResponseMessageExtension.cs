@@ -16,7 +16,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using Jube.Dictionary;
-using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.Observability;
 using RabbitMQ.Client;
@@ -82,6 +82,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
                     new InvokeStagePerformance();
+
                 stages.WriteResponse = new StageDuration
                 {
                     DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
@@ -101,6 +102,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var stagesForArchive = payload.InvokeTaskPerformance.Stages;
             var logsForArchive = payload.Logs;
+
             try
             {
                 if (!context.EntityAnalysisModel.Flags.EnableTrace)
@@ -146,6 +148,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             activity?.SetTag("messaging.system", "rabbitmq");
             activity?.SetTag("messaging.destination.name", "jubeOutbound");
             activity?.SetTag("messaging.operation", "publish");
+
             activity?.SetTag("jube.entity_analysis_model_instance_entry_guid",
                 context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid);
 
@@ -155,6 +158,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             var body = context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0
                 ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson
                 : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson;
+
             activity?.SetTag("messaging.message.body.size", body.Length);
 
             context.EntityAnalysisModel.Services.RabbitMqChannel.BasicPublish("jubeOutbound", "", props, body);

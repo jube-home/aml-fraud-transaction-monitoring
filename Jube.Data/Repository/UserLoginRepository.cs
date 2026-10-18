@@ -31,6 +31,7 @@ namespace Jube.Data.Repository
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -66,6 +67,7 @@ namespace Jube.Data.Repository
             if (scopeToTenantRegistryId.HasValue)
             {
                 var scopedTenantRegistryId = scopeToTenantRegistryId.Value;
+
                 query = query.Where(w => dbContext.UserInTenant.Any(u =>
                     u.User == w.CreatedUser && u.TenantRegistryId == scopedTenantRegistryId));
             }
@@ -83,6 +85,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.CreatedUser != null && w.CreatedUser.ToLower().Contains(lowerSearch)) ||
                     (w.RemoteIp != null && w.RemoteIp.ToLower().Contains(lowerSearch)) ||
@@ -102,6 +105,7 @@ namespace Jube.Data.Repository
             string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "createdUser" => query.OrderByField(o => o.CreatedUser, descending),

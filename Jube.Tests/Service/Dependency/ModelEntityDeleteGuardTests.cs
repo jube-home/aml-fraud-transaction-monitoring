@@ -57,24 +57,34 @@ namespace Jube.Test.Service.Dependency
             {
                 var listIds = await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                     .Where(w => w.EntityAnalysisModelGuid == guid).Select(s => s.Id).ToListAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelListVersion>()
                     .Where(w => listIds.Contains(w.EntityAnalysisModelListId)).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                     .Where(w => w.EntityAnalysisModelGuid == guid).DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelGatewayRuleVersion>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelTtlCounterVersion>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == id).DeleteAsync();
             }
         }
@@ -92,6 +102,7 @@ namespace Jube.Test.Service.Dependency
                 });
 
             createdModels.Add((saved.Id, saved.Guid));
+
             return (saved.Id, saved.Guid);
         }
 
@@ -140,8 +151,10 @@ namespace Jube.Test.Service.Dependency
             var (modelId, modelGuid) = await CreateModelAsync(dbContext);
             await AddFieldAsync(dbContext, modelId, "Country");
             var listId = await AddListAsync(dbContext, modelGuid, "HighRisk");
+
             await AddGatewayRuleAsync(dbContext, modelId, "UsesList",
                 "If (List.HighRisk.Contains(Payload.Country)) Then\n   Return True\nEnd If");
+
             var service = await ListServiceAsync(dbContext);
 
             var ex = await Assert.ThrowsAsync<ListValidationException>(() => service.DeleteAsync(listId));
@@ -150,6 +163,7 @@ namespace Jube.Test.Service.Dependency
                 .Match<FluentValidation.Results.ValidationFailure>(e =>
                     e.ErrorCode == "HasDependents" && e.ErrorMessage.Contains("UsesList") &&
                     e.ErrorMessage.Contains("List.HighRisk"));
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>().SingleAsync(w => w.Id == listId)).Deleted
                 .Should().NotBe(1);
         }
@@ -175,10 +189,13 @@ namespace Jube.Test.Service.Dependency
             var (modelId, modelGuid) = await CreateModelAsync(dbContext);
             await AddFieldAsync(dbContext, modelId, "Country");
             var listId = await AddListAsync(dbContext, modelGuid, "HighRisk");
+
             var ruleId = await AddGatewayRuleAsync(dbContext, modelId, "UsesList",
                 "If (List.HighRisk.Contains(Payload.Country)) Then\n   Return True\nEnd If");
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>().Where(w => w.Id == ruleId)
                 .Set(s => s.Deleted, (byte)1).UpdateAsync();
+
             var service = await ListServiceAsync(dbContext);
 
             await service.DeleteAsync(listId);
@@ -190,11 +207,13 @@ namespace Jube.Test.Service.Dependency
             await using var dbContext = fx.GetDbContext();
             var (modelId, _) = await CreateModelAsync(dbContext);
             var fieldId = await AddFieldAsync(dbContext, modelId, "AccountId");
+
             await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId, Name = "PerAccount", TtlCounterDataName = "AccountId", Active = 1,
                 Deleted = 0, Guid = Guid.NewGuid()
             });
+
             var service = await XPathServiceAsync(dbContext);
 
             var ex = await Assert.ThrowsAsync<XPathValidationException>(() => service.DeleteAsync(fieldId));

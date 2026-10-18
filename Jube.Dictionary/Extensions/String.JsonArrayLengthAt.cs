@@ -20,6 +20,7 @@ namespace Jube.Dictionary.Extensions
         public static int JsonArrayLengthAt(this string? @this, string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
+
             return node is JsonArray array ? array.Count : -1;
         }
     }

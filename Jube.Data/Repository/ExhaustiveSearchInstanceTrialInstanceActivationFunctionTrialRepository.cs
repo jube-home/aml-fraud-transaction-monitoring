@@ -28,18 +28,21 @@ namespace Jube.Data.Repository
             ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
         public async Task<IEnumerable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>>
-            GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(int exhaustiveSearchInstanceTrialInstanceId, CancellationToken token = default)
+            GetByExhaustiveSearchInstanceTrialInstanceIdOrderByIdAsync(int exhaustiveSearchInstanceTrialInstanceId,
+                CancellationToken token = default)
         {
             return await dbContext.ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial.Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstanceId == exhaustiveSearchInstanceTrialInstanceId)
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial
                 .Where(d =>

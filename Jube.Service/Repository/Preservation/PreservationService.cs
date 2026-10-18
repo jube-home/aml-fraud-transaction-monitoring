@@ -12,22 +12,25 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics;
 using Jube.Cryptography.Exceptions;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.Preservation;
+using Jube.Preservation.Exceptions;
+using Jube.Preservation.Models;
 using Jube.Resources;
 using Jube.Service.Exceptions.Repository.Preservation;
 using Jube.Service.Observability;
-using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Service.Repository.Preservation
 {
-    using Library = global::Jube.Preservation.Preservation;
+    using Library = Jube.Preservation.Preservation;
 
     public sealed class PreservationService
     {
@@ -37,8 +40,8 @@ namespace Jube.Service.Repository.Preservation
             ["Preservation", "EntityAnalysisModel", "RoleRegistry", "VisualisationRegistry", "CaseWorkflow"];
 
         private readonly ILog auditLog;
-        private readonly bool legacyFallback;
         private readonly DbContext dbContext;
+        private readonly bool legacyFallback;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly string? salt;
@@ -121,6 +124,7 @@ namespace Jube.Service.Repository.Preservation
         {
             using var op = OperationScope.Start("Preservation", "Import", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Preservation.Import: entry user={userName}");
@@ -137,6 +141,7 @@ namespace Jube.Service.Repository.Preservation
                 }
 
                 byte[] bytes;
+
                 await using (var ms = new MemoryStream())
                 {
                     await files[0].Content.CopyToAsync(ms, token).ConfigureAwait(false);
@@ -144,7 +149,8 @@ namespace Jube.Service.Repository.Preservation
                 }
 
                 var library = new Library(dbContext, userName, salt, legacyFallback);
-                await library.ImportAsync(bytes, new global::Jube.Preservation.ImportOptions
+
+                await library.ImportAsync(bytes, new ImportOptions
                 {
                     Password = password
                 }, token).ConfigureAwait(false);
@@ -166,9 +172,11 @@ namespace Jube.Service.Repository.Preservation
 
                 throw;
             }
-            catch (Exception ex) when (ex is InvalidHmacException or InvalidDecryptionException)
+            catch (Exception ex) when (ex is InvalidHmacException or InvalidDecryptionException
+                                           or InvalidAdvancedAnalyticsPreservationException)
             {
                 op.Outcome("invalid-file");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"Preservation.Import: package could not be decrypted user={userName}");
@@ -199,10 +207,13 @@ namespace Jube.Service.Repository.Preservation
             [Description("Include Dictionaries.")] bool dictionaries,
             [Description("Include Visualisations.")]
             bool visualisations,
+            [Description("Include Advanced Analytics instances, trained models and training history.")]
+            bool advancedAnalytics = false,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("Preservation", "ExportPeek", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Preservation.ExportPeek: entry user={userName}");
@@ -213,15 +224,18 @@ namespace Jube.Service.Repository.Preservation
                 EnsurePermitted("Preservation.ExportPeek");
 
                 var library = new Library(dbContext, userName);
-                var peek = await library.ExportPeekAsync(new global::Jube.Preservation.ExportOptions
+
+                var peek = await library.ExportPeekAsync(new ExportOptions
                 {
                     Exhaustive = exhaustive,
                     Lists = lists,
                     Dictionaries = dictionaries,
-                    Visualisations = visualisations
+                    Visualisations = visualisations,
+                    AdvancedAnalytics = advancedAnalytics
                 }, token).ConfigureAwait(false);
 
                 op.Rows(1);
+
                 return peek.Json;
             }
             catch (ForbiddenException)
@@ -250,6 +264,7 @@ namespace Jube.Service.Repository.Preservation
         {
             using var op = OperationScope.Start("Preservation", "Export", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Preservation.Export: entry user={userName}");
@@ -260,17 +275,20 @@ namespace Jube.Service.Repository.Preservation
                 EnsurePermitted("Preservation.Export");
 
                 var library = new Library(dbContext, userName, salt, legacyFallback);
-                var export = await library.ExportAsync(new global::Jube.Preservation.ExportOptions
+
+                var export = await library.ExportAsync(new ExportOptions
                 {
                     Password = model.Password,
                     Exhaustive = model.Exhaustive,
                     Lists = model.Lists,
                     Dictionaries = model.Dictionaries,
                     Visualisations = model.Visualisations,
-                    Roles = model.Roles
+                    Roles = model.Roles,
+                    AdvancedAnalytics = model.AdvancedAnalytics
                 }, token).ConfigureAwait(false);
 
                 op.Rows(1);
+
                 return new PreservationExportDto { Guid = export.Guid, EncryptedBytes = export.EncryptedBytes };
             }
             catch (ForbiddenException)
@@ -299,7 +317,7 @@ namespace Jube.Service.Repository.Preservation
                 {
                     await serviceChangeBus.PublishAsync(new ServiceChangeEvent(area, tenantRegistryId,
                         ServiceChangeKind.Updated, null, null, userName, DateTimeOffset.UtcNow,
-                        System.Diagnostics.Activity.Current?.TraceId.ToString() ?? "-"), token).ConfigureAwait(false);
+                        Activity.Current?.TraceId.ToString() ?? "-"), token).ConfigureAwait(false);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {

@@ -15,7 +15,7 @@ using Jube.Dto.Query.CaseByCaseKeyValue;
 
 namespace Jube.Service.Query.CaseByCaseKeyValue
 {
-    using QueryDto = global::Jube.Data.Query.GetCaseByCaseKeyValueQuery.Dto;
+    using QueryDto = global::Jube.Data.Query.GetCaseByCaseKeyValueQuery.GetCaseByCaseKeyValueQueryDto;
 
     internal static class CaseByCaseKeyValueMapper
     {

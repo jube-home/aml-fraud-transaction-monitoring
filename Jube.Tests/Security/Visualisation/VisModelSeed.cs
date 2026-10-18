@@ -25,6 +25,5 @@ internal sealed class VisModelSeed
     public int WorkflowId { get; init; }
     public Guid WorkflowGuid { get; init; }
     public required string WorkflowName { get; init; }
-
     public required Dictionary<string, string> WorkflowChildren { get; init; }
 }

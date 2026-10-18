@@ -28,7 +28,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
         private static long sampledOutCount;
         private static double samplePercentage = 100.0;
         private static MeterListener listener;
-
         public static long SampledOutCount => Interlocked.Read(ref sampledOutCount);
 
         public static int QueueDepth
@@ -58,6 +57,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
             listener?.Dispose();
 
             var names = new HashSet<string>(meterNames, StringComparer.Ordinal);
+
             var newListener = new MeterListener
             {
                 InstrumentPublished = (instrument, meterListener) =>
@@ -71,8 +71,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
 
             newListener.SetMeasurementEventCallback<long>((instrument, measurement, tags, _) =>
                 Record(instrument, measurement, tags));
+
             newListener.SetMeasurementEventCallback<double>((instrument, measurement, tags, _) =>
                 Record(instrument, measurement, tags));
+
             newListener.SetMeasurementEventCallback<int>((instrument, measurement, tags, _) =>
                 Record(instrument, measurement, tags));
 
@@ -83,15 +85,19 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
         public static List<Aggregation> DrainAll()
         {
             Dictionary<string, Aggregator> drained;
+
             lock (aggregatorsLock)
             {
                 drained = aggregators;
                 aggregators = new Dictionary<string, Aggregator>();
             }
 
-            return drained.Values.Select(aggregator => new Aggregation(
-                aggregator.InstrumentName, aggregator.InstrumentType, aggregator.Tags,
-                aggregator.Count, aggregator.Sum, aggregator.Min, aggregator.Max)).ToList();
+            return
+            [
+                .. drained.Values.Select(aggregator => new Aggregation(
+                    aggregator.InstrumentName, aggregator.InstrumentType, aggregator.Tags,
+                    aggregator.Count, aggregator.Sum, aggregator.Min, aggregator.Max))
+            ];
         }
 
         private static void Record(Instrument instrument, double value,
@@ -100,6 +106,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
             if (samplePercentage < 100.0 && Random.Shared.NextDouble() * 100.0 >= samplePercentage)
             {
                 Interlocked.Increment(ref sampledOutCount);
+
                 return;
             }
 
@@ -113,6 +120,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
                     if (aggregators.Count >= MaxDistinctSeries)
                     {
                         Interlocked.Increment(ref droppedNewSeriesCount);
+
                         return;
                     }
 
@@ -132,12 +140,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
             }
 
             var pairs = new List<string>(tags.Length);
+
             foreach (var tag in tags)
             {
                 pairs.Add($"{tag.Key}={tag.Value}");
             }
 
             pairs.Sort(StringComparer.Ordinal);
+
             return string.Join(',', pairs);
         }
 
@@ -145,6 +155,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry
         {
             var name = instrument.GetType().Name;
             var backtickIndex = name.IndexOf('`');
+
             return backtickIndex < 0 ? name : name[..backtickIndex];
         }
 

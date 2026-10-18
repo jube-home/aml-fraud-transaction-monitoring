@@ -49,17 +49,14 @@ namespace Jube.App.Code
         {
             var secure = dynamicEnvironment.AppSettings("SecureHttpCookie")
                 .Equals("True", StringComparison.OrdinalIgnoreCase);
+
             var sameSite = secure && StrictCookie(dynamicEnvironment) ? SameSiteMode.Strict : SameSiteMode.Lax;
             var isSecure = secure || response.HttpContext.Request.IsHttps;
 
             response.Cookies.Delete("authentication-jwt",
                 new CookieOptions { HttpOnly = true, SameSite = sameSite, Secure = isSecure });
-            SessionExpiry.Revoke(response.HttpContext);
-        }
 
-        private static bool StrictCookie(DynamicEnvironment dynamicEnvironment)
-        {
-            return dynamicEnvironment.AppSettings("StrictCookie").Equals("True", StringComparison.OrdinalIgnoreCase);
+            SessionExpiry.Revoke(response.HttpContext);
         }
 
         public static AuthenticationResponseDto IssueAuthenticationCookies(
@@ -69,6 +66,7 @@ namespace Jube.App.Code
             TimeProvider timeProvider = null)
         {
             var now = (timeProvider ?? TimeProvider.System).GetUtcNow().UtcDateTime;
+
             var token = Jwt.CreateToken(userName,
                 dynamicEnvironment.AppSettings("JWTKey"),
                 dynamicEnvironment.AppSettings("JWTValidIssuer"),
@@ -87,6 +85,11 @@ namespace Jube.App.Code
             AppendCookies(response, dynamicEnvironment, authenticationDto.Token, expiration);
 
             return authenticationDto;
+        }
+
+        private static bool StrictCookie(DynamicEnvironment dynamicEnvironment)
+        {
+            return dynamicEnvironment.AppSettings("StrictCookie").Equals("True", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

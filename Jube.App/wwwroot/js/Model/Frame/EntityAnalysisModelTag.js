@@ -17,10 +17,17 @@ const validationFail = "There is invalid data in the form. Please check fields a
 
 if (typeof id === "undefined") {
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelTag", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelTag", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 

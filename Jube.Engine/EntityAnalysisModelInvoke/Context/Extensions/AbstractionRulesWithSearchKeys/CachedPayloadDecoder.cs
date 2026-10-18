@@ -29,6 +29,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
             foreach (var (key, raw) in payloadMap)
             {
                 var document = new DictionaryNoBoxing<string>(raw.Count);
+
                 foreach (var (i, value) in raw)
                 {
                     switch (i)

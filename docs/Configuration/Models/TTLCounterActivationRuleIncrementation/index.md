@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # TTL Counter Activation Rule Incrementation
 In previous documentation the TTL Counter definition was introduced and a TTL Counter by the name of IP was created.  
 

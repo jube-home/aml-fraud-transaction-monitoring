@@ -51,6 +51,7 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
                 {
                     var existing = await repository
                         .GetByNameCaseWorkflowIdAsync(name, dto.CaseWorkflowId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[CaseWorkflowXPathResources.NameAlreadyExists])
@@ -115,6 +116,7 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
                     string.Format(localiser[CaseWorkflowXPathResources.ColorMaxLength], MaxColorLength))
                 .WithErrorCode("ConditionalFormatBackColorMaximumLength")
                 .When(w => w.ConditionalRegularExpressionFormatting);
+
             RuleFor(p => p.BoldLineFormatForeColor)
                 .Matches(ColorPattern)
                 .When(w => !string.IsNullOrEmpty(w.BoldLineFormatForeColor))

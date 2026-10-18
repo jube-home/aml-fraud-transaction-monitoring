@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         internal static TimeZoneInfo? Find(string? zoneId)
         {
             var id = (zoneId ?? "").Trim();
+
             if (id.Length is 0 or > 64 || id.Contains("..") || id.StartsWith('/') || id.Contains('\\'))
             {
                 return null;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -18,8 +18,9 @@ using Jube.Dto.Query.EntityAnalysisModelTimeWindow;
 using Jube.Dto.Validation;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelTimeWindow;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -32,7 +33,6 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
     public sealed class EntityAnalysisModelTimeWindowService
     {
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -55,6 +55,8 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelTimeWindowService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -166,6 +168,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
             {
                 var rule = await new EntityAnalysisModelAbstractionRuleRepository(dbContext, tenantRegistryId)
                     .GetByIdAsync(entityAnalysisModelAbstractionRuleId, token).ConfigureAwait(false);
+
                 if (rule?.EntityAnalysisModelId == null)
                 {
                     throw new NotFoundException(
@@ -173,6 +176,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
                 }
 
                 var model = await RequireModelAsync(rule.EntityAnalysisModelId.Value, token).ConfigureAwait(false);
+
                 if (rule.Search != 1)
                 {
                     return Refused("Search", "NotASearchRule",
@@ -182,17 +186,23 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
                 var searchKey = (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                         .GetByEntityAnalysisModelIdOrderByIdAsync(model.Id, token).ConfigureAwait(false))
                     .FirstOrDefault(x => x.Name == rule.SearchKey && x.Active == 1);
+
                 var settings = AbstractionSettings.FromRecord(rule.Id, rule.Name, rule.SearchKey,
                     rule.SearchFunctionKey, rule.SearchFunctionTypeId, rule.SearchInterval, rule.SearchValue,
                     rule.Offset == 1, rule.OffsetTypeId, rule.OffsetValue);
+
                 var ttlInterval = searchKey?.SearchKeyTtlInterval ?? "d";
                 var ttlValue = searchKey?.SearchKeyTtlIntervalValue ?? 0;
                 var reference = Reference(referenceDate);
+
                 var window = TimeWindow.AbstractionRule(settings.IntervalType, settings.IntervalValue, ttlInterval,
                     ttlValue, reference);
+
                 var dto = ToDto(window);
+
                 dto.SearchKeyShortensTheWindow = AbstractionWindow.SearchKeyShortensTheWindow(settings.IntervalType,
                     settings.IntervalValue, ttlInterval, ttlValue, reference);
+
                 dto.Note = (dto.SearchKeyShortensTheWindow
                                ? $"The search key {rule.SearchKey} keeps history for only {ttlValue} " +
                                  $"{Name(ttlInterval)}, which is shorter than the rule's {settings.IntervalValue} " +
@@ -203,6 +213,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
                            (settings.EnableOffset
                                ? " The rule's offset then skips matches by count, which does not change the window."
                                : string.Empty);
+
                 return dto;
             }, token);
         }
@@ -222,12 +233,14 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
             {
                 var counter = await new EntityAnalysisModelTtlCounterRepository(dbContext, tenantRegistryId)
                     .GetByIdAsync(entityAnalysisModelTtlCounterId, token).ConfigureAwait(false);
+
                 if (counter?.EntityAnalysisModelId == null)
                 {
                     throw new NotFoundException(strings[EntityAnalysisModelTimeWindowResources.TtlCounterNotFound]);
                 }
 
                 await RequireModelAsync(counter.EntityAnalysisModelId.Value, token).ConfigureAwait(false);
+
                 if (counter.EnableLiveForever == 1)
                 {
                     return new TimeWindowDto
@@ -241,6 +254,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
 
                 var dto = Window(TimeWindowKind.TtlCounter, counter.TtlCounterInterval,
                     counter.TtlCounterValue ?? 0, Reference(referenceDate), "TtlCounterInterval");
+
                 if (dto.Valid)
                 {
                     dto.Note = counter.OnlineAggregation == 1
@@ -272,6 +286,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
 
             var dto = ToDto(TimeWindow.Calculate(kind, interval!, value, reference));
             dto.Note = Arithmetic(kind);
+
             return dto;
         }
 
@@ -329,6 +344,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
             using var op = OperationScope.Start("EntityAnalysisModelTimeWindow", operation, userName, tenantRegistryId,
                 auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTimeWindow.{operation}: entry user={userName}");
@@ -338,6 +354,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
             {
                 token.ThrowIfCancellationRequested();
                 EnsurePermitted($"EntityAnalysisModelTimeWindow.{operation}");
+
                 return await body().ConfigureAwait(false);
             }
             catch (ForbiddenException)

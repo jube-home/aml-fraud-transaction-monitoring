@@ -17,7 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Cache;
+using Jube.Cache.Redis.Callback;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.Helpers;
 using Jube.TaskCancellation;
 
@@ -29,7 +31,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         private readonly Task startTask;
 
         private ModelEngineHost(Jube.DynamicEnvironment.DynamicEnvironment environment, TestLog log,
-            global::Jube.Engine.Engine engine, CancellationTokenProvider cancellation, Task startTask)
+            Jube.Engine.Engine engine, CancellationTokenProvider cancellation, Task startTask)
         {
             Environment = environment;
             Log = log;
@@ -39,47 +41,64 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         }
 
         public Jube.DynamicEnvironment.DynamicEnvironment Environment { get; }
-
         public TestLog Log { get; }
-
-        public global::Jube.Engine.Engine Engine { get; }
+        public Jube.Engine.Engine Engine { get; }
 
         public static string RedisConnectionString { get; } =
-            System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString")
+            System.Environment.GetEnvironmentVariable("JubeTestRedis")
+            ?? System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString")
             ?? "localhost,defaultDatabase=1";
 
-        private static Dictionary<string, string> DefaultSettings() => new()
+        public async ValueTask DisposeAsync()
         {
-            ["ConnectionString"] = ModelScaffold.ConnectionString,
-            ["ReportConnectionString"] = ModelScaffold.ConnectionString,
-            ["JWTKey"] = "an-adequately-long-unit-test-signing-key-0123456789",
-            ["RedisConnectionString"] = RedisConnectionString,
-            ["AMQP"] = "False",
-            ["EnableEngine"] = "True",
-            ["EnablePublicInvokeController"] = "True",
-            ["EnableMigration"] = "False",
-            ["EnableExhaustiveTraining"] = "False",
-            ["EnableReprocessing"] = "False",
-            ["EnableSanctionLoader"] = "False",
-            ["EnableCasesAutomation"] = "False",
-            ["EnableTtlCounter"] = "False",
-            ["EnableSearchKeyCache"] = "False",
-            ["CachePruneServer"] = "False",
-            ["EnableOpenTelemetry"] = "False",
-            ["StreamingActivationWatcher"] = "False",
-            ["ModelSynchronisationWait"] = "500",
-            ["CaseCreationThreads"] = "1",
-            ["LocalCache"] = "True",
-            ["LocalCacheFill"] = "False",
-            ["LocalCacheBytes"] = "50000000",
-            ["MaxInvokeControllerRequestBytes"] = "20000",
-            ["CallbackTimeout"] = "10000"
-        };
+            cancellation.Cancel();
+
+            try
+            {
+                await startTask.WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
+        }
+
+        private static Dictionary<string, string> DefaultSettings()
+        {
+            return new Dictionary<string, string>
+            {
+                ["ConnectionString"] = ModelScaffold.ConnectionString,
+                ["ReportConnectionString"] = ModelScaffold.ConnectionString,
+                ["JWTKey"] = "an-adequately-long-unit-test-signing-key-0123456789",
+                ["RedisConnectionString"] = RedisConnectionString,
+                ["AMQP"] = "False",
+                ["EnableEngine"] = "True",
+                ["EnablePublicInvokeController"] = "True",
+                ["EnableMigration"] = "False",
+                ["EnableExhaustiveTraining"] = "False",
+                ["EnableReprocessing"] = "False",
+                ["EnableSanctionLoader"] = "False",
+                ["EnableCasesAutomation"] = "False",
+                ["EnableTtlCounter"] = "False",
+                ["EnableSearchKeyCache"] = "False",
+                ["CachePruneServer"] = "False",
+                ["EnableOpenTelemetry"] = "False",
+                ["StreamingActivationWatcher"] = "False",
+                ["ModelSynchronisationWait"] = "500",
+                ["CaseCreationThreads"] = "1",
+                ["LocalCache"] = "True",
+                ["LocalCacheFill"] = "False",
+                ["LocalCacheBytes"] = "50000000",
+                ["MaxInvokeControllerRequestBytes"] = "20000",
+                ["CallbackTimeout"] = "10000"
+            };
+        }
 
         public static Jube.DynamicEnvironment.DynamicEnvironment CreateEnvironment(
             IReadOnlyDictionary<string, string>? overrides = null)
         {
             var settings = DefaultSettings();
+
             if (overrides == null)
             {
                 return TestDynamicEnvironment.Create(settings);
@@ -98,18 +117,21 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             var environment = CreateEnvironment(overrides);
             var log = new TestLog(false);
+
             var callbacks =
-                new ConcurrentDictionary<Guid, TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>>();
+                new ConcurrentDictionary<Guid, TaskCompletionSource<Callback>>();
+
             var cancellation = new CancellationTokenProvider();
             var taskCoordinator = new TaskCoordinator(cancellation, log);
 
             var cacheService = new CacheService(RedisConnectionString, ModelScaffold.ConnectionString, callbacks,
                 int.Parse(environment.AppSettings("CallbackTimeout")), true, false, 50_000_000, false, false, false,
                 false, TimeSpan.FromDays(1), false, log);
+
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",
                 _ => cacheService.StartAsync(taskCoordinator, static (_, _) => { }));
 
-            var engine = new global::Jube.Engine.Engine(environment, log, null, cacheService,
+            var engine = new Jube.Engine.Engine(environment, log, null, cacheService,
                 new JsonSerializationHelper(), taskCoordinator, new ImplicitAsyncInvocationTracker(log),
                 ModelScaffold.ConnectionString);
 
@@ -117,11 +139,13 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             var host = new ModelEngineHost(environment, log, engine, cancellation, startTask);
 
             var deadline = DateTime.UtcNow + (readyTimeout ?? TimeSpan.FromSeconds(120));
+
             while (!engine.Context.Ready)
             {
                 if (DateTime.UtcNow > deadline)
                 {
                     await host.DisposeAsync().ConfigureAwait(false);
+
                     throw new TimeoutException(
                         "The engine did not report ready in time. Errors: " + host.RecentErrors());
                 }
@@ -132,12 +156,12 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             return host;
         }
 
-        public global::Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel? FindActiveModel(
+        public EntityAnalysisModel? FindActiveModel(
             Guid modelGuid)
         {
             return EngineModels().FirstOrDefault(m => m.Instance.Guid == modelGuid);
 
-            IEnumerable<global::Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel>
+            IEnumerable<EntityAnalysisModel>
                 EngineModels()
             {
                 return Engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
@@ -149,19 +173,6 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             return string.Join(System.Environment.NewLine,
                 Log.Entries.Where(e => e.Level == "ERROR").TakeLast(take).Select(e => e.Message));
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            cancellation.Cancel();
-            try
-            {
-                await startTask.WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception)
-            {
-            }
         }
     }
 }

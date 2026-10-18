@@ -103,8 +103,10 @@ namespace Jube.Cryptography
                 cs.FlushFinalBlock();
 
                 var decryptedData = ms.ToArray();
-                return !CryptographicOperations.FixedTimeEquals(ComputeHmacLegacy(decryptedData), hmac) ? throw new InvalidHmacException() : decryptedData;
 
+                return !CryptographicOperations.FixedTimeEquals(ComputeHmacLegacy(decryptedData), hmac)
+                    ? throw new InvalidHmacException()
+                    : decryptedData;
             }
             catch (Exception ex)
             {
@@ -132,7 +134,10 @@ namespace Jube.Cryptography
                 cs.FlushFinalBlock();
 
                 var decryptedData = ms.ToArray();
-                return !CryptographicOperations.FixedTimeEquals(ComputeHmac(decryptedData), hmac) ? throw new InvalidHmacException() : decryptedData;
+
+                return !CryptographicOperations.FixedTimeEquals(ComputeHmac(decryptedData), hmac)
+                    ? throw new InvalidHmacException()
+                    : decryptedData;
             }
             catch (Exception ex)
             {
@@ -143,12 +148,14 @@ namespace Jube.Cryptography
         private byte[] ComputeHmac(byte[] data)
         {
             using var hmac = new HMACSHA256(key);
+
             return hmac.ComputeHash(data);
         }
 
         private byte[] ComputeHmacLegacy(byte[] data)
         {
             using var hmac = new HMACSHA256(salt);
+
             return hmac.ComputeHash(data);
         }
     }

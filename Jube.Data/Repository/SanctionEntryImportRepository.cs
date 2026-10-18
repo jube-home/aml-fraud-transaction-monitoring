@@ -54,6 +54,7 @@ namespace Jube.Data.Repository
         public async Task<SanctionEntryImport> InsertAsync(SanctionEntryImport model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 

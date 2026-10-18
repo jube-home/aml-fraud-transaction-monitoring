@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.BackgroundTasks.Context.Models
 {
     using System.Collections.Concurrent;
@@ -18,9 +23,15 @@ namespace Jube.Engine.BackgroundTasks.Context.Models
 
     public class Sanctions
     {
-        public readonly ConcurrentDictionary<int, SanctionEntry> SanctionsEntries = new ConcurrentDictionary<int, SanctionEntry>();
-        public readonly ConcurrentDictionary<int, SanctionEntriesSource> SanctionsSources = new ConcurrentDictionary<int, SanctionEntriesSource>();
-        public readonly ConcurrentDictionary<string, byte> SanctionsStopTokens = new ConcurrentDictionary<string, byte>();
+        public readonly ConcurrentDictionary<int, SanctionEntry> SanctionsEntries =
+            new ConcurrentDictionary<int, SanctionEntry>();
+
+        public readonly ConcurrentDictionary<int, SanctionEntriesSource> SanctionsSources =
+            new ConcurrentDictionary<int, SanctionEntriesSource>();
+
+        public readonly ConcurrentDictionary<string, byte> SanctionsStopTokens =
+            new ConcurrentDictionary<string, byte>();
+
         public bool SanctionsLoadedForStartup { get; set; }
     }
 }

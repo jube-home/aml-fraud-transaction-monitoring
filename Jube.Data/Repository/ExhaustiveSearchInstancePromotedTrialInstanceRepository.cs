@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class ExhaustiveSearchInstancePromotedTrialInstanceRepository
     {
         private readonly DbContext dbContext;
@@ -41,30 +41,87 @@ namespace Jube.Data.Repository
         public ExhaustiveSearchInstancePromotedTrialInstanceRepository(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
         public async Task UpdateActiveAsync(int id, bool active, CancellationToken token = default)
         {
-            var records = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+            var existing = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
                 .Where(d =>
                     (d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                     && d.Id == id)
-                .Set(s => s.Active, (byte)(active ? 1 : 0))
-                .UpdateAsync(token).ConfigureAwait(false);
+                .Select(d => new
+                {
+                    d.Id,
+                    d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId
+                })
+                .FirstOrDefaultAsync(token).ConfigureAwait(false);
 
-            if (records == 0)
+            if (existing == null)
             {
                 throw new KeyNotFoundException();
             }
+
+            await AdvancedAnalyticsRunGuard.InTransactionAsync(dbContext, async () =>
+            {
+                if (active)
+                {
+                    await DeactivateAllForExhaustiveSearchInstanceAsync(
+                        existing.ExhaustiveSearchInstanceId.GetValueOrDefault(), token).ConfigureAwait(false);
+
+                    await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                        .Where(d => d.Id == id)
+                        .Set(s => s.Active, (byte)1)
+                        .UpdateAsync(token).ConfigureAwait(false);
+
+                    return;
+                }
+
+                await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                    .Where(d => d.Id == id)
+                    .Set(s => s.Active, (byte)0)
+                    .UpdateAsync(token).ConfigureAwait(false);
+
+                var nextBest = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                    .Where(d =>
+                        d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId ==
+                        existing.ExhaustiveSearchInstanceId
+                        && d.Id != id
+                        && (d.Deleted == 0 || d.Deleted == null))
+                    .OrderByDescending(o => o.Score)
+                    .Select(d => (int?)d.Id)
+                    .FirstOrDefaultAsync(token).ConfigureAwait(false);
+
+                if (nextBest.HasValue)
+                {
+                    await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                        .Where(d => d.Id == nextBest.Value)
+                        .Set(s => s.Active, (byte)1)
+                        .UpdateAsync(token).ConfigureAwait(false);
+                }
+            }, token).ConfigureAwait(false);
         }
 
-        public async Task<ExhaustiveSearchInstancePromotedTrialInstance> InsertAsync(ExhaustiveSearchInstancePromotedTrialInstance model, CancellationToken token = default)
+        public Task DeactivateAllForExhaustiveSearchInstanceAsync(int exhaustiveSearchInstanceId,
+            CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(d =>
+                    d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId == exhaustiveSearchInstanceId
+                    && d.Active == 1)
+                .Set(s => s.Active, (byte)0)
+                .UpdateAsync(token);
+        }
+
+        public async Task<ExhaustiveSearchInstancePromotedTrialInstance> InsertAsync(
+            ExhaustiveSearchInstancePromotedTrialInstance model, CancellationToken token = default)
         {
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -77,7 +134,83 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task<ExhaustiveSearchInstancePromotedTrialInstance> GetLastActiveByExhaustiveSearchInstanceIdAsync(
+            int exhaustiveSearchInstanceId, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(w =>
+                    w.Active == 1 && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id ==
+                                  exhaustiveSearchInstanceId
+                                  && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                                          .EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                                      !tenantRegistryId.HasValue))
+                .OrderByDescending(o => o.Id)
+                .FirstOrDefaultAsync(token);
+        }
+
+        public Task<ExhaustiveSearchInstancePromotedTrialInstance> GetActiveByExhaustiveSearchInstanceIdAsync(
+            int exhaustiveSearchInstanceId, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(w =>
+                    w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
+                    && w.Active == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
+                    && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                        .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
+                .FirstOrDefaultAsync(token);
+        }
+
+        public Task<List<ExhaustiveSearchInstancePromotedTrialInstance>>
+            GetByExhaustiveSearchInstanceIdOrderByIdAscAsync(
+                int exhaustiveSearchInstanceId, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(w =>
+                    w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
+                    && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                        .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token);
+        }
+
+        public Task<List<ExhaustiveSearchInstancePromotedTrialInstance>>
+            GetByExhaustiveSearchInstanceIdOrderByIdDescAsync(
+                int exhaustiveSearchInstanceId, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(w =>
+                    w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                        .EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue))
+                .OrderByDescending(o => o.Id)
+                .ToListAsync(token);
+        }
+
+        public Task<List<int>> GetNonDeletedTrialInstanceIdsAsync(
+            IEnumerable<int> exhaustiveSearchInstanceTrialInstanceIds, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(w =>
+                    w.ExhaustiveSearchInstanceTrialInstanceId.HasValue
+                    && exhaustiveSearchInstanceTrialInstanceIds.Contains(
+                        w.ExhaustiveSearchInstanceTrialInstanceId.Value)
+                    && (w.Deleted == 0 || w.Deleted == null))
+                .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId.Value)
+                .Distinct()
+                .ToListAsync(token);
+        }
+
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstancePromotedTrialInstance
                 .Where(d =>

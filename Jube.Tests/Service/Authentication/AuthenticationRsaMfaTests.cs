@@ -47,9 +47,11 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
         builder.WebHost.UseUrls("http://127.0.0.1:0");
         var host = builder.Build();
         app = host;
+
         host.Use(async (context, next) =>
         {
             context.Request.EnableBuffering();
+
             using (var reader = new System.IO.StreamReader(context.Request.Body, leaveOpen: true))
             {
                 bodies.Enqueue(await reader.ReadToEndAsync());
@@ -58,8 +60,10 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
             context.Request.Body.Position = 0;
             await next(context);
         });
+
         Jube.App.Endpoints.Mocks.MockRsaMfaEndpoints.MapMockRsaMfaEndpoints(host);
         await host.StartAsync();
+
         endpoint = host.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Required()
             .Addresses
             .Single() + "/api/mfa";
@@ -80,6 +84,7 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
     {
         var settings = new System.Collections.Generic.Dictionary<string, string>
             { ["MultifactorAuthenticationEndpoint"] = endpoint };
+
         foreach (var (k, v) in overrides)
         {
             settings[k] = v;
@@ -162,6 +167,7 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
 
         log.Entries.Should().NotBeEmpty();
         log.Entries.Should().NotContain(e => (e.Message + e.Exception).Contains(code));
+
         log.Entries.Should().NotContain(e => e.Message.Contains("collectedInputs")
                                              || e.Message.Contains("subjectCredentials"));
     }
@@ -183,6 +189,7 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
 
         var act = () => Verifier(log, ("MultifactorAuthenticationEndpoint", "http://127.0.0.1:1/api/mfa"))
             .VerifyAsync("alice", "87654321");
+
         await act.Should().ThrowAsync<HttpRequestException>();
 
         log.Entries.Should().Contain(e => e.Level == "ERROR");
@@ -196,9 +203,11 @@ public sealed class AuthenticationRsaMfaTests : IAsyncLifetime
 
         var act = () => Verifier(log, ("MultifactorAuthenticationClientKey", "wrong-key"))
             .VerifyAsync("alice", "87654321");
+
         await act.Should().ThrowAsync<HttpRequestException>();
 
         log.Entries.Should().NotBeEmpty();
+
         log.Entries.Should().NotContain(e => (e.Message + e.Exception).Contains("87654321")
                                              || (e.Message + e.Exception).Contains("Invalid client-key")
                                              || (e.Message + e.Exception).Contains("wrong-key"));

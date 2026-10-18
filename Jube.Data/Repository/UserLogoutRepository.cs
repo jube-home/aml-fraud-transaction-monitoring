@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
         {
             model.CreatedDate ??= DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -81,6 +82,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.CreatedUser != null && w.CreatedUser.ToLower().Contains(lowerSearch)) ||
                     (w.CutByUser != null && w.CutByUser.ToLower().Contains(lowerSearch)) ||
@@ -101,6 +103,7 @@ namespace Jube.Data.Repository
             string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "createdUser" => query.OrderByField(o => o.CreatedUser, descending),

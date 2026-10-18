@@ -25,6 +25,7 @@ namespace Jube.Dictionary.Extensions
             if (@this < 0)
             {
                 var isOddInteger = Math.Abs(degree % 2) == 1;
+
                 return isOddInteger ? CalculationSupport.Finite(-Math.Pow(-@this, 1d / degree)) : double.NaN;
             }
 

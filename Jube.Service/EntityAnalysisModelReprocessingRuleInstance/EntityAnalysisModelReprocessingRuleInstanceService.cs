@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,11 +14,12 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.EntityAnalysisModelReprocessingRuleInstance;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
-using Jube.Dto.EntityAnalysisModelReprocessingRuleInstance;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelReprocessingRuleInstance;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -57,9 +58,12 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelReprocessingRuleInstanceDtoValidator(
                 new EntityAnalysisModelReprocessingRuleRepository(dbContext, userName), strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelReprocessingRuleInstanceService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -116,6 +120,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: entry user={userName}");
@@ -124,9 +129,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.List");
+
                 var dtos = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: {dtos.Count} rows user={userName}");
@@ -142,6 +149,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: cancelled user={userName}");
@@ -152,8 +160,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelReprocessingRuleInstance.List: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -171,6 +181,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance",
                 "ListByEntityAnalysisModelReprocessingId", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -180,10 +191,12 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.ListByEntityAnalysisModelReprocessingId");
+
                 var dtos = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository
                     .GetByEntityAnalysisModelsReprocessingRuleIdAsync(entityAnalysisModelReprocessingId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -200,6 +213,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -211,9 +225,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.ListByEntityAnalysisModelReprocessingId: unexpected failure entityAnalysisModelReprocessingId={entityAnalysisModelReprocessingId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -228,6 +244,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Get: entry id={id} user={userName}");
@@ -237,6 +254,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Get");
                 var reprocessingRuleInstance = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (reprocessingRuleInstance == null)
                 {
                     if (log.IsDebugEnabled)
@@ -249,6 +267,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 }
 
                 op.Entity(reprocessingRuleInstance.Id);
+
                 return EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(reprocessingRuleInstance);
             }
             catch (ForbiddenException)
@@ -259,6 +278,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Get: cancelled id={id} user={userName}");
@@ -269,9 +289,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.Get: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -289,7 +311,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -320,6 +344,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.ListPaged: cancelled user={userName}");
@@ -330,9 +355,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.ListPaged: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -349,6 +376,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.FilterFields: entry user={userName}");
@@ -360,6 +388,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelReprocessingRuleInstanceDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -375,9 +404,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.FilterFields: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -402,6 +433,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -411,10 +443,13 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Filter");
+
                 var rows = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -430,8 +465,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelReprocessingRuleInstance.Filter: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -454,6 +491,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -463,10 +501,13 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Count");
+
                 var rows = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -498,6 +539,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -510,6 +552,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -552,6 +595,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Create: cancelled user={userName}");
@@ -562,8 +606,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.Create: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }
@@ -579,6 +625,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -592,6 +639,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -607,8 +655,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelReprocessingRuleInstance.Validate: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -626,6 +676,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance",
                 "CreateByExistingUpdateUncompleted", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -638,6 +689,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -651,6 +703,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 }
 
                 ReprocessingRuleInstancePoco saved;
+
                 try
                 {
                     saved = await repository
@@ -701,6 +754,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -712,9 +766,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -733,6 +789,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -745,6 +802,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -758,6 +816,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 }
 
                 ReprocessingRuleInstancePoco saved;
+
                 try
                 {
                     saved = await repository
@@ -805,6 +864,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -816,9 +876,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -833,6 +895,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Delete: entry id={id} user={userName}");
@@ -879,6 +942,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Delete: cancelled id={id} user={userName}");
@@ -889,9 +953,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelReprocessingRuleInstance.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }

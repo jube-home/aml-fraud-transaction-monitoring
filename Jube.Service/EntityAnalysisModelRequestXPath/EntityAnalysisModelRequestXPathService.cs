@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,18 +14,20 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery;
 using Jube.Data.Repository;
+using Jube.Dto.EntityAnalysisModelRequestXPath;
 using Jube.Dto.Filter;
 using Jube.Dto.Validation;
-using Jube.Dto.EntityAnalysisModelRequestXPath;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelRequestXPath;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.Parser.Dependency;
 using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelRequestXPath;
 using log4net;
@@ -46,6 +48,8 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         private static readonly int[] writePermissions = [7];
         private static readonly int[] overridePermissions = [2];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly RequestXPathRepository repository;
@@ -53,7 +57,6 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
-        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelRequestXPathDtoValidator validator;
 
         private EntityAnalysisModelRequestXPathService(DbContext dbContext, string userName, int tenantRegistryId,
@@ -62,17 +65,27 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RequestXPathRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelRequestXPathDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> ReadByEntityAnalysisModelPermissions => readByEntityAnalysisModelPermissions;
+        public static IReadOnlyList<int> ReadByDataTypePermissions => readByDataTypePermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
+        public static IReadOnlyList<int> OverridePermissions => overridePermissions;
 
         public static Task<EntityAnalysisModelRequestXPathService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -126,6 +139,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.List: entry user={userName}");
@@ -134,9 +148,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.List");
+
                 var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.List: {dtos.Count} rows user={userName}");
@@ -152,6 +168,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.List: cancelled user={userName}");
@@ -178,6 +195,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -188,9 +206,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             {
                 EnsurePermitted(readByEntityAnalysisModelPermissions,
                     "EntityAnalysisModelRequestXPath.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -207,6 +227,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -218,9 +239,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelRequestXPath.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -236,6 +259,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListByCasesWorkflowId", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -245,9 +269,12 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             try
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelRequestXPath.ListByCasesWorkflowId");
-                var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository
-                    .GetByCasesWorkflowIdAsync(casesWorkflowId, token).ConfigureAwait(false));
+
+                var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(
+                    await new GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery(dbContext, tenantRegistryId)
+                        .ExecuteAsync(casesWorkflowId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -264,6 +291,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -275,9 +303,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelRequestXPath.ListByCasesWorkflowId: unexpected failure casesWorkflowId={casesWorkflowId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -289,6 +319,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListByOverrideKey", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.ListByOverrideKey: entry user={userName}");
@@ -297,9 +328,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             try
             {
                 EnsurePermitted(overridePermissions, "EntityAnalysisModelRequestXPath.ListByOverrideKey");
+
                 var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetByOverrideKeysAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -316,6 +349,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.ListByOverrideKey: cancelled user={userName}");
@@ -326,8 +360,10 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelRequestXPath.ListByOverrideKey: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -347,6 +383,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath",
                 "ListByEntityAnalysisModelIdByDataType", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -357,10 +394,12 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             {
                 EnsurePermitted(readByDataTypePermissions,
                     "EntityAnalysisModelRequestXPath.ListByEntityAnalysisModelIdByDataType");
+
                 var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdByDataTypeAsync(entityAnalysisModelId, token, 1, 2, 3)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -377,6 +416,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -388,9 +428,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelRequestXPath.ListByEntityAnalysisModelIdByDataType: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -405,6 +447,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Get: entry id={id} user={userName}");
@@ -414,6 +457,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelRequestXPath.Get");
                 var requestXPath = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (requestXPath == null)
                 {
                     if (log.IsDebugEnabled)
@@ -426,6 +470,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 }
 
                 op.Entity(requestXPath.Id);
+
                 return EntityAnalysisModelRequestXPathMapper.ToDto(requestXPath);
             }
             catch (ForbiddenException)
@@ -436,6 +481,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.Get: cancelled id={id} user={userName}");
@@ -464,7 +510,9 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -495,6 +543,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.ListPaged: cancelled user={userName}");
@@ -520,6 +569,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.FilterFields: entry user={userName}");
@@ -531,6 +581,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelRequestXPathDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -570,6 +621,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -579,10 +631,13 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.Filter");
+
                 var rows = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -620,6 +675,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Count: entry groupBy={groupBy} user={userName}");
@@ -628,10 +684,13 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.Count");
+
                 var rows = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -662,6 +721,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Create: entry user={userName} name={model?.Name}");
@@ -673,6 +733,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 EnsurePermitted(writePermissions, "EntityAnalysisModelRequestXPath.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -713,6 +774,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.Create: cancelled user={userName}");
@@ -723,8 +785,10 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelRequestXPath.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -739,6 +803,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Validate: entry id={model?.Id} user={userName}");
@@ -751,6 +816,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -783,6 +849,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Update: entry id={model?.Id} user={userName}");
@@ -794,6 +861,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 EnsurePermitted(writePermissions, "EntityAnalysisModelRequestXPath.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -806,6 +874,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 }
 
                 RequestXPathPoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(EntityAnalysisModelRequestXPathMapper.ToPoco(model), token)
@@ -852,6 +921,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.Update: cancelled id={model?.Id} user={userName}");
@@ -862,8 +932,10 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelRequestXPath.Update: unexpected failure id={model?.Id} user={userName}", ex);
+
                 throw;
             }
         }
@@ -879,6 +951,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         {
             using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRequestXPath.Delete: entry id={id} user={userName}");
@@ -891,6 +964,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 try
                 {
                     var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                     if (existing != null)
                     {
                         var dependents = await deleteValidator
@@ -898,6 +972,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                                 new ModelEntityDelete(ModelEntityKind.RequestXPath, id, existing.EntityAnalysisModelId),
                                 token)
                             .ConfigureAwait(false);
+
                         if (!dependents.IsValid)
                         {
                             throw new DtoValidationException(dependents);
@@ -943,6 +1018,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRequestXPath.Delete: cancelled id={id} user={userName}");

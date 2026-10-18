@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Jube.Dictionary;
+using Jube.Parser.Models;
 using log4net;
 
 namespace Jube.Parser
@@ -26,12 +27,12 @@ namespace Jube.Parser
     {
         private readonly ILog log;
         private readonly List<string> ruleScriptTokens;
-        public IReadOnlyList<string> RuleScriptTokens => ruleScriptTokens;
         public List<string> EntityAnalysisModelAbstractionCalculations;
         public Dictionary<string, int> EntityAnalysisModelInlineScriptProperties;
         public Dictionary<string, EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths;
         public List<string> EntityAnalysisModelsAbstractionRule;
         public List<string> EntityAnalysisModelsActivationRules;
+        public List<string> EntityAnalysisModelsAdvancedAnalyticsAdaptations;
         public List<string> EntityAnalysisModelsDictionaries;
         public List<string> EntityAnalysisModelsExhaustiveAdaptations;
         public List<string> EntityAnalysisModelsHttpAdaptations;
@@ -50,6 +51,11 @@ namespace Jube.Parser
             if (!this.ruleScriptTokens.Contains("Return"))
             {
                 this.ruleScriptTokens.Add("return");
+            }
+
+            if (!this.ruleScriptTokens.Contains("Matched"))
+            {
+                this.ruleScriptTokens.Add("Matched");
             }
 
             if (!this.ruleScriptTokens.Contains("If"))
@@ -100,6 +106,31 @@ namespace Jube.Parser
             if (!this.ruleScriptTokens.Contains("HttpAdaptation"))
             {
                 this.ruleScriptTokens.Add("HttpAdaptation");
+            }
+
+            if (!this.ruleScriptTokens.Contains("Value"))
+            {
+                this.ruleScriptTokens.Add("Value");
+            }
+
+            if (!this.ruleScriptTokens.Contains("?"))
+            {
+                this.ruleScriptTokens.Add("?");
+            }
+
+            if (!this.ruleScriptTokens.Contains("Else"))
+            {
+                this.ruleScriptTokens.Add("Else");
+            }
+
+            if (!this.ruleScriptTokens.Contains("ElseIf"))
+            {
+                this.ruleScriptTokens.Add("ElseIf");
+            }
+
+            if (!this.ruleScriptTokens.Contains("AdvancedAnalyticsAdaptation"))
+            {
+                this.ruleScriptTokens.Add("AdvancedAnalyticsAdaptation");
             }
 
             if (!this.ruleScriptTokens.Contains("Select"))
@@ -228,6 +259,7 @@ namespace Jube.Parser
             }
 
             var type = typeof(Dictionary.Extensions.Extensions);
+
             var methods = type.GetMethods(
                 BindingFlags.Public |
                 BindingFlags.NonPublic |
@@ -261,6 +293,8 @@ namespace Jube.Parser
             }
         }
 
+        public IReadOnlyList<string> RuleScriptTokens => ruleScriptTokens;
+
         private static string NormaliseVisualBasicQuotes(string text)
         {
             return text.Replace('\u201C', '"').Replace('\u201D', '"').Replace('\uFF02', '"');
@@ -274,6 +308,7 @@ namespace Jube.Parser
                 var lines = parsedRule.ParsedRuleText.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
                 var softParseFailed = false;
                 var i = 0;
+
                 foreach (var line in lines)
                 {
                     if (!string.IsNullOrEmpty(line))
@@ -282,12 +317,16 @@ namespace Jube.Parser
 
                         string[] separator =
                             [",", " ", "(", ")", "=", ">", "<", ">=", "<=", "<>", ".", "_", "+", "-", "/", "*", "&"];
+
                         var tokens = matches.Aggregate(line, (current, match) => current.Replace(match.Value, ""))
                             .Split(separator, StringSplitOptions.RemoveEmptyEntries);
+
                         int j;
+
                         for (j = 0; j < tokens.Length; j++)
                         {
                             var valid = false;
+
                             if (NumericHelper.IsNumeric(tokens[j]))
                             {
                                 valid = true;
@@ -303,6 +342,7 @@ namespace Jube.Parser
 
                                     var testToken = "";
                                     int f;
+
                                     //This joins up the token for matching based on the next number of tokens
                                     for (f = 0; f < permissionTokensCount; f++)
                                     {
@@ -312,6 +352,7 @@ namespace Jube.Parser
                                         }
 
                                         var extend = j + f; //We are adding the tokens that come after.
+
                                         if (extend < tokens.Length)
                                         {
                                             testToken += tokens[extend];
@@ -360,6 +401,7 @@ namespace Jube.Parser
                     {
                         var vbKeyword = EvalExpressionRegistry.ResultTypes[resultTypeId].VbKeyword;
                         var pattern = $@"\.{Regex.Escape(name)}\b(?:\(\s*\))?";
+
                         parsedRule.ParsedRuleText =
                             Regex.Replace(parsedRule.ParsedRuleText, pattern, $".Eval(Of {vbKeyword})(\"{name}\")");
                     }
@@ -415,6 +457,7 @@ namespace Jube.Parser
             sb.AppendLine("Public Class GatewayRule");
 
             countLine += 1;
+
             sb.AppendLine(
                 "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)), KVP As PooledDictionary(Of String, Double),Log as ILog) As Boolean");
 
@@ -478,6 +521,7 @@ namespace Jube.Parser
             sb.AppendLine("Public Class GatewayRule");
 
             countLine += 1;
+
             sb.AppendLine(
                 "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)), KVP As PooledDictionary(Of String, Double),Log as ILog) As Boolean");
 
@@ -544,8 +588,9 @@ namespace Jube.Parser
             sb.AppendLine("Public Class ActivationRule");
 
             countLine += 1;
+
             sb.AppendLine(
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean");
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),AdvancedAnalyticsAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean");
 
             countLine += 1;
             sb.AppendLine("Dim Matched as Boolean");
@@ -607,6 +652,7 @@ namespace Jube.Parser
             sb.AppendLine("Public Class CalculationRule");
 
             countLine += 1;
+
             sb.AppendLine(
                 "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Log as ILog) As Double");
 
@@ -670,6 +716,7 @@ namespace Jube.Parser
             sb.AppendLine("Public Class InlineFunction");
 
             countLine += 1;
+
             sb.AppendLine(
                 "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter as PooledDictionary(Of String,Long),List as Dictionary(Of String,List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Object");
 
@@ -700,22 +747,27 @@ namespace Jube.Parser
         public ParsedRule TranslateFromDotNotation(ParsedRule parsedRule, bool showOnlyCacheForPayload = false)
         {
             var sb = new StringBuilder();
+
             var lines = NormaliseVisualBasicQuotes(parsedRule.OriginalRuleText)
                 .Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
+
             for (var i = 0; i < lines.Length; i++)
             {
                 var originalLine = lines[i];
                 var dictionaryFindReplace = new Dictionary<string, string>();
+
                 var separators = new[]
                 {
                     " ", ",", "=", ">", "(", ")", "<", ">=", "<=", "<>", "not"
                 };
+
                 var specialTokens = new[]
                 {
                     "in", "like"
                 };
 
                 var tokens = lines[i].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
                 foreach (var t in tokens)
                 {
                     var replaceString = string.Empty;
@@ -746,6 +798,7 @@ namespace Jube.Parser
                                 var asFunction = "AsString()";
                                 var databaseCast = "";
                                 var defaultValue = "";
+
                                 if (EntityAnalysisModelRequestXPaths != null ||
                                     EntityAnalysisModelInlineScriptProperties != null)
                                 {
@@ -917,6 +970,7 @@ namespace Jube.Parser
                                         DatabaseCast = databaseCast,
                                         DefaultValue = defaultValue
                                     };
+
                                     parsedRule.SelectedPayloadData.Add(elements[k], selectedPayloadData);
                                 }
 
@@ -1049,6 +1103,27 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "ExhaustiveAdaptation(\"" + elements[k] + "\")";
                             }
+                            else if (string.Equals("advancedAnalyticsAdaptation", firstString,
+                                         StringComparison.OrdinalIgnoreCase))
+                            {
+                                findString = firstString + "." + elements[k];
+
+                                if (EntityAnalysisModelsAdvancedAnalyticsAdaptations != null)
+                                {
+                                    if (EntityAnalysisModelsAdvancedAnalyticsAdaptations.All(w => w != elements[k]))
+                                    {
+                                        var errorSpan = new ErrorSpan
+                                        {
+                                            Message =
+                                                $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
+                                            Line = i
+                                        };
+                                        parsedRule.ErrorSpans.Add(errorSpan);
+                                    }
+                                }
+
+                                replaceString = replaceString + "AdvancedAnalyticsAdaptation(\"" + elements[k] + "\")";
+                            }
                             else if (string.Equals("HTTPAdaptation", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
@@ -1068,7 +1143,7 @@ namespace Jube.Parser
                                     }
                                 }
 
-                                replaceString = replaceString + "HTTPAdaptation(\"" + elements[k] + "\")";
+                                replaceString = replaceString + "(HTTPAdaptation(\"" + elements[k] + "\")?.Value)";
                             }
 
                             else if (string.Equals("list", firstString,
@@ -1146,6 +1221,7 @@ namespace Jube.Parser
             }
 
             parsedRule.ParsedRuleText = sb.ToString();
+
             return parsedRule;
         }
     }

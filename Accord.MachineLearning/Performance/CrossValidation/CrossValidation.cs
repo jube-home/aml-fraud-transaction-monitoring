@@ -1,111 +1,126 @@
-// Accord Machine Learning Library
-// The Accord.NET Framework
+// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.MachineLearning.Performance;
+using Accord.Statistics;
 
 namespace Accord.MachineLearning
 {
-    using Accord.MachineLearning.Performance;
-    using Accord.Statistics;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using Accord.Compat;
-
     /// <summary>
-    ///   k-Fold cross-validation. Please only use the static methods contained in this class,
-    ///   the rest are marked as obsolete.
+    ///     k-Fold cross-validation. Please only use the static methods contained in this class,
+    ///     the rest are marked as obsolete.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   Cross-validation is a technique for estimating the performance of a predictive
-    ///   model. It can be used to measure how the results of a statistical analysis will
-    ///   generalize to an independent data set. It is mainly used in settings where the
-    ///   goal is prediction, and one wants to estimate how accurately a predictive model
-    ///   will perform in practice.</para>
-    /// <para>
-    ///   One round of cross-validation involves partitioning a sample of data into
-    ///   complementary subsets, performing the analysis on one subset (called the
-    ///   training set), and validating the analysis on the other subset (called the
-    ///   validation set or testing set). To reduce variability, multiple rounds of 
-    ///   cross-validation are performed using different partitions, and the validation 
-    ///   results are averaged over the rounds.</para> 
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Cross-validation_(statistics)">
-    ///       Wikipedia, The Free Encyclopedia. Cross-validation (statistics). Available on:
-    ///       http://en.wikipedia.org/wiki/Cross-validation_(statistics) </a></description></item>
-    ///   </list></para> 
+    ///     <para>
+    ///         Cross-validation is a technique for estimating the performance of a predictive
+    ///         model. It can be used to measure how the results of a statistical analysis will
+    ///         generalize to an independent data set. It is mainly used in settings where the
+    ///         goal is prediction, and one wants to estimate how accurately a predictive model
+    ///         will perform in practice.
+    ///     </para>
+    ///     <para>
+    ///         One round of cross-validation involves partitioning a sample of data into
+    ///         complementary subsets, performing the analysis on one subset (called the
+    ///         training set), and validating the analysis on the other subset (called the
+    ///         validation set or testing set). To reduce variability, multiple rounds of
+    ///         cross-validation are performed using different partitions, and the validation
+    ///         results are averaged over the rounds.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Cross-validation_(statistics)">
+    ///                         Wikipedia, The Free Encyclopedia. Cross-validation (statistics). Available on:
+    ///                         http://en.wikipedia.org/wiki/Cross-validation_(statistics)
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn_hmm" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\DecisionTreeTest.cs" region="doc_cross_validation" />
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\Bayes\NaiveBayesTest.cs" region="doc_cross_validation" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn_hmm" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\DecisionTreeTest.cs"
+    ///         region="doc_cross_validation" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\Bayes\NaiveBayesTest.cs" region="doc_cross_validation" />
     /// </example>
-    /// 
     [Serializable]
 #pragma warning disable 0618
     public class CrossValidation : CrossValidation<object>
 #pragma warning restore 0618
     {
         /// <summary>
-        ///   Obsolete. Please use <see cref="CrossValidation{TModel, TInput}"/> instead.
+        ///     Obsolete. Please use <see cref="CrossValidation{TModel,TInput}" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use CrossValidation<TModel, TInput> instead.")]
         public CrossValidation(int size)
-            : base(size) { }
+            : base(size)
+        {
+        }
 
         /// <summary>
-        ///   Obsolete. Please use <see cref="CrossValidation{TModel, TInput}"/> instead.
+        ///     Obsolete. Please use <see cref="CrossValidation{TModel, TInput}" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use CrossValidation<TModel, TInput> instead.")]
         public CrossValidation(int size, int folds)
-            : base(size, folds) { }
+            : base(size, folds)
+        {
+        }
 
         /// <summary>
-        ///   Obsolete. Please use <see cref="CrossValidation{TModel, TInput}"/> instead.
+        ///     Obsolete. Please use <see cref="CrossValidation{TModel, TInput}" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use CrossValidation<TModel, TInput> instead.")]
         public CrossValidation(int[] labels, int classes, int folds)
-            : base(labels, classes, folds) { }
+            : base(labels, classes, folds)
+        {
+        }
 
         /// <summary>
-        ///   Obsolete. Please use <see cref="CrossValidation{TModel, TInput}"/> instead.
+        ///     Obsolete. Please use <see cref="CrossValidation{TModel, TInput}" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use CrossValidation<TModel, TInput> instead.")]
         public CrossValidation(int[] indices, int folds)
-            : base(indices, folds) { }
+            : base(indices, folds)
+        {
+        }
 
         /// <summary>
-        ///   Obsolete. Please use <see cref="Classes.Random(int, int)"/> instead.
+        ///     Obsolete. Please use <see cref="Classes.Random(int, int)" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use Classes.Random(size, folds) instead.")]
         public static int[] Splittings(int size, int folds)
         {
@@ -113,9 +128,8 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Obsolete. Please use Classes.Random(labels, classes, folds) instead.
+        ///     Obsolete. Please use Classes.Random(labels, classes, folds) instead.
         /// </summary>
-        /// 
         [Obsolete("Please use Classes.Random(labels, classes, folds) instead.")]
         public static int[] Splittings(int[] labels, int classes, int folds)
         {
@@ -123,30 +137,27 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Creates a new <see cref="CrossValidation{TModel, TLearner, TInput, TOutput}"/> algorithm.
+        ///     Creates a new <see cref="CrossValidation{TModel, TLearner, TInput, TOutput}" /> algorithm.
         /// </summary>
-        /// 
         /// <typeparam name="TModel">The type of the machine learning model whose parameters should be searched.</typeparam>
-        /// <typeparam name="TLearner">The type of the learning algorithm used to learn <typeparamref name="TModel"/>.</typeparam>
+        /// <typeparam name="TLearner">The type of the learning algorithm used to learn <typeparamref name="TModel" />.</typeparam>
         /// <typeparam name="TInput">The type of the input data. Default is double[].</typeparam>
         /// <typeparam name="TOutput">The type of the output data. Default is int.</typeparam>
-        /// 
         /// <param name="k">The number of folds in the k-fold cross-validation. Default is 10.</param>
-        /// <param name="learner">A function that can create a <typeparamref name="TModel"/> given training parameters.</param>
+        /// <param name="learner">A function that can create a <typeparamref name="TModel" /> given training parameters.</param>
         /// <param name="loss">A function that can measure how far model predictions are from the expected ground-truth.</param>
         /// <param name="fit">A function that specifies how to create a new model using the teacher learning algorirhm.</param>
         /// <param name="x">The input data to be used during training.</param>
         /// <param name="y">The output data to be used during training.</param>
-        /// 
         /// <example>
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn" />
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn_hmm" />
-        ///   <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\DecisionTreeTest.cs" region="doc_cross_validation" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\CrossValidationTest.cs" region="doc_learn_hmm" />
+        ///     <code source="Unit Tests\Accord.Tests.MachineLearning\DecisionTrees\DecisionTreeTest.cs"
+        ///         region="doc_cross_validation" />
         /// </example>
-        /// 
         /// <returns>A grid-search algorithm that has been configured with the given parameters.</returns>
-        /// 
-        public static CrossValidation<TModel, TLearner, TInput, TOutput> Create<TModel, TLearner, TInput, TOutput>(int k,
+        public static CrossValidation<TModel, TLearner, TInput, TOutput> Create<TModel, TLearner, TInput, TOutput>(
+            int k,
             CreateLearnerFromSubset<TLearner, TInput, TOutput> learner,
             LearnNewModel<TLearner, TInput, TOutput, TModel> fit,
             ComputeLoss<TOutput, SetResult<TModel>> loss,
@@ -154,12 +165,12 @@ namespace Accord.MachineLearning
             where TModel : class, ITransform<TInput, TOutput>
             where TLearner : class, ISupervisedLearning<TModel, TInput, TOutput>
         {
-            return new CrossValidation<TModel, TLearner, TInput, TOutput>()
+            return new CrossValidation<TModel, TLearner, TInput, TOutput>
             {
                 K = k,
                 Learner = learner,
                 Fit = fit,
-                Loss = loss,
+                Loss = loss
             };
         }
 

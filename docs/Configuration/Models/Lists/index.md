@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Lists
 
 The Lists Page facilitates the creation of lists of data that can be referenced as an operator in all rules in the

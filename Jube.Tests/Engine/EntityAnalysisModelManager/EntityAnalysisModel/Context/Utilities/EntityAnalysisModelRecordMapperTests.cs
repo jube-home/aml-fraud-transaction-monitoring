@@ -50,6 +50,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                     Id = id
                 }
             };
+
             return model;
         }
 
@@ -74,6 +75,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                     EntityAnalysisInstanceGuid = Guid.NewGuid()
                 }
             };
+
             return context;
         }
 
@@ -235,11 +237,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 "EnableActivationArchive", (Action<PocoModel, byte?>)((r, v) => r.EnableActivationArchive = v),
                 (Func<EngineModel, bool>)(m => m.Flags.EnableActivationArchive), false
             ];
+
             yield return
             [
                 "EnableRdbmsArchive", (Action<PocoModel, byte?>)((r, v) => r.EnableRdbmsArchive = v),
                 (Func<EngineModel, bool>)(m => m.Flags.EnableRdbmsArchive), true
             ];
+
             yield return
             [
                 "EnableTrace", (Action<PocoModel, byte?>)((r, v) => r.EnableTrace = v),
@@ -340,6 +344,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 (Action<PocoModel, int?>)((r, v) => r.ReferenceDatePayloadLocationTypeId = (byte?)v),
                 (Func<EngineModel, int>)(m => m.References.ReferenceDatePayloadLocationTypeId), 1, 5
             ];
+
             yield return
             [
                 "CacheFetchLimit", (Action<PocoModel, int?>)((r, v) => r.CacheFetchLimit = v),
@@ -393,6 +398,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 "ActivationWatcherSample", (Action<PocoModel, double?>)((r, v) => r.ActivationWatcherSample = v),
                 (Func<EngineModel, double>)(m => m.Counters.ActivationWatcherSample), 0d, 0.75d
             ];
+
             yield return
             [
                 "MaxActivationWatcherThreshold",
@@ -589,6 +595,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
         public void FullyPopulatedRecordMapsEveryFieldOntoItsCorrespondingContextProperty()
         {
             var guid = Guid.NewGuid();
+
             var record = new PocoModel
             {
                 Id = 5,
@@ -630,6 +637,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 EnableActivationArchive = 1,
                 EnableRdbmsArchive = 0
             };
+
             var model = NewModel(record.Id);
 
             Map(record, model);
@@ -683,8 +691,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             var model = EntityAnalysisModelRecordMapper.CreateEntityAnalysisModel(context, record);
 
             model.Instance.Id.Should().Be(42);
+
             model.Instance.EntityAnalysisInstanceGuid.Should()
                 .Be(context.EntityAnalysisModels.EntityAnalysisInstanceGuid);
+
             model.JsonSerializationHelper.Should().BeSameAs(context.JsonSerializationHelper);
         }
 
@@ -711,6 +721,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             var model = EntityAnalysisModelRecordMapper.CreateEntityAnalysisModel(context, record);
 
             using var scope = new AssertionScope();
+
             model.Dependencies.ActiveEntityAnalysisModels.Should()
                 .BeSameAs(context.EntityAnalysisModels.ActiveEntityAnalysisModels);
             model.Dependencies.SanctionsEntries.Should().BeSameAs(context.EntityAnalysisModels.SanctionsEntries);
@@ -744,6 +755,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             first.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty();
             first.Snapshot.ModelActivationRules.Should().BeEmpty();
             first.Snapshot.Should().NotBeSameAs(second.Snapshot);
+
             first.Snapshot.EntityAnalysisModelLists.Should()
                 .NotBeSameAs(second.Snapshot.EntityAnalysisModelLists);
         }

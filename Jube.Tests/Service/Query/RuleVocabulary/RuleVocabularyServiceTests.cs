@@ -51,6 +51,7 @@ namespace Jube.Test.Service.Query.RuleVocabulary
 
             byName.Items.Should().Contain(w => w.Name == "IsMatch" && w.Kind == "Function" &&
                                                w.ReceiverTypes.Contains("String") && w.Overloads > 1);
+
             onStrings.Items.Should().HaveCount(200);
             onStrings.More.Should().BeTrue();
             onStrings.Items.Should().OnlyContain(w => w.ReceiverTypes.Contains("String"));
@@ -66,6 +67,7 @@ namespace Jube.Test.Service.Query.RuleVocabulary
             var second = await service.ListAsync(take: 10, afterName: first.Items[^1].Name);
 
             second.Items.Select(w => w.Name).Should().NotIntersectWith(first.Items.Select(w => w.Name));
+
             string.Compare(second.Items[0].Name, first.Items[^1].Name, System.StringComparison.OrdinalIgnoreCase)
                 .Should().BePositive();
         }

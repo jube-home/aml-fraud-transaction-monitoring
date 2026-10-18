@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,44 +11,58 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelBacktest;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelBacktest(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestFields", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists the fields a backtest's filter and class may use, including Tag.<Name> for the class."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestRunRule", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Backtests a rule immediately over a filtered archive against a class; returns raw counts."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestSubmit", OperationKind.Write, Idempotent: false,
-                Destructive: false,
-                "Submits a large backtest to the engine's backtest threads; returns the run to poll."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestStatus", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns a submitted backtest's status, progress and headline counts."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestList", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists a model's submitted backtests, optionally for one rule."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestResult", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns a finished backtest's counts and examples."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestStop", OperationKind.Write, Idempotent: true,
-                Destructive: false,
-                "Stops a submitted backtest."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelBacktestExplain", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Explains why one archived transaction was or was not counted, with the values read.")
-        ]);
+        static partial void AddEntityAnalysisModelBacktest(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestFields", OperationKind.Read, true,
+                    false,
+                    "Lists the fields a backtest's filter and class may use, including Tag.<Name> for the class.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestRunRule", OperationKind.Read, true,
+                    false,
+                    "Backtests a rule immediately over a filtered archive against a class; returns raw counts.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestSubmit", OperationKind.Write, false,
+                    false,
+                    "Submits a large backtest to the engine's backtest threads; returns the run to poll.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestStatus", OperationKind.Read, true,
+                    false,
+                    "Returns a submitted backtest's status, progress and headline counts.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestList", OperationKind.Read, true,
+                    false,
+                    "Lists a model's submitted backtests, optionally for one rule.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestResult", OperationKind.Read, true,
+                    false,
+                    "Returns a finished backtest's counts and examples.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestStop", OperationKind.Write, true,
+                    false,
+                    "Stops a submitted backtest.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestExplain", OperationKind.Read, true,
+                    false,
+                    "Explains why one archived transaction was or was not counted, with the values read.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions)
+            ]);
+        }
     }
 }

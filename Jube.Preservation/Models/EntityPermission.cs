@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Preservation.Models
 {
     using Data.Poco;
@@ -19,29 +24,22 @@ namespace Jube.Preservation.Models
     [MessagePackObject]
     public class EntityPermission
     {
-        [Key(0)]
-        public IEnumerable<CaseWorkflowRole>? CaseWorkflowRole { get; set; }
-        [Key(1)]
-        public IEnumerable<CaseWorkflowActionRole>? CaseWorkflowActionRole { get; set; }
-        [Key(2)]
-        public IEnumerable<CaseWorkflowDisplayRole>? CaseWorkflowDisplayRole { get; set; }
-        [Key(3)]
-        public IEnumerable<CaseWorkflowFilterRole>? CaseWorkflowFilterRole { get; set; }
-        [Key(4)]
-        public IEnumerable<CaseWorkflowFormRole>? CaseWorkflowFormRole { get; set; }
-        [Key(5)]
-        public IEnumerable<CaseWorkflowMacroRole>? CaseWorkflowMacroRole { get; set; }
-        [Key(6)]
-        public IEnumerable<CaseWorkflowStatusRole>? CaseWorkflowStatusRole { get; set; }
-        [Key(7)]
-        public IEnumerable<CaseWorkflowXPathRole>? CaseWorkflowXPathRole { get; set; }
-        [Key(8)]
-        public IEnumerable<VisualisationRegistryRole>? VisualisationRegistryRole { get; set; }
+        [Key(0)] public IEnumerable<CaseWorkflowRole>? CaseWorkflowRole { get; set; }
+        [Key(1)] public IEnumerable<CaseWorkflowActionRole>? CaseWorkflowActionRole { get; set; }
+        [Key(2)] public IEnumerable<CaseWorkflowDisplayRole>? CaseWorkflowDisplayRole { get; set; }
+        [Key(3)] public IEnumerable<CaseWorkflowFilterRole>? CaseWorkflowFilterRole { get; set; }
+        [Key(4)] public IEnumerable<CaseWorkflowFormRole>? CaseWorkflowFormRole { get; set; }
+        [Key(5)] public IEnumerable<CaseWorkflowMacroRole>? CaseWorkflowMacroRole { get; set; }
+        [Key(6)] public IEnumerable<CaseWorkflowStatusRole>? CaseWorkflowStatusRole { get; set; }
+        [Key(7)] public IEnumerable<CaseWorkflowXPathRole>? CaseWorkflowXPathRole { get; set; }
+        [Key(8)] public IEnumerable<VisualisationRegistryRole>? VisualisationRegistryRole { get; set; }
+
         [Key(9)]
         public IEnumerable<VisualisationRegistryDatasourceRole>? VisualisationRegistryDatasourceRole { get; set; }
+
         [Key(10)]
         public IEnumerable<VisualisationRegistryParameterRole>? VisualisationRegistryParameterRole { get; set; }
-        [Key(11)]
-        public IEnumerable<EntityAnalysisModelRole>? EntityAnalysisModelRole { get; set; }
+
+        [Key(11)] public IEnumerable<EntityAnalysisModelRole>? EntityAnalysisModelRole { get; set; }
     }
 }

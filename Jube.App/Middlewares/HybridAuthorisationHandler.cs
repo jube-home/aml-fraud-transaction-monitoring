@@ -54,6 +54,7 @@ namespace Jube.App.Middlewares
             if (Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
                 var header = authHeader.ToString();
+
                 if (header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                 {
                     return await ValidateJwtAsync(header["Bearer ".Length..].Trim());
@@ -74,6 +75,7 @@ namespace Jube.App.Middlewares
             try
             {
                 string userName;
+
                 try
                 {
                     userName = apiTokensCache.ValidateApiKeyAndReturnAuthenticatedUser(apiKey);
@@ -99,10 +101,12 @@ namespace Jube.App.Middlewares
         {
             ClaimsPrincipal principal;
             SecurityToken validated;
+
             try
             {
                 var o = Options;
                 var handler = new JwtSecurityTokenHandler();
+
                 var validationParams = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -120,8 +124,10 @@ namespace Jube.App.Middlewares
                 var result = await Task.Run(() =>
                 {
                     var validatedPrincipal = handler.ValidateToken(token, validationParams, out var securityToken);
+
                     return (validatedPrincipal, securityToken);
                 });
+
                 principal = result.validatedPrincipal;
                 validated = result.securityToken;
             }
@@ -142,6 +148,7 @@ namespace Jube.App.Middlewares
             }
 
             var issuedMilliseconds = principal.FindFirstValue(TokenValidity.IssuedMillisecondsClaim);
+
             if (AbsoluteSessionLifetime.IsExpired(dynamicEnvironment, issuedMilliseconds, DateTimeOffset.UtcNow))
             {
                 return Fail("Session has expired.");
@@ -151,6 +158,7 @@ namespace Jube.App.Middlewares
             {
                 await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                     dynamicEnvironment.AppSettings("ConnectionString"), log);
+
                 if (await TokenValidity.IsRevokedAsync(dbContext, username, issuedMilliseconds,
                         (validated as JwtSecurityToken)?.IssuedAt).ConfigureAwait(false))
                 {
@@ -160,6 +168,7 @@ namespace Jube.App.Middlewares
             catch (Exception ex)
             {
                 log.Error("ValidateJwtAsync could not check token revocation.", ex);
+
                 return Fail("Token could not be verified.");
             }
 
@@ -174,6 +183,7 @@ namespace Jube.App.Middlewares
         private AuthenticateResult Success(IEnumerable<Claim> claims)
         {
             var identity = new ClaimsIdentity(claims, Scheme.Name);
+
             return AuthenticateResult.Success(
                 new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name));
         }
@@ -183,6 +193,7 @@ namespace Jube.App.Middlewares
             if (Request.Path.StartsWithSegments("/api"))
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
+
                 return Task.CompletedTask;
             }
 
@@ -191,6 +202,7 @@ namespace Jube.App.Middlewares
             var redirectUrl = $"{loginUrl}?RedirectUrl={WebUtility.UrlEncode(returnUrl)}";
 
             Response.Redirect(redirectUrl);
+
             return Task.CompletedTask;
         }
     }

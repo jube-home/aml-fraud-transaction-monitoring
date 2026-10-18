@@ -322,6 +322,13 @@ function CompileSqlOnServer(filterJson, selectJson, filterTokens, caseWorkflowGu
         success: function (data) {
             if (typeof data !== "undefined") {
                 currentCaseSessionGuid = data.guid;
+
+                window.AskJoobySetPageContext?.("CaseSearch", "search", {
+                    caseWorkflowGuid: caseWorkflowGuid,
+                    caseWorkflowFilterGuid: newFilterBuilder.caseWorkflowFilterGuid,
+                    sessionCaseSearchCompiledSqlGuid: data.guid
+                });
+
                 if (refreshGrid) {
                     ExecuteCasesInSession();
                     ShowButtons();

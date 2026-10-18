@@ -45,6 +45,7 @@ namespace Jube.Test.Cache.Observability
             await CacheDiagnostics.RecordAsync(call, () =>
             {
                 invoked = true;
+
                 return Task.CompletedTask;
             });
 

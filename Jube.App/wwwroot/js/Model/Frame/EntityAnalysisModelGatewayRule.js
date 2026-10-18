@@ -43,6 +43,7 @@ var resetButton = $("#Reset").kendoButton().hide();
 if (typeof id === "undefined") {
     initBuilderCoder(2, GetSelectedParentID());
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelGatewayRule", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -68,6 +69,12 @@ if (typeof id === "undefined") {
             resetButton.show();
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelGatewayRule", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 

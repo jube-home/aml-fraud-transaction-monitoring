@@ -50,43 +50,44 @@
 //   Software.
 //
 
+using System;
+using System.Numerics;
+
 namespace Accord.Math.Transforms
 {
-    using System;
-    using System.Runtime.CompilerServices;
-    using Accord.Compat;
-    using System.Numerics;
-
     /// <summary>
-    ///   Fourier Transform (for arbitrary size matrices).
+    ///     Fourier Transform (for arbitrary size matrices).
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The transforms in this class accept arbitrary-length matrices and are not restricted to 
-    ///   only matrices that have dimensions which are powers of two. It also provides results which 
-    ///   are more equivalent with other mathematical packages, such as MATLAB and Octave.</para>
-    /// <para>
-    ///   This class had been created as an alternative to <see cref="FourierTransform">AForge.NET's 
-    ///   original FourierTransform class</see> that would provide more expected results.</para>
+    ///     <para>
+    ///         The transforms in this class accept arbitrary-length matrices and are not restricted to
+    ///         only matrices that have dimensions which are powers of two. It also provides results which
+    ///         are more equivalent with other mathematical packages, such as MATLAB and Octave.
+    ///     </para>
+    ///     <para>
+    ///         This class had been created as an alternative to
+    ///         <see cref="FourierTransform">
+    ///             AForge.NET's
+    ///             original FourierTransform class
+    ///         </see>
+    ///         that would provide more expected results.
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   The following examples show how to compute 1-D Discrete Fourier Transform and 
-    ///   1-D Fast Fourier Transforms, respectively:</para>
-    /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft" />
-    /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
-    /// 
-    /// <para>
-    ///   The next examples show how to compute 2-D Discrete Fourier Transform and 
-    ///   2-D Fast Fourier Transforms, respectively:</para>
-    /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft2" />
-    /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft2" />
+    ///     <para>
+    ///         The following examples show how to compute 1-D Discrete Fourier Transform and
+    ///         1-D Fast Fourier Transforms, respectively:
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft" />
+    ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
+    ///     <para>
+    ///         The next examples show how to compute 2-D Discrete Fourier Transform and
+    ///         2-D Fast Fourier Transforms, respectively:
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft2" />
+    ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft2" />
     /// </example>
-    /// 
-    /// <seealso cref="FourierTransform"/>
-    /// 
+    /// <seealso cref="FourierTransform" />
     public static class FourierTransform2
     {
         // Trigonometric tables cached.
@@ -96,41 +97,40 @@ namespace Accord.Math.Transforms
         private static double[] expSinTable;
 
         /// <summary>
-        ///   1-D Discrete Fourier Transform.
+        ///     1-D Discrete Fourier Transform.
         /// </summary>
-        /// 
         /// <param name="data">The data to transform.</param>
         /// <param name="direction">The transformation direction.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft" />
         /// </example>
-        /// 
         public static void DFT(Complex[] data, FourierTransform.Direction direction)
         {
-            int n = data.Length;
+            var n = data.Length;
             var c = new Complex[n];
 
             // for each destination element
-            for (int i = 0; i < c.Length; i++)
+            for (var i = 0; i < c.Length; i++)
             {
                 double sumRe = 0;
                 double sumIm = 0;
-                double phim = 2 * Math.PI * i / (double)n;
+                var phim = 2 * System.Math.PI * i / n;
 
                 // sum source elements
-                for (int j = 0; j < n; j++)
+                for (var j = 0; j < n; j++)
                 {
-                    double re = data[j].Real;
-                    double im = data[j].Imaginary;
-                    double cosw = Math.Cos(phim * j);
-                    double sinw = Math.Sin(phim * j);
+                    var re = data[j].Real;
+                    var im = data[j].Imaginary;
+                    var cosw = System.Math.Cos(phim * j);
+                    var sinw = System.Math.Sin(phim * j);
 
                     if (direction == FourierTransform.Direction.Backward)
+                    {
                         sinw = -sinw;
+                    }
 
-                    sumRe += (re * cosw + im * sinw);
-                    sumIm += (im * cosw - re * sinw);
+                    sumRe += re * cosw + im * sinw;
+                    sumIm += im * cosw - re * sinw;
                 }
 
                 c[i] = new Complex(sumRe, sumIm);
@@ -138,35 +138,36 @@ namespace Accord.Math.Transforms
 
             if (direction == FourierTransform.Direction.Backward)
             {
-                for (int i = 0; i < c.Length; i++)
+                for (var i = 0; i < c.Length; i++)
+                {
                     data[i] = c[i] / n;
+                }
             }
             else
             {
-                for (int i = 0; i < c.Length; i++)
+                for (var i = 0; i < c.Length; i++)
+                {
                     data[i] = c[i];
+                }
             }
         }
 
         /// <summary>
-        ///   2-D Discrete Fourier Transform.
+        ///     2-D Discrete Fourier Transform.
         /// </summary>
-        /// 
         /// <param name="data">The data to transform.</param>
         /// <param name="direction">The transformation direction.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft2" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_dft2" />
         /// </example>
-        /// 
         public static void DFT2(Complex[][] data, FourierTransform.Direction direction)
         {
-            int m = data.Columns();
+            var m = data.Columns();
 
             if (direction == FourierTransform.Direction.Forward)
             {
                 // process rows
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
                 {
                     // transform it
                     DFT(data[i], FourierTransform.Direction.Forward);
@@ -174,40 +175,48 @@ namespace Accord.Math.Transforms
 
                 // process columns
                 var col = new Complex[data.Length];
-                for (int j = 0; j < m; j++)
+                for (var j = 0; j < m; j++)
                 {
                     // copy column
-                    for (int i = 0; i < col.Length; i++)
+                    for (var i = 0; i < col.Length; i++)
+                    {
                         col[i] = data[i][j];
+                    }
 
                     // transform it
                     DFT(col, FourierTransform.Direction.Forward);
 
                     // copy back
-                    for (int i = 0; i < col.Length; i++)
+                    for (var i = 0; i < col.Length; i++)
+                    {
                         data[i][j] = col[i];
+                    }
                 }
             }
             else
             {
                 // process columns
                 var col = new Complex[data.Length];
-                for (int j = 0; j < m; j++)
+                for (var j = 0; j < m; j++)
                 {
                     // copy column
-                    for (int i = 0; i < col.Length; i++)
+                    for (var i = 0; i < col.Length; i++)
+                    {
                         col[i] = data[i][j];
+                    }
 
                     // transform it
                     DFT(col, FourierTransform.Direction.Backward);
 
                     // copy back
-                    for (int i = 0; i < col.Length; i++)
+                    for (var i = 0; i < col.Length; i++)
+                    {
                         data[i][j] = col[i];
+                    }
                 }
 
                 // process rows
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
                 {
                     // transform it
                     DFT(data[i], FourierTransform.Direction.Backward);
@@ -216,27 +225,28 @@ namespace Accord.Math.Transforms
         }
 
         /// <summary>
-        ///   1-D Fast Fourier Transform.
+        ///     1-D Fast Fourier Transform.
         /// </summary>
-        /// 
         /// <param name="data">The data to transform..</param>
         /// <param name="direction">The transformation direction.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
         /// </example>
-        /// 
         public static void FFT(Complex[] data, FourierTransform.Direction direction)
         {
-            int n = data.Length;
+            var n = data.Length;
 
             if (n == 0)
+            {
                 return;
+            }
 
             if (direction == FourierTransform.Direction.Backward)
             {
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
+                {
                     data[i] = new Complex(data[i].Imaginary, data[i].Real);
+                }
             }
 
             if ((n & (n - 1)) == 0)
@@ -252,27 +262,24 @@ namespace Accord.Math.Transforms
 
             if (direction == FourierTransform.Direction.Backward)
             {
-                for (int i = 0; i < data.Length; i++)
+                for (var i = 0; i < data.Length; i++)
                 {
-                    double im = data[i].Imaginary;
-                    double re = data[i].Real;
+                    var im = data[i].Imaginary;
+                    var re = data[i].Real;
                     data[i] = new Complex(im / n, re / n);
                 }
             }
         }
 
         /// <summary>
-        ///   1-D Fast Fourier Transform.
+        ///     1-D Fast Fourier Transform.
         /// </summary>
-        /// 
         /// <param name="real">The real part of the complex numbers to transform.</param>
         /// <param name="imag">The imaginary part of the complex numbers to transform.</param>
         /// <param name="direction">The transformation direction.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft" />
         /// </example>
-        /// 
         public static void FFT(double[] real, double[] imag, FourierTransform.Direction direction)
         {
             if (direction == FourierTransform.Direction.Forward)
@@ -286,7 +293,7 @@ namespace Accord.Math.Transforms
 
             if (direction == FourierTransform.Direction.Backward)
             {
-                for (int i = 0; i < real.Length; i++)
+                for (var i = 0; i < real.Length; i++)
                 {
                     real[i] /= real.Length;
                     imag[i] /= real.Length;
@@ -295,23 +302,20 @@ namespace Accord.Math.Transforms
         }
 
         /// <summary>
-        ///   2-D Fast Fourier Transform.
+        ///     2-D Fast Fourier Transform.
         /// </summary>
-        /// 
         /// <param name="data">The data to transform.</param>
         /// <param name="direction">The Transformation direction.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft2" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\FourierTransformTest.cs" region="doc_fft2" />
         /// </example>
-        /// 
         public static void FFT2(Complex[][] data, FourierTransform.Direction direction)
         {
-            int n = data.Length;
-            int m = data[0].Length;
+            var n = data.Length;
+            var m = data[0].Length;
 
             // process rows
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
                 // transform it
                 FFT(data[i], direction);
@@ -319,36 +323,40 @@ namespace Accord.Math.Transforms
 
             // process columns
             var col = new Complex[n];
-            for (int j = 0; j < m; j++)
+            for (var j = 0; j < m; j++)
             {
                 // copy column
-                for (int i = 0; i < col.Length; i++)
+                for (var i = 0; i < col.Length; i++)
+                {
                     col[i] = data[i][j];
+                }
 
                 // transform it
                 FFT(col, direction);
 
                 // copy back
-                for (int i = 0; i < col.Length; i++)
+                for (var i = 0; i < col.Length; i++)
+                {
                     data[i][j] = col[i];
+                }
             }
         }
 
         /// <summary>
-        ///   Computes the discrete Fourier transform (DFT) of the given complex vector, 
-        ///   storing the result back into the vector. The vector can have any length. 
-        ///   This is a wrapper function.
+        ///     Computes the discrete Fourier transform (DFT) of the given complex vector,
+        ///     storing the result back into the vector. The vector can have any length.
+        ///     This is a wrapper function.
         /// </summary>
-        /// 
         /// <param name="real">The real.</param>
         /// <param name="imag">The imag.</param>
-        /// 
         private static void FFT(double[] real, double[] imag)
         {
-            int n = real.Length;
+            var n = real.Length;
 
             if (n == 0)
+            {
                 return;
+            }
 
             if ((n & (n - 1)) == 0)
             {
@@ -363,21 +371,24 @@ namespace Accord.Math.Transforms
         }
 
         /// <summary>
-        ///   Computes the inverse discrete Fourier transform (IDFT) of the given complex 
-        ///   vector, storing the result back into the vector. The vector can have any length.
-        ///   This is a wrapper function. This transform does not perform scaling, so the 
-        ///   inverse is not a true inverse.
+        ///     Computes the inverse discrete Fourier transform (IDFT) of the given complex
+        ///     vector, storing the result back into the vector. The vector can have any length.
+        ///     This is a wrapper function. This transform does not perform scaling, so the
+        ///     inverse is not a true inverse.
         /// </summary>
-        /// 
         private static void IDFT(Complex[] data)
         {
-            int n = data.Length;
+            var n = data.Length;
 
             if (n == 0)
+            {
                 return;
+            }
 
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
+            {
                 data[i] = new Complex(data[i].Imaginary, data[i].Real);
+            }
 
             if ((n & (n - 1)) == 0)
             {
@@ -390,52 +401,50 @@ namespace Accord.Math.Transforms
                 TransformBluestein(data);
             }
 
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                double im = data[i].Imaginary;
-                double re = data[i].Real;
+                var im = data[i].Imaginary;
+                var re = data[i].Real;
                 data[i] = new Complex(im, re);
             }
         }
 
-
         /// <summary>
-        ///   Computes the inverse discrete Fourier transform (IDFT) of the given complex 
-        ///   vector, storing the result back into the vector. The vector can have any length.
-        ///   This is a wrapper function. This transform does not perform scaling, so the 
-        ///   inverse is not a true inverse.
+        ///     Computes the inverse discrete Fourier transform (IDFT) of the given complex
+        ///     vector, storing the result back into the vector. The vector can have any length.
+        ///     This is a wrapper function. This transform does not perform scaling, so the
+        ///     inverse is not a true inverse.
         /// </summary>
-        /// 
         private static void IDFT(double[] real, double[] imag)
         {
             FFT(imag, real);
         }
 
         /// <summary>
-        ///   Computes the discrete Fourier transform (DFT) of the given complex vector, storing 
-        ///   the result back into the vector. The vector's length must be a power of 2. Uses the 
-        ///   Cooley-Tukey decimation-in-time radix-2 algorithm.
+        ///     Computes the discrete Fourier transform (DFT) of the given complex vector, storing
+        ///     the result back into the vector. The vector's length must be a power of 2. Uses the
+        ///     Cooley-Tukey decimation-in-time radix-2 algorithm.
         /// </summary>
-        /// 
-        /// <exception cref="System.ArgumentException">Length is not a power of 2.</exception>
-        /// 
+        /// <exception cref="ArgumentException">Length is not a power of 2.</exception>
         private static void TransformRadix2(double[] real, double[] imag)
         {
-            int n = real.Length;
+            var n = real.Length;
 
-            int levels = (int)Math.Floor(Math.Log(n, 2));
+            var levels = (int)System.Math.Floor(System.Math.Log(n, 2));
 
             if (1 << levels != n)
+            {
                 throw new ArgumentException("Length is not a power of 2");
+            }
 
             // Trigonometric tables.
-            double[] cosTable = CosTable(n / 2);
-            double[] sinTable = SinTable(n / 2);
+            var cosTable = CosTable(n / 2);
+            var sinTable = SinTable(n / 2);
 
             // Bit-reversed addressing permutation
-            for (int i = 0; i < real.Length; i++)
+            for (var i = 0; i < real.Length; i++)
             {
-                int j = unchecked((int)((uint)Reverse(i) >> (32 - levels)));
+                var j = unchecked((int)((uint)Reverse(i) >> (32 - levels)));
 
                 if (j > i)
                 {
@@ -450,21 +459,21 @@ namespace Accord.Math.Transforms
             }
 
             // Cooley-Tukey decimation-in-time radix-2 FFT
-            for (int size = 2; size <= n; size *= 2)
+            for (var size = 2; size <= n; size *= 2)
             {
-                int halfsize = size / 2;
-                int tablestep = n / size;
+                var halfsize = size / 2;
+                var tablestep = n / size;
 
-                for (int i = 0; i < n; i += size)
+                for (var i = 0; i < n; i += size)
                 {
                     for (int j = i, k = 0; j < i + halfsize; j++, k += tablestep)
                     {
-                        int h = j + halfsize;
-                        double re = real[h];
-                        double im = imag[h];
+                        var h = j + halfsize;
+                        var re = real[h];
+                        var im = imag[h];
 
-                        double tpre = +re * cosTable[k] + im * sinTable[k];
-                        double tpim = -re * sinTable[k] + im * cosTable[k];
+                        var tpre = +re * cosTable[k] + im * sinTable[k];
+                        var tpim = -re * sinTable[k] + im * cosTable[k];
 
                         real[h] = real[j] - tpre;
                         imag[h] = imag[j] - tpim;
@@ -476,35 +485,37 @@ namespace Accord.Math.Transforms
 
                 // Prevent overflow in 'size *= 2'
                 if (size == n)
+                {
                     break;
+                }
             }
         }
 
         /// <summary>
-        ///   Computes the discrete Fourier transform (DFT) of the given complex vector, storing 
-        ///   the result back into the vector. The vector's length must be a power of 2. Uses the 
-        ///   Cooley-Tukey decimation-in-time radix-2 algorithm.
+        ///     Computes the discrete Fourier transform (DFT) of the given complex vector, storing
+        ///     the result back into the vector. The vector's length must be a power of 2. Uses the
+        ///     Cooley-Tukey decimation-in-time radix-2 algorithm.
         /// </summary>
-        /// 
-        /// <exception cref="System.ArgumentException">Length is not a power of 2.</exception>
-        /// 
+        /// <exception cref="ArgumentException">Length is not a power of 2.</exception>
         private static void TransformRadix2(Complex[] complex)
         {
-            int n = complex.Length;
+            var n = complex.Length;
 
-            int levels = (int)Math.Floor(Math.Log(n, 2));
+            var levels = (int)System.Math.Floor(System.Math.Log(n, 2));
 
             if (1 << levels != n)
+            {
                 throw new ArgumentException("Length is not a power of 2");
-            
+            }
+
             // Trigonometric tables.
-            double[] cosTable = CosTable(n / 2);
-            double[] sinTable = SinTable(n / 2);
+            var cosTable = CosTable(n / 2);
+            var sinTable = SinTable(n / 2);
 
             // Bit-reversed addressing permutation
-            for (int i = 0; i < complex.Length; i++)
+            for (var i = 0; i < complex.Length; i++)
             {
-                int j = unchecked((int)((uint)Reverse(i) >> (32 - levels)));
+                var j = unchecked((int)((uint)Reverse(i) >> (32 - levels)));
 
                 if (j > i)
                 {
@@ -516,24 +527,24 @@ namespace Accord.Math.Transforms
 
 
             // Cooley-Tukey decimation-in-time radix-2 FFT
-            for (int size = 2; size <= n; size *= 2)
+            for (var size = 2; size <= n; size *= 2)
             {
-                int halfsize = size / 2;
-                int tablestep = n / size;
+                var halfsize = size / 2;
+                var tablestep = n / size;
 
-                for (int i = 0; i < n; i += size)
+                for (var i = 0; i < n; i += size)
                 {
                     for (int j = i, k = 0; j < i + halfsize; j++, k += tablestep)
                     {
-                        int h = j + halfsize;
-                        double re = complex[h].Real;
-                        double im = complex[h].Imaginary;
+                        var h = j + halfsize;
+                        var re = complex[h].Real;
+                        var im = complex[h].Imaginary;
 
-                        double tpre = +re * cosTable[k] + im * sinTable[k];
-                        double tpim = -re * sinTable[k] + im * cosTable[k];
+                        var tpre = +re * cosTable[k] + im * sinTable[k];
+                        var tpim = -re * sinTable[k] + im * cosTable[k];
 
-                        double rej = complex[j].Real;
-                        double imj = complex[j].Imaginary;
+                        var rej = complex[j].Real;
+                        var imj = complex[j].Imaginary;
 
                         complex[h] = new Complex(rej - tpre, imj - tpim);
                         complex[j] = new Complex(rej + tpre, imj + tpim);
@@ -542,31 +553,31 @@ namespace Accord.Math.Transforms
 
                 // Prevent overflow in 'size *= 2'
                 if (size == n)
+                {
                     break;
+                }
             }
         }
 
-
         /// <summary>
-        ///   Computes the discrete Fourier transform (DFT) of the given complex vector, storing 
-        ///   the result back into the vector. The vector can have any length. This requires the 
-        ///   convolution function, which in turn requires the radix-2 FFT function. Uses 
-        ///   Bluestein's chirp z-transform algorithm.
+        ///     Computes the discrete Fourier transform (DFT) of the given complex vector, storing
+        ///     the result back into the vector. The vector can have any length. This requires the
+        ///     convolution function, which in turn requires the radix-2 FFT function. Uses
+        ///     Bluestein's chirp z-transform algorithm.
         /// </summary>
-        /// 
         private static void TransformBluestein(double[] real, double[] imag)
         {
-            int n = real.Length;
-            int m = HighestOneBit(n * 2 + 1) << 1;
+            var n = real.Length;
+            var m = HighestOneBit(n * 2 + 1) << 1;
 
             // Trigonometric tables.
-            double[] cosTable = ExpCosTable(n);
-            double[] sinTable = ExpSinTable(n);
-            
+            var cosTable = ExpCosTable(n);
+            var sinTable = ExpSinTable(n);
+
             // Temporary vectors and preprocessing
             var areal = new double[m];
             var aimag = new double[m];
-            for (int i = 0; i < real.Length; i++)
+            for (var i = 0; i < real.Length; i++)
             {
                 areal[i] = +real[i] * cosTable[i] + imag[i] * sinTable[i];
                 aimag[i] = -real[i] * sinTable[i] + imag[i] * cosTable[i];
@@ -577,7 +588,7 @@ namespace Accord.Math.Transforms
             breal[0] = cosTable[0];
             bimag[0] = sinTable[0];
 
-            for (int i = 1; i < cosTable.Length; i++)
+            for (var i = 1; i < cosTable.Length; i++)
             {
                 breal[i] = breal[m - i] = cosTable[i];
                 bimag[i] = bimag[m - i] = sinTable[i];
@@ -589,7 +600,7 @@ namespace Accord.Math.Transforms
             Convolve(areal, aimag, breal, bimag, creal, cimag);
 
             // Postprocessing
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
             {
                 real[i] = +creal[i] * cosTable[i] + cimag[i] * sinTable[i];
                 imag[i] = -creal[i] * sinTable[i] + cimag[i] * cosTable[i];
@@ -598,21 +609,21 @@ namespace Accord.Math.Transforms
 
         private static void TransformBluestein(Complex[] data)
         {
-            int n = data.Length;
-            int m = HighestOneBit(n * 2 + 1) << 1;
+            var n = data.Length;
+            var m = HighestOneBit(n * 2 + 1) << 1;
 
             // Trigonometric tables.
-            double[] cosTable = ExpCosTable(n);
-            double[] sinTable = ExpSinTable(n);
-            
+            var cosTable = ExpCosTable(n);
+            var sinTable = ExpSinTable(n);
+
             // Temporary vectors and preprocessing
             var areal = new double[m];
             var aimag = new double[m];
 
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                double re = data[i].Real;
-                double im = data[i].Imaginary;
+                var re = data[i].Real;
+                var im = data[i].Imaginary;
 
                 areal[i] = +re * cosTable[i] + im * sinTable[i];
                 aimag[i] = -re * sinTable[i] + im * cosTable[i];
@@ -623,7 +634,7 @@ namespace Accord.Math.Transforms
             breal[0] = cosTable[0];
             bimag[0] = sinTable[0];
 
-            for (int i = 1; i < cosTable.Length; i++)
+            for (var i = 1; i < cosTable.Length; i++)
             {
                 breal[i] = breal[m - i] = cosTable[i];
                 bimag[i] = bimag[m - i] = sinTable[i];
@@ -635,44 +646,42 @@ namespace Accord.Math.Transforms
             Convolve(areal, aimag, breal, bimag, creal, cimag);
 
             // Postprocessing
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                double re = +creal[i] * cosTable[i] + cimag[i] * sinTable[i];
-                double im = -creal[i] * sinTable[i] + cimag[i] * cosTable[i];
+                var re = +creal[i] * cosTable[i] + cimag[i] * sinTable[i];
+                var im = -creal[i] * sinTable[i] + cimag[i] * cosTable[i];
                 data[i] = new Complex(re, im);
             }
         }
 
         /// <summary>
-        ///   Computes the circular convolution of the given real 
-        ///   vectors. All vectors must have the same length.
+        ///     Computes the circular convolution of the given real
+        ///     vectors. All vectors must have the same length.
         /// </summary>
-        /// 
         public static void Convolve(double[] x, double[] y, double[] result)
         {
-            int n = x.Length;
+            var n = x.Length;
             Convolve(x, new double[n], y, new double[n], result, new double[n]);
         }
 
         /// <summary>
-        ///   Computes the circular convolution of the given complex 
-        ///   vectors. All vectors must have the same length.
+        ///     Computes the circular convolution of the given complex
+        ///     vectors. All vectors must have the same length.
         /// </summary>
-        /// 
         public static void Convolve(Complex[] x, Complex[] y, Complex[] result)
         {
             FFT(x, FourierTransform.Direction.Forward);
             FFT(y, FourierTransform.Direction.Forward);
 
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
-                double xreal = x[i].Real;
-                double ximag = x[i].Imaginary;
-                double yreal = y[i].Real;
-                double yimag = y[i].Imaginary;
+                var xreal = x[i].Real;
+                var ximag = x[i].Imaginary;
+                var yreal = y[i].Real;
+                var yimag = y[i].Imaginary;
 
-                double re = xreal * yreal - ximag * yimag;
-                double im = ximag * yreal + xreal * yimag;
+                var re = xreal * yreal - ximag * yimag;
+                var im = ximag * yreal + xreal * yimag;
 
                 x[i] = new Complex(re, im);
             }
@@ -680,25 +689,25 @@ namespace Accord.Math.Transforms
             IDFT(x);
 
             // Scaling (because this FFT implementation omits it)
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
                 result[i] = x[i] / x.Length;
             }
         }
 
         /// <summary>
-        ///   Computes the circular convolution of the given complex 
-        ///   vectors. All vectors must have the same length.
+        ///     Computes the circular convolution of the given complex
+        ///     vectors. All vectors must have the same length.
         /// </summary>
-        /// 
-        public static void Convolve(double[] xreal, double[] ximag, double[] yreal, double[] yimag, double[] outreal, double[] outimag)
+        public static void Convolve(double[] xreal, double[] ximag, double[] yreal, double[] yimag, double[] outreal,
+            double[] outimag)
         {
-            int n = xreal.Length;
+            var n = xreal.Length;
 
             FFT(xreal, ximag);
             FFT(yreal, yimag);
 
-            for (int i = 0; i < xreal.Length; i++)
+            for (var i = 0; i < xreal.Length; i++)
             {
                 var temp = xreal[i] * yreal[i] - ximag[i] * yimag[i];
                 ximag[i] = ximag[i] * yreal[i] + xreal[i] * yimag[i];
@@ -708,7 +717,7 @@ namespace Accord.Math.Transforms
             IDFT(xreal, ximag);
 
             // Scaling (because this FFT implementation omits it)
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
             {
                 outreal[i] = xreal[i] / n;
                 outimag[i] = ximag[i] / n;
@@ -717,32 +726,33 @@ namespace Accord.Math.Transforms
 
         private static int HighestOneBit(int i)
         {
-            i |= (i >> 1);
-            i |= (i >> 2);
-            i |= (i >> 4);
-            i |= (i >> 8);
-            i |= (i >> 16);
+            i |= i >> 1;
+            i |= i >> 2;
+            i |= i >> 4;
+            i |= i >> 8;
+            i |= i >> 16;
             return i - (int)((uint)i >> 1);
         }
 
         private static int Reverse(int i)
         {
-            i = (i & 0x55555555) << 1 | (int)((uint)i >> 1) & 0x55555555;
-            i = (i & 0x33333333) << 2 | (int)((uint)i >> 2) & 0x33333333;
-            i = (i & 0x0f0f0f0f) << 4 | (int)((uint)i >> 4) & 0x0f0f0f0f;
+            i = ((i & 0x55555555) << 1) | ((int)((uint)i >> 1) & 0x55555555);
+            i = ((i & 0x33333333) << 2) | ((int)((uint)i >> 2) & 0x33333333);
+            i = ((i & 0x0f0f0f0f) << 4) | ((int)((uint)i >> 4) & 0x0f0f0f0f);
             i = (i << 24) | ((i & 0xff00) << 8) |
                 ((int)((uint)i >> 8) & 0xff00) | (int)((uint)i >> 24);
             return i;
         }
 
         /// <summary>
-        ///   Computes the Magnitude spectrum of a complex signal.
+        ///     Computes the Magnitude spectrum of a complex signal.
         /// </summary>
-        /// 
         public static double[] GetMagnitudeSpectrum(Complex[] fft)
         {
             if (fft == null)
+            {
                 throw new ArgumentNullException("fft");
+            }
 
             // assumes fft is symmetric
 
@@ -751,93 +761,108 @@ namespace Accord.Math.Transforms
             // from a two-sided spectrum to a single-sided spectrum, discard the second half of
             // the array and multiply every point except for DC by two.
 
-            int numUniquePts = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
-            double[] mx = new double[numUniquePts];
+            var numUniquePts = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
+            var mx = new double[numUniquePts];
 
             mx[0] = fft[0].Magnitude / fft.Length;
-            for (int i = 0; i < numUniquePts; i++)
+            for (var i = 0; i < numUniquePts; i++)
+            {
                 mx[i] = fft[i].Magnitude * 2 / fft.Length;
+            }
 
             return mx;
         }
 
         /// <summary>
-        ///   Computes the Power spectrum of a complex signal.
+        ///     Computes the Power spectrum of a complex signal.
         /// </summary>
-        /// 
         public static double[] GetPowerSpectrum(Complex[] fft)
         {
             if (fft == null)
+            {
                 throw new ArgumentNullException("fft");
+            }
 
-            int n = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
+            var n = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
 
-            double[] mx = new double[n];
+            var mx = new double[n];
 
             mx[0] = fft[0].SquaredMagnitude() / fft.Length;
 
-            for (int i = 1; i < n; i++)
-                mx[i] = fft[i].SquaredMagnitude() * 2.0 / fft.Length;
+            var hasNyquist = fft.Length % 2 == 0;
+
+            for (var i = 1; i < n; i++)
+            {
+                var nyquist = hasNyquist && i == fft.Length / 2;
+                mx[i] = fft[i].SquaredMagnitude() * (nyquist ? 1.0 : 2.0) / fft.Length;
+            }
 
             return mx;
         }
 
         /// <summary>
-        ///   Computes the Phase spectrum of a complex signal.
+        ///     Computes the Phase spectrum of a complex signal.
         /// </summary>
-        /// 
         public static double[] GetPhaseSpectrum(Complex[] fft)
         {
-            if (fft == null) throw new ArgumentNullException("fft");
+            if (fft == null)
+            {
+                throw new ArgumentNullException("fft");
+            }
 
-            int n = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
+            var n = (int)System.Math.Ceiling((fft.Length + 1) / 2.0);
 
-            double[] mx = new double[n];
+            var mx = new double[n];
 
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
+            {
                 mx[i] = fft[i].Phase;
+            }
 
             return mx;
         }
 
         /// <summary>
-        ///   Creates an evenly spaced frequency vector (assuming a symmetric FFT)
+        ///     Creates an evenly spaced frequency vector (assuming a symmetric FFT)
         /// </summary>
-        /// 
         public static double[] GetFrequencyVector(int length, int sampleRate)
         {
-            int numUniquePts = (int)System.Math.Ceiling((length + 1) / 2.0);
+            var numUniquePts = (int)System.Math.Ceiling((length + 1) / 2.0);
 
-            double[] freq = new double[numUniquePts];
-            for (int i = 0; i < numUniquePts; i++)
+            var freq = new double[numUniquePts];
+            for (var i = 0; i < numUniquePts; i++)
+            {
                 freq[i] = i * sampleRate / (double)length;
+            }
 
             return freq;
         }
 
         /// <summary>
-        ///   Gets the spectral resolution for a signal of given sampling rate and number of samples.
+        ///     Gets the spectral resolution for a signal of given sampling rate and number of samples.
         /// </summary>
-        /// 
         public static double GetSpectralResolution(int samplingRate, int samples)
         {
             return samplingRate / (double)samples;
         }
 
         /// <summary>
-        ///   Gets the power Cepstrum for a complex signal.
+        ///     Gets the power Cepstrum for a complex signal.
         /// </summary>
-        /// 
         public static double[] GetPowerCepstrum(Complex[] signal)
         {
             if (signal == null)
+            {
                 throw new ArgumentNullException("signal");
+            }
 
             FourierTransform.FFT(signal, FourierTransform.Direction.Backward);
 
-            Complex[] logabs = new Complex[signal.Length];
-            for (int i = 0; i < logabs.Length; i++)
+            var logabs = new Complex[signal.Length];
+            for (var i = 0; i < logabs.Length; i++)
+            {
                 logabs[i] = new Complex(System.Math.Log(signal[i].Magnitude), 0);
+            }
 
             FourierTransform.FFT(logabs, FourierTransform.Direction.Forward);
 
@@ -845,84 +870,92 @@ namespace Accord.Math.Transforms
         }
 
         /// <summary>
-        ///   Gets a half period cosine table.
-        ///   Keeps the results in memory and reuses if parameters are the same.
+        ///     Gets a half period cosine table.
+        ///     Keeps the results in memory and reuses if parameters are the same.
         /// </summary>
-        /// 
         private static double[] CosTable(int sampleCount)
         {
             // Return table from memory if period matches.
             if (cosTable != null && sampleCount == cosTable.Length)
+            {
                 return cosTable;
+            }
 
             // Create a new table and keep in memory.
             cosTable = new double[sampleCount];
-            for (int i = 0; i < sampleCount; i++)
+            for (var i = 0; i < sampleCount; i++)
             {
-                cosTable[i] = Math.Cos(Math.PI * i / sampleCount);
+                cosTable[i] = System.Math.Cos(System.Math.PI * i / sampleCount);
             }
+
             return cosTable;
         }
 
         /// <summary>
-        ///   Gets a half period sinus table.
-        ///   Keeps the results in memory and reuses if parameters are the same.
+        ///     Gets a half period sinus table.
+        ///     Keeps the results in memory and reuses if parameters are the same.
         /// </summary>
-        ///
         private static double[] SinTable(int sampleCount)
         {
             // Return table from memory if period matches.
             if (sinTable != null && sampleCount == sinTable.Length)
+            {
                 return sinTable;
+            }
 
             // Create a new table and keep in memory.
             sinTable = new double[sampleCount];
-            for (int i = 0; i < sampleCount; i++)
+            for (var i = 0; i < sampleCount; i++)
             {
-                sinTable[i] = Math.Sin(Math.PI * i / sampleCount);
+                sinTable[i] = System.Math.Sin(System.Math.PI * i / sampleCount);
             }
+
             return sinTable;
         }
-        
+
         /// <summary>
-        ///   Gets a cosine table with exponentially increasing frequency by i * i.
-        ///   Keeps the results in memory and reuses if parameters are the same.
+        ///     Gets a cosine table with exponentially increasing frequency by i * i.
+        ///     Keeps the results in memory and reuses if parameters are the same.
         /// </summary>
-        ///
         private static double[] ExpCosTable(int sampleCount)
         {
             // Return table from memory if period matches.
             if (expCosTable != null && sampleCount == expCosTable.Length)
+            {
                 return expCosTable;
+            }
 
             // Create a new table and keep in memory.
             expCosTable = new double[sampleCount];
-            for (int i = 0; i < sampleCount; i++)
+            for (var i = 0; i < sampleCount; i++)
             {
-                int j = (int)((long)i * i % (sampleCount * 2));  // This is more accurate than j = i * i
-                expCosTable[i] = Math.Cos(Math.PI * j / sampleCount);
+                var j = (int)((long)i * i % (sampleCount * 2)); // This is more accurate than j = i * i
+                expCosTable[i] = System.Math.Cos(System.Math.PI * j / sampleCount);
             }
+
             return expCosTable;
         }
 
         /// <summary>
-        ///   Gets a sinus table with exponentially increasing frequency by i * i.
-        ///   Keeps the results in memory and reuses if parameters are the same.
+        ///     Gets a sinus table with exponentially increasing frequency by i * i.
+        ///     Keeps the results in memory and reuses if parameters are the same.
         /// </summary>
-        ///
         private static double[] ExpSinTable(int sampleCount)
         {
             // Return table from memory if period matches.
             if (expSinTable != null && sampleCount == expSinTable.Length)
+            {
                 return expSinTable;
+            }
 
             // Create a new table and keep in memory.
             expSinTable = new double[sampleCount];
-            for (int i = 0; i < sampleCount; i++)
+            for (var i = 0; i < sampleCount; i++)
             {
-                int j = (int)((long)i * i % (sampleCount * 2));  // This is more accurate than j = i * i
-                expSinTable[i] = Math.Sin(Math.PI * j / sampleCount);
+                var j = (int)((long)i * i % (sampleCount * 2)); // This is more accurate than j = i * i
+                expSinTable[i] = System.Math.Sin(System.Math.PI * j / sampleCount);
             }
+
             return expSinTable;
         }
     }

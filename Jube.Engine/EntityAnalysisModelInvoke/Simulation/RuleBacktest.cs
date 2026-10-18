@@ -18,8 +18,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Models;
     using Newtonsoft.Json.Linq;
     using Parser;
+    using Parser.Models;
 
     public sealed record BacktestRow(
         Guid EntityAnalysisModelInstanceEntryGuid,
@@ -65,7 +67,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     public sealed class RuleBacktest(BacktestPlan plan)
     {
         public const string TagNamespace = "Tag";
-
         public BacktestResult Result { get; } = new() { ClassDefined = plan.Class != null };
 
         public static BacktestOutcome Classify(bool fired, bool positive)
@@ -85,6 +86,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(context);
 
             var values = context.Values.ToDictionary(v => v.Key, v => v.Value.Value, StringComparer.Ordinal);
+
             foreach (var tag in tagNames ?? [])
             {
                 values[$"{TagNamespace}.{tag}"] = tags.Contains(tag);
@@ -101,20 +103,24 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
             var context = InvocationContextBuilder.FromArchive(plan.EntityAnalysisModelId,
                 row.EntityAnalysisModelInstanceEntryGuid, row.Archive, plan.Fields);
+
             var inputs = RuleRunner.ToInputs(context, plan.Lists);
 
             var passed = true;
             string filterError = null;
+
             if (plan.Filter != null)
             {
                 var filter = await RuleRunner.RunAsync(plan.Filter, RuleParse.GatewayRule, true, inputs, token)
                     .ConfigureAwait(false);
+
                 filterError = filter.Error == null ? null : $"{filter.Error.GetType().Name}: {filter.Error.Message}";
                 passed = filter.Error == null && filter.Value is true;
             }
 
             var run = await RuleRunner.RunAsync(plan.Rule, plan.RuleParseType, plan.Reprocessing, inputs, token)
                 .ConfigureAwait(false);
+
             var names = plan.Rule.References.Select(r => r.CompletionName)
                 .Concat(plan.Filter?.References.Select(r => r.CompletionName) ?? [])
                 .Distinct(StringComparer.Ordinal)
@@ -125,7 +131,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 .ToList();
 
             return new BacktestExplanation(row.EntityAnalysisModelInstanceEntryGuid, row.EntryKeyValue,
-                row.ReferenceDate, row.Tags.ToList(), passed, filterError, run.Error == null && run.Value is true,
+                row.ReferenceDate, [.. row.Tags], passed, filterError, run.Error == null && run.Value is true,
                 run.Error == null ? null : $"{run.Error.GetType().Name}: {run.Error.Message}",
                 plan.Class?.Invoke(ClassValues(context, plan.TagNames, row.Tags)), names);
         }
@@ -141,17 +147,21 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
                 var context = InvocationContextBuilder.FromArchive(plan.EntityAnalysisModelId,
                     row.EntityAnalysisModelInstanceEntryGuid, row.Archive, plan.Fields);
+
                 var inputs = RuleRunner.ToInputs(context, plan.Lists);
 
                 if (plan.Filter != null)
                 {
                     var filter = await RuleRunner.RunAsync(plan.Filter, RuleParse.GatewayRule, true, inputs, token)
                         .ConfigureAwait(false);
+
                     Result.DurationMicroseconds += filter.DurationMicroseconds;
+
                     if (filter.Error != null)
                     {
                         Result.FilterErrors++;
                         Result.FilteredOut++;
+
                         if (Abort(filter))
                         {
                             return false;
@@ -169,6 +179,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
                 var run = await RuleRunner.RunAsync(plan.Rule, plan.RuleParseType, plan.Reprocessing, inputs, token)
                     .ConfigureAwait(false);
+
                 Result.Evaluated++;
                 Result.DurationMicroseconds += run.DurationMicroseconds;
                 Track(row);
@@ -215,9 +226,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             }
 
             Result.Aborted = true;
+
             Result.AbortReason = "A rule took longer than the time limit on one transaction, so the backtest " +
                                  "stopped there; the engine has no time limit, so a rule this slow would hold " +
                                  "up every invocation.";
+
             return true;
         }
 

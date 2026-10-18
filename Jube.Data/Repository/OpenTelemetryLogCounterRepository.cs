@@ -52,6 +52,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -90,6 +91,7 @@ namespace Jube.Data.Repository
             model.UpdatedDate = updatedDate;
             model.UpdatedUser = userName;
             model.Version = version;
+
             return model;
         }
 

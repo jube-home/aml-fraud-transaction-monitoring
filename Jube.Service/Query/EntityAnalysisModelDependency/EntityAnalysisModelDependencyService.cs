@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,8 +17,9 @@ using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelDependency;
 using Jube.Dto.Validation;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelDependency;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -49,7 +50,6 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
         ];
 
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -72,6 +72,8 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelDependencyService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -140,19 +142,25 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             return RunAsync("Dependents", async () =>
             {
                 var result = new DependencyImpactDto();
+
                 var (graph, entity, error) = await ResolveAsync(entityAnalysisModelId, kind, id, token)
                     .ConfigureAwait(false);
+
                 if (error != null)
                 {
                     result.Errors = [error];
+
                     return result;
                 }
 
                 result.Entity = ToDto(entity!);
                 result.Dependents = Impact(graph!, entity!);
+
                 result.DirectDependents = result.Dependents.Where(d => d.Depth == 1)
                     .Select(d => (d.Dependent.Kind, d.Dependent.Id)).Distinct().Count();
+
                 result.DeleteBlocked = deleteGuarded.Contains(entity!.Kind) && result.DirectDependents > 0;
+
                 return result;
             }, token);
         }
@@ -172,16 +180,20 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             return RunAsync("Dependencies", async () =>
             {
                 var result = new DependencyListDto();
+
                 var (graph, entity, error) = await ResolveAsync(entityAnalysisModelId, kind, id, token)
                     .ConfigureAwait(false);
+
                 if (error != null)
                 {
                     result.Errors = [error];
+
                     return result;
                 }
 
                 result.Entity = ToDto(entity!);
                 result.Dependencies = graph!.DependenciesOf(entity!).Select(d => ToDto(d, 1, null)).ToList();
+
                 return result;
             }, token);
         }
@@ -197,6 +209,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             return RunAsync("Issues", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 var graph = await ModelDependencyGraphBuilder
                     .BuildAsync(dbContext, tenantRegistryId, userName, model.Id, log, token).ConfigureAwait(false);
 
@@ -214,6 +227,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             ResolveAsync(int entityAnalysisModelId, string? kind, int id, CancellationToken token)
         {
             var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
             if (!Enum.TryParse<ModelEntityKind>(kind, true, out var parsed) || !Enum.IsDefined(parsed) ||
                 int.TryParse(kind, out _))
             {
@@ -224,6 +238,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
 
             var graph = await ModelDependencyGraphBuilder
                 .BuildAsync(dbContext, tenantRegistryId, userName, model.Id, log, token).ConfigureAwait(false);
+
             var entity = graph.Entities.FirstOrDefault(e => e.Kind == parsed && e.Id == id);
 
             return entity == null
@@ -242,11 +257,13 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             while (queue.Count > 0 && result.Count < MaxDependents)
             {
                 var (target, depth, via) = queue.Dequeue();
+
                 foreach (var dependency in graph.DependentsOf(target.Kind, target.Id)
                              .Where(d => d.Dependent != target)
                              .OrderBy(d => d.Dependent.Kind).ThenBy(d => d.Dependent.Name))
                 {
                     result.Add(ToDto(dependency, depth, via == null ? null : $"{via.Kind}:{via.Name}"));
+
                     if (depth < MaxDepth && visited.Add(dependency.Dependent))
                     {
                         queue.Enqueue((dependency.Dependent, depth + 1, via ?? dependency.Dependent));
@@ -284,6 +301,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             using var op = OperationScope.Start("EntityAnalysisModelDependency", operation, userName, tenantRegistryId,
                 auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelDependency.{operation}: entry user={userName}");
@@ -293,6 +311,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDependency
             {
                 token.ThrowIfCancellationRequested();
                 EnsurePermitted($"EntityAnalysisModelDependency.{operation}");
+
                 return await body().ConfigureAwait(false);
             }
             catch (ForbiddenException)

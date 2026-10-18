@@ -137,6 +137,12 @@ function loadTemplate(id) {
             ReadyExisting(data);
             validator.validate();
 
+            window.AskJoobySetPageContext?.("EntityAnalysisModel", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name
+            });
+
             $("#Template").show();
             $("#Homepage").hide();
         });
@@ -185,6 +191,7 @@ function showTemplate() {
     $("#ErrorMessage").html("");
 
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModel", "new", null);
     $("#Template").show();
     $("#Homepage").hide();
 }
@@ -192,6 +199,7 @@ function showTemplate() {
 function showHomePage() {
     $("#Template").hide();
     $("#Homepage").show();
+    window.AskJoobySetPageContext?.("EntityAnalysisModel", "list", null);
     getRecords();
 }
 

@@ -87,6 +87,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
                 }).ConfigureAwait(false);
 
             createdRowIds.Add(id);
+
             return instance;
         }
 
@@ -231,15 +232,19 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "caseCreation", sortDirection: "asc");
+
             var ascendingMine = ascending.Rows
                 .Where(r => r.Instance == instanceLow || r.Instance == instanceMid || r.Instance == instanceHigh)
                 .ToList();
+
             ascendingMine.Select(r => r.CaseCreation).Should().Equal(10, 20, 30);
 
             var descending = await service.ListAsync(sortField: "caseCreation", sortDirection: "desc");
+
             var descendingMine = descending.Rows
                 .Where(r => r.Instance == instanceLow || r.Instance == instanceMid || r.Instance == instanceHigh)
                 .ToList();
+
             descendingMine.Select(r => r.CaseCreation).Should().Equal(30, 20, 10);
         }
 
@@ -254,13 +259,17 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "instance", sortDirection: "asc");
+
             var ascendingMine = ascending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
                 .ToList();
+
             ascendingMine.Select(r => r.Instance).Should().Equal(instanceA, instanceB);
 
             var descending = await service.ListAsync(sortField: "instance", sortDirection: "desc");
+
             var descendingMine = descending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
                 .ToList();
+
             descendingMine.Select(r => r.Instance).Should().Equal(instanceB, instanceA);
         }
 
@@ -315,6 +324,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
         {
             await using var dbContext = fx.GetDbContext();
             var from = DateTime.UtcNow.AddMinutes(-1);
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateRowAsync(dbContext, 1);
@@ -338,8 +348,10 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(
                 "caseCreation", "tagging", "notification", "asynchronousEntityInvoke");
+
             result.Statistics.Columns["asynchronousEntityInvoke"].Min.Should().Be(0,
                 "AsynchronousEntityInvoke is always 0 in the DTO -- a pre-existing mapping gap");
+
             result.Statistics.Columns["asynchronousEntityInvoke"].Max.Should().Be(0);
         }
 
@@ -353,6 +365,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.Instance == instance);
+
             mine.Name.Should().BeNull(
                 "the legacy DTO's Name property was never mapped from any source column -- preserved as-is");
         }
@@ -367,6 +380,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.Instance == instance);
+
             mine.AsynchronousEntityInvoke.Should().Be(0,
                 "the legacy DTO's AsynchronousEntityInvoke never matched the underlying AsynchronousInvoke column name -- preserved as-is");
         }

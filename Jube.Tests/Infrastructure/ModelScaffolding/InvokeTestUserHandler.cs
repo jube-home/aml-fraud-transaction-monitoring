@@ -37,6 +37,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             }
 
             var identity = new ClaimsIdentity([new Claim(ClaimTypes.Name, value.ToString())], TestScheme);
+
             return Task.FromResult(AuthenticateResult.Success(
                 new AuthenticationTicket(new ClaimsPrincipal(identity), TestScheme)));
         }
@@ -44,12 +45,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             Response.StatusCode = StatusCodes.Status401Unauthorized;
+
             return Task.CompletedTask;
         }
 
         protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
         {
             Response.StatusCode = StatusCodes.Status403Forbidden;
+
             return Task.CompletedTask;
         }
     }

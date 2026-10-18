@@ -57,7 +57,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         private readonly List<int> createdTrialInstanceIds = [];
         private readonly List<int> createdTrialVariableIds = [];
         private readonly List<int> createdVariableIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -76,10 +75,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
                 .Where(w => createdTrialInstanceIds.Contains(w.Id)).DeleteAsync();
             await dbContext.ExhaustiveSearchInstanceVariable
                 .Where(w => createdVariableIds.Contains(w.Id)).DeleteAsync();
+
             foreach (var id in createdSearchInstanceIds)
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -88,6 +89,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -220,6 +222,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -228,6 +231,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -236,8 +240,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task GetAsyncThrowsForbiddenWhenPermissionMissingAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("A"), 1, 1, 1, 1, null, null));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
 
             var ex = await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync(promotedId));
@@ -251,15 +257,19 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         {
             await using var dbContext = fx.GetDbContext();
             var name = Nm("Full");
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(name, 1.5, 2.5, 30.5, -4.5, (10.25, 11.25, 12.25, 13.25), 0.75));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(promotedId);
 
             var dto = result.Should().ContainSingle().Subject;
+
             var expectedId = await dbContext.ExhaustiveSearchInstanceVariable.Where(w => w.Name == name)
                 .Select(s => s.Id).SingleAsync();
+
             dto.Id.Should().Be(expectedId);
             dto.Name.Should().Be(name);
             dto.VariableMean.Should().Be(1.5);
@@ -277,8 +287,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task MissingPrescriptionAndSensitivityDefaultToZeroAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("Bare"), 1, 2, 3, 4, null, null));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = (await service.GetAsync(promotedId)).Should().ContainSingle().Subject;
@@ -295,10 +307,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task ResultsAreOrderedBySensitivityDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("Low"), 1, 1, 1, 1, null, 0.1),
                 new VariableSpec(Nm("High"), 1, 1, 1, 1, null, 0.9),
                 new VariableSpec(Nm("Mid"), 1, 1, 1, 1, null, 0.5));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(promotedId);
@@ -312,10 +326,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
             await using var dbContext = fx.GetDbContext();
             var kept = Nm("Kept");
             var nullRemoved = Nm("NullRemoved");
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(kept, 1, 1, 1, 1, null, null),
                 new VariableSpec(nullRemoved, 1, 1, 1, 1, null, null, null),
                 new VariableSpec(Nm("Gone"), 1, 1, 1, 1, null, null, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(promotedId);
@@ -346,8 +362,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task TenantBPromotedTrialInstanceIsInvisibleToTenantAAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedB = await SeedPromotedAsync(dbContext, fx.Seed.UserTenantB,
                 new VariableSpec(Nm("SecretB"), 1, 1, 1, 1, (1, 1, 1, 1), 0.5));
+
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await serviceA.GetAsync(promotedB)).Should().BeEmpty();
@@ -357,8 +375,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task TenantAPromotedTrialInstanceIsInvisibleToTenantBAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedA = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("SecretA"), 1, 1, 1, 1, (1, 1, 1, 1), 0.5));
+
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
             (await serviceB.GetAsync(promotedA)).Should().BeEmpty();
@@ -370,10 +390,12 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
             await using var dbContext = fx.GetDbContext();
             var nameA = Nm("OwnA");
             var nameB = Nm("OwnB");
+
             var promotedA = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(nameA, 1, 1, 1, 1, null, null));
             var promotedB = await SeedPromotedAsync(dbContext, fx.Seed.UserTenantB,
                 new VariableSpec(nameB, 2, 2, 2, 2, null, null));
+
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
@@ -386,18 +408,23 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         {
             await using var dbContext = fx.GetDbContext();
             var name = Nm("Direct");
+
             var promotedA = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(name, 1, 1, 1, 1, null, null));
 
             (await new
-                    global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
+                    global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery.
+                    GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
                         dbContext, fx.Seed.UserWithPermission).ExecuteAsync(promotedA)).Select(r => r.Name).Should()
                 .Equal(name);
+
             (await new
-                global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
+                global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery.
+                GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
                     dbContext, fx.Seed.UserTenantB).ExecuteAsync(promotedA)).Should().BeEmpty();
             (await new
-                global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
+                global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery.
+                GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(
                     dbContext, fx.Seed.UserNoTenant).ExecuteAsync(promotedA)).Should().BeEmpty();
         }
 
@@ -405,8 +432,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task ForeignTenantAttemptLogsWarnNotErrorAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedB = await SeedPromotedAsync(dbContext, fx.Seed.UserTenantB,
                 new VariableSpec(Nm("SecretB"), 1, 1, 1, 1, null, null));
+
             var log = new TestLog();
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, log);
 
@@ -420,8 +449,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceV
         public async Task PreCancelledTokenThrowsOperationCanceledAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var promotedId = await SeedPromotedAsync(dbContext, fx.Seed.UserWithPermission,
                 new VariableSpec(Nm("C"), 1, 1, 1, 1, null, null));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             using var cts = new CancellationTokenSource();
             await cts.CancelAsync();

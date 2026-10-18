@@ -918,6 +918,8 @@ function load() {
     }
     loadPending(modelId);
 
+    window.AskJoobySetPageContext?.("Integrity", "readonly", {id: Number(modelId), name: $model.text()});
+
     $("#IntegritySummary").text("Checking…");
 
     $.getJSON("/api/EntityAnalysisModelIntegrity/" + modelId).done(function (report) {

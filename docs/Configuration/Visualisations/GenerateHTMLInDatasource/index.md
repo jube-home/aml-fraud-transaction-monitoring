@@ -6,8 +6,6 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Generate HTML in Visualisation Datasource
 Several Kendo Charting controls are supported inside a visualisation datasource for the purpose of the display of data, including Kendo Grid, Kendo Chart and Kendo Map controls.  It is possible to craft HTML and inline CSS to render for each record returned by the SQL.
 

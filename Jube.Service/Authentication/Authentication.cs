@@ -22,6 +22,7 @@ namespace Jube.Service.Authentication
     using Data.Repository;
     using Dto.Authentication;
     using Exceptions.Authentication;
+    using Interfaces;
 
     public class Authentication(
         DbContext dbContext,
@@ -32,7 +33,6 @@ namespace Jube.Service.Authentication
     {
         private readonly IPasswordHashScheme hashScheme = passwordHashScheme ?? new Argon2PasswordHashScheme();
         private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
-
         private const int MinLength = 12;
         private const int MaxLength = 128;
 
@@ -108,6 +108,7 @@ namespace Jube.Service.Authentication
             CancellationToken token)
         {
             var window = lockoutWindow ?? TimeSpan.FromMinutes(30);
+
             if (!enablePasswordLockoutReset || userRegistry.PasswordLocked != 1 || window <= TimeSpan.Zero)
             {
                 return;
@@ -130,6 +131,7 @@ namespace Jube.Service.Authentication
         {
             const int authenticationMethod = 1;
             var userRegistryRepository = new UserRegistryRepository(dbContext);
+
             var userRegistry =
                 await userRegistryRepository.GetByUserNameAsync(authenticationRequestDto.UserName, token);
 
@@ -165,6 +167,7 @@ namespace Jube.Service.Authentication
             }
 
             var password = authenticationRequestDto.Password;
+
             if (string.IsNullOrEmpty(password))
             {
                 DoEquivalentHashWork(password, passwordHashingKey);
@@ -173,6 +176,7 @@ namespace Jube.Service.Authentication
             }
 
             var attempt = await userRegistryRepository.ReserveLoginAttemptAsync(userRegistry.Id, token);
+
             if (attempt == null || attempt > lockPasswordAfter)
             {
                 DoEquivalentHashWork(password, passwordHashingKey);
@@ -182,6 +186,7 @@ namespace Jube.Service.Authentication
             }
 
             bool verified;
+
             try
             {
                 if (passwordAsymmetricEncryption && passwordAsymmetricEncryptionPrivateKey != null)
@@ -221,6 +226,7 @@ namespace Jube.Service.Authentication
                 if (!string.IsNullOrEmpty(authenticationRequestDto.NewPassword))
                 {
                     var newPassword = authenticationRequestDto.NewPassword;
+
                     if (passwordAsymmetricEncryption && passwordAsymmetricEncryptionPrivateKey != null)
                     {
                         newPassword = DecryptPassword(newPassword, passwordAsymmetricEncryptionPrivateKey);
@@ -265,18 +271,21 @@ namespace Jube.Service.Authentication
         {
             var userRegistryRepository = new UserRegistryRepository(dbContext);
             var userRegistry = await userRegistryRepository.GetByUserNameAsync(userName, token);
+
             if (userRegistry == null)
             {
                 return false;
             }
 
             var attempt = await userRegistryRepository.ReserveLoginAttemptAsync(userRegistry.Id, token);
+
             if (attempt != null && attempt <= lockPasswordAfter)
             {
                 return true;
             }
 
             await userRegistryRepository.LockIfAttemptsReachedAsync(userRegistry.Id, lockPasswordAfter, token);
+
             return false;
         }
 
@@ -284,6 +293,7 @@ namespace Jube.Service.Authentication
         {
             var userRegistryRepository = new UserRegistryRepository(dbContext);
             var userRegistry = await userRegistryRepository.GetByUserNameAsync(userName, CancellationToken.None);
+
             if (userRegistry != null)
             {
                 await userRegistryRepository.ReleaseLoginAttemptAsync(userRegistry.Id, CancellationToken.None);
@@ -301,6 +311,7 @@ namespace Jube.Service.Authentication
             if (userRegistry == null)
             {
                 await LogLoginFailedAsync(userLogin, userName, 1, authenticationMethod, token);
+
                 return;
             }
 
@@ -314,6 +325,7 @@ namespace Jube.Service.Authentication
         {
             var userRegistryRepository = new UserRegistryRepository(dbContext);
             var userRegistry = await userRegistryRepository.GetByUserNameAsync(userName, token);
+
             if (userRegistry == null)
             {
                 return;
@@ -334,6 +346,7 @@ namespace Jube.Service.Authentication
             try
             {
                 var candidate = password ?? string.Empty;
+
                 if (passwordAsymmetricEncryption && passwordAsymmetricEncryptionPrivateKey != null
                                                  && candidate.Length > 0)
                 {
@@ -358,6 +371,7 @@ namespace Jube.Service.Authentication
             var userRegistry = await userRegistryRepository.GetByUserNameAsync(userName, token);
 
             var password = changePasswordRequestDto.Password;
+
             if (string.IsNullOrEmpty(password))
             {
                 throw new PasswordEmptyException();
@@ -380,6 +394,7 @@ namespace Jube.Service.Authentication
             }
 
             var newPassword = changePasswordRequestDto.NewPassword;
+
             if (string.IsNullOrEmpty(newPassword))
             {
                 var errors = new List<string>
@@ -414,6 +429,7 @@ namespace Jube.Service.Authentication
             userLogin.Failed = 1;
             userLogin.FailureTypeId = failureTypeId;
             userLogin.AuthenticationTypeId = authenticationMethod;
+
             return userLoginRepository.InsertAsync(userLogin, token);
         }
 
@@ -423,6 +439,7 @@ namespace Jube.Service.Authentication
             var userLoginRepository = new UserLoginRepository(dbContext, createdUser);
             userLogin.Failed = 0;
             userLogin.AuthenticationTypeId = authenticationMethod;
+
             return userLoginRepository.InsertAsync(userLogin, token);
         }
 

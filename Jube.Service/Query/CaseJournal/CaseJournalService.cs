@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetCaseJournalQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseJournal;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseJournal;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.CaseJournal
     public sealed class CaseJournalService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetCaseJournalQuery query;
+        private readonly GetCaseJournalQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +50,12 @@ namespace Jube.Service.Query.CaseJournal
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetCaseJournalQuery(dbContext, userName, log,
+
+            query = new GetCaseJournalQuery(dbContext, userName, log,
                 reportConnectionString ?? dbContext.Connection.ConnectionString);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseJournalService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -122,6 +125,7 @@ namespace Jube.Service.Query.CaseJournal
         {
             using var op = OperationScope.Start("CaseJournal", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseJournal.Get: entry user={userName} caseWorkflowGuid={caseWorkflowGuid} limit={limit}");
@@ -130,9 +134,12 @@ namespace Jube.Service.Query.CaseJournal
             try
             {
                 EnsurePermitted("CaseJournal.Get");
+
                 var dto = CaseJournalMapper.ToDto(await query.ExecuteAsync(drillName, drillValue, caseWorkflowGuid,
                     limit, activationsOnly ? 1 : 0, responseElevation, token).ConfigureAwait(false));
+
                 op.Rows(dto.Rows?.Count ?? 0);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseJournal.Get: {dto.Rows?.Count ?? 0} rows user={userName}");

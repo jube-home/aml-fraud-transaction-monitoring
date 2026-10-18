@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-78b351e9-t jc-78b351e9-d">
+    <title id="jc-78b351e9-t">Model comparison</title>
+    <desc id="jc-78b351e9-d">Radar chart with 2 series: Neural network, Logistic. 6 axes: Precision, Recall, Stability,
+        Speed, Explainability, Coverage.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Model comparison</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="100.2" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Neural network</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="132.2" y="44" width="62.4" height="18"/>
+        <rect class="sw" x="134.2" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="152.2" y="57">Logistic</text>
+    </g>
+    <path class="gl" d="M320 162L377.16 195L377.16 261L320 294L262.84 261L262.84 195Z"/>
+    <path class="gl" d="M320 96L434.32 162L434.32 294L320 360L205.68 294L205.68 162Z"/>
+    <line class="gl" x1="320" y1="228" x2="320" y2="96"/>
+    <text class="tk ctr" x="320" y="84">Precision</text>
+    <line class="gl" x1="320" y1="228" x2="434.32" y2="162"/>
+    <text class="tk" x="442.98" y="161">Recall</text>
+    <line class="gl" x1="320" y1="228" x2="434.32" y2="294"/>
+    <text class="tk" x="442.98" y="303">Stability</text>
+    <line class="gl" x1="320" y1="228" x2="320" y2="360"/>
+    <text class="tk ctr" x="320" y="380">Speed</text>
+    <line class="gl" x1="320" y1="228" x2="205.68" y2="294"/>
+    <text class="tk end" x="197.02" y="309">Explainability</text>
+    <line class="gl" x1="320" y1="228" x2="205.68" y2="162"/>
+    <text class="tk end" x="197.02" y="155">Coverage</text>
+    <text class="tk ring" x="323" y="160">0.5</text>
+    <text class="tk ring" x="323" y="94">1</text>
+    <g class="sr s0">
+        <path class="ar" d="M320 119.76L422.88 168.6L388.59 267.6L320 320.4L285.71 247.8L222.83 171.9Z"/>
+        <path class="ln" d="M320 119.76L422.88 168.6L388.59 267.6L320 320.4L285.71 247.8L222.83 171.9Z">
+            <title>Neural network</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Precision, Neural network: 0.82">
+            <title>Precision, Neural network: 0.82</title>
+            <circle class="hit" cx="320" cy="119.76" r="9"/>
+            <circle class="pt" cx="320" cy="119.76" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="247.02" y="125.76" width="145.96" height="44" rx="6"/>
+                <text class="tx b" x="257.02" y="143.76">Precision</text>
+                <rect class="tsw s0" x="257.02" y="151.76" width="9" height="9" rx="2"/>
+                <text class="tx" x="271.02" y="160.76">Neural network: 0.82</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Recall, Neural network: 0.9">
+            <title>Recall, Neural network: 0.9</title>
+            <circle class="hit" cx="422.88" cy="168.6" r="9"/>
+            <circle class="pt" cx="422.88" cy="168.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="353.26" y="110.6" width="139.24" height="44" rx="6"/>
+                <text class="tx b" x="363.26" y="128.6">Recall</text>
+                <rect class="tsw s0" x="363.26" y="136.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="377.26" y="145.6">Neural network: 0.9</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Stability, Neural network: 0.6">
+            <title>Stability, Neural network: 0.6</title>
+            <circle class="hit" cx="388.59" cy="267.6" r="9"/>
+            <circle class="pt" cx="388.59" cy="267.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="318.97" y="209.6" width="139.24" height="44" rx="6"/>
+                <text class="tx b" x="328.97" y="227.6">Stability</text>
+                <rect class="tsw s0" x="328.97" y="235.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="342.97" y="244.6">Neural network: 0.6</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Speed, Neural network: 0.7">
+            <title>Speed, Neural network: 0.7</title>
+            <circle class="hit" cx="320" cy="320.4" r="9"/>
+            <circle class="pt" cx="320" cy="320.4" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="250.38" y="262.4" width="139.24" height="44" rx="6"/>
+                <text class="tx b" x="260.38" y="280.4">Speed</text>
+                <rect class="tsw s0" x="260.38" y="288.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="274.38" y="297.4">Neural network: 0.7</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Explainability, Neural network: 0.3">
+            <title>Explainability, Neural network: 0.3</title>
+            <circle class="hit" cx="285.71" cy="247.8" r="9"/>
+            <circle class="pt" cx="285.71" cy="247.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="216.09" y="189.8" width="139.24" height="44" rx="6"/>
+                <text class="tx b" x="226.09" y="207.8">Explainability</text>
+                <rect class="tsw s0" x="226.09" y="215.8" width="9" height="9" rx="2"/>
+                <text class="tx" x="240.09" y="224.8">Neural network: 0.3</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Coverage, Neural network: 0.85">
+            <title>Coverage, Neural network: 0.85</title>
+            <circle class="hit" cx="222.83" cy="171.9" r="9"/>
+            <circle class="pt" cx="222.83" cy="171.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="149.85" y="113.9" width="145.96" height="44" rx="6"/>
+                <text class="tx b" x="159.85" y="131.9">Coverage</text>
+                <rect class="tsw s0" x="159.85" y="139.9" width="9" height="9" rx="2"/>
+                <text class="tx" x="173.85" y="148.9">Neural network: 0.85</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ar" d="M320 135.6L402.31 180.48L422.88 287.4L320 353.4L217.12 287.4L239.98 181.8Z"/>
+        <path class="ln" d="M320 135.6L402.31 180.48L422.88 287.4L320 353.4L217.12 287.4L239.98 181.8Z">
+            <title>Logistic</title>
+        </path>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Precision, Logistic: 0.7">
+            <title>Precision, Logistic: 0.7</title>
+            <circle class="hit" cx="320" cy="135.6" r="9"/>
+            <circle class="pt" cx="320" cy="135.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="269.28" y="77.6" width="101.44" height="44" rx="6"/>
+                <text class="tx b" x="279.28" y="95.6">Precision</text>
+                <rect class="tsw s1" x="279.28" y="103.6" width="9" height="9" rx="2"/>
+                <text class="tx" x="293.28" y="112.6">Logistic: 0.7</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Recall, Logistic: 0.72">
+            <title>Recall, Logistic: 0.72</title>
+            <circle class="hit" cx="402.31" cy="180.48" r="9"/>
+            <circle class="pt" cx="402.31" cy="180.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="348.23" y="122.48" width="108.16" height="44" rx="6"/>
+                <text class="tx b" x="358.23" y="140.48">Recall</text>
+                <rect class="tsw s1" x="358.23" y="148.48" width="9" height="9" rx="2"/>
+                <text class="tx" x="372.23" y="157.48">Logistic: 0.72</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Stability, Logistic: 0.9">
+            <title>Stability, Logistic: 0.9</title>
+            <circle class="hit" cx="422.88" cy="287.4" r="9"/>
+            <circle class="pt" cx="422.88" cy="287.4" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="372.16" y="229.4" width="101.44" height="44" rx="6"/>
+                <text class="tx b" x="382.16" y="247.4">Stability</text>
+                <rect class="tsw s1" x="382.16" y="255.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="396.16" y="264.4">Logistic: 0.9</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Speed, Logistic: 0.95">
+            <title>Speed, Logistic: 0.95</title>
+            <circle class="hit" cx="320" cy="353.4" r="9"/>
+            <circle class="pt" cx="320" cy="353.4" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="265.92" y="295.4" width="108.16" height="44" rx="6"/>
+                <text class="tx b" x="275.92" y="313.4">Speed</text>
+                <rect class="tsw s1" x="275.92" y="321.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="289.92" y="330.4">Logistic: 0.95</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Explainability, Logistic: 0.9">
+            <title>Explainability, Logistic: 0.9</title>
+            <circle class="hit" cx="217.12" cy="287.4" r="9"/>
+            <circle class="pt" cx="217.12" cy="287.4" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="166.4" y="229.4" width="101.44" height="44" rx="6"/>
+                <text class="tx b" x="176.4" y="247.4">Explainability</text>
+                <rect class="tsw s1" x="176.4" y="255.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="190.4" y="264.4">Logistic: 0.9</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Coverage, Logistic: 0.7">
+            <title>Coverage, Logistic: 0.7</title>
+            <circle class="hit" cx="239.98" cy="181.8" r="9"/>
+            <circle class="pt" cx="239.98" cy="181.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="189.26" y="123.8" width="101.44" height="44" rx="6"/>
+                <text class="tx b" x="199.26" y="141.8">Coverage</text>
+                <rect class="tsw s1" x="199.26" y="149.8" width="9" height="9" rx="2"/>
+                <text class="tx" x="213.26" y="158.8">Logistic: 0.7</text>
+            </g>
+        </g>
+    </g>
+</svg>

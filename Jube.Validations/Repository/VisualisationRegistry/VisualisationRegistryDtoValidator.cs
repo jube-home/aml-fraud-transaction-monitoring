@@ -38,6 +38,7 @@ namespace Jube.Validations.Repository.VisualisationRegistry
                 .MustAsync(async (dto, name, cancellation) =>
                 {
                     var existing = await repository.GetByNameAsync(name, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[VisualisationRegistryResources.NameAlreadyExists])

@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Inline Scripts
 
 Models inside Jube are extensible via the use of Inline Scripts. Inline Scripts use the processing context after
@@ -48,7 +46,7 @@ The database contains the following Visual Basic code to provide a "straight thr
 default
 environment, while also showing a minimal VB.net example (which is to say LanguageId = 1):
 
-```vb
+```vbnet
 Imports System
 Imports System.Net.Http
 Imports System.Threading
@@ -216,7 +214,7 @@ entry point.
 The class at a minimum must contain one method conforming to the following signature, and otherwise enforced as per
 the IInlineScript interface:
 
-```vb
+```csharp
 public async Task<bool> ExecuteAsync(Context context)
 {
 }
@@ -361,10 +359,8 @@ Event coverage during invocation is described in the following table:
 | PayloadEvent                | After Request XPath Processing                          | Parent entity Guid and Name (i.e. EntityAnalysisModel) | None except default Property extraction.                                     |
 | ActivationRuleOverrideEvent | After Activation Rule Matching for each Activation Rule | Guid or Name                                           | Overides any match status from Activation Rule processing for that instance. |
 
-The intention is that Inline Scripts be available in a plethora of invocation stages allowing for extensibility across
-the whole pipeline without needing to modify the core.
-
-At the time of writing Inline Script event coverage is a work in progress.
+The events in the table above are the invocation stages available, each allowing for extensibility at that point in
+the pipeline without needing to modify the core.
 
 # Deployment
 

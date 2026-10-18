@@ -98,11 +98,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ARuleFlaggedAsSearchIsSkippedEntirelyByThisExtension()
         {
             var wasEvaluated = false;
+
             var searchRule = NewRule("SearchRule", (_, _, _, _) =>
             {
                 wasEvaluated = true;
+
                 return true;
             }, true);
+
             var context = NewContext(searchRule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -129,11 +132,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var secondEvaluated = false;
             var throwing = NewRule("Throws", (_, _, _, _) => throw new InvalidOperationException("boom"));
+
             var second = NewRule("Second", (_, _, _, _) =>
             {
                 secondEvaluated = true;
+
                 return true;
             });
+
             var context = NewContext(throwing, second);
 
             var act = context.ExecuteAbstractionRulesWithoutSearchKeys;

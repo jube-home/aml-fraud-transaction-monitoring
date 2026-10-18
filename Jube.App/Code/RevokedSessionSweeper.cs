@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code.Interfaces;
 using Jube.Data.Context;
 using Jube.Data.Security;
 using log4net;
@@ -39,6 +40,7 @@ namespace Jube.App.Code
 
             using var timer = new PeriodicTimer(ComputeWindow(
                 dynamicEnvironment.AppSettings("RevokedSessionCheckInterval"), intervalValue));
+
             while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
             {
                 try
@@ -82,6 +84,7 @@ namespace Jube.App.Code
             }
 
             var aborted = 0;
+
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
 
@@ -91,8 +94,10 @@ namespace Jube.App.Code
             foreach (var session in connectionsBySession)
             {
                 token.ThrowIfCancellationRequested();
+
                 var refuse = AbsoluteSessionLifetime.IsExpired(dynamicEnvironment, session.Key.IssuedMilliseconds,
                     DateTimeOffset.UtcNow);
+
                 if (!refuse && sessionStates.TryGetValue(session.Key.UserName, out var state))
                 {
                     refuse = state.Blocked

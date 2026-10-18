@@ -40,6 +40,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 var records = await repository
                     .GetApprovedAsync(context.ApprovalsRequired, context.Services.CancellationToken)
                     .ConfigureAwait(false);
+
                 foreach (var record in records)
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -105,7 +106,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                         else
                         {
-                            var removed = context.EntityAnalysisModels.ActiveEntityAnalysisModels.TryRemove(record.Id, out _);
+                            var removed =
+                                context.EntityAnalysisModels.ActiveEntityAnalysisModels.TryRemove(record.Id, out _);
+
                             if (context.Services.Log.IsDebugEnabled)
                             {
                                 context.Services.Log.Debug(removed

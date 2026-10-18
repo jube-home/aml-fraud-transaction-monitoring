@@ -139,6 +139,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
             if (record.EntryName == null)
             {
                 entityAnalysisModel.References.EntryName = "";
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -292,8 +293,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
             entityAnalysisModel.Flags.EnableLogs = record.EnableLogs == 1;
             entityAnalysisModel.Flags.EnableLogsInfo = record.EnableLogsInfo == 1;
             entityAnalysisModel.Flags.EnableLogsWarnThreshold = record.EnableLogsWarnThreshold == 1;
+
             entityAnalysisModel.Flags.LogsWarnThresholdMilliseconds =
                 record.LogsWarnThresholdMilliseconds;
+
             entityAnalysisModel.Flags.EnableLogsInResponse = record.EnableLogsInResponse == 1;
             entityAnalysisModel.Flags.EnableSampling = record.EnableSampling == 1;
             entityAnalysisModel.Flags.SamplePercentage = record.SamplePercentage;

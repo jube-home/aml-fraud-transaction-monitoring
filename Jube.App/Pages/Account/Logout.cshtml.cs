@@ -19,7 +19,6 @@ namespace Jube.App.Pages.Account
     public class LogoutModel : PageModel
     {
         public bool LoggedOut { get; private set; }
-
         public bool IsAuthenticated => User.Identity?.IsAuthenticated == true;
 
         public ActionResult OnGet()

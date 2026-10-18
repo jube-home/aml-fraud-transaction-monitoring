@@ -46,19 +46,20 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
             if (string.IsNullOrEmpty(dependencies))
             {
-                return baseArray.Concat(alwaysInclude).ToArray();
+                return [.. baseArray, .. alwaysInclude];
             }
 
             var additionalDeps = dependencies.Split(",".ToCharArray())
                 .Select(file => ResolveDependencyPath(binaryPath, frameworkPath, file))
                 .ToArray();
 
-            return baseArray.Concat(alwaysInclude).Concat(additionalDeps).ToArray();
+            return [.. baseArray, .. alwaysInclude, .. additionalDeps];
         }
 
         private static string ResolveDependencyPath(string binaryPath, string frameworkPath, string file)
         {
             var path = Path.Combine(binaryPath, file);
+
             return File.Exists(path)
                 ? path
                 : Path.Combine(frameworkPath, file);
@@ -68,6 +69,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             string[] dependencyArray, ILog log)
         {
             var compile = new Compile();
+
             compile.CompileCode(inlineScript.InlineScriptCode, log, dependencyArray,
                 inlineScript.LanguageId == 2 ? Compile.Language.CSharp : Compile.Language.Vb);
 
@@ -79,6 +81,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             inlineScript.InlineScriptCompile = compile.CompiledAssembly;
 
             var interfaceType = typeof(IInlineScript);
+
             var implementations = inlineScript.InlineScriptCompile.GetExportedTypes()
                 .Where(t => interfaceType.IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
 
@@ -153,6 +156,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         {
             var shadowEntityAnalysisModelInlineScriptEventsToBeSorted =
                 new List<EntityAnalysisModelInlineScriptEvent>();
+
             foreach (var attribute in inlineScript.PreProcessingMethodInfo.GetCustomAttributes())
             {
                 var entityAnalysisModelInlineScriptEvent = new EntityAnalysisModelInlineScriptEvent();
@@ -192,7 +196,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             }
 
             inlineScript.EntityAnalysisModelInlineScriptEvents =
-                shadowEntityAnalysisModelInlineScriptEventsToBeSorted.OrderBy(o => o.Priority).ToList();
+                [.. shadowEntityAnalysisModelInlineScriptEventsToBeSorted.OrderBy(o => o.Priority)];
         }
 
         private static Func<object> CompileActivatorDelegate(EntityAnalysisModelInlineScript inlineScript)
@@ -251,6 +255,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     [typeof(EntityAnalysisModelInvoke.Context.Context)]);
 
             inlineScript.ActivatorDelegate = CompileActivatorDelegate(inlineScript);
+
             inlineScript.ExecuteAsyncDelegate = CompileMethodDelegate(
                 inlineScript.InlineScriptType,
                 inlineScript.PreProcessingMethodInfo);

@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.CaseCreationStagePerformanceCounter;
 using Jube.Service.Exceptions.CaseCreationStagePerformanceCounter;
 using Jube.Service.Reactivity;
@@ -85,6 +85,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -92,8 +93,10 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
         public async Task ListReturnsMostRecentFirstAndProjectsStageNameAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var firstId = await CreateCounterAsync(dbContext, CaseCreationStage.ExistingCasePriorityLookup,
                 createdDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.HttpEndpoint,
                 createdDate: DateTime.UtcNow);
 
@@ -177,6 +180,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             await using var dbContext = fx.GetDbContext();
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
+
             var oldId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification,
                 createdDate: twoHoursAgo);
             var newId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, createdDate: justNow);
@@ -225,6 +229,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 samplePercentage: 100);
 
@@ -244,11 +249,13 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
 
             var ascending = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: "asc");
+
             ascending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.TotalMicroseconds)
                 .Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: "desc");
+
             descending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.TotalMicroseconds)
                 .Should().Equal(3000, 2000, 1000);
         }
@@ -265,6 +272,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var ids = new HashSet<int> { highId, lowId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: ascendingKeyword);
 
@@ -280,6 +288,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var ids = new HashSet<int> { lowId, highId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: "banana");
 
@@ -290,8 +299,10 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
         public async Task ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var firstId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification,
                 createdDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification,
                 createdDate: DateTime.UtcNow);
 
@@ -308,12 +319,14 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
         {
             await using var dbContext = fx.GetDbContext();
             var from = DateTime.UtcNow.AddMinutes(-1);
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateCounterAsync(dbContext, CaseCreationStage.WorkflowStatusLookupAndPersist);
             }
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(2, stageId: (int)CaseCreationStage.WorkflowStatusLookupAndPersist,
                 from: from);
 

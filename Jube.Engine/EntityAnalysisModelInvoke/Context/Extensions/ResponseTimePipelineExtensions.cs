@@ -23,7 +23,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         [
             "Parse", "CheckIntegrityAndUpsert", "InlineFunctions", "InlineScripts", "Gateway", "CacheDbStorage",
             "JoinReadTasks", "AbstractionRulesWithoutSearchKeys", "AbstractionCalculations", "ExhaustiveAdaptation",
-            "HttpAdaptation", "Activation", "JoinWriteTasks", "WriteResponse", "BuildArchivePayload"
+            "AdvancedAnalyticsAdaptation", "HttpAdaptation", "Activation", "JoinWriteTasks", "WriteResponse",
+            "BuildArchivePayload"
         ];
 
         public static void RecordResponseTime(this Context context, string stage)

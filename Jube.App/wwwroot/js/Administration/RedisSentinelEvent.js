@@ -68,6 +68,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("RedisSentinelEvent", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

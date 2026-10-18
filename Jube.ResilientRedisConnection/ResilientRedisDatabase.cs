@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Jube.ResilientNpgsqlConnection;
 using Jube.ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using Npgsql;
 using NpgsqlTypes;
@@ -238,6 +239,7 @@ namespace Jube.ResilientRedisConnection
                 async Task<List<HashEntry>> Collect()
                 {
                     var results = new List<HashEntry>();
+
                     await foreach (var entry in PgHashScanAsync(key, pattern))
                     {
                         results.Add(entry);
@@ -390,6 +392,7 @@ namespace Jube.ResilientRedisConnection
         {
             var conn = new ResilientNpgsqlConnection.ResilientNpgsqlConnection(connectionString, log);
             await conn.OpenAsync(cancellationToken);
+
             return conn;
         }
 
@@ -429,11 +432,13 @@ namespace Jube.ResilientRedisConnection
                   DO UPDATE SET "ByteValue"=EXCLUDED."ByteValue"
                   RETURNING true;
                   """;
+
             await using var conn = await OpenAsync();
             await using var cmd = new ResilientNpgsqlCommand(conn, sql);
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
             cmd.Parameters.AddWithValue("v", (byte[]?)value ?? Array.Empty<byte>());
+
             return await cmd.ExecuteScalarAsync() is not null and not DBNull;
         }
 
@@ -446,6 +451,7 @@ namespace Jube.ResilientRedisConnection
 
             await using var conn = await OpenAsync();
             await using var tx = await conn.BeginTransactionAsync();
+
             try
             {
                 await using var cmd = new ResilientNpgsqlCommand(conn, """
@@ -454,10 +460,12 @@ namespace Jube.ResilientRedisConnection
                                                                        ON CONFLICT("Key","Field")
                                                                        DO UPDATE SET "ByteValue"=EXCLUDED."ByteValue";
                                                                        """);
+
                 cmd.Transaction = tx;
                 cmd.Parameters.AddWithValue("k", key.ToString());
                 cmd.Parameters.AddWithValue("f", "");
                 cmd.Parameters.AddWithValue("v", Array.Empty<byte>());
+
                 foreach (var e in hashFields)
                 {
                     cmd.Parameters["k"].Value = key.ToString();
@@ -478,11 +486,14 @@ namespace Jube.ResilientRedisConnection
         private async Task<RedisValue> PgHashGetAsync(RedisKey key, RedisValue field)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """SELECT "ByteValue","IntValue","FloatValue" FROM "CacheSetHash" WHERE "Key"=@k AND "Field"=@f;""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
             await using var reader = await cmd.ExecuteReaderAsync();
+
             if (!await reader.ReadAsync())
             {
                 return RedisValue.Null;
@@ -506,25 +517,30 @@ namespace Jube.ResilientRedisConnection
             return RedisValue.Null;
         }
 
-
         private async Task<RedisValue[]> PgHashGetManyAsync(RedisKey key, RedisValue[] fields)
         {
             var fs = fields.Select(f => f.ToString()).ToArray();
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """SELECT "Field","ByteValue","IntValue","FloatValue" FROM "CacheSetHash" WHERE "Key"=@k AND "Field"=ANY(@fields);""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
+
             // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
             cmd.Parameters.Add(new NpgsqlParameter("fields", NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
                 Value = fs
             });
+
             var lookup = new Dictionary<string, RedisValue>();
             await using var reader = await cmd.ExecuteReaderAsync();
+
             while (await reader.ReadAsync())
             {
                 var f = reader.GetString(0);
                 RedisValue value;
+
                 if (!reader.IsDBNull(1))
                 {
                     value = (RedisValue)reader.GetFieldValue<byte[]>(1);
@@ -551,39 +567,50 @@ namespace Jube.ResilientRedisConnection
         private async Task<long> PgHashLengthAsync(RedisKey key)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """SELECT count(*) FROM "CacheSetHash" WHERE "Key"=@k;""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
+
             return (long)(await cmd.ExecuteScalarAsync() ?? 0L);
         }
 
         private async Task<bool> PgHashDeleteAsync(RedisKey key, RedisValue field)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """DELETE FROM "CacheSetHash" WHERE "Key"=@k AND "Field"=@f;""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
+
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
         private async Task<long> PgHashDeleteManyAsync(RedisKey key, RedisValue[] fields)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """DELETE FROM "CacheSetHash" WHERE "Key"=@k AND "Field"=ANY(@fields);""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
+
             // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
             cmd.Parameters.Add(new NpgsqlParameter("fields", NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
                 Value = fields.Select(f => f.ToString()).ToArray()
             });
+
             return await cmd.ExecuteNonQueryAsync();
         }
 
         private async Task<long> PgHashIncrementAsync(RedisKey key, RedisValue field, long value)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn, """
                                                                    INSERT INTO "CacheSetHash"("Key","Field","IntValue")
                                                                    VALUES(@k,@f,@v)
@@ -591,15 +618,18 @@ namespace Jube.ResilientRedisConnection
                                                                    DO UPDATE SET "IntValue"=COALESCE("CacheSetHash"."IntValue",0)+@v
                                                                    RETURNING "IntValue";
                                                                    """);
+
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
             cmd.Parameters.AddWithValue("v", value);
+
             return (long)(await cmd.ExecuteScalarAsync() ?? 0L);
         }
 
         private async Task<double> PgHashIncrementAsync(RedisKey key, RedisValue field, double value)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn, """
                                                                    INSERT INTO "CacheSetHash"("Key","Field","FloatValue")
                                                                    VALUES(@k,@f,@v)
@@ -607,9 +637,11 @@ namespace Jube.ResilientRedisConnection
                                                                    DO UPDATE SET "FloatValue"=COALESCE("CacheSetHash"."FloatValue",0)+@v
                                                                    RETURNING "FloatValue";
                                                                    """);
+
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
             cmd.Parameters.AddWithValue("v", value);
+
             return (double)(await cmd.ExecuteScalarAsync() ?? 0d);
         }
 
@@ -626,11 +658,14 @@ namespace Jube.ResilientRedisConnection
         private async Task<long> PgHashStringLengthAsync(RedisKey key, RedisValue field)
         {
             await using var conn = await OpenAsync();
+
             await using var cmd = new ResilientNpgsqlCommand(conn,
                 """SELECT length("ByteValue"), length("IntValue"::text), length("FloatValue"::text) FROM "CacheSetHash" WHERE "Key"=@k AND "Field"=@f;""");
+
             cmd.Parameters.AddWithValue("k", key.ToString());
             cmd.Parameters.AddWithValue("f", field.ToString());
             await using var reader = await cmd.ExecuteReaderAsync();
+
             if (!await reader.ReadAsync())
             {
                 return 0L;
@@ -658,22 +693,27 @@ namespace Jube.ResilientRedisConnection
             [EnumeratorCancellation] CancellationToken token = default)
         {
             var like = GlobToLike(pattern);
+
             var sql = like is null
                 ? """SELECT "Field","ByteValue","IntValue","FloatValue" FROM "CacheSetHash" WHERE "Key"=@k ORDER BY "Field";"""
                 : """SELECT "Field","ByteValue","IntValue","FloatValue" FROM "CacheSetHash" WHERE "Key"=@k AND "Field" LIKE @p ORDER BY "Field";""";
+
             await using var conn = await OpenAsync(token);
             await using var cmd = new ResilientNpgsqlCommand(conn, sql);
             cmd.Parameters.AddWithValue("k", key.ToString());
+
             if (like is not null)
             {
                 cmd.Parameters.AddWithValue("p", like);
             }
 
             await using var reader = await cmd.ExecuteReaderAsync(token);
+
             while (await reader.ReadAsync(token))
             {
                 var field = reader.GetString(0);
                 RedisValue value;
+
                 if (!reader.IsDBNull(1))
                 {
                     value = (RedisValue)reader.GetFieldValue<byte[]>(1);
@@ -698,6 +738,7 @@ namespace Jube.ResilientRedisConnection
         private static string? GlobToLike(RedisValue pattern)
         {
             var p = pattern.ToString();
+
             if (string.IsNullOrEmpty(p) || p == "*")
             {
                 return null;

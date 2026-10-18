@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion
 {
     [Description("Confusion matrix and derived ratios for the active promoted trial instance of an Exhaustive " +
@@ -27,11 +31,8 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion
         public double Score { get; set; }
 
         [Description("False positive count.")] public int FalsePositive { get; set; }
-
         [Description("True positive count.")] public int TruePositive { get; set; }
-
         [Description("False negative count.")] public int FalseNegative { get; set; }
-
         [Description("True negative count.")] public int TrueNegative { get; set; }
 
         [Description("Table total (as computed by the query).")]

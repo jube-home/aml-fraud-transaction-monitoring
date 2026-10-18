@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowMacro;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowMacro;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -34,7 +35,6 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
     {
         private static readonly int[] permissions = [24];
         private static readonly int[] activeOnlyPermissions = [24, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -59,6 +59,9 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowMacroDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> ActiveOnlyPermissions => activeOnlyPermissions;
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowMacroService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +113,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.List: entry user={userName}");
@@ -120,6 +124,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 EnsurePermitted("CaseWorkflowMacro.List", permissions);
                 var dtos = CaseWorkflowMacroMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowMacro.List: {dtos.Count} rows user={userName}");
@@ -157,6 +162,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.List: entry user={userName} take={take} afterId={afterId}");
@@ -166,10 +172,12 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             {
                 EnsurePermitted("CaseWorkflowMacro.List", permissions);
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = CaseWorkflowMacroMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -203,6 +211,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.FilterFields: entry user={userName}");
@@ -214,6 +223,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<CaseWorkflowMacroDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -253,6 +263,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -264,6 +275,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 var rows = CaseWorkflowMacroMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -301,6 +313,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Count: entry groupBy={groupBy} user={userName}");
@@ -312,6 +325,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 var rows = CaseWorkflowMacroMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -339,6 +353,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "ListByWorkflow", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.ListByWorkflow: entry caseWorkflowId={caseWorkflowId} " +
@@ -348,10 +363,12 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             try
             {
                 EnsurePermitted("CaseWorkflowMacro.ListByWorkflow", permissions);
+
                 var dtos = CaseWorkflowMacroMapper.ToDto(
                     await repository.GetByCasesWorkflowIdOrderByIdAsync(caseWorkflowId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowMacro.ListByWorkflow: {dtos.Count} rows " +
@@ -373,8 +390,10 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowMacro.ListByWorkflow: unexpected failure " +
                           $"caseWorkflowId={caseWorkflowId} user={userName}", ex);
+
                 throw;
             }
         }
@@ -389,6 +408,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "ListByWorkflowIdActiveOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.ListByWorkflowIdActiveOnly: entry id={id} user={userName}");
@@ -397,9 +417,11 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             try
             {
                 EnsurePermitted("CaseWorkflowMacro.ListByWorkflowIdActiveOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowMacroMapper.ToDto(
                     await repository.GetByCasesWorkflowIdActiveOnlyAsync(id, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowMacro.ListByWorkflowIdActiveOnly: {dtos.Count} rows id={id} " +
@@ -421,8 +443,10 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowMacro.ListByWorkflowIdActiveOnly: unexpected failure id={id} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -437,6 +461,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "ListByWorkflowGuidActiveOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.ListByWorkflowGuidActiveOnly: entry guid={guid} user={userName}");
@@ -445,9 +470,11 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             try
             {
                 EnsurePermitted("CaseWorkflowMacro.ListByWorkflowGuidActiveOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowMacroMapper.ToDto(
                     await repository.GetByCasesWorkflowGuidActiveOnlyAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowMacro.ListByWorkflowGuidActiveOnly: {dtos.Count} rows guid={guid} " +
@@ -469,8 +496,10 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowMacro.ListByWorkflowGuidActiveOnly: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -485,6 +514,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Get", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Get: entry id={id} user={userName}");
@@ -495,6 +525,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 EnsurePermitted("CaseWorkflowMacro.Get", permissions);
                 var entity = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
                 var dto = CaseWorkflowMacroMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowMacro.Get: id={id} not found or not visible to tenant " +
@@ -521,6 +552,54 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             }
         }
 
+        [Description("Returns a single Case Workflow Macro by Id, or null if it doesn't exist or isn't " +
+                     "visible to the caller's tenant.")]
+        [ServiceOperation("CaseWorkflowMacroGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<CaseWorkflowMacroDto?> GetByGuidAsync(
+            [Description("Server-assigned identifier of the Case Workflow Macro.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowMacro", "GetByGuid", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowMacro.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowMacro.GetByGuid", permissions);
+                var entity = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+                var dto = CaseWorkflowMacroMapper.ToDto(entity);
+
+                if (entity == null && log.IsDebugEnabled)
+                {
+                    log.Debug($"CaseWorkflowMacro.GetByGuid: guid={guid} not found or not visible to tenant " +
+                              $"user={userName}");
+                }
+
+                return dto;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowMacro.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Case Workflow Macro under a parent Case Workflow.")]
         [ServiceOperation("CaseWorkflowMacroCreate", OperationKind.Write, Idempotent = false)]
         public async Task<CaseWorkflowMacroDto> InsertAsync(CaseWorkflowMacroDto? model,
@@ -528,6 +607,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Insert: entry user={userName} name={model?.Name}");
@@ -539,6 +619,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 EnsurePermitted("CaseWorkflowMacro.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -598,6 +679,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Validate: entry id={model?.Id} user={userName}");
@@ -610,6 +692,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -638,6 +721,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Update: entry id={model?.Id} user={userName}");
@@ -649,6 +733,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 EnsurePermitted("CaseWorkflowMacro.Update", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -686,6 +771,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowMacro.Update: id={model?.Id} not found, not visible, or locked " +
@@ -717,6 +803,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         {
             using var op = OperationScope.Start("CaseWorkflowMacro", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowMacro.Delete: entry id={id} user={userName}");
@@ -742,6 +829,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowMacro.Delete: id={id} not found, not visible, or locked " +

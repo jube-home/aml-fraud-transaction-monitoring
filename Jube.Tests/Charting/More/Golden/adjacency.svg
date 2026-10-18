@@ -1,0 +1,712 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-6349c7e0" viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-6349c7e0-t jc-6349c7e0-d">
+    <title id="jc-6349c7e0-t">Account transfer network</title>
+    <desc id="jc-6349c7e0-d">Matrix of 8 rows and 8 columns, ordered by hierarchical clustering.</desc>
+    <style>
+        .jc-6349c7e0{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-6349c7e0:not([data-theme="light"]),.jc-6349c7e0:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-6349c7e0:not([data-theme="light"]),.jc-6349c7e0[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-6349c7e0
+        text{fill:var(--jc-text);font-size:12px}.jc-6349c7e0 .bg{fill:var(--jc-surface)}.jc-6349c7e0
+        .ttl{font-size:16px;font-weight:600}.jc-6349c7e0 .sub{fill:var(--jc-text2)}.jc-6349c7e0
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-6349c7e0 .at{fill:var(--jc-text2);font-weight:500}.jc-6349c7e0
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-6349c7e0
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-6349c7e0
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-6349c7e0 .ref.s0,.jc-6349c7e0
+        .ref.s1,.jc-6349c7e0 .ref.s2,.jc-6349c7e0 .ref.s3,.jc-6349c7e0 .ref.s4,.jc-6349c7e0 .ref.s5,.jc-6349c7e0
+        .ref.s6,.jc-6349c7e0 .ref.s7{stroke:var(--sc)}.jc-6349c7e0
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-6349c7e0
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-6349c7e0
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-6349c7e0
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-6349c7e0 .wh,.jc-6349c7e0
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-6349c7e0
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-6349c7e0
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-6349c7e0
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-6349c7e0 .cd.hollow{fill:var(--jc-surface)}.jc-6349c7e0
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-6349c7e0
+        .ar.off{fill-opacity:0}.jc-6349c7e0 .ring{font-size:10px}.jc-6349c7e0
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-6349c7e0 .needle{fill:var(--jc-text);stroke:none}.jc-6349c7e0
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-6349c7e0
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-6349c7e0
+        .big{font-size:28px;font-weight:600}.jc-6349c7e0 .rg0,.jc-6349c7e0 .rg1,.jc-6349c7e0
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-6349c7e0 .rg0{fill-opacity:.1}.jc-6349c7e0
+        .rg1{fill-opacity:.2}.jc-6349c7e0 .rg2{fill-opacity:.32}.jc-6349c7e0
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-6349c7e0
+        .bar.part{fill-opacity:.35}.jc-6349c7e0 .lgt{fill:var(--jc-text2)}.jc-6349c7e0
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-6349c7e0
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-6349c7e0
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-6349c7e0
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-6349c7e0 .bar{fill:var(--sc)}.jc-6349c7e0
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-6349c7e0
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-6349c7e0
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-6349c7e0
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-6349c7e0
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-6349c7e0
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-6349c7e0 .mk:hover .pt.h,.jc-6349c7e0 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-6349c7e0 .pt.sm{fill-opacity:.55;stroke:none}.jc-6349c7e0
+        .na{fill:var(--jc-grid)}.jc-6349c7e0 .mk:hover .sl,.jc-6349c7e0 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-6349c7e0
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-6349c7e0
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-6349c7e0
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-6349c7e0
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-6349c7e0
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-6349c7e0 .ctr{text-anchor:middle}.jc-6349c7e0
+        .end{text-anchor:end}.jc-6349c7e0 .mid{dominant-baseline:central}.jc-6349c7e0 .mk{outline:none}.jc-6349c7e0
+        .m,.jc-6349c7e0 .pt,.jc-6349c7e0 .bub,.jc-6349c7e0 .bar,.jc-6349c7e0 .ov,.jc-6349c7e0 .sl,.jc-6349c7e0
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-6349c7e0 .mk:hover .m,.jc-6349c7e0 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-6349c7e0 .mk:hover .pt,.jc-6349c7e0 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-6349c7e0 .mk:hover .bub,.jc-6349c7e0 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-6349c7e0 .mk:hover .bar,.jc-6349c7e0 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-6349c7e0 .mk:hover .ov,.jc-6349c7e0 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-6349c7e0 .mk:hover .sl,.jc-6349c7e0 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-6349c7e0 .mk:hover .box,.jc-6349c7e0 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-6349c7e0 .mk:hover .wk,.jc-6349c7e0 .mk:focus-visible
+        .wk,.jc-6349c7e0 .mk:hover .cd,.jc-6349c7e0 .mk:focus-visible .cd{stroke-width:2.5}.jc-6349c7e0 .mk:hover
+        .cell,.jc-6349c7e0 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-6349c7e0 .mk:hover
+        .vl,.jc-6349c7e0 .mk:focus-visible .vl,.jc-6349c7e0 .mk:hover .cx,.jc-6349c7e0 .mk:focus-visible
+        .cx{opacity:1}.jc-6349c7e0 .mk:hover .mkr,.jc-6349c7e0 .mk:focus-visible .mkr{stroke-width:3}.jc-6349c7e0
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-6349c7e0
+        .mk:hover .tt,.jc-6349c7e0 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-6349c7e0
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-6349c7e0
+        .tx{fill:var(--jc-text);font-size:12px}.jc-6349c7e0 .tx.b{font-weight:600}.jc-6349c7e0
+        .tsw{fill:var(--sc)}.jc-6349c7e0 .lg{cursor:default;transition:opacity .15s ease}.jc-6349c7e0 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-6349c7e0 .sr{transition:opacity .15s ease}.jc-6349c7e0:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-6349c7e0:has(.mk:hover) .mk:not(:hover) .pt,.jc-6349c7e0:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-6349c7e0:has(.mk:hover) .mk:not(:hover) .bar,.jc-6349c7e0:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-6349c7e0:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-6349c7e0:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}@media (prefers-reduced-motion:reduce){.jc-6349c7e0,.jc-6349c7e0
+        *{transition:none!important;animation:none!important}}.jc-6349c7e0 .q0{fill:var(--jc-q0)}.jc-6349c7e0
+        .qt0{fill:var(--jc-qt0)}.jc-6349c7e0 .q1{fill:var(--jc-q1)}.jc-6349c7e0 .qt1{fill:var(--jc-qt1)}.jc-6349c7e0
+        .q2{fill:var(--jc-q2)}.jc-6349c7e0 .qt2{fill:var(--jc-qt2)}.jc-6349c7e0 .q3{fill:var(--jc-q3)}.jc-6349c7e0
+        .qt3{fill:var(--jc-qt3)}.jc-6349c7e0 .q4{fill:var(--jc-q4)}.jc-6349c7e0 .qt4{fill:var(--jc-qt4)}.jc-6349c7e0
+        .q5{fill:var(--jc-q5)}.jc-6349c7e0 .qt5{fill:var(--jc-qt5)}.jc-6349c7e0 .q6{fill:var(--jc-q6)}.jc-6349c7e0
+        .qt6{fill:var(--jc-qt6)}.jc-6349c7e0 .q7{fill:var(--jc-q7)}.jc-6349c7e0 .qt7{fill:var(--jc-qt7)}.jc-6349c7e0
+        .q8{fill:var(--jc-q8)}.jc-6349c7e0 .qt8{fill:var(--jc-qt8)}.jc-6349c7e0 .d0{fill:var(--jc-d0)}.jc-6349c7e0
+        .dt0{fill:var(--jc-dt0)}.jc-6349c7e0 .d1{fill:var(--jc-d1)}.jc-6349c7e0 .dt1{fill:var(--jc-dt1)}.jc-6349c7e0
+        .d2{fill:var(--jc-d2)}.jc-6349c7e0 .dt2{fill:var(--jc-dt2)}.jc-6349c7e0 .d3{fill:var(--jc-d3)}.jc-6349c7e0
+        .dt3{fill:var(--jc-dt3)}.jc-6349c7e0 .d4{fill:var(--jc-d4)}.jc-6349c7e0 .dt4{fill:var(--jc-dt4)}.jc-6349c7e0
+        .d5{fill:var(--jc-d5)}.jc-6349c7e0 .dt5{fill:var(--jc-dt5)}.jc-6349c7e0 .d6{fill:var(--jc-d6)}.jc-6349c7e0
+        .dt6{fill:var(--jc-dt6)}.jc-6349c7e0 .d7{fill:var(--jc-d7)}.jc-6349c7e0 .dt7{fill:var(--jc-dt7)}.jc-6349c7e0
+        .d8{fill:var(--jc-d8)}.jc-6349c7e0 .dt8{fill:var(--jc-dt8)}.jc-6349c7e0 .d9{fill:var(--jc-d9)}.jc-6349c7e0
+        .dt9{fill:var(--jc-dt9)}.jc-6349c7e0 .d10{fill:var(--jc-d10)}.jc-6349c7e0 .dt10{fill:var(--jc-dt10)}
+    </style>
+    <rect class="bg" x="0" y="0" width="520" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Account transfer network</text>
+    <text class="tk end mid" x="23.48" y="72.75">E</text>
+    <text class="tk end mid" x="23.48" y="122.25">A</text>
+    <text class="tk end mid" x="23.48" y="171.75">G</text>
+    <text class="tk end mid" x="23.48" y="221.25">C</text>
+    <text class="tk end mid" x="23.48" y="270.75">F</text>
+    <text class="tk end mid" x="23.48" y="320.25">H</text>
+    <text class="tk end mid" x="23.48" y="369.75">B</text>
+    <text class="tk end mid" x="23.48" y="419.25">D</text>
+    <text class="tk ctr" x="56.26" y="460">E</text>
+    <text class="tk ctr" x="105.83" y="460">A</text>
+    <text class="tk ctr" x="155.39" y="460">G</text>
+    <text class="tk ctr" x="204.96" y="460">C</text>
+    <text class="tk ctr" x="254.52" y="460">F</text>
+    <text class="tk ctr" x="304.09" y="460">H</text>
+    <text class="tk ctr" x="353.65" y="460">B</text>
+    <text class="tk ctr" x="403.22" y="460">D</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / E, Value: 0">
+        <title>E / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="100.75">E / E</text>
+            <text class="tx" x="41.48" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / A, Value: 4">
+        <title>E / A, Value: 4</title>
+        <rect class="cell m q6" x="81.05" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="100.75">E / A</text>
+            <text class="tx" x="83.87" y="117.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / G, Value: 4">
+        <title>E / G, Value: 4</title>
+        <rect class="cell m q6" x="130.61" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="100.75">E / G</text>
+            <text class="tx" x="133.43" y="117.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / C, Value: 6">
+        <title>E / C, Value: 6</title>
+        <rect class="cell m q8" x="180.18" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="100.75">E / C</text>
+            <text class="tx" x="183" y="117.75">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / F, Value: 0">
+        <title>E / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="100.75">E / F</text>
+            <text class="tx" x="232.56" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / H, Value: 0">
+        <title>E / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="100.75">E / H</text>
+            <text class="tx" x="282.13" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / B, Value: 0">
+        <title>E / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="100.75">E / B</text>
+            <text class="tx" x="331.69" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / D, Value: 0">
+        <title>E / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="100.75">E / D</text>
+            <text class="tx" x="374.08" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / E, Value: 4">
+        <title>A / E, Value: 4</title>
+        <rect class="cell m q6" x="31.48" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="86.25">A / E</text>
+            <text class="tx" x="41.48" y="103.25">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / A, Value: 0">
+        <title>A / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="86.25">A / A</text>
+            <text class="tx" x="83.87" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / G, Value: 3">
+        <title>A / G, Value: 3</title>
+        <rect class="cell m q4" x="130.61" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="86.25">A / G</text>
+            <text class="tx" x="133.43" y="103.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / C, Value: 5">
+        <title>A / C, Value: 5</title>
+        <rect class="cell m q7" x="180.18" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="86.25">A / C</text>
+            <text class="tx" x="183" y="103.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / F, Value: 0">
+        <title>A / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="86.25">A / F</text>
+            <text class="tx" x="232.56" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / H, Value: 0">
+        <title>A / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="86.25">A / H</text>
+            <text class="tx" x="282.13" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / B, Value: 0">
+        <title>A / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="86.25">A / B</text>
+            <text class="tx" x="331.69" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / D, Value: 0">
+        <title>A / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="86.25">A / D</text>
+            <text class="tx" x="374.08" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / E, Value: 4">
+        <title>G / E, Value: 4</title>
+        <rect class="cell m q6" x="31.48" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="135.75">G / E</text>
+            <text class="tx" x="41.48" y="152.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / A, Value: 3">
+        <title>G / A, Value: 3</title>
+        <rect class="cell m q4" x="81.05" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="135.75">G / A</text>
+            <text class="tx" x="83.87" y="152.75">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / G, Value: 0">
+        <title>G / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="135.75">G / G</text>
+            <text class="tx" x="133.43" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / C, Value: 0">
+        <title>G / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="135.75">G / C</text>
+            <text class="tx" x="183" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / F, Value: 0">
+        <title>G / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="135.75">G / F</text>
+            <text class="tx" x="232.56" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / H, Value: 0">
+        <title>G / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="135.75">G / H</text>
+            <text class="tx" x="282.13" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / B, Value: 0">
+        <title>G / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="135.75">G / B</text>
+            <text class="tx" x="331.69" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / D, Value: 0">
+        <title>G / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="135.75">G / D</text>
+            <text class="tx" x="374.08" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / E, Value: 6">
+        <title>C / E, Value: 6</title>
+        <rect class="cell m q8" x="31.48" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="185.25">C / E</text>
+            <text class="tx" x="41.48" y="202.25">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / A, Value: 5">
+        <title>C / A, Value: 5</title>
+        <rect class="cell m q7" x="81.05" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="185.25">C / A</text>
+            <text class="tx" x="83.87" y="202.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / G, Value: 0">
+        <title>C / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="185.25">C / G</text>
+            <text class="tx" x="133.43" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / C, Value: 0">
+        <title>C / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="185.25">C / C</text>
+            <text class="tx" x="183" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / F, Value: 0">
+        <title>C / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="185.25">C / F</text>
+            <text class="tx" x="232.56" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / H, Value: 0">
+        <title>C / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="185.25">C / H</text>
+            <text class="tx" x="282.13" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / B, Value: 0">
+        <title>C / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="185.25">C / B</text>
+            <text class="tx" x="331.69" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / D, Value: 1">
+        <title>C / D, Value: 1</title>
+        <rect class="cell m q1" x="378.44" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="185.25">C / D</text>
+            <text class="tx" x="374.08" y="202.25">Value: 1</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / E, Value: 0">
+        <title>F / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="234.75">F / E</text>
+            <text class="tx" x="41.48" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / A, Value: 0">
+        <title>F / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="234.75">F / A</text>
+            <text class="tx" x="83.87" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / G, Value: 0">
+        <title>F / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="234.75">F / G</text>
+            <text class="tx" x="133.43" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / C, Value: 0">
+        <title>F / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="234.75">F / C</text>
+            <text class="tx" x="183" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / F, Value: 0">
+        <title>F / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="234.75">F / F</text>
+            <text class="tx" x="232.56" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / H, Value: 0">
+        <title>F / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="234.75">F / H</text>
+            <text class="tx" x="282.13" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / B, Value: 4">
+        <title>F / B, Value: 4</title>
+        <rect class="cell m q6" x="328.87" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="234.75">F / B</text>
+            <text class="tx" x="331.69" y="251.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / D, Value: 6">
+        <title>F / D, Value: 6</title>
+        <rect class="cell m q8" x="378.44" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="234.75">F / D</text>
+            <text class="tx" x="374.08" y="251.75">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / E, Value: 0">
+        <title>H / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="284.25">H / E</text>
+            <text class="tx" x="41.48" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / A, Value: 0">
+        <title>H / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="284.25">H / A</text>
+            <text class="tx" x="83.87" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / G, Value: 0">
+        <title>H / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="284.25">H / G</text>
+            <text class="tx" x="133.43" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / C, Value: 0">
+        <title>H / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="284.25">H / C</text>
+            <text class="tx" x="183" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / F, Value: 0">
+        <title>H / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="284.25">H / F</text>
+            <text class="tx" x="232.56" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / H, Value: 0">
+        <title>H / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="284.25">H / H</text>
+            <text class="tx" x="282.13" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / B, Value: 2">
+        <title>H / B, Value: 2</title>
+        <rect class="cell m q3" x="328.87" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="284.25">H / B</text>
+            <text class="tx" x="331.69" y="301.25">Value: 2</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / D, Value: 3">
+        <title>H / D, Value: 3</title>
+        <rect class="cell m q4" x="378.44" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="284.25">H / D</text>
+            <text class="tx" x="374.08" y="301.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / E, Value: 0">
+        <title>B / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="333.75">B / E</text>
+            <text class="tx" x="41.48" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / A, Value: 0">
+        <title>B / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="333.75">B / A</text>
+            <text class="tx" x="83.87" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / G, Value: 0">
+        <title>B / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="333.75">B / G</text>
+            <text class="tx" x="133.43" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / C, Value: 0">
+        <title>B / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="333.75">B / C</text>
+            <text class="tx" x="183" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / F, Value: 4">
+        <title>B / F, Value: 4</title>
+        <rect class="cell m q6" x="229.74" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="333.75">B / F</text>
+            <text class="tx" x="232.56" y="350.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / H, Value: 2">
+        <title>B / H, Value: 2</title>
+        <rect class="cell m q3" x="279.31" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="333.75">B / H</text>
+            <text class="tx" x="282.13" y="350.75">Value: 2</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / B, Value: 0">
+        <title>B / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="333.75">B / B</text>
+            <text class="tx" x="331.69" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / D, Value: 5">
+        <title>B / D, Value: 5</title>
+        <rect class="cell m q7" x="378.44" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="333.75">B / D</text>
+            <text class="tx" x="374.08" y="350.75">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / E, Value: 0">
+        <title>D / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="383.25">D / E</text>
+            <text class="tx" x="41.48" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / A, Value: 0">
+        <title>D / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="383.25">D / A</text>
+            <text class="tx" x="83.87" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / G, Value: 0">
+        <title>D / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="383.25">D / G</text>
+            <text class="tx" x="133.43" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / C, Value: 1">
+        <title>D / C, Value: 1</title>
+        <rect class="cell m q1" x="180.18" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="383.25">D / C</text>
+            <text class="tx" x="183" y="400.25">Value: 1</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / F, Value: 6">
+        <title>D / F, Value: 6</title>
+        <rect class="cell m q8" x="229.74" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="383.25">D / F</text>
+            <text class="tx" x="232.56" y="400.25">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / H, Value: 3">
+        <title>D / H, Value: 3</title>
+        <rect class="cell m q4" x="279.31" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="383.25">D / H</text>
+            <text class="tx" x="282.13" y="400.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / B, Value: 5">
+        <title>D / B, Value: 5</title>
+        <rect class="cell m q7" x="328.87" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="383.25">D / B</text>
+            <text class="tx" x="331.69" y="400.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / D, Value: 0">
+        <title>D / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="383.25">D / D</text>
+            <text class="tx" x="374.08" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <rect class="q8" x="444" y="48" width="12" height="24.94"/>
+    <rect class="q7" x="444" y="72.44" width="12" height="24.94"/>
+    <rect class="q6" x="444" y="96.89" width="12" height="24.94"/>
+    <rect class="q5" x="444" y="121.33" width="12" height="24.94"/>
+    <rect class="q4" x="444" y="145.78" width="12" height="24.94"/>
+    <rect class="q3" x="444" y="170.22" width="12" height="24.94"/>
+    <rect class="q2" x="444" y="194.67" width="12" height="24.94"/>
+    <rect class="q1" x="444" y="219.11" width="12" height="24.94"/>
+    <rect class="q0" x="444" y="243.56" width="12" height="24.94"/>
+    <line class="ax" x1="456" y1="268" x2="460" y2="268"/>
+    <text class="tk mid" x="464" y="268">0</text>
+    <line class="ax" x1="456" y1="231.33" x2="460" y2="231.33"/>
+    <text class="tk mid" x="464" y="231.33">1</text>
+    <line class="ax" x1="456" y1="194.67" x2="460" y2="194.67"/>
+    <text class="tk mid" x="464" y="194.67">2</text>
+    <line class="ax" x1="456" y1="158" x2="460" y2="158"/>
+    <text class="tk mid" x="464" y="158">3</text>
+    <line class="ax" x1="456" y1="121.33" x2="460" y2="121.33"/>
+    <text class="tk mid" x="464" y="121.33">4</text>
+    <line class="ax" x1="456" y1="84.67" x2="460" y2="84.67"/>
+    <text class="tk mid" x="464" y="84.67">5</text>
+    <line class="ax" x1="456" y1="48" x2="460" y2="48"/>
+    <text class="tk mid" x="464" y="48">6</text>
+</svg>

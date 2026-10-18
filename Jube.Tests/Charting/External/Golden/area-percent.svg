@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-067c66a9-t jc-067c66a9-d">
+    <title id="jc-067c66a9-t">Channel mix</title>
+    <desc id="jc-067c66a9-d">100% stacked area chart with 3 series: Card, Transfer, Cash. Y values range from 0 to
+        100.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Channel mix</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="43.2" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Card</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="75.2" y="44" width="64.32" height="18"/>
+        <rect class="sw" x="77.2" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="95.2" y="57">Transfer</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="157.52" y="44" width="45.6" height="18"/>
+        <rect class="sw" x="159.52" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="177.52" y="57">Cash</text>
+    </g>
+    <line class="gl" x1="52.38" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="44.38" y="364">0%</text>
+    <line class="gl" x1="52.38" y1="305.6" x2="624" y2="305.6"/>
+    <text class="tk end mid" x="44.38" y="305.6">20%</text>
+    <line class="gl" x1="52.38" y1="247.2" x2="624" y2="247.2"/>
+    <text class="tk end mid" x="44.38" y="247.2">40%</text>
+    <line class="gl" x1="52.38" y1="188.8" x2="624" y2="188.8"/>
+    <text class="tk end mid" x="44.38" y="188.8">60%</text>
+    <line class="gl" x1="52.38" y1="130.4" x2="624" y2="130.4"/>
+    <text class="tk end mid" x="44.38" y="130.4">80%</text>
+    <line class="gl" x1="52.38" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="44.38" y="72">100%</text>
+    <text class="tk ctr" x="123.83" y="380">Q1</text>
+    <text class="tk ctr" x="266.74" y="380">Q2</text>
+    <text class="tk ctr" x="409.64" y="380">Q3</text>
+    <text class="tk ctr" x="552.55" y="380">Q4</text>
+    <line class="ax" x1="52.38" y1="364" x2="624" y2="364"/>
+    <g class="sr s0">
+        <path class="ar"
+              d="M123.83 247.2C171.47 242.33 219.1 237.47 266.74 232.6C314.37 227.73 362.01 218 409.64 218C457.28 218 504.91 233.57 552.55 241.36L552.55 364C504.91 364 457.28 364 409.64 364C362.01 364 314.37 364 266.74 364C219.1 364 171.47 364 123.83 364Z"/>
+        <path class="ln"
+              d="M123.83 247.2C171.47 242.33 219.1 237.47 266.74 232.6C314.37 227.73 362.01 218 409.64 218C457.28 218 504.91 233.57 552.55 241.36">
+            <title>Card</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: Q1, Y: 40">
+            <title>Card, X: Q1, Y: 40</title>
+            <circle class="hit" cx="123.83" cy="247.2" r="9"/>
+            <circle class="pt h" cx="123.83" cy="247.2" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="93.48" y="172.7" width="60.71" height="61" rx="6"/>
+                <rect class="tsw s0" x="103.48" y="181.7" width="9" height="9" rx="2"/>
+                <text class="tx b" x="117.48" y="190.7">Card</text>
+                <text class="tx" x="103.48" y="207.7">X: Q1</text>
+                <text class="tx" x="103.48" y="224.7">Y: 40</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: Q2, Y: 45">
+            <title>Card, X: Q2, Y: 45</title>
+            <circle class="hit" cx="266.74" cy="232.6" r="9"/>
+            <circle class="pt h" cx="266.74" cy="232.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="236.38" y="158.1" width="60.71" height="61" rx="6"/>
+                <rect class="tsw s0" x="246.38" y="167.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="260.38" y="176.1">Card</text>
+                <text class="tx" x="246.38" y="193.1">X: Q2</text>
+                <text class="tx" x="246.38" y="210.1">Y: 45</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: Q3, Y: 50">
+            <title>Card, X: Q3, Y: 50</title>
+            <circle class="hit" cx="409.64" cy="218" r="9"/>
+            <circle class="pt h" cx="409.64" cy="218" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="379.29" y="143.5" width="60.71" height="61" rx="6"/>
+                <rect class="tsw s0" x="389.29" y="152.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="403.29" y="161.5">Card</text>
+                <text class="tx" x="389.29" y="178.5">X: Q3</text>
+                <text class="tx" x="389.29" y="195.5">Y: 50</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: Q4, Y: 42">
+            <title>Card, X: Q4, Y: 42</title>
+            <circle class="hit" cx="552.55" cy="241.36" r="9"/>
+            <circle class="pt h" cx="552.55" cy="241.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="522.19" y="166.86" width="60.71" height="61" rx="6"/>
+                <rect class="tsw s0" x="532.19" y="175.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="546.19" y="184.86">Card</text>
+                <text class="tx" x="532.19" y="201.86">X: Q4</text>
+                <text class="tx" x="532.19" y="218.86">Y: 42</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ar"
+              d="M123.83 159.6C171.47 156.68 219.1 153.27 266.74 150.84C314.37 148.41 362.01 145 409.64 145C457.28 145 504.91 145 552.55 145L552.55 241.36C504.91 233.57 457.28 218 409.64 218C362.01 218 314.37 227.73 266.74 232.6C219.1 237.47 171.47 242.33 123.83 247.2Z"/>
+        <path class="ln"
+              d="M123.83 159.6C171.47 156.68 219.1 153.27 266.74 150.84C314.37 148.41 362.01 145 409.64 145C457.28 145 504.91 145 552.55 145">
+            <title>Transfer</title>
+        </path>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: Q1, Y: 30">
+            <title>Transfer, X: Q1, Y: 30</title>
+            <circle class="hit" cx="123.83" cy="159.6" r="9"/>
+            <circle class="pt h" cx="123.83" cy="159.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="82.28" y="85.1" width="83.1" height="61" rx="6"/>
+                <rect class="tsw s1" x="92.28" y="94.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="106.28" y="103.1">Transfer</text>
+                <text class="tx" x="92.28" y="120.1">X: Q1</text>
+                <text class="tx" x="92.28" y="137.1">Y: 30</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: Q2, Y: 28">
+            <title>Transfer, X: Q2, Y: 28</title>
+            <circle class="hit" cx="266.74" cy="150.84" r="9"/>
+            <circle class="pt h" cx="266.74" cy="150.84" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="225.19" y="76.34" width="83.1" height="61" rx="6"/>
+                <rect class="tsw s1" x="235.19" y="85.34" width="9" height="9" rx="2"/>
+                <text class="tx b" x="249.19" y="94.34">Transfer</text>
+                <text class="tx" x="235.19" y="111.34">X: Q2</text>
+                <text class="tx" x="235.19" y="128.34">Y: 28</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: Q3, Y: 25">
+            <title>Transfer, X: Q3, Y: 25</title>
+            <circle class="hit" cx="409.64" cy="145" r="9"/>
+            <circle class="pt h" cx="409.64" cy="145" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="368.09" y="72" width="83.1" height="61" rx="6"/>
+                <rect class="tsw s1" x="378.09" y="81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="392.09" y="90">Transfer</text>
+                <text class="tx" x="378.09" y="107">X: Q3</text>
+                <text class="tx" x="378.09" y="124">Y: 25</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: Q4, Y: 33">
+            <title>Transfer, X: Q4, Y: 33</title>
+            <circle class="hit" cx="552.55" cy="145" r="9"/>
+            <circle class="pt h" cx="552.55" cy="145" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="511" y="72" width="83.1" height="61" rx="6"/>
+                <rect class="tsw s1" x="521" y="81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="535" y="90">Transfer</text>
+                <text class="tx" x="521" y="107">X: Q4</text>
+                <text class="tx" x="521" y="124">Y: 33</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <path class="ar"
+              d="M123.83 72C171.47 72 219.1 72 266.74 72C314.37 72 362.01 72 409.64 72C457.28 72 504.91 72 552.55 72L552.55 145C504.91 145 457.28 145 409.64 145C362.01 145 314.37 148.41 266.74 150.84C219.1 153.27 171.47 156.68 123.83 159.6Z"/>
+        <path class="ln"
+              d="M123.83 72C171.47 72 219.1 72 266.74 72C314.37 72 362.01 72 409.64 72C457.28 72 504.91 72 552.55 72">
+            <title>Cash</title>
+        </path>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Cash, X: Q1, Y: 30">
+            <title>Cash, X: Q1, Y: 30</title>
+            <circle class="hit" cx="123.83" cy="72" r="9"/>
+            <circle class="pt h" cx="123.83" cy="72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="92.2" y="78.5" width="63.26" height="61" rx="6"/>
+                <rect class="tsw s2" x="102.2" y="87.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="116.2" y="96.5">Cash</text>
+                <text class="tx" x="102.2" y="113.5">X: Q1</text>
+                <text class="tx" x="102.2" y="130.5">Y: 30</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Cash, X: Q2, Y: 27">
+            <title>Cash, X: Q2, Y: 27</title>
+            <circle class="hit" cx="266.74" cy="72" r="9"/>
+            <circle class="pt h" cx="266.74" cy="72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="235.11" y="78.5" width="63.26" height="61" rx="6"/>
+                <rect class="tsw s2" x="245.11" y="87.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="259.11" y="96.5">Cash</text>
+                <text class="tx" x="245.11" y="113.5">X: Q2</text>
+                <text class="tx" x="245.11" y="130.5">Y: 27</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Cash, X: Q3, Y: 25">
+            <title>Cash, X: Q3, Y: 25</title>
+            <circle class="hit" cx="409.64" cy="72" r="9"/>
+            <circle class="pt h" cx="409.64" cy="72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="378.01" y="78.5" width="63.26" height="61" rx="6"/>
+                <rect class="tsw s2" x="388.01" y="87.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="402.01" y="96.5">Cash</text>
+                <text class="tx" x="388.01" y="113.5">X: Q3</text>
+                <text class="tx" x="388.01" y="130.5">Y: 25</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="Cash, X: Q4, Y: 25">
+            <title>Cash, X: Q4, Y: 25</title>
+            <circle class="hit" cx="552.55" cy="72" r="9"/>
+            <circle class="pt h" cx="552.55" cy="72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="520.92" y="78.5" width="63.26" height="61" rx="6"/>
+                <rect class="tsw s2" x="530.92" y="87.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="544.92" y="96.5">Cash</text>
+                <text class="tx" x="530.92" y="113.5">X: Q4</text>
+                <text class="tx" x="530.92" y="130.5">Y: 25</text>
+            </g>
+        </g>
+    </g>
+</svg>

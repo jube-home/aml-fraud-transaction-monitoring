@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
+
 namespace Jube.Parser
 {
     using System;
@@ -33,6 +35,7 @@ namespace Jube.Parser
         private static string Group(BuilderGroup group)
         {
             var parts = new List<string>();
+
             foreach (var node in group.Rules)
             {
                 switch (node)
@@ -47,6 +50,7 @@ namespace Jube.Parser
             }
 
             var expression = string.Join(" " + group.Condition + " ", parts);
+
             return group.Not ? "NOT ( " + expression + " )" : expression;
         }
 
@@ -54,6 +58,7 @@ namespace Jube.Parser
         {
             var definition = BuilderOperators.ByType[rule.Operator];
             var values = string.Join(", ", rule.Arguments.Select(a => Render(rule.Type, a)));
+
             return rule.Id + definition.Template.Replace("?", values);
         }
 
@@ -97,12 +102,14 @@ namespace Jube.Parser
         {
             var sb = new StringBuilder(value.Length + 2);
             sb.Append('"');
+
             foreach (var c in value)
             {
                 sb.Append(c == '"' ? "\"\"" : c.ToString());
             }
 
             sb.Append('"');
+
             return sb.ToString();
         }
 

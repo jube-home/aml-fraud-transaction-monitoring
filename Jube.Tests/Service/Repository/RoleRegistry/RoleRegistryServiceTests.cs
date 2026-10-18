@@ -23,6 +23,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.RoleRegistry;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.RoleRegistry;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -47,7 +48,6 @@ namespace Jube.Test.Service.Repository.RoleRegistry
         private readonly List<int> createdRoleIds = [];
         private readonly List<int> createdTenantIds = [];
         private readonly List<string> createdUserNames = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -56,9 +56,11 @@ namespace Jube.Test.Service.Repository.RoleRegistry
 
             await dbContext.GetTable<Data.Poco.RoleRegistryVersion>()
                 .Where(w => createdRoleIds.Contains(w.RoleRegistryId)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => w.RoleRegistryId != null && createdRoleIds.Contains(w.RoleRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.RoleRegistry.Where(w => createdRoleIds.Contains(w.Id)).DeleteAsync();
             await dbContext.UserRegistry.Where(w => createdUserNames.Contains(w.Name)).DeleteAsync();
             await dbContext.UserInTenant.Where(w => createdUserNames.Contains(w.User)).DeleteAsync();
@@ -91,10 +93,12 @@ namespace Jube.Test.Service.Repository.RoleRegistry
                     CreatedDate = DateTime.UtcNow,
                     CreatedUser = DatabaseFixture.Prefix,
                 }).ConfigureAwait(false);
+
                 createdTenantIds.Add(tenantId.Value);
             }
 
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -126,6 +130,7 @@ namespace Jube.Test.Service.Repository.RoleRegistry
             }
 
             var userName = $"{DatabaseFixture.Prefix}RRUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -140,6 +145,7 @@ namespace Jube.Test.Service.Repository.RoleRegistry
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix,
             }).ConfigureAwait(false);
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
@@ -262,10 +268,13 @@ namespace Jube.Test.Service.Repository.RoleRegistry
         {
             await using var dbContext = fx.GetDbContext();
             var privilegedUser = await CreateUserWithRoleRegistryPermissionAsync(dbContext);
+
             var privilegedUserTenantId = await dbContext.UserInTenant
                 .Where(w => w.User == privilegedUser).Select(w => w.TenantRegistryId).FirstAsync();
+
             var otherPrivilegedUser = await CreateUserWithRoleRegistryPermissionAsync(
                 dbContext, tenantId: privilegedUserTenantId);
+
             var service = await BuildServiceAsync(dbContext, privilegedUser);
             var created = await service.InsertAsync(ValidDto());
             createdRoleIds.Add(created.Id);
@@ -362,6 +371,7 @@ namespace Jube.Test.Service.Repository.RoleRegistry
             {
                 await dbContext.RoleRegistry.Where(w => w.Id == created.Id)
                     .Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Data.Poco.Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }

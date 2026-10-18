@@ -1,94 +1,103 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics.Distributions;
+using Accord.Statistics.Models.Markov;
 
 namespace Accord.Statistics.Running
 {
 #pragma warning disable 612, 618
-
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Hidden Markov Model filter.
+    ///     Hidden Markov Model filter.
     /// </summary>
-    /// 
     [Serializable]
     public class RunningMarkovStatistics<TDistribution> : IRunning<double[]>, IRunningMarkovStatistics
         where TDistribution : IDistribution
     {
-
         private BaseRunningMarkovStatistics _base;
-
-        private double[] previous;
         private double[] next;
 
-        /// <summary>
-        ///   Gets the <see cref="HiddenMarkovModel{TDistribution}"/> used in this filter.
-        /// </summary>
-        /// 
-        public HiddenMarkovModel<TDistribution> Model { get; private set; }
+        private double[] previous;
 
         /// <summary>
-        ///   Creates a new <see cref="RunningMarkovStatistics{TDistribution}"/>.
+        ///     Creates a new <see cref="RunningMarkovStatistics{TDistribution}" />.
         /// </summary>
-        /// 
         /// <param name="model">The hidden Markov model to use in this filter.</param>
-        /// 
         public RunningMarkovStatistics(HiddenMarkovModel<TDistribution> model)
         {
-            this.Model = model;
-            this.previous = new double[model.States];
-            this.next = new double[model.States];
+            Model = model;
+            previous = new double[model.States];
+            next = new double[model.States];
 
-            this._base = new BaseRunningMarkovStatistics(model);
+            _base = new BaseRunningMarkovStatistics(model);
         }
 
         /// <summary>
-        ///   Registers the occurrence of a value.
+        ///     Gets the <see cref="HiddenMarkovModel{TDistribution}" /> used in this filter.
         /// </summary>
-        /// 
+        public HiddenMarkovModel<TDistribution> Model { get; private set; }
+
+        /// <summary>
+        ///     Registers the occurrence of a value.
+        /// </summary>
         /// <param name="value">The value to be registered.</param>
-        /// 
         public void Push(params double[] value)
         {
             if (!Started)
             {
-                for (int i = 0; i < Current.Length; i++)
+                for (var i = 0; i < Current.Length; i++)
+                {
                     Current[i] = Model.LogInitial[i] + Model.Emissions[i].LogProbabilityFunction(value);
+                }
+
                 Started = true;
             }
             else
             {
-                for (int i = 0; i < Current.Length; i++)
-                    previous[i] = Current[i];
-
-                for (int i = 0; i < Current.Length; i++)
+                for (var i = 0; i < Current.Length; i++)
                 {
-                    double sum = Double.NegativeInfinity;
-                    for (int j = 0; j < previous.Length; j++)
+                    previous[i] = Current[i];
+                }
+
+                for (var i = 0; i < Current.Length; i++)
+                {
+                    var sum = double.NegativeInfinity;
+                    for (var j = 0; j < previous.Length; j++)
+                    {
                         sum = Special.LogSum(sum, previous[j] + Model.Transitions[j, i]);
+                    }
+
                     Current[i] = sum + Model.Emissions[i].LogProbabilityFunction(value);
                 }
             }
@@ -97,93 +106,79 @@ namespace Accord.Statistics.Running
         }
 
         /// <summary>
-        ///   Checks the classification after the insertion
-        ///   of a new value without registering this value.
+        ///     Clears this instance.
         /// </summary>
-        /// 
+        public void Clear()
+        {
+            _base.Clear();
+        }
+
+        /// <summary>
+        ///     Gets whether the model has been initialized or not.
+        /// </summary>
+        public bool Started
+        {
+            get => _base.Started;
+            set => _base.Started = value;
+        }
+
+        /// <summary>
+        ///     Gets the current vector of probabilities of being in each state.
+        /// </summary>
+        public double[] Current => _base.Current;
+
+        /// <summary>
+        ///     Gets the current most likely state (in the Viterbi path).
+        /// </summary>
+        public int CurrentState => _base.CurrentState;
+
+        /// <summary>
+        ///     Gets the current Viterbi probability
+        ///     (along the most likely path).
+        /// </summary>
+        public double LogViterbi => _base.LogViterbi;
+
+        /// <summary>
+        ///     Gets the current Forward probability
+        ///     (along all possible paths).
+        /// </summary>
+        public double LogForward => _base.LogForward;
+
+        /// <summary>
+        ///     Checks the classification after the insertion
+        ///     of a new value without registering this value.
+        /// </summary>
         /// <param name="value">The value to be checked.</param>
-        /// 
         public double Peek(double[] value)
         {
             if (!Started)
             {
-                for (int i = 0; i < Current.Length; i++)
+                for (var i = 0; i < Current.Length; i++)
+                {
                     next[i] = Model.LogInitial[i] + Model.Emissions[i].LogProbabilityFunction(value);
+                }
             }
             else
             {
-                for (int i = 0; i < Current.Length; i++)
+                for (var i = 0; i < Current.Length; i++)
                 {
-                    double sum = Double.NegativeInfinity;
-                    for (int j = 0; j < previous.Length; j++)
+                    var sum = double.NegativeInfinity;
+                    for (var j = 0; j < previous.Length; j++)
+                    {
                         sum = Special.LogSum(sum, Current[j] + Model.Transitions[j, i]);
+                    }
+
                     next[i] = sum + Model.Emissions[i].LogProbabilityFunction(value);
                 }
             }
 
-            double logLikelihood = Double.NegativeInfinity;
-            for (int i = 0; i < next.Length; i++)
+            var logLikelihood = double.NegativeInfinity;
+            for (var i = 0; i < next.Length; i++)
+            {
                 logLikelihood = Special.LogSum(logLikelihood, next[i]);
+            }
 
             return logLikelihood;
-        }
-
-
-        /// <summary>
-        ///   Gets whether the model has been initialized or not.
-        /// </summary>
-        /// 
-        public bool Started
-        {
-            get { return _base.Started; }
-            set { _base.Started = value; }
-        }
-
-        /// <summary>
-        ///   Gets the current vector of probabilities of being in each state.
-        /// </summary>
-        /// 
-        public double[] Current
-        {
-            get { return _base.Current; }
-        }
-
-        /// <summary>
-        ///   Gets the current most likely state (in the Viterbi path).
-        /// </summary>
-        /// 
-        public int CurrentState
-        {
-            get { return _base.CurrentState; }
-        }
-
-        /// <summary>
-        ///   Gets the current Viterbi probability
-        ///   (along the most likely path).
-        /// </summary>
-        /// 
-        public double LogViterbi
-        {
-            get { return _base.LogViterbi; }
-        }
-
-        /// <summary>
-        ///   Gets the current Forward probability
-        ///   (along all possible paths).
-        /// </summary>
-        /// 
-        public double LogForward
-        {
-            get { return _base.LogForward; }
-        }
-
-        /// <summary>
-        ///   Clears this instance.
-        /// </summary>
-        /// 
-        public void Clear()
-        {
-            _base.Clear();
         }
     }
 }

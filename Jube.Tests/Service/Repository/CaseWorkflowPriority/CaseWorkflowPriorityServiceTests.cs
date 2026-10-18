@@ -42,7 +42,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowPriority
                 NullLoggerFactory.Instance);
 
         public Task InitializeAsync() => Task.CompletedTask;
-
         public Task DisposeAsync() => Task.CompletedTask;
 
         private static Task<CaseWorkflowPriorityService> BuildServiceAsync(
@@ -67,6 +66,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowPriority
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -89,6 +89,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowPriority
             var priorities = await service.ListActiveOnlyAsync();
 
             priorities.Should().HaveCount(3);
+
             priorities.Select(p => (p.Id, p.Name)).Should().ContainInOrder(
                 (1, "High"),
                 (2, "Medium"),
@@ -114,6 +115,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowPriority
         {
             await using var dbContext = fx.GetDbContext();
             var bus = new CapturingBus();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: bus);
 

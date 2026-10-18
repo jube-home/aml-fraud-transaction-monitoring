@@ -23,6 +23,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var compact = @this!.Replace(" ", "").ToUpperInvariant();
+
             return string.Join(" ", compact.Chunk(4).Select(chunk => new string(chunk)));
         }
     }

@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis;
 using Jube.Cache.Redis.Models;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -109,6 +109,7 @@ namespace Jube.Test.Cache.Redis
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.HashGetAsync)
             };
+
             var repository = new CacheAbstractionRepository(fake, TestLog.NoOp);
             var modelGuid = Guid.NewGuid();
 

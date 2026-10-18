@@ -28,15 +28,18 @@ namespace Jube.Dictionary.Extensions
             for (var i = @this.Length - 1; i >= 0; i--)
             {
                 var c = @this[i];
+
                 if (!char.IsDigit(c))
                 {
                     return false;
                 }
 
                 var digit = c - '0';
+
                 if (doubleDigit)
                 {
                     digit *= 2;
+
                     if (digit > 9)
                     {
                         digit -= 9;

@@ -35,9 +35,9 @@ namespace Jube.App.Code
             }
 
             string[] unauthenticatedStartsWithStrings =
-            {
+            [
                 "api/Authentication/ByUserNamePassword"
-            };
+            ];
 
             if (unauthenticatedStartsWithStrings.Any(unauthenticatedStartsWithString =>
                     context.ApiDescription.RelativePath != null &&
@@ -47,6 +47,7 @@ namespace Jube.App.Code
             }
 
             operation.Security ??= new List<OpenApiSecurityRequirement>();
+
             operation.Security.Add(new OpenApiSecurityRequirement
             {
                 {

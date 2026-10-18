@@ -12,6 +12,7 @@
  */
 
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 
 namespace Jube.Service.Reactivity
 {
@@ -36,6 +37,7 @@ namespace Jube.Service.Reactivity
         {
             var key = Guid.NewGuid();
             handlers[key] = handler;
+
             return new Subscription(() => handlers.TryRemove(key, out _));
         }
 

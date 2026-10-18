@@ -1,59 +1,74 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Math.Random;
+using Accord.Statistics.Distributions.Fitting;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Rayleigh distribution.
+    ///     Rayleigh distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In probability theory and statistics, the Rayleigh distribution is a continuous 
-    ///   probability distribution. A Rayleigh distribution is often observed when the overall
-    ///   magnitude of a vector is related to its directional components. </para>
-    ///   
-    /// <para>One example where the Rayleigh distribution naturally arises is when wind speed
-    ///   is analyzed into its orthogonal 2-dimensional vector components. Assuming that the 
-    ///   magnitude of each component is uncorrelated and normally distributed with equal variance,
-    ///   then the overall wind speed (vector magnitude) will be characterized by a Rayleigh 
-    ///   distribution.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Rayleigh_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Rayleigh distribution. Available on: 
-    ///       http://en.wikipedia.org/wiki/Rayleigh_distribution </a></description></item>
-    ///   </list></para> 
+    ///     <para>
+    ///         In probability theory and statistics, the Rayleigh distribution is a continuous
+    ///         probability distribution. A Rayleigh distribution is often observed when the overall
+    ///         magnitude of a vector is related to its directional components.
+    ///     </para>
+    ///     <para>
+    ///         One example where the Rayleigh distribution naturally arises is when wind speed
+    ///         is analyzed into its orthogonal 2-dimensional vector components. Assuming that the
+    ///         magnitude of each component is uncorrelated and normally distributed with equal variance,
+    ///         then the overall wind speed (vector magnitude) will be characterized by a Rayleigh
+    ///         distribution.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Rayleigh_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Rayleigh distribution. Available on:
+    ///                         http://en.wikipedia.org/wiki/Rayleigh_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   // Create a new Rayleigh's distribution with σ = 0.42
     ///   var rayleigh = new RayleighDistribution(sigma: 0.42);
     ///   
@@ -79,22 +94,16 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   string str = rayleigh.ToString(CultureInfo.InvariantCulture); // Rayleigh(x; σ = 0.42)
     /// </code>
     /// </example>
-    /// 
     [Serializable]
     public class RayleighDistribution : UnivariateContinuousDistribution,
         ISampleableDistribution<double>, IFormattable
     {
-
         // Distribution parameters
-        private double sigma; // σ
-
 
         /// <summary>
-        ///   Creates a new Rayleigh distribution.
+        ///     Creates a new Rayleigh distribution.
         /// </summary>
-        /// 
         /// <param name="sigma">The scale parameter σ (sigma).</param>
-        /// 
         public RayleighDistribution([Positive] double sigma)
         {
             if (sigma < 0)
@@ -103,224 +112,223 @@ namespace Accord.Statistics.Distributions.Univariate
                     "Sigma must be positive.");
             }
 
-            this.sigma = sigma;
+            this.Scale = sigma;
         }
 
+        private RayleighDistribution()
+        {
+        }
 
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
         /// <value>The distribution's mean value.</value>
-        /// 
         /// <remarks>
-        ///   The Rayleight's mean value is defined 
-        ///   as <c>mean = σ * sqrt(π / 2)</c>.
+        ///     The Rayleight's mean value is defined
+        ///     as <c>mean = σ * sqrt(π / 2)</c>.
         /// </remarks>
-        /// 
         public override double Mean
         {
-            get { return sigma * Math.Sqrt(Math.PI / 2.0); }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the Rayleight's scale parameter σ (sigma)
-        /// </summary>
-        /// 
-        public double Scale
-        {
-            get { return sigma; }
-        }
-
-        /// <summary>
-        ///   Gets the variance for this distribution.
-        /// </summary>
-        /// 
-        /// <value>The distribution's variance.</value>
-        /// 
-        /// <remarks>
-        ///   The Rayleight's variance value is defined 
-        ///   as <c>var = (4 - π) / 2 * σ²</c>.
-        /// </remarks>
-        /// 
-        public override double Variance
-        {
-            get { return (4.0 - Math.PI) / 2.0 * sigma * sigma; }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the mode for this distribution.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   In the Rayleigh distribution, the mode equals σ (sigma).
-        /// </remarks>
-        /// 
-        /// <value>
-        ///   The distribution's mode value.
-        /// </value>
-        /// 
-        public override double Mode
-        {
-            get { return sigma; }
+            get => Scale * System.Math.Sqrt(System.Math.PI / 2.0);
             set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///     Gets the Rayleight's scale parameter σ (sigma)
         /// </summary>
-        /// 
+        public double Scale { get; private set; }
+
+        /// <summary>
+        ///     Gets the variance for this distribution.
+        /// </summary>
+        /// <value>The distribution's variance.</value>
+        /// <remarks>
+        ///     The Rayleight's variance value is defined
+        ///     as <c>var = (4 - π) / 2 * σ²</c>.
+        /// </remarks>
+        public override double Variance
+        {
+            get => (4.0 - System.Math.PI) / 2.0 * Scale * Scale;
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the mode for this distribution.
+        /// </summary>
+        /// <remarks>
+        ///     In the Rayleigh distribution, the mode equals σ (sigma).
+        /// </remarks>
+        /// <value>
+        ///     The distribution's mode value.
+        /// </value>
+        public override double Mode
+        {
+            get => Scale;
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the entropy for this distribution.
+        /// </summary>
         /// <value>The distribution's entropy.</value>
-        /// 
         public override double Entropy
         {
-            get { return 1 + Math.Log(sigma / Math.Sqrt(2)) + Constants.EulerGamma / 2.0; ; }
-            set {} //Not Implemented.
+            get => 1 + System.Math.Log(Scale / System.Math.Sqrt(2)) + Constants.EulerGamma / 2.0;
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the support interval for this distribution.
+        ///     Gets the support interval for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
         /// </value>
-        /// 
         public override DoubleRange Support
         {
-            get { return new DoubleRange(0, Double.PositiveInfinity); }
-            set {} //Not Implemented.
+            get => new(0, double.PositiveInfinity);
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format(formatProvider, "Rayleigh(x; σ = {0})",
+                Scale.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public override object Clone()
+        {
+            return new RayleighDistribution(Scale);
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
         /// </remarks>
-        /// 
         /// <example>
-        ///   See <see cref="RayleighDistribution"/>.
+        ///     See <see cref="RayleighDistribution" />.
         /// </example>
-        /// 
         protected internal override double InnerDistributionFunction(double x)
         {
-            return 1.0 - Math.Exp(-x * x / (2 * sigma * sigma));
+            return 1.0 - System.Math.Exp(-x * x / (2 * Scale * Scale));
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        ///
         /// <example>
-        ///   See <see cref="RayleighDistribution"/>.
+        ///     See <see cref="RayleighDistribution" />.
         /// </example>
-        ///
         protected internal override double InnerProbabilityDensityFunction(double x)
         {
-            return x / (sigma * sigma) * Math.Exp(-x * x / (2 * sigma * sigma));
+            return x / (Scale * Scale) * System.Math.Exp(-x * x / (2 * Scale * Scale));
         }
 
         /// <summary>
-        ///   Gets the log-probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the log-probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The logarithm of the probability of <c>x</c>
-        ///   occurring in the current distribution.
+        ///     The logarithm of the probability of <c>x</c>
+        ///     occurring in the current distribution.
         /// </returns>
-        /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
         /// <example>
-        ///   See <see cref="RayleighDistribution"/>.
+        ///     See <see cref="RayleighDistribution" />.
         /// </example>
-        /// 
         protected internal override double InnerLogProbabilityDensityFunction(double x)
         {
-            return Math.Log(x / (sigma * sigma)) + (-x * x / (2 * sigma * sigma));
+            return System.Math.Log(x / (Scale * Scale)) + -x * x / (2 * Scale * Scale);
         }
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///     Fits the underlying distribution to a given set of observations.
         /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
+        /// <param name="observations">
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, such
-        ///   as regularization constants and additional parameters.</param>
-        ///   
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting, such
+        ///     as regularization constants and additional parameters.
+        /// </param>
         /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
+        ///     Although both double[] and double[][] arrays are supported,
+        ///     providing a double[] for a multivariate distribution or a
+        ///     double[][] for a univariate distribution may have a negative
+        ///     impact in performance.
         /// </remarks>
-        /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             if (options != null)
+            {
                 throw new ArgumentException("This method does not accept fitting options.");
+            }
 
             if (weights != null)
+            {
                 throw new ArgumentException("This distribution does not support weighted samples.");
+            }
 
             double sum = 0;
-            for (int i = 0; i < observations.Length; i++)
+            for (var i = 0; i < observations.Length; i++)
+            {
                 sum += observations[i] * observations[i];
+            }
 
             double n = observations.Length;
-            double c = 1 / (2 * n);
-            double sigma2 = c * sum;
-            double biased = Math.Sqrt(sigma2);
+            var c = 1 / (2 * n);
+            var sigma2 = c * sum;
+            var biased = System.Math.Sqrt(sigma2);
 
-            double num = Gamma.Log(n) + 0.5 * Math.Log(n);
-            double den = Gamma.Log(n + 0.5);
-            double correction = Math.Exp(num - den);
+            var num = Gamma.Log(n) + 0.5 * System.Math.Log(n);
+            var den = Gamma.Log(n + 0.5);
+            var correction = System.Math.Exp(num - den);
 
-            if (Double.IsPositiveInfinity(num) && Double.IsPositiveInfinity(den))
+            if (double.IsPositiveInfinity(num) && double.IsPositiveInfinity(den))
+            {
                 correction = 1;
+            }
 
-            sigma = biased * correction;
+            Scale = biased * correction;
         }
 
-
-        private RayleighDistribution() { }
-
-
         /// <summary>
-        ///   Estimates a new Gamma distribution from a given set of observations.
+        ///     Estimates a new Gamma distribution from a given set of observations.
         /// </summary>
-        /// 
         public static RayleighDistribution Estimate(double[] observations)
         {
             var n = new RayleighDistribution();
@@ -328,165 +336,125 @@ namespace Accord.Statistics.Distributions.Univariate
             return n;
         }
 
-        /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A new object that is a copy of this instance.
-        /// </returns>
-        /// 
-        public override object Clone()
-        {
-            return new RayleighDistribution(sigma);
-        }
-
         #region ISamplableDistribution<double> Members
 
         /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
+        ///     Generates a random vector of observations from the current distribution.
         /// </summary>
-        /// 
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///   
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
         public override double[] Generate(int samples, double[] result, Random source)
         {
-            return Random(sigma, samples, result, source);
+            return Random(Scale, samples, result, source);
         }
 
         /// <summary>
-        ///   Generates a random observation from the current distribution.
+        ///     Generates a random observation from the current distribution.
         /// </summary>
-        /// 
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///   
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random observations drawn from this distribution.</returns>
-        /// 
         public override double Generate(Random source)
         {
-            return Random(sigma, source);
+            return Random(Scale, source);
         }
 
         /// <summary>
-        ///   Generates a random vector of observations from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random vector of observations from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
         /// <param name="samples">The number of samples to generate.</param>
-        ///
         /// <returns>An array of double values sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double[] Random(double sigma, int samples)
         {
-            return Random(sigma, samples, Accord.Math.Random.Generator.Random);
+            return Random(sigma, samples, Generator.Random);
         }
 
         /// <summary>
-        ///   Generates a random vector of observations from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random vector of observations from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
         /// <param name="samples">The number of samples to generate.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///   
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>An array of double values sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double[] Random(double sigma, int samples, Random source)
         {
             return Random(sigma, samples, new double[samples], source);
         }
 
         /// <summary>
-        ///   Generates a random vector of observations from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random vector of observations from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        ///
         /// <returns>An array of double values sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double[] Random(double sigma, int samples, double[] result)
         {
-            return Random(sigma, samples, result, Accord.Math.Random.Generator.Random);
+            return Random(sigma, samples, result, Generator.Random);
         }
 
         /// <summary>
-        ///   Generates a random vector of observations from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random vector of observations from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>An array of double values sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double[] Random(double sigma, int samples, double[] result, Random source)
         {
-            for (int i = 0; i < samples; i++)
-                result[i] = Math.Sqrt(-2 * sigma * sigma * Math.Log(source.NextDouble()));
+            for (var i = 0; i < samples; i++)
+            {
+                result[i] = System.Math.Sqrt(-2 * sigma * sigma * System.Math.Log(source.NextDouble()));
+            }
+
             return result;
         }
 
         /// <summary>
-        ///   Generates a random observation from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random observation from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
-        /// 
         /// <returns>A random double value sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double Random(double sigma)
         {
-            return Random(sigma, Accord.Math.Random.Generator.Random);
+            return Random(sigma, Generator.Random);
         }
 
         /// <summary>
-        ///   Generates a random observation from the 
-        ///   Rayleigh distribution with the given parameters.
+        ///     Generates a random observation from the
+        ///     Rayleigh distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="sigma">The Rayleigh distribution's sigma.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        /// 
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random double value sampled from the specified Rayleigh distribution.</returns>
-        /// 
         public static double Random(double sigma, Random source)
         {
-            return Math.Sqrt(-2 * sigma * sigma * Math.Log(source.NextDouble()));
+            return System.Math.Sqrt(-2 * sigma * sigma * System.Math.Log(source.NextDouble()));
         }
 
         #endregion
-
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString(string format, IFormatProvider formatProvider)
-        {
-            return String.Format(formatProvider, "Rayleigh(x; σ = {0})",
-                sigma.ToString(format, formatProvider));
-        }
-
     }
 }

@@ -12,6 +12,7 @@
  */
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("VisualisationDirectory", "list", null);
     $.get("../api/VisualisationRegistry/GetByShowInDirectory",
         function (data) {
             const directory = $('#Directory');

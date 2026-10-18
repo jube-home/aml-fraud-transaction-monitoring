@@ -23,6 +23,7 @@ namespace Jube.HealthCheck
                 client.Timeout = TimeSpan.FromSeconds(5);
 
                 var response = await client.GetAsync("http://localhost:5001/api/ready");
+
                 return response.IsSuccessStatusCode ? 0 : 1;
             }
             catch

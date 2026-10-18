@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.Observability;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -43,6 +43,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     EngineDiagnostics.InvokeTaskFaultedCount.Add(1,
                         new KeyValuePair<string, object>("task.type", pendingReadTasksResult.TaskType.ToString()),
                         new KeyValuePair<string, object>("task.direction", "read"));
+
                     continue;
                 }
 
@@ -52,16 +53,19 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                         invokeTaskPerformance.TaskWrapperStats.Read.SanctionsAsync =
                             new TaskPerformance(pendingReadTasksResult.ComputeTime,
                                 pendingReadTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.TtlCountersAsync:
                         invokeTaskPerformance.TaskWrapperStats.Read.TtlCountersAsync =
                             new TaskPerformance(pendingReadTasksResult.ComputeTime,
                                 pendingReadTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.AbstractionRulesWithSearchKeysAsync:
                         invokeTaskPerformance.TaskWrapperStats.Read.AbstractionRulesWithSearchKeysAsync =
                             new TaskPerformance(pendingReadTasksResult.ComputeTime,
                                 pendingReadTasksResult.ThreadMemory);
+
                         break;
                 }
             }
@@ -69,6 +73,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             if (context.LogSampled)
             {
                 invokeTaskPerformance.Stages ??= new InvokeStagePerformance();
+
                 invokeTaskPerformance.Stages.JoinReadTasks = new StageDuration
                 {
                     DurationMicroseconds = (long)(joinStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))

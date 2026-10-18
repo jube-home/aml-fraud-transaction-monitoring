@@ -18,15 +18,18 @@ namespace Jube.Dictionary.Extensions
         public static int FromRomanNumerals(this string? @this)
         {
             var text = (@this ?? "").Trim().ToUpperInvariant();
+
             if (text.Length is 0 or > 15)
             {
                 return 0;
             }
 
             var total = 0;
+
             for (var i = 0; i < text.Length; i++)
             {
                 var current = RomanValue(text[i]);
+
                 if (current == 0)
                 {
                     return 0;

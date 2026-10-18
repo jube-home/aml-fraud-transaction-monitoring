@@ -22,6 +22,7 @@ using Jube.Dto.Repository.Case;
 using Jube.Service.Exceptions.Repository.Case;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.Case;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -47,13 +48,11 @@ namespace Jube.Test.Service.Repository.Case
                 NullLoggerFactory.Instance);
 
         private static readonly EngineJsonSerializationHelper jsonSerializationHelper = new();
-
         private readonly List<int> createdCaseIds = [];
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<long> createdArchiveIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -62,7 +61,9 @@ namespace Jube.Test.Service.Repository.Case
 
             await dbContext.GetTable<Data.Poco.CaseEvent>()
                 .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
+
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 // ReSharper disable once AccessToDisposedClosure
                 .Where(w => dbContext.CaseWorkflowStatus.Where(s => createdCaseWorkflowStatusIds.Contains(s.Id))
@@ -71,11 +72,14 @@ namespace Jube.Test.Service.Repository.Case
                 // ReSharper disable once AccessToDisposedClosure
                 .Where(w => dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                     .Select(s => s.Guid).Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Archive.Where(w => createdArchiveIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -100,6 +104,7 @@ namespace Jube.Test.Service.Repository.Case
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -110,6 +115,7 @@ namespace Jube.Test.Service.Repository.Case
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -123,6 +129,7 @@ namespace Jube.Test.Service.Repository.Case
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -147,6 +154,7 @@ namespace Jube.Test.Service.Repository.Case
             });
 
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -180,6 +188,7 @@ namespace Jube.Test.Service.Repository.Case
             string caseKeyValue)
         {
             var guid = Guid.NewGuid();
+
             var json = new JObject
             {
                 ["payload"] = new JObject
@@ -230,9 +239,12 @@ namespace Jube.Test.Service.Repository.Case
         public async Task ListIsScopedToCallersTenantAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseA = await serviceA.InsertAsync(new CaseDto
             {
                 Id = 1,
@@ -242,6 +254,7 @@ namespace Jube.Test.Service.Repository.Case
                 Payload = "{}",
             });
             createdCaseIds.Add(caseA.Id);
+
             await dbContext.Case.Where(w => w.Id == caseA.Id).Set(s => s.CaseWorkflowGuid, workflowGuid)
                 .UpdateAsync();
 
@@ -297,8 +310,10 @@ namespace Jube.Test.Service.Repository.Case
         public async Task CreateFromCaseKeyValueRaisesCaseFromArchiveAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
@@ -313,6 +328,7 @@ namespace Jube.Test.Service.Repository.Case
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
             });
+
             created = created.Required();
 
             created.Should().NotBeNull();
@@ -325,13 +341,16 @@ namespace Jube.Test.Service.Repository.Case
         public async Task CreateFromCaseKeyValueWithExistingOpenCaseThrowsConflictAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var createCaseDto = new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -368,10 +387,12 @@ namespace Jube.Test.Service.Repository.Case
         public async Task CreateFromCaseKeyValueWithNoMatchingArchiveThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.CreateFromCaseKeyValueAsync(new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -405,13 +426,16 @@ namespace Jube.Test.Service.Repository.Case
         public async Task UpdateLockingAnUnlockedCaseSetsLockedDateAndUserAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var created = await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -419,6 +443,7 @@ namespace Jube.Test.Service.Repository.Case
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
             });
+
             created = created.Required();
             createdCaseIds.Add(created.Id);
             created.Locked.Should().BeFalse();
@@ -445,13 +470,16 @@ namespace Jube.Test.Service.Repository.Case
         public async Task UpdateUnlockingALockedCaseClearsLockedDateAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var created = await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -459,6 +487,7 @@ namespace Jube.Test.Service.Repository.Case
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
             });
+
             created = created.Required();
             createdCaseIds.Add(created.Id);
 
@@ -493,13 +522,16 @@ namespace Jube.Test.Service.Repository.Case
         public async Task UpdateWithUnknownWorkflowStatusThrowsInvalidCaseWorkflowStatusAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var created = await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -507,6 +539,7 @@ namespace Jube.Test.Service.Repository.Case
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
             });
+
             created = created.Required();
             createdCaseIds.Add(created.Id);
 
@@ -526,14 +559,17 @@ namespace Jube.Test.Service.Repository.Case
         public async Task UpdateChangingRatingWritesCaseEventAndPublishesChangeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, modelId) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKey = "account";
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
 
             var busSpy = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: busSpy);
+
             var created = await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
             {
                 CaseWorkflowGuid = workflowGuid,
@@ -541,6 +577,7 @@ namespace Jube.Test.Service.Repository.Case
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
             });
+
             created = created.Required();
             createdCaseIds.Add(created.Id);
             busSpy.Published.Clear();

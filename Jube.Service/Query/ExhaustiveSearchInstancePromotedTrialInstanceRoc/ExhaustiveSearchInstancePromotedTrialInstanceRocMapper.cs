@@ -19,7 +19,8 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
 
     internal static class ExhaustiveSearchInstancePromotedTrialInstanceRocMapper
     {
-        private static ExhaustiveSearchInstancePromotedTrialInstanceRocDto ToDto(DataQuery.Dto source) => new()
+        private static ExhaustiveSearchInstancePromotedTrialInstanceRocDto ToDto(
+            DataQuery.GetExhaustiveSearchInstancePromotedTrialInstanceRocQueryDto source) => new()
         {
             Id = source.Id,
             Score = FiniteNumber.Of(source.Score),
@@ -28,6 +29,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
         };
 
         public static List<ExhaustiveSearchInstancePromotedTrialInstanceRocDto> ToDto(
-            IEnumerable<DataQuery.Dto> source) => source.Select(ToDto).ToList();
+            IEnumerable<DataQuery.GetExhaustiveSearchInstancePromotedTrialInstanceRocQueryDto> source) =>
+            source.Select(ToDto).ToList();
     }
 }

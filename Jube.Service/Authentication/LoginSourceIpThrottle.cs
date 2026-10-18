@@ -28,6 +28,7 @@ namespace Jube.Service.Authentication
             }
 
             var now = clock.GetUtcNow().UtcDateTime;
+
             return now - existing.StartUtc <= window && existing.Count > maxAttemptsPerWindow;
         }
 
@@ -39,6 +40,7 @@ namespace Jube.Service.Authentication
             }
 
             var now = clock.GetUtcNow().UtcDateTime;
+
             windowsByRemoteIp.AddOrUpdate(remoteIp,
                 _ => new Window(1, now),
                 (_, existing) => now - existing.StartUtc > window

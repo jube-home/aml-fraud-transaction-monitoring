@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,28 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelTimeWindow;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelTimeWindow(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelTimeWindowIntervals", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists the kinds of time window and the interval codes each allows."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelTimeWindowCalculate", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Works out a time window's exact start and end as the engine does."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelTimeWindowAbstractionRule", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Works out the window an abstraction rule aggregates over for a reference date."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelTimeWindowTtlCounter", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Works out the window a TTL counter counts over for a reference date.")
-        ]);
+        static partial void AddEntityAnalysisModelTimeWindow(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTimeWindowIntervals", OperationKind.Read, true,
+                    false,
+                    "Lists the kinds of time window and the interval codes each allows.",
+                    EntityAnalysisModelTimeWindowService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTimeWindowCalculate", OperationKind.Read, true,
+                    false,
+                    "Works out a time window's exact start and end as the engine does.",
+                    EntityAnalysisModelTimeWindowService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTimeWindowAbstractionRule", OperationKind.Read, true,
+                    false,
+                    "Works out the window an abstraction rule aggregates over for a reference date.",
+                    EntityAnalysisModelTimeWindowService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTimeWindowTtlCounter", OperationKind.Read, true,
+                    false,
+                    "Works out the window a TTL counter counts over for a reference date.",
+                    EntityAnalysisModelTimeWindowService.RequiredPermissions)
+            ]);
+        }
     }
 }

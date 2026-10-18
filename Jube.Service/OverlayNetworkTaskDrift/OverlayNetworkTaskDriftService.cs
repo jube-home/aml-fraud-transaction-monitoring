@@ -17,7 +17,7 @@ using Jube.Data.Repository;
 using Jube.Dto.OverlayNetworkTaskDrift;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.OverlayNetworkTaskDrift;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +30,6 @@ namespace Jube.Service.OverlayNetworkTaskDrift
     public sealed class OverlayNetworkTaskDriftService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -54,6 +53,9 @@ namespace Jube.Service.OverlayNetworkTaskDrift
             this.permissionValidation = permissionValidation;
             repository = new OverlayNetworkTaskDriftRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<OverlayNetworkTaskDriftService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -138,12 +140,16 @@ namespace Jube.Service.OverlayNetworkTaskDrift
         {
             using var op = OperationScope.Start("OverlayNetworkTaskDrift", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OverlayNetworkTaskDrift.List: entry take={clampedTake} user={userName}");
@@ -169,6 +175,7 @@ namespace Jube.Service.OverlayNetworkTaskDrift
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"OverlayNetworkTaskDrift.List: {dtos.Count} rows user={userName}");
@@ -184,6 +191,7 @@ namespace Jube.Service.OverlayNetworkTaskDrift
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"OverlayNetworkTaskDrift.List: cancelled user={userName}");

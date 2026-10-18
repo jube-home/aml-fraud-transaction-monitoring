@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetEntityApprovalSubjectsByKindAndParentQuery
 {
     using System.Collections.Generic;
@@ -18,9 +20,9 @@ namespace Jube.Data.Query.GetEntityApprovalSubjectsByKindAndParentQuery
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using EntityApproval;
     using LinqToDB;
     using Models;
-    using Repository;
 
     public sealed class GetEntityApprovalSubjectsByKindAndParentQuery(DbContext dbContext, int tenantRegistryId)
     {

@@ -20,9 +20,11 @@ namespace Jube.Dictionary.Extensions
         public static string Crc32Hex(this string? @this)
         {
             var crc = 0xFFFFFFFFu;
+
             foreach (var b in Encoding.UTF8.GetBytes(@this ?? ""))
             {
                 crc ^= b;
+
                 for (var i = 0; i < 8; i++)
                 {
                     crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320u : crc >> 1;

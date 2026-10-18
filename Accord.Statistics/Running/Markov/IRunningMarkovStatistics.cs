@@ -1,138 +1,131 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics.Models.Markov;
 
 namespace Accord.Statistics.Running
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Common interface for running Markov filters.
+    ///     Common interface for running Markov filters.
     /// </summary>
     public interface IRunningMarkovStatistics
     {
         /// <summary>
-        ///   Gets whether the model has been initialized or not.
+        ///     Gets whether the model has been initialized or not.
         /// </summary>
-        /// 
         bool Started { get; set; }
 
-         /// <summary>
-        ///   Gets the current vector of probabilities of being in each state.
+        /// <summary>
+        ///     Gets the current vector of probabilities of being in each state.
         /// </summary>
-        /// 
         double[] Current { get; }
 
         /// <summary>
-        ///   Gets the current most likely state (in the Viterbi path).
+        ///     Gets the current most likely state (in the Viterbi path).
         /// </summary>
-        /// 
         int CurrentState { get; }
 
         /// <summary>
-        ///   Gets the current Viterbi probability
-        ///   (along the most likely path).
+        ///     Gets the current Viterbi probability
+        ///     (along the most likely path).
         /// </summary>
-        /// 
         double LogViterbi { get; }
 
         /// <summary>
-        ///   Gets the current Forward probability
-        ///   (along all possible paths).
+        ///     Gets the current Forward probability
+        ///     (along all possible paths).
         /// </summary>
-        /// 
         double LogForward { get; }
 
         /// <summary>
-        ///   Clears all measures previously computed
-        ///   and indicate the sequence has ended.
+        ///     Clears all measures previously computed
+        ///     and indicate the sequence has ended.
         /// </summary>
-        /// 
         void Clear();
-
     }
 
     /// <summary>
-    ///   Base class for running hidden Markov filters.
+    ///     Base class for running hidden Markov filters.
     /// </summary>
-    /// 
     [Serializable]
     internal class BaseRunningMarkovStatistics
     {
-
-        private bool started;
-        private double[] current;
         private int? currentState;
-
-        private double? logViterbi;
         private double? logForward;
 
+        private double? logViterbi;
+        private bool started;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseRunningMarkovStatistics"/> class.
+        ///     Initializes a new instance of the <see cref="BaseRunningMarkovStatistics" /> class.
         /// </summary>
-        /// 
         /// <param name="model">The Markov model.</param>
-        /// 
         public BaseRunningMarkovStatistics(IHiddenMarkovModel model)
         {
             if (model == null)
+            {
                 throw new ArgumentNullException("model");
+            }
 
-            current = new double[model.States];
+            Current = new double[model.States];
         }
 
         /// <summary>
-        ///   Gets whether the model has been initialized or not.
+        ///     Gets whether the model has been initialized or not.
         /// </summary>
-        /// 
         public bool Started
         {
-            get { return started; }
-            set { started = value; }
+            get => started;
+            set => started = value;
         }
 
         /// <summary>
-        ///   Gets the current vector of probabilities of being in each state.
+        ///     Gets the current vector of probabilities of being in each state.
         /// </summary>
-        /// 
-        public double[] Current
-        {
-            get { return current; }
-        }
+        public double[] Current { get; }
 
         /// <summary>
-        ///   Gets the current most likely state (in the Viterbi path).
+        ///     Gets the current most likely state (in the Viterbi path).
         /// </summary>
-        /// 
         public int CurrentState
         {
             get
             {
                 if (currentState == null)
                 {
-                    int state; current.Max(out state);
+                    int state;
+                    Current.Max(out state);
                     currentState = state;
                 }
 
@@ -141,17 +134,16 @@ namespace Accord.Statistics.Running
         }
 
         /// <summary>
-        ///   Gets the current Viterbi probability
-        ///   (along the most likely path).
+        ///     Gets the current Viterbi probability
+        ///     (along the most likely path).
         /// </summary>
-        /// 
         public double LogViterbi
         {
             get
             {
                 if (logViterbi == null)
                 {
-                    int state = CurrentState;
+                    var state = CurrentState;
                     logViterbi = Current[state];
                 }
 
@@ -160,19 +152,21 @@ namespace Accord.Statistics.Running
         }
 
         /// <summary>
-        ///   Gets the current Forward probability
-        ///   (along all possible paths).
+        ///     Gets the current Forward probability
+        ///     (along all possible paths).
         /// </summary>
-        /// 
         public double LogForward
         {
             get
             {
                 if (logForward == null)
                 {
-                    double sum = Double.NegativeInfinity;
-                    for (int i = 0; i < Current.Length; i++)
+                    var sum = double.NegativeInfinity;
+                    for (var i = 0; i < Current.Length; i++)
+                    {
                         sum = Special.LogSum(sum, Current[i]);
+                    }
+
                     logForward = sum;
                 }
 
@@ -181,15 +175,16 @@ namespace Accord.Statistics.Running
         }
 
         /// <summary>
-        ///   Clears all measures previously computed
-        ///   and indicate the sequence has ended.
+        ///     Clears all measures previously computed
+        ///     and indicate the sequence has ended.
         /// </summary>
-        /// 
         public void Clear()
         {
             Started = false;
-            for (int i = 0; i < current.Length; i++)
-                current[i] = 0;
+            for (var i = 0; i < Current.Length; i++)
+            {
+                Current[i] = 0;
+            }
 
             currentState = null;
             logViterbi = null;
@@ -197,15 +192,13 @@ namespace Accord.Statistics.Running
         }
 
         /// <summary>
-        ///   Clears all measures previously computed.
+        ///     Clears all measures previously computed.
         /// </summary>
-        /// 
         public void Invalidate()
         {
             currentState = null;
             logViterbi = null;
             logForward = null;
         }
-
     }
 }

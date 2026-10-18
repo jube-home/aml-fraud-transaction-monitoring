@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelActivationRuleOverrideQuery(List<ServiceToolDescriptor> tools) =>
+        static partial void AddEntityAnalysisModelActivationRuleOverrideQuery(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelActivationRuleOverrideQueryGet", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Lists the override-enabled Activation Rules of an Entity Analysis Model and whether each is currently overridden for a override key and value.")
+                    "EntityAnalysisModelActivationRuleOverrideQueryGet", OperationKind.Read, true,
+                    false,
+                    "Lists the override-enabled Activation Rules of an Entity Analysis Model and whether each is currently overridden for a override key and value.",
+                    EntityAnalysisModelActivationRuleOverrideQueryService.RequiredPermissions)
             ]);
+        }
     }
 }

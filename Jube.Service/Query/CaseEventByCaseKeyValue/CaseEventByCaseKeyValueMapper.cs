@@ -18,7 +18,7 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
     internal static class CaseEventByCaseKeyValueMapper
     {
         public static CaseEventByCaseKeyValueDto ToDto(
-            global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery.Dto source) => new()
+            global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery.GetCaseEventByCaseKeyValueQueryDto source) => new()
         {
             Id = source.Id,
             CaseId = source.CaseId,
@@ -30,7 +30,8 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
         };
 
         public static List<CaseEventByCaseKeyValueDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery.Dto> source) =>
+            IEnumerable<global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery.GetCaseEventByCaseKeyValueQueryDto>
+                source) =>
             source.Select(ToDto).ToList();
     }
 }

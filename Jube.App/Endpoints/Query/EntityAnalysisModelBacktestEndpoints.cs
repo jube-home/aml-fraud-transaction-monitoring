@@ -44,9 +44,11 @@ namespace Jube.App.Endpoints.Query
             group.MapGet("Fields/{entityAnalysisModelId:int}", FieldsAsync)
                 .Produces<BacktestFieldsDto>()
                 .WithName("EntityAnalysisModelBacktestFields");
+
             group.MapGet("ByEntityAnalysisModelId/{entityAnalysisModelId:int}", ListAsync)
                 .Produces<List<BacktestInstanceDto>>()
                 .WithName("EntityAnalysisModelBacktestList");
+
             group.MapGet("{id:int}", StatusAsync)
                 .Produces<BacktestInstanceDto>()
                 .WithName("EntityAnalysisModelBacktestStatus");
@@ -124,12 +126,15 @@ namespace Jube.App.Endpoints.Query
                 if (!string.IsNullOrEmpty(model.WindowInterval) && model.WindowValue is > 0)
                 {
                     var services = httpContext.RequestServices;
+
                     var timeWindow = await EntityAnalysisModelTimeWindowService.CreateAsync(dbContext,
                         httpContext.User.Identity?.Name, services.GetRequiredService<ILog>(),
                         services.GetRequiredService<IStringLocalizerFactory>(),
                         services.GetRequiredService<IServiceChangeBus>(), cancellation).ConfigureAwait(false);
+
                     var window = await timeWindow.CalculateAsync("Calendar", model.WindowInterval,
                         model.WindowValue.Value, null, cancellation).ConfigureAwait(false);
+
                     if (window.Valid)
                     {
                         (model.Request.From, model.Request.To) = (window.From, window.To);
@@ -148,6 +153,7 @@ namespace Jube.App.Endpoints.Query
             var log = services.GetRequiredService<ILog>();
             var dynamicEnvironment = services.GetRequiredService<DynamicEnvironment.DynamicEnvironment>();
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"{method} {route}: entry user={user}");
@@ -155,12 +161,14 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelBacktestService.CreateAsync(dbContext, user, log,
                     services.GetRequiredService<IStringLocalizerFactory>(),
                     services.GetRequiredService<IServiceChangeBus>(),
                     dynamicEnvironment.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
+
                 return TypedResults.Ok(await body(dbContext, service, token).ConfigureAwait(false));
             }
             catch (ServiceException ex) when (ex.Code is "PermissionDenied" or "NotAuthenticated")
@@ -193,6 +201,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"{method} {route}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

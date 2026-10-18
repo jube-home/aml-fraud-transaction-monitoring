@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class CaseWorkflowXPathRepository
     {
         private readonly DbContext dbContext;
@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -208,6 +209,13 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
+        public Task<CaseWorkflowXPath> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflowXPath.FirstOrDefaultAsync(w =>
+                w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<CaseWorkflowXPath> InsertAsync(CaseWorkflowXPath model, CancellationToken token = default)
         {
             model.CreatedUser = userName;
@@ -215,6 +223,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -270,7 +279,7 @@ namespace Jube.Data.Repository
                 Deleted = existing.Deleted,
                 DeletedUser = existing.DeletedUser,
                 DeletedDate = existing.DeletedDate,
-                Version = existing.Version,
+                Version = existing.Version
             };
 
             await dbContext.InsertAsync(audit, token: token);

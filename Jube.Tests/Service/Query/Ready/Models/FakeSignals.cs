@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Service.Query.Ready;
+using Jube.Service.Query.Ready.Interfaces;
 
 namespace Jube.Test.Service.Query.Ready.Models
 {
@@ -19,7 +19,6 @@ namespace Jube.Test.Service.Query.Ready.Models
     {
         public int EngineReads;
         public int WatcherStreamReads;
-
         public bool StoppingRequested => stopping;
 
         public bool EngineReady
@@ -27,6 +26,7 @@ namespace Jube.Test.Service.Query.Ready.Models
             get
             {
                 EngineReads++;
+
                 return engineReady;
             }
         }
@@ -36,6 +36,7 @@ namespace Jube.Test.Service.Query.Ready.Models
             get
             {
                 WatcherStreamReads++;
+
                 return watcherStreamReady;
             }
         }

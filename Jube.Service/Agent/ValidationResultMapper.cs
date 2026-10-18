@@ -13,7 +13,7 @@
 
 using FluentValidation.Results;
 using Jube.Dto.Validation;
-using Jube.Parser;
+using Jube.Parser.Models;
 
 namespace Jube.Service.Agent
 {

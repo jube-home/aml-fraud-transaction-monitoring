@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.LoadTest.Models;
+
 namespace Jube.LoadTest
 {
     public static class EntryPoint
@@ -20,6 +22,7 @@ namespace Jube.LoadTest
             if (args.Contains("-h") || args.Contains("--help"))
             {
                 PrintUsage();
+
                 return 0;
             }
 
@@ -119,6 +122,7 @@ namespace Jube.LoadTest
             {
                 await Console.Error.WriteLineAsync("Missing required argument: -uri <endpoint>");
                 PrintUsage();
+
                 return 1;
             }
 
@@ -126,6 +130,7 @@ namespace Jube.LoadTest
             {
                 await Console.Error.WriteLineAsync("Missing required argument: -apikey <key>");
                 PrintUsage();
+
                 return 1;
             }
 
@@ -168,6 +173,7 @@ namespace Jube.LoadTest
                          StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
                 var parts = roleSpec.Split('=', 2);
+
                 if (parts.Length != 2)
                 {
                     throw new FormatException(

@@ -5,8 +5,6 @@ nav_order: 1
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Authentication
 
 The login page needs to authenticate the user via a User Name and Password.

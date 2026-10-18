@@ -25,6 +25,7 @@ public static class TestRsa
     public static string PrivateKeyEnv(bool other = false)
     {
         var pem = (other ? keyB : keyA).Value.ExportPkcs8PrivateKeyPem();
+
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(pem));
     }
 

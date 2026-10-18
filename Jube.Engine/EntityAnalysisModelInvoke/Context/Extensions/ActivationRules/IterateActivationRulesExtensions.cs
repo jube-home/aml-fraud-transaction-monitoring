@@ -70,6 +70,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     }
 
                     var suppressed = false;
+
                     if (overrideKind == EntityAnalysisModelOverrideKind.Suppress)
                     {
                         suppressed = true;
@@ -99,6 +100,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     if (!forced)
                     {
                         var activationSample = evaluateActivationRule.ActivationSample >= context.Random.NextDouble();
+
                         if (!activationSample)
                         {
                             context.TraceLog(
@@ -114,6 +116,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
 
                     bool matched;
+
                     if (forced)
                     {
                         matched = true;
@@ -140,6 +143,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         $"is checking for Activation Rule Evaluation InlineScripts looking for context Guid:{evaluateActivationRule.Guid} and or Name:{evaluateActivationRule.Name}.");
 
                     var overrideScriptTimings = new Dictionary<string, TaskPerformance>();
+
                     foreach (var inlineScript in context.Snapshot
                                  .EntityAnalysisModelInlineScripts.Where(s => s.EntityAnalysisModelInlineScriptEvents
                                      .Any(e => e.EntityAnalysisModelInlineScriptEventType ==
@@ -239,6 +243,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         var (caseResult, caseTiming) = await TimeAsync(() =>
                             context.ActivationRuleCreateCaseObjectAsync(evaluateActivationRule, suppressed,
                                 cacheService)).ConfigureAwait(false);
+
                         createCase = caseResult;
                         timing.CaseCreation = caseTiming;
                     }
@@ -254,9 +259,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 {
                     itemStopwatch.Stop();
                     var allocated = GC.GetAllocatedBytesForCurrentThread() - itemStartBytes;
+
                     timing.Rule = new TaskPerformance(
                         (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                         Math.Max(allocated, 0));
+
                     items[evaluateActivationRule.Name] = timing;
                 }
             }
@@ -270,6 +277,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             var startBytes = GC.GetAllocatedBytesForCurrentThread();
             action();
             sw.Stop();
+
             return new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                 Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0));
         }
@@ -280,6 +288,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             var startBytes = GC.GetAllocatedBytesForCurrentThread();
             await action().ConfigureAwait(false);
             sw.Stop();
+
             return new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                 Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0));
         }
@@ -290,6 +299,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             var startBytes = GC.GetAllocatedBytesForCurrentThread();
             var result = await action().ConfigureAwait(false);
             sw.Stop();
+
             return (result, new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                 Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0)));
         }

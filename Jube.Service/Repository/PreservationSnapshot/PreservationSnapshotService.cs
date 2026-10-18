@@ -15,19 +15,20 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.PreservationSnapshot;
+using Jube.Preservation.Models;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.Preservation;
-using NotFoundException = Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using NotFoundException = Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException;
 
 namespace Jube.Service.Repository.PreservationSnapshot
 {
-    using Library = global::Jube.Preservation.Preservation;
+    using Library = Jube.Preservation.Preservation;
 
     public sealed class PreservationSnapshotService
     {
@@ -36,7 +37,6 @@ namespace Jube.Service.Repository.PreservationSnapshot
 
         private static readonly int[] permissions = [38];
         private static readonly int[] importPermissions = [63];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly bool legacyFallback;
@@ -127,10 +127,12 @@ namespace Jube.Service.Repository.PreservationSnapshot
                 EnsurePermitted("PreservationSnapshot.List");
 
                 var repository = new PreservationSnapshotRepository(dbContext, userName);
+
                 var dtos = PreservationSnapshotMapper.ToDto(
                     await repository.GetAsync(Math.Clamp(limit, 1, 1000), token).ConfigureAwait(false));
 
                 op.Rows(dtos.Count);
+
                 return dtos;
             }
             catch (ForbiddenException)
@@ -178,6 +180,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
 
                 op.Entity(snapshot.Id);
                 op.Rows(1);
+
                 return PreservationSnapshotMapper.ToDto(snapshot);
             }
             catch (ForbiddenException)
@@ -236,6 +239,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
 
                 op.Entity(snapshot.Id);
                 op.Rows(1);
+
                 return snapshot.Json;
             }
             catch (ForbiddenException)
@@ -513,21 +517,23 @@ namespace Jube.Service.Repository.PreservationSnapshot
             throw new ArgumentOutOfRangeException(nameof(source), ProcessSourceRequiredMessage);
         }
 
-        private Task<global::Jube.Data.Poco.PreservationSnapshot> TakeAsync(
+        private Task<Data.Poco.PreservationSnapshot> TakeAsync(
             PreservationSnapshotRequestDto model, CancellationToken token)
         {
             var library = new Library(dbContext, userName, salt, legacyFallback);
 
-            return library.SnapshotAsync(new global::Jube.Preservation.ExportOptions
+            return library.SnapshotAsync(new ExportOptions
             {
                 Exhaustive = model.Exhaustive,
                 Lists = model.Lists,
                 Dictionaries = model.Dictionaries,
-                Visualisations = model.Visualisations
+                Visualisations = model.Visualisations,
+                Roles = model.Roles,
+                AdvancedAnalytics = model.AdvancedAnalytics
             }, (byte)model.SnapshotSourceId, model.Name, token);
         }
 
-        private async Task<global::Jube.Data.Poco.PreservationSnapshot> RestoreAsync(int id,
+        private async Task<Data.Poco.PreservationSnapshot> RestoreAsync(int id,
             CancellationToken token)
         {
             var library = new Library(dbContext, userName, salt, legacyFallback);

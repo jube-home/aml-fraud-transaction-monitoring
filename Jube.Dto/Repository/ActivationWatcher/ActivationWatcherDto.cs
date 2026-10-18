@@ -12,9 +12,12 @@
  */
 
 using System.ComponentModel;
-// ReSharper disable NotAccessedPositionalProperty.Global
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Repository.ActivationWatcher
 {
     public sealed record ActivationWatcherDto(

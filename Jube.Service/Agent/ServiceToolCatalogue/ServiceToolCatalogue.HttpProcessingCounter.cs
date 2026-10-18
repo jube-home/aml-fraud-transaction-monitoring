@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.HttpProcessingCounter;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -25,7 +28,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "of HTTP requests by how they were routed -- Model (synchronous), AsynchronousModel, " +
                     "Tag, Error, Sanction (direct recall), Exhaustive (direct recall), and All (every " +
                     "request received). Not scoped to any tenant. Also accepts samplePercentage (0-100) " +
-                    "to draw an unbiased random subset of matching rows instead of the most recent ones."));
+                    "to draw an unbiased random subset of matching rows instead of the most recent ones.",
+                    HttpProcessingCounterService.RequiredPermissions, HttpProcessingCounterService.RequiresLandlord));
         }
     }
 }

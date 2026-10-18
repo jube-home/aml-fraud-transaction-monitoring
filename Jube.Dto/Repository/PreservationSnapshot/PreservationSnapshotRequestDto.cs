@@ -13,7 +13,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Repository.PreservationSnapshot
 {
@@ -36,5 +39,13 @@ namespace Jube.Dto.Repository.PreservationSnapshot
 
         [Description("Include Visualisation Registry configuration.")]
         public bool Visualisations { get; set; } = true;
+
+        [Description("Include roles and their permissions. On by default: a rollback removes what the " +
+                     "snapshot body does not hold, so omitting roles loses the permission model.")]
+        public bool Roles { get; set; } = true;
+
+        [Description("Include Advanced Analytics instances, trained models and training history. On by " +
+                     "default, for the same reason as Roles.")]
+        public bool AdvancedAnalytics { get; set; } = true;
     }
 }

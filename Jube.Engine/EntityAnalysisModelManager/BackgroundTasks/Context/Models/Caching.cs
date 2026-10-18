@@ -11,18 +11,30 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
 {
     using System.Collections.Concurrent;
     using System.Reflection;
     using Jube.Engine.Models;
-    using SanctionEntry=Sanctions.Models.SanctionEntry;
+    using SanctionEntry = Sanctions.Models.SanctionEntry;
 
     public class Caching
     {
-        public ConcurrentDictionary<int, SanctionEntry> SanctionsEntries { get; set; } = new ConcurrentDictionary<int, SanctionEntry>();
-        public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } = new ConcurrentDictionary<string, byte>();
-        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; set; } = new ConcurrentDictionary<string, Assembly>();
-        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; set; } = new ConcurrentDictionary<string, HashCacheAssemblyPayload>();
+        public ConcurrentDictionary<int, SanctionEntry> SanctionsEntries { get; set; } =
+            new ConcurrentDictionary<int, SanctionEntry>();
+
+        public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } =
+            new ConcurrentDictionary<string, byte>();
+
+        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; set; } =
+            new ConcurrentDictionary<string, Assembly>();
+
+        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; set; } =
+            new ConcurrentDictionary<string, HashCacheAssemblyPayload>();
     }
 }

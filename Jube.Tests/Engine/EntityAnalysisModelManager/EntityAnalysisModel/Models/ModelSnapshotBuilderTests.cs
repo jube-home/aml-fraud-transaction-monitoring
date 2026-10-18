@@ -108,6 +108,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             {
                 ModelActivationRules = [ActivationRule(2, 0, 0)]
             };
+
             var next = builder.Build();
 
             using var scope = new AssertionScope();

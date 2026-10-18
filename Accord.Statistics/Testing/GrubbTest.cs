@@ -1,155 +1,158 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing
 {
-    using System;
-    using Distributions.Univariate;
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Grubb's Test for Outliers (for approximately Normal distributions).
+    ///     Grubb's Test for Outliers (for approximately Normal distributions).
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   Grubbs' test (named after Frank E. Grubbs, who published the test in 1950),
-    ///   also known as the maximum normed residual test or extreme studentized deviate
-    ///   test, is a statistical test used to detect outliers in a univariate data set
-    ///   assumed to come from a normally distributed population.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="https://en.wikipedia.org/wiki/Grubbs%27_test_for_outliers">
-    ///        Wikipedia, The Free Encyclopedia. Grubb's test for outliers. Available on:
-    ///        https://en.wikipedia.org/wiki/Grubbs%27_test_for_outliers </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         Grubbs' test (named after Frank E. Grubbs, who published the test in 1950),
+    ///         also known as the maximum normed residual test or extreme studentized deviate
+    ///         test, is a statistical test used to detect outliers in a univariate data set
+    ///         assumed to come from a normally distributed population.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="https://en.wikipedia.org/wiki/Grubbs%27_test_for_outliers">
+    ///                         Wikipedia, The Free Encyclopedia. Grubb's test for outliers. Available on:
+    ///                         https://en.wikipedia.org/wiki/Grubbs%27_test_for_outliers
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="Accord.Statistics.Distributions.Univariate.NormalDistribution"/>
-    /// 
+    /// <seealso cref="NormalDistribution" />
     [Serializable]
     public class GrubbTest : HypothesisTest<GrubbDistribution>
     {
-        private double min;
-        private double max;
-        private double abs;
+        /// <summary>
+        ///     Constructs a Grubb's test.
+        /// </summary>
+        public GrubbTest(double[] samples, GrubbTestHypothesis hypothesis = GrubbTestHypothesis.ThereAreOutliers)
+        {
+            NumberOfSamples = samples.Length;
+            Mean = samples.Mean();
+            StandardDeviation = samples.StandardDeviation(Mean);
+
+            // Compute Grubb's statistic
+            Min = Max = samples[0] - Mean;
+            for (var i = 1; i < samples.Length; i++)
+            {
+                var z = samples[i] - Mean;
+                if (z > Max)
+                {
+                    Max = z;
+                }
+
+                if (z < Min)
+                {
+                    Min = z;
+                }
+            }
+
+            Abs = System.Math.Max(-Min, Max);
+
+            Statistic = g(hypothesis) / StandardDeviation;
+            StatisticDistribution = new GrubbDistribution(NumberOfSamples);
+            Tail = DistributionTail.OneUpper;
+            Hypothesis = hypothesis;
+
+            // Compute the transformed p-value
+            PValue = StatisticToPValue(Statistic);
+        }
 
         /// <summary>
-        /// Gets the number of observations in the sample.
+        ///     Gets the number of observations in the sample.
         /// </summary>
-        /// 
         /// <value>The number of observations in the sample.</value>
-        /// 
         public int NumberOfSamples { get; private set; }
 
         /// <summary>
-        /// Gets the sample's mean.
+        ///     Gets the sample's mean.
         /// </summary>
-        /// 
         public double Mean { get; private set; }
 
         /// <summary>
-        /// Gets the sample's standard deviation.
+        ///     Gets the sample's standard deviation.
         /// </summary>
-        /// 
         public double StandardDeviation { get; private set; }
 
         /// <summary>
-        /// Gets the difference between the minimum value and the mean.
+        ///     Gets the difference between the minimum value and the mean.
         /// </summary>
-        /// 
-        public double Min { get { return min; } }
+        public double Min { get; }
 
         /// <summary>
-        /// Gets the difference between the maximum value and the mean.
+        ///     Gets the difference between the maximum value and the mean.
         /// </summary>
-        /// 
-        public double Max { get { return max; } }
+        public double Max { get; }
 
         /// <summary>
-        /// Gets the maximum absolute difference between 
-        /// an observation in the sample and the mean.
+        ///     Gets the maximum absolute difference between
+        ///     an observation in the sample and the mean.
         /// </summary>
-        /// 
-        public double Abs { get { return abs; } }
+        public double Abs { get; }
 
         /// <summary>
-        /// Gets the <see cref="GrubbTestHypothesis"/> being tested.
+        ///     Gets the <see cref="GrubbTestHypothesis" /> being tested.
         /// </summary>
-        /// 
         public GrubbTestHypothesis Hypothesis { get; private set; }
-
-        /// <summary>
-        ///   Constructs a Grubb's test.
-        /// </summary>
-        /// 
-        public GrubbTest(double[] samples, GrubbTestHypothesis hypothesis = GrubbTestHypothesis.ThereAreOutliers)
-        {
-            this.NumberOfSamples = samples.Length;
-            this.Mean = samples.Mean();
-            this.StandardDeviation = samples.StandardDeviation(Mean);
-
-            // Compute Grubb's statistic
-            this.min = this.max = samples[0] - Mean;
-            for (int i = 1; i < samples.Length; i++)
-            {
-                double z = samples[i] - Mean;
-                if (z > max)
-                    max = z;
-                if (z < min)
-                    min = z;
-            }
-            this.abs = Math.Max(-min, max);
-
-            this.Statistic = g(hypothesis) / StandardDeviation;
-            this.StatisticDistribution = new GrubbDistribution(NumberOfSamples);
-            this.Tail = DistributionTail.OneUpper;
-            this.Hypothesis = hypothesis;
-
-            // Compute the transformed p-value
-            this.PValue = StatisticToPValue(Statistic);
-        }
 
         private double g(GrubbTestHypothesis hypothesis)
         {
             switch (hypothesis)
             {
                 case GrubbTestHypothesis.ThereAreOutliers:
-                    return abs;
+                    return Abs;
                 case GrubbTestHypothesis.TheMaximumIsAnOutlier:
-                    return max;
+                    return Max;
                 case GrubbTestHypothesis.TheMinimumIsAnOutlier:
-                    return -min;
+                    return -Min;
             }
 
             throw new ArgumentOutOfRangeException("hypothesis");
         }
 
         /// <summary>
-        /// Converts a given test statistic to a p-value.
+        ///     Converts a given test statistic to a p-value.
         /// </summary>
         /// <param name="x">The value of the test statistic.</param>
         /// <returns>The p-value for the given statistic.</returns>
@@ -159,7 +162,7 @@ namespace Accord.Statistics.Testing
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(Math.Abs(x));
+                    p = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(System.Math.Abs(x));
                     break;
 
                 case DistributionTail.OneUpper:
@@ -178,7 +181,7 @@ namespace Accord.Statistics.Testing
         }
 
         /// <summary>
-        /// Converts a given p-value to a test statistic.
+        ///     Converts a given p-value to a test statistic.
         /// </summary>
         /// <param name="p">The p-value.</param>
         /// <returns>The test statistic which would generate the given p-value.</returns>
@@ -202,6 +205,5 @@ namespace Accord.Statistics.Testing
 
             return t;
         }
-
     }
 }

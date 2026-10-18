@@ -1,98 +1,101 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Analysis.ContrastFunctions
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Log-cosh (Hyperbolic Tangent) contrast function.
+    ///     Log-cosh (Hyperbolic Tangent) contrast function.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   According to Hyvärinen, the Logcosh contrast function
-    ///   is a good general-purpose contrast function.
+    ///     According to Hyvärinen, the Logcosh contrast function
+    ///     is a good general-purpose contrast function.
     /// </remarks>
-    /// 
-    /// <seealso cref="IndependentComponentAnalysis"/>
-    /// 
+    /// <seealso cref="IndependentComponentAnalysis" />
     [Serializable]
     public class Logcosh : IContrastFunction
     {
-        double alpha = 1;
-
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Logcosh"/> class.
+        ///     Initializes a new instance of the <see cref="Logcosh" /> class.
         /// </summary>
-        /// 
-        public Logcosh() { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="Logcosh"/> class.
-        /// </summary>
-        /// 
-        /// <param name="alpha">The log-cosh alpha constant. Default is 1.</param>
-        /// 
-        public Logcosh(double alpha)
+        public Logcosh()
         {
-            this.alpha = alpha;
         }
 
         /// <summary>
-        ///   Gets the exponential log-cosh constant.
+        ///     Initializes a new instance of the <see cref="Logcosh" /> class.
         /// </summary>
-        /// 
-        public double Alpha { get { return alpha; } }
+        /// <param name="alpha">The log-cosh alpha constant. Default is 1.</param>
+        public Logcosh(double alpha)
+        {
+            this.Alpha = alpha;
+        }
 
         /// <summary>
-        ///   Contrast function.
+        ///     Gets the exponential log-cosh constant.
         /// </summary>
-        /// 
+        public double Alpha { get; } = 1;
+
+        /// <summary>
+        ///     Contrast function.
+        /// </summary>
         /// <param name="x">The vector of observations.</param>
-        /// <param name="output">At method's return, this parameter
-        /// should contain the evaluation of function over the vector
-        /// of observations <paramref name="x"/>.</param>
-        /// <param name="derivative">At method's return, this parameter
-        /// should contain the evaluation of function derivative over
-        /// the vector of observations <paramref name="x"/>.</param>
-        /// 
+        /// <param name="output">
+        ///     At method's return, this parameter
+        ///     should contain the evaluation of function over the vector
+        ///     of observations <paramref name="x" />.
+        /// </param>
+        /// <param name="derivative">
+        ///     At method's return, this parameter
+        ///     should contain the evaluation of function derivative over
+        ///     the vector of observations <paramref name="x" />.
+        /// </param>
         public void Evaluate(double[] x, double[] output, double[] derivative)
         {
             // Log-cosh contrast function and its derivative, as given
             //  in original Hyvärinen's paper. See main references for the
             //  Independent Component Analysis class for details.
 
-            for (int j = 0; j < x.Length; j++)
+            for (var j = 0; j < x.Length; j++)
             {
                 double f;
 
                 // g(w*x)
-                f = output[j] = System.Math.Tanh(alpha * x[j]);
+                f = output[j] = System.Math.Tanh(Alpha * x[j]);
 
                 // g'(w*x)
-                derivative[j] = alpha * (1.0 - f * f);
+                derivative[j] = Alpha * (1.0 - f * f);
             }
         }
     }
-
 }

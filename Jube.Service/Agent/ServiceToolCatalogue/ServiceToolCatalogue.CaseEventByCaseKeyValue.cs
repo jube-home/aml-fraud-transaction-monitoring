@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseEventByCaseKeyValue;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseEventByCaseKeyValue(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseEventByCaseKeyValueGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the audit events of a case identified by case key and case key value, newest first.")
-        ]);
+        static partial void AddCaseEventByCaseKeyValue(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseEventByCaseKeyValueGet", OperationKind.Read, true, false,
+                    "Lists the audit events of a case identified by case key and case key value, newest first.",
+                    CaseEventByCaseKeyValueService.RequiredPermissions)
+            ]);
+        }
     }
 }

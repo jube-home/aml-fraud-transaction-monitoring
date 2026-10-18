@@ -1,173 +1,172 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Math
 {
-    using Accord.Math.Comparers;
-    using Accord.Math.Random;
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-
     public static partial class Jagged
     {
         /// <summary>
-        ///   Converts the values of a matrix using the default converter.
+        ///     Converts the values of a matrix using the default converter.
         /// </summary>
         /// <typeparam name="TInput">The type of the input.</typeparam>
         /// <typeparam name="TOutput">The type of the output.</typeparam>
         /// <param name="matrix">The matrix to be converted.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static TOutput[][] Convert<TInput, TOutput>(TInput[,] matrix)
         {
-            return Jagged.Convert(matrix, x => (TOutput)System.Convert.ChangeType(x, typeof(TOutput)));
+            return Convert(matrix, x => (TOutput)System.Convert.ChangeType(x, typeof(TOutput)));
         }
 
         /// <summary>
-        ///   Converts the values of a matrix using the default converter.
+        ///     Converts the values of a matrix using the default converter.
         /// </summary>
         /// <typeparam name="TInput">The type of the input.</typeparam>
         /// <typeparam name="TOutput">The type of the output.</typeparam>
         /// <param name="matrix">The matrix to be converted.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static TOutput[][] Convert<TInput, TOutput>(this TInput[][] matrix)
         {
-            return Jagged.Convert(matrix, x => (TOutput)System.Convert.ChangeType(x, typeof(TOutput)));
+            return Convert(matrix, x => (TOutput)System.Convert.ChangeType(x, typeof(TOutput)));
         }
 
         /// <summary>
-        ///   Converts the values of a matrix using the given converter expression.
+        ///     Converts the values of a matrix using the given converter expression.
         /// </summary>
         /// <typeparam name="TInput">The type of the input.</typeparam>
         /// <typeparam name="TOutput">The type of the output.</typeparam>
         /// <param name="matrix">The vector to be converted.</param>
         /// <param name="converter">The converter function.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static TOutput[][] Convert<TInput, TOutput>(this TInput[,] matrix,
 #if !NETSTANDARD1_4
             Converter<TInput, TOutput> converter
 #else
             Func<TInput, TOutput> converter
 #endif
-            )
+        )
         {
-            int rows = matrix.Rows();
-            int cols = matrix.Columns();
+            var rows = matrix.Rows();
+            var cols = matrix.Columns();
 
-            var result = Jagged.Zeros<TOutput>(rows, cols);
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < cols; j++)
+            var result = Zeros<TOutput>(rows, cols);
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < cols; j++)
+                {
                     result[i][j] = converter(matrix[i, j]);
+                }
+            }
 
             return result;
         }
 
         /// <summary>
-        ///   Converts the values of a matrix using the given converter expression.
+        ///     Converts the values of a matrix using the given converter expression.
         /// </summary>
         /// <typeparam name="TInput">The type of the input.</typeparam>
         /// <typeparam name="TOutput">The type of the output.</typeparam>
         /// <param name="matrix">The vector to be converted.</param>
         /// <param name="converter">The converter function.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static TOutput[][] Convert<TInput, TOutput>(this TInput[][] matrix,
 #if !NETSTANDARD1_4
             Converter<TInput, TOutput> converter
 #else
             Func<TInput, TOutput> converter
 #endif
-            )
+        )
         {
-            int rows = matrix.Rows();
-            int cols = matrix.Columns();
+            var rows = matrix.Rows();
+            var cols = matrix.Columns();
 
-            var result = Jagged.Zeros<TOutput>(rows, cols);
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < cols; j++)
+            var result = Zeros<TOutput>(rows, cols);
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < cols; j++)
+                {
                     result[i][j] = converter(matrix[i][j]);
+                }
+            }
 
             return result;
         }
 
         /// <summary>
-        ///   Converts the values of a tensor.
+        ///     Converts the values of a tensor.
         /// </summary>
-        /// 
         /// <typeparam name="TOutput">The type of the output.</typeparam>
         /// <param name="array">The tensor to be converted.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static Array Convert<TOutput>(this Array array)
         {
             return Convert(array, typeof(TOutput));
         }
 
         /// <summary>
-        ///   Converts the values of a tensor.
+        ///     Converts the values of a tensor.
         /// </summary>
-        /// 
         /// <param name="type">The type of the output.</param>
         /// <param name="array">The tensor to be converted.</param>
-        /// 
         /// <example>
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
-        /// <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_matrix" />
+        ///     <code source="Unit Tests\Accord.Tests.Math\Matrix\Matrix.Conversion.cs" region="doc_convert_jagged" />
         /// </example>
-        /// 
         public static Array Convert(this Array array, Type type)
         {
-            Array r = Jagged.Zeros(type, array.GetLength(deep: true));
+            var r = Zeros(type, array.GetLength());
 
-            foreach (int[] idx in r.GetIndices(deep: true))
+            foreach (var idx in r.GetIndices(true))
             {
-                var value = ExtensionMethods.To(array.GetValue(deep: true, indices: idx), type);
-                r.SetValue(value: value, deep: true, indices: idx);
+                var value = array.GetValue(true, idx).To(type);
+                r.SetValue(value, true, idx);
             }
+
             return r;
         }
     }

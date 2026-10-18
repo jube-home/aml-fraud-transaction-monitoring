@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,18 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddExhaustiveSearchInstancePromotedTrialInstance(List<ServiceToolDescriptor> tools) =>
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstance(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "ExhaustiveSearchInstancePromotedTrialInstanceUpdate", OperationKind.Write, Idempotent: true,
-                    Destructive: false,
+                    "ExhaustiveSearchInstancePromotedTrialInstanceUpdate", OperationKind.Write, true,
+                    false,
                     "Sets whether a promoted trial instance is promoted for production use; setting the same " +
-                    "value twice has no further effect.")
+                    "value twice has no further effect.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceService.WritePermissions)
             ]);
+        }
     }
 }

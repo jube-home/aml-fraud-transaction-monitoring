@@ -26,7 +26,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
     {
         public async Task<DateTime?> CacheServiceGetReferenceDateAsync()
         {
-            var referenceDate = await entityAnalysisModel.Services.CacheService.CacheReferenceDateRepository.GetReferenceDatePreferReplicaAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid).ConfigureAwait(false);
+            var referenceDate = await entityAnalysisModel.Services.CacheService.CacheReferenceDateRepository
+                .GetReferenceDatePreferReplicaAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                    entityAnalysisModel.Instance.Guid).ConfigureAwait(false);
+
             return referenceDate;
         }
 
@@ -34,10 +37,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
             string key, double decrement)
         {
             var value = 0d;
+
             try
             {
-                value = await entityAnalysisModel.Services.CacheService.CacheTtlCounterRepository.DecrementTtlCounterCacheAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid, ttlCounter.Guid,
-                    ttlCounter.TtlCounterDataName, key, decrement).ConfigureAwait(false);
+                value = await entityAnalysisModel.Services.CacheService.CacheTtlCounterRepository
+                    .DecrementTtlCounterCacheAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                        entityAnalysisModel.Instance.Guid, ttlCounter.Guid,
+                        ttlCounter.TtlCounterDataName, key, decrement).ConfigureAwait(false);
 
                 if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                 {
@@ -47,8 +53,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceGetReferenceDateAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceGetReferenceDateAsync: has produced an error {ex}");
             }
+
             return value;
         }
 
@@ -60,11 +68,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
                 int limit)
         {
             List<ExpiredTtlCounterEntry> values = null;
+
             try
             {
                 values = await cacheTtlCounterEntryRepository.GetAllExpiredByTtlCounterPreferReplicaAsync(
-                    entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
-                    ttlCounter.Guid, ttlCounter.TtlCounterDataName, adjustedTtlCounterDate, limit).ConfigureAwait(false);
+                        entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
+                        ttlCounter.Guid, ttlCounter.TtlCounterDataName, adjustedTtlCounterDate, limit)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -82,12 +92,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
         {
             try
             {
-                await cacheTtlCounterEntryRepository.DeleteAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
+                await cacheTtlCounterEntryRepository.DeleteAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                    entityAnalysisModel.Instance.Guid,
                     ttlCounter.Guid, ttlCounter.TtlCounterDataName, dataValue, referenceDate).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceDeleteTtlCounterEntryAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceDeleteTtlCounterEntryAsync: has produced an error {ex}");
             }
         }
 

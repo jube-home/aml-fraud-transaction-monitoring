@@ -19,31 +19,37 @@ namespace Jube.Data.Repository
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
-    using Interface;
+    using Interfaces;
     using LinqToDB;
     using Poco;
 
-    public class ExhaustiveSearchInstanceVariableHistogramClassificationRepository(DbContext dbContext) : IGenericRepository
+    public class ExhaustiveSearchInstanceVariableHistogramClassificationRepository(DbContext dbContext)
+        : IGenericRepository
     {
         public Task<int> InsertAsync(object arg, CancellationToken token = default)
         {
-            return dbContext.InsertWithInt32IdentityAsync((ExhaustiveSearchInstanceVariableHistogramClassification)arg, token: token);
+            return dbContext.InsertWithInt32IdentityAsync((ExhaustiveSearchInstanceVariableHistogramClassification)arg,
+                token: token);
         }
 
-        public async Task<IEnumerable<ExhaustiveSearchInstanceVariableHistogramClassification>> GetByExhaustiveSearchInstanceVariableIdAsync(
-            int exhaustiveSearchInstanceVariableId, CancellationToken token = default)
+        public async Task<IEnumerable<ExhaustiveSearchInstanceVariableHistogramClassification>>
+            GetByExhaustiveSearchInstanceVariableIdAsync(
+                int exhaustiveSearchInstanceVariableId, CancellationToken token = default)
         {
             return await dbContext.ExhaustiveSearchInstanceVariableHistogramClassification.Where(w =>
-                    w.ExhaustiveSearchInstanceVariableClassificationId == exhaustiveSearchInstanceVariableId)
+                    w.ExhaustiveSearchInstanceVariableClassification.ExhaustiveSearchInstanceVariableId ==
+                    exhaustiveSearchInstanceVariableId)
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceVariableHistogramClassification
                 .Where(d =>
                     d.ExhaustiveSearchInstanceVariableClassification.ExhaustiveSearchInstanceVariable
-                        .ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                        .ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId ==
+                    tenantRegistryIdOutsideOfInstance
                     && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.ImportId, importId)
                 .Set(s => s.Deleted, Convert.ToByte(1))

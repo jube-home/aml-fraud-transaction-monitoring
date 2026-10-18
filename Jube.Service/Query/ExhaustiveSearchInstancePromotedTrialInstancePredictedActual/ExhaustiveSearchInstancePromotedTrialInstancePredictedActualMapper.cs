@@ -15,19 +15,27 @@ using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActua
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
 {
-    using DataDto = global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery.Dto;
+    using DataDto =
+        Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery.
+        GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQueryDto;
 
     internal static class ExhaustiveSearchInstancePromotedTrialInstancePredictedActualMapper
     {
-        public static ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto ToDto(DataDto source) => new()
+        public static ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto ToDto(DataDto source)
         {
-            Predicted = FiniteNumber.Of(source.Predicted),
-            Actual = FiniteNumber.Of(source.Actual),
-            Error = FiniteNumber.Of(source.Error)
-        };
+            return new ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto
+            {
+                Predicted = FiniteNumber.Of(source.Predicted),
+                Actual = FiniteNumber.Of(source.Actual),
+                Error = FiniteNumber.Of(source.Error),
+                Value = source.Value.HasValue && double.IsFinite(source.Value.Value) ? source.Value : null
+            };
+        }
 
         public static List<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto> ToDto(
-            IEnumerable<DataDto> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<DataDto> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

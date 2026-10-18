@@ -84,6 +84,7 @@ namespace Jube.Test.Service.RedisCallCounter
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -286,6 +287,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call, 10);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: call, sortField: "count",
                 sortDirection: ascendingKeyword);
 
@@ -327,6 +329,7 @@ namespace Jube.Test.Service.RedisCallCounter
         {
             await using var dbContext = fx.GetDbContext();
             var call = $"{DatabaseFixture.Prefix}Repository{Guid.NewGuid():N}.Method";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateCounterAsync(dbContext, call);

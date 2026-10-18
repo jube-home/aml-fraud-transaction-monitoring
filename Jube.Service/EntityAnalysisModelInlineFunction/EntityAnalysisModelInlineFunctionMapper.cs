@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 : new EntityAnalysisModelInlineFunctionDto
                 {
                     Id = inlineFunction.Id,
+                    Guid = inlineFunction.Guid,
                     EntityAnalysisModelId = inlineFunction.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = inlineFunction.Name,
                     Active = inlineFunction.Active == 1,

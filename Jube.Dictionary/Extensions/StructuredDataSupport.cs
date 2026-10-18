@@ -25,6 +25,7 @@ namespace Jube.Dictionary.Extensions
         internal static JsonNode? Parse(string? json)
         {
             var text = json ?? "";
+
             if (text.Length is 0 or > MaximumDocumentLength)
             {
                 return null;
@@ -44,18 +45,21 @@ namespace Jube.Dictionary.Extensions
         {
             var current = root;
             var text = (path ?? "").Trim();
+
             if (text.StartsWith('$'))
             {
                 text = text.Substring(1);
             }
 
             var i = 0;
+
             while (i < text.Length && current is not null)
             {
                 if (text[i] == '.')
                 {
                     i++;
                     var start = i;
+
                     while (i < text.Length && text[i] != '.' && text[i] != '[')
                     {
                         i++;
@@ -69,6 +73,7 @@ namespace Jube.Dictionary.Extensions
                 else if (text[i] == '[')
                 {
                     var close = text.IndexOf(']', i);
+
                     if (close < 0)
                     {
                         return null;
@@ -76,6 +81,7 @@ namespace Jube.Dictionary.Extensions
 
                     var inner = text.Substring(i + 1, close - i - 1).Trim();
                     i = close + 1;
+
                     if (inner.Length >= 2 && (inner[0] == '\'' || inner[0] == '"') && inner[^1] == inner[0])
                     {
                         current = current is JsonObject obj &&
@@ -102,6 +108,7 @@ namespace Jube.Dictionary.Extensions
                 else
                 {
                     var start = i;
+
                     while (i < text.Length && text[i] != '.' && text[i] != '[')
                     {
                         i++;
@@ -120,6 +127,7 @@ namespace Jube.Dictionary.Extensions
         internal static XmlDocument? ParseXml(string? xml)
         {
             var text = xml ?? "";
+
             if (text.Length is 0 or > MaximumDocumentLength)
             {
                 return null;
@@ -139,6 +147,7 @@ namespace Jube.Dictionary.Extensions
                 using var reader = XmlReader.Create(stringReader, settings);
                 var document = new XmlDocument { XmlResolver = null };
                 document.Load(reader);
+
                 return document;
             }
             catch (XmlException)

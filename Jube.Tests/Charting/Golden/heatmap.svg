@@ -1,0 +1,975 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-4c8c0cfb" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-4c8c0cfb-t jc-4c8c0cfb-d">
+    <title id="jc-4c8c0cfb-t">Alerts by hour and weekday</title>
+    <desc id="jc-4c8c0cfb-d">Heatmap with 7 rows and 12 columns. Values range from 12 to 67.</desc>
+    <style>
+        .jc-4c8c0cfb{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-4c8c0cfb:not([data-theme="light"]),.jc-4c8c0cfb:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-4c8c0cfb:not([data-theme="light"]),.jc-4c8c0cfb[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-4c8c0cfb
+        text{fill:var(--jc-text);font-size:12px}.jc-4c8c0cfb .bg{fill:var(--jc-surface)}.jc-4c8c0cfb
+        .ttl{font-size:16px;font-weight:600}.jc-4c8c0cfb .sub{fill:var(--jc-text2)}.jc-4c8c0cfb
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-4c8c0cfb .at{fill:var(--jc-text2);font-weight:500}.jc-4c8c0cfb
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-4c8c0cfb
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-4c8c0cfb
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-4c8c0cfb .ref.s0,.jc-4c8c0cfb
+        .ref.s1,.jc-4c8c0cfb .ref.s2,.jc-4c8c0cfb .ref.s3,.jc-4c8c0cfb .ref.s4,.jc-4c8c0cfb .ref.s5,.jc-4c8c0cfb
+        .ref.s6,.jc-4c8c0cfb .ref.s7{stroke:var(--sc)}.jc-4c8c0cfb
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-4c8c0cfb
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-4c8c0cfb
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-4c8c0cfb
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-4c8c0cfb .wh,.jc-4c8c0cfb
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-4c8c0cfb
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-4c8c0cfb
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-4c8c0cfb
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-4c8c0cfb .cd.hollow{fill:var(--jc-surface)}.jc-4c8c0cfb
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-4c8c0cfb
+        .ar.off{fill-opacity:0}.jc-4c8c0cfb .ring{font-size:10px}.jc-4c8c0cfb
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-4c8c0cfb .needle{fill:var(--jc-text);stroke:none}.jc-4c8c0cfb
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-4c8c0cfb
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-4c8c0cfb
+        .big{font-size:28px;font-weight:600}.jc-4c8c0cfb .rg0,.jc-4c8c0cfb .rg1,.jc-4c8c0cfb
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-4c8c0cfb .rg0{fill-opacity:.1}.jc-4c8c0cfb
+        .rg1{fill-opacity:.2}.jc-4c8c0cfb .rg2{fill-opacity:.32}.jc-4c8c0cfb
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-4c8c0cfb
+        .bar.part{fill-opacity:.35}.jc-4c8c0cfb .lgt{fill:var(--jc-text2)}.jc-4c8c0cfb
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-4c8c0cfb
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-4c8c0cfb
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-4c8c0cfb
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-4c8c0cfb .bar{fill:var(--sc)}.jc-4c8c0cfb
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-4c8c0cfb
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4c8c0cfb
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4c8c0cfb
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-4c8c0cfb
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-4c8c0cfb
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-4c8c0cfb .mk:hover .pt.h,.jc-4c8c0cfb .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-4c8c0cfb .pt.sm{fill-opacity:.55;stroke:none}.jc-4c8c0cfb
+        .na{fill:var(--jc-grid)}.jc-4c8c0cfb .mk:hover .sl,.jc-4c8c0cfb .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-4c8c0cfb
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-4c8c0cfb
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-4c8c0cfb
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-4c8c0cfb
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-4c8c0cfb
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-4c8c0cfb .ctr{text-anchor:middle}.jc-4c8c0cfb
+        .end{text-anchor:end}.jc-4c8c0cfb .mid{dominant-baseline:central}.jc-4c8c0cfb .mk{outline:none}.jc-4c8c0cfb
+        .m,.jc-4c8c0cfb .pt,.jc-4c8c0cfb .bub,.jc-4c8c0cfb .bar,.jc-4c8c0cfb .ov,.jc-4c8c0cfb .sl,.jc-4c8c0cfb
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-4c8c0cfb .mk:hover .m,.jc-4c8c0cfb .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-4c8c0cfb .mk:hover .pt,.jc-4c8c0cfb .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-4c8c0cfb .mk:hover .bub,.jc-4c8c0cfb .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-4c8c0cfb .mk:hover .bar,.jc-4c8c0cfb .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-4c8c0cfb .mk:hover .ov,.jc-4c8c0cfb .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-4c8c0cfb .mk:hover .sl,.jc-4c8c0cfb .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-4c8c0cfb .mk:hover .box,.jc-4c8c0cfb .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-4c8c0cfb .mk:hover .wk,.jc-4c8c0cfb .mk:focus-visible
+        .wk,.jc-4c8c0cfb .mk:hover .cd,.jc-4c8c0cfb .mk:focus-visible .cd{stroke-width:2.5}.jc-4c8c0cfb .mk:hover
+        .cell,.jc-4c8c0cfb .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-4c8c0cfb .mk:hover
+        .vl,.jc-4c8c0cfb .mk:focus-visible .vl,.jc-4c8c0cfb .mk:hover .cx,.jc-4c8c0cfb .mk:focus-visible
+        .cx{opacity:1}.jc-4c8c0cfb .mk:hover .mkr,.jc-4c8c0cfb .mk:focus-visible .mkr{stroke-width:3}.jc-4c8c0cfb
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-4c8c0cfb
+        .mk:hover .tt,.jc-4c8c0cfb .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-4c8c0cfb
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-4c8c0cfb
+        .tx{fill:var(--jc-text);font-size:12px}.jc-4c8c0cfb .tx.b{font-weight:600}.jc-4c8c0cfb
+        .tsw{fill:var(--sc)}.jc-4c8c0cfb .lg{cursor:default;transition:opacity .15s ease}.jc-4c8c0cfb .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-4c8c0cfb .sr{transition:opacity .15s ease}.jc-4c8c0cfb:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-4c8c0cfb:has(.mk:hover) .mk:not(:hover) .pt,.jc-4c8c0cfb:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-4c8c0cfb:has(.mk:hover) .mk:not(:hover) .bar,.jc-4c8c0cfb:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-4c8c0cfb:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-4c8c0cfb:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}@media (prefers-reduced-motion:reduce){.jc-4c8c0cfb,.jc-4c8c0cfb
+        *{transition:none!important;animation:none!important}}.jc-4c8c0cfb .q0{fill:var(--jc-q0)}.jc-4c8c0cfb
+        .qt0{fill:var(--jc-qt0)}.jc-4c8c0cfb .q1{fill:var(--jc-q1)}.jc-4c8c0cfb .qt1{fill:var(--jc-qt1)}.jc-4c8c0cfb
+        .q2{fill:var(--jc-q2)}.jc-4c8c0cfb .qt2{fill:var(--jc-qt2)}.jc-4c8c0cfb .q3{fill:var(--jc-q3)}.jc-4c8c0cfb
+        .qt3{fill:var(--jc-qt3)}.jc-4c8c0cfb .q4{fill:var(--jc-q4)}.jc-4c8c0cfb .qt4{fill:var(--jc-qt4)}.jc-4c8c0cfb
+        .q5{fill:var(--jc-q5)}.jc-4c8c0cfb .qt5{fill:var(--jc-qt5)}.jc-4c8c0cfb .q6{fill:var(--jc-q6)}.jc-4c8c0cfb
+        .qt6{fill:var(--jc-qt6)}.jc-4c8c0cfb .q7{fill:var(--jc-q7)}.jc-4c8c0cfb .qt7{fill:var(--jc-qt7)}.jc-4c8c0cfb
+        .q8{fill:var(--jc-q8)}.jc-4c8c0cfb .qt8{fill:var(--jc-qt8)}.jc-4c8c0cfb .d0{fill:var(--jc-d0)}.jc-4c8c0cfb
+        .dt0{fill:var(--jc-dt0)}.jc-4c8c0cfb .d1{fill:var(--jc-d1)}.jc-4c8c0cfb .dt1{fill:var(--jc-dt1)}.jc-4c8c0cfb
+        .d2{fill:var(--jc-d2)}.jc-4c8c0cfb .dt2{fill:var(--jc-dt2)}.jc-4c8c0cfb .d3{fill:var(--jc-d3)}.jc-4c8c0cfb
+        .dt3{fill:var(--jc-dt3)}.jc-4c8c0cfb .d4{fill:var(--jc-d4)}.jc-4c8c0cfb .dt4{fill:var(--jc-dt4)}.jc-4c8c0cfb
+        .d5{fill:var(--jc-d5)}.jc-4c8c0cfb .dt5{fill:var(--jc-dt5)}.jc-4c8c0cfb .d6{fill:var(--jc-d6)}.jc-4c8c0cfb
+        .dt6{fill:var(--jc-dt6)}.jc-4c8c0cfb .d7{fill:var(--jc-d7)}.jc-4c8c0cfb .dt7{fill:var(--jc-dt7)}.jc-4c8c0cfb
+        .d8{fill:var(--jc-d8)}.jc-4c8c0cfb .dt8{fill:var(--jc-dt8)}.jc-4c8c0cfb .d9{fill:var(--jc-d9)}.jc-4c8c0cfb
+        .dt9{fill:var(--jc-dt9)}.jc-4c8c0cfb .d10{fill:var(--jc-d10)}.jc-4c8c0cfb .dt10{fill:var(--jc-dt10)}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alerts by hour and weekday</text>
+    <text class="tk end mid" x="37.78" y="70.57">Mon</text>
+    <text class="tk end mid" x="37.78" y="115.71">Tue</text>
+    <text class="tk end mid" x="37.78" y="160.86">Wed</text>
+    <text class="tk end mid" x="37.78" y="206">Thu</text>
+    <text class="tk end mid" x="37.78" y="251.14">Fri</text>
+    <text class="tk end mid" x="37.78" y="296.29">Sat</text>
+    <text class="tk end mid" x="37.78" y="341.43">Sun</text>
+    <text class="tk ctr" x="66.71" y="380">00h</text>
+    <text class="tk ctr" x="108.56" y="380">02h</text>
+    <text class="tk ctr" x="150.41" y="380">04h</text>
+    <text class="tk ctr" x="192.26" y="380">06h</text>
+    <text class="tk ctr" x="234.11" y="380">08h</text>
+    <text class="tk ctr" x="275.96" y="380">10h</text>
+    <text class="tk ctr" x="317.82" y="380">12h</text>
+    <text class="tk ctr" x="359.67" y="380">14h</text>
+    <text class="tk ctr" x="401.52" y="380">16h</text>
+    <text class="tk ctr" x="443.37" y="380">18h</text>
+    <text class="tk ctr" x="485.22" y="380">20h</text>
+    <text class="tk ctr" x="527.07" y="380">22h</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 00h, Value: 18">
+        <title>Mon / 00h, Value: 18</title>
+        <rect class="cell m q0" x="45.78" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="66.71" y="70.57">18</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="98.57">Mon / 00h</text>
+            <text class="tx" x="55.78" y="115.57">Value: 18</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 02h, Value: 20">
+        <title>Mon / 02h, Value: 20</title>
+        <rect class="cell m q1" x="87.63" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="108.56" y="70.57">20</text>
+        <g class="tt">
+            <rect class="tb" x="69.68" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="79.68" y="98.57">Mon / 02h</text>
+            <text class="tx" x="79.68" y="115.57">Value: 20</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 04h, Value: 23">
+        <title>Mon / 04h, Value: 23</title>
+        <rect class="cell m q1" x="129.48" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="150.41" y="70.57">23</text>
+        <g class="tt">
+            <rect class="tb" x="111.53" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="121.53" y="98.57">Mon / 04h</text>
+            <text class="tx" x="121.53" y="115.57">Value: 23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 06h, Value: 17">
+        <title>Mon / 06h, Value: 17</title>
+        <rect class="cell m q0" x="171.34" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="192.26" y="70.57">17</text>
+        <g class="tt">
+            <rect class="tb" x="153.39" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="163.39" y="98.57">Mon / 06h</text>
+            <text class="tx" x="163.39" y="115.57">Value: 17</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 08h, Value: 17">
+        <title>Mon / 08h, Value: 17</title>
+        <rect class="cell m q0" x="213.19" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="234.11" y="70.57">17</text>
+        <g class="tt">
+            <rect class="tb" x="195.24" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="205.24" y="98.57">Mon / 08h</text>
+            <text class="tx" x="205.24" y="115.57">Value: 17</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 10h, Value: 37">
+        <title>Mon / 10h, Value: 37</title>
+        <rect class="cell m q4" x="255.04" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt4" x="275.96" y="70.57">37</text>
+        <g class="tt">
+            <rect class="tb" x="237.09" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="247.09" y="98.57">Mon / 10h</text>
+            <text class="tx" x="247.09" y="115.57">Value: 37</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 12h, Value: 45">
+        <title>Mon / 12h, Value: 45</title>
+        <rect class="cell m q5" x="296.89" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="317.82" y="70.57">45</text>
+        <g class="tt">
+            <rect class="tb" x="278.94" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="288.94" y="98.57">Mon / 12h</text>
+            <text class="tx" x="288.94" y="115.57">Value: 45</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 14h, Value: 60">
+        <title>Mon / 14h, Value: 60</title>
+        <rect class="cell m q7" x="338.74" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="359.67" y="70.57">60</text>
+        <g class="tt">
+            <rect class="tb" x="320.79" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="330.79" y="98.57">Mon / 14h</text>
+            <text class="tx" x="330.79" y="115.57">Value: 60</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 16h, Value: 59">
+        <title>Mon / 16h, Value: 59</title>
+        <rect class="cell m q7" x="380.59" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="401.52" y="70.57">59</text>
+        <g class="tt">
+            <rect class="tb" x="362.64" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="372.64" y="98.57">Mon / 16h</text>
+            <text class="tx" x="372.64" y="115.57">Value: 59</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 18h, Value: 46">
+        <title>Mon / 18h, Value: 46</title>
+        <rect class="cell m q5" x="422.45" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="443.37" y="70.57">46</text>
+        <g class="tt">
+            <rect class="tb" x="404.5" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="414.5" y="98.57">Mon / 18h</text>
+            <text class="tx" x="414.5" y="115.57">Value: 46</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 20h, Value: 47">
+        <title>Mon / 20h, Value: 47</title>
+        <rect class="cell m q5" x="464.3" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="485.22" y="70.57">47</text>
+        <g class="tt">
+            <rect class="tb" x="446.35" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="456.35" y="98.57">Mon / 20h</text>
+            <text class="tx" x="456.35" y="115.57">Value: 47</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Mon / 22h, Value: 32">
+        <title>Mon / 22h, Value: 32</title>
+        <rect class="cell m q3" x="506.15" y="48" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="527.07" y="70.57">32</text>
+        <g class="tt">
+            <rect class="tb" x="470.25" y="80.57" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="480.25" y="98.57">Mon / 22h</text>
+            <text class="tx" x="480.25" y="115.57">Value: 32</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 00h, Value: 19">
+        <title>Tue / 00h, Value: 19</title>
+        <rect class="cell m q1" x="45.78" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="66.71" y="115.71">19</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="79.71">Tue / 00h</text>
+            <text class="tx" x="55.78" y="96.71">Value: 19</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 02h, Value: 14">
+        <title>Tue / 02h, Value: 14</title>
+        <rect class="cell m q0" x="87.63" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="108.56" y="115.71">14</text>
+        <g class="tt">
+            <rect class="tb" x="71.08" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="81.08" y="79.71">Tue / 02h</text>
+            <text class="tx" x="81.08" y="96.71">Value: 14</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 04h, Value: 12">
+        <title>Tue / 04h, Value: 12</title>
+        <rect class="cell m q0" x="129.48" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="150.41" y="115.71">12</text>
+        <g class="tt">
+            <rect class="tb" x="112.93" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="122.93" y="79.71">Tue / 04h</text>
+            <text class="tx" x="122.93" y="96.71">Value: 12</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 06h, Value: 14">
+        <title>Tue / 06h, Value: 14</title>
+        <rect class="cell m q0" x="171.34" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="192.26" y="115.71">14</text>
+        <g class="tt">
+            <rect class="tb" x="154.79" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="164.79" y="79.71">Tue / 06h</text>
+            <text class="tx" x="164.79" y="96.71">Value: 14</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 08h, Value: 20">
+        <title>Tue / 08h, Value: 20</title>
+        <rect class="cell m q1" x="213.19" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="234.11" y="115.71">20</text>
+        <g class="tt">
+            <rect class="tb" x="196.64" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="206.64" y="79.71">Tue / 08h</text>
+            <text class="tx" x="206.64" y="96.71">Value: 20</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 10h, Value: 24">
+        <title>Tue / 10h, Value: 24</title>
+        <rect class="cell m q1" x="255.04" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="275.96" y="115.71">24</text>
+        <g class="tt">
+            <rect class="tb" x="238.49" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="248.49" y="79.71">Tue / 10h</text>
+            <text class="tx" x="248.49" y="96.71">Value: 24</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 12h, Value: 35">
+        <title>Tue / 12h, Value: 35</title>
+        <rect class="cell m q3" x="296.89" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="317.82" y="115.71">35</text>
+        <g class="tt">
+            <rect class="tb" x="280.34" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="290.34" y="79.71">Tue / 12h</text>
+            <text class="tx" x="290.34" y="96.71">Value: 35</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 14h, Value: 51">
+        <title>Tue / 14h, Value: 51</title>
+        <rect class="cell m q6" x="338.74" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="359.67" y="115.71">51</text>
+        <g class="tt">
+            <rect class="tb" x="322.19" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="332.19" y="79.71">Tue / 14h</text>
+            <text class="tx" x="332.19" y="96.71">Value: 51</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 16h, Value: 58">
+        <title>Tue / 16h, Value: 58</title>
+        <rect class="cell m q7" x="380.59" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="401.52" y="115.71">58</text>
+        <g class="tt">
+            <rect class="tb" x="364.04" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="374.04" y="79.71">Tue / 16h</text>
+            <text class="tx" x="374.04" y="96.71">Value: 58</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 18h, Value: 46">
+        <title>Tue / 18h, Value: 46</title>
+        <rect class="cell m q5" x="422.45" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="443.37" y="115.71">46</text>
+        <g class="tt">
+            <rect class="tb" x="405.9" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="415.9" y="79.71">Tue / 18h</text>
+            <text class="tx" x="415.9" y="96.71">Value: 46</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 20h, Value: 37">
+        <title>Tue / 20h, Value: 37</title>
+        <rect class="cell m q4" x="464.3" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt4" x="485.22" y="115.71">37</text>
+        <g class="tt">
+            <rect class="tb" x="447.75" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="457.75" y="79.71">Tue / 20h</text>
+            <text class="tx" x="457.75" y="96.71">Value: 37</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Tue / 22h, Value: 32">
+        <title>Tue / 22h, Value: 32</title>
+        <rect class="cell m q3" x="506.15" y="93.14" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="527.07" y="115.71">32</text>
+        <g class="tt">
+            <rect class="tb" x="473.05" y="61.71" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="483.05" y="79.71">Tue / 22h</text>
+            <text class="tx" x="483.05" y="96.71">Value: 32</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 00h, Value: 25">
+        <title>Wed / 00h, Value: 25</title>
+        <rect class="cell m q2" x="45.78" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="66.71" y="160.86">25</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="124.86">Wed / 00h</text>
+            <text class="tx" x="55.78" y="141.86">Value: 25</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 02h, Value: 23">
+        <title>Wed / 02h, Value: 23</title>
+        <rect class="cell m q1" x="87.63" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="108.56" y="160.86">23</text>
+        <g class="tt">
+            <rect class="tb" x="69.68" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="79.68" y="124.86">Wed / 02h</text>
+            <text class="tx" x="79.68" y="141.86">Value: 23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 04h, Value: 12">
+        <title>Wed / 04h, Value: 12</title>
+        <rect class="cell m q0" x="129.48" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="150.41" y="160.86">12</text>
+        <g class="tt">
+            <rect class="tb" x="111.53" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="121.53" y="124.86">Wed / 04h</text>
+            <text class="tx" x="121.53" y="141.86">Value: 12</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 06h, Value: 23">
+        <title>Wed / 06h, Value: 23</title>
+        <rect class="cell m q1" x="171.34" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="192.26" y="160.86">23</text>
+        <g class="tt">
+            <rect class="tb" x="153.39" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="163.39" y="124.86">Wed / 06h</text>
+            <text class="tx" x="163.39" y="141.86">Value: 23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 08h, Value: 17">
+        <title>Wed / 08h, Value: 17</title>
+        <rect class="cell m q0" x="213.19" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="234.11" y="160.86">17</text>
+        <g class="tt">
+            <rect class="tb" x="195.24" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="205.24" y="124.86">Wed / 08h</text>
+            <text class="tx" x="205.24" y="141.86">Value: 17</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 10h, Value: 31">
+        <title>Wed / 10h, Value: 31</title>
+        <rect class="cell m q3" x="255.04" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="275.96" y="160.86">31</text>
+        <g class="tt">
+            <rect class="tb" x="237.09" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="247.09" y="124.86">Wed / 10h</text>
+            <text class="tx" x="247.09" y="141.86">Value: 31</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 12h, Value: 49">
+        <title>Wed / 12h, Value: 49</title>
+        <rect class="cell m q6" x="296.89" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="317.82" y="160.86">49</text>
+        <g class="tt">
+            <rect class="tb" x="278.94" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="288.94" y="124.86">Wed / 12h</text>
+            <text class="tx" x="288.94" y="141.86">Value: 49</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 14h, Value: 58">
+        <title>Wed / 14h, Value: 58</title>
+        <rect class="cell m q7" x="338.74" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="359.67" y="160.86">58</text>
+        <g class="tt">
+            <rect class="tb" x="320.79" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="330.79" y="124.86">Wed / 14h</text>
+            <text class="tx" x="330.79" y="141.86">Value: 58</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 16h, Value: 58">
+        <title>Wed / 16h, Value: 58</title>
+        <rect class="cell m q7" x="380.59" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="401.52" y="160.86">58</text>
+        <g class="tt">
+            <rect class="tb" x="362.64" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="372.64" y="124.86">Wed / 16h</text>
+            <text class="tx" x="372.64" y="141.86">Value: 58</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 18h, Value: 50">
+        <title>Wed / 18h, Value: 50</title>
+        <rect class="cell m q6" x="422.45" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="443.37" y="160.86">50</text>
+        <g class="tt">
+            <rect class="tb" x="404.5" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="414.5" y="124.86">Wed / 18h</text>
+            <text class="tx" x="414.5" y="141.86">Value: 50</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 20h, Value: 37">
+        <title>Wed / 20h, Value: 37</title>
+        <rect class="cell m q4" x="464.3" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt4" x="485.22" y="160.86">37</text>
+        <g class="tt">
+            <rect class="tb" x="446.35" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="456.35" y="124.86">Wed / 20h</text>
+            <text class="tx" x="456.35" y="141.86">Value: 37</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Wed / 22h, Value: 28">
+        <title>Wed / 22h, Value: 28</title>
+        <rect class="cell m q2" x="506.15" y="138.29" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="527.07" y="160.86">28</text>
+        <g class="tt">
+            <rect class="tb" x="470.25" y="106.86" width="77.75" height="44" rx="6"/>
+            <text class="tx b" x="480.25" y="124.86">Wed / 22h</text>
+            <text class="tx" x="480.25" y="141.86">Value: 28</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 00h, Value: 22">
+        <title>Thu / 00h, Value: 22</title>
+        <rect class="cell m q1" x="45.78" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="66.71" y="206">22</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="170">Thu / 00h</text>
+            <text class="tx" x="55.78" y="187">Value: 22</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 02h, Value: 14">
+        <title>Thu / 02h, Value: 14</title>
+        <rect class="cell m q0" x="87.63" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="108.56" y="206">14</text>
+        <g class="tt">
+            <rect class="tb" x="71.08" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="81.08" y="170">Thu / 02h</text>
+            <text class="tx" x="81.08" y="187">Value: 14</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 04h, Value: 19">
+        <title>Thu / 04h, Value: 19</title>
+        <rect class="cell m q1" x="129.48" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="150.41" y="206">19</text>
+        <g class="tt">
+            <rect class="tb" x="112.93" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="122.93" y="170">Thu / 04h</text>
+            <text class="tx" x="122.93" y="187">Value: 19</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 06h, Value: 17">
+        <title>Thu / 06h, Value: 17</title>
+        <rect class="cell m q0" x="171.34" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="192.26" y="206">17</text>
+        <g class="tt">
+            <rect class="tb" x="154.79" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="164.79" y="170">Thu / 06h</text>
+            <text class="tx" x="164.79" y="187">Value: 17</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 08h, Value: 23">
+        <title>Thu / 08h, Value: 23</title>
+        <rect class="cell m q1" x="213.19" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="234.11" y="206">23</text>
+        <g class="tt">
+            <rect class="tb" x="196.64" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="206.64" y="170">Thu / 08h</text>
+            <text class="tx" x="206.64" y="187">Value: 23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 10h, Value: 28">
+        <title>Thu / 10h, Value: 28</title>
+        <rect class="cell m q2" x="255.04" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="275.96" y="206">28</text>
+        <g class="tt">
+            <rect class="tb" x="238.49" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="248.49" y="170">Thu / 10h</text>
+            <text class="tx" x="248.49" y="187">Value: 28</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 12h, Value: 43">
+        <title>Thu / 12h, Value: 43</title>
+        <rect class="cell m q5" x="296.89" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="317.82" y="206">43</text>
+        <g class="tt">
+            <rect class="tb" x="280.34" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="290.34" y="170">Thu / 12h</text>
+            <text class="tx" x="290.34" y="187">Value: 43</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 14h, Value: 56">
+        <title>Thu / 14h, Value: 56</title>
+        <rect class="cell m q7" x="338.74" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="359.67" y="206">56</text>
+        <g class="tt">
+            <rect class="tb" x="322.19" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="332.19" y="170">Thu / 14h</text>
+            <text class="tx" x="332.19" y="187">Value: 56</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 16h, Value: 61">
+        <title>Thu / 16h, Value: 61</title>
+        <rect class="cell m q8" x="380.59" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="401.52" y="206">61</text>
+        <g class="tt">
+            <rect class="tb" x="364.04" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="374.04" y="170">Thu / 16h</text>
+            <text class="tx" x="374.04" y="187">Value: 61</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 18h, Value: 49">
+        <title>Thu / 18h, Value: 49</title>
+        <rect class="cell m q6" x="422.45" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="443.37" y="206">49</text>
+        <g class="tt">
+            <rect class="tb" x="405.9" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="415.9" y="170">Thu / 18h</text>
+            <text class="tx" x="415.9" y="187">Value: 49</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 20h, Value: 46">
+        <title>Thu / 20h, Value: 46</title>
+        <rect class="cell m q5" x="464.3" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="485.22" y="206">46</text>
+        <g class="tt">
+            <rect class="tb" x="447.75" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="457.75" y="170">Thu / 20h</text>
+            <text class="tx" x="457.75" y="187">Value: 46</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Thu / 22h, Value: 33">
+        <title>Thu / 22h, Value: 33</title>
+        <rect class="cell m q3" x="506.15" y="183.43" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="527.07" y="206">33</text>
+        <g class="tt">
+            <rect class="tb" x="473.05" y="152" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="483.05" y="170">Thu / 22h</text>
+            <text class="tx" x="483.05" y="187">Value: 33</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 00h, Value: 16">
+        <title>Fri / 00h, Value: 16</title>
+        <rect class="cell m q0" x="45.78" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="66.71" y="251.14">16</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="215.14">Fri / 00h</text>
+            <text class="tx" x="55.78" y="232.14">Value: 16</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 02h, Value: 24">
+        <title>Fri / 02h, Value: 24</title>
+        <rect class="cell m q1" x="87.63" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="108.56" y="251.14">24</text>
+        <g class="tt">
+            <rect class="tb" x="73.24" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="83.24" y="215.14">Fri / 02h</text>
+            <text class="tx" x="83.24" y="232.14">Value: 24</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 04h, Value: 24">
+        <title>Fri / 04h, Value: 24</title>
+        <rect class="cell m q1" x="129.48" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="150.41" y="251.14">24</text>
+        <g class="tt">
+            <rect class="tb" x="115.09" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="125.09" y="215.14">Fri / 04h</text>
+            <text class="tx" x="125.09" y="232.14">Value: 24</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 06h, Value: 20">
+        <title>Fri / 06h, Value: 20</title>
+        <rect class="cell m q1" x="171.34" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="192.26" y="251.14">20</text>
+        <g class="tt">
+            <rect class="tb" x="156.94" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="166.94" y="215.14">Fri / 06h</text>
+            <text class="tx" x="166.94" y="232.14">Value: 20</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 08h, Value: 16">
+        <title>Fri / 08h, Value: 16</title>
+        <rect class="cell m q0" x="213.19" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt0" x="234.11" y="251.14">16</text>
+        <g class="tt">
+            <rect class="tb" x="198.79" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="208.79" y="215.14">Fri / 08h</text>
+            <text class="tx" x="208.79" y="232.14">Value: 16</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 10h, Value: 25">
+        <title>Fri / 10h, Value: 25</title>
+        <rect class="cell m q2" x="255.04" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="275.96" y="251.14">25</text>
+        <g class="tt">
+            <rect class="tb" x="240.64" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="250.64" y="215.14">Fri / 10h</text>
+            <text class="tx" x="250.64" y="232.14">Value: 25</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 12h, Value: 46">
+        <title>Fri / 12h, Value: 46</title>
+        <rect class="cell m q5" x="296.89" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="317.82" y="251.14">46</text>
+        <g class="tt">
+            <rect class="tb" x="282.5" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="292.5" y="215.14">Fri / 12h</text>
+            <text class="tx" x="292.5" y="232.14">Value: 46</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 14h, Value: 53">
+        <title>Fri / 14h, Value: 53</title>
+        <rect class="cell m q6" x="338.74" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="359.67" y="251.14">53</text>
+        <g class="tt">
+            <rect class="tb" x="324.35" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="334.35" y="215.14">Fri / 14h</text>
+            <text class="tx" x="334.35" y="232.14">Value: 53</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 16h, Value: 57">
+        <title>Fri / 16h, Value: 57</title>
+        <rect class="cell m q7" x="380.59" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="401.52" y="251.14">57</text>
+        <g class="tt">
+            <rect class="tb" x="366.2" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="376.2" y="215.14">Fri / 16h</text>
+            <text class="tx" x="376.2" y="232.14">Value: 57</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 18h, Value: 50">
+        <title>Fri / 18h, Value: 50</title>
+        <rect class="cell m q6" x="422.45" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="443.37" y="251.14">50</text>
+        <g class="tt">
+            <rect class="tb" x="408.05" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="418.05" y="215.14">Fri / 18h</text>
+            <text class="tx" x="418.05" y="232.14">Value: 50</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 20h, Value: 40">
+        <title>Fri / 20h, Value: 40</title>
+        <rect class="cell m q4" x="464.3" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt4" x="485.22" y="251.14">40</text>
+        <g class="tt">
+            <rect class="tb" x="449.9" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="459.9" y="215.14">Fri / 20h</text>
+            <text class="tx" x="459.9" y="232.14">Value: 40</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Fri / 22h, Value: 26">
+        <title>Fri / 22h, Value: 26</title>
+        <rect class="cell m q2" x="506.15" y="228.57" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="527.07" y="251.14">26</text>
+        <g class="tt">
+            <rect class="tb" x="477.36" y="197.14" width="70.64" height="44" rx="6"/>
+            <text class="tx b" x="487.36" y="215.14">Fri / 22h</text>
+            <text class="tx" x="487.36" y="232.14">Value: 26</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 00h, Value: 32">
+        <title>Sat / 00h, Value: 32</title>
+        <rect class="cell m q3" x="45.78" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="66.71" y="296.29">32</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="260.29">Sat / 00h</text>
+            <text class="tx" x="55.78" y="277.29">Value: 32</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 02h, Value: 35">
+        <title>Sat / 02h, Value: 35</title>
+        <rect class="cell m q3" x="87.63" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="108.56" y="296.29">35</text>
+        <g class="tt">
+            <rect class="tb" x="72.35" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="82.35" y="260.29">Sat / 02h</text>
+            <text class="tx" x="82.35" y="277.29">Value: 35</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 04h, Value: 33">
+        <title>Sat / 04h, Value: 33</title>
+        <rect class="cell m q3" x="129.48" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="150.41" y="296.29">33</text>
+        <g class="tt">
+            <rect class="tb" x="114.21" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="124.21" y="260.29">Sat / 04h</text>
+            <text class="tx" x="124.21" y="277.29">Value: 33</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 06h, Value: 22">
+        <title>Sat / 06h, Value: 22</title>
+        <rect class="cell m q1" x="171.34" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt1" x="192.26" y="296.29">22</text>
+        <g class="tt">
+            <rect class="tb" x="156.06" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="166.06" y="260.29">Sat / 06h</text>
+            <text class="tx" x="166.06" y="277.29">Value: 22</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 08h, Value: 27">
+        <title>Sat / 08h, Value: 27</title>
+        <rect class="cell m q2" x="213.19" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="234.11" y="296.29">27</text>
+        <g class="tt">
+            <rect class="tb" x="197.91" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="207.91" y="260.29">Sat / 08h</text>
+            <text class="tx" x="207.91" y="277.29">Value: 27</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 10h, Value: 48">
+        <title>Sat / 10h, Value: 48</title>
+        <rect class="cell m q5" x="255.04" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="275.96" y="296.29">48</text>
+        <g class="tt">
+            <rect class="tb" x="239.76" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="249.76" y="260.29">Sat / 10h</text>
+            <text class="tx" x="249.76" y="277.29">Value: 48</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 12h, Value: 46">
+        <title>Sat / 12h, Value: 46</title>
+        <rect class="cell m q5" x="296.89" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt5" x="317.82" y="296.29">46</text>
+        <g class="tt">
+            <rect class="tb" x="281.61" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="291.61" y="260.29">Sat / 12h</text>
+            <text class="tx" x="291.61" y="277.29">Value: 46</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 14h, Value: 59">
+        <title>Sat / 14h, Value: 59</title>
+        <rect class="cell m q7" x="338.74" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="359.67" y="296.29">59</text>
+        <g class="tt">
+            <rect class="tb" x="323.46" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="333.46" y="260.29">Sat / 14h</text>
+            <text class="tx" x="333.46" y="277.29">Value: 59</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 16h, Value: 61">
+        <title>Sat / 16h, Value: 61</title>
+        <rect class="cell m q8" x="380.59" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="401.52" y="296.29">61</text>
+        <g class="tt">
+            <rect class="tb" x="365.32" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="375.32" y="260.29">Sat / 16h</text>
+            <text class="tx" x="375.32" y="277.29">Value: 61</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 18h, Value: 67">
+        <title>Sat / 18h, Value: 67</title>
+        <rect class="cell m q8" x="422.45" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="443.37" y="296.29">67</text>
+        <g class="tt">
+            <rect class="tb" x="407.17" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="417.17" y="260.29">Sat / 18h</text>
+            <text class="tx" x="417.17" y="277.29">Value: 67</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 20h, Value: 50">
+        <title>Sat / 20h, Value: 50</title>
+        <rect class="cell m q6" x="464.3" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="485.22" y="296.29">50</text>
+        <g class="tt">
+            <rect class="tb" x="449.02" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="459.02" y="260.29">Sat / 20h</text>
+            <text class="tx" x="459.02" y="277.29">Value: 50</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sat / 22h, Value: 34">
+        <title>Sat / 22h, Value: 34</title>
+        <rect class="cell m q3" x="506.15" y="273.71" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="527.07" y="296.29">34</text>
+        <g class="tt">
+            <rect class="tb" x="475.59" y="242.29" width="72.41" height="44" rx="6"/>
+            <text class="tx b" x="485.59" y="260.29">Sat / 22h</text>
+            <text class="tx" x="485.59" y="277.29">Value: 34</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 00h, Value: 27">
+        <title>Sun / 00h, Value: 27</title>
+        <rect class="cell m q2" x="45.78" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="66.71" y="341.43">27</text>
+        <g class="tt">
+            <rect class="tb" x="45.78" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="55.78" y="305.43">Sun / 00h</text>
+            <text class="tx" x="55.78" y="322.43">Value: 27</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 02h, Value: 30">
+        <title>Sun / 02h, Value: 30</title>
+        <rect class="cell m q2" x="87.63" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="108.56" y="341.43">30</text>
+        <g class="tt">
+            <rect class="tb" x="71.08" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="81.08" y="305.43">Sun / 02h</text>
+            <text class="tx" x="81.08" y="322.43">Value: 30</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 04h, Value: 33">
+        <title>Sun / 04h, Value: 33</title>
+        <rect class="cell m q3" x="129.48" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="150.41" y="341.43">33</text>
+        <g class="tt">
+            <rect class="tb" x="112.93" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="122.93" y="305.43">Sun / 04h</text>
+            <text class="tx" x="122.93" y="322.43">Value: 33</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 06h, Value: 25">
+        <title>Sun / 06h, Value: 25</title>
+        <rect class="cell m q2" x="171.34" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt2" x="192.26" y="341.43">25</text>
+        <g class="tt">
+            <rect class="tb" x="154.79" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="164.79" y="305.43">Sun / 06h</text>
+            <text class="tx" x="164.79" y="322.43">Value: 25</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 08h, Value: 33">
+        <title>Sun / 08h, Value: 33</title>
+        <rect class="cell m q3" x="213.19" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="234.11" y="341.43">33</text>
+        <g class="tt">
+            <rect class="tb" x="196.64" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="206.64" y="305.43">Sun / 08h</text>
+            <text class="tx" x="206.64" y="322.43">Value: 33</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 10h, Value: 40">
+        <title>Sun / 10h, Value: 40</title>
+        <rect class="cell m q4" x="255.04" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt4" x="275.96" y="341.43">40</text>
+        <g class="tt">
+            <rect class="tb" x="238.49" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="248.49" y="305.43">Sun / 10h</text>
+            <text class="tx" x="248.49" y="322.43">Value: 40</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 12h, Value: 56">
+        <title>Sun / 12h, Value: 56</title>
+        <rect class="cell m q7" x="296.89" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt7" x="317.82" y="341.43">56</text>
+        <g class="tt">
+            <rect class="tb" x="280.34" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="290.34" y="305.43">Sun / 12h</text>
+            <text class="tx" x="290.34" y="322.43">Value: 56</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 14h, Value: 66">
+        <title>Sun / 14h, Value: 66</title>
+        <rect class="cell m q8" x="338.74" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="359.67" y="341.43">66</text>
+        <g class="tt">
+            <rect class="tb" x="322.19" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="332.19" y="305.43">Sun / 14h</text>
+            <text class="tx" x="332.19" y="322.43">Value: 66</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 16h, Value: 62">
+        <title>Sun / 16h, Value: 62</title>
+        <rect class="cell m q8" x="380.59" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="401.52" y="341.43">62</text>
+        <g class="tt">
+            <rect class="tb" x="364.04" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="374.04" y="305.43">Sun / 16h</text>
+            <text class="tx" x="374.04" y="322.43">Value: 62</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 18h, Value: 62">
+        <title>Sun / 18h, Value: 62</title>
+        <rect class="cell m q8" x="422.45" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt8" x="443.37" y="341.43">62</text>
+        <g class="tt">
+            <rect class="tb" x="405.9" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="415.9" y="305.43">Sun / 18h</text>
+            <text class="tx" x="415.9" y="322.43">Value: 62</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 20h, Value: 49">
+        <title>Sun / 20h, Value: 49</title>
+        <rect class="cell m q6" x="464.3" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt6" x="485.22" y="341.43">49</text>
+        <g class="tt">
+            <rect class="tb" x="447.75" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="457.75" y="305.43">Sun / 20h</text>
+            <text class="tx" x="457.75" y="322.43">Value: 49</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sun / 22h, Value: 36">
+        <title>Sun / 22h, Value: 36</title>
+        <rect class="cell m q3" x="506.15" y="318.86" width="41.85" height="45.14"/>
+        <text class="lbl ctr mid qt3" x="527.07" y="341.43">36</text>
+        <g class="tt">
+            <rect class="tb" x="473.05" y="287.43" width="74.95" height="44" rx="6"/>
+            <text class="tx b" x="483.05" y="305.43">Sun / 22h</text>
+            <text class="tx" x="483.05" y="322.43">Value: 36</text>
+        </g>
+    </g>
+    <rect class="q8" x="564" y="48" width="12" height="24.94"/>
+    <rect class="q7" x="564" y="72.44" width="12" height="24.94"/>
+    <rect class="q6" x="564" y="96.89" width="12" height="24.94"/>
+    <rect class="q5" x="564" y="121.33" width="12" height="24.94"/>
+    <rect class="q4" x="564" y="145.78" width="12" height="24.94"/>
+    <rect class="q3" x="564" y="170.22" width="12" height="24.94"/>
+    <rect class="q2" x="564" y="194.67" width="12" height="24.94"/>
+    <rect class="q1" x="564" y="219.11" width="12" height="24.94"/>
+    <rect class="q0" x="564" y="243.56" width="12" height="24.94"/>
+    <line class="ax" x1="576" y1="236" x2="580" y2="236"/>
+    <text class="tk mid" x="584" y="236">20</text>
+    <line class="ax" x1="576" y1="196" x2="580" y2="196"/>
+    <text class="tk mid" x="584" y="196">30</text>
+    <line class="ax" x1="576" y1="156" x2="580" y2="156"/>
+    <text class="tk mid" x="584" y="156">40</text>
+    <line class="ax" x1="576" y1="116" x2="580" y2="116"/>
+    <text class="tk mid" x="584" y="116">50</text>
+    <line class="ax" x1="576" y1="76" x2="580" y2="76"/>
+    <text class="tk mid" x="584" y="76">60</text>
+</svg>

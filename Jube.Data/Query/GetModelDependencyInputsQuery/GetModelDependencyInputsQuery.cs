@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetModelDependencyInputsQuery
 {
     using System;
@@ -19,9 +21,9 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using Helpers;
     using Poco;
     using Repository;
-    using SyntaxTree;
     using Models;
 
     public class GetModelDependencyInputsQuery(DbContext dbContext, int tenantRegistryId, string userName)
@@ -67,6 +69,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
             {
                 dto.Add("GatewayRule", g.Id, g.Name, g.Active, g.Version);
+
                 dto.Text("GatewayRule", g.Id, 2,
                     g.RuleScriptTypeId == 1 ? g.BuilderRuleScript : g.CoderRuleScript, null);
             }
@@ -76,6 +79,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .ConfigureAwait(false))
             {
                 dto.Add("AbstractionRule", a.Id, a.Name, a.Active, a.Version);
+
                 dto.Text("AbstractionRule", a.Id, 3, a.RuleScriptTypeId == 1 ? a.BuilderRuleScript : a.CoderRuleScript,
                     a.RuleScriptTypeId == 1);
 
@@ -85,6 +89,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                 }
 
                 dto.Reference("AbstractionRule", a.Id, "SearchKey", "Payload", a.SearchKey);
+
                 if (a.SearchFunctionTypeId != 1)
                 {
                     dto.Reference("AbstractionRule", a.Id, "SearchFunctionKey", "Payload", a.SearchFunctionKey);
@@ -102,6 +107,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
 
             var ttlCounters = (await new EntityAnalysisModelTtlCounterRepository(dbContext, tenantRegistryId)
                 .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false)).ToList();
+
             foreach (var t in ttlCounters)
             {
                 dto.Add("TtlCounter", t.Id, t.Name, t.Active, t.Version);
@@ -110,6 +116,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
 
             var caseWorkflows = (await new CaseWorkflowRepository(dbContext, tenantRegistryId)
                 .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false)).ToList();
+
             foreach (var w in caseWorkflows)
             {
                 dto.Add("CaseWorkflow", w.Id, w.Name, w.Active);
@@ -120,13 +127,16 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .ConfigureAwait(false))
             {
                 dto.Add("ActivationRule", r.Id, r.Name, r.Active, r.Version);
+
                 dto.Text("ActivationRule", r.Id, 5, r.RuleScriptTypeId == 1 ? r.BuilderRuleScript : r.CoderRuleScript,
                     null);
+
                 dto.Reference("ActivationRule", r.Id, "ResponseElevationKey", "Payload", r.ResponseElevationKey);
 
                 if (r.EnableTtlCounter == 1 && r.EntityAnalysisModelTtlCounterGuid != Guid.Empty)
                 {
                     var counter = ttlCounters.FirstOrDefault(t => t.Guid == r.EntityAnalysisModelTtlCounterGuid);
+
                     if (counter != null)
                     {
                         dto.Reference("ActivationRule", r.Id, "TtlCounterIncrement", "TTLCounter", counter.Name);
@@ -144,6 +154,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                 }
 
                 dto.Reference("ActivationRule", r.Id, "CaseKey", "Payload", r.CaseKey);
+
                 if (r.CaseWorkflowGuid != Guid.Empty)
                 {
                     dto.Reference("ActivationRule", r.Id, "CaseWorkflow", "CaseWorkflow",
@@ -188,6 +199,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .GetByEntityAnalysisModelIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
             {
                 dto.Add("ReprocessingRule", p.Id, p.Name, p.Active);
+
                 dto.Text("ReprocessingRule", p.Id, 2, p.RuleScriptTypeId == 1 ? p.BuilderRuleScript : p.CoderRuleScript,
                     null);
             }
@@ -207,17 +219,17 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .GroupBy(e => e.Kind))
             {
                 var kind = approvalKindOf[group.Key];
-                var current = group.ToDictionary(e => e.Id, e => e.Version.Value);
+                var current = group.ToDictionary(e => e.Id, e => e.Version.GetValueOrDefault());
 
                 var rows = await repository
-                    .GetRowsByKindAndEntityIdsAsync(kind, current.Keys.ToList(), token).ConfigureAwait(false);
+                    .GetRowsByKindAndEntityIdsAsync(kind, [.. current.Keys], token).ConfigureAwait(false);
 
                 var effective = EntityApprovalResolver.EffectiveVersionsByEntity(rows, current, approvalsRequired);
 
                 foreach (var entity in group)
                 {
                     entity.Approved = effective.TryGetValue(entity.Id, out var version)
-                                      && version == entity.Version.Value;
+                                      && version == entity.Version.GetValueOrDefault();
                 }
             }
         }
@@ -239,6 +251,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
 
                 var inlineScript = await inlineScriptRepository
                     .GetByIdAsync(modelInlineScript.EntityAnalysisInlineScriptId.Value, token).ConfigureAwait(false);
+
                 if (inlineScript == null)
                 {
                     continue;
@@ -253,9 +266,11 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
             }
 
             var current = wirings.ToDictionary(w => w.Wiring.Id, w => w.Wiring.Version ?? 1);
+
             var rows = await new EntityApprovalRepository(dbContext, tenantRegistryId)
                 .GetRowsByKindAndEntityIdsAsync(EntityApprovalKind.EntityAnalysisModelInlineScript,
-                    current.Keys.ToList(), token).ConfigureAwait(false);
+                    [.. current.Keys], token).ConfigureAwait(false);
+
             var effective = EntityApprovalResolver.EffectiveVersionsByEntity(rows, current, approvalsRequired);
 
             foreach (var (wiring, script) in wirings)
@@ -267,6 +282,7 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                 {
                     var before = dto.Entities.Count;
                     dto.Add("InlineScriptProperty", wiring.Id, property.Key, wiring.Active, current[wiring.Id]);
+
                     if (dto.Entities.Count > before)
                     {
                         dto.Entities[^1].Approved = approved;

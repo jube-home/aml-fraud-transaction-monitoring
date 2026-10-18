@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,14 +30,13 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredic
     public sealed class ExhaustiveSearchInstancePromotedTrialInstancePredictedActualService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
-
-        private readonly global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery
-            query;
-
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+
+        private readonly GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery
+            query;
+
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -54,9 +54,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredic
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery(
+
+            query = new GetExhaustiveSearchInstancePromotedTrialInstancePredictedActualQuery(
                 dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualService> CreateAsync(
             DbContext dbContext, string? userName,
@@ -121,11 +124,15 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredic
         public async Task<List<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto>> GetAsync(
             [Description("Id of the exhaustive search instance whose promoted trial instance is charted.")]
             int exhaustiveSearchInstanceId,
+            [Description("Optional Id of a continuous Exhaustive Search Instance Variable. When set, each row's " +
+                         "Value is that variable's raw value for the row instead of null.")]
+            int? exhaustiveSearchInstanceVariableId = null,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstancePredictedActual", "Get",
                 userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -135,9 +142,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredic
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstancePromotedTrialInstancePredictedActual.Get");
+
                 var dtos = ExhaustiveSearchInstancePromotedTrialInstancePredictedActualMapper.ToDto(
-                    await query.ExecuteAsync(exhaustiveSearchInstanceId, token).ConfigureAwait(false));
+                    await query.ExecuteAsync(exhaustiveSearchInstanceId, exhaustiveSearchInstanceVariableId, token)
+                        .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -159,9 +169,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredic
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstancePredictedActual.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

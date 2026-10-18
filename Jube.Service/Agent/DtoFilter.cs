@@ -46,6 +46,7 @@ namespace Jube.Service.Agent
             }
 
             var clampedTake = Math.Clamp(take, 1, MaximumTake);
+
             var matched = rows
                 .Where(r => !afterId.HasValue || id(r) > afterId.Value)
                 .OrderBy(id)
@@ -71,9 +72,11 @@ namespace Jube.Service.Agent
             }
 
             FilterField? group = null;
+
             if (!string.IsNullOrWhiteSpace(groupBy))
             {
                 group = BuilderFilter.Fields(typeof(T)).FirstOrDefault(f => f.Id == groupBy);
+
                 if (group == null)
                 {
                     return new FilterCountResultDto
@@ -93,6 +96,7 @@ namespace Jube.Service.Agent
 
             var matched = rows.Where(predicate).ToList();
             var result = new FilterCountResultDto { Valid = true, Count = matched.Count };
+
             if (group == null)
             {
                 return result;
@@ -107,6 +111,7 @@ namespace Jube.Service.Agent
 
             result.GroupsTruncated = groups.Count > MaximumGroups;
             result.Groups = groups.Take(MaximumGroups).ToList();
+
             return result;
         }
 
@@ -114,22 +119,28 @@ namespace Jube.Service.Agent
             out List<ValidationErrorDto> errors)
         {
             errors = [];
+
             if (string.IsNullOrWhiteSpace(builderJson))
             {
                 predicate = _ => true;
+
                 return true;
             }
 
             var parsed = BuilderProfile.Parse(builderJson, BuilderFilter.Catalogue(typeof(T)));
+
             if (!parsed.Valid)
             {
                 predicate = _ => false;
+
                 errors = parsed.Errors.Select(e => new ValidationErrorDto
                     { PropertyName = e.Path, ErrorCode = e.Code, Message = e.Message }).ToList();
+
                 return false;
             }
 
             predicate = BuilderFilter.Compile<T>(parsed.Group);
+
             return true;
         }
 

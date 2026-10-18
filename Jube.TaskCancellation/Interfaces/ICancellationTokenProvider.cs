@@ -13,13 +13,10 @@
 
 namespace Jube.TaskCancellation.Interfaces
 {
-
     public interface ICancellationTokenProvider
     {
-        CancellationToken Token
-        {
-            get;
-        }
+        CancellationToken Token { get; }
+
         void Cancel();
     }
 }

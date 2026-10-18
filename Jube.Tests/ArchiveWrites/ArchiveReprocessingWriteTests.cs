@@ -30,35 +30,19 @@ namespace Jube.Test.ArchiveWrites
     {
         private readonly List<Guid> guids = [];
 
-        public Task InitializeAsync() => Task.CompletedTask;
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            foreach (var guid in guids)
-            {
-                var keyIds = await dbContext.ArchiveKey.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid)
-                    .Select(k => k.Id).ToListAsync();
-                await dbContext.ArchiveKeyVersion.Where(v => keyIds.Contains(v.ArchiveKeyId)).DeleteAsync();
-                await dbContext.ArchiveKey.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid).DeleteAsync();
-                var archiveIds = await dbContext.Archive.Where(a => a.EntityAnalysisModelInstanceEntryGuid == guid)
-                    .Select(a => a.Id).ToListAsync();
-                await dbContext.ArchiveVersion.Where(v => archiveIds.Contains(v.ArchiveId)).DeleteAsync();
-                await dbContext.Archive.Where(a => a.EntityAnalysisModelInstanceEntryGuid == guid).DeleteAsync();
-            }
-        }
-
         private async Task<Guid> ArchiveAsync(params ArchiveKey[] keys)
         {
             var guid = Guid.NewGuid();
             guids.Add(guid);
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.InsertAsync(new Archive
             {
                 Json = "{\"payload\":{\"a\":1}}", EntityAnalysisModelInstanceEntryGuid = guid, EntryKeyValue = "E1",
                 ResponseElevation = 1, ActivationRuleCount = 1, CreatedDate = DateTime.UtcNow.AddDays(-1),
                 ReferenceDate = DateTime.UtcNow.AddDays(-1)
             });
+
             foreach (var key in keys)
             {
                 key.EntityAnalysisModelInstanceEntryGuid = guid;
@@ -77,6 +61,7 @@ namespace Jube.Test.ArchiveWrites
         private async Task<List<ArchiveKey>> KeysAsync(Guid guid)
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.ArchiveKey.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid)
                 .OrderBy(k => k.Key).ToListAsync();
         }
@@ -84,6 +69,7 @@ namespace Jube.Test.ArchiveWrites
         private async Task<List<ArchiveKeyVersion>> KeyVersionsAsync(Guid guid)
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.ArchiveKeyVersion.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid)
                 .ToListAsync();
         }
@@ -92,6 +78,28 @@ namespace Jube.Test.ArchiveWrites
         {
             await using var dbContext = fx.GetDbContext();
             await new ArchiveKeyRepository(dbContext).ReplaceAsync(guid, keys, 42);
+        }
+
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            foreach (var guid in guids)
+            {
+                var keyIds = await dbContext.ArchiveKey.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid)
+                    .Select(k => k.Id).ToListAsync();
+
+                await dbContext.ArchiveKeyVersion.Where(v => keyIds.Contains(v.ArchiveKeyId)).DeleteAsync();
+                await dbContext.ArchiveKey.Where(k => k.EntityAnalysisModelInstanceEntryGuid == guid).DeleteAsync();
+
+                var archiveIds = await dbContext.Archive.Where(a => a.EntityAnalysisModelInstanceEntryGuid == guid)
+                    .Select(a => a.Id).ToListAsync();
+
+                await dbContext.ArchiveVersion.Where(v => archiveIds.Contains(v.ArchiveId)).DeleteAsync();
+                await dbContext.Archive.Where(a => a.EntityAnalysisModelInstanceEntryGuid == guid).DeleteAsync();
+            }
         }
 
         [Fact]
@@ -103,8 +111,10 @@ namespace Jube.Test.ArchiveWrites
             await ReplaceAsync(guid, Key("A", "1"), Key("B", "2"));
 
             var after = await KeysAsync(guid);
+
             after.Select(k => (k.Id, k.Version, k.KeyValueString)).Should()
                 .Equal(before.Select(k => (k.Id, k.Version, k.KeyValueString)));
+
             (await KeyVersionsAsync(guid)).Should().BeEmpty();
         }
 
@@ -137,8 +147,10 @@ namespace Jube.Test.ArchiveWrites
             await ReplaceAsync(guid, Key("A", "1"), Key("New", "z", 2));
 
             var keys = await KeysAsync(guid);
+
             keys.Select(k => (k.Key, k.KeyValueString, k.ProcessingTypeId)).Should()
                 .Equal(("A", "1", (byte?)1), ("New", "z", (byte?)2));
+
             keys.Single(k => k.Key == "New").Version.Should().Be(1);
             (await KeyVersionsAsync(guid)).Should().BeEmpty();
         }
@@ -180,8 +192,10 @@ namespace Jube.Test.ArchiveWrites
             updated.Version.Should().Be(2);
             updated.EntityAnalysisModelsReprocessingRuleInstanceId.Should().Be(43);
             updated.ReferenceDate.Should().Be(original.ReferenceDate);
+
             var versions = await dbContext.ArchiveVersion.Where(v => v.ArchiveId == original.Id)
                 .OrderBy(v => v.Id).ToListAsync();
+
             versions.Select(v => (v.Version, v.ResponseElevation, v.EntityAnalysisModelsReprocessingRuleInstanceId))
                 .Should().Equal((null, 1d, null), (1, 5d, 42));
         }
@@ -208,20 +222,27 @@ namespace Jube.Test.ArchiveWrites
                 },
                 new Archive { EntityAnalysisModelInstanceEntryGuid = gone, Json = "{}" }
             ]);
+
             await new ArchiveKeyRepository(dbContext).ReplaceBatchAsync(
                 [(first, [Key("A", "5")]), (second, [Key("A", "1")])], 9);
 
             updated.Should().BeEquivalentTo([first, second]);
+
             var rows = await dbContext.Archive.Where(a => a.EntityAnalysisModelInstanceEntryGuid == first ||
                                                           a.EntityAnalysisModelInstanceEntryGuid == second)
                 .ToListAsync();
+
             rows.Should().OnlyContain(r => r.Version == 1 && r.EntityAnalysisModelsReprocessingRuleInstanceId == 9);
+
             rows.Single(r => r.EntityAnalysisModelInstanceEntryGuid == second).EntityAnalysisModelActivationRuleId
                 .Should().Be(3);
+
             rows.Single(r => r.EntityAnalysisModelInstanceEntryGuid == first).Json.Should().Contain("\"n\": 1");
+
             (await dbContext.ArchiveVersion.CountAsync(v => v.EntityAnalysisModelInstanceEntryGuid == first ||
                                                             v.EntityAnalysisModelInstanceEntryGuid == second))
                 .Should().Be(2);
+
             (await KeysAsync(first)).Single().KeyValueString.Should().Be("5");
             (await KeyVersionsAsync(first)).Should().ContainSingle();
             (await KeysAsync(second)).Select(k => k.Key).Should().Equal("A");
@@ -233,6 +254,7 @@ namespace Jube.Test.ArchiveWrites
         {
             await using var dbContext = fx.GetDbContext();
             var thrown = false;
+
             try
             {
                 await new ArchiveRepository(dbContext).UpdateAsync(new Archive

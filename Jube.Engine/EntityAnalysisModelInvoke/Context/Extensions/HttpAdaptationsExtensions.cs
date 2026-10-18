@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptations;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -78,6 +79,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                             context.ArchiveHttpAdaptation(modelAdaptation);
                         }).ConfigureAwait(false);
+
                     items[modelAdaptation.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)

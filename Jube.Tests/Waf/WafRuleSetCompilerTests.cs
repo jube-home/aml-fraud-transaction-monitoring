@@ -13,6 +13,7 @@
 
 using FluentAssertions;
 using Jube.App.Code.Waf;
+using Jube.App.Code.Waf.Models;
 using Jube.Data.Poco;
 using Xunit;
 

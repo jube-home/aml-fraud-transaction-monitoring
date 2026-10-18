@@ -18,6 +18,7 @@ var validationFail = "There is invalid data in the form. Please check fields and
 if (typeof id === "undefined") {
     initBuilderCoder(4, parentKey);
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelAbstractionCalculation", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -29,6 +30,12 @@ if (typeof id === "undefined") {
             initBuilderCoder(4, parentKey, builderCoderData);
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelAbstractionCalculation", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 

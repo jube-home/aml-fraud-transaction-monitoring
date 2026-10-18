@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Service.EntityApproval
 {
     using System;
@@ -20,7 +22,6 @@ namespace Jube.Service.EntityApproval
     using System.Threading.Tasks;
     using Data.Context;
     using Data.Poco;
-    using Data.Repository;
     using LinqToDB;
 
     public static class EntityApprovalChangeSources
@@ -133,7 +134,13 @@ namespace Jube.Service.EntityApproval
                     Source<EntityAnalysisModelTag, EntityAnalysisModelTagVersion>(
                         (rows, id) => rows.Where(r => r.Id == id),
                         (rows, id, version) => rows.Where(r => r.EntityAnalysisModelTagId == id && r.Version < version)
-                            .OrderByDescending(r => r.Version))
+                            .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.AdvancedAnalyticsInstance] = Source<AdvancedAnalyticsInstance,
+                    AdvancedAnalyticsInstanceVersion>(
+                    (rows, id) => rows.Where(r => r.Id == id),
+                    (rows, id, version) => rows
+                        .Where(r => r.AdvancedAnalyticsInstanceId == id && r.Version < version)
+                        .OrderByDescending(r => r.Version))
             };
 
         public static IReadOnlySet<EntityApprovalKind> Kinds => sources.Keys.ToHashSet();
@@ -155,6 +162,7 @@ namespace Jube.Service.EntityApproval
             {
                 var currentRow = await current(dbContext.GetTable<TEntity>(), entityId)
                     .FirstOrDefaultAsync(token).ConfigureAwait(false);
+
                 var earlierRow = await earlier(dbContext.GetTable<TVersion>(), entityId, version)
                     .FirstOrDefaultAsync(token).ConfigureAwait(false);
 

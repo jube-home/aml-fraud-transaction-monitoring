@@ -17,31 +17,18 @@ namespace Jube.Dictionary.Interfaces
 
     public interface ILruCacheConcurrentSizedDictionary<TKey, TValue>
     {
-        long TotalSize
-        {
-            get;
-        }
-        ICollection<TKey> Keys
-        {
-            get;
-        }
-        ICollection<TValue> Values
-        {
-            get;
-        }
-        int Count
-        {
-            get;
-        }
-        bool IsReadOnly
-        {
-            get;
-        }
-        TValue this[TKey key]
-        {
-            get;
-            set;
-        }
+        long TotalSize { get; }
+
+        ICollection<TKey> Keys { get; }
+
+        ICollection<TValue> Values { get; }
+
+        int Count { get; }
+
+        bool IsReadOnly { get; }
+
+        TValue this[TKey key] { get; set; }
+
         bool ContainsKey(TKey key);
         long EstimatedSizeBytes();
         void Add(KeyValuePair<TKey, TValue> item);

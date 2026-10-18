@@ -1,72 +1,76 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Data;
+using System.Runtime.Serialization;
+using Accord.MachineLearning;
+using Accord.Math;
+using Accord.Properties;
 
 namespace Accord.Statistics.Filters
 {
-    using System;
-    using Accord.Math;
-    using MachineLearning;
-    using System.Data;
-    using Accord.Compat;
-    using System.Runtime.Serialization;
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
-    ///   Codification Filter class.
+    ///     Codification Filter class.
     /// </summary>
-    /// 
     /// <typeparam name="T">The object type that needs to be codified. Default is <c>string</c>.</typeparam>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The codification filter performs an integer codification of classes in
-    ///   given in a string form. An unique integer identifier will be assigned
-    ///   for each of the string classes.</para>
+    ///     <para>
+    ///         The codification filter performs an integer codification of classes in
+    ///         given in a string form. An unique integer identifier will be assigned
+    ///         for each of the string classes.
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   Every Learn() method in the framework expects the class labels to be contiguous and zero-indexed,
-    ///   meaning that if there is a classification problem with n classes, all class labels must be numbers
-    ///   ranging from 0 to n-1. However, not every dataset might be in this format and sometimes we will
-    ///   have to pre-process the data to be in this format. The example below shows how to use the 
-    ///   Codification class to perform such pre-processing.</para>
-    ///   
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs" region="doc_learn_codification" />
-    /// 
-    /// <para>
-    ///   Most classifiers in the framework also expect the input data to be of the same nature, i.e. continuous. 
-    ///   The codification filter can also be used to convert discrete, categorical, ordinal and baseline categorical
-    ///   variables into continuous vectors that can be fed to other machine learning algorithms, such as K-Means:.</para>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\Clustering\KMeansTest.cs" region="doc_learn_mixed" />
-    ///   
-    /// <para>
-    ///   For more examples, please see the documentation page for the non-generic <see cref="Codification"/> filter.</para>
+    ///     <para>
+    ///         Every Learn() method in the framework expects the class labels to be contiguous and zero-indexed,
+    ///         meaning that if there is a classification problem with n classes, all class labels must be numbers
+    ///         ranging from 0 to n-1. However, not every dataset might be in this format and sometimes we will
+    ///         have to pre-process the data to be in this format. The example below shows how to use the
+    ///         Codification class to perform such pre-processing.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs"
+    ///         region="doc_learn_codification" />
+    ///     <para>
+    ///         Most classifiers in the framework also expect the input data to be of the same nature, i.e. continuous.
+    ///         The codification filter can also be used to convert discrete, categorical, ordinal and baseline categorical
+    ///         variables into continuous vectors that can be fed to other machine learning algorithms, such as K-Means:.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\Clustering\KMeansTest.cs" region="doc_learn_mixed" />
+    ///     <para>
+    ///         For more examples, please see the documentation page for the non-generic <see cref="Codification" /> filter.
+    ///     </para>
     /// </example>
-    /// 
-    /// <seealso cref="Codification"/>
-    /// <seealso cref="Discretization{TInput, TOutput}"/>
-    /// 
+    /// <seealso cref="Codification" />
     [Serializable]
 #if NETSTANDARD2_0
     [SurrogateSelector(typeof(Codification.Selector))]
@@ -79,223 +83,230 @@ namespace Accord.Statistics.Filters
         private object defaultMissingValueReplacement = DBNull.Value;
 
 #if !NETSTANDARD1_4
-        private bool initialized = false;
+        private bool initialized;
 #endif
 
         /// <summary>
-        /// Gets the number of outputs generated by the model.
+        ///     Gets the number of outputs generated by the model.
         /// </summary>
-        /// 
         /// <value>The number of outputs.</value>
-        /// 
         public int NumberOfOutputs
         {
             get
             {
-                int total = 0;
+                var total = 0;
                 foreach (var col in Columns)
+                {
                     total += col.NumberOfSymbols;
+                }
+
                 return total;
             }
         }
 
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification()
         {
         }
 
 #if !NETSTANDARD1_4
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification(DataTable data)
             : this()
         {
-            this.Learn(data);
+            Learn(data);
         }
 
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification(DataTable data, params string[] columns)
             : this()
         {
-            for (int i = 0; i < columns.Length; i++)
-                this.Add(new Options(columns[i]).Learn(data));
+            for (var i = 0; i < columns.Length; i++)
+            {
+                Add(new Options(columns[i]).Learn(data));
+            }
         }
 #endif
 
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification(string columnName, params T[] values)
             : this()
         {
-            this.Add(new Options(columnName).Learn(values));
+            Add(new Options(columnName).Learn(values));
         }
 
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification(string[] columnNames, T[][] values)
             : this()
         {
-            for (int i = 0; i < columnNames.Length; i++)
-                this.Add(new Options(columnNames[i]).Learn(values.GetColumn(i)));
+            for (var i = 0; i < columnNames.Length; i++)
+            {
+                Add(new Options(columnNames[i]).Learn(values.GetColumn(i)));
+            }
         }
 
         /// <summary>
-        ///   Creates a new Codification Filter.
+        ///     Creates a new Codification Filter.
         /// </summary>
-        /// 
         public Codification(string columnName, T[][] values)
             : this()
         {
-            this.Add(new Options(columnName).Learn(values.Concatenate()));
+            Add(new Options(columnName).Learn(values.Concatenate()));
         }
 
         /// <summary>
-        ///   Gets or sets the default value to be used as a replacement for missing values. 
-        ///   Default is to use <c>System.DBNull.Value</c>.
+        ///     Gets or sets the default value to be used as a replacement for missing values.
+        ///     Default is to use <c>System.DBNull.Value</c>.
         /// </summary>
-        /// 
         public object DefaultMissingValueReplacement
         {
-            get { return this.defaultMissingValueReplacement; }
-            set { this.defaultMissingValueReplacement = value; }
+            get => defaultMissingValueReplacement;
+            set => defaultMissingValueReplacement = value;
         }
 
         int ITransform.NumberOfOutputs
         {
-            get { return NumberOfOutputs; }
-            set { throw new InvalidOperationException("This property is read only."); }
+            get => NumberOfOutputs;
+            set => throw new InvalidOperationException("This property is read only.");
         }
 
         /// <summary>
-        ///   Translates a value of a given variable
-        ///   into its integer (codeword) representation.
+        ///     Translates a value of a given variable
+        ///     into its integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="columnName">The name of the variable's data column.</param>
         /// <param name="value">The value to be translated.</param>
-        /// 
-        /// <returns>An integer which uniquely identifies the given value
-        /// for the given variable.</returns>
-        /// 
+        /// <returns>
+        ///     An integer which uniquely identifies the given value
+        ///     for the given variable.
+        /// </returns>
         public int Transform(string columnName, T value)
         {
             return Columns[columnName].Transform(value);
         }
 
         /// <summary>
-        ///   Translates an array of values into their
-        ///   integer representation, assuming values
-        ///   are given in original order of columns.
+        ///     Translates an array of values into their
+        ///     integer representation, assuming values
+        ///     are given in original order of columns.
         /// </summary>
-        /// 
         /// <param name="data">The values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each value
-        /// uniquely identifies the given value for each of
-        /// the variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each value
+        ///     uniquely identifies the given value for each of
+        ///     the variables.
+        /// </returns>
         public int[] Transform(params T[] data)
         {
-            if (this.Columns.Count == 1)
-                return this.Columns[0].Transform(data);
-
-            if (data.Length > this.Columns.Count)
+            if (Columns.Count == 1)
             {
-                throw new ArgumentException("The array contains more values"
-                    + " than the number of known columns.", "data");
+                return Columns[0].Transform(data);
             }
 
-            int[] result = new int[data.Length];
-            for (int i = 0; i < data.Length; i++)
-                result[i] = this.Columns[i].Transform(data[i]);
+            if (data.Length > Columns.Count)
+            {
+                throw new ArgumentException("The array contains more values"
+                                            + " than the number of known columns.", "data");
+            }
+
+            var result = new int[data.Length];
+            for (var i = 0; i < data.Length; i++)
+            {
+                result[i] = Columns[i].Transform(data[i]);
+            }
+
             return result;
         }
 
 #if !NETSTANDARD1_4
         /// <summary>
-        ///   Translates an array of values into their
-        ///   integer representation, assuming values
-        ///   are given in original order of columns.
+        ///     Translates an array of values into their
+        ///     integer representation, assuming values
+        ///     are given in original order of columns.
         /// </summary>
-        /// 
-        /// <param name="row">A <see cref="DataRow"/> containing the values to be translated.</param>
-        /// <param name="columnNames">The columns of the <paramref name="row"/> containing the
-        /// values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each value
-        /// uniquely identifies the given value for each of
-        /// the variables.</returns>
-        /// 
+        /// <param name="row">A <see cref="DataRow" /> containing the values to be translated.</param>
+        /// <param name="columnNames">
+        ///     The columns of the <paramref name="row" /> containing the
+        ///     values to be translated.
+        /// </param>
+        /// <returns>
+        ///     An array of integers in which each value
+        ///     uniquely identifies the given value for each of
+        ///     the variables.
+        /// </returns>
         public int[] Transform(DataRow row, string[] columnNames)
         {
-            string[] newColumnNames;
-            return Transform(row, columnNames, out newColumnNames);
+            return Transform(row, columnNames, out _);
         }
 
         /// <summary>
-        ///   Translates an array of values into their
-        ///   integer representation, assuming values
-        ///   are given in original order of columns.
+        ///     Translates an array of values into their
+        ///     integer representation, assuming values
+        ///     are given in original order of columns.
         /// </summary>
-        /// 
-        /// <param name="row">A <see cref="DataRow"/> containing the values to be translated.</param>
-        /// <param name="columnNames">The columns of the <paramref name="row"/> containing the
-        /// values to be translated.</param>
+        /// <param name="row">A <see cref="DataRow" /> containing the values to be translated.</param>
+        /// <param name="columnNames">
+        ///     The columns of the <paramref name="row" /> containing the
+        ///     values to be translated.
+        /// </param>
         /// <param name="newColumnNames">The updated column names after the data has been translated.</param>
-        /// 
-        /// <returns>An array of integers in which each value
-        /// uniquely identifies the given value for each of
-        /// the variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each value
+        ///     uniquely identifies the given value for each of
+        ///     the variables.
+        /// </returns>
         public int[] Transform(DataRow row, string[] columnNames, out string[] newColumnNames)
         {
-            int length = 0;
-            foreach (string columnName in columnNames)
+            var length = 0;
+            foreach (var columnName in columnNames)
+            {
                 length += Columns[columnName].NumberOfOutputs;
+            }
 
-            int[] result = new int[length];
+            var result = new int[length];
             newColumnNames = new string[length];
 
-            int c = 0;
-            foreach (string columnName in columnNames)
+            var c = 0;
+            foreach (var columnName in columnNames)
             {
-                Options options = Columns[columnName];
-                object x = row[columnName];
+                var options = Columns[columnName];
+                var x = row[columnName];
 
-                if ((options.VariableType == CodificationVariable.Continuous) ||
-                    (options.VariableType == CodificationVariable.Discrete))
+                if (options.VariableType == CodificationVariable.Continuous ||
+                    options.VariableType == CodificationVariable.Discrete)
                 {
                     newColumnNames[c] = options.ColumnName;
-                    result[c++] = (int)System.Convert.ChangeType(x, typeof(int));
+                    result[c++] = (int)Convert.ChangeType(x, typeof(int));
                 }
                 else if (options.VariableType == CodificationVariable.CategoricalWithBaseline)
                 {
-                    for (int k = 0; k < options.NumberOfOutputs; k++)
+                    for (var k = 0; k < options.NumberOfOutputs; k++)
                     {
                         newColumnNames[c + k] = getFactorName(options, options.Mapping.Reverse[k + 1]);
                         result[c + k] = 0;
                     }
 
-                    int j = options.Transform(row);
+                    var j = options.Transform(row);
                     if (j >= 1)
+                    {
                         result[c + j - 1] = 1;
+                    }
+
                     c += options.NumberOfOutputs;
                 }
                 else if (options.VariableType == CodificationVariable.Categorical)
                 {
-                    for (int k = 0; k < options.NumberOfOutputs; k++)
+                    for (var k = 0; k < options.NumberOfOutputs; k++)
                     {
                         newColumnNames[c + k] = getFactorName(options, options.Mapping.Reverse[k]);
                         result[c + k] = 0;
@@ -319,154 +330,163 @@ namespace Accord.Statistics.Filters
             return result;
         }
 
-
         /// <summary>
-        ///   Translates an array of values into their
-        ///   integer representation, assuming values
-        ///   are given in original order of columns.
+        ///     Translates an array of values into their
+        ///     integer representation, assuming values
+        ///     are given in original order of columns.
         /// </summary>
-        /// 
-        /// <param name="table">A <see cref="DataTable"/> containing the values to be translated.</param>
-        /// <param name="columnNames">The columns of the <paramref name="table"/> containing the
-        /// values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each value
-        /// uniquely identifies the given value for each of
-        /// the variables.</returns>
-        /// 
+        /// <param name="table">A <see cref="DataTable" /> containing the values to be translated.</param>
+        /// <param name="columnNames">
+        ///     The columns of the <paramref name="table" /> containing the
+        ///     values to be translated.
+        /// </param>
+        /// <returns>
+        ///     An array of integers in which each value
+        ///     uniquely identifies the given value for each of
+        ///     the variables.
+        /// </returns>
         public int[][] Transform(DataTable table, string[] columnNames)
         {
-            string[] newColumnNames;
-            return Transform(table, columnNames, out newColumnNames);
+            return Transform(table, columnNames, out _);
         }
 
         /// <summary>
-        ///   Translates an array of values into their
-        ///   integer representation, assuming values
-        ///   are given in original order of columns.
+        ///     Translates an array of values into their
+        ///     integer representation, assuming values
+        ///     are given in original order of columns.
         /// </summary>
-        /// 
-        /// <param name="table">A <see cref="DataTable"/> containing the values to be translated.</param>
-        /// <param name="columnNames">The columns of the <paramref name="table"/> containing the
-        /// values to be translated.</param>
+        /// <param name="table">A <see cref="DataTable" /> containing the values to be translated.</param>
+        /// <param name="columnNames">
+        ///     The columns of the <paramref name="table" /> containing the
+        ///     values to be translated.
+        /// </param>
         /// <param name="newColumnNames">The updated column names after the data has been translated.</param>
-        /// 
-        /// <returns>An array of integers in which each value
-        /// uniquely identifies the given value for each of
-        /// the variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each value
+        ///     uniquely identifies the given value for each of
+        ///     the variables.
+        /// </returns>
         public int[][] Transform(DataTable table, string[] columnNames, out string[] newColumnNames)
         {
             newColumnNames = columnNames;
             var result = new int[table.Rows.Count][];
-            for (int i = 0; i < table.Rows.Count; i++)
+            for (var i = 0; i < table.Rows.Count; i++)
+            {
                 result[i] = Transform(table.Rows[i], columnNames, out newColumnNames);
+            }
+
             return result;
         }
 #endif
 
         /// <summary>
-        ///   Translates a value of the given variables
-        ///   into their integer (codeword) representation.
+        ///     Translates a value of the given variables
+        ///     into their integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="columnNames">The names of the variable's data column.</param>
         /// <param name="values">The values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each integer
-        /// uniquely identifies the given value for the given 
-        /// variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each integer
+        ///     uniquely identifies the given value for the given
+        ///     variables.
+        /// </returns>
         public int[] Transform(string[] columnNames, T[] values)
         {
             if (columnNames.Length != values.Length)
             {
                 throw new ArgumentException("The number of column names"
-                    + " and the number of values must match.", "values");
+                                            + " and the number of values must match.", "values");
             }
 
             var result = new int[values.Length];
-            for (int i = 0; i < columnNames.Length; i++)
-                result[i] = this.Columns[columnNames[i]].Transform(values[i]);
+            for (var i = 0; i < columnNames.Length; i++)
+            {
+                result[i] = Columns[columnNames[i]].Transform(values[i]);
+            }
+
             return result;
         }
 
         /// <summary>
-        ///   Translates a value of the given variables
-        ///   into their integer (codeword) representation.
+        ///     Translates a value of the given variables
+        ///     into their integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="columnName">The variable name.</param>
         /// <param name="values">The values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each integer
-        /// uniquely identifies the given value for the given 
-        /// variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each integer
+        ///     uniquely identifies the given value for the given
+        ///     variables.
+        /// </returns>
         public int[] Transform(string columnName, T[] values)
         {
-            return this.Columns[columnName].Transform(values);
+            return Columns[columnName].Transform(values);
         }
 
         /// <summary>
-        ///   Translates a value of the given variables
-        ///   into their integer (codeword) representation.
+        ///     Translates a value of the given variables
+        ///     into their integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="columnName">The variable name.</param>
         /// <param name="values">The values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each integer
-        /// uniquely identifies the given value for the given 
-        /// variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each integer
+        ///     uniquely identifies the given value for the given
+        ///     variables.
+        /// </returns>
         public int[][] Transform(string columnName, T[][] values)
         {
-            return values.Apply(x => this.Columns[columnName].Transform(x));
+            return values.Apply(x => Columns[columnName].Transform(x));
         }
 
         /// <summary>
-        ///   Translates a value of the given variables
-        ///   into their integer (codeword) representation.
+        ///     Translates a value of the given variables
+        ///     into their integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="input">The values to be translated.</param>
-        /// 
-        /// <returns>An array of integers in which each integer
-        /// uniquely identifies the given value for the given 
-        /// variables.</returns>
-        /// 
+        /// <returns>
+        ///     An array of integers in which each integer
+        ///     uniquely identifies the given value for the given
+        ///     variables.
+        /// </returns>
         public int[][] Transform(T[][] input)
         {
             var result = new int[input.Length][];
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 result[i] = Transform(input[i]);
+            }
+
             return result;
         }
 
         /// <summary>
-        ///   Translates a value of the given variables
-        ///   into their integer (codeword) representation.
+        ///     Translates a value of the given variables
+        ///     into their integer (codeword) representation.
         /// </summary>
-        /// 
         /// <param name="input">The values to be translated.</param>
-        /// <param name="result">The location to where to store the
-        /// result of this transformation.</param>
-        /// 
-        /// <returns>An array of integers in which each integer
-        /// uniquely identifies the given value for the given 
-        /// variables.</returns>
-        /// 
+        /// <param name="result">
+        ///     The location to where to store the
+        ///     result of this transformation.
+        /// </param>
+        /// <returns>
+        ///     An array of integers in which each integer
+        ///     uniquely identifies the given value for the given
+        ///     variables.
+        /// </returns>
         public int[][] Transform(T[][] input, int[][] result)
         {
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 result[i] = Transform(input[i]);
+            }
+
             return result;
         }
 
         double[] ICovariantTransform<T[], double[]>.Transform(T[] input)
         {
-            return Transform(new[] { input }, new double[][] { new double[NumberOfOutputs] })[0];
+            return Transform(new[] { input }, new[] { new double[NumberOfOutputs] })[0];
         }
 
         double[][] ICovariantTransform<T[], double[]>.Transform(T[][] input)
@@ -475,34 +495,40 @@ namespace Accord.Statistics.Filters
         }
 
         /// <summary>
-        /// Applies the transformation to a set of input vectors,
-        /// producing an associated set of output vectors.
+        ///     Applies the transformation to a set of input vectors,
+        ///     producing an associated set of output vectors.
         /// </summary>
-        /// <param name="input">The input data to which
-        /// the transformation should be applied.</param>
-        /// <param name="result">The location to where to store the
-        /// result of this transformation.</param>
-        /// <returns>The output generated by applying this
-        /// transformation to the given input.</returns>
+        /// <param name="input">
+        ///     The input data to which
+        ///     the transformation should be applied.
+        /// </param>
+        /// <param name="result">
+        ///     The location to where to store the
+        ///     result of this transformation.
+        /// </param>
+        /// <returns>
+        ///     The output generated by applying this
+        ///     transformation to the given input.
+        /// </returns>
         public double[][] Transform(T[][] input, double[][] result)
         {
-            for (int j = 0; j < input.Length; j++)
+            for (var j = 0; j < input.Length; j++)
             {
-                T[] x = input[j];
-                double[] r = result[j];
+                var x = input[j];
+                var r = result[j];
 
-                int c = 0;
-                for (int i = 0; i < Columns.Count; i++)
+                var c = 0;
+                for (var i = 0; i < Columns.Count; i++)
                 {
-                    Options options = this.Columns[i];
+                    var options = Columns[i];
 
                     if (options.VariableType == CodificationVariable.Continuous)
                     {
-                        result[j][c++] = (double)System.Convert.ChangeType(x[i], typeof(double));
+                        result[j][c++] = (double)Convert.ChangeType(x[i], typeof(double));
                     }
                     else if (options.VariableType == CodificationVariable.Discrete)
                     {
-                        result[j][c++] = Math.Round((double)System.Convert.ChangeType(x[i], typeof(double)));
+                        result[j][c++] = System.Math.Round((double)Convert.ChangeType(x[i], typeof(double)));
                     }
                     else if (options.VariableType == CodificationVariable.Ordinal)
                     {
@@ -510,18 +536,27 @@ namespace Accord.Statistics.Filters
                     }
                     else if (options.VariableType == CodificationVariable.Categorical)
                     {
-                        for (int k = 0; k < options.NumberOfSymbols; k++)
+                        for (var k = 0; k < options.NumberOfSymbols; k++)
+                        {
                             r[c + k] = 0;
+                        }
+
                         r[c + options.Transform(x[i])] = 1;
                         c += options.NumberOfSymbols;
                     }
                     else if (options.VariableType == CodificationVariable.CategoricalWithBaseline)
                     {
-                        for (int k = 0; k < options.NumberOfSymbols; k++)
+                        for (var k = 0; k < options.NumberOfSymbols; k++)
+                        {
                             r[c + k] = 0;
-                        int m = options.Transform(x[i]);
+                        }
+
+                        var m = options.Transform(x[i]);
                         if (m >= 1)
+                        {
                             r[c + m - 1] = 1;
+                        }
+
                         c += options.NumberOfSymbols;
                     }
                     else
@@ -534,276 +569,86 @@ namespace Accord.Statistics.Filters
             return result;
         }
 
-
-
         /// <summary>
-        ///   Translates an integer (codeword) representation of
-        ///   the value of a given variable into its original
-        ///   value.
+        ///     Translates an integer (codeword) representation of
+        ///     the value of a given variable into its original
+        ///     value.
         /// </summary>
-        /// 
         /// <param name="columnName">The variable name.</param>
         /// <param name="codeword">The codeword to be translated.</param>
-        /// 
         /// <returns>The original meaning of the given codeword.</returns>
-        /// 
         public T Revert(string columnName, int codeword)
         {
-            return this.Columns[columnName].Revert(codeword);
+            return Columns[columnName].Revert(codeword);
         }
 
         /// <summary>
-        ///   Translates an integer (codeword) representation of
-        ///   the value of a given variable into its original
-        ///   value.
+        ///     Translates an integer (codeword) representation of
+        ///     the value of a given variable into its original
+        ///     value.
         /// </summary>
-        /// 
         /// <param name="codewords">The codewords to be translated.</param>
-        /// 
         /// <returns>The original meaning of the given codeword.</returns>
-        /// 
         public T[] Revert(int[] codewords)
         {
-            if (this.Columns.Count != 1)
-                throw new InvalidOperationException("This method can only be called when there is a single output column.");
+            if (Columns.Count != 1)
+            {
+                throw new InvalidOperationException(
+                    "This method can only be called when there is a single output column.");
+            }
 
-            return this.Columns[0].Revert(codewords);
+            return Columns[0].Revert(codewords);
         }
 
         /// <summary>
-        ///   Translates an integer (codeword) representation of
-        ///   the value of a given variable into its original
-        ///   value.
+        ///     Translates an integer (codeword) representation of
+        ///     the value of a given variable into its original
+        ///     value.
         /// </summary>
-        /// 
         /// <param name="columnName">The name of the variable's data column.</param>
         /// <param name="codewords">The codewords to be translated.</param>
-        /// 
         /// <returns>The original meaning of the given codeword.</returns>
-        /// 
         public T[] Revert(string columnName, int[] codewords)
         {
-            return this.Columns[columnName].Revert(codewords);
+            return Columns[columnName].Revert(codewords);
         }
 
         /// <summary>
-        ///   Translates the integer (codeword) representations of
-        ///   the values of the given variables into their original
-        ///   values.
+        ///     Translates the integer (codeword) representations of
+        ///     the values of the given variables into their original
+        ///     values.
         /// </summary>
-        /// 
         /// <param name="columnNames">The name of the variables' columns.</param>
         /// <param name="codewords">The codewords to be translated.</param>
-        /// 
         /// <returns>The original meaning of the given codewords.</returns>
-        /// 
         public T[] Revert(string[] columnNames, int[] codewords)
         {
             var result = new T[codewords.Length];
-            for (int i = 0; i < columnNames.Length; i++)
+            for (var i = 0; i < columnNames.Length; i++)
+            {
                 result[i] = Revert(columnNames[i], codewords[i]);
+            }
+
             return result;
         }
 
-
-
 #if !NETSTANDARD1_4
         /// <summary>
-        ///   Processes the current filter.
+        ///     Processes the current filter.
         /// </summary>
-        /// 
         protected override DataTable ProcessFilter(DataTable data)
         {
             // Copy only the schema (Clone)
-            DataTable result = data.Clone();
+            var result = data.Clone();
 
-            if (!this.initialized)
+            if (!initialized)
+            {
                 Learn(data);
-
-            var order = new List<DataColumn>();
-
-            // For each column having a mapping
-            foreach (DataColumn column in data.Columns)
-            {
-                DataColumn currentColumn = result.Columns[column.ColumnName];
-                order.Add(currentColumn);
-
-                if (!this.Columns.Contains(column.ColumnName))
-                    continue;
-
-                Options options = this.Columns[column.ColumnName];
-
-                // If we are just converting strings to integer codes
-                if (options.VariableType == CodificationVariable.Ordinal)
-                {
-                    // Change its type from string to integer
-                    currentColumn.MaxLength = -1;
-                    if (options.HasMissingValue && options.MissingValueReplacement != null && options.MissingValueReplacement != DBNull.Value)
-                    {
-                        currentColumn.DataType = options.MissingValueReplacement.GetType();
-                    }
-                    else
-                    {
-                        currentColumn.DataType = typeof(int);
-                    }
-                }
-
-                // If we want to avoid implying an order relationship between them
-                else if (options.VariableType == CodificationVariable.Categorical)
-                {
-                    // Remove the column from the schema
-                    order.Remove(currentColumn);
-
-                    // Create extra columns for each possible value
-                    for (int i = 0; i < options.NumberOfOutputs; i++)
-                    {
-                        // Except for the first, that should be the baseline value
-                        T symbolName = options.Mapping.Reverse[i];
-                        string factorName = getFactorName(options, symbolName);
-
-                        order.Add(new DataColumn(factorName, typeof(int))
-                        {
-                            DefaultValue = 0
-                        });
-                    }
-                }
-
-                // If we want to avoid implying an order relationship between them
-                else if (options.VariableType == CodificationVariable.CategoricalWithBaseline)
-                {
-                    // Remove the column from the schema
-                    order.Remove(currentColumn);
-
-                    // Create extra columns for each possible value
-                    for (int i = 0; i < options.NumberOfOutputs; i++)
-                    {
-                        // Except for the first, that should be the baseline value
-                        T symbolName = options.Mapping.Reverse[i + 1];
-                        string factorName = getFactorName(options, symbolName);
-
-                        order.Add(new DataColumn(factorName, typeof(int))
-                        {
-                            DefaultValue = 0
-                        });
-                    }
-                }
-
-                else if (options.VariableType == CodificationVariable.Continuous)
-                {
-                    // Change its type from to double
-                    currentColumn.MaxLength = -1;
-                    currentColumn.DataType = typeof(double);
-                }
-
-                else if (options.VariableType == CodificationVariable.Discrete)
-                {
-                    // Change its type from to int
-                    currentColumn.MaxLength = -1;
-                    currentColumn.DataType = typeof(double);
-                }
-
-                else
-                {
-                    throw new InvalidOperationException("Unknown variable type: " + options.VariableType);
-                }
             }
 
-            // Put the columns back in the same order
-            result.Columns.Clear();
-            result.Columns.AddRange(order.ToArray());
+            buildResultSchema(data, result);
 
-
-            // Now for each row on the original table
-            foreach (DataRow inputRow in data.Rows)
-            {
-                // We'll import to the result table
-                DataRow resultRow = result.NewRow();
-
-                // For each column in original table
-                foreach (DataColumn column in data.Columns)
-                {
-                    string name = column.ColumnName;
-
-                    // If the column has a mapping
-                    if (Columns.Contains(name))
-                    {
-                        var options = Columns[name];
-                        var map = options.Mapping;
-                        var obj = inputRow[name];
-
-                        // Retrieve string value
-                        if (options.IsMissingValue(obj))
-                        {
-                            resultRow[name] = options.MissingValueReplacement;
-                            continue;
-                        }
-
-                        T label = (T)obj;
-
-                        if (options.VariableType == CodificationVariable.Ordinal)
-                        {
-                            int value = -1;
-
-                            // Get its corresponding integer
-                            try { value = map[label]; }
-                            catch
-                            {
-                                value = map.Values.Count + 1;
-                                map[label] = value;
-                            }
-
-                            // Set the row to the integer
-                            resultRow[name] = value;
-                        }
-                        else if (options.VariableType == CodificationVariable.CategoricalWithBaseline)
-                        {
-                            if (options.Mapping[label] > 0)
-                            {
-                                // Find the corresponding column
-                                var factorName = getFactorName(options, label);
-
-                                try
-                                {
-                                    resultRow[factorName] = 1;
-                                }
-                                catch { }
-                            }
-                        }
-                        else if (options.VariableType == CodificationVariable.Categorical)
-                        {
-                            // Find the corresponding column
-                            var factorName = getFactorName(options, label);
-
-                            try
-                            {
-                                resultRow[factorName] = 1;
-                            }
-                            catch { }
-                        }
-                        else if (options.VariableType == CodificationVariable.Continuous)
-                        {
-                            resultRow[name] = obj;
-                        }
-                        else if (options.VariableType == CodificationVariable.Discrete)
-                        {
-                            resultRow[name] = obj;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Unknown variable type: " + options.VariableType);
-                        }
-                    }
-                    else
-                    {
-                        // The column does not have a mapping
-                        //  so we'll just copy the value over
-                        resultRow[name] = inputRow[name];
-                    }
-                }
-
-                // Finally, add the row into the result table
-                result.Rows.Add(resultRow);
-            }
+            copyRows(data, result);
 
             return result;
         }
@@ -814,175 +659,199 @@ namespace Accord.Statistics.Filters
             return options.ColumnName + ": " + name;
         }
 
-
-
         /// <summary>
-        /// Learns a model that can map the given inputs to the desired outputs.
+        ///     Learns a model that can map the given inputs to the desired outputs.
         /// </summary>
         /// <param name="x">The model inputs.</param>
         /// <param name="weights">The weight of importance for each input sample.</param>
-        /// <returns>A model that has learned how to produce suitable outputs
-        /// given the input data <paramref name="x" />.</returns>
+        /// <returns>
+        ///     A model that has learned how to produce suitable outputs
+        ///     given the input data <paramref name="x" />.
+        /// </returns>
         public Codification<T> Learn(T[] x, double[] weights = null)
         {
             if (weights != null)
-                throw new ArgumentException(Accord.Properties.Resources.NotSupportedWeights, "weights");
+            {
+                throw new ArgumentException(Resources.NotSupportedWeights, "weights");
+            }
 
-            if (this.Columns.Count == 0)
-                this.Add(new Options("0"));
-            if (this.Columns.Count != 1)
+            if (Columns.Count == 0)
+            {
+                Add(new Options("0"));
+            }
+
+            if (Columns.Count != 1)
+            {
                 throw new Exception("There are more predefined columns than columns in the data.");
+            }
 
             Columns[0].Learn(x, weights);
 #if !NETSTANDARD1_4
-            this.initialized = true;
+            initialized = true;
 #endif
             return this;
         }
 
         /// <summary>
-        /// Learns a model that can map the given inputs to the desired outputs.
+        ///     Learns a model that can map the given inputs to the desired outputs.
         /// </summary>
         /// <param name="x">The model inputs.</param>
         /// <param name="weights">The weight of importance for each input sample.</param>
-        /// <returns>A model that has learned how to produce suitable outputs
-        /// given the input data <paramref name="x" />.</returns>
+        /// <returns>
+        ///     A model that has learned how to produce suitable outputs
+        ///     given the input data <paramref name="x" />.
+        /// </returns>
         public Codification<T> Learn(T[][] x, double[] weights = null)
         {
             if (weights != null)
-                throw new ArgumentException(Accord.Properties.Resources.NotSupportedWeights, "weights");
+            {
+                throw new ArgumentException(Resources.NotSupportedWeights, "weights");
+            }
 
-            for (int i = this.Columns.Count; i < x.Columns(); i++)
-                this.Add(new Options(i.ToString()));
-            if (this.Columns.Count != x.Columns())
+            for (var i = Columns.Count; i < x.Columns(); i++)
+            {
+                Add(new Options(i.ToString()));
+            }
+
+            if (Columns.Count != x.Columns())
+            {
                 throw new Exception("There are more predefined columns than columns in the data.");
+            }
 
-            for (int i = 0; i < Columns.Count; i++)
+            for (var i = 0; i < Columns.Count; i++)
+            {
                 Columns[i].Learn(x.GetColumn(i), weights);
+            }
 #if !NETSTANDARD1_4
-            this.initialized = true;
+            initialized = true;
 #endif
             return this;
         }
 
 #if !NETSTANDARD1_4
         /// <summary>
-        /// Learns a model that can map the given inputs to the desired outputs.
+        ///     Learns a model that can map the given inputs to the desired outputs.
         /// </summary>
         /// <param name="x">The model inputs.</param>
         /// <param name="weights">The weight of importance for each input sample.</param>
-        /// <returns>A model that has learned how to produce suitable outputs
-        /// given the input data <paramref name="x" />.</returns>
+        /// <returns>
+        ///     A model that has learned how to produce suitable outputs
+        ///     given the input data <paramref name="x" />.
+        /// </returns>
         public Codification<T> Learn(DataTable x, double[] weights = null)
         {
             if (weights != null)
-                throw new ArgumentException(Accord.Properties.Resources.NotSupportedWeights, "weights");
+            {
+                throw new ArgumentException(Resources.NotSupportedWeights, "weights");
+            }
 
             foreach (DataColumn col in x.Columns)
             {
-                if (!this.Columns.Contains(col.ColumnName))
+                if (!Columns.Contains(col.ColumnName))
                 {
                     if (col.DataType == typeof(T))
-                        this.Add(new Options(col.ColumnName));
+                    {
+                        Add(new Options(col.ColumnName));
+                    }
                 }
             }
 
             foreach (DataColumn col in x.Columns)
             {
                 if (col.DataType == typeof(T))
-                    this.Columns[col.ColumnName].Learn(x, weights);
+                {
+                    Columns[col.ColumnName].Learn(x, weights);
+                }
             }
 
-            this.initialized = true;
+            initialized = true;
 
             return this;
         }
 #endif
 
         /// <summary>
-        ///   Converts this instance into a transform that can generate double[].
+        ///     Converts this instance into a transform that can generate double[].
         /// </summary>
-        /// 
         public ITransform<T[], double[]> ToDouble()
         {
-            return (ITransform<T[], double[]>)this;
+            return this;
         }
 
         /// <summary>
-        /// Adds a new <see cref="Options">column options</see> to this filter's collection,
-        /// specifying how a particular column should be processed by the filter..
+        ///     Adds a new <see cref="Options">column options</see> to this filter's collection,
+        ///     specifying how a particular column should be processed by the filter..
         /// </summary>
-        /// 
         /// <param name="codificationVariable">The type of the variable to be added.</param>
-        /// 
         public void Add(CodificationVariable codificationVariable)
         {
-            this.Add(new Options(this.Columns.Count.ToString(), codificationVariable));
+            Add(new Options(Columns.Count.ToString(), codificationVariable));
         }
 
         /// <summary>
-        /// Adds a new <see cref="Options">column options</see> to this filter's collection,
-        /// specifying how a particular column should be processed by the filter..
+        ///     Adds a new <see cref="Options">column options</see> to this filter's collection,
+        ///     specifying how a particular column should be processed by the filter..
         /// </summary>
-        /// 
         /// <param name="name">The name of the variable to added.</param>
         /// <param name="codificationVariable">The type of the variable to be added.</param>
-        /// 
         public void Add(string name, CodificationVariable codificationVariable)
         {
-            this.Add(new Options(name, codificationVariable));
+            Add(new Options(name, codificationVariable));
         }
 
         /// <summary>
-        /// Adds a new <see cref="Options">column options</see> to this filter's collection,
-        /// specifying how a particular column should be processed by the filter..
+        ///     Adds a new <see cref="Options">column options</see> to this filter's collection,
+        ///     specifying how a particular column should be processed by the filter..
         /// </summary>
-        /// 
         /// <param name="name">The name of the variable to added.</param>
         /// <param name="codificationVariable">The type of the variable to be added.</param>
-        /// <param name="baseline">The baseline value to be used in conjunction with 
-        ///   <see cref="CodificationVariable.CategoricalWithBaseline"/>. The baseline
-        ///   value will be treated as absolute zero in a otherwise one-hot representation.</param>
-        /// 
+        /// <param name="baseline">
+        ///     The baseline value to be used in conjunction with
+        ///     <see cref="CodificationVariable.CategoricalWithBaseline" />. The baseline
+        ///     value will be treated as absolute zero in a otherwise one-hot representation.
+        /// </param>
         public void Add(string name, CodificationVariable codificationVariable, T baseline)
         {
-            this.Add(new Options(name, codificationVariable, baseline));
+            Add(new Options(name, codificationVariable, baseline));
         }
 
         /// <summary>
-        /// Adds a new <see cref="Options">column options</see> to this filter's collection,
-        /// specifying how a particular column should be processed by the filter..
+        ///     Adds a new <see cref="Options">column options</see> to this filter's collection,
+        ///     specifying how a particular column should be processed by the filter..
         /// </summary>
-        /// 
         /// <param name="name">The name of the variable to added.</param>
         /// <param name="codificationVariable">The type of the variable to be added.</param>
-        /// <param name="order">The order of the variables in the mapping. The first variable
-        ///   will be assigned to position (symbol) 1, the second to position 2, and so on.</param>
-        /// 
+        /// <param name="order">
+        ///     The order of the variables in the mapping. The first variable
+        ///     will be assigned to position (symbol) 1, the second to position 2, and so on.
+        /// </param>
         public void Add(string name, CodificationVariable codificationVariable, T[] order)
         {
-            this.Add(new Options(name, codificationVariable, order));
+            Add(new Options(name, codificationVariable, order));
         }
 
         /// <summary>
-        /// Called when a new column options definition is being added.
-        /// Can be used to validate or modify these options beforehand.
+        ///     Called when a new column options definition is being added.
+        ///     Can be used to validate or modify these options beforehand.
         /// </summary>
-        /// 
         /// <param name="options">The column options being added.</param>
-        /// 
         protected override void OnAddingOptions(Options options)
         {
             if (options.Owner != null)
+            {
                 throw new ArgumentException("The provided options already belong to another codification object.");
+            }
+
             options.Owner = this;
         }
 
-        [OnDeserializedAttribute]
+        [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            foreach (Options option in this)
+            foreach (var option in this)
+            {
                 option.Owner = this;
+            }
         }
     }
 }

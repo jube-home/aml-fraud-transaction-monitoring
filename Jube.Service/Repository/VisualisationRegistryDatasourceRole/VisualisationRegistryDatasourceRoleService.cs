@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.VisualisationRegistryDatasourceRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryDatasourceRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
     public sealed class VisualisationRegistryDatasourceRoleService
     {
         private static readonly int[] permissions = [33];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
             repository = new RuleRepository(dbContext, userName);
             validator = new VisualisationRegistryDatasourceRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<VisualisationRegistryDatasourceRoleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -115,6 +116,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
             using var op = OperationScope.Start("VisualisationRegistryDatasourceRole",
                 "ListByVisualisationRegistryDatasourceGuid", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug("VisualisationRegistryDatasourceRole.ListByVisualisationRegistryDatasourceGuid: entry " +
@@ -125,10 +127,12 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
             {
                 EnsurePermitted("VisualisationRegistryDatasourceRole.ListByVisualisationRegistryDatasourceGuid",
                     permissions);
+
                 var dtos = VisualisationRegistryDatasourceRoleMapper.ToDto(
                     await repository.GetByVisualisationRegistryDatasourceGuidAsync(guid, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug("VisualisationRegistryDatasourceRole.ListByVisualisationRegistryDatasourceGuid: " +
@@ -150,8 +154,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error("VisualisationRegistryDatasourceRole.ListByVisualisationRegistryDatasourceGuid: " +
                           $"unexpected failure guid={guid} user={userName}", ex);
+
                 throw;
             }
         }
@@ -163,6 +169,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasourceRole", "Insert", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasourceRole.Insert: entry user={userName} " +
@@ -176,6 +183,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
                 EnsurePermitted("VisualisationRegistryDatasourceRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -236,6 +244,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
         {
             using var op = OperationScope.Start("VisualisationRegistryDatasourceRole", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasourceRole.Delete: entry id={id} user={userName}");
@@ -258,6 +267,18 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
                 op.Outcome("forbidden");
                 throw;
             }
+            catch (KeyNotFoundException)
+            {
+                op.Outcome("not_found");
+
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"VisualisationRegistryDatasourceRole.Delete: id={id} not found or not visible " +
+                             $"user={userName}");
+                }
+
+                throw;
+            }
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -266,8 +287,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"VisualisationRegistryDatasourceRole.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }

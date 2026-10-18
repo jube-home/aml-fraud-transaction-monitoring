@@ -33,30 +33,6 @@ namespace Jube.Test.Repository
         private readonly List<int> kvpIds = [];
         private int tenantRegistryId;
 
-        public async Task InitializeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            tenantRegistryId = await dbContext.UserInTenant
-                .Where(w => w.User == fx.Seed.UserWithPermission)
-                .Select(s => s.TenantRegistryId)
-                .FirstAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
-                .Where(w => kvpIds.Contains(w.EntityAnalysisModelDictionaryKvpId!.Value)).DeleteAsync();
-            await dbContext.EntityAnalysisModelDictionaryKvp.Where(w => kvpIds.Contains(w.Id)).DeleteAsync();
-            await dbContext.GetTable<EntityAnalysisModelDictionaryVersion>()
-                .Where(w => dictionaryIds.Contains(w.EntityAnalysisModelDictionaryId)).DeleteAsync();
-            await dbContext.EntityAnalysisModelDictionary.Where(w => dictionaryIds.Contains(w.Id)).DeleteAsync();
-            await dbContext.GetTable<EntityAnalysisModelVersion>()
-                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
-        }
-
         private async Task<int> SeedKvpAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -73,6 +49,7 @@ namespace Jube.Test.Repository
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
 
@@ -87,6 +64,7 @@ namespace Jube.Test.Repository
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             dictionary.Id = await dbContext.InsertWithInt32IdentityAsync(dictionary);
             dictionaryIds.Add(dictionary.Id);
 
@@ -101,9 +79,41 @@ namespace Jube.Test.Repository
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             kvp.Id = await dbContext.InsertWithInt32IdentityAsync(kvp);
             kvpIds.Add(kvp.Id);
+
             return kvp.Id;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
+                .Where(w => kvpIds.Contains(w.EntityAnalysisModelDictionaryKvpId!.Value)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelDictionaryKvp.Where(w => kvpIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelDictionaryVersion>()
+                .Where(w => dictionaryIds.Contains(w.EntityAnalysisModelDictionaryId)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelDictionary.Where(w => dictionaryIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
+                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         [Fact]

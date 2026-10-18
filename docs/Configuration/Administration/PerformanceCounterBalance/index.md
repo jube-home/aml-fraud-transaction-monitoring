@@ -6,9 +6,6 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Performance Counter Balances
 
 The nature of the Jube Platform is that immeasurable harm can be caused by the misconfiguration of a rule. Consider a

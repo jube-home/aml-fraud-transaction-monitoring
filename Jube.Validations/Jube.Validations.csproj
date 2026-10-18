@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Jube.Analytics\Jube.Analytics.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
         <ProjectReference Include="..\Jube.Parser\Jube.Parser.csproj"/>

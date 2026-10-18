@@ -78,6 +78,7 @@ namespace Jube.Test.Cache.Redis
             fake.KeyExpirations.Should().HaveCount(1,
                 "the TTL only needs setting once - re-setting it on every increment would keep sliding the " +
                 "window forward and the counter would never reset");
+
             var (key, expiry) = fake.KeyExpirations.Single();
             key.ToString().Should().Be("RateLimit:GlobalHttp:203.0.113.14");
             expiry.Should().Be(window);
@@ -90,6 +91,7 @@ namespace Jube.Test.Cache.Redis
             {
                 ThrowOnMethod = "HashIncrementAsync"
             };
+
             var repository = new CacheRateLimitRepository(fake, TestLog.NoOp);
 
             var count = await repository.IncrementRateLimitCacheAsync("GlobalHttp", "203.0.113.15",

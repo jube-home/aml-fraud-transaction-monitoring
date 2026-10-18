@@ -25,6 +25,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.Icons;
 using Jube.Service.Observability;
 using Jube.Service.Query.Icons;
+using Jube.Service.Query.Icons.Interfaces;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
@@ -48,7 +49,6 @@ namespace Jube.Test.Service.Query.Icons
                 NullLoggerFactory.Instance);
 
         private readonly List<string> tempDirectories = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public Task DisposeAsync()
@@ -67,6 +67,7 @@ namespace Jube.Test.Service.Query.Icons
             var icons = Path.Combine(webRoot, "icons");
             Directory.CreateDirectory(icons);
             tempDirectories.Add(webRoot);
+
             foreach (var file in iconFiles)
             {
                 File.WriteAllText(Path.Combine(icons, file), "x");
@@ -106,6 +107,7 @@ namespace Jube.Test.Service.Query.Icons
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -114,6 +116,7 @@ namespace Jube.Test.Service.Query.Icons
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -122,6 +125,7 @@ namespace Jube.Test.Service.Query.Icons
         public async Task MissingPermissionThrowsForbiddenWithCodeAndRequiredSpecificationsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
                 new FakeIconFileSource("a.png"));
 
@@ -135,6 +139,7 @@ namespace Jube.Test.Service.Query.Icons
         public async Task ForbiddenDoesNotTouchTheFileSystemAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
                 new ThrowingIconFileSource());
 
@@ -145,6 +150,7 @@ namespace Jube.Test.Service.Query.Icons
         public async Task ReturnsOneDtoPerFileNameInSourceOrderAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 new FakeIconFileSource("zeta.png", "alpha.svg", "Mid.gif"));
 
@@ -170,6 +176,7 @@ namespace Jube.Test.Service.Query.Icons
             await File.WriteAllTextAsync(Path.Combine(webRoot, "outside.png"), "x");
 
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 new WebRootIconFileSource(webRoot));
 
@@ -177,6 +184,7 @@ namespace Jube.Test.Service.Query.Icons
 
             result.Should().AllBeOfType<IconDto>();
             result.Select(r => r.Name).Should().BeEquivalentTo("a.png", "b.svg", "c.ico");
+
             result.Select(r => r.Name).Should().Equal(
                 Directory.GetFiles(Path.Combine(webRoot, "icons")).Select(f => Path.GetFileName(f)));
         }
@@ -187,6 +195,7 @@ namespace Jube.Test.Service.Query.Icons
             var webRoot = Path.Combine(Path.GetTempPath(), $"{DatabaseFixture.Prefix}IconsMissing{Guid.NewGuid():N}");
             var log = new TestLog();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 new WebRootIconFileSource(webRoot), log);
 
@@ -245,12 +254,15 @@ namespace Jube.Test.Service.Query.Icons
 
             await using var dbContext = fx.GetDbContext();
             var auditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 new FakeIconFileSource("a.png"), auditLog: auditLog);
+
             await service.GetAsync();
 
             activities.Should().ContainSingle(a => a.OperationName == "Icons.Get")
                 .Subject.GetTagItem("jube.outcome").Should().Be("ok");
+
             auditLog.Entries.Should().ContainSingle();
             auditLog.Entries[0].Message.Should().Contain("op=Get");
         }

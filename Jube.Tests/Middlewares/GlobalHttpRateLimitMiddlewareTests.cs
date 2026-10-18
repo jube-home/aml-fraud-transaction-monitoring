@@ -42,6 +42,7 @@ namespace Jube.Test.Middlewares
         {
             var context = new DefaultHttpContext();
             context.Connection.RemoteIpAddress = System.Net.IPAddress.Parse(remoteIp);
+
             return context;
         }
 
@@ -49,9 +50,11 @@ namespace Jube.Test.Middlewares
         public async Task WhenDisabledEveryRequestReachesTheEndpointAsync()
         {
             var reached = 0;
+
             var middleware = new GlobalHttpRateLimitMiddleware(_ =>
             {
                 reached++;
+
                 return Task.CompletedTask;
             }, new GlobalHttpRequestSourceIpThrottle(), TestCacheService.Create(out _), Environment(false));
 
@@ -67,9 +70,11 @@ namespace Jube.Test.Middlewares
         public async Task WhenEnabledRequestsBeyondTheThresholdGet429AndDoNotReachTheEndpointAsync()
         {
             var reached = 0;
+
             var middleware = new GlobalHttpRateLimitMiddleware(_ =>
             {
                 reached++;
+
                 return Task.CompletedTask;
             }, new GlobalHttpRequestSourceIpThrottle(), TestCacheService.Create(out _), Environment(true));
 
@@ -152,6 +157,7 @@ namespace Jube.Test.Middlewares
                 new GlobalHttpRequestSourceIpThrottle(), TestCacheService.Create(out _), Environment(true, 0));
 
             var context = Context("203.0.113.36");
+
             for (var i = 0; i < 10; i++)
             {
                 context = Context("203.0.113.36");

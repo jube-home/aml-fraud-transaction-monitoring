@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.VisualisationRegistryParameter;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Concurrency;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryParameter;
 using Jube.Service.Observability;
@@ -37,7 +38,6 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         private const int MaxListTake = 200;
         private static readonly int[] permissions = [32];
         private static readonly int[] activeOnlyPermissions = [32, 28, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -60,9 +60,13 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
+
             validator = new VisualisationRegistryParameterDtoValidator(
                 new VisualisationRegistryRepository(dbContext, userName), repository, strings);
         }
+
+        public static IReadOnlyList<int> ActiveOnlyPermissions => activeOnlyPermissions;
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<VisualisationRegistryParameterService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -116,6 +120,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.List: entry user={userName}");
@@ -124,9 +129,11 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             try
             {
                 EnsurePermitted("VisualisationRegistryParameter.List", permissions);
+
                 var dtos = VisualisationRegistryParameterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.List: {dtos.Count} rows user={userName}");
@@ -142,6 +149,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.List: cancelled user={userName}");
@@ -167,6 +175,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Get: entry id={id} user={userName}");
@@ -176,6 +185,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             {
                 EnsurePermitted("VisualisationRegistryParameter.Get", permissions);
                 var visualisationRegistryParameter = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (visualisationRegistryParameter == null)
                 {
                     if (log.IsDebugEnabled)
@@ -188,6 +198,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                 }
 
                 op.Entity(visualisationRegistryParameter.Id);
+
                 return VisualisationRegistryParameterMapper.ToDto(visualisationRegistryParameter);
             }
             catch (ForbiddenException)
@@ -198,6 +209,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.Get: cancelled id={id} user={userName}");
@@ -213,6 +225,70 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             }
         }
 
+        [Description("Returns one Visualisation Registry Parameter by its Id, scoped to the calling user's " +
+                     "tenant. Returns null when no matching row is visible to the caller.")]
+        [ServiceOperation("VisualisationRegistryParameterGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<VisualisationRegistryParameterDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Parameter.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryParameter", "GetByGuid", userName,
+                tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistryParameter.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("VisualisationRegistryParameter.GetByGuid", permissions);
+                var visualisationRegistryParameter = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (visualisationRegistryParameter == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"VisualisationRegistryParameter.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(visualisationRegistryParameter.Id);
+
+                return VisualisationRegistryParameterMapper.ToDto(visualisationRegistryParameter);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"VisualisationRegistryParameter.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error($"VisualisationRegistryParameter.GetByGuid: unexpected failure guid={guid} user={userName}",
+                    ex);
+
+                throw;
+            }
+        }
+
         [Description("Lists the Parameters belonging to a given Visualisation Registry, ordered by Id, scoped " +
                      "to the calling user's tenant. Includes inactive Parameters.")]
         [ServiceOperation("VisualisationRegistryParameterGetByVisualisationRegistryId", OperationKind.Read,
@@ -224,6 +300,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "ListByVisualisationRegistryId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -233,10 +310,12 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             try
             {
                 EnsurePermitted("VisualisationRegistryParameter.ListByVisualisationRegistryId", activeOnlyPermissions);
+
                 var dtos = VisualisationRegistryParameterMapper.ToDto(await repository
                     .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistryId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -253,6 +332,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -264,9 +344,11 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryParameter.ListByVisualisationRegistryId: unexpected failure visualisationRegistryId={visualisationRegistryId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -284,6 +366,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             using var op = OperationScope.Start("VisualisationRegistryParameter",
                 "ListByVisualisationRegistryIdActiveOnly", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -294,10 +377,12 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             {
                 EnsurePermitted("VisualisationRegistryParameter.ListByVisualisationRegistryIdActiveOnly",
                     activeOnlyPermissions);
+
                 var dtos = VisualisationRegistryParameterMapper.ToDto(await repository
                     .GetByVisualisationRegistryIdActiveOnlyAsync(visualisationRegistryId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -314,6 +399,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -325,9 +411,11 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryParameter.ListByVisualisationRegistryIdActiveOnly: unexpected failure visualisationRegistryId={visualisationRegistryId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -345,7 +433,9 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -376,6 +466,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.ListPaged: cancelled user={userName}");
@@ -402,6 +493,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.FilterFields: entry user={userName}");
@@ -413,6 +505,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<VisualisationRegistryParameterDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -453,6 +546,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -462,10 +556,13 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             try
             {
                 EnsurePermitted("VisualisationRegistryParameter.Filter", permissions);
+
                 var rows = VisualisationRegistryParameterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -503,6 +600,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Count: entry groupBy={groupBy} user={userName}");
@@ -511,10 +609,13 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             try
             {
                 EnsurePermitted("VisualisationRegistryParameter.Count", permissions);
+
                 var rows = VisualisationRegistryParameterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -545,6 +646,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Create: entry user={userName}");
@@ -554,12 +656,14 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("VisualisationRegistryParameter.Create", permissions);
+
                 using var nameGate = await NameGate.EnterAsync(
                         $"{tenantRegistryId}|VisualisationRegistryParameter|{model.VisualisationRegistryId}|{model.Name}",
                         token)
                     .ConfigureAwait(false);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -601,6 +705,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.Create: cancelled user={userName}");
@@ -627,6 +732,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Validate: entry id={model?.Id} user={userName}");
@@ -639,6 +745,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -671,6 +778,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Update: entry id={model?.Id} user={userName}");
@@ -680,12 +788,14 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("VisualisationRegistryParameter.Update", permissions);
+
                 using var nameGate = await NameGate.EnterAsync(
                         $"{tenantRegistryId}|VisualisationRegistryParameter|{model.VisualisationRegistryId}|{model.Name}",
                         token)
                     .ConfigureAwait(false);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -698,6 +808,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                 }
 
                 VisualisationRegistryParameterPoco saved;
+
                 try
                 {
                     saved = await UniqueViolation.GuardAsync(
@@ -747,6 +858,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.Update: cancelled id={model?.Id} user={userName}");
@@ -757,9 +869,11 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryParameter.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -776,6 +890,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             using var op = OperationScope.Start("VisualisationRegistryParameter", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryParameter.Delete: entry id={id} user={userName}");
@@ -821,6 +936,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"VisualisationRegistryParameter.Delete: cancelled id={id} user={userName}");

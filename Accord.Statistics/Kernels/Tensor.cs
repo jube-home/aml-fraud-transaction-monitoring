@@ -1,38 +1,45 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Kernels
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Tensor Product combination of Kernels.
+    ///     Tensor Product combination of Kernels.
     /// </summary>
-    /// 
     /// <example>
-    /// <code source="Unit Tests\Accord.Tests.MachineLearning\Kernels\TensorTest.cs" region="doc_learn" />
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\Kernels\TensorTest.cs" region="doc_learn" />
     /// </example>
-    /// 
     [Serializable]
     public struct Tensor<T> : IKernel
         where T : IKernel
@@ -40,41 +47,38 @@ namespace Accord.Statistics.Kernels
         private T[] kernels;
 
         /// <summary>
-        ///   Gets or sets the inner kernels used in this tensor kernel.
+        ///     Gets or sets the inner kernels used in this tensor kernel.
         /// </summary>
-        /// 
         public T[] Kernels
         {
-            get { return kernels; }
-            set { kernels = value; }
+            get => kernels;
+            set => kernels = value;
         }
 
         /// <summary>
-        ///   Constructs a new additive kernel.
+        ///     Constructs a new additive kernel.
         /// </summary>
-        /// 
         /// <param name="kernels">Kernels to combine.</param>
-        /// 
         public Tensor(params T[] kernels)
         {
             this.kernels = kernels;
         }
 
         /// <summary>
-        ///   Tensor Product Kernel Combination function.
+        ///     Tensor Product Kernel Combination function.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public double Function(double[] x, double[] y)
         {
-            double product = 1.0;
-            for (int i = 0; i < kernels.Length; i++)
+            var product = 1.0;
+            for (var i = 0; i < kernels.Length; i++)
+            {
                 product *= kernels[i].Function(x, y);
+            }
+
             return product;
         }
-
     }
 }

@@ -15,7 +15,7 @@ using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
 using Jube.Cache.Redis.Models;
 using Jube.Extensions;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using StackExchange.Redis;
 
@@ -33,9 +33,11 @@ namespace Jube.Cache.Redis
                 "CacheTtlCounterEntryRepository.GetAllExpiredByTtlCounterPreferReplicaAsync", async () =>
                 {
                     var expired = new List<ExpiredTtlCounterEntry>();
+
                     try
                     {
                         var referenceDateTimestamp = referenceDate.ToUnixTimeMilliSeconds();
+
                         var redisKeyExpiryIndex = ExpiryIndexKey(tenantRegistryId, entityAnalysisModelGuid,
                             entityAnalysisModelTtlCounterGuid, dataName);
 
@@ -53,6 +55,7 @@ namespace Jube.Cache.Redis
                         foreach (var expiredMember in expiredMembers)
                         {
                             var parts = ((string)expiredMember.Element)?.Split(':', 2);
+
                             if (parts == null || parts.Length != 2 || !long.TryParse(parts[0], out var entryTimestamp))
                             {
                                 continue;
@@ -109,10 +112,12 @@ namespace Jube.Cache.Redis
                             $":{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
 
                         var sum = 0d;
+
                         await foreach (var hashEntry in resilientRedisResilientRedisDatabase.HashScanAsync(redisKey,
                                            flags: CommandFlags.PreferReplica))
                         {
                             var timestamp = (long)hashEntry.Name;
+
                             if (timestamp >= referenceDateFromTimestamp && timestamp <= referenceDateToTimestamp)
                             {
                                 sum += (double)hashEntry.Value;
@@ -124,6 +129,7 @@ namespace Jube.Cache.Redis
                     catch (Exception ex)
                     {
                         log.Error($"Cache Redis: Has created an exception as {ex}.");
+
                         return 0d;
                     }
                 });
@@ -140,10 +146,12 @@ namespace Jube.Cache.Redis
 
                     var redisKey =
                         $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
+
                     var redisHSetKey = $"{referenceDateTimestamp}";
 
                     var redisKeyExpiryIndex = ExpiryIndexKey(tenantRegistryId, entityAnalysisModelGuid,
                         entityAnalysisModelTtlCounterGuid, dataName);
+
                     var expiryIndexMember = $"{referenceDateTimestamp}:{dataValue}";
 
                     await Task.WhenAll(
@@ -172,10 +180,12 @@ namespace Jube.Cache.Redis
 
                     var redisKey =
                         $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
+
                     var redisHSetKey = $"{referenceDateTimestamp}";
 
                     var redisKeyExpiryIndex = ExpiryIndexKey(tenantRegistryId, entityAnalysisModelGuid,
                         entityAnalysisModelTtlCounterGuid, dataName);
+
                     var expiryIndexMember = $"{referenceDateTimestamp}:{dataValue}";
 
                     await Task.WhenAll(

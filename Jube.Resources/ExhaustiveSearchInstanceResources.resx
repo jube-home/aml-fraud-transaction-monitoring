@@ -57,6 +57,9 @@
     <data name="AnomalyProbabilityRange" xml:space="preserve">
     <value>The anomaly probability must be between 0 and 1.</value>
   </data>
+    <data name="BaseRateRange" xml:space="preserve">
+    <value>The base rate must be greater than 0 and less than 1.</value>
+  </data>
     <data name="FilterJsonRequired" xml:space="preserve">
     <value>A training data filter is required.</value>
   </data>
@@ -69,10 +72,43 @@
     <data name="FilterJsonInvalid" xml:space="preserve">
     <value>The filter definition must be valid JSON of no more than 1 MB.</value>
   </data>
+    <data name="CategoricalOptionsInvalid" xml:space="preserve">
+    <value>The categorical options must be valid JSON of no more than 1 MB.</value>
+  </data>
     <data name="FilterSqlInvalid" xml:space="preserve">
     <value>The filter must be a plain boolean expression with no statements, comments, subqueries or unbalanced parentheses.</value>
   </data>
     <data name="FilterTokensInvalid" xml:space="preserve">
     <value>The filter tokens must be a JSON array.</value>
+  </data>
+    <data name="DataSourceInvalid" xml:space="preserve">
+    <value>The data source must be Archive (0), DemoDataset (1) or UploadedDataset (2).</value>
+  </data>
+    <data name="CalibrationMethodInvalid" xml:space="preserve">
+    <value>The calibration method must be automatic, platt, isotonic or beta.</value>
+  </data>
+    <data name="DatasetRequired" xml:space="preserve">
+    <value>An uploaded dataset must be selected when the data source is UploadedDataset.</value>
+  </data>
+    <data name="DatasetAmbiguous" xml:space="preserve">
+    <value>Exactly one of the CSV dataset and the JSON dataset must be selected.</value>
+  </data>
+    <data name="DatasetNotFound" xml:space="preserve">
+    <value>The selected dataset does not exist, is not confirmed, or is not available to your tenant.</value>
+  </data>
+    <data name="DatasetNotPermitted" xml:space="preserve">
+    <value>A dataset can only be selected when the data source is UploadedDataset.</value>
+  </data>
+    <data name="DatasetFilterRequired" xml:space="preserve">
+    <value>A Class Definition filter must be set to define the positive class when the data source is UploadedDataset.</value>
+  </data>
+    <data name="AnomalyContaminationRange" xml:space="preserve">
+    <value>For this anomaly algorithm the anomaly probability is the contamination fraction and must be above 0 and at most 0.5.</value>
+  </data>
+    <data name="AnomalyAlgorithmInvalid" xml:space="preserve">
+    <value>The anomaly algorithm is not a known algorithm.</value>
+  </data>
+    <data name="AnomalyParametersInvalid" xml:space="preserve">
+    <value>The anomaly parameters are not valid. {0}</value>
   </data>
 </root>

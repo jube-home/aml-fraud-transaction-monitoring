@@ -39,6 +39,7 @@ namespace Jube.Data.Repository
         {
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 

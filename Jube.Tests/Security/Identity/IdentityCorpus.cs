@@ -41,11 +41,8 @@ public static class IdentityCorpus
     ];
 
     private static IReadOnlyList<string> Seeds { get; } = BuildSeeds();
-
     public static IReadOnlyList<string> Injection { get; } = Expand(Seeds, 2, 420);
-
     public static IReadOnlyList<string> InjectionSmall { get; } = [.. Injection.Where((_, i) => i % 5 == 0)];
-
     public static IReadOnlyList<string> NumericProbes { get; } = BuildNumericProbes();
 
     public static IReadOnlyList<string> GuidProbes { get; } =
@@ -82,6 +79,7 @@ public static class IdentityCorpus
         set.AddRange(PenTestPayloads.UnicodeTricks);
 
         string[] openers = ["'", "\"", "')", "'))", "\\", "$$", "$a$"];
+
         string[] bodies =
         [
             " OR 1=1", "; DROP TABLE \"UserRegistry\"", "; UPDATE \"UserRegistry\" SET \"Active\"=1",
@@ -89,7 +87,9 @@ public static class IdentityCorpus
             "; COPY (SELECT 1) TO PROGRAM 'id'", " OR EXISTS(SELECT 1 FROM pg_shadow)",
             "; INSERT INTO \"RoleRegistryPermission\" DEFAULT VALUES", " ORDER BY 1000", "||chr(65)||"
         ];
+
         string[] closers = ["--", "/*", "#", ";--", "", " --"];
+
         for (var i = 0; i < openers.Length; i++)
         {
             for (var j = 0; j < bodies.Length; j++)
@@ -104,6 +104,7 @@ public static class IdentityCorpus
     private static List<string> Expand(IReadOnlyList<string> seeds, int mutationsPerSeed, int cap)
     {
         var all = new List<string>(seeds);
+
         for (var i = 0; i < seeds.Count; i++)
         {
             for (var m = 0; m < mutationsPerSeed; m++)
@@ -113,12 +114,14 @@ public static class IdentityCorpus
         }
 
         var distinct = all.Distinct().ToList();
+
         if (distinct.Count <= cap)
         {
             return distinct;
         }
 
         var stride = (double)distinct.Count / cap;
+
         return [.. Enumerable.Range(0, cap).Select(i => distinct[(int)(i * stride)]).Distinct()];
     }
 
@@ -126,10 +129,12 @@ public static class IdentityCorpus
     {
         var list = new List<string>(PenTestPayloads.TypeConfusionInt);
         list.AddRange(PenTestPayloads.SqlNumeric);
+
         list.AddRange([
             "2147483647", "-2147483648", "4294967296", "1e0", "+1", "--1", "1.0", "1_0", "0b1", "٠",
             "1;", "1'", "1%00", "1%0d%0a", "%31", "１２３", "1\t", "\t1", "0x7fffffff", "1e999", "-0", "00000000001"
         ]);
+
         return [.. list.Distinct()];
     }
 }

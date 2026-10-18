@@ -13,6 +13,7 @@
 
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using Jube.Dictionary.Fuzzy.Models;
 
 namespace Jube.Dictionary.Fuzzy
 {
@@ -32,7 +33,7 @@ namespace Jube.Dictionary.Fuzzy
             public Entry[] Items { get; } = items;
         }
 
-        private static readonly ConditionalWeakTable<object, ConcurrentDictionary<string, Snapshot>> Snapshots = new();
+        private static readonly ConditionalWeakTable<object, ConcurrentDictionary<string, Snapshot>> snapshots = new();
 
         public static bool Any(string? value, IEnumerable<string>? list, FuzzyOptions options)
         {
@@ -48,6 +49,7 @@ namespace Jube.Dictionary.Fuzzy
             }
 
             var normalisedValue = FuzzyNormaliser.Normalise(value, options.Normalisation);
+
             if (normalisedValue.Length == 0 || normalisedValue.Length < options.MinLength)
             {
                 return FuzzyResult.None;
@@ -86,6 +88,7 @@ namespace Jube.Dictionary.Fuzzy
                 }
 
                 count++;
+
                 if (stopAtFirst)
                 {
                     return new FuzzyResult(count, bestScore, bestEntry);
@@ -121,11 +124,13 @@ namespace Jube.Dictionary.Fuzzy
                 case FuzzyAlgorithm.Levenshtein:
                 {
                     var distance = FuzzyScorers.LevenshteinDistance(a, b);
+
                     return (distance <= spec.Threshold, FuzzyScorers.DistanceScore(distance, a, b));
                 }
                 case FuzzyAlgorithm.Damerau:
                 {
                     var distance = FuzzyScorers.DamerauDistance(a, b);
+
                     return (distance <= spec.Threshold, FuzzyScorers.DistanceScore(distance, a, b));
                 }
                 case FuzzyAlgorithm.Similarity:
@@ -161,6 +166,7 @@ namespace Jube.Dictionary.Fuzzy
             if (options.Normalisation.RemoveSpaces)
             {
                 var length = entry.Normalised.Length;
+
                 if (value.Length < length)
                 {
                     return (false, 0d);
@@ -177,6 +183,7 @@ namespace Jube.Dictionary.Fuzzy
             }
 
             var window = entry.Tokens.Length;
+
             if (window == 0 || valueTokens.Length < window)
             {
                 return (false, 0d);
@@ -200,7 +207,7 @@ namespace Jube.Dictionary.Fuzzy
                 return Build(list, normalisation);
             }
 
-            var perList = Snapshots.GetValue(list, _ => new ConcurrentDictionary<string, Snapshot>());
+            var perList = snapshots.GetValue(list, _ => new ConcurrentDictionary<string, Snapshot>());
             var signature = normalisation.Signature;
             var count = indexed.Count;
             var fingerprint = Fingerprint(indexed);
@@ -213,6 +220,7 @@ namespace Jube.Dictionary.Fuzzy
 
             var built = Build(indexed, normalisation);
             perList[signature] = new Snapshot(count, fingerprint, built);
+
             return built;
         }
 
@@ -229,6 +237,7 @@ namespace Jube.Dictionary.Fuzzy
         private static Entry[] Build(IEnumerable<string> list, FuzzyNormalisation normalisation)
         {
             var items = new List<Entry>();
+
             foreach (var original in list)
             {
                 var normalised = FuzzyNormaliser.Normalise(original, normalisation);

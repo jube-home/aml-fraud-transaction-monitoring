@@ -27,6 +27,7 @@ namespace Jube.Service.Repository.RoleRegistryPermission
                 : new RoleRegistryPermissionDto
                 {
                     Id = rulePoco.Id,
+                    Guid = rulePoco.Guid,
                     RoleRegistryId = rulePoco.RoleRegistryId.GetValueOrDefault(),
                     PermissionSpecificationId = rulePoco.PermissionSpecificationId.GetValueOrDefault(),
                     Active = rulePoco.Active == 1,

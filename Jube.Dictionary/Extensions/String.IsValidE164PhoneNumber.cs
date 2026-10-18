@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidE164PhoneNumber(this string? @this)
         {
             var value = (@this ?? "").Trim();
+
             return value.Length is >= 3 and <= 16 && value[0] == '+' && value[1] != '0' &&
                    value.Skip(1).All(char.IsAsciiDigit);
         }

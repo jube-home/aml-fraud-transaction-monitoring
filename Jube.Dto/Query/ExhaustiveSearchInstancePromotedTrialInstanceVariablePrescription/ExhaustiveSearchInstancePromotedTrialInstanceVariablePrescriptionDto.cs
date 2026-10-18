@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription
 {
     [Description("One variable of a promoted trial instance of an Exhaustive Search Instance, with the " +
@@ -24,7 +28,6 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePr
         public int Id { get; set; }
 
         [Description("Name of the variable.")] public string? Name { get; set; }
-
         [Description("Mean of the variable.")] public double VariableMean { get; set; }
 
         [Description("Standard deviation of the variable.")]
@@ -50,5 +53,17 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePr
 
         [Description("Sensitivity of the variable, zero when there is none. Results are ordered by this, descending.")]
         public double Sensitivity { get; set; }
+
+        [Description("True for the prescription simulated toward the positive class, false for the negative class, " +
+                     "null when there is no prescription.")]
+        public bool? Positive { get; set; }
+
+        [Description(
+            "Integer Id of the promoted trial instance variable, used to fetch its prescription histogram chart.")]
+        public int PromotedTrialInstanceVariableId { get; set; }
+
+        [Description("Histogram bins of the prescription, empty when there is none.")]
+        public List<ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionHistogramValueDto>
+            HistogramValues { get; set; } = [];
     }
 }

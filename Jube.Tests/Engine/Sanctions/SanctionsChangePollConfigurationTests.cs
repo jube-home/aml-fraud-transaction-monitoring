@@ -39,8 +39,10 @@ namespace Jube.Test.Engine.Sanctions
             SanctionsTaskStarter.ChangeMarkerReader = (dbContext, token) =>
             {
                 Interlocked.Increment(ref markerReads);
+
                 return new Jube.Data.Repository.SanctionEntryImportRepository(dbContext).GetChangeMarkerAsync(token);
             };
+
             return Task.CompletedTask;
         }
 
@@ -48,12 +50,14 @@ namespace Jube.Test.Engine.Sanctions
         {
             SanctionsTaskStarter.ChangeMarkerReader = (dbContext, token) =>
                 new Jube.Data.Repository.SanctionEntryImportRepository(dbContext).GetChangeMarkerAsync(token);
+
             if (host != null)
             {
                 await host.DisposeAsync();
             }
 
             await using var dbContext = fx.GetDbContext();
+
             foreach (var sourceId in sourceIds)
             {
                 await dbContext.SanctionEntry.Where(w => w.SanctionEntrySourceId == sourceId).DeleteAsync();
@@ -72,6 +76,7 @@ namespace Jube.Test.Engine.Sanctions
         private async Task<int> NewSourceAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}PollCfg{Guid.NewGuid():N}"[..40], Severity = 2, Delimiter = ',',
@@ -79,6 +84,7 @@ namespace Jube.Test.Engine.Sanctions
                 DirectoryLocation = "/tmp/does-not-matter", Skip = 0
             });
             sourceIds.Add(id);
+
             return id;
         }
 
@@ -121,6 +127,7 @@ namespace Jube.Test.Engine.Sanctions
             var defaults = ModelEngineHost.CreateEnvironment();
             defaults.AppSettings("EnableSanctionLoaderChangePoll").Should().Be("True");
             defaults.AppSettings("SanctionLoaderChangePoll").Should().Be("60000");
+
             SanctionsTaskStarter.ResolveChangePollMilliseconds(defaults.AppSettings("SanctionLoaderChangePoll"))
                 .Should().Be(60000);
 
@@ -130,6 +137,7 @@ namespace Jube.Test.Engine.Sanctions
             var ids = await SanctionsChangePollTests.ImportAsync(fx, sourceId, "zzdefaultalpha zzdefaultbeta");
 
             var deadline = DateTime.UtcNow.AddSeconds(20);
+
             while (DateTime.UtcNow < deadline &&
                    !Engine.Engine.Context.Sanctions.SanctionsEntries.ContainsKey(ids[0]))
             {
@@ -165,6 +173,7 @@ namespace Jube.Test.Engine.Sanctions
             var ids = await SanctionsChangePollTests.ImportAsync(fx, sourceId, "zzsliceonealpha zzsliceonebeta");
 
             var deadline = DateTime.UtcNow.AddSeconds(20);
+
             while (DateTime.UtcNow < deadline &&
                    !Engine.Engine.Context.Sanctions.SanctionsEntries.ContainsKey(ids[0]))
             {
@@ -173,6 +182,7 @@ namespace Jube.Test.Engine.Sanctions
 
             Engine.Engine.Context.Sanctions.SanctionsEntries.ContainsKey(ids[0]).Should().BeTrue(
                 "one slice of the wait ends with the fingerprint check");
+
             Volatile.Read(ref markerReads).Should().BeGreaterThan(readsAtStart);
         }
     }

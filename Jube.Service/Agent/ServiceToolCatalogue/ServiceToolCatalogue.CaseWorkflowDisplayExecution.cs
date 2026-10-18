@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseWorkflowDisplayExecution;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowDisplayExecution(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowDisplayExecutionExecute", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Renders a case workflow display HTML template with the case's stored payload tokens replaced.")
-        ]);
+        static partial void AddCaseWorkflowDisplayExecution(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowDisplayExecutionExecute", OperationKind.Read, true, false,
+                    "Renders a case workflow display HTML template with the case's stored payload tokens replaced.",
+                    CaseWorkflowDisplayExecutionService.RequiredPermissions)
+            ]);
+        }
     }
 }

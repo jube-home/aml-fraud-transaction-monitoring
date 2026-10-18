@@ -6,9 +6,6 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # OpenTelemetry Log Counter
 
 [Infrastructure Health Metrics](../InfrastructureHealthMetrics/index.html) already captures a lot of unstructured log

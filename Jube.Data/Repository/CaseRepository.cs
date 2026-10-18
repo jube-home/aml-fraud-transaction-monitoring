@@ -154,12 +154,14 @@ namespace Jube.Data.Repository
         public async Task<Case> InsertAsync(Case model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
         public async Task<Case> UpdateCaseAsync(Case model, CancellationToken token = default)
         {
             await dbContext.UpdateAsync(model, token: token);
+
             return model;
         }
     }

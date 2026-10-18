@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Query.Ready.Interfaces;
+
 namespace Jube.Service.Query.Ready
 {
     public class ReadyService(IReadinessSignals signals, bool engineEnabled, bool watcherStreamEnabled)

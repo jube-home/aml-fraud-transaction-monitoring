@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-dot" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-bda768ca-t jc-bda768ca-d">
+    <title id="jc-bda768ca-t">Alert rate by country</title>
+    <desc id="jc-bda768ca-d">Lollipop chart with 1 series: Before. Across 8 categories, values from 0 to 61.</desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alert rate by country</text>
+    <line class="gl" x1="102.21" y1="48" x2="102.21" y2="346"/>
+    <text class="tk ctr" x="102.21" y="362">0</text>
+    <line class="gl" x1="176.75" y1="48" x2="176.75" y2="346"/>
+    <text class="tk ctr" x="176.75" y="362">10</text>
+    <line class="gl" x1="251.29" y1="48" x2="251.29" y2="346"/>
+    <text class="tk ctr" x="251.29" y="362">20</text>
+    <line class="gl" x1="325.83" y1="48" x2="325.83" y2="346"/>
+    <text class="tk ctr" x="325.83" y="362">30</text>
+    <line class="gl" x1="400.38" y1="48" x2="400.38" y2="346"/>
+    <text class="tk ctr" x="400.38" y="362">40</text>
+    <line class="gl" x1="474.92" y1="48" x2="474.92" y2="346"/>
+    <text class="tk ctr" x="474.92" y="362">50</text>
+    <line class="gl" x1="549.46" y1="48" x2="549.46" y2="346"/>
+    <text class="tk ctr" x="549.46" y="362">60</text>
+    <line class="gl" x1="624" y1="48" x2="624" y2="346"/>
+    <text class="tk ctr" x="624" y="362">70</text>
+    <line class="ax" x1="102.21" y1="48" x2="102.21" y2="346"/>
+    <text class="tk end mid" x="94.21" y="66.63">Italy</text>
+    <text class="tk end mid" x="94.21" y="103.88">France</text>
+    <text class="tk end mid" x="94.21" y="141.13">United Kingdom</text>
+    <text class="tk end mid" x="94.21" y="178.38">Poland</text>
+    <text class="tk end mid" x="94.21" y="215.63">Germany</text>
+    <text class="tk end mid" x="94.21" y="252.88">Sweden</text>
+    <text class="tk end mid" x="94.21" y="290.13">Spain</text>
+    <text class="tk end mid" x="94.21" y="327.38">Netherlands</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Italy, Before: 61">
+        <title>Italy, Before: 61</title>
+        <rect class="rowhl" x="102.21" y="48" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 66.63L556.91 66.63"/>
+        <circle class="pt sr s0" cx="556.91" cy="66.63" r="5.5"/>
+        <text class="dl" x="565.91" y="70.63">61</text>
+        <g class="tt">
+            <rect class="tb" x="455.23" y="48" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="465.23" y="66">Italy</text>
+            <rect class="tsw s0" x="465.23" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="479.23" y="83">Before: 61</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="France, Before: 55">
+        <title>France, Before: 55</title>
+        <rect class="rowhl" x="102.21" y="85.25" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 103.88L512.19 103.88"/>
+        <circle class="pt sr s0" cx="512.19" cy="103.88" r="5.5"/>
+        <text class="dl" x="521.19" y="107.88">55</text>
+        <g class="tt">
+            <rect class="tb" x="524.19" y="81.88" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="534.19" y="99.88">France</text>
+            <rect class="tsw s0" x="534.19" y="107.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="548.19" y="116.88">Before: 55</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="United Kingdom, Before: 42">
+        <title>United Kingdom, Before: 42</title>
+        <rect class="rowhl" x="102.21" y="122.5" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 141.13L415.28 141.13"/>
+        <circle class="pt sr s0" cx="415.28" cy="141.13" r="5.5"/>
+        <text class="dl" x="424.28" y="145.13">42</text>
+        <g class="tt">
+            <rect class="tb" x="427.28" y="119.13" width="110.44" height="44" rx="6"/>
+            <text class="tx b" x="437.28" y="137.13">United Kingdom</text>
+            <rect class="tsw s0" x="437.28" y="145.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="451.28" y="154.13">Before: 42</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Poland, Before: 37">
+        <title>Poland, Before: 37</title>
+        <rect class="rowhl" x="102.21" y="159.75" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 178.38L378.01 178.38"/>
+        <circle class="pt sr s0" cx="378.01" cy="178.38" r="5.5"/>
+        <text class="dl" x="387.01" y="182.38">37</text>
+        <g class="tt">
+            <rect class="tb" x="390.01" y="156.38" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="400.01" y="174.38">Poland</text>
+            <rect class="tsw s0" x="400.01" y="182.38" width="9" height="9" rx="2"/>
+            <text class="tx" x="414.01" y="191.38">Before: 37</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Germany, Before: 31">
+        <title>Germany, Before: 31</title>
+        <rect class="rowhl" x="102.21" y="197" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 215.63L333.29 215.63"/>
+        <circle class="pt sr s0" cx="333.29" cy="215.63" r="5.5"/>
+        <text class="dl" x="342.29" y="219.63">31</text>
+        <g class="tt">
+            <rect class="tb" x="345.29" y="193.63" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="355.29" y="211.63">Germany</text>
+            <rect class="tsw s0" x="355.29" y="219.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="369.29" y="228.63">Before: 31</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Sweden, Before: 29">
+        <title>Sweden, Before: 29</title>
+        <rect class="rowhl" x="102.21" y="234.25" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 252.88L318.38 252.88"/>
+        <circle class="pt sr s0" cx="318.38" cy="252.88" r="5.5"/>
+        <text class="dl" x="327.38" y="256.88">29</text>
+        <g class="tt">
+            <rect class="tb" x="330.38" y="230.88" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="340.38" y="248.88">Sweden</text>
+            <rect class="tsw s0" x="340.38" y="256.88" width="9" height="9" rx="2"/>
+            <text class="tx" x="354.38" y="265.88">Before: 29</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Spain, Before: 23">
+        <title>Spain, Before: 23</title>
+        <rect class="rowhl" x="102.21" y="271.5" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 290.13L273.66 290.13"/>
+        <circle class="pt sr s0" cx="273.66" cy="290.13" r="5.5"/>
+        <text class="dl" x="282.66" y="294.13">23</text>
+        <g class="tt">
+            <rect class="tb" x="285.66" y="268.13" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="295.66" y="286.13">Spain</text>
+            <rect class="tsw s0" x="295.66" y="294.13" width="9" height="9" rx="2"/>
+            <text class="tx" x="309.66" y="303.13">Before: 23</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Netherlands, Before: 18">
+        <title>Netherlands, Before: 18</title>
+        <rect class="rowhl" x="102.21" y="308.75" width="521.79" height="37.25"/>
+        <path class="stem s0" d="M102.21 327.38L236.38 327.38"/>
+        <circle class="pt sr s0" cx="236.38" cy="327.38" r="5.5"/>
+        <text class="dl" x="245.38" y="331.38">18</text>
+        <g class="tt">
+            <rect class="tb" x="248.38" y="302" width="89.68" height="44" rx="6"/>
+            <text class="tx b" x="258.38" y="320">Netherlands</text>
+            <rect class="tsw s0" x="258.38" y="328" width="9" height="9" rx="2"/>
+            <text class="tx" x="272.38" y="337">Before: 18</text>
+        </g>
+    </g>
+    <text class="at ctr" x="363.11" y="380">Alerts per 1,000</text>
+</svg>

@@ -1,0 +1,127 @@
+.aa-hidden {
+    display: none;
+}
+
+#InstanceGrid td, #InstanceGrid th {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+#InstanceGrid .k-button {
+    min-width: 64px;
+    margin: 0 2px;
+}
+
+#InstanceGrid td.k-command-cell .k-button {
+    min-width: 64px;
+}
+
+#InstanceGrid .aa-instance-approval-note, #InstanceGrid .aa-instance-action-note {
+    width: 100%;
+    min-width: 180px;
+}
+
+.footerStyle #ApproveAllPendingInstances {
+    margin-left: 8px;
+}
+
+.aa-hint {
+    color: #8e8e8e;
+    padding-left: 8px;
+}
+
+.aa-empty {
+    color: #8e8e8e;
+    padding: 20px;
+}
+
+.aa-subtitle {
+    font-weight: bold;
+    padding: 12px 4px 4px 4px;
+}
+
+.aa-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.aa-summary {
+    padding: 6px 0;
+}
+
+.aa-badge {
+    background: #2e7d32;
+    border-radius: 3px;
+    color: #fff;
+    margin-left: 8px;
+    padding: 2px 8px;
+}
+
+.aa-banner {
+    background: #fff8e1;
+    border: 1px solid #f0c36d;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+}
+
+.aa-charts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding-top: 12px;
+}
+
+.aa-chart-card {
+    min-width: 0;
+}
+
+.aa-chart {
+    min-width: 0;
+}
+
+.aa-chart svg {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+}
+
+@media (max-width: 1100px) {
+    .aa-charts {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .aa-charts {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+}
+
+.aa-model-diagram {
+    max-width: 480px;
+    padding-top: 8px;
+}
+
+.aa-model-diagram svg {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+}
+
+.aa-live td {
+    background: #e8f5e9;
+}
+
+.aa-off td {
+    color: #8e8e8e;
+    background: #f4f4f4;
+}
+
+.aa-off-text {
+    color: #b71c1c;
+    font-weight: bold;
+    padding-left: 6px;
+}

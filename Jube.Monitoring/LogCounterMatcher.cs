@@ -22,7 +22,6 @@ namespace Jube.Monitoring
     public sealed class LogCounterMatcher(Meter meter)
     {
         private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
-
         private readonly ConcurrentDictionary<string, Counter<long>> counters = new(StringComparer.Ordinal);
         private HashSet<string> excludedNames = [];
         private (string Name, Regex Regex)[] rules = [];
@@ -34,6 +33,7 @@ namespace Jube.Monitoring
 
             var rows = await logCounterRepository.GetAllActiveAsync(token).ConfigureAwait(false);
             var refreshedRules = new List<(string Name, Regex Regex)>(rows.Count);
+
             foreach (var row in rows)
             {
                 if (string.IsNullOrEmpty(row.Name) || string.IsNullOrEmpty(row.Regex))
@@ -48,7 +48,6 @@ namespace Jube.Monitoring
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(
-                        // ReSharper disable once LocalizableElement
                         $"Jube.Monitoring LogCounterMatcher: rule '{row.Name}' has an invalid Regex and was skipped: {ex.Message}");
                 }
             }
@@ -57,6 +56,7 @@ namespace Jube.Monitoring
 
             var excludeRows = await excludeRepository.GetAllActiveAsync(token).ConfigureAwait(false);
             var refreshedExcludes = new HashSet<string>(StringComparer.Ordinal);
+
             foreach (var row in excludeRows)
             {
                 if (!string.IsNullOrEmpty(row.Name))
@@ -78,6 +78,7 @@ namespace Jube.Monitoring
             foreach (var rule in rules)
             {
                 bool isMatch;
+
                 try
                 {
                     isMatch = rule.Regex.IsMatch(text);

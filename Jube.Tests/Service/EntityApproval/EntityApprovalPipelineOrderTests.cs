@@ -11,13 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Test.Service.EntityApproval
 {
     using System;
     using System.Linq;
     using FluentAssertions;
     using Jube.Data.Query.Models;
-    using Jube.Data.Repository;
     using Jube.Service.EntityApproval;
     using Xunit;
 
@@ -61,13 +62,12 @@ namespace Jube.Test.Service.EntityApproval
         [Fact]
         public void OrderFollowsThePipelineThenNameWithinAKind()
         {
-            var ordered = EntityApprovalPipelineOrder.Order(new[]
-            {
+            var ordered = EntityApprovalPipelineOrder.Order([
                 Subject(EntityApprovalKind.EntityAnalysisModelActivationRule, 1, "Zeta"),
                 Subject(EntityApprovalKind.EntityAnalysisModelInlineFunction, 2, "beta"),
                 Subject(EntityApprovalKind.EntityAnalysisModelAbstractionCalculation, 3, "Alpha"),
                 Subject(EntityApprovalKind.EntityAnalysisModelInlineFunction, 4, "Alpha")
-            });
+            ]);
 
             ordered.Select(s => (s.Kind, s.Name)).Should().Equal(
                 (EntityApprovalKind.EntityAnalysisModelInlineFunction, "Alpha"),

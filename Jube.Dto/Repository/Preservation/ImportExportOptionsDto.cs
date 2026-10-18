@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Repository.Preservation
 {
     [Description("Options for exporting (or previewing) the calling tenant's configuration into a Jube " +
@@ -37,5 +41,10 @@ namespace Jube.Dto.Repository.Preservation
 
         [Description("Include Roles and their Permissions (not honoured by the peek operation, as legacy).")]
         public bool Roles { get; set; }
+
+        [Description(
+            "Include Advanced Analytics instances, trained models with their versions and the training history. " +
+            "The expiring cache is never included.")]
+        public bool AdvancedAnalytics { get; set; }
     }
 }

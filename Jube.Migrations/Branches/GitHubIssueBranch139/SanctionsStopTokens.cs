@@ -18,15 +18,25 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
     [Migration(20260725122500)]
     public class SanctionsStopTokens : Migration
     {
-
-        private static readonly string[] Honorifics =
+        private static readonly string[] honorifics =
         {
-            "ustadh", "ustadha", "ustadhah", "ustaz", "ustaza", "ustad", "ustada", "ustaadh", "ostad", "ostada", "ostaad", "muhtaram", "muhtarama", "mohtaram", "mohtarama", "mohtarameh", "janab", "janabe", "jenab", "jenabe", "jinab", "hadrat", "hadhrat", "hadrah", "hazrat", "hazret", "hanim", "hanum", "hanoum", "hanimefendi", "khanum", "khanom", "khanoum", "khanem", "beyefendi", "efendi", "effendi", "effendy", "effendim", "afandi", "afendi", "mohandes", "mohandis", "muhandis", "oliajenab"
+            "ustadh", "ustadha", "ustadhah", "ustaz", "ustaza", "ustad", "ustada", "ustaadh", "ostad", "ostada",
+            "ostaad", "muhtaram", "muhtarama", "mohtaram", "mohtarama", "mohtarameh", "janab", "janabe", "jenab",
+            "jenabe", "jinab", "hadrat", "hadhrat", "hadrah", "hazrat", "hazret", "hanim", "hanum", "hanoum",
+            "hanimefendi", "khanum", "khanom", "khanoum", "khanem", "beyefendi", "efendi", "effendi", "effendy",
+            "effendim", "afandi", "afendi", "mohandes", "mohandis", "muhandis", "oliajenab"
         };
 
-        private static readonly string[] ReligiousCulturalTitles =
+        private static readonly string[] religiousCulturalTitles =
         {
-            "hajj", "hadj", "haj", "alhajj", "alhaj", "elhajj", "elhaj", "hajji", "haji", "hadji", "hajjy", "haci", "hacci", "hajjah", "hajja", "hajjeh", "hajjia", "hajiya", "haciye", "karbalai", "karbalaei", "karbalayi", "sheikh", "shaikh", "shaykh", "sheik", "shekh", "cheikh", "sheikha", "sheikhah", "shaykhah", "imam", "imaam", "mullah", "mulla", "molla", "molah", "mullo", "maulana", "mawlana", "mowlana", "molana", "moulana", "maulvi", "molvi", "moulvi", "maulawi", "mawlawi", "mawlavi", "mufti", "mufty", "qari", "qaari", "hafiz", "hafez", "hafeez", "hafidh", "hafiza", "allamah", "allama", "alama", "allameh", "ayatollah", "ayatullah", "hojjatoleslam", "hojatoleslam", "hujjatalislam", "seghatoleslam", "thiqatalislam", "akhund", "akhond", "akhoond", "agha", "aga", "aqa", "aghaa"
+            "hajj", "hadj", "haj", "alhajj", "alhaj", "elhajj", "elhaj", "hajji", "haji", "hadji", "hajjy", "haci",
+            "hacci", "hajjah", "hajja", "hajjeh", "hajjia", "hajiya", "haciye", "karbalai", "karbalaei", "karbalayi",
+            "sheikh", "shaikh", "shaykh", "sheik", "shekh", "cheikh", "sheikha", "sheikhah", "shaykhah", "imam",
+            "imaam", "mullah", "mulla", "molla", "molah", "mullo", "maulana", "mawlana", "mowlana", "molana", "moulana",
+            "maulvi", "molvi", "moulvi", "maulawi", "mawlawi", "mawlavi", "mufti", "mufty", "qari", "qaari", "hafiz",
+            "hafez", "hafeez", "hafidh", "hafiza", "allamah", "allama", "alama", "allameh", "ayatollah", "ayatullah",
+            "hojjatoleslam", "hojatoleslam", "hujjatalislam", "seghatoleslam", "thiqatalislam", "akhund", "akhond",
+            "akhoond", "agha", "aga", "aqa", "aghaa"
         };
 
         public override void Up()
@@ -41,13 +51,12 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                 .OnColumn("Token").Ascending()
                 .WithOptions().Unique();
 
-            InsertInto(Honorifics, StopTokenCategory.Honorific);
-            InsertInto(ReligiousCulturalTitles, StopTokenCategory.ReligiousCulturalTitle);
+            InsertInto(honorifics, StopTokenCategory.Honorific);
+            InsertInto(religiousCulturalTitles, StopTokenCategory.ReligiousCulturalTitle);
         }
 
         public override void Down()
         {
-
         }
 
         private void InsertInto(string[] tokens, StopTokenCategory category)

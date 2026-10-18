@@ -43,6 +43,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
         {
             await using var dbContext = fx.GetDbContext();
             var repository = new TenantRegistryRepository(dbContext, fx.Seed.UserWithPermission);
+
             var service = await TenantRegistryVersionHistoryService.CreateAsync(dbContext, fx.Seed.LandlordUser,
                 TestLog.NoOp, localizers);
 
@@ -93,6 +94,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
 
             (await service.GetByIdAndDateRangeAsync(firstVersionId, earlyDate.AddDays(-1), earlyDate.AddDays(1)))
                 .Should().NotBeNull();
+
             (await service.GetByIdAndDateRangeAsync(firstVersionId, midDate, lateDate))
                 .Should().BeNull("the row exists but falls outside the requested window");
 
@@ -124,6 +126,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
         public async Task TenantRegistry_UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 TenantRegistryVersionHistoryService.CreateAsync(dbContext, fx.Seed.UnknownUser, TestLog.NoOp,
                     localizers));
@@ -134,6 +137,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
         {
             await using var landlordDb = fx.GetDbContext();
             var landlordRepository = new TenantRegistryRepository(landlordDb, fx.Seed.LandlordUser);
+
             var tenant = await landlordRepository.InsertAsync(new TenantRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}Tenant{Guid.NewGuid():N}"[..40],
@@ -144,13 +148,17 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             });
 
             await using var ownDb = fx.GetDbContext();
+
             var ownTenantService = await TenantRegistryVersionHistoryService.CreateAsync(ownDb,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers);
+
             await Assert.ThrowsAsync<ForbiddenException>(() => ownTenantService.GetByParentIdAsync(tenant.Id));
 
             await using var otherDb = fx.GetDbContext();
+
             var otherTenantService = await TenantRegistryVersionHistoryService.CreateAsync(otherDb,
                 fx.Seed.UserTenantB, TestLog.NoOp, localizers);
+
             await Assert.ThrowsAsync<ForbiddenException>(() => otherTenantService.GetByParentIdAsync(tenant.Id));
         }
 
@@ -161,6 +169,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             var userName = fx.Seed.UserWithPermission;
 
             var modelRepository = new EntityAnalysisModelRepository(dbContext, userName);
+
             var modelId = (await modelRepository.InsertAsync(new Jube.Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -185,6 +194,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             });
 
             var statusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
+
             var service = await CaseWorkflowStatusVersionHistoryService.CreateAsync(dbContext, userName, TestLog.NoOp,
                 localizers);
 
@@ -197,6 +207,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
                 Locked = 0,
                 Deleted = 0
             });
+
             statusA.Name = $"{DatabaseFixture.Prefix}StatusARenamed{Guid.NewGuid():N}"[..40];
             await statusRepository.UpdateAsync(statusA);
 
@@ -209,6 +220,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
                 Locked = 0,
                 Deleted = 0
             });
+
             statusB.Name = $"{DatabaseFixture.Prefix}StatusBRenamedOnce{Guid.NewGuid():N}"[..40];
             await statusRepository.UpdateAsync(statusB);
             statusB.Name = $"{DatabaseFixture.Prefix}StatusBRenamedTwice{Guid.NewGuid():N}"[..40];
@@ -246,6 +258,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
         public async Task CaseWorkflowStatus_UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 CaseWorkflowStatusVersionHistoryService.CreateAsync(dbContext, fx.Seed.UnknownUser, TestLog.NoOp,
                     localizers));
@@ -258,6 +271,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             var userName = fx.Seed.UserWithPermission;
 
             var modelRepository = new EntityAnalysisModelRepository(dbContext, userName);
+
             var modelId = (await modelRepository.InsertAsync(new Jube.Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -282,6 +296,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             });
 
             var statusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
+
             var status = await statusRepository.InsertAsync(new CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -306,6 +321,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             var userName = fx.Seed.UserWithPermission;
 
             var modelRepository = new EntityAnalysisModelRepository(dbContext, userName);
+
             var modelId = (await modelRepository.InsertAsync(new Jube.Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -330,6 +346,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             });
 
             var statusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
+
             var status = await statusRepository.InsertAsync(new CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -339,6 +356,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
                 Locked = 0,
                 Deleted = 0
             });
+
             status.Name = $"{DatabaseFixture.Prefix}StatusRenamed{Guid.NewGuid():N}"[..40];
             await statusRepository.UpdateAsync(status);
 
@@ -352,8 +370,10 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
 
             (await otherTenantService.GetByIdAsync(versionId)).Should().BeNull();
             (await otherTenantService.GetByParentIdAsync(status.Id)).Should().BeEmpty();
+
             (await otherTenantService.GetByDateRangeAsync(status.Id, DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow.AddDays(1))).Should().BeEmpty();
+
             (await otherTenantService.GetLatestAsync(status.Id)).Should().BeNull();
 
             var changes = await otherTenantService.CompareAsync(versionId, versionId);

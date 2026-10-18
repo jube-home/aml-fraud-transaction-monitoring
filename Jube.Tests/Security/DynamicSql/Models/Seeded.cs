@@ -13,6 +13,11 @@
 
 using System;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Test.Security.DynamicSql.Models;
 
 public sealed record Seeded(Guid WorkflowGuid, string CaseKeyValue, int CaseId, int ModelId, Guid ModelGuid);

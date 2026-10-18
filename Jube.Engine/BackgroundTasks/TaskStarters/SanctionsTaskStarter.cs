@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Engine.Sanctions;
 using Jube.Engine.Sanctions.Models;
 using Microsoft.VisualBasic.FileIO;
@@ -118,7 +119,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         }
 
         internal static int LightRefreshCount => Volatile.Read(ref lightRefreshCount);
-
         private static int lightRefreshCount;
 
         internal static Func<DbContext, CancellationToken, Task<string>> ChangeMarkerReader { get; set; } =
@@ -134,6 +134,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 context.Services.Log.Error($"Sanctions Cache Loader: could not read the import fingerprint {ex}");
+
                 return null;
             }
         }
@@ -154,6 +155,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 await Task.Delay(wait, token).ConfigureAwait(false);
+
                 return;
             }
 
@@ -163,6 +165,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 wait);
 
             var stopwatch = Stopwatch.StartNew();
+
             while (stopwatch.ElapsedMilliseconds < wait)
             {
                 var remaining = wait - (int)stopwatch.ElapsedMilliseconds;
@@ -176,12 +179,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         {
             var token = context.Services.TaskCoordinator.CancellationToken;
             DbContext dbContext = null;
+
             try
             {
                 dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                     context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
 
                 var marker = await ChangeMarkerReader(dbContext, token).ConfigureAwait(false);
+
                 if (marker == lastMarker)
                 {
                     return lastMarker;
@@ -206,6 +211,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex)
             {
                 context.Services.Log.Error($"Sanctions Cache Loader: the change poll has produced an error {ex}");
+
                 return lastMarker;
             }
             finally
@@ -235,7 +241,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         {
             try
             {
-                var repository = new SanctionsEntryRepository(dbContext);
+                var repository = new SanctionEntryRepository(dbContext);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -253,6 +259,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 }
 
                 var liveIds = new HashSet<int>();
+
                 foreach (var record in records)
                 {
                     context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
@@ -313,6 +320,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
                     var processSanctionEntriesSources = sanctionEntriesSources.ToList();
+
                     foreach (var processSanctionEntriesSource in processSanctionEntriesSources)
                     {
                         context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
@@ -335,6 +343,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                     var stream = await response.Content
                                         .ReadAsStreamAsync(context.Services.TaskCoordinator.CancellationToken)
                                         .ConfigureAwait(false);
+
                                     await using var stream1 = stream.ConfigureAwait(false);
 
                                     if (context.Services.Log.IsInfoEnabled)
@@ -344,6 +353,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                     }
 
                                     using var tfp = new TextFieldParser(stream);
+
                                     tfp.Delimiters =
                                     [
                                         processSanctionEntriesSource.Delimiter
@@ -523,6 +533,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DbContext dbContext)
         {
             var sanctionEntriesSources = new List<SanctionEntriesSource>();
+
             try
             {
                 var repository = new SanctionEntrySourceRepository(dbContext);
@@ -556,6 +567,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             {
                                 SanctionEntrySourceId = record.Id
                             };
+
                             context.Sanctions.SanctionsSources.TryAdd(record.Id, sanctionEntriesSource);
                         }
                         else
@@ -691,7 +703,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private static async Task<int> ReconcileSourceAsync(Context.Context context, DbContext dbContext,
             int sanctionEntrySourceId, HashSet<string> seenHashes)
         {
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sanctionEntrySourceId,
                 seenHashes, "Sanctions Loader", context.Services.Log,
@@ -749,7 +761,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             ProcessTextFieldParserAsync(Context.Context context, DbContext dbContext, TextFieldParser tfp,
                 SanctionEntriesSource processSanctionEntriesSource, int skip, int sanctionEntryImportId)
         {
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             var rejectionRepository = new SanctionEntryRejectionRepository(dbContext);
 
             var inserted = 0;
@@ -789,10 +801,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     {
                         SanctionEntrySourceId = processSanctionEntriesSource.SanctionEntrySourceId,
                         SanctionEntryReference = !string.IsNullOrEmpty(record.Reference) ? record.Reference : "NA",
-                        SanctionElementValue = record.ElementValue
-                            .Split([" "], StringSplitOptions.RemoveEmptyEntries)
-                            .Select(SanctionEntryFileImporter.NormalizeElementValue)
-                            .ToArray(),
+                        SanctionElementValue =
+                        [
+                            .. record.ElementValue
+                                .Split([" "], StringSplitOptions.RemoveEmptyEntries)
+                                .Select(SanctionEntryFileImporter.NormalizeElementValue)
+                        ],
                         SanctionEntryId = persisted.Id
                     };
 

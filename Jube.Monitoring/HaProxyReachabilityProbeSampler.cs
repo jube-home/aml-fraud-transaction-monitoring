@@ -27,6 +27,7 @@ namespace Jube.Monitoring
             var results = new List<HaProxyReachabilityProbe>();
 
             IPAddress[] addresses;
+
             try
             {
                 addresses = await Dns.GetHostAddressesAsync(haProxyTasksHostname).ConfigureAwait(false);
@@ -51,10 +52,12 @@ namespace Jube.Monitoring
         {
             var haProxyAddress = $"{address}:{port}";
             var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 using var response = await httpClient
                     .GetAsync($"http://{FormatHost(address)}:{port}/api/ready").ConfigureAwait(false);
+
                 stopwatch.Stop();
 
                 return new HaProxyReachabilityProbe
@@ -86,11 +89,13 @@ namespace Jube.Monitoring
         {
             var haProxyAddress = $"{address}:{port}";
             var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 using var tcpClient = new TcpClient();
                 var connectTask = tcpClient.ConnectAsync(address, port);
                 var timeoutTask = Task.Delay(tcpConnectTimeout);
+
                 if (await Task.WhenAny(connectTask, timeoutTask).ConfigureAwait(false) == timeoutTask)
                 {
                     throw new TimeoutException($"Connect to {haProxyAddress} timed out after {tcpConnectTimeout}.");

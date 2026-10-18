@@ -14,16 +14,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Jube.Engine.Observability.Models;
 
 namespace Jube.Engine.Observability
 {
     public static class ModelInvokeWarningCapture
     {
         private const int MaxQueueLength = 20000;
-
         private static readonly ConcurrentQueue<ModelInvokeWarningCaptureRecord> queue = new();
         private static long droppedCount;
-
         public static int QueueDepth => queue.Count;
 
         public static long TakeDroppedCount()
@@ -41,6 +40,7 @@ namespace Jube.Engine.Observability
             if (queue.Count >= MaxQueueLength)
             {
                 Interlocked.Increment(ref droppedCount);
+
                 return;
             }
 

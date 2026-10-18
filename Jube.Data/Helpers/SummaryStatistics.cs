@@ -26,7 +26,7 @@ namespace Jube.Data.Helpers
         {
             if (values.Length == 0)
             {
-                return new ColumnStatistics(0, 0, 0, 0, 0, Array.Empty<HistogramBucket>());
+                return new ColumnStatistics(0, 0, 0, 0, 0, []);
             }
 
             var histogram = new Histogram();
@@ -36,7 +36,7 @@ namespace Jube.Data.Helpers
 
             return new ColumnStatistics(
                 values.Min(), values.Max(), values.Mean(), values.Median(), standardDeviation,
-                histogram.Bins.Select(b => new HistogramBucket(Math.Round(b.Range.Min, 2), b.Value)).ToList());
+                [.. histogram.Bins.Select(b => new HistogramBucket(Math.Round(b.Range.Min, 2), b.Value))]);
         }
 
         public static PayloadStatistics Build(IDictionary<string, double[]> columnValues)

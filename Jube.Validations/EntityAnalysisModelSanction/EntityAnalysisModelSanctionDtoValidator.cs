@@ -23,7 +23,6 @@ namespace Jube.Validations.EntityAnalysisModelSanction
     {
         private const int MaxNameLength = 256;
         private const int MaxMultipartStringDataNameLength = 256;
-
         private static readonly char[] allowedCacheIntervals = ['s', 'n', 'h', 'd'];
         private static readonly byte[] allowedAggregationTypeIds = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -53,6 +52,7 @@ namespace Jube.Validations.EntityAnalysisModelSanction
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.NameAlreadyExists])

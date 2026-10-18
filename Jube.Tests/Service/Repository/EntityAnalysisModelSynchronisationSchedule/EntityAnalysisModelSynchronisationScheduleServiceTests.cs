@@ -22,15 +22,16 @@ using Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Service.Exceptions.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule
 {
@@ -79,6 +80,7 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var scheduleDate = DateTimeOffset.UtcNow.AddHours(2);
+
             var saved = await service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto
             {
                 ScheduleDate = scheduleDate
@@ -110,8 +112,10 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
             var after = DateTime.UtcNow;
 
             saved.ScheduleDate.Should().NotBeNull();
+
             saved.ScheduleDate.Required().Should().BeOnOrAfter(before.AddSeconds(-1)).And
                 .BeOnOrBefore(after.AddSeconds(1));
+
             saved.CreatedDate.Should().NotBeNull();
             saved.ScheduleDate.Should().BeCloseTo(saved.CreatedDate.Required(), TimeSpan.FromSeconds(2));
         }

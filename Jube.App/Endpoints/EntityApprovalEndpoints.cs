@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,10 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query;
-using Jube.Data.Repository;
 using Jube.Dto.EntityApproval;
 using Jube.Resources;
 using Jube.Service.EntityApproval;
+using Jube.Service.EntityApproval.Models;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Validations.EntityApproval;
 using log4net;
@@ -106,6 +107,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var statuses = await service.ValueStatusAsync((EntityApprovalKind)body.Kind, body.EntityId, token);
+
                 return TypedResults.Ok(statuses.Select(ToStatusDto).ToList());
             }
             catch (EntityApprovalNotAuthenticatedException)
@@ -131,6 +133,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}/ValueStatus: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -140,7 +143,7 @@ namespace Jube.App.Endpoints
             return new EntityApprovalStatusDto(
                 (int)status.Kind, status.EntityId, status.Name, status.CurrentVersion, status.EffectiveVersion,
                 status.Deleted, status.Pending, status.Rejected, status.MakerUser, status.ApprovalsRecorded,
-                status.ApprovalsRequired, status.CanApprove);
+                status.ApprovalsRequired, status.CanApprove, status.Note, status.ReturnedNote);
         }
 
         private static async Task<IResult> ApproveValuesAsync(HttpContext httpContext, EntityApprovalBulkDto body,
@@ -151,9 +154,11 @@ namespace Jube.App.Endpoints
 
             var strings = stringLocalizerFactory.Create(typeof(EntityApprovalResources));
             var validation = await new EntityApprovalBulkDtoValidator(strings).ValidateAsync(body, token);
+
             if (!validation.IsValid)
             {
                 log.Warn($"POST {Base}/ApproveValues: 400 user={user} errors={validation.Errors.Count}");
+
                 return TypedResults.BadRequest(validation);
             }
 
@@ -166,6 +171,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var result = await service.ApproveValuesAsync((EntityApprovalKind)body.Kind, body.EntityId, token);
+
                 return TypedResults.Ok(new EntityApprovalBulkResultDto(result.Approved, result.Refusals));
             }
             catch (EntityApprovalNotAuthenticatedException)
@@ -191,6 +197,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}/ApproveValues: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -214,6 +221,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var status = await service.StatusAsync((EntityApprovalKind)kind, entityId, token);
+
                 return TypedResults.Ok(ToStatusDto(status));
             }
             catch (EntityApprovalNotAuthenticatedException)
@@ -235,6 +243,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/Status: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -258,6 +267,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var pending = await service.PendingForKindAsync((EntityApprovalKind)kind, token);
+
                 return TypedResults.Ok(pending.Select(p => new PendingApprovalDto(
                         (int)p.Kind, p.EntityId, p.Name, p.Version, p.Deleted, p.MakerUser, p.ModelId, p.ParentId))
                     .ToList());
@@ -277,6 +287,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/PendingByKind: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -306,9 +317,11 @@ namespace Jube.App.Endpoints
 
             var strings = stringLocalizerFactory.Create(typeof(EntityApprovalResources));
             var validation = await new EntityApprovalDecisionDtoValidator(strings).ValidateAsync(body, token);
+
             if (!validation.IsValid)
             {
                 log.Warn($"POST {Base}/{verb}: 400 user={user} errors={validation.Errors.Count}");
+
                 return TypedResults.BadRequest(validation);
             }
 
@@ -321,6 +334,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var kind = (EntityApprovalKind)body.Kind;
+
                 var approval = approve
                     ? await service.ApproveAsync(kind, body.EntityId, body.Version, body.Note, token)
                     : await service.RejectAsync(kind, body.EntityId, body.Version, body.Note, token);
@@ -330,16 +344,19 @@ namespace Jube.App.Endpoints
             catch (EntityApprovalNotAuthenticatedException)
             {
                 log.Warn($"POST {Base}/{verb}: 403 (not authenticated) user={user}");
+
                 return TypedResults.Forbid();
             }
             catch (EntityApprovalForbiddenException)
             {
                 log.Warn($"POST {Base}/{verb}: 403 user={user}");
+
                 return TypedResults.Forbid();
             }
             catch (ApprovalRefusedException ex)
             {
                 log.Warn($"POST {Base}/{verb}: 400 (refused) user={user}: {ex.Message}");
+
                 return TypedResults.BadRequest(new { message = ex.Message, reasons = ex.Reasons });
             }
             catch (KeyNotFoundException)
@@ -354,6 +371,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}/{verb}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -377,6 +395,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var rows = await service.HistoryAsync((EntityApprovalKind)kind, entityId, token);
+
                 return TypedResults.Ok(rows.Select(ToDto).ToList());
             }
             catch (EntityApprovalNotAuthenticatedException)
@@ -394,6 +413,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/History: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -412,6 +432,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var pending = await service.PendingForModelAsync(modelId, token);
+
                 return TypedResults.Ok(pending.Select(p => new PendingApprovalDto(
                         (int)p.Kind, p.EntityId, p.Name, p.Version, p.Deleted, p.MakerUser, p.ModelId, p.ParentId))
                     .ToList());
@@ -431,6 +452,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/Pending: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -454,10 +476,13 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var changes = await service.ChangesAsync((EntityApprovalKind)kind, entityId, version, token);
+
                 return TypedResults.Ok(new EntityApprovalChangesDto(changes.HasEarlierVersion,
-                    changes.Changes.Select(c => new EntityApprovalChangeDto(c.PropertyName,
+                [
+                    .. changes.Changes.Select(c => new EntityApprovalChangeDto(c.PropertyName,
                         VersionText.Preview(c.FromValue), VersionText.Preview(c.ToValue),
-                        VersionText.ChangeKind(c.FromValue, c.ToValue))).ToList()));
+                        VersionText.ChangeKind(c.FromValue, c.ToValue)))
+                ]));
             }
             catch (EntityApprovalNotAuthenticatedException)
             {
@@ -482,6 +507,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/Changes: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

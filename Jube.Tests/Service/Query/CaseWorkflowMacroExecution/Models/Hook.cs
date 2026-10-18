@@ -37,11 +37,13 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution.Models
             BaseUrl = $"http://127.0.0.1:{port}/";
             listener.Prefixes.Add(BaseUrl);
             listener.Start();
+
             _ = Task.Run(async () =>
             {
                 while (listener.IsListening)
                 {
                     HttpListenerContext ctx;
+
                     try
                     {
                         ctx = await listener.GetContextAsync();
@@ -53,6 +55,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution.Models
 
                     using var reader = new StreamReader(ctx.Request.InputStream, Encoding.UTF8);
                     var body = await reader.ReadToEndAsync();
+
                     lock (Requests)
                     {
                         Requests.Add(new Received(ctx.Request.HttpMethod, ctx.Request.Url.Required().AbsolutePath,

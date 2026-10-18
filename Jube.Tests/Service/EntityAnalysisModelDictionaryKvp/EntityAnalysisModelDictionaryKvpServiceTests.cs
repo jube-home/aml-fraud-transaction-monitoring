@@ -21,6 +21,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelDictionaryKvp;
@@ -30,6 +31,7 @@ using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
@@ -81,6 +83,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             {
                 await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
                     .Where(w => w.EntityAnalysisModelDictionaryKvpId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -89,6 +92,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             {
                 await dbContext.GetTable<EntityAnalysisModelDictionaryVersion>()
                     .Where(w => w.EntityAnalysisModelDictionaryId == dictionaryId).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionary>().Where(w => w.Id == dictionaryId)
                     .DeleteAsync();
             }
@@ -97,6 +101,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -113,6 +118,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private async Task<int> CreateParentDictionaryAsync(DbContext dbContext, string createdUser)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -124,6 +130,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             createdModelIds.Add(model.Id);
 
             var dictionaryRepository = new EntityAnalysisModelDictionaryRepository(dbContext, createdUser);
+
             var dictionary = await dictionaryRepository.InsertAsync(new Data.Poco.EntityAnalysisModelDictionary
             {
                 EntityAnalysisModelGuid = model.Guid,
@@ -281,6 +288,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(dictionaryId, UniqueKey("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.GetByEntityAnalysisModelDictionaryIdAsync(dictionaryId));
 
@@ -318,6 +326,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -326,6 +335,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -382,6 +392,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var dto = NewDto(dictionaryId, kvpKey!);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey) &&
                 e.ErrorCode == "KvpKeyNotEmpty");
@@ -409,6 +420,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             dto.KvpValue = null;
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelDictionaryKvpDto.KvpValue) &&
                 e.ErrorCode == "KvpValueNotEmpty");
@@ -1024,6 +1036,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1041,6 +1054,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -1057,6 +1071,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelDictionaryKvpList", "EntityAnalysisModelDictionaryKvpGet",

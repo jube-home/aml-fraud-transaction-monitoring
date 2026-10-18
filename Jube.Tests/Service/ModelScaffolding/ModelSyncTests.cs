@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.ModelScaffolding;
+using Jube.Test.Infrastructure.ModelScaffolding.Exceptions;
 using Npgsql;
 using Xunit;
 
@@ -53,6 +54,7 @@ namespace Jube.Test.Service.ModelScaffolding
             }
 
             Assert.NotEqual(one.ModelGuid, fixture.Shared.ModelGuid);
+
             Assert.DoesNotContain(one.UserName,
                 fixture.Engine.FindActiveModel(two.ModelGuid).Required().Snapshot.Users);
         }
@@ -66,6 +68,7 @@ namespace Jube.Test.Service.ModelScaffolding
             await using (var connection = new NpgsqlConnection(ModelScaffold.ConnectionString))
             {
                 await connection.OpenAsync();
+
                 await using var update = new NpgsqlCommand(
                     "UPDATE \"EntityAnalysisModel\" SET \"Name\" = @name WHERE \"Id\" = @id", connection);
                 update.Parameters.AddWithValue("name", renamed);
@@ -77,6 +80,7 @@ namespace Jube.Test.Service.ModelScaffolding
 
             Assert.Equal(renamed, fixture.Engine.FindActiveModel(scaffold.ModelGuid).Required().Instance.Name);
             Assert.True(result.Elapsed < TimeSpan.FromSeconds(60));
+
             Assert.True(scaffold.ScheduleIds.Count >= 2,
                 "each SyncAsync inserts a schedule row and tracks it for clean-up");
         }

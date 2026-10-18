@@ -6,8 +6,6 @@ parent: Multi Tenancy
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Multi Tenancy Concepts
 Jube supports multi-tenancy which allows single infrastructure to be shared among many logically isolated clients (i.e. customers rather than end users rolling up to those customers), maintaining total isolation between tenants data,  with no loss of function in the user interface.  Given the use of Environment Variables,  optionally, Jube threads and cache offloading can be quite selective also,  which serves to separate compute where required,  why obtaining cost efficiency of centralised configuration.
 

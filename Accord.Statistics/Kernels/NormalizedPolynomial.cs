@@ -1,52 +1,57 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Distances;
 
 namespace Accord.Statistics.Kernels
 {
-    using System;
-    using Accord.Math;
-    using Accord.Math.Distances;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Normalized Polynomial Kernel. This class is equivalent to the
-    ///   Normalized&gt;Polynomial> kernel but has more efficient
-    ///   implementation.
+    ///     Normalized Polynomial Kernel. This class is equivalent to the
+    ///     Normalized&gt;Polynomial> kernel but has more efficient
+    ///     implementation.
     /// </summary>
-    /// 
     [Serializable]
     public sealed class NormalizedPolynomial : KernelBase, IKernel,
         IDistance, ICloneable
     {
-        private int degree;
         private double constant;
+        private int degree;
 
         /// <summary>
-        ///   Constructs a new Normalized Polynomial kernel of a given degree.
+        ///     Constructs a new Normalized Polynomial kernel of a given degree.
         /// </summary>
-        /// 
         /// <param name="degree">The polynomial degree for this kernel.</param>
         /// <param name="constant">The polynomial constant for this kernel. Default is 1.</param>
-        /// 
         public NormalizedPolynomial(int degree, double constant)
         {
             this.degree = degree;
@@ -54,77 +59,71 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
-        ///   Constructs a new Normalized Polynomial kernel of a given degree.
+        ///     Constructs a new Normalized Polynomial kernel of a given degree.
         /// </summary>
-        /// 
         /// <param name="degree">The polynomial degree for this kernel.</param>
-        /// 
         public NormalizedPolynomial(int degree)
-            : this(degree, 1.0) { }
+            : this(degree, 1.0)
+        {
+        }
 
         /// <summary>
-        ///   Gets or sets the kernel's polynomial degree.
+        ///     Gets or sets the kernel's polynomial degree.
         /// </summary>
-        /// 
         public int Degree
         {
-            get { return degree; }
+            get => degree;
             set
             {
-                if (degree <= 0)
+                if (value <= 0)
+                {
                     throw new ArgumentOutOfRangeException("value", "Degree must be positive.");
+                }
 
                 degree = value;
             }
         }
 
         /// <summary>
-        ///   Gets or sets the kernel's polynomial constant term.
+        ///     Gets or sets the kernel's polynomial constant term.
         /// </summary>
-        /// 
         public double Constant
         {
-            get { return constant; }
-            set { constant = value; }
+            get => constant;
+            set => constant = value;
         }
 
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
         /// <summary>
-        ///   Normalized polynomial kernel function.
+        ///     Normalized polynomial kernel function.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public override double Function(double[] x, double[] y)
         {
-            double sum = constant;
-            double sumX = constant;
-            double sumY = constant;
+            var sum = constant;
+            var sumX = constant;
+            var sumY = constant;
 
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
                 sum += x[i] * y[i];
                 sumX += x[i] * x[i];
                 sumY += y[i] * y[i];
             }
 
-            return Math.Pow(sum / (sumX + sumY), degree);
+            return System.Math.Pow(sum / (sumX + sumY), degree);
         }
-
-        /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A new object that is a copy of this instance.
-        /// </returns>
-        /// 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
-
     }
 }

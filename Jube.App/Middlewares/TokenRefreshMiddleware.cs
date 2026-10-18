@@ -45,12 +45,14 @@ namespace Jube.App.Middlewares
             }
 
             var handler = new JwtSecurityTokenHandler();
+
             if (!handler.CanReadToken(accessToken))
             {
                 return Task.CompletedTask;
             }
 
             var username = context.User.FindFirstValue(ClaimTypes.Name);
+
             if (String.IsNullOrEmpty(username))
             {
                 return Task.CompletedTask;
@@ -58,6 +60,7 @@ namespace Jube.App.Middlewares
 
             var now = DateTime.UtcNow;
             var sessionStart = now;
+
             if (long.TryParse(context.User.FindFirstValue(TokenValidity.IssuedMillisecondsClaim),
                     NumberStyles.Integer, CultureInfo.InvariantCulture, out var sessionStartMilliseconds))
             {
@@ -66,6 +69,7 @@ namespace Jube.App.Middlewares
 
             var expiration = now.AddMinutes(15);
             var absoluteLifetime = AbsoluteSessionLifetime.From(dynamicEnvironment);
+
             if (absoluteLifetime.HasValue && sessionStart + absoluteLifetime.Value < expiration)
             {
                 expiration = sessionStart + absoluteLifetime.Value;

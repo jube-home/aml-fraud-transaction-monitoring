@@ -50,6 +50,7 @@ namespace Jube.Validations.EntityAnalysisModelDictionary
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelGuidAsync(name, dto.EntityAnalysisModelGuid, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelDictionaryResources.NameAlreadyExists])

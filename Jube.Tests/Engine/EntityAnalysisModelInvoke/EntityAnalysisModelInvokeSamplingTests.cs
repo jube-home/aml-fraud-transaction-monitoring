@@ -28,8 +28,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var method = typeof(Jube.Engine.EntityAnalysisModelInvoke.EntityAnalysisModelInvoke).GetMethod(
                 "DetermineSampled", BindingFlags.NonPublic | BindingFlags.Static);
+
             method.Should()
                 .NotBeNull("DetermineSampled must still exist with this exact name for these tests to mean anything");
+
             method!.Invoke(null, [context]);
         }
 

@@ -87,6 +87,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -95,8 +96,10 @@ namespace Jube.Test.Service.ModelInvokeWarning
         {
             await using var dbContext = fx.GetDbContext();
             var modelGuid = Guid.NewGuid();
+
             var firstId = await CreateWarningAsync(dbContext, modelGuid, "First", 1000, 500,
                 DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, modelGuid, "Second", 2000, 900,
                 DateTime.UtcNow);
 
@@ -220,6 +223,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var otherId = await CreateWarningAsync(dbContext, modelGuid, "Other message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 search: uniqueMessage.ToUpperInvariant());
 
@@ -270,11 +274,13 @@ namespace Jube.Test.Service.ModelInvokeWarning
 
             var ascending = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: "asc");
+
             ascending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.ElapsedMicroseconds)
                 .Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: "desc");
+
             descending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.ElapsedMicroseconds)
                 .Should().Equal(3000, 2000, 1000);
         }
@@ -292,6 +298,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var ids = new HashSet<int> { highId, lowId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: ascendingKeyword);
 
@@ -309,6 +316,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var ids = new HashSet<int> { lowId, highId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: "banana");
 
@@ -321,8 +329,10 @@ namespace Jube.Test.Service.ModelInvokeWarning
         {
             await using var dbContext = fx.GetDbContext();
             var modelGuid = Guid.NewGuid();
+
             var firstId = await CreateWarningAsync(dbContext, modelGuid,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -338,6 +348,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
         {
             await using var dbContext = fx.GetDbContext();
             var modelGuid = Guid.NewGuid();
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateWarningAsync(dbContext, modelGuid);

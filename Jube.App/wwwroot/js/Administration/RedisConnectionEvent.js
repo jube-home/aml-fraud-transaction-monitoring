@@ -80,6 +80,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("RedisConnectionEvent", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

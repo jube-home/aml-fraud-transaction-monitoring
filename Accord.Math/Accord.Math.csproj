@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Accord.Math.Core\Accord.Math.Core.csproj"/>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Accord.Math.Core\Accord.Math.Core.csproj"/>
+    </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DefaultItemExcludes>Properties/**;$(DefaultItemExcludes)</DefaultItemExcludes>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <DefaultItemExcludes>Properties/**;$(DefaultItemExcludes)</DefaultItemExcludes>
+    </PropertyGroup>
 
 </Project>

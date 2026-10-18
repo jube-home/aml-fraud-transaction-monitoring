@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,22 +11,31 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseNote;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseNote(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseNoteInsert", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's " +
-                "notification/webhook if enabled. Notes are append-only."),
-            new ServiceToolDescriptor(
-                "CaseNoteValidate", OperationKind.Read, true, false,
-                "Validates a Case Note without saving it and returns every failure."),
-            new ServiceToolDescriptor(
-                "CaseNoteListByCaseKeyValue", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists case notes for a Case Key/Value pair, newest first, scoped to the caller's tenant.")
-        ]);
+        static partial void AddCaseNote(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseNoteInsert", OperationKind.Write, false, false,
+                    "Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's " +
+                    "notification/webhook if enabled. Notes are append-only.",
+                    CaseNoteService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseNoteValidate", OperationKind.Read, true, false,
+                    "Validates a Case Note without saving it and returns every failure.",
+                    CaseNoteService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseNoteListByCaseKeyValue", OperationKind.Read, true, false,
+                    "Lists case notes for a Case Key/Value pair, newest first, scoped to the caller's tenant.",
+                    CaseNoteService.RequiredPermissions)
+            ]);
+        }
     }
 }

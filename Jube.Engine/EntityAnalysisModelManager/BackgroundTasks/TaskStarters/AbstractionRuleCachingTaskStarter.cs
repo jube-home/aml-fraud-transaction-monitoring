@@ -18,7 +18,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
     using System.Threading.Tasks;
     using Context;
     using Data.Context;
-    using Data.Query;
+    using Jube.Data.Query.GetEntityAnalysisModelsSearchKeyCalculationInstancesLastSearchKeyDates;
 
     public class AbstractionRuleCachingTaskStarter(Context context)
     {
@@ -51,6 +51,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                                     context.Services.DynamicEnvironment.AppSettings("ConnectionString"),
                                     context.Services.Log);
+
                                 try
                                 {
                                     var query =

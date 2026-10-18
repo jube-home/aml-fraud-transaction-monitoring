@@ -75,20 +75,67 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Start the docker-compose stack
-        run: docker compose -f docker-compose.yml -f .github/zap/docker-compose.zap.yml up -d --build
+      # The same disk reality as the end-to-end workflow: the stack's images, their build cache and the seeded
+      # Postgres volume outgrow the hosted runner's free disk - the jube.app image alone is 2.3GB with the RAG
+      # corpus embedded - and this job adds the ZAP scanner image on top. A full disk kills Postgres mid-seed
+      # and the container sits at "unhealthy" until the wait expires, a failure that never names the disk.
+      - name: Free runner disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/local/lib/android /opt/hostedtoolcache/CodeQL /usr/local/.ghcup /opt/ghc /usr/local/share/boost
+          sudo docker image prune -af
+          df -h /
 
+      - uses: docker/setup-buildx-action@v3
+
+      # Shares the jube-r layer cache with the end-to-end workflow (same scope), so whichever workflow last built
+      # an unchanged Jube.R/ hands the other the image as a cache hit instead of minutes of package installation.
+      - name: Build the jube-r image with a cross-run layer cache
+        uses: docker/build-push-action@v6
+        with:
+          context: Jube.R
+          tags: jube.r
+          load: true
+          cache-from: type=gha,scope=jube-r
+          cache-to: type=gha,scope=jube-r,mode=max
+
+      # The jube-r service is deliberately left out of the build list - its image was just loaded above, and
+      # "up" without --build starts services from the images that already exist rather than rebuilding them.
+      - name: Start the docker-compose stack
+        run: |
+          docker compose -f docker-compose.yml -f .github/zap/docker-compose.zap.yml build jube jube-monitoring jube-otel-listener
+          docker compose -f docker-compose.yml -f .github/zap/docker-compose.zap.yml up -d
+
+      # The images are built and running by this point, so the BuildKit cache - the sdk base, the full in-image
+      # restore, build and publish of the solution, the R package compilation - is dead weight on the same disk
+      # the seed is about to write two gigabytes into. Pruning it never touches the running containers' images
+      # or the jube-r layer cache, which lives in the Actions cache service rather than on this disk.
+      - name: Drop the docker build cache
+        run: docker builder prune -af && docker buildx prune -af && df -h /
+
+      # Thirty minutes, matching the end-to-end workflow's wait: the boot migrates a fresh volume and inserts the
+      # 1.2GB RAG corpus into pgvector, which takes most of a five-minute window on a fast local machine and more
+      # than all of it on a hosted runner. The loop exits as soon as the container is healthy, "unhealthy" mid-wait
+      # is the normal case while migrations hold /api/ready closed rather than a verdict, and the loop gives up
+      # early only when the container has actually stopped; a failure prints the disk, the container state and the
+      # stack logs so the run says which of slow-boot, crash and full-disk it was.
       - name: Wait for jube to become healthy
         run: |
-          for i in $(seq 1 60); do
+          for i in $(seq 1 360); do
             status=$(docker inspect --format '{{.State.Health.Status}}' jube 2>/dev/null || echo "starting")
             echo "attempt $i: $status"
             if [ "$status" = "healthy" ]; then
               exit 0
             fi
+            if [ "$(docker inspect --format '{{.State.Running}}' jube 2>/dev/null)" = "false" ]; then
+              echo "the jube container has stopped"
+              break
+            fi
             sleep 5
           done
-          echo "jube did not become healthy in time"
+          echo "jube did not become healthy"
+          df -h /
+          docker inspect --format '{{json .State}}' jube || true
           docker compose logs
           exit 1
 

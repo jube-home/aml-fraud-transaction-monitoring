@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Case Workflow Action
 Case Notes provide a means to annotate cases and provide a history of the unstructured actions taken.  Case notes by their nature are unstructured and cannot be reported upon. There are two structured data items that can be attached to a case note:
 

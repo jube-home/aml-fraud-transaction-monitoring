@@ -1,0 +1,109 @@
+{
+  "kind": "LogisticRegressionPipeline",
+  "schemaVersion": 1,
+  "inputCount": 3,
+  "variablesInOrder": [
+    "amount",
+    "velocity",
+    "noise"
+  ],
+  "payload": {
+    "standardise": true,
+    "rejectMissing": false,
+    "fillValues": [
+      0.2089105882723401,
+      -0.0928871669307757,
+      0.5061045482317472
+    ],
+    "means": [
+      0.10486018754664697,
+      -0.016042539050469175,
+      0.4947851902841344
+    ],
+    "standardDeviations": [
+      1.1805650469354818,
+      1.1481367594180023,
+      0.28051298525985885
+    ],
+    "indicatorInputs": [
+      1
+    ],
+    "weights": [
+      1.5963982657367788,
+      -0.815495717103676,
+      0.09817599372516501,
+      0.049752074232523015
+    ],
+    "intercept": -1.016194303663706,
+    "trainingPrior": 0.35,
+    "baseRate": 0.35
+  },
+  "calibrator": {
+    "method": "Platt",
+    "parameters": [
+      0.813581038735717,
+      -0.1873059861192511,
+      0.0,
+      1E-06
+    ]
+  },
+  "evidence": {
+    "coefficients": [
+      {
+        "name": "(Intercept)",
+        "kind": "Intercept",
+        "estimate": -1.3425528506930282,
+        "standardError": 0.24745951685902118,
+        "waldZ": -5.425343376298139,
+        "pValue": 5.7843231902304634E-08,
+        "oddsRatio": 0.261178068188451,
+        "oddsRatioLower95": 0.16080471647288455,
+        "oddsRatioUpper95": 0.4242038716206042
+      },
+      {
+        "name": "amount",
+        "kind": "Predictor",
+        "estimate": 1.3522323652396109,
+        "standardError": 0.12479517307280384,
+        "waldZ": 10.835614326611307,
+        "pValue": 2.333935620679599E-27,
+        "oddsRatio": 3.8660463321747542,
+        "oddsRatioLower95": 3.0272006680941854,
+        "oddsRatioUpper95": 4.937338446060638
+      },
+      {
+        "name": "velocity",
+        "kind": "Predictor",
+        "estimate": -0.7102775086802864,
+        "standardError": 0.11682372710230576,
+        "waldZ": -6.079907963031147,
+        "pValue": 1.2025155128841333E-09,
+        "oddsRatio": 0.4915077808578285,
+        "oddsRatioLower95": 0.3909217736748956,
+        "oddsRatioUpper95": 0.6179750397957969
+      },
+      {
+        "name": "noise",
+        "kind": "Predictor",
+        "estimate": 0.3499873406367185,
+        "standardError": 0.40412583768531646,
+        "waldZ": 0.8660355463568395,
+        "pValue": 0.3864706688371192,
+        "oddsRatio": 1.4190495842153477,
+        "oddsRatioLower95": 0.6426951670146354,
+        "oddsRatioUpper95": 3.13321435388341
+      },
+      {
+        "name": "velocity__missing",
+        "kind": "MissingIndicator",
+        "estimate": 0.049752074232523015,
+        "standardError": 0.3242240238506136,
+        "waldZ": 0.1534496847014838,
+        "pValue": 0.878043666073113,
+        "oddsRatio": 1.0510104914892968,
+        "oddsRatioLower95": 0.5567074867497598,
+        "oddsRatioUpper95": 1.9842072893068559
+      }
+    ]
+  }
+}

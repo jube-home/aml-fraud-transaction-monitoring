@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.Exceptions.PatroniClusterEvent;
 using Jube.Service.PatroniClusterEvent;
 using Jube.Service.Reactivity;
@@ -87,6 +87,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -97,6 +98,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
 
             var firstId = await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
+
             var secondId = await CreateEntryAsync(dbContext, name, PatroniClusterEventType.Failover,
                 reason: "manual failover",
                 timelineId: 2, lsnBytes: 12345);
@@ -187,6 +189,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
 
             await CreateEntryAsync(dbContext, uniqueName, PatroniClusterEventType.Failover,
                 reason: "no recovery target specified");
+
             await CreateEntryAsync(dbContext, "OtherNode", PatroniClusterEventType.RoleChanged);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -287,6 +290,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}A", PatroniClusterEventType.RoleChanged);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: name, sortField: "name",
                 sortDirection: ascendingKeyword);
 
@@ -312,8 +316,10 @@ namespace Jube.Test.Service.PatroniClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
+
             var firstId = await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged,
                 DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged,
                 DateTime.UtcNow);
 
@@ -330,6 +336,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
@@ -347,6 +354,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.Failover, timelineId: 2,
                 lsnBytes: 12345);
 

@@ -13,6 +13,7 @@
 
 using FluentAssertions;
 using Jube.Dictionary.Fuzzy;
+using Jube.Dictionary.Fuzzy.Models;
 using Xunit;
 
 namespace Jube.Test.Dictionary.Fuzzy
@@ -226,6 +227,7 @@ namespace Jube.Test.Dictionary.Fuzzy
             var spec = new FuzzyAlgorithmSpec(FuzzyAlgorithm.Levenshtein, 2);
 
             FuzzyListMatcher.Score(spec, "jon smyth", "john smith").Passed.Should().BeTrue();
+
             FuzzyListMatcher.Score(new FuzzyAlgorithmSpec(FuzzyAlgorithm.Levenshtein, 1), "jon smyth", "john smith")
                 .Passed.Should().BeFalse();
         }

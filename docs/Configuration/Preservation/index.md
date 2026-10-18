@@ -5,8 +5,6 @@ nav_order: 9
 parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Introduction
 
 Preservation is functionality to allow for the Export and Import of definitions and various lookup data to facilitate
@@ -299,6 +297,25 @@ The import process follows the following steps, assuming deserialisation has tak
 A transaction cannot be commited unless all inserts have occured without error. Given that data is only updated in a
 transaction, it is not possible to have a partial import, nor lose existing data as deletes happen in the same
 transaction, and any exception, anywhere, brings about a transaction rollback.
+
+# Approval History
+
+Every entity under maker checker governance carries its approval history in the export: the full set of approval,
+rejection, retraction and resubmission records for each exported entity, exactly as the checkers left them. On import
+the history is replayed identically. Each imported entity keeps the version number it had at export, its history
+records are re-pointed at the entity's new identifier in the importing tenant, and nothing else about them changes, so
+an entity whose current version was approved at export is live the moment the import commits, under the approval of the
+checker who originally approved it, while an entity that was awaiting approval imports still awaiting approval. The
+import never approves anything on its own authority when the file carries a history.
+
+A file exported before the approval history was carried has no such records, and for that file alone the import falls
+back to the earlier behaviour: every imported entity is stamped approved at its current version, attributed to the
+importing user.
+
+One boundary is deliberate: the superseded row copies in the Version tables are audit history and are not exported, so
+an entity that was awaiting approval of a pending change imports with its pending change as the current row and its
+last approved version recorded in the history but not substitutable. Approving or retracting the pending change in the
+importing tenant resolves it, exactly as it would have in the tenant of origin.
 
 # Role Import and Orphaned Users
 

@@ -11,14 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetPendingEntityApprovalEntityIdsQuery
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
-    using Models;
-    using Repository;
+    using EntityApproval;
 
     public sealed class GetPendingEntityApprovalEntityIdsQuery(DbContext dbContext, int tenantRegistryId)
     {

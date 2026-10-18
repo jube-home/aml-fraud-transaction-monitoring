@@ -33,6 +33,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -63,19 +64,12 @@ namespace Jube.Data.Repository
                    && w.Id == id, token);
         }
 
-        public Task UpdateAbstractionRuleMatchesAsync(int id, CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModelSearchKeyDistinctValueCalculationInstance
-                .Where(d => d.EntityAnalysisModelSearchKeyCalculationInstanceId == id)
-                .Set(s => s.AbstractionRulesMatchesUpdatedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
         public async Task<CaseEvent> InsertAsync(CaseEvent model, CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 

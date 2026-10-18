@@ -23,6 +23,8 @@ namespace Jube.Parser.Dependency
     using Data.Query.GetModelDependencyInputsQuery;
     using Data.Query.Models;
     using log4net;
+    using Models;
+    using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 
     public static class ModelDependencyGraphBuilder
     {
@@ -54,6 +56,7 @@ namespace Jube.Parser.Dependency
                 .ToDictionary(g => g.Key, g => g.First());
 
             var references = new List<ModelReference>();
+
             foreach (var text in inputs.RuleTexts)
             {
                 if (!byKindAndId.TryGetValue((Enum.Parse<ModelEntityKind>(text.Kind), text.Id), out var dependent))

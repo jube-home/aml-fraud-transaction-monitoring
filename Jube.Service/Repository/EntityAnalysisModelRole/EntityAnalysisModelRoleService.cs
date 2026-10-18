@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.EntityAnalysisModelRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.EntityAnalysisModelRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
     public sealed class EntityAnalysisModelRoleService
     {
         private static readonly int[] permissions = [6];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
             repository = new RuleRepository(dbContext, userName);
             validator = new EntityAnalysisModelRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelRoleService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -111,6 +112,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
         {
             using var op = OperationScope.Start("EntityAnalysisModelRole", "ListByEntityAnalysisModelGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRole.ListByEntityAnalysisModelGuid: entry guid={guid} " +
@@ -120,9 +122,11 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
             try
             {
                 EnsurePermitted("EntityAnalysisModelRole.ListByEntityAnalysisModelGuid", permissions);
+
                 var dtos = EntityAnalysisModelRoleMapper.ToDto(
                     await repository.GetByEntityAnalysisModelGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelRole.ListByEntityAnalysisModelGuid: {dtos.Count} rows " +
@@ -144,8 +148,10 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelRole.ListByEntityAnalysisModelGuid: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -157,6 +163,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
         {
             using var op = OperationScope.Start("EntityAnalysisModelRole", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRole.Insert: entry user={userName} " +
@@ -170,6 +177,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
                 EnsurePermitted("EntityAnalysisModelRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -231,6 +239,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelRole
         {
             using var op = OperationScope.Start("EntityAnalysisModelRole", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelRole.Delete: entry id={id} user={userName}");

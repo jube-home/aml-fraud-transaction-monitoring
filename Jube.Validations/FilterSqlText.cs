@@ -36,6 +36,7 @@ namespace Jube.Validations
             var outside = new StringBuilder(sql.Length);
             var depth = 0;
             var quote = '\0';
+
             foreach (var c in sql)
             {
                 if (quote != '\0')
@@ -61,6 +62,7 @@ namespace Jube.Validations
                         break;
                     case ')':
                         depth--;
+
                         if (depth < 0)
                         {
                             return false;
@@ -85,6 +87,7 @@ namespace Jube.Validations
             }
 
             var text = outside.ToString();
+
             return !text.Contains("--") && !text.Contains("/*") && !text.Contains("*/") && !Forbidden().IsMatch(text);
         }
 
@@ -103,6 +106,7 @@ namespace Jube.Validations
             try
             {
                 using var document = JsonDocument.Parse(tokens);
+
                 return document.RootElement.ValueKind == JsonValueKind.Array;
             }
             catch (JsonException)

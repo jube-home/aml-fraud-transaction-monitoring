@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
 namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs
 {
     using System;
@@ -33,6 +34,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalys
             using var stringWriter = new StringWriter();
             using var jsonWriter = new JsonTextWriter(stringWriter);
             ArchiveSerializer.Serialize(jsonWriter, value);
+
             return JObject.Parse(stringWriter.ToString());
         }
 
@@ -52,6 +54,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalys
         {
             var anchorDate = new DateTime(2026, 10, 7, 6, 32, 22, DateTimeKind.Utc);
             var log = new InvocationLog { AnchorDate = anchorDate };
+
             log.AddEntry(new InvocationLogEntry
             {
                 ElapsedMicroseconds = 10,
@@ -61,6 +64,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalys
                 ThreadId = 7,
                 Message = "Entity Invoke: did the thing"
             });
+
             log.AddEntry(new InvocationLogEntry { Message = "second" });
 
             var json = Serialize(log);

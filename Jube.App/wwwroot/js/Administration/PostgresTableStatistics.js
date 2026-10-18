@@ -63,6 +63,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("PostgresTableStatistics", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

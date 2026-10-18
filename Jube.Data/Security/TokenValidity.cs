@@ -18,7 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
-using Jube.Data.Security.Models;
+using Jube.Data.Security.Models.TokenValidity;
 using LinqToDB;
 using LinqToDB.Data;
 
@@ -66,6 +66,7 @@ namespace Jube.Data.Security
                 new DataParameter("name", userName, DataType.NVarChar)).ConfigureAwait(false);
 
             var row = rows.Count > 0 ? rows[0] : null;
+
             long? validFrom = row?.ValidFrom.HasValue == true
                 ? new DateTimeOffset(DateTime.SpecifyKind(row.ValidFrom.Value, DateTimeKind.Utc))
                     .ToUnixTimeMilliseconds()
@@ -78,6 +79,7 @@ namespace Jube.Data.Security
             GetSessionStatesAsync(DbContext dbContext, IReadOnlyCollection<string> userNames)
         {
             var result = new Dictionary<string, (long?, bool)>(StringComparer.Ordinal);
+
             if (userNames.Count == 0)
             {
                 return result;
@@ -96,6 +98,7 @@ namespace Jube.Data.Security
                     ? new DateTimeOffset(DateTime.SpecifyKind(row.ValidFrom.Value, DateTimeKind.Utc))
                         .ToUnixTimeMilliseconds()
                     : null;
+
                 result[row.Name] = (validFrom, row.Blocked == 1);
             }
 
@@ -106,6 +109,7 @@ namespace Jube.Data.Security
             DateTime? issuedAtUtc)
         {
             var (validFrom, blocked) = await GetSessionStateAsync(dbContext, userName).ConfigureAwait(false);
+
             if (blocked)
             {
                 return true;

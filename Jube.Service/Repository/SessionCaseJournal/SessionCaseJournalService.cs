@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -18,7 +18,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.SessionCaseJournal;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.SessionCaseJournal;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -33,7 +33,6 @@ namespace Jube.Service.Repository.SessionCaseJournal
     {
         private const int MaxJsonLength = 1_000_000;
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.SessionCaseJournal
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<SessionCaseJournalService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -112,6 +113,7 @@ namespace Jube.Service.Repository.SessionCaseJournal
         {
             using var op = OperationScope.Start("SessionCaseJournal", "GetByCaseWorkflowGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SessionCaseJournal.GetByCaseWorkflowGuid: entry guid={guid} user={userName}");
@@ -120,10 +122,12 @@ namespace Jube.Service.Repository.SessionCaseJournal
             try
             {
                 EnsurePermitted("SessionCaseJournal.GetByCaseWorkflowGuid");
+
                 var dto = SessionCaseJournalMapper.ToDto(
                     await repository.GetByCaseWorkflowGuidAsync(guid, token).ConfigureAwait(false));
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 op.Rows(dto is null ? 0 : 1);
+
                 return dto;
             }
             catch (ForbiddenException)
@@ -139,8 +143,10 @@ namespace Jube.Service.Repository.SessionCaseJournal
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"SessionCaseJournal.GetByCaseWorkflowGuid: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -154,6 +160,7 @@ namespace Jube.Service.Repository.SessionCaseJournal
         {
             using var op = OperationScope.Start("SessionCaseJournal", "Create", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SessionCaseJournal.Create: entry user={userName}");
@@ -232,6 +239,7 @@ namespace Jube.Service.Repository.SessionCaseJournal
             try
             {
                 using var document = JsonDocument.Parse(json);
+
                 return IsStorable(document.RootElement);
             }
             catch (JsonException)

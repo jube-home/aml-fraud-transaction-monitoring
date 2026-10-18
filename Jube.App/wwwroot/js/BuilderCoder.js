@@ -653,9 +653,9 @@ function initCoder(data) {
     });
 
     if (data) {
-        coder.setValue(data.ruleTextCoder);
+        coder.setValue(data.ruleTextCoder || '');
     } else {
-        coder.setValue(ruleTextCoder);
+        coder.setValue(ruleTextCoder || '');
     }
     langTools.addCompleter(completer);
 }

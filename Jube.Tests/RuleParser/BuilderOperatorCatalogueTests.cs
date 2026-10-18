@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,23 +63,10 @@ namespace Jube.Test.RuleParser
             ["HighRiskTerms"] = ["GB", "FR", "gb-france 12345"]
         };
 
-        public static IEnumerable<object[]> RuleTextCases()
-        {
-            return BuilderOperators.All
-                .SelectMany(o => o.RuleTextTypes.Select(t => new object[] { o.Type, t }));
-        }
-
-        public static IEnumerable<object[]> InMemoryCases()
-        {
-            return BuilderOperators.All
-                .Where(o => o.InMemoryCapable && o.Template != null)
-                .SelectMany(o => o.RuleTextTypes.Where(t => o.Evaluators.ContainsKey(t))
-                    .Select(t => new object[] { o.Type, t }));
-        }
-
         private static RuleParseEnvironmentDto Environment()
         {
             var environment = RuleParseTests.Environment();
+
             foreach (var (name, type) in new[]
                      {
                          ("Limit", 3), ("Count", 2), ("Other", 2), ("Email", 1), ("Opened", 4), ("Closed", 4),
@@ -94,6 +82,7 @@ namespace Jube.Test.RuleParser
         private static JToken Sample(BuilderArgument argument, BuilderFieldType type)
         {
             var kind = argument.Kind;
+
             if (kind == BuilderArgumentKind.Value)
             {
                 kind = type switch
@@ -107,6 +96,7 @@ namespace Jube.Test.RuleParser
             }
 
             var name = argument.Name.ToLowerInvariant();
+
             string one = kind switch
             {
                 BuilderArgumentKind.Integer => name.Contains("hour") ? name.Contains("end") ? "17" : "9"
@@ -147,6 +137,7 @@ namespace Jube.Test.RuleParser
                 BuilderArgumentKind.Date => "2026-01-31T23:30:00Z",
                 _ => one
             };
+
             return new JValue(one + ", " + two);
         }
 
@@ -173,13 +164,29 @@ namespace Jube.Test.RuleParser
         {
             var parsed = BuilderProfile.Parse(Json(definition, type), fields, BuilderTarget.RuleText);
             parsed.Errors.Should().BeEmpty(Json(definition, type));
+
             return BuilderRuleTranslator.Translate(parsed.Group);
+        }
+
+        public static IEnumerable<object[]> RuleTextCases()
+        {
+            return BuilderOperators.All
+                .SelectMany(o => o.RuleTextTypes.Select(t => new object[] { o.Type, t }));
+        }
+
+        public static IEnumerable<object[]> InMemoryCases()
+        {
+            return BuilderOperators.All
+                .Where(o => o.InMemoryCapable && o.Template != null)
+                .SelectMany(o => o.RuleTextTypes.Where(t => o.Evaluators.ContainsKey(t))
+                    .Select(t => new object[] { o.Type, t }));
         }
 
         [Fact]
         public void EveryPipelineMatchStepOnAPlainValueIsAnOperator()
         {
             var plain = new[] { typeof(string), typeof(int), typeof(double), typeof(DateTime), typeof(bool) };
+
             var steps = typeof(global::Jube.Dictionary.Extensions.Extensions)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(m => m.Name.Length > 5 && m.Name.StartsWith("Match") && char.IsUpper(m.Name[5]) &&
@@ -198,6 +205,7 @@ namespace Jube.Test.RuleParser
                 ["MatchLessOrEqual"] = "less_or_equal", ["MatchOutsideRange"] = "not_between",
                 ["MatchContains"] = "contains", ["MatchStartsWith"] = "begins_with", ["MatchEndsWith"] = "ends_with"
             };
+
             var templates = BuilderOperators.All.Select(o => o.Template ?? string.Empty).ToList();
 
             var missing = steps.Where(step => !templates.Any(t => t.Contains("." + step + "(")) &&
@@ -213,8 +221,10 @@ namespace Jube.Test.RuleParser
         public void KeysAreUniqueAndGroupsAreInOrderWithLabelsAlphabeticalOutsideBasic()
         {
             BuilderOperators.All.Select(o => o.Type).Should().OnlyHaveUniqueItems();
+
             BuilderOperators.All.Select(o => BuilderOperators.GroupOrder.ToList().IndexOf(o.Group)).Should()
                 .BeInAscendingOrder().And.NotContain(-1);
+
             foreach (var group in BuilderOperators.All.Where(o => o.Group != BuilderOperators.Basic)
                          .GroupBy(o => o.Group))
             {
@@ -257,8 +267,10 @@ namespace Jube.Test.RuleParser
         {
             var definition = BuilderOperators.ByType[type];
             var text = Translate(definition, fieldType);
+
             var parsed = RuleParse.Execute(text, RuleParse.GatewayRule, Environment(), TestLog.NoOp,
                 RuleParse.EngineReferences(RuleParse.GatewayRule), engineWrap: true);
+
             parsed.Compiled.Should().BeTrue(parsed.Message);
 
             var filter = BuilderProfile.Parse(Json(definition, fieldType), fields);
@@ -274,6 +286,7 @@ namespace Jube.Test.RuleParser
                 [
                     new InvocationContextField(subject, "Payload", dataType == "string" ? "string" : dataType)
                 ], [], false, DateTime.UtcNow);
+
                 InvocationContextBuilder.Overlay(context, new Dictionary<string, string> { [subject] = payload });
                 var inputs = RuleRunner.ToInputs(context, lists);
                 InvocationContextBuilder.TryConvertText(dataType, payload, out var typed);

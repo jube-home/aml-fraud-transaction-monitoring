@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             var now = DateTime.UtcNow;
+
             var updated = await dbContext.EntityAnalysisModelEngineSnapshot
                 .Where(w => w.Instance == instance && w.EntityAnalysisModelId == entityAnalysisModelId)
                 .Set(s => s.TenantRegistryId, tenantRegistryId)
@@ -54,6 +55,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             var cutoff = EngineInstanceLiveness.CutoffFrom(now);
+
             var live = dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
                 .Where(w => w.TenantRegistryId == tenantRegistryId && w.HeartbeatDate > cutoff)
                 .Select(s => s.Instance);

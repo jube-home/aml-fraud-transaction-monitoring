@@ -14,13 +14,14 @@
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query;
+using Jube.Data.Query.GetEntityVersionHistoryQuery;
 using Jube.Data.Repository;
 using Jube.Resources;
 using Jube.Service.Exceptions.Query.EntityVersionHistory;
+using Jube.Service.Query.Interfaces;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
-using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
 {
@@ -28,7 +29,6 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
         EntityAnalysisModelDictionaryKvpVersionHistoryService, EntityAnalysisModelDictionaryKvpVersion>
     {
         private static readonly int[] permissions = [4];
-
         private readonly GetEntityVersionHistoryQuery<EntityAnalysisModelDictionaryKvpVersion> query;
         private readonly EntityAnalysisModelDictionaryKvpRepository parentRepository;
         private readonly PermissionValidation permissionValidation;
@@ -43,8 +43,10 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
             this.permissionValidation = permissionValidation;
             this.log = log;
             this.strings = strings;
+
             query = new GetEntityVersionHistoryQuery<EntityAnalysisModelDictionaryKvpVersion>(dbContext,
                 nameof(EntityAnalysisModelDictionaryKvpVersion.EntityAnalysisModelDictionaryKvpId));
+
             parentRepository = new EntityAnalysisModelDictionaryKvpRepository(dbContext, tenantRegistryId);
         }
 
@@ -97,6 +99,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
         {
             EnsurePermitted("EntityAnalysisModelDictionaryKvpVersionHistory.GetById");
             var version = await query.ByIdAsync(id, token).ConfigureAwait(false);
+
             return await IsOwnedAsync(version, token).ConfigureAwait(false) ? version : null;
         }
 
@@ -104,6 +107,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
             CancellationToken token = default)
         {
             EnsurePermitted("EntityAnalysisModelDictionaryKvpVersionHistory.GetByParentId");
+
             if (!await IsParentOwnedAsync(parentId, token).ConfigureAwait(false))
             {
                 return [];
@@ -117,6 +121,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
             CancellationToken token = default)
         {
             EnsurePermitted("EntityAnalysisModelDictionaryKvpVersionHistory.GetByDateRange");
+
             if (!await IsParentOwnedAsync(parentId, token).ConfigureAwait(false))
             {
                 return [];
@@ -130,6 +135,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
         {
             EnsurePermitted("EntityAnalysisModelDictionaryKvpVersionHistory.GetByIdAndDateRange");
             var version = await query.ByIdAndDateRangeAsync(id, from, to, token).ConfigureAwait(false);
+
             return await IsOwnedAsync(version, token).ConfigureAwait(false) ? version : null;
         }
 
@@ -137,6 +143,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
             CancellationToken token = default)
         {
             EnsurePermitted("EntityAnalysisModelDictionaryKvpVersionHistory.GetLatest");
+
             if (!await IsParentOwnedAsync(parentId, token).ConfigureAwait(false))
             {
                 return null;
@@ -173,6 +180,7 @@ namespace Jube.Service.Query.EntityAnalysisModelDictionaryKvpVersionHistory
             }
 
             var parentId = query.ParentIdOf(version);
+
             return parentId.HasValue && await IsParentOwnedAsync(parentId.Value, token).ConfigureAwait(false);
         }
 

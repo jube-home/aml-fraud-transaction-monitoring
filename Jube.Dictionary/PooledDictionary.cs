@@ -25,7 +25,6 @@ namespace Jube.Dictionary
         private readonly ArrayPool<int> intPool = ArrayPool<int>.Shared;
         private readonly ArrayPool<TKey> keyPool = ArrayPool<TKey>.Shared;
         private readonly ArrayPool<TValue> valuePool = ArrayPool<TValue>.Shared;
-
         private int capacity;
         private int[] hashes;
         private TKey[] keys;
@@ -51,6 +50,10 @@ namespace Jube.Dictionary
             hashes = intPool.Rent(capacity);
             keys = keyPool.Rent(capacity);
             values = valuePool.Rent(capacity);
+
+            Array.Clear(hashes, 0, capacity);
+            Array.Clear(keys, 0, capacity);
+            Array.Clear(values, 0, capacity);
         }
 
         public int Count { get; private set; }
@@ -72,6 +75,7 @@ namespace Jube.Dictionary
             set
             {
                 var index = FindIndex(key);
+
                 if (index >= 0)
                 {
                     values[index] = value;
@@ -105,6 +109,7 @@ namespace Jube.Dictionary
                     keys[probeIndex] = key;
                     values[probeIndex] = value;
                     Count++;
+
                     return;
                 }
 
@@ -125,19 +130,23 @@ namespace Jube.Dictionary
         public bool TryGetValue(TKey key, out TValue value)
         {
             var index = FindIndex(key);
+
             if (index >= 0)
             {
                 value = values[index];
+
                 return true;
             }
 
             value = default!;
+
             return false;
         }
 
         public bool Remove(TKey key)
         {
             var index = FindIndex(key);
+
             if (index < 0)
             {
                 return false;
@@ -147,6 +156,7 @@ namespace Jube.Dictionary
             keys[index] = default!;
             values[index] = default!;
             Count--;
+
             return true;
         }
 
@@ -170,12 +180,14 @@ namespace Jube.Dictionary
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
         {
             var index = FindIndex(item.Key);
+
             return index >= 0 && Equals(values[index], item.Value);
         }
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
         {
             var index = FindIndex(item.Key);
+
             if (index < 0 || !Equals(values[index], item.Value))
             {
                 return false;
@@ -185,6 +197,7 @@ namespace Jube.Dictionary
             keys[index] = default!;
             values[index] = default!;
             Count--;
+
             return true;
         }
 
@@ -221,6 +234,7 @@ namespace Jube.Dictionary
         public TValue GetValueOrThrow(TKey key)
         {
             var index = FindIndex(key);
+
             return index < 0
                 ? throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.")
                 : values[index];
@@ -248,6 +262,7 @@ namespace Jube.Dictionary
                     keys[probeIndex] = key;
                     values[probeIndex] = value;
                     Count++;
+
                     return true;
                 }
 
@@ -278,6 +293,7 @@ namespace Jube.Dictionary
             for (var i = 0; i < capacity; i++)
             {
                 var probeIndex = (index + i) % capacity;
+
                 if (hashes[probeIndex] == 0)
                 {
                     return -1;
@@ -296,6 +312,7 @@ namespace Jube.Dictionary
         private static int ComputeHash(TKey key)
         {
             var hash = key!.GetHashCode() & 0x7FFFFFFF;
+
             return hash == 0 ? 1 : hash;
         }
 

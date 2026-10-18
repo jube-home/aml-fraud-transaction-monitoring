@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
@@ -30,9 +31,24 @@ namespace Jube.Test.Repository.Sanctions
         private int importId;
         private int sourceId;
 
+        private SanctionEntryRejection NewRejection(int rowNumber, SanctionEntryRejectionReason reason,
+            string rawData = "bad,row")
+        {
+            return new SanctionEntryRejection
+            {
+                SanctionEntryImportId = importId,
+                SanctionEntrySourceId = sourceId,
+                RowNumber = rowNumber,
+                RawData = rawData,
+                ReasonId = (int)reason,
+                CreatedDate = DateTime.UtcNow
+            };
+        }
+
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             sourceId = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}SanctionSource{Guid.NewGuid():N}"[..40],
@@ -57,20 +73,6 @@ namespace Jube.Test.Repository.Sanctions
             await dbContext.SanctionEntryRejection.Where(w => w.SanctionEntryImportId == importId).DeleteAsync();
             await dbContext.SanctionEntryImport.Where(w => w.Id == importId).DeleteAsync();
             await dbContext.SanctionEntrySource.Where(w => w.Id == sourceId).DeleteAsync();
-        }
-
-        private SanctionEntryRejection NewRejection(int rowNumber, SanctionEntryRejectionReason reason,
-            string rawData = "bad,row")
-        {
-            return new SanctionEntryRejection
-            {
-                SanctionEntryImportId = importId,
-                SanctionEntrySourceId = sourceId,
-                RowNumber = rowNumber,
-                RawData = rawData,
-                ReasonId = (int)reason,
-                CreatedDate = DateTime.UtcNow
-            };
         }
 
         [Fact]

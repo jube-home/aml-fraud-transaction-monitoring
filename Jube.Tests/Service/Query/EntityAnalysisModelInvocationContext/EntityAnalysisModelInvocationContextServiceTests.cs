@@ -21,6 +21,7 @@ using Jube.Data.Context;
 using Jube.Dictionary;
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.Helpers;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelInvocationContext;
@@ -63,8 +64,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
 
             await dbContext.Archive.Where(w => createdArchiveGuids.Contains(w.EntityAnalysisModelInstanceEntryGuid))
                 .DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => modelIds.Contains(w.EntityAnalysisModelId))
                 .DeleteAsync();
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
@@ -86,6 +89,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
             params int[] permissionSpecificationIds)
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var tenantRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.TenantRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}IcTenant{suffix}", Active = 1, Locked = 0, Deleted = 0,
@@ -94,6 +98,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
             createdTenantRegistryIds.Add(tenantRegistryId);
 
             var roleRegistryGuid = Guid.NewGuid();
+
             var roleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleRegistryGuid, Name = $"{DatabaseFixture.Prefix}IcRole{suffix}", Active = 1, Locked = 0,
@@ -113,6 +118,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
             }
 
             var userName = $"{DatabaseFixture.Prefix}IcUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = roleRegistryGuid, Name = userName,
@@ -120,7 +126,9 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
                 PasswordLocked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
+
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
                 { User = userName, TenantRegistryId = tenantRegistryId });
 
@@ -177,7 +185,9 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
                     new JsonSerializationHelper().ArchiveJsonSerializer)),
                 EntryKeyValue = "TX-ARCH", CreatedDate = DateTime.UtcNow, ReferenceDate = payload.ReferenceDate
             });
+
             createdArchiveGuids.Add(guid);
+
             return guid;
         }
 
@@ -192,8 +202,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
             var context = await service.BlankAsync(modelId);
 
             context.Source.Should().Be("Blank");
+
             context.Values.Select(v => v.Name).Should()
                 .Contain(["Payload.Amount", "Payload.Country", "Payload.AccountId", "TTLCounter.PerAccount"]);
+
             context.Values.Where(v => v.Origin == "Default").Should().ContainSingle()
                 .Which.Should().Match<InvocationContextValueDto>(v => v.Name == "Payload.Country" && v.Value == "GB");
         }
@@ -214,8 +226,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
 
             context.EntryId.Should().Be("TX1");
             context.ReferenceDate.Should().Be(new DateTime(2026, 9, 1, 10, 0, 0, DateTimeKind.Utc));
+
             context.Values.Single(v => v.Name == "Payload.Amount").Should().Match<InvocationContextValueDto>(v =>
                 v.Value == "12.5" && v.Origin == "Extracted" && v.DataType == "double");
+
             context.Values.Single(v => v.Name == "TTLCounter.PerAccount").Origin.Should().Be("Unset");
             context.Stages.Single(s => s.Stage == "Extraction").Status.Should().Be("Computed");
             context.Stages.Single(s => s.Stage == "CaseCreation").Status.Should().Be("Excluded");
@@ -248,6 +262,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
 
             context.Source.Should().Be("Archive");
             context.EntryId.Should().Be("TX-ARCH");
+
             context.Values.ToDictionary(v => v.Name, v => v.Value).Should().Contain(new Dictionary<string, string?>
                 { ["Payload.Amount"] = "99.5", ["Payload.Country"] = "FR", ["TTLCounter.PerAccount"] = "3" });
         }
@@ -291,6 +306,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
 
             context.Values.Single(v => v.Name == "TTLCounter.PerAccount").Should()
                 .Match<InvocationContextValueDto>(v => v.Value == "5" && v.Origin == "Overlay");
+
             context.Values.Single(v => v.Name == "Payload.Country").Value.Should().Be("GB");
             context.Errors.Should().HaveCount(2);
         }
@@ -305,6 +321,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelInvocationContext
             var guid = await ArchiveAsync(dbContext, modelId);
 
             var author = await BuildServiceAsync(dbContext, authorOnly);
+
             await Assert.ThrowsAsync<ForbiddenException>(() => author.FromArchiveAsync(
                 new InvocationContextFromArchiveDto
                     { EntityAnalysisModelId = modelId, EntityAnalysisModelInstanceEntryGuid = guid }));

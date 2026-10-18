@@ -15,9 +15,12 @@ namespace Jube.Cache.Redis.Models
 {
     using Dictionary;
 
-    public class LocalCacheInstanceKey(LruCacheConcurrentSizedDictionary<string, byte[]> lruCacheConcurrentSizedDictionary)
+    public class LocalCacheInstanceKey(
+        LruCacheConcurrentSizedDictionary<string, byte[]> lruCacheConcurrentSizedDictionary)
     {
-        public readonly LruCacheConcurrentSizedDictionary<string, byte[]> LruCacheConcurrentSizedDictionary = lruCacheConcurrentSizedDictionary;
+        public readonly LruCacheConcurrentSizedDictionary<string, byte[]> LruCacheConcurrentSizedDictionary =
+            lruCacheConcurrentSizedDictionary;
+
         public int DualMiss = 0;
         public int HashRemove = 0;
         public int HashRemoveMiss = 0;
@@ -27,7 +30,6 @@ namespace Jube.Cache.Redis.Models
         public int Misses = 0;
         public long MissRemoteResponseTime = 0;
         public long UnpackResponseTime = 0;
-
         public int Requests = 0;
     }
 }

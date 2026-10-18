@@ -124,6 +124,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             createdIds.Add(saved.Id);
 
             var newName = UniqueName("Updated");
+
             var updated = await service.UpdateAsync(new OpenTelemetryExcludeDto
             {
                 Id = saved.Id,

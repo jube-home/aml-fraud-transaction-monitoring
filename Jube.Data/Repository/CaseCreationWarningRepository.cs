@@ -33,6 +33,7 @@ namespace Jube.Data.Repository
         public CaseCreationWarningRepository(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -45,6 +46,41 @@ namespace Jube.Data.Repository
         public Task BulkCopyAsync(List<CaseCreationWarning> models, CancellationToken token = default)
         {
             return dbContext.BulkCopyAsync(models, token);
+        }
+
+        public async Task<IEnumerable<CaseCreationWarning>> GetLastAsync(bool includeAllTenants, int take,
+            DateTime? from, DateTime? to, int? stageId, string search, double? samplePercentage,
+            string sortField, string sortDirection, CancellationToken token = default)
+        {
+            var query = BuildFilteredQuery(includeAllTenants, from, to, stageId, search, samplePercentage);
+
+            return await ApplySort(query, sortField, sortDirection)
+                .Take(take)
+                .ToListAsync(token).ConfigureAwait(false);
+        }
+
+        public Task<int> CountAsync(bool includeAllTenants, DateTime? from, DateTime? to, int? stageId,
+            string search, double? samplePercentage, CancellationToken token = default)
+        {
+            return BuildFilteredQuery(includeAllTenants, from, to, stageId, search, samplePercentage)
+                .CountAsync(token);
+        }
+
+        public async Task<PayloadStatistics> GetStatisticsAsync(bool includeAllTenants, DateTime? from, DateTime? to,
+            int? stageId, string search, double? samplePercentage, int statisticsCap,
+            CancellationToken token = default)
+        {
+            var durationMicroseconds = await BuildFilteredQuery(includeAllTenants, from, to, stageId, search,
+                    samplePercentage)
+                .OrderByDescending(o => o.Id)
+                .Take(statisticsCap)
+                .Select(s => (double)s.DurationMicroseconds.GetValueOrDefault())
+                .ToArrayAsync(token).ConfigureAwait(false);
+
+            return SummaryStatistics.Build(new Dictionary<string, double[]>
+            {
+                ["durationMicroseconds"] = durationMicroseconds
+            });
         }
 
         private IQueryable<CaseCreationWarning> BuildFilteredQuery(bool includeAllTenants, DateTime? from,
@@ -86,6 +122,7 @@ namespace Jube.Data.Repository
             IQueryable<CaseCreationWarning> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
@@ -98,41 +135,6 @@ namespace Jube.Data.Repository
                 "instance" => query.OrderByField(o => o.Instance, descending),
                 _ => query.OrderByField(o => o.Id, true)
             };
-        }
-
-        public async Task<IEnumerable<CaseCreationWarning>> GetLastAsync(bool includeAllTenants, int take,
-            DateTime? from, DateTime? to, int? stageId, string search, double? samplePercentage,
-            string sortField, string sortDirection, CancellationToken token = default)
-        {
-            var query = BuildFilteredQuery(includeAllTenants, from, to, stageId, search, samplePercentage);
-
-            return await ApplySort(query, sortField, sortDirection)
-                .Take(take)
-                .ToListAsync(token).ConfigureAwait(false);
-        }
-
-        public Task<int> CountAsync(bool includeAllTenants, DateTime? from, DateTime? to, int? stageId,
-            string search, double? samplePercentage, CancellationToken token = default)
-        {
-            return BuildFilteredQuery(includeAllTenants, from, to, stageId, search, samplePercentage)
-                .CountAsync(token);
-        }
-
-        public async Task<PayloadStatistics> GetStatisticsAsync(bool includeAllTenants, DateTime? from, DateTime? to,
-            int? stageId, string search, double? samplePercentage, int statisticsCap,
-            CancellationToken token = default)
-        {
-            var durationMicroseconds = await BuildFilteredQuery(includeAllTenants, from, to, stageId, search,
-                    samplePercentage)
-                .OrderByDescending(o => o.Id)
-                .Take(statisticsCap)
-                .Select(s => (double)s.DurationMicroseconds.GetValueOrDefault())
-                .ToArrayAsync(token).ConfigureAwait(false);
-
-            return SummaryStatistics.Build(new Dictionary<string, double[]>
-            {
-                ["durationMicroseconds"] = durationMicroseconds
-            });
         }
     }
 }

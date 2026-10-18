@@ -18,12 +18,13 @@ namespace Jube.Dictionary.Extensions
         public static string CountryAlpha2(this string? @this)
         {
             var key = (@this ?? "").Trim();
-            if (IsoReferenceData.CountriesByAlpha2.TryGetValue(key, out var country))
+
+            if (IsoReferenceData.countriesByAlpha2.TryGetValue(key, out var country))
             {
                 return country.Alpha2;
             }
 
-            return IsoReferenceData.CountriesByAlpha3.TryGetValue(key, out country) ? country.Alpha2 : "";
+            return IsoReferenceData.countriesByAlpha3.TryGetValue(key, out country) ? country.Alpha2 : "";
         }
     }
 }

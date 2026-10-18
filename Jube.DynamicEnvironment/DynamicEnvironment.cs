@@ -151,10 +151,49 @@ namespace Jube.DynamicEnvironment
                     "EnableExhaustiveTraining", "True"
                 },
                 {
+                    "EnableAdvancedAnalyticsTraining", "True"
+                },
+                {
+                    "AdvancedAnalyticsTrainingPollSeconds", "5"
+                },
+                {
+                    "AdvancedAnalyticsTrainingMaxConcurrentRuns", "2"
+                },
+                {
+                    "AdvancedAnalyticsTrainingMaxConcurrentRunsPerTenant", "1"
+                },
+                {
+                    "AdvancedAnalyticsTrainingMaxRunSeconds", "1800"
+                },
+                {
+                    "AdvancedAnalyticsTrainingHeartbeatSeconds", "10"
+                },
+                {
+                    "AdvancedAnalyticsTrainingStaleSeconds", "120"
+                },
+                {
+                    "AdvancedAnalyticsTrainingInlineMaxRows", "20000"
+                },
+                {
+                    "AdvancedAnalyticsTrainingInlineMaxBytes", "16777216"
+                },
+                {
+                    "AdvancedAnalyticsTrainingOnlineMaxRows", "2000"
+                },
+                {
                     "EnableReprocessing", "True"
                 },
                 {
-                    "UseMockDataExhaustive", "True"
+                    "ExhaustiveDatasetUploadMaxBytes", "52428800"
+                },
+                {
+                    "ExhaustiveDatasetUploadMaxRows", "1000000"
+                },
+                {
+                    "ExhaustiveDatasetUploadMaxColumns", "500"
+                },
+                {
+                    "ExhaustiveBatchRecallMaxRows", "2000"
                 },
                 {
                     "SanctionLoaderWait", "3600000"
@@ -176,6 +215,9 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "EnableMockEndpoints", "True"
+                },
+                {
+                    "EnableVisualisationDatasourceTableAllowList", "True"
                 },
                 {
                     "ApprovalsRequired", "1"
@@ -287,6 +329,27 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "ExhaustiveSimulationsCount", "100"
+                },
+                {
+                    "ExhaustiveChallengerModelBaseProbability", "0.1"
+                },
+                {
+                    "ExhaustiveAnomalyAutoBudgetSeconds", "120"
+                },
+                {
+                    "ExhaustiveRecallTimeout", "1000"
+                },
+                {
+                    "AdvancedAnalyticsStageTimeout", "1000"
+                },
+                {
+                    "AdvancedAnalyticsCacheTtlSeconds", "3600"
+                },
+                {
+                    "AdvancedAnalyticsCacheMaxEntryBytes", "67108864"
+                },
+                {
+                    "AdvancedAnalyticsCacheMaxTenantBytes", "1073741824"
                 },
                 {
                     "EnableCallback", "True"
@@ -640,6 +703,9 @@ namespace Jube.DynamicEnvironment
                     "EnableInfrastructureHealthMetricsPurge", "True"
                 },
                 {
+                    "DockerMonitoringProxyUrl", null
+                },
+                {
                     "WaitInfrastructureHealthMetricsPurge", "60000"
                 },
                 {
@@ -653,10 +719,239 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "OpenTelemetryMetricCaptureSamplePercentage", "100"
+                },
+                {
+                    "EnableAskJooby", "False"
+                },
+                {
+                    "AskJoobyApiEndpoint", "https://inference.do-ai.run/v1"
+                },
+                {
+                    "AskJoobyApiKey", null
+                },
+                {
+                    "AskJoobyModel", "deepseek-v4.1-flash"
+                },
+                {
+                    "AskJoobyEmbeddingModel", "bge-m3"
+                },
+                {
+                    "AskJoobyEmbeddingApiEndpoint", "https://inference.do-ai.run/v1"
+                },
+                {
+                    "AskJoobyEmbeddingApiKey", null
+                },
+                {
+                    "AskJoobyRerankerModel", "bge-reranker-v2-m3"
+                },
+                {
+                    "AskJoobyRerankerApiEndpoint", "https://inference.do-ai.run/v1"
+                },
+                {
+                    "AskJoobyRerankerApiKey", null
+                },
+                {
+                    "AskJoobyRagCandidateCount", "40"
+                },
+                {
+                    "AskJoobyRagMaxCandidateCharacters", "3500"
+                },
+                {
+                    "AskJoobyRagPromotionBudgetCharacters", "6000"
+                },
+                {
+                    "AskJoobyRerankerMinScore", "-100"
+                },
+                {
+                    "AskJoobyEnableReranking", "True"
+                },
+                {
+                    "AskJoobyThinkingDisableExplicitly", "True"
+                },
+                {
+                    "AskJoobyTemperature", null
+                },
+                {
+                    "AskJoobyMaxFanOut", "8"
+                },
+                {
+                    "AskJoobyMaxSpawnDepth", "6"
+                },
+                {
+                    "AskJoobyMemoryDecayHalfLifeDays", "30"
+                },
+                {
+                    "AskJoobyEnableValidation", "True"
+                },
+                {
+                    "AskJoobyMaxToolResultCharacters", "6000"
+                },
+                {
+                    "AskJoobyMaxSearchesPerTurn", "64"
+                },
+                {
+                    "AskJoobyEnableSuggestions", "True"
+                },
+                {
+                    "AskJoobyValidationModel", "deepseek-v4.1-flash"
+                },
+                {
+                    "AskJoobyValidationApiEndpoint", null
+                },
+                {
+                    "AskJoobyValidationApiKey", null
+                },
+                {
+                    "AskJoobyEnableAiAnalysis", "True"
+                },
+                {
+                    "AskJoobyAiAnalysisModel", "deepseek-v4.1-flash"
+                },
+                {
+                    "AskJoobyAiAnalysisApiEndpoint", null
+                },
+                {
+                    "AskJoobyAiAnalysisApiKey", null
+                },
+                {
+                    "AskJoobyAiAnalysisTimeoutSeconds", "60"
+                },
+                {
+                    "AskJoobyAiAnalysisEnableThinking", "False"
+                },
+                {
+                    "AskJoobyAiAnalysisThinkingEffort", "0"
+                },
+                {
+                    "AskJoobyAiAnalysisCodeBudgetCharacters", "16000"
+                },
+                {
+                    "AskJoobyEnableThinking", "False"
+                },
+                {
+                    "AskJoobyThinkingEffort", "1"
+                },
+                {
+                    "AskJoobyValidationEnableThinking", "False"
+                },
+                {
+                    "AskJoobyValidationThinkingEffort", "0"
+                },
+                {
+                    "AskJoobyValidationTemperature", "0.0"
+                },
+                {
+                    "AskJoobyRagTopK", "3"
+                },
+                {
+                    "AskJoobyRagMinScore", "0.013"
+                },
+                {
+                    "AskJoobyValidationRagMinScore", "0.02"
+                },
+                {
+                    "AskJoobyEmbedAllMessages", "True"
+                },
+                {
+                    "AskJoobyReadOnly", "False"
+                },
+                {
+                    "AskJoobyChatInputPromptInjectionMainThreshold", "0.97"
+                },
+                {
+                    "AskJoobyEnableChatInputTopicBoundary", "True"
+                },
+                {
+                    "AskJoobyUtilityEnableThinking", "False"
+                },
+                {
+                    "AskJoobyUtilityThinkingEffort", "0"
+                },
+                {
+                    "AskJoobyMaxConcurrentToolCalls", "4"
+                },
+                {
+                    "AskJoobyAgentIdleTimeoutSeconds", "360"
+                },
+                {
+                    "AskJoobyMaxIterationsPerRequest", "200"
+                },
+                {
+                    "AskJoobyTurnTokenBudget", "10000000"
+                },
+                {
+                    "AskJoobyAgentTokenBudget", "2000000"
+                },
+                {
+                    "AskJoobyCachedTokenBudgetWeight", "0.1"
+                },
+                {
+                    "AskJoobyMaxOutputTokens", "12288"
+                },
+                {
+                    "AskJoobyRecordPromptPrefixHash", "False"
+                },
+                {
+                    "AskJoobyShowPromptCacheShare", "True"
+                },
+                {
+                    "EnableAskJoobyCostBanner", "True"
+                },
+                {
+                    "RServerUrl", "http://localhost:8080"
+                },
+                {
+                    "RServerHttpTimeout", "330000"
+                },
+                {
+                    "RServerMaxConnections", "10"
+                },
+                {
+                    "RServerValidateSsl", "True"
+                },
+                {
+                    "EnableAskJoobyR", "True"
+                },
+                {
+                    "EnableWebSearch", "False"
+                },
+                {
+                    "AskJoobyWebSearchProvider", "1"
+                },
+                {
+                    "AskJoobyWebSearchApiKey", null
+                },
+                {
+                    "AskJoobyWebSearchApiEndpoint", "https://api.tavily.com/search"
+                },
+                {
+                    "AskJoobyWebSearchMaxResults", "5"
+                },
+                {
+                    "AskJoobyWebSearchDepth", "2"
+                },
+                {
+                    "AskJoobyWebSearchAnswerMode", "2"
+                },
+                {
+                    "AskJoobyWebSearchRawContentMode", "2"
+                },
+                {
+                    "EnableOpenCorporates", "False"
+                },
+                {
+                    "AskJoobyOpenCorporatesApiKey", null
+                },
+                {
+                    "AskJoobyOpenCorporatesApiEndpoint", "https://api.opencorporates.com/v0.4"
+                },
+                {
+                    "AskJoobyOpenCorporatesMaxResults", "5"
                 }
             };
 
             var secretsPath = Environment.GetEnvironmentVariable("SecretsPath") ?? string.Empty;
+
             if (string.IsNullOrEmpty(secretsPath))
             {
                 secretsPath = appSettings["SecretsPath"] ?? string.Empty;
@@ -673,48 +968,51 @@ namespace Jube.DynamicEnvironment
                            appSettings[environmentVariable.Key.ToString() ?? string.Empty]
                      select environmentVariable)
             {
-                if (environmentVariable.Value == null)
+                var replaced = Convert.ToString(environmentVariable.Value);
+
+                if (string.IsNullOrEmpty(replaced))
                 {
                     continue;
                 }
 
-                var replaced = Convert.ToString(environmentVariable.Value);
-                if (replaced != null)
+                foreach (var token in Tokenisation.Tokenisation.ReturnTokens(replaced))
                 {
-                    foreach (var token in Tokenisation.Tokenisation.ReturnTokens(replaced))
+                    var path = Path.Combine(secretsPath, token);
+
+                    if (!File.Exists(path))
                     {
-                        var path = Path.Combine(secretsPath, token);
-                        if (!File.Exists(path))
-                        {
-                            Console.WriteLine(
-                                $@"For environment variable {environmentVariable.Key} could not find {path} in container.");
-                            continue;
-                        }
+                        Console.WriteLine(
+                            $@"For environment variable {environmentVariable.Key} could not find {path} in container.");
 
-                        string secret;
-                        try
-                        {
-                            secret = File.ReadAllText(path).Trim();
-                        }
-                        catch (IOException ex)
-                        {
-                            Console.WriteLine(
-                                $@"For environment variable {environmentVariable.Key} could not read {path}: {ex.Message}");
-                            continue;
-                        }
-
-                        if (string.IsNullOrEmpty(secret))
-                        {
-                            Console.WriteLine(
-                                $@"For environment variable {environmentVariable.Key} path {path} in container but it is empty.");
-                            continue;
-                        }
-
-                        replaced = replaced.Replace($"[@{token}@]", secret);
+                        continue;
                     }
 
-                    appSettings[environmentVariable.Key.ToString() ?? string.Empty] = replaced;
+                    string secret;
+
+                    try
+                    {
+                        secret = File.ReadAllText(path).Trim();
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine(
+                            $@"For environment variable {environmentVariable.Key} could not read {path}: {ex.Message}");
+
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(secret))
+                    {
+                        Console.WriteLine(
+                            $@"For environment variable {environmentVariable.Key} path {path} in container but it is empty.");
+
+                        continue;
+                    }
+
+                    replaced = replaced.Replace($"[@{token}@]", secret);
                 }
+
+                appSettings[environmentVariable.Key.ToString() ?? string.Empty] = replaced;
             }
 
             InstantiateLog4Net();
@@ -730,6 +1028,7 @@ namespace Jube.DynamicEnvironment
         {
             Console.WriteLine(@"Console logging for instantiation of logging library:");
             Console.WriteLine();
+
             Console.WriteLine(
                 $@"Log4NetConfigFileLocationName:{Environment.GetEnvironmentVariable("Log4NetConfigFileLocationName")}");
             Console.WriteLine($@"Log4NetLogPath:{Environment.GetEnvironmentVariable("Log4NetLogPath")}");
@@ -749,6 +1048,7 @@ namespace Jube.DynamicEnvironment
                         $@"Checking log4net XML serialisation file path {path} exists.");
 
                     var fileInfo = new FileInfo(path);
+
                     if (fileInfo.Exists)
                     {
                         try
@@ -765,6 +1065,7 @@ namespace Jube.DynamicEnvironment
                         {
                             Console.WriteLine(
                                 $@"A log4net configuration file path: {path} was provided but it failed to parse with error {ex}. Falling back to default logger configuration.");
+
                             ConfigureLoggerFromEnvironmentVariables();
                         }
                     }
@@ -788,6 +1089,7 @@ namespace Jube.DynamicEnvironment
             catch (Exception ex)
             {
                 Console.WriteLine();
+
                 Console.WriteLine(
                     $@"Failed to instantiate the logger with error {ex}.  No logging exists for the instance.");
             }
@@ -819,6 +1121,7 @@ namespace Jube.DynamicEnvironment
         private void ConfigureRollingFileAppender(PatternLayout patternLayout, Level log4NetLevel)
         {
             var log4NetLogFile = Log4NetLogFile();
+
             if (log4NetLogFile != null)
             {
                 Console.WriteLine(@"Configuring software instantiation of log4net RollingFileAppender:");
@@ -862,6 +1165,7 @@ namespace Jube.DynamicEnvironment
         private Level Log4NetLogLevel()
         {
             appSettings.TryGetValue("Log4NetLogLevel", out var log4NetLogLevel);
+
             return log4NetLogLevel switch
             {
                 "ERROR" => Level.Error,
@@ -875,9 +1179,11 @@ namespace Jube.DynamicEnvironment
         private PatternLayout PatternLayout()
         {
             appSettings.TryGetValue("Log4NetPatternLayout", out var log4NetPatternLayout);
+
             var layout = new PatternLayout(log4NetPatternLayout ??
                                            "%date:%-5level:[%thread]:[%logger::%method]:%line:%message%newline");
             layout.ActivateOptions();
+
             return layout;
         }
 
@@ -885,12 +1191,14 @@ namespace Jube.DynamicEnvironment
         {
             appSettings.TryGetValue("Log4NetMaximumFileSize", out var log4NetMaximumFileSize);
             log4NetMaximumFileSize ??= "100MB";
+
             return log4NetMaximumFileSize;
         }
 
         private int Log4NetMaxSizeRollBackupsInt()
         {
             appSettings.TryGetValue("Log4NetMaxSizeRollBackups", out var log4NetMaxSizeRollBackups);
+
             if (!int.TryParse(log4NetMaxSizeRollBackups, out var log4NetMaxSizeRollBackupsInt))
             {
                 log4NetMaxSizeRollBackupsInt = 100;
@@ -956,6 +1264,7 @@ namespace Jube.DynamicEnvironment
         public string AppSettings(string key)
         {
             string value = null;
+
             if (appSettings.TryGetValue(key, out var setting))
             {
                 value = setting;

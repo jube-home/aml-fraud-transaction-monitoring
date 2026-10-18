@@ -38,12 +38,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             {
                 var currentPrevailingActivationRuleId = prevailingActivationRuleId;
                 var currentActivationRuleCount = activationRuleCount;
+
                 context.TraceLog(
                     $"response elevation for activation rule {evaluateActivationRule.Id} has not been included in the local count as the rule is not set to visible. The prevailing activation rule id is {currentPrevailingActivationRuleId} and this activation rule count is {currentActivationRuleCount}.");
             }
 
             var finalPrevailingActivationRuleId = prevailingActivationRuleId;
             var finalActivationRuleCount = activationRuleCount;
+
             context.TraceLog(
                 $"response elevation for activation rule {evaluateActivationRule.Id} activation counter has been incremented and the prevailing activation rule has been set to {finalPrevailingActivationRuleId}. This activation rule count is {finalActivationRuleCount}.");
         }

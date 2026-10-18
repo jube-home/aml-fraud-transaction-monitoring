@@ -5,9 +5,6 @@ nav_order: 8
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Rule and Code Builder
 
 Several pages in the platform rely on the construction of code and in most cases this is facilitated by a point and

@@ -38,6 +38,7 @@ namespace Jube.App.Code.Waf
 
             using var timer = new PeriodicTimer(ComputeWindow(
                 dynamicEnvironment.AppSettings("WafRefreshInterval"), Setting("WafRefreshIntervalValue", 30)));
+
             while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
             {
                 try

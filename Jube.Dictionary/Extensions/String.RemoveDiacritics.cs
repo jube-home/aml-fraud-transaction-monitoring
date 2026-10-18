@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Globalization;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace Jube.Dictionary.Extensions
             foreach (var t in normalizedString)
             {
                 var uc = CharUnicodeInfo.GetUnicodeCategory(t);
+
                 if (uc != UnicodeCategory.NonSpacingMark)
                 {
                     sb.Append(t);

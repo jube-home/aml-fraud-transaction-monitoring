@@ -37,46 +37,6 @@ namespace Jube.Test.Repository
         private readonly List<int> requestXPathIds = [];
         private int tenantRegistryId;
 
-        public async Task InitializeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            tenantRegistryId = await dbContext.UserInTenant
-                .Where(w => w.User == fx.Seed.UserWithPermission)
-                .Select(s => s.TenantRegistryId)
-                .FirstAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
-                .Where(w => requestXPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
-            await dbContext.EntityAnalysisModelRequestXpath
-                .Where(w => requestXPathIds.Contains(w.Id)).DeleteAsync();
-
-            await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
-                .Where(w => activationRuleIds.Contains(w.EntityAnalysisModelActivationRuleId!.Value)).DeleteAsync();
-            await dbContext.EntityAnalysisModelActivationRule
-                .Where(w => activationRuleIds.Contains(w.Id)).DeleteAsync();
-
-            await dbContext.GetTable<EntityAnalysisModelListValueVersion>()
-                .Where(w => listValueIds.Contains(w.EntityAnalysisModelListValueId!.Value)).DeleteAsync();
-            await dbContext.EntityAnalysisModelListValue
-                .Where(w => listValueIds.Contains(w.Id)).DeleteAsync();
-
-            await dbContext.EntityAnalysisModelListVersion
-                .Where(w => listIds.Contains(w.EntityAnalysisModelListId)).DeleteAsync();
-            await dbContext.EntityAnalysisModelList
-                .Where(w => listIds.Contains(w.Id)).DeleteAsync();
-
-            await dbContext.GetTable<EntityAnalysisModelVersion>()
-                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.EntityAnalysisModel
-                .Where(w => modelIds.Contains(w.Id)).DeleteAsync();
-        }
-
         private async Task<EntityAnalysisModel> SeedModelAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -96,6 +56,7 @@ namespace Jube.Test.Repository
 
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
+
             return model;
         }
 
@@ -118,7 +79,51 @@ namespace Jube.Test.Repository
             });
 
             requestXPathIds.Add(id);
+
             return id;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
+                .Where(w => requestXPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelRequestXpath
+                .Where(w => requestXPathIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
+                .Where(w => activationRuleIds.Contains(w.EntityAnalysisModelActivationRuleId!.Value)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelActivationRule
+                .Where(w => activationRuleIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelListValueVersion>()
+                .Where(w => listValueIds.Contains(w.EntityAnalysisModelListValueId!.Value)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModelListValue
+                .Where(w => listValueIds.Contains(w.Id)).DeleteAsync();
+            await dbContext.EntityAnalysisModelListVersion
+                .Where(w => listIds.Contains(w.EntityAnalysisModelListId)).DeleteAsync();
+            await dbContext.EntityAnalysisModelList
+                .Where(w => listIds.Contains(w.Id)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
+                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModel
+                .Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         [Fact]
@@ -136,12 +141,16 @@ namespace Jube.Test.Repository
                 .Where(w => w.EntityAnalysisModelRequestXpathId == id).ToListAsync();
 
             using var scope = new AssertionScope();
+
             versions.Should().HaveCount(2,
                 "a delete is a pending change: it archives the pre-delete row for approval to fall back to, and the deleted state so history holds every version");
+
             var preDelete = versions.Single(w => w.Version == 1);
             preDelete.Name.Should().Be("ZzDelVerAmount");
+
             (preDelete.Deleted is null or 0).Should().BeTrue(
                 "the version row is the row as it stood before the delete, so it is not itself deleted");
+
             var deletedState = versions.Single(w => w.Version == 2);
             deletedState.Deleted.Should().Be(1);
             deletedState.DeletedUser.Should().Be(fx.Seed.UserWithPermission);
@@ -161,8 +170,10 @@ namespace Jube.Test.Repository
             var core = await dbContext.EntityAnalysisModelRequestXpath.FirstAsync(w => w.Id == id);
 
             using var scope = new AssertionScope();
+
             core.Version.Should().Be(2,
                 "without the bump the approval granted against version one would still match the deleted row");
+
             core.Deleted.Should().Be(1);
             core.DeletedUser.Should().Be(fx.Seed.UserWithPermission);
             core.DeletedDate.Should().NotBeNull();
@@ -255,14 +266,18 @@ namespace Jube.Test.Repository
 
             var versions = await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
                 .Where(w => w.EntityAnalysisModelActivationRuleId == id).ToListAsync();
+
             var core = await dbContext.EntityAnalysisModelActivationRule.FirstAsync(w => w.Id == id);
 
             using var scope = new AssertionScope();
             versions.Should().HaveCount(2);
+
             versions.Should().Contain(w => w.Version == 3,
                 "the superseded version is the one the row was on before the delete");
+
             versions.Should().Contain(w => w.Version == 4 && w.Deleted == 1,
                 "the deleted state is archived as the version the delete produced");
+
             core.Version.Should().Be(4);
         }
 
@@ -306,13 +321,16 @@ namespace Jube.Test.Repository
 
             var versions = await dbContext.GetTable<EntityAnalysisModelListValueVersion>()
                 .Where(w => w.EntityAnalysisModelListValueId == id).ToListAsync();
+
             var core = await dbContext.EntityAnalysisModelListValue.FirstAsync(w => w.Id == id);
 
             using var scope = new AssertionScope();
             versions.Should().HaveCount(2);
             versions.Should().OnlyContain(w => w.ListValue == "ZzDelVerValue");
+
             versions.Should().OnlyContain(w => w.EntityAnalysisModelListId == listId,
                 "per-value approval resolution needs the parent list to find the value's versions");
+
             core.Version.Should().Be(2);
         }
 
@@ -328,6 +346,7 @@ namespace Jube.Test.Repository
 
             var versions = await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => w.EntityAnalysisModelId == model.Id).ToListAsync();
+
             var core = await dbContext.EntityAnalysisModel.FirstAsync(w => w.Id == model.Id);
 
             using var scope = new AssertionScope();

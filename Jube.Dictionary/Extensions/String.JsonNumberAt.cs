@@ -21,6 +21,7 @@ namespace Jube.Dictionary.Extensions
         public static double JsonNumberAt(this string? @this, string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
+
             return node is JsonValue value && value.GetValueKind() == JsonValueKind.Number
                 ? value.GetValue<double>()
                 : double.NaN;

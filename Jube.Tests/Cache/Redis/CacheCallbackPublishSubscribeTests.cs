@@ -18,7 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 using CallbackDto = Jube.Cache.Redis.Callback.Callback;
@@ -39,6 +39,7 @@ namespace Jube.Test.Cache.Redis
             var log = new TestLog();
             var fake = new FakeHybridResilientRedisDatabase();
             var instance = new CacheCallbackPublishSubscribe(callbacks, log, instanceGuid, fake);
+
             return (instance, log, callbacks, fake);
         }
 
@@ -166,8 +167,10 @@ namespace Jube.Test.Cache.Redis
             instance.AddToDictionary(payload, guid, 1);
 
             callbacks.Should().HaveCount(1);
+
             ReferenceEquals(callbacks[guid], pending).Should().BeTrue(
                 "AddToDictionary should complete the existing pending TaskCompletionSource rather than replacing it");
+
             pending.Task.IsCompletedSuccessfully.Should().BeTrue();
 
 #pragma warning disable VSTHRD002, AsyncFixer02, VSTHRD103
@@ -237,8 +240,10 @@ namespace Jube.Test.Cache.Redis
 
             callbacks.Should().NotContainKey(pendingGuid,
                 "a pending callback that has never arrived should be swept once past its timeout");
+
             pendingTcs.Task.IsFaulted.Should().BeTrue(
                 "the awaiting caller should be told the callback timed out, not left hanging forever");
+
             pendingTcs.Task.Exception!.InnerException.Should().BeOfType<TimeoutException>();
         }
 

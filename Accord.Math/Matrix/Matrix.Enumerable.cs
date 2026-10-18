@@ -1,97 +1,101 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System.Collections.Generic;
 
 namespace Accord.Math
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-
     public static partial class Matrix
     {
-
         /// <summary>
-        ///   Gets the number of rows in a jagged matrix.
+        ///     Gets the number of rows in a jagged matrix.
         /// </summary>
-        /// 
         /// <typeparam name="T">The type of the elements in the matrix.</typeparam>
         /// <param name="values">The matrix whose number of rows must be computed.</param>
-        /// 
         /// <returns>The number of rows in the matrix.</returns>
-        /// 
         public static int Rows<T>(this IList<IList<T>> values)
         {
             return values.Count;
         }
 
         /// <summary>
-        ///   Gets the number of columns in a jagged matrix.
+        ///     Gets the number of columns in a jagged matrix.
         /// </summary>
-        /// 
         /// <typeparam name="T">The type of the elements in the matrix.</typeparam>
         /// <param name="values">The matrix whose number of rows must be computed.</param>
-        /// 
         /// <returns>The number of columns in the matrix.</returns>
-        /// 
         public static int Columns<T>(this IList<IList<T>> values)
         {
             return values[0].Count;
         }
 
         /// <summary>
-        ///   Converts a matrix represented as a nested list of lists into a multi-dimensional matrix.
+        ///     Converts a matrix represented as a nested list of lists into a multi-dimensional matrix.
         /// </summary>
-        /// 
         public static T[,] ToMatrix<T, U>(this IList<IList<T>> values)
         {
-            int rows = values.Rows();
-            int cols = values.Columns();
+            var rows = values.Rows();
+            var cols = values.Columns();
 
-            T[,] result = Matrix.Zeros<T>(rows, cols);
-            for (int i = 0; i < values.Count; i++)
-                for (int j = 0; j < values[i].Count; j++)
+            var result = Zeros<T>(rows, cols);
+            for (var i = 0; i < values.Count; i++)
+            {
+                for (var j = 0; j < values[i].Count; j++)
+                {
                     result[i, j] = values[i][j];
+                }
+            }
 
             return result;
         }
 
         /// <summary>
-        ///   Converts a matrix represented as a nested list of lists into a jagged matrix.
+        ///     Converts a matrix represented as a nested list of lists into a jagged matrix.
         /// </summary>
-        /// 
         public static T[][] ToJagged<T>(this IList<IList<T>> values)
         {
-            int rows = values.Rows();
-            int cols = values.Columns();
+            var rows = values.Rows();
+            var cols = values.Columns();
 
-            T[][] result = Jagged.Zeros<T>(rows, cols);
-            for (int i = 0; i < values.Count; i++)
-                for (int j = 0; j < values[i].Count; j++)
+            var result = Jagged.Zeros<T>(rows, cols);
+            for (var i = 0; i < values.Count; i++)
+            {
+                for (var j = 0; j < values[i].Count; j++)
+                {
                     result[i][j] = values[i][j];
+                }
+            }
 
             return result;
         }
-
-
     }
 }

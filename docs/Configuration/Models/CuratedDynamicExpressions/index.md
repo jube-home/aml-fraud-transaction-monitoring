@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Curated Dynamic Expressions
 
 Every extension method described in [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html)
@@ -23,7 +20,7 @@ managed today. Once curated, it is used from a rule exactly like any other exten
 
 ``` vb
 If Payload.Email.IsGmailEmail Then
-    Return Matched
+    Return True
 End If
 ```
 

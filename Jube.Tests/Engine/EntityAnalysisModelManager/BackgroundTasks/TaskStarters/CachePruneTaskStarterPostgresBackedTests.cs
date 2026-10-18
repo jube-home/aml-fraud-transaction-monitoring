@@ -67,6 +67,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
 
             var latestBatchIds = await dbContext.GetTable<CachePayloadLatestRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).Select(s => s.Id).ToListAsync();
+
             if (latestBatchIds.Count > 0)
             {
                 await dbContext.GetTable<CachePayloadLatestRemovalBatchEntry>()
@@ -175,6 +176,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
 
             var remainingPayloadReferenceDates =
                 await redis.SortedSetRangeByScoreWithScoresAsync(payloadReferenceDateKey);
+
             remainingPayloadReferenceDates.Select(s => s.Element.ToString()).Should()
                 .NotContain(expiredInstanceGuid.ToString("N"))
                 .And.Contain(survivingInstanceGuid.ToString("N"));
@@ -185,6 +187,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 .BeTrue("the surviving payload entry must not be touched");
 
             var remainingLatest = await redis.SortedSetRangeByScoreWithScoresAsync(latestReferenceDateSortedSetKey);
+
             remainingLatest.Select(s => s.Element.ToString()).Should()
                 .NotContain(expiredSearchKeyValue)
                 .And.Contain(survivingSearchKeyValue);
@@ -200,6 +203,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var payloadBatches = await assertDbContext.GetTable<CachePayloadRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).ToListAsync();
             payloadBatches.Should().ContainSingle();
+
             payloadBatches.Single().ExpiredSortedSetCount.Should().Be(1,
                 "only the expired instance should have been picked up for deletion, not the surviving one");
 
@@ -211,6 +215,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var latestBatches = await assertDbContext.GetTable<CachePayloadLatestRemovalBatch>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).ToListAsync();
             latestBatches.Should().ContainSingle();
+
             latestBatches.Single().ReferenceDate.Should().Be(referenceDate,
                 "the audit ReferenceDate column must be the real referenceDate, not the threshold");
 

@@ -32,6 +32,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
     {
         private const string DecoratedScript = """
                                                using System;
+
                                                using System.Threading.Tasks;
                                                using Jube.Engine.Attributes.Events;
                                                using Jube.Engine.Attributes.Properties;
@@ -62,9 +63,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
 
                                                        [Longitude]
                                                        public double Lon { get; set; }
-
                                                        public int Count { get; set; }
-
                                                        public string Unset { get; set; }
 
                                                        [ActivationRuleOverrideEvent(Guid = "bc81ff60-3254-4f1a-9003-ecae5e114142", Priority = 1)]
@@ -84,6 +83,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
 
         private const string InvalidScript = """
                                              using System.Threading.Tasks;
+
                                              using Jube.Engine.EntityAnalysisModelInvoke.Context;
                                              using Jube.Engine.Interfaces;
 
@@ -131,6 +131,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
         {
             var entityAnalysisModel =
                 new Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel();
+
             entityAnalysisModel.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
 
             return new Jube.Engine.EntityAnalysisModelInvoke.Context.Context
@@ -272,13 +273,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             inlineScript.EntityAnalysisModelInlineScriptEvents.Should().HaveCount(2);
 
             var first = inlineScript.EntityAnalysisModelInlineScriptEvents[0];
+
             first.EntityAnalysisModelInlineScriptEventType.Should()
                 .Be(EntityAnalysisModelInlineScriptEventTypeEnum.Payload);
+
             first.Priority.Should().Be(0);
 
             var second = inlineScript.EntityAnalysisModelInlineScriptEvents[1];
+
             second.EntityAnalysisModelInlineScriptEventType.Should()
                 .Be(EntityAnalysisModelInlineScriptEventTypeEnum.AbstractionRuleOverride);
+
             second.Priority.Should().Be(1);
             second.Guid.Should().Be(Guid.Parse("bc81ff60-3254-4f1a-9003-ecae5e114142"));
         }
@@ -337,6 +342,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             var second = InlineScriptTestCompiler.CompileValid(15, DecoratedScript);
 
             first.ActivatorDelegate.Should().NotBeSameAs(second.ActivatorDelegate);
+
             first.ActivatorDelegate().GetType().FullName.Should()
                 .Be(second.ActivatorDelegate().GetType().FullName);
         }

@@ -47,9 +47,7 @@ public static class ObservabilityPayloads
     ];
 
     public static readonly TimeSpan SleepBound = TimeSpan.FromSeconds(5.5);
-
     public static IReadOnlyList<string> Injection { get; } = Build();
-
     public static IReadOnlyList<string> SortNameVariants { get; } = BuildSortVariants();
 
     private static IReadOnlyList<string> BuildSortVariants()
@@ -59,12 +57,15 @@ public static class ObservabilityPayloads
             "level", "loggerName", "message", "exception", "occurredDate", "createdDate", "instance", "id",
             "elapsedMicroseconds", "entityAnalysisModelName", "stageName", "durationMicroseconds"
         };
+
         var suffixes = new[]
         {
             "", " ", " asc", " DESC", ";", "--", "\"", "'", ",1", ",(SELECT 1)", "\0", "\t", "%", "ı", "－－",
             "; DROP TABLE x", " DESC,pg_sleep(0)"
         };
+
         var result = new List<string>();
+
         foreach (var name in names)
         {
             foreach (var suffix in suffixes)
@@ -99,6 +100,7 @@ public static class ObservabilityPayloads
         all.AddRange(PenTestPayloads.CsvFormulaInjection);
 
         var grammar = new List<string>();
+
         foreach (var prefix in prefixes)
         {
             foreach (var condition in conditions)
@@ -111,12 +113,14 @@ public static class ObservabilityPayloads
         }
 
         var stride = Math.Max(1, grammar.Count / 120);
+
         for (var i = 0; i < grammar.Count; i += stride)
         {
             all.Add(grammar[i]);
         }
 
         var seeds = all.Take(60).ToList();
+
         foreach (var seed in seeds)
         {
             all.Add(MixCase(seed));
@@ -132,18 +136,21 @@ public static class ObservabilityPayloads
         }
 
         var distinct = all.Distinct().ToList();
+
         if (distinct.Count <= Cap)
         {
             return distinct;
         }
 
         var step = (double)distinct.Count / Cap;
+
         return [.. Enumerable.Range(0, Cap).Select(i => distinct[(int)(i * step)])];
     }
 
     private static string MixCase(string value)
     {
         var builder = new StringBuilder(value.Length);
+
         for (var i = 0; i < value.Length; i++)
         {
             builder.Append(i % 2 == 0 ? char.ToUpperInvariant(value[i]) : char.ToLowerInvariant(value[i]));
@@ -155,6 +162,7 @@ public static class ObservabilityPayloads
     private static string HtmlEncode(string value)
     {
         var builder = new StringBuilder(value.Length * 4);
+
         foreach (var c in value)
         {
             builder.Append("&#").Append((int)c).Append(';');

@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.UserLogout;
 using Jube.Service.Observability;
@@ -138,6 +138,7 @@ namespace Jube.Test.Service.UserLogout
         {
             await using var dbContext = fx.GetDbContext();
             var user = NewUser();
+
             await CreateSampleAsync(dbContext, user, await TenantOfAsync(dbContext, fx.Seed.UserWithPermission),
                 reasonId, outcomeId);
 
@@ -156,6 +157,7 @@ namespace Jube.Test.Service.UserLogout
             await using var dbContext = fx.GetDbContext();
             var user = NewUser();
             var end = DateTime.UtcNow;
+
             await CreateSampleAsync(dbContext, user, await TenantOfAsync(dbContext, fx.Seed.UserWithPermission),
                 createdDate: end, sessionStart: end.AddMinutes(-12).AddSeconds(-5));
 
@@ -171,6 +173,7 @@ namespace Jube.Test.Service.UserLogout
         {
             await using var dbContext = fx.GetDbContext();
             var user = NewUser();
+
             await CreateSampleAsync(dbContext, user, await TenantOfAsync(dbContext, fx.Seed.UserWithPermission),
                 2, 2);
 
@@ -234,6 +237,7 @@ namespace Jube.Test.Service.UserLogout
 
             (await service.ListAsync(from: newDate.AddMinutes(-1))).Rows.Where(r => r.CreatedUser == user)
                 .Should().ContainSingle();
+
             (await service.ListAsync(from: oldDate.AddDays(-1), to: oldDate.AddDays(1), search: user)).Rows
                 .Should().ContainSingle();
         }
@@ -281,6 +285,7 @@ namespace Jube.Test.Service.UserLogout
             await using var dbContext = fx.GetDbContext();
             var tenant = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
             var marker = $"zzmark{Guid.NewGuid():N}";
+
             await CreateSampleAsync(dbContext, NewUser(), tenant,
                 message: column == "message" ? marker : null,
                 cutByUser: column == "cutby" ? marker : null,
@@ -390,6 +395,7 @@ namespace Jube.Test.Service.UserLogout
 
             var descending = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.CreatedUser).Should().BeInDescendingOrder();
         }
 
@@ -406,6 +412,7 @@ namespace Jube.Test.Service.UserLogout
             await CreateSampleAsync(dbContext, $"{prefix}A", tenant);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: ascendingKeyword);
 
@@ -422,6 +429,7 @@ namespace Jube.Test.Service.UserLogout
             await CreateSampleAsync(dbContext, $"{prefix}B", tenant);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result = await service.ListAsync(search: prefix, sortField: "createdUser",
                 sortDirection: "garbage");
 
@@ -523,6 +531,7 @@ namespace Jube.Test.Service.UserLogout
 
             auditLog.Entries.Should().ContainSingle().Which.Message.Should()
                 .Contain("area=UserLogout").And.Contain("op=List").And.Contain("outcome=ok");
+
             activities.Should().ContainSingle(a => a.OperationName == "UserLogout.List")
                 .Which.GetTagItem("jube.outcome").Should().Be("ok");
         }

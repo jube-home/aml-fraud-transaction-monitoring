@@ -58,6 +58,7 @@ namespace Jube.Parser
                     {
                         return true;
                     }
+
                     break;
                 }
             }
@@ -101,7 +102,7 @@ namespace Jube.Parser
                     return testDouble;
                 }
             }
-            
+
             return 0;
         }
 

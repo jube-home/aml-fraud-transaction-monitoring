@@ -41,6 +41,7 @@ $.get("/api/VisualisationRegistry",
 
         if (typeof id === "undefined") {
             ReadyNew();
+            window.AskJoobySetPageContext?.("CaseWorkflow", "new", {[parentKeyName]: parentKey});
             SetEnableVisualisation();
         } else {
             $.get(endpoint + "/" + id,
@@ -55,6 +56,12 @@ $.get("/api/VisualisationRegistry",
 
                     SetEnableVisualisation();
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("CaseWorkflow", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     });

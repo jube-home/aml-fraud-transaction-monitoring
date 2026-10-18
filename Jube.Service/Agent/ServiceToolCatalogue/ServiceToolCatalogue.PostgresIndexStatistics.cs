@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.PostgresIndexStatistics;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -22,7 +25,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "PostgresIndexStatisticsList", OperationKind.Read, true, false,
                     "Lists live per-index Postgres statistics for every user index (scan counts, size, " +
                     "unique/primary-key/unused flags), queried live -- not stored history, not scoped to " +
-                    "any tenant."));
+                    "any tenant.", PostgresIndexStatisticsService.RequiredPermissions,
+                    PostgresIndexStatisticsService.RequiresLandlord));
         }
     }
 }

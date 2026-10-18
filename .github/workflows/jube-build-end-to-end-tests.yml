@@ -6,6 +6,10 @@
 # The suite runs as two slices, each standing up its own private copy of the stack, in parallel, so the wall
 # clock is the slower of the two rather than their sum.
 #
+# The first slice's filter names every category the suite defines besides PenTest - the AskJooby, AdvancedAnalytics,
+# Convention and Reporting categories were once uncovered by any gate, which is exactly the kind of silent hole the
+# filter now closes by naming them. A new category must be added here or it does not gate.
+#
 # The split is about isolation, not speed. A single unfiltered run put the pen test battery - thousands of
 # hostile requests, deliberately concurrent - on the same Postgres instance and the same Npgsql pool as the
 # Service tests, and the pen test's load starved the Service tests of connections; failures that said nothing
@@ -68,10 +72,10 @@ jobs:
       matrix:
         include:
           - slice: units-and-services
-            timeout: 60
-            filter: "Category=Unit|Category=Service|Category=PermissionParity"
+            timeout: 120
+            filter: "Category=Unit|Category=Service|Category=PermissionParity|Category=AskJooby|Category=AdvancedAnalytics|Category=Convention|Category=Reporting"
           - slice: pen-test
-            timeout: 60
+            timeout: 120
             filter: "Category=PenTest"
 
     env:
@@ -94,25 +98,83 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # The hosted runner offers roughly 14 to 20GB of free disk, and this slice needs more than that on its own:
+      # the jube.app image is 2.3GB now that the RAG corpus is embedded in Jube.Migrations, jube.r is another
+      # 2.1GB, the pulled bases add 2GB, the in-image restore-build-publish of the whole solution leaves several
+      # gigabytes of build cache, the host-side Release build is 4GB more because every output referencing
+      # Jube.Migrations carries the corpus-bearing assembly, and the seeded Postgres volume is 1.9GB before the
+      # WAL's transient growth. A full disk mid-migration kills Postgres, the app dies with it, and the container
+      # sits at "unhealthy" until the wait expires - a failure that reads as a hang and never names the disk.
+      # Removing toolchains this workflow never touches reclaims around 20GB for about a minute of runtime.
+      - name: Free runner disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/local/lib/android /opt/hostedtoolcache/CodeQL /usr/local/.ghcup /opt/ghc /usr/local/share/boost
+          sudo docker image prune -af
+          df -h /
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: Start the docker-compose stack
-        run: docker compose up -d --build
+      - uses: docker/setup-buildx-action@v3
 
+      # The jube-r image is built separately, ahead of the compose stack, so its layers can live in the Actions
+      # cache between runs: a hosted runner starts with an empty docker layer cache, so compose otherwise rebuilds
+      # the R image's package library from nothing on every run, which is minutes of work that only actually
+      # changes when something under Jube.R/ does. On an unchanged Jube.R/ the whole build is a cache hit and the
+      # image loads in well under a minute; on a change the build runs once and re-primes the cache for both this
+      # workflow and the ZAP one, which shares the scope.
+      - name: Build the jube-r image with a cross-run layer cache
+        uses: docker/build-push-action@v6
+        with:
+          context: Jube.R
+          tags: jube.r
+          load: true
+          cache-from: type=gha,scope=jube-r
+          cache-to: type=gha,scope=jube-r,mode=max
+
+      # The jube-r service is deliberately left out of the build list - its image was just loaded above, and
+      # "up" without --build starts services from the images that already exist rather than rebuilding them.
+      - name: Start the docker-compose stack
+        run: |
+          docker compose build jube jube-monitoring jube-otel-listener
+          docker compose up -d
+
+      # The images are built and running by this point, so the BuildKit cache - the sdk base, the full in-image
+      # restore, build and publish of the solution, the R package compilation - is dead weight on the same disk
+      # the seed is about to write two gigabytes into. Pruning it never touches the running containers' images
+      # or the jube-r layer cache, which lives in the Actions cache service rather than on this disk.
+      - name: Drop the docker build cache
+        run: docker builder prune -af && docker buildx prune -af && df -h /
+
+      # The boot applies every migration to a fresh volume, including inserting the 1.2GB RAG corpus into pgvector,
+      # and takes ~280 seconds on a fast local NVMe machine - so a ceiling of a few minutes is one the hosted
+      # runner's slower disk and CPU cannot meet. Thirty minutes is deliberately far past any plausible healthy
+      # boot: the loop exits the moment the container reports healthy, so only a genuinely failed boot ever pays
+      # the full wait, and a slow boot that succeeds is strictly better than a fast abort that says nothing. The
+      # container showing "unhealthy" mid-wait is the normal case rather than a verdict - the probe hits /api/ready
+      # and nothing listens until the migrations finish - so the loop only gives up early when the container has
+      # actually stopped, and a failure prints the disk, the container state and the stack logs so the run says
+      # which of slow-boot, crash and full-disk it was.
       - name: Wait for jube to become healthy
         run: |
-          for i in $(seq 1 60); do
+          for i in $(seq 1 360); do
             status=$(docker inspect --format '{{.State.Health.Status}}' jube 2>/dev/null || echo "starting")
             echo "attempt $i: $status"
             if [ "$status" = "healthy" ]; then
               exit 0
             fi
+            if [ "$(docker inspect --format '{{.State.Running}}' jube 2>/dev/null)" = "false" ]; then
+              echo "the jube container has stopped"
+              break
+            fi
             sleep 5
           done
-          echo "jube did not become healthy in time"
+          echo "jube did not become healthy"
+          df -h /
+          docker inspect --format '{{json .State}}' jube || true
           docker compose logs
           exit 1
 

@@ -1,95 +1,104 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.MachineLearning.VectorMachines.Learning;
+using Accord.Statistics.Kernels;
 
 namespace Accord.MachineLearning.VectorMachines
 {
-    using Accord.Diagnostics;
-    using Accord.MachineLearning;
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Statistics.Kernels;
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Accord.Compat;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Runtime.CompilerServices;
-    using Accord.MachineLearning.VectorMachines.Learning;
-
     /// <summary>
-    ///   One-against-one Multi-class Kernel Support Vector Machine Classifier.
+    ///     One-against-one Multi-class Kernel Support Vector Machine Classifier.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The Support Vector Machine is by nature a binary classifier. One of the ways
-    ///   to extend the original SVM algorithm to multiple classes is to build a one-
-    ///   against-one scheme where multiple SVMs specialize to recognize each of the
-    ///   available classes. By using a competition scheme, the original multi-class
-    ///   classification problem is then reduced to <c>n*(n/2)</c> smaller binary problems.</para>
-    /// <para>
-    ///   Currently this class supports only Kernel machines as the underlying classifiers.
-    ///   If a Linear Support Vector Machine is needed, specify a Linear kernel in the
-    ///   constructor at the moment of creation. </para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       <a href="http://courses.media.mit.edu/2006fall/mas622j/Projects/aisen-project/index.html">
-    ///        http://courses.media.mit.edu/2006fall/mas622j/Projects/aisen-project/index.html </a></description></item>
-    ///     <item><description>
-    ///       <a href="http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html">
-    ///        http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html </a></description></item>
-    ///     </list></para>
+    ///     <para>
+    ///         The Support Vector Machine is by nature a binary classifier. One of the ways
+    ///         to extend the original SVM algorithm to multiple classes is to build a one-
+    ///         against-one scheme where multiple SVMs specialize to recognize each of the
+    ///         available classes. By using a competition scheme, the original multi-class
+    ///         classification problem is then reduced to <c>n*(n/2)</c> smaller binary problems.
+    ///     </para>
+    ///     <para>
+    ///         Currently this class supports only Kernel machines as the underlying classifiers.
+    ///         If a Linear Support Vector Machine is needed, specify a Linear kernel in the
+    ///         constructor at the moment of creation.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://courses.media.mit.edu/2006fall/mas622j/Projects/aisen-project/index.html">
+    ///                         http://courses.media.mit.edu/2006fall/mas622j/Projects/aisen-project/index.html
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html">
+    ///                         http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   The following example shows how to learn a linear, multi-class support vector 
-    ///   machine using the <see cref="LinearDualCoordinateDescent"/> algorithm. </para>
-    /// <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs" region="doc_learn_ldcd" />
-    /// 
-    /// <para>
-    ///   The following example shows how to learn a non-linear, multi-class support 
-    ///   vector machine using the <see cref="Gaussian"/> kernel and the 
-    ///   <see cref="SequentialMinimalOptimization{TKernel}"/> algorithm. </para>
-    /// <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs" region="doc_learn_gaussian" />
-    ///   
-    /// <para>
-    ///   Support vector machines can have their weights calibrated in order to produce 
-    ///   probability estimates (instead of simple class separation distances). The
-    ///   following example shows how to use <see cref="ProbabilisticOutputCalibration"/>
-    ///   within <see cref="MulticlassSupportVectorLearning{TKernel}"/> to generate a probabilistic
-    ///   SVM:</para>
-    /// <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs" region="doc_learn_calibration" />
+    ///     <para>
+    ///         The following example shows how to learn a linear, multi-class support vector
+    ///         machine using the <see cref="LinearDualCoordinateDescent" /> algorithm.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs"
+    ///         region="doc_learn_ldcd" />
+    ///     <para>
+    ///         The following example shows how to learn a non-linear, multi-class support
+    ///         vector machine using the <see cref="Gaussian" /> kernel and the
+    ///         <see cref="SequentialMinimalOptimization{TKernel}" /> algorithm.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs"
+    ///         region="doc_learn_gaussian" />
+    ///     <para>
+    ///         Support vector machines can have their weights calibrated in order to produce
+    ///         probability estimates (instead of simple class separation distances). The
+    ///         following example shows how to use <see cref="ProbabilisticOutputCalibration" />
+    ///         within <see cref="MulticlassSupportVectorLearning{TKernel}" /> to generate a probabilistic
+    ///         SVM:
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs"
+    ///         region="doc_learn_calibration" />
     /// </example>
-    ///
-    /// <seealso cref="Learning.MulticlassSupportVectorLearning{TKernel, TInput}"/>
-    /// 
-    /// <seealso cref="SupportVectorMachine"/>
-    /// <seealso cref="Learning.SequentialMinimalOptimization{TKernel, TInput}"/>
-    ///
+    /// <seealso cref="MulticlassSupportVectorLearning{TKernel, TInput}" />
+    /// <seealso cref="SupportVectorMachine" />
+    /// <seealso cref="SequentialMinimalOptimization{TKernel, TInput}" />
     [Serializable]
     public class MulticlassSupportVectorMachine<TKernel, TInput> :
         MulticlassSupportVectorMachine<
@@ -98,7 +107,7 @@ namespace Accord.MachineLearning.VectorMachines
         where TKernel : IKernel<TInput>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MulticlassSupportVectorMachine{TKernel, TInput}"/> class.
+        ///     Initializes a new instance of the <see cref="MulticlassSupportVectorMachine{TKernel, TInput}" /> class.
         /// </summary>
         /// <param name="classes">The number of classes in the multi-class classification problem.</param>
         /// <param name="inputs">The number of inputs (length of the input vectors) accepted by the machine.</param>
@@ -108,5 +117,4 @@ namespace Accord.MachineLearning.VectorMachines
         {
         }
     }
-
 }

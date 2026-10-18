@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,6 +93,7 @@ namespace Jube.Test.Service.CaseCreationWarning
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -99,9 +101,11 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListReturnsMostRecentFirstAndProjectsFieldsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var firstId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.ExistingCasePriorityLookup,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.HttpEndpoint, 2000, occurredDate: DateTime.UtcNow);
 
@@ -225,6 +229,7 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListFiltersByStageIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var priorityId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.ExistingCasePriorityLookup);
             var httpId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
@@ -243,8 +248,10 @@ namespace Jube.Test.Service.CaseCreationWarning
         {
             await using var dbContext = fx.GetDbContext();
             var uniqueCaseKeyValue = $"UniqueCase{Guid.NewGuid():N}";
+
             var matchingId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 caseKeyValue: uniqueCaseKeyValue);
+
             var otherId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -294,11 +301,13 @@ namespace Jube.Test.Service.CaseCreationWarning
 
             var ascending =
                 await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "asc");
+
             ascending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.DurationMicroseconds)
                 .Should().Equal(1000, 2000, 3000);
 
             var descending =
                 await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "desc");
+
             descending.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.DurationMicroseconds)
                 .Should().Equal(3000, 2000, 1000);
         }
@@ -310,12 +319,14 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListSortDirectionIsCaseInsensitiveForAscendingAsync(string ascendingKeyword)
         {
             await using var dbContext = fx.GetDbContext();
+
             var highId =
                 await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 2000);
             var lowId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 1000);
             var ids = new HashSet<int> { highId, lowId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(sortField: "durationMicroseconds",
                 sortDirection: ascendingKeyword);
 
@@ -330,6 +341,7 @@ namespace Jube.Test.Service.CaseCreationWarning
             var lowId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 1000);
             var highId =
                 await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 2000);
+
             var ids = new HashSet<int> { lowId, highId };
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -343,8 +355,10 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var firstId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 occurredDate: DateTime.UtcNow);
 
@@ -360,6 +374,7 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListTotalReflectsFullFilteredCountEvenWhenTakeIsSmallerAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);

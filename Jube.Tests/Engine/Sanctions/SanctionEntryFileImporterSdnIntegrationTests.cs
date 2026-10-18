@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Test.Infrastructure;
 using LinqToDB;
 using Xunit;
@@ -50,7 +51,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ThePersistedRowCountForTheSourceExactlyMatchesTheInsertedCountAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             var active = (await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId)).ToList();
 
@@ -62,7 +63,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task EveryPersistedRowHasANonEmptyHashElementValueAndReferenceAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             var active = await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId);
 
@@ -76,7 +77,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task NoTwoPersistedRowsShareTheSameHashAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             var active = (await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId)).ToList();
 
@@ -91,7 +92,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task KnownRealSdnEntriesArePersistedWithTheirExactNameAsync(string reference, string name)
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             var active = (await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId)).ToList();
 
             var entry = active.Should().ContainSingle(e => e.SanctionEntryReference == reference).Subject;
@@ -102,7 +103,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task AnEntryWithAnEmbeddedCommaInItsQuotedNameIsNotTruncatedAtTheCommaAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             var active = await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId);
 
             var entry = active.Should().ContainSingle(e => e.SanctionEntryReference == "173").Subject;
@@ -114,7 +115,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ThePayloadColumnRetainsTheFullOriginalRawRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             var active = await repository.GetActiveBySanctionEntrySourceIdAsync(fx.SourceId);
 
             var entry = active.Should().ContainSingle(e => e.SanctionEntryReference == "36").Subject;
@@ -155,7 +156,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task GetAsyncAcrossAllSourcesStillIncludesOurIsolatedSourcesRowsAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             var all = await repository.GetAsync();
 

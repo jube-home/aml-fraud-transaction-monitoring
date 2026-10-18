@@ -73,6 +73,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Channel != null && w.Channel.ToLower().Contains(lowerSearch)) ||
                     (w.Message != null && w.Message.ToLower().Contains(lowerSearch)));
@@ -90,6 +91,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "channel" => query.OrderByField(o => o.Channel, descending),

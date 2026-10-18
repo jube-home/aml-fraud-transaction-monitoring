@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,17 +13,21 @@
 
 using System.ComponentModel;
 using System.Globalization;
+using FluentValidation.Results;
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.Case;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.Case;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.Repository.Case;
+using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -31,41 +35,40 @@ using Newtonsoft.Json.Linq;
 using EngineCaseProcessing = Jube.Engine.BackgroundTasks.TaskStarters.Case.CaseProcessing;
 using EngineCreateCase = Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement.CreateCase;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = global::Jube.Case.Notification;
-using EngineSendHttpEndpoint = global::Jube.Case.SendHttpEndpoint;
+using EngineNotification = Jube.Case.Notification;
+using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.Case;
 using RuleRepository = Jube.Data.Repository.CaseRepository;
 
 namespace Jube.Service.Repository.Case
 {
-    using EntryPayload = Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .EntityAnalysisModelInstanceEntryPayload;
+    using Jube.Data.Query.GetExistingCasePriorityQuery;
+    using Jube.Data.Query.GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery;
+    using EntryPayload = EntityAnalysisModelInstanceEntryPayload;
     using EntryPayloadExtensions =
-        Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .Extensions.EntityAnalysisModelInstanceEntryPayloadExtensions;
+        EntityAnalysisModelInstanceEntryPayloadExtensions;
 
     public sealed class CaseService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
-        private readonly DbContext dbContext;
-        private readonly RuleRepository repository;
         private readonly CaseEventRepository caseEventRepository;
         private readonly CaseWorkflowRepository caseWorkflowRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
-        private readonly GetExistingCasePriorityQuery existingCasePriorityQuery;
-        private readonly GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery lastArchiveJsonQuery;
+        private readonly CreateCaseValidator createCaseValidator;
+        private readonly DbContext dbContext;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
+        private readonly GetExistingCasePriorityQuery existingCasePriorityQuery;
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
+        private readonly GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery lastArchiveJsonQuery;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
         private readonly CaseDtoValidator validator;
-        private readonly CreateCaseValidator createCaseValidator;
 
         private CaseService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
@@ -91,6 +94,8 @@ namespace Jube.Service.Repository.Case
             validator = new CaseDtoValidator(strings);
             createCaseValidator = new CreateCaseValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -145,6 +150,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.List: entry user={userName}");
@@ -155,6 +161,7 @@ namespace Jube.Service.Repository.Case
                 EnsurePermitted("Case.List");
                 var dtos = CaseMapper.ToDto(await repository.GetAsyncActiveOnlyAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"Case.List: {dtos.Count} rows user={userName}");
@@ -170,6 +177,7 @@ namespace Jube.Service.Repository.Case
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"Case.List: cancelled user={userName}");
@@ -197,6 +205,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.List: entry user={userName} take={take} afterId={afterId}");
@@ -206,10 +215,12 @@ namespace Jube.Service.Repository.Case
             {
                 EnsurePermitted("Case.List");
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = CaseMapper.ToDto(await repository.GetAsyncActiveOnlyAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -242,6 +253,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "Get", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.Get: entry id={id} user={userName}");
@@ -251,6 +263,7 @@ namespace Jube.Service.Repository.Case
             {
                 EnsurePermitted("Case.Get");
                 var dto = CaseMapper.ToDto(await repository.GetByIdActiveOnlyAsync(id, token).ConfigureAwait(false));
+
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (dto is not null)
                 {
@@ -289,6 +302,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "Insert", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.Insert: entry user={userName}");
@@ -300,6 +314,7 @@ namespace Jube.Service.Repository.Case
                 EnsurePermitted("Case.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -313,11 +328,13 @@ namespace Jube.Service.Repository.Case
 
                 var status = await caseWorkflowStatusRepository.GetByGuidAsync(model.CaseWorkflowStatusGuid, token)
                     .ConfigureAwait(false);
+
                 var visibleStatuses = status?.CaseWorkflowId is null
                     ? []
                     : (await caseWorkflowStatusRepository
                         .GetByCasesWorkflowIdActiveOnlyAsync(status.CaseWorkflowId.Value, token)
                         .ConfigureAwait(false)).ToList();
+
                 if (status is null || visibleStatuses.All(v => v.Guid != status.Guid))
                 {
                     if (log.IsWarnEnabled)
@@ -333,6 +350,7 @@ namespace Jube.Service.Repository.Case
                     .GetByIdAsync(status.CaseWorkflowId ?? throw new NotFoundException(strings[CaseResources.NotFound]),
                         token)
                     .ConfigureAwait(false);
+
                 if (workflow is null)
                 {
                     throw new NotFoundException(strings[CaseResources.NotFound]);
@@ -399,6 +417,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "CreateFromCaseKeyValue", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.CreateFromCaseKeyValue: entry user={userName}");
@@ -410,6 +429,7 @@ namespace Jube.Service.Repository.Case
                 EnsurePermitted("Case.CreateFromCaseKeyValue");
 
                 var results = await createCaseValidator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -423,6 +443,7 @@ namespace Jube.Service.Repository.Case
 
                 var caseWorkflow = await caseWorkflowRepository
                     .GetByGuidActiveOnlyWithRoleAsync(model.CaseWorkflowGuid, token).ConfigureAwait(false);
+
                 if (caseWorkflow is null)
                 {
                     if (log.IsWarnEnabled)
@@ -438,6 +459,7 @@ namespace Jube.Service.Repository.Case
                     .ExecuteAsync(model.CaseWorkflowGuid, model.CaseKey ?? string.Empty,
                         model.CaseKeyValue ?? string.Empty, token)
                     .ConfigureAwait(false);
+
                 if (existingCase is not null)
                 {
                     if (log.IsWarnEnabled)
@@ -451,8 +473,10 @@ namespace Jube.Service.Repository.Case
 
                 var caseWorkflowStatuses = await caseWorkflowStatusRepository
                     .GetByCasesWorkflowGuidActiveOnlyAsync(model.CaseWorkflowGuid, token).ConfigureAwait(false);
+
                 var caseWorkflowStatus =
                     caseWorkflowStatuses.FirstOrDefault(f => f.Guid == model.CaseWorkflowStatusGuid);
+
                 if (caseWorkflowStatus is null)
                 {
                     if (log.IsWarnEnabled)
@@ -470,6 +494,7 @@ namespace Jube.Service.Repository.Case
                         throw new NotFoundException(strings[CaseResources.CaseWorkflowNotFound]),
                         model.CaseKey ?? string.Empty, model.CaseKeyValue ?? string.Empty,
                         token).ConfigureAwait(false);
+
                 if (archive is null)
                 {
                     if (log.IsWarnEnabled)
@@ -501,11 +526,13 @@ namespace Jube.Service.Repository.Case
                     .ExecuteAsync(model.CaseWorkflowGuid, model.CaseKey ?? string.Empty,
                         model.CaseKeyValue ?? string.Empty, token)
                     .ConfigureAwait(false);
+
                 if (existing is null)
                 {
                     log.Error("Case.CreateFromCaseKeyValue: manual case creation did not produce a case for Case " +
                               $"Workflow {model.CaseWorkflowGuid}, Case Key {model.CaseKey}, Case Key Value " +
                               $"{model.CaseKeyValue}.");
+
                     throw new CaseCreationFailedException(strings[CaseResources.CaseCreationFailed]);
                 }
 
@@ -559,6 +586,7 @@ namespace Jube.Service.Repository.Case
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"Case.CreateFromCaseKeyValue: cancelled user={userName}");
@@ -586,6 +614,7 @@ namespace Jube.Service.Repository.Case
         {
             using var op = OperationScope.Start("Case", "Update", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Case.Update: entry id={model?.Id} user={userName}");
@@ -597,6 +626,7 @@ namespace Jube.Service.Repository.Case
                 EnsurePermitted("Case.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -609,6 +639,7 @@ namespace Jube.Service.Repository.Case
                 }
 
                 var existing = await repository.GetByIdActiveOnlyAsync(model.Id, token).ConfigureAwait(false);
+
                 if (existing is null)
                 {
                     if (log.IsWarnEnabled)
@@ -632,18 +663,18 @@ namespace Jube.Service.Repository.Case
 
                 if (!string.IsNullOrEmpty(model.LockedUser) &&
                     !string.Equals(model.LockedUser, existing.LockedUser, StringComparison.Ordinal) &&
-                    !await LinqToDB.AsyncExtensions.AnyAsync(dbContext.UserInTenant,
+                    !await AsyncExtensions.AnyAsync(dbContext.UserInTenant,
                             u => u.User == model.LockedUser && u.TenantRegistryId == tenantRegistryId, token)
                         .ConfigureAwait(false))
                 {
-                    throw new DtoValidationException(new FluentValidation.Results.ValidationResult(
+                    throw new DtoValidationException(new ValidationResult(
                     [
-                        new FluentValidation.Results.ValidationFailure(nameof(CaseDto.LockedUser),
+                        new ValidationFailure(nameof(CaseDto.LockedUser),
                             strings[CaseResources.LockedUserInvalid]) { ErrorCode = "LockedUserInTenant" }
                     ]));
                 }
 
-                var caseEvents = new List<Data.Poco.CaseEvent>();
+                var caseEvents = new List<CaseEvent>();
 
                 if (existing.ClosedStatusId is 0 or 1 or 2)
                 {
@@ -653,7 +684,7 @@ namespace Jube.Service.Repository.Case
                             existing.ClosedUser = userName;
                             existing.ClosedDate = DateTime.UtcNow;
 
-                            caseEvents.Add(new Data.Poco.CaseEvent
+                            caseEvents.Add(new CaseEvent
                             {
                                 CaseEventTypeId = 5,
                                 CaseId = existing.Id,
@@ -663,9 +694,10 @@ namespace Jube.Service.Repository.Case
                                 CreatedDate = existing.ClosedDate,
                                 CreatedUser = userName
                             });
+
                             break;
                         case 2:
-                            caseEvents.Add(new Data.Poco.CaseEvent
+                            caseEvents.Add(new CaseEvent
                             {
                                 CaseEventTypeId = 12,
                                 CaseId = existing.Id,
@@ -676,9 +708,10 @@ namespace Jube.Service.Repository.Case
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
+
                             break;
                         case 1:
-                            caseEvents.Add(new Data.Poco.CaseEvent
+                            caseEvents.Add(new CaseEvent
                             {
                                 CaseEventTypeId = 13,
                                 CaseId = existing.Id,
@@ -689,6 +722,7 @@ namespace Jube.Service.Repository.Case
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
+
                             break;
                     }
                 }
@@ -697,7 +731,7 @@ namespace Jube.Service.Repository.Case
                     switch (model.ClosedStatusId)
                     {
                         case 2:
-                            caseEvents.Add(new Data.Poco.CaseEvent
+                            caseEvents.Add(new CaseEvent
                             {
                                 CaseEventTypeId = 12,
                                 CaseId = existing.Id,
@@ -708,9 +742,10 @@ namespace Jube.Service.Repository.Case
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
+
                             break;
                         case 1:
-                            caseEvents.Add(new Data.Poco.CaseEvent
+                            caseEvents.Add(new CaseEvent
                             {
                                 CaseEventTypeId = 13,
                                 CaseId = existing.Id,
@@ -721,6 +756,7 @@ namespace Jube.Service.Repository.Case
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
+
                             break;
                     }
                 }
@@ -729,7 +765,7 @@ namespace Jube.Service.Repository.Case
 
                 if (existing.LockedUser != model.LockedUser)
                 {
-                    caseEvents.Add(new Data.Poco.CaseEvent
+                    caseEvents.Add(new CaseEvent
                     {
                         CaseEventTypeId = 14,
                         CaseId = existing.Id,
@@ -745,9 +781,10 @@ namespace Jube.Service.Repository.Case
                 existing.LockedUser = model.LockedUser;
 
                 var wasLocked = existing.Locked == 1;
+
                 if (!wasLocked && model.Locked)
                 {
-                    caseEvents.Add(new Data.Poco.CaseEvent
+                    caseEvents.Add(new CaseEvent
                     {
                         CaseEventTypeId = 6,
                         CaseId = existing.Id,
@@ -769,7 +806,7 @@ namespace Jube.Service.Repository.Case
 
                 if (!SameInstant(existing.DiaryDate, model.DiaryDate?.UtcDateTime))
                 {
-                    caseEvents.Add(new Data.Poco.CaseEvent
+                    caseEvents.Add(new CaseEvent
                     {
                         CaseEventTypeId = 10,
                         CaseId = existing.Id,
@@ -788,7 +825,7 @@ namespace Jube.Service.Repository.Case
                 {
                     if (model.Diary)
                     {
-                        caseEvents.Add(new Data.Poco.CaseEvent
+                        caseEvents.Add(new CaseEvent
                         {
                             CaseEventTypeId = 7,
                             CaseId = existing.Id,
@@ -809,6 +846,7 @@ namespace Jube.Service.Repository.Case
                     var caseWorkflowStatuses = await caseWorkflowStatusRepository
                         .GetByCasesWorkflowGuidActiveOnlyAsync(existing.CaseWorkflowGuid, token)
                         .ConfigureAwait(false);
+
                     var caseWorkflowStatus =
                         caseWorkflowStatuses.FirstOrDefault(f => f.Guid == model.CaseWorkflowStatusGuid);
 
@@ -824,7 +862,7 @@ namespace Jube.Service.Repository.Case
                             strings[CaseResources.InvalidCaseWorkflowStatus]);
                     }
 
-                    caseEvents.Add(new Data.Poco.CaseEvent
+                    caseEvents.Add(new CaseEvent
                     {
                         CaseEventTypeId = 9,
                         CaseId = existing.Id,
@@ -887,7 +925,7 @@ namespace Jube.Service.Repository.Case
 
                 if (existing.Rating != model.Rating)
                 {
-                    caseEvents.Add(new Data.Poco.CaseEvent
+                    caseEvents.Add(new CaseEvent
                     {
                         CaseEventTypeId = 11,
                         CaseId = existing.Id,
@@ -943,6 +981,7 @@ namespace Jube.Service.Repository.Case
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"Case.Update: cancelled id={model?.Id} user={userName}");

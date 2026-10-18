@@ -6,9 +6,6 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Roles
 
 Roles are a collection of both users and permissions, for the purpose of authentication and authorisation in the user

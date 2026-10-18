@@ -52,6 +52,7 @@ if (typeof id === "undefined") {
     SetEnableHttpEndpoint();
     SetEnableNotification();
     ReadyNew();
+    window.AskJoobySetPageContext?.("CaseWorkflowAction", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -86,6 +87,12 @@ if (typeof id === "undefined") {
             $("#NotificationDestination").val(data.notificationDestination);
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("CaseWorkflowAction", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 $(function () {

@@ -51,7 +51,6 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         private readonly List<int> createdRuleIds = [];
         private readonly List<int> createdOverrideIds = [];
         private readonly List<int> createdXpathIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -60,6 +59,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
 
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRuleOverride>()
                 .Where(w => createdOverrideIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
                 .Where(w => createdXpathIds.Contains(w.Id)).DeleteAsync();
 
@@ -67,6 +67,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             {
                 await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
                     .Where(w => w.EntityAnalysisModelActivationRuleId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -75,6 +76,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -104,6 +106,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             createdModelIds.Add(model.Id);
 
             var ruleName = Unique("Rule");
+
             var rule = await new EntityAnalysisModelActivationRuleRepository(dbContext, ownerUser).InsertAsync(
                 new Data.Poco.EntityAnalysisModelActivationRule
                 {
@@ -117,6 +120,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             createdRuleIds.Add(rule.Id);
 
             var key = Unique("Key");
+
             var xpathId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = model.Id,
@@ -135,6 +139,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
             createdXpathIds.Add(xpathId);
 
             var keyValue = Unique("Value");
+
             if (!suppressed)
             {
                 return new Seeded(model.Guid, key, keyValue, ruleName, rule.Id);
@@ -181,6 +186,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -189,6 +195,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -259,8 +266,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         public async Task GetIgnoresExpiredOverrideAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission, true,
                 expiry: DateTime.UtcNow.AddHours(-1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = (await service.GetAsync(seeded.ModelGuid, seeded.Key, seeded.KeyValue)).Single();
@@ -318,8 +327,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         public async Task GetReturnsEmptyWhenKeyIsNotAnOverrideEnabledXpathAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission, false,
                 xpathEnableOverride: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(seeded.ModelGuid, seeded.Key, seeded.KeyValue);
@@ -331,8 +342,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
         public async Task GetReturnsEmptyWhenRuleHasOverrideDisabledAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission, false,
                 ruleEnableOverride: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(seeded.ModelGuid, seeded.Key, seeded.KeyValue);

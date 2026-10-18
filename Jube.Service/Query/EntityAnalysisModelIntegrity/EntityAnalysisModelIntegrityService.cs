@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,15 +14,19 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Query;
+using Jube.Data.Query.GetModelEntityGuidsQuery;
 using Jube.Data.Query.Models;
 using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelIntegrity;
 using Jube.Engine.Integrity;
+using Jube.Engine.Integrity.Models;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelIntegrity;
 using Jube.Service.Observability;
+using Jube.Service.Query.EntityAnalysisModelIntegrity.Interfaces;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using log4net;
@@ -33,11 +37,10 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
 {
     public sealed class EntityAnalysisModelIntegrityService
     {
-        private static readonly TimeSpan HeartbeatTolerance =
+        private static readonly TimeSpan heartbeatTolerance =
             TimeSpan.FromMinutes(EngineInstanceLiveness.ToleranceMinutes);
 
         private static readonly int[] permissions = [60];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly IEngineStateSource? engineStateSource;
@@ -62,6 +65,8 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelIntegrityService> CreateAsync(DbContext dbContext,
             IEngineStateSource? engineStateSource, string? userName, ILog log,
@@ -141,10 +146,13 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             return RunAsync("Check", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 var graph = await ModelDependencyGraphBuilder
                     .BuildAsync(dbContext, tenantRegistryId, userName, model.Id, log, token).ConfigureAwait(false);
+
                 var inputs = await new GetModelIntegrityInputsQuery(dbContext, tenantRegistryId)
                     .ExecuteAsync(model.Id, token).ConfigureAwait(false);
+
                 var observation = await ObserveAsync(model.Id, inputs, token).ConfigureAwait(false);
                 var now = DateTime.UtcNow;
 
@@ -155,7 +163,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
                         graph, inputs.SearchRules.Select(r => new SearchWindowInput(r.Id, r.Name, r.Interval, r.Value,
                             r.SearchKey, r.SearchKeyTtlInterval, r.SearchKeyTtlValue)), now))
                     .Concat(ModelIntegrityRules.EngineChecks(observation, model.Active == 1, graph.Entities, now,
-                        HeartbeatTolerance))
+                        heartbeatTolerance))
                     .OrderBy(c => c.Severity)
                     .ToList();
 
@@ -192,9 +200,12 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             return RunAsync("EngineState", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 var inputs = await new GetModelIntegrityInputsQuery(dbContext, tenantRegistryId)
                     .ExecuteAsync(model.Id, token).ConfigureAwait(false);
+
                 var observation = await ObserveAsync(model.Id, inputs, token).ConfigureAwait(false);
+
                 var guids = await new GetModelEntityGuidsQuery(dbContext, tenantRegistryId)
                     .ExecuteAsync(model.Id, token).ConfigureAwait(false);
 
@@ -245,15 +256,18 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             return RunAsync("Graph", async () =>
             {
                 var model = await RequireModelAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+
                 var graph = await ModelDependencyGraphBuilder
                     .BuildAsync(dbContext, tenantRegistryId, userName, model.Id, log, token).ConfigureAwait(false);
 
                 ModelEntity? focus = null;
+
                 if (!string.IsNullOrEmpty(focusKind) && focusId.HasValue)
                 {
                     focus = Enum.TryParse<ModelEntityKind>(focusKind, true, out var kind) && Enum.IsDefined(kind)
                         ? graph.Entities.FirstOrDefault(e => e.Kind == kind && e.Id == focusId.Value)
                         : null;
+
                     if (focus == null)
                     {
                         throw new NotFoundException(string.Format(
@@ -262,6 +276,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
                 }
 
                 var built = ModelGraphBuilder.Build(graph, focus, Math.Clamp(radius, 1, 5));
+
                 return new ModelGraphDto
                 {
                     Nodes = built.Nodes.Select(n => new ModelGraphNodeDto
@@ -280,8 +295,10 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
         {
             var nodes = inputs.Nodes.Select(n => new EngineNode(n.Instance, n.HeartbeatDate, n.SynchronisedDate))
                 .ToList();
+
             var liveCutoff = EngineInstanceLiveness.CutoffFrom(DateTime.UtcNow);
             var liveInstances = nodes.Where(n => n.HeartbeatDate > liveCutoff).Select(n => n.Instance).ToHashSet();
+
             var snapshots = (await new EntityAnalysisModelEngineSnapshotRepository(dbContext)
                     .GetByEntityAnalysisModelIdAsync(tenantRegistryId, entityAnalysisModelId, token)
                     .ConfigureAwait(false))
@@ -295,6 +312,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             {
                 var states = snapshots.Where(s => s.Instance != engineStateSource.Instance).ToList();
                 var local = engineStateSource.GetModelState(entityAnalysisModelId);
+
                 if (local != null)
                 {
                     states.Add(local);
@@ -313,6 +331,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             using var op = OperationScope.Start("EntityAnalysisModelIntegrity", operation, userName, tenantRegistryId,
                 auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelIntegrity.{operation}: entry user={userName}");
@@ -322,6 +341,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             {
                 token.ThrowIfCancellationRequested();
                 EnsurePermitted($"EntityAnalysisModelIntegrity.{operation}");
+
                 return await body().ConfigureAwait(false);
             }
             catch (ForbiddenException)

@@ -33,7 +33,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private string currentFileName;
         private long currentOffset;
         private bool initialized;
-
         public bool LoggingCollectorOff { get; private set; }
 
         public async ValueTask DisposeAsync()
@@ -85,12 +84,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private async Task<List<PostgresLogEntry>> SampleCoreAsync(CancellationToken token)
         {
             LoggingCollectorOff = !await IsLoggingCollectorOnAsync(token).ConfigureAwait(false);
+
             if (LoggingCollectorOff)
             {
                 return null;
             }
 
             var (fileName, size) = await GetLatestLogFileAsync(token).ConfigureAwait(false);
+
             if (fileName == null)
             {
                 return null;
@@ -101,6 +102,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 currentFileName = fileName;
                 currentOffset = size;
                 initialized = true;
+
                 return null;
             }
 
@@ -121,6 +123,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
             var delta = await ReadLogDeltaAsync(fileName, currentOffset, size - currentOffset, token)
                 .ConfigureAwait(false);
+
             currentOffset = size;
 
             return string.IsNullOrEmpty(delta) ? null : ParseEntries(delta);
@@ -130,7 +133,9 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             await using var command =
                 new NpgsqlCommand("SELECT current_setting('logging_collector')", connection);
+
             var result = (string)await command.ExecuteScalarAsync(token).ConfigureAwait(false);
+
             return string.Equals(result, "on", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -139,6 +144,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             await using var command =
                 new NpgsqlCommand("SELECT name, size FROM pg_ls_logdir() ORDER BY modification DESC LIMIT 1",
                     connection);
+
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 
             if (!await reader.ReadAsync(token).ConfigureAwait(false))
@@ -169,12 +175,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             foreach (var rawLine in text.Split('\n'))
             {
                 var line = rawLine.TrimEnd('\r');
+
                 if (line.Length == 0)
                 {
                     continue;
                 }
 
                 var match = linePrefixPattern.Match(line);
+
                 if (match.Success)
                 {
                     DateTime? occurredDate = DateTime.TryParseExact(match.Groups[1].Value,
@@ -190,6 +198,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                         Level = match.Groups[3].Value,
                         Message = match.Groups[4].Value
                     };
+
                     entries.Add(current);
                 }
                 else if (current != null)

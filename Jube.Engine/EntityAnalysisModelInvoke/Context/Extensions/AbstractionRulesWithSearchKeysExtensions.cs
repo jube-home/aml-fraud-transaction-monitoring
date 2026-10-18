@@ -24,6 +24,7 @@ using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using StackExchange.Redis;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
@@ -48,10 +49,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                 var payloadMap = await FetchSortedSetKeysByGroupingKeyAsync(context, sortedSetKeysByGroupingKey)
                     .ConfigureAwait(false);
+
                 var parsedPayloadMap = BuildParsedPayloadMap(context, payloadMap);
 
                 await ExecuteAbstractionRulesForGroupingKeysAsync(context, sortedSetKeysByGroupingKey,
                     abstractionRuleMatches, parsedPayloadMap).ConfigureAwait(false);
+
                 await CalculateAbstractionRuleValuesOrLookupFromTheCacheAsync(context,
                         context.EntityAnalysisModel.Services.CacheService, abstractionRuleMatches, items)
                     .ConfigureAwait(false);
@@ -73,6 +76,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
                 new InvokeStagePerformance();
+
             stages.AbstractionRulesWithSearchKeys = new StageTiming<TaskPerformance>
             {
                 DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
@@ -88,6 +92,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             Dictionary<string, DictionaryNoBoxing<string>> parsedPayloadMap)
         {
             var pendingExecutionThreads = new List<Task>();
+
             foreach (var (key, value) in context.Snapshot.DistinctSearchKeys)
             {
                 if (value.SearchKeyCache)
@@ -147,6 +152,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             Context context, ConcurrentDictionary<string, List<RedisValue>> sortedSetKeysByGroupingKey)
         {
             var sortedSetFetchTasks = new List<Task>();
+
             foreach (var (key, value) in context.Snapshot.DistinctSearchKeys)
             {
                 context.TraceLog($"is evaluating grouping key {key}.");
@@ -252,6 +258,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 .ConfigureAwait(false);
 
             context.TraceLog($"batch payload fetch returned {payloadMap.Count} records.");
+
             return payloadMap;
         }
 
@@ -273,6 +280,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                 var itemStopwatch = Stopwatch.StartNew();
                 var startBytes = GC.GetAllocatedBytesForCurrentThread();
+
                 try
                 {
                     context.TraceLog($"is evaluating abstraction rule {abstractionRule.Id}.");
@@ -310,6 +318,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     itemStopwatch.Stop();
                     var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
                     items[abstractionRule.Name] = new TaskPerformance(
                         (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                         Math.Max(allocated, 0));
@@ -373,6 +382,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 itemStopwatch.Stop();
                 var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
                 items["AbstractionRuleCacheBatchFetch"] = new TaskPerformance(
                     (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                     Math.Max(allocated, 0));

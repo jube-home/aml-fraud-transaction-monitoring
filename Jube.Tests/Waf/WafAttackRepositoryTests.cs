@@ -31,25 +31,6 @@ namespace Jube.Test.Waf
         private readonly string marker = "ZzWafTest" + Guid.NewGuid().ToString("N")[..8];
         private DateTime baseTime;
 
-        public async Task InitializeAsync()
-        {
-            baseTime = DateTime.UtcNow;
-            await using var dbContext = fx.GetDbContext();
-
-            await dbContext.InsertAsync(Row("OWASP-XSS-SCRIPT", "A7-XSS", "/api/Alpha",
-                "<script>alert(1)</script>", "Dropped", baseTime.AddMinutes(-3)));
-            await dbContext.InsertAsync(Row("OWASP-SQLI-UNION", "A1-Injection", "/api/Beta",
-                "1 UNION SELECT x", "Dropped", baseTime.AddMinutes(-2)));
-            await dbContext.InsertAsync(Row("OWASP-TRAVERSAL-DOTDOT", "A5-BrokenAccessControl", "/api/Gamma",
-                "../../etc/passwd", "Detected", baseTime.AddMinutes(-1)));
-        }
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            await dbContext.WafAttack.Where(w => w.CorrelationId == marker).DeleteAsync();
-        }
-
         private WafAttack Row(string signature, string category, string route, string value, string action,
             DateTime createdDate)
         {
@@ -74,7 +55,27 @@ namespace Jube.Test.Waf
         private async Task<List<WafAttack>> MineAsync(IEnumerable<WafAttack> rows)
         {
             await Task.CompletedTask;
+
             return [.. rows.Where(w => w.CorrelationId == marker)];
+        }
+
+        public async Task InitializeAsync()
+        {
+            baseTime = DateTime.UtcNow;
+            await using var dbContext = fx.GetDbContext();
+
+            await dbContext.InsertAsync(Row("OWASP-XSS-SCRIPT", "A7-XSS", "/api/Alpha",
+                "<script>alert(1)</script>", "Dropped", baseTime.AddMinutes(-3)));
+            await dbContext.InsertAsync(Row("OWASP-SQLI-UNION", "A1-Injection", "/api/Beta",
+                "1 UNION SELECT x", "Dropped", baseTime.AddMinutes(-2)));
+            await dbContext.InsertAsync(Row("OWASP-TRAVERSAL-DOTDOT", "A5-BrokenAccessControl", "/api/Gamma",
+                "../../etc/passwd", "Detected", baseTime.AddMinutes(-1)));
+        }
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await dbContext.WafAttack.Where(w => w.CorrelationId == marker).DeleteAsync();
         }
 
         [Fact]
@@ -139,6 +140,7 @@ namespace Jube.Test.Waf
 
             var all = await repository.GetLastAsync(100000, baseTime.AddMinutes(-10), baseTime.AddMinutes(1),
                 null, null, null, null);
+
             var traversal = await repository.GetLastAsync(100000, baseTime.AddMinutes(-10), baseTime.AddMinutes(1),
                 "passwd", null, null, null);
 

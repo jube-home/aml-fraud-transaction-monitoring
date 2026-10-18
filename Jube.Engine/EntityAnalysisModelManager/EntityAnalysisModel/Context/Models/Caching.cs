@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Models
 {
     using System.Collections.Concurrent;
@@ -19,7 +24,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
 
     public class Caching
     {
-        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; set; } = new ConcurrentDictionary<string, Assembly>();
-        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; set; } = new ConcurrentDictionary<string, HashCacheAssemblyPayload>();
+        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; set; } =
+            new ConcurrentDictionary<string, Assembly>();
+
+        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; set; } =
+            new ConcurrentDictionary<string, HashCacheAssemblyPayload>();
     }
 }

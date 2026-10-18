@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.VisualisationRegistryDatasource;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,39 +24,54 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceList", OperationKind.Read, true, false,
-                    "Lists Datasources for the caller's tenant, keyset-paged and capped."),
+                    "Lists Datasources for the caller's tenant, keyset-paged and capped.",
+                    VisualisationRegistryDatasourceService.ListPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Visualisation Registry Datasources may use."),
+                    "Lists the fields a query builder JSON filter over Visualisation Registry Datasources may use.",
+                    VisualisationRegistryDatasourceService.ListPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceFilter", OperationKind.Read, true, false,
-                    "Returns the Visualisation Registry Datasources matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Visualisation Registry Datasources matching query builder JSON, keyset-paged and capped.",
+                    VisualisationRegistryDatasourceService.ListPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceCount", OperationKind.Read, true, false,
-                    "Counts the Visualisation Registry Datasources matching query builder JSON, optionally grouped by a field."),
+                    "Counts the Visualisation Registry Datasources matching query builder JSON, optionally grouped by a field.",
+                    VisualisationRegistryDatasourceService.ListPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceGet", OperationKind.Read, true, false,
-                    "Returns one Datasource by id, scoped to the caller's tenant."),
+                    "Returns one Datasource by id, scoped to the caller's tenant.",
+                    VisualisationRegistryDatasourceService.ReadPermissions),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceGetByGuid", OperationKind.Read, true, false,
+                    "Returns one Datasource by Guid, scoped to the caller's tenant.",
+                    VisualisationRegistryDatasourceService.ReadPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceGetByVisualisationRegistryId", OperationKind.Read, true,
                     false,
-                    "Lists Datasources belonging to a given Visualisation Registry, scoped to the caller's tenant."),
+                    "Lists Datasources belonging to a given Visualisation Registry, scoped to the caller's tenant.",
+                    VisualisationRegistryDatasourceService.ReadByParentPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceGetByVisualisationRegistryIdActiveOnly", OperationKind.Read,
                     true, false,
-                    "Lists active, role-visible Datasources belonging to a given Visualisation Registry for the caller."),
+                    "Lists active, role-visible Datasources belonging to a given Visualisation Registry for the caller.",
+                    VisualisationRegistryDatasourceService.ReadByParentPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceCreate", OperationKind.Write, false, false,
-                    "Registers a Datasource under a Visualisation Registry in the caller's tenant, validating its SQL Command; calling twice creates two."),
+                    "Registers a Datasource under a Visualisation Registry in the caller's tenant, validating its SQL Command; calling twice creates two.",
+                    VisualisationRegistryDatasourceService.WritePermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceValidate", OperationKind.Read, true, false,
-                    "Validates a Visualisation Registry Datasource without saving it and returns every failure."),
+                    "Validates a Visualisation Registry Datasource without saving it and returns every failure.",
+                    VisualisationRegistryDatasourceService.WritePermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceUpdate", OperationKind.Write, true, false,
-                    "Updates a Datasource in the caller's tenant by id, re-validating its SQL Command."),
+                    "Updates a Datasource in the caller's tenant by id, re-validating its SQL Command.",
+                    VisualisationRegistryDatasourceService.WritePermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Datasource in the caller's tenant by id.")
+                    "Soft-deletes a Datasource in the caller's tenant by id.",
+                    VisualisationRegistryDatasourceService.WritePermissions)
             ]);
         }
     }

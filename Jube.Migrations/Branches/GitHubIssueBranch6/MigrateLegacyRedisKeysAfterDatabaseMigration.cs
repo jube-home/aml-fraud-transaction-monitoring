@@ -1,19 +1,31 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using FluentMigrator;
+using Jube.Cache;
+using log4net;
+using Npgsql;
+using StackExchange.Redis;
+
 namespace Jube.Migrations.Branches.GitHubIssueBranch6
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Cache;
-    using DynamicEnvironment;
-    using FluentMigrator;
-    using log4net;
-    using Npgsql;
-    using StackExchange.Redis;
-
     [Migration(20250405191701)]
     public class MigrateLegacyRedisKeysAfterDatabaseMigration(
         CacheService cacheService,
-        DynamicEnvironment dynamicEnvironment,
+        DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
         ILog log) : Migration
     {
         public override void Up()
@@ -21,9 +33,13 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             MigrateLegacyRedisKeys();
         }
 
+        public override void Down()
+        {
+        }
+
         private static void Swap(string[] segments, int position, Dictionary<int, Guid> idGuidDictionary)
         {
-            var id = Int32.Parse(segments[position]);
+            var id = int.Parse(segments[position]);
             idGuidDictionary.TryGetValue(id, out var guid);
             segments[position] = guid.ToString("N");
         }
@@ -74,6 +90,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             Dictionary<int, Guid> entityAnalysisModelTtlCounterIdList)
         {
             var segments = key.ToString().Split(":");
+
             switch (segments[0])
             {
                 case "ReferenceDate":
@@ -100,13 +117,14 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                     return key;
             }
 
-            return String.Join(":", segments);
+            return string.Join(":", segments);
         }
 
         private Dictionary<int, Guid> GetIdGuidDictionary(string tableName)
         {
             var values = new Dictionary<int, Guid>();
             var connection = new NpgsqlConnection(dynamicEnvironment.AppSettings("ConnectionString"));
+
             try
             {
                 connection.Open();
@@ -115,6 +133,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 command.Connection = connection;
 
                 var reader = command.ExecuteReader();
+
                 while (reader.Read())
                 {
                     var id = reader.IsDBNull(0) ? null : reader.GetValue(0);
@@ -124,6 +143,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                     {
                         continue;
                     }
+
                     if (guid != null)
                     {
                         values.Add((int)id, (Guid)guid);
@@ -147,10 +167,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             }
 
             return values;
-        }
-
-        public override void Down()
-        {
         }
     }
 }

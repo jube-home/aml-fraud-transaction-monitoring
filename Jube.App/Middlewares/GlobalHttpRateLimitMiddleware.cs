@@ -25,7 +25,7 @@ namespace Jube.App.Middlewares
         DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
     {
         private const string RateLimitName = "GlobalHttp";
-        private static readonly TimeProvider Clock = TimeProvider.System;
+        private static readonly TimeProvider clock = TimeProvider.System;
 
         public async Task InvokeAsync(HttpContext context)
         {
@@ -35,11 +35,13 @@ namespace Jube.App.Middlewares
             if (!enabled)
             {
                 await next(context);
+
                 return;
             }
 
             var window = ComputeWindow(dynamicEnvironment.AppSettings("GlobalHttpRateLimitInterval"),
                 dynamicEnvironment.AppSettings("GlobalHttpRateLimitIntervalValue"));
+
             var maxRequests = int.Parse(dynamicEnvironment.AppSettings("GlobalHttpRateLimitAttempts"));
             var remoteIp = context.Connection.RemoteIpAddress?.ToString();
 
@@ -49,11 +51,12 @@ namespace Jube.App.Middlewares
             var exceeded = backplane
                 ? await cacheService.CacheRateLimitRepository.IncrementRateLimitCacheAsync(RateLimitName,
                     remoteIp ?? string.Empty, window).ConfigureAwait(false) > maxRequests
-                : throttle.TryRecordAndCheckExceeded(remoteIp, maxRequests, window, Clock);
+                : throttle.TryRecordAndCheckExceeded(remoteIp, maxRequests, window, clock);
 
             if (exceeded)
             {
                 context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
                 return;
             }
 

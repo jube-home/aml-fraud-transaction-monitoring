@@ -24,6 +24,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.UserInTenant;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.UserInTenant;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -48,7 +49,6 @@ namespace Jube.Test.Service.Repository.UserInTenant
         private readonly List<int> createdTenantIds = [];
         private readonly List<int> createdRoleIds = [];
         private readonly List<string> createdUserNames = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -58,15 +58,18 @@ namespace Jube.Test.Service.Repository.UserInTenant
             await dbContext.GetTable<UserInTenantSwitchLog>()
                 .Where(w => w.SwitchedUser != null && createdUserNames.Contains(w.SwitchedUser))
                 .DeleteAsync();
+
             await dbContext.UserInTenant
                 .Where(w => w.User != null && createdUserNames.Contains(w.User))
                 .DeleteAsync();
             await dbContext.UserRegistry
                 .Where(w => w.Name != null && createdUserNames.Contains(w.Name))
                 .DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => w.RoleRegistryId != null && createdRoleIds.Contains(w.RoleRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.RoleRegistry
                 .Where(w => createdRoleIds.Contains(w.Id))
                 .DeleteAsync();
@@ -106,6 +109,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
             createdTenantIds.Add(tenantId);
 
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -333,6 +337,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
 
             var switchLog = await dbContext.GetTable<UserInTenantSwitchLog>()
                 .FirstAsync(w => w.UserInTenantId == row.Id);
+
             switchLog.TenantRegistryId.Should().Be(tenantAId);
             switchLog.SwitchedUser.Should().Be(landlordActorUser);
         }
@@ -462,6 +467,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -518,6 +524,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
             var act = () => service.UpdateAsync(0);
 
             var exception = await act.Should().ThrowAsync<DtoValidationException>();
+
             exception.Which.Result.Errors.Single(e => e.ErrorCode == "TenantRegistryIdInvalid").ErrorMessage
                 .Should().Be("The tenant is required.");
         }
@@ -526,6 +533,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
         public async Task ValidationMessageResolvesFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
@@ -537,6 +545,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
                 var act = () => service.UpdateAsync(0);
 
                 var exception = await act.Should().ThrowAsync<DtoValidationException>();
+
                 exception.Which.Result.Errors.Single(e => e.ErrorCode == "TenantRegistryIdInvalid").ErrorMessage
                     .Should().Be("Le tenant est requis.");
             }
@@ -557,6 +566,7 @@ namespace Jube.Test.Service.Repository.UserInTenant
                 "UserInTenantGetCurrentTenantRegistry",
                 "UserInTenantSwitchTenant",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
 

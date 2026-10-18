@@ -23,7 +23,6 @@ using LinqToDB;
 using LinqToDB.Data;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Jube.Test.Security.DynamicSql;
 
 internal sealed class DynamicSqlData
@@ -31,7 +30,6 @@ internal sealed class DynamicSqlData
     public const string SafeCommand = "SELECT 1::integer AS \"Value\"";
     public const string MarkerA = "ZzW12TenantAMarker";
     public const string MarkerB = "ZzW12TenantBMarker";
-
     private readonly List<int> datasourceIds = [];
     private readonly List<int> registryIds = [];
     private readonly List<int> parameterIds = [];
@@ -74,11 +72,14 @@ internal sealed class DynamicSqlData
             await data.AddRegistryAsync(db, data.TenantA, data.RoleA, data.UserA, "A");
         (data.RegistryB, data.RegistryGuidB) =
             await data.AddRegistryAsync(db, data.TenantB, data.RoleB, data.UserB, "B");
+
         data.DatasourceA = await data.AddDatasourceAsync(db, data.RegistryA, data.RoleA, data.UserA,
             $"SELECT '{MarkerA}' AS \"Marker\"");
         data.DatasourceB = await data.AddDatasourceAsync(db, data.RegistryB, data.RoleB, data.UserB,
             $"SELECT '{MarkerB}' AS \"Marker\"");
+
         data.ParameterA = await data.AddParameterAsync(db, data.RegistryA, data.UserA, "Term", 1, "default");
+
         return data;
     }
 
@@ -86,6 +87,7 @@ internal sealed class DynamicSqlData
         string label)
     {
         var guid = Guid.NewGuid();
+
         var id = await db.InsertWithInt32IdentityAsync(new VisualisationRegistry
         {
             Name = $"{DatabaseFixture.Prefix}W12Reg{label}{Guid.NewGuid():N}"[..40],
@@ -100,6 +102,7 @@ internal sealed class DynamicSqlData
             CreatedDate = DateTime.UtcNow
         });
         registryIds.Add(id);
+
         await db.InsertAsync(new VisualisationRegistryRole
         {
             VisualisationRegistryGuid = guid,
@@ -110,6 +113,7 @@ internal sealed class DynamicSqlData
             Deleted = 0,
             Version = 1
         });
+
         return (id, guid);
     }
 
@@ -117,6 +121,7 @@ internal sealed class DynamicSqlData
         byte active = 1)
     {
         var guid = Guid.NewGuid();
+
         var id = await db.InsertWithInt32IdentityAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = registryId,
@@ -138,6 +143,7 @@ internal sealed class DynamicSqlData
         });
         // ReSharper disable once InconsistentlySynchronizedField
         datasourceIds.Add(id);
+
         await db.InsertAsync(new VisualisationRegistryDatasourceRole
         {
             VisualisationRegistryDatasourceGuid = guid,
@@ -148,6 +154,7 @@ internal sealed class DynamicSqlData
             Deleted = 0,
             Version = 1
         });
+
         return id;
     }
 
@@ -170,30 +177,38 @@ internal sealed class DynamicSqlData
             CreatedDate = DateTime.UtcNow
         });
         parameterIds.Add(id);
+
         return id;
     }
 
     public async Task<string> SnapshotAsync(bool includeDatasources = true)
     {
         await using var db = fx.GetDbContext();
+
         var registries = await db.GetTable<VisualisationRegistry>()
             .Where(w => registryIds.Contains(w.Id) ||
                         (w.Name != null && w.Name.StartsWith(DatabaseFixture.Prefix + "W12")))
             .OrderBy(w => w.Id).Select(w => w.Id + ":" + w.Name + ":" + w.Version + ":" + w.Deleted).ToListAsync();
+
         var datasources = await db.GetTable<VisualisationRegistryDatasource>()
             .Where(w => includeDatasources && registryIds.Contains(w.VisualisationRegistryId ?? 0))
             .OrderBy(w => w.Id).Select(w =>
                 w.Id + ":" + w.Name + ":" + w.Command + ":" + w.Version + ":" + w.Deleted + ":" + w.Active)
             .ToListAsync();
+
         var users = await db.GetTable<UserRegistry>().Where(w => w.Name == UserA || w.Name == UserB)
             .OrderBy(w => w.Name).Select(w => w.Name + ":" + w.Password + ":" + w.Email + ":" + w.Active).ToListAsync();
+
         var tenants = await db.GetTable<TenantRegistry>().Where(w => w.Id == TenantA || w.Id == TenantB)
             .OrderBy(w => w.Id).Select(w => w.Id + ":" + w.Name).ToListAsync();
+
         var sessionSearches = await db.GetTable<SessionCaseSearchCompiledSql>()
             .Where(w => w.CreatedUser == UserA || w.CreatedUser == UserB).CountAsync();
+
         var stray = await db.QueryToListAsync<string>(
             "select table_name::text from information_schema.tables where table_name ilike 'zzw12%' " +
             "union all select rolname::text from pg_roles where rolname ilike 'zzw12%'");
+
         return string.Join("|", registries) + "#" + string.Join("|", datasources) + "#" + string.Join("|", users) +
                "#" + string.Join("|", tenants) + "#" + sessionSearches + "#" + string.Join(",", stray);
     }
@@ -202,12 +217,15 @@ internal sealed class DynamicSqlData
     {
         await RegisterAllDatasourcesOfRegistryAsync(0);
         await using var db = fx.GetDbContext();
+
         var datasourceGuids = await db.GetTable<VisualisationRegistryDatasource>()
             // ReSharper disable once InconsistentlySynchronizedField
             .Where(w => datasourceIds.Contains(w.Id)).Select(w => w.Guid).ToListAsync();
+
         var logIds = db.GetTable<VisualisationRegistryDatasourceExecutionLog>()
             // ReSharper disable once InconsistentlySynchronizedField
             .Where(w => datasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0)).Select(w => w.Id);
+
         await db.GetTable<VisualisationRegistryDatasourceExecutionLogParameter>()
             .Where(w => logIds.Contains(w.VisualisationRegistryDatasourceExecutionLogId ?? 0)).DeleteAsync();
         await db.GetTable<VisualisationRegistryDatasourceExecutionLog>()
@@ -216,16 +234,21 @@ internal sealed class DynamicSqlData
         await db.GetTable<VisualisationRegistryDatasourceSeries>()
             // ReSharper disable once InconsistentlySynchronizedField
             .Where(w => datasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0)).DeleteAsync();
+
         await db.GetTable<VisualisationRegistryDatasourceRole>()
             .Where(w => datasourceGuids.Contains(w.VisualisationRegistryDatasourceGuid)).DeleteAsync();
+
         await db.GetTable<VisualisationRegistryDatasourceVersion>()
             // ReSharper disable once InconsistentlySynchronizedField
             .Where(w => datasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0)).DeleteAsync();
         await db.GetTable<VisualisationRegistryDatasource>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId ?? 0)).DeleteAsync();
+
         await db.GetTable<VisualisationRegistryParameter>().Where(w => parameterIds.Contains(w.Id)).DeleteAsync();
+
         var registryGuids = db.GetTable<VisualisationRegistry>().Where(w => registryIds.Contains(w.Id))
             .Select(w => w.Guid);
+
         await db.GetTable<VisualisationRegistryRole>()
             .Where(w => registryGuids.Contains(w.VisualisationRegistryGuid)).DeleteAsync();
         await db.GetTable<VisualisationRegistryVersion>().Where(w => registryIds.Contains(w.VisualisationRegistryId))
@@ -246,8 +269,10 @@ internal sealed class DynamicSqlData
     public async Task RegisterAllDatasourcesOfRegistryAsync(int registryId)
     {
         await using var db = fx.GetDbContext();
+
         var ids = await db.GetTable<VisualisationRegistryDatasource>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId ?? 0)).Select(w => w.Id).ToListAsync();
+
         lock (datasourceIds)
         {
             datasourceIds.AddRange(ids.Where(i => !datasourceIds.Contains(i)));
@@ -257,12 +282,14 @@ internal sealed class DynamicSqlData
     public async Task<int> AddDatasourceInactiveAsync()
     {
         await using var db = fx.GetDbContext();
+
         return await AddDatasourceAsync(db, RegistryA, RoleA, UserA, SafeCommand, active: 0);
     }
 
     public async Task<int> DatasourceCountAsync(int registryId)
     {
         await using var db = fx.GetDbContext();
+
         return await db.GetTable<VisualisationRegistryDatasource>()
             .CountAsync(w => w.VisualisationRegistryId == registryId && (w.Deleted == 0 || w.Deleted == null));
     }
@@ -270,6 +297,7 @@ internal sealed class DynamicSqlData
     public async Task<VisualisationRegistryDatasource?> DatasourceAsync(int id)
     {
         await using var db = fx.GetDbContext();
+
         return await db.GetTable<VisualisationRegistryDatasource>().FirstOrDefaultAsync(w => w.Id == id);
     }
 }

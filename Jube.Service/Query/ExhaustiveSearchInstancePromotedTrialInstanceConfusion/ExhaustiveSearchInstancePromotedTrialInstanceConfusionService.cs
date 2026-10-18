@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +29,10 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfus
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceConfusionService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
-        private readonly global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceConfusionQuery query;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly ExhaustiveSearchInstancePromotedTrialInstanceRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -51,10 +50,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfus
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query =
-                new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceConfusionQuery(dbContext,
-                    userName);
+
+            repository = new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext, tenantRegistryId);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceConfusionService> CreateAsync(
             DbContext dbContext, string? userName,
@@ -123,6 +123,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfus
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstanceConfusion", "Get",
                 userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"ExhaustiveSearchInstancePromotedTrialInstanceConfusion.Get: entry user={userName} id={id}");
@@ -131,9 +132,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfus
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstancePromotedTrialInstanceConfusion.Get");
+
                 var dto = ExhaustiveSearchInstancePromotedTrialInstanceConfusionMapper.ToDto(
-                    await query.ExecuteAsync(id, token).ConfigureAwait(false));
+                    await repository.GetActiveByExhaustiveSearchInstanceIdAsync(id, token).ConfigureAwait(false));
+
                 op.Rows(1);
+
                 return dto;
             }
             catch (ForbiddenException)
@@ -149,9 +153,11 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfus
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstanceConfusion.Get: unexpected failure user={userName} id={id}",
                     ex);
+
                 throw;
             }
         }

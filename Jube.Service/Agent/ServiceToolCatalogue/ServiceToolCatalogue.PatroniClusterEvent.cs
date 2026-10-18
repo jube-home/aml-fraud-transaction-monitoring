@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.PatroniClusterEvent;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -28,7 +31,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "(Scope/Name/EventType/PreviousValue/NewValue/Reason) filters. Only populated when " +
                     "Patroni is configured or discoverable (Failover rows additionally require etcd as the " +
                     "DCS), not scoped to any tenant. Also accepts samplePercentage (0-100) to draw an " +
-                    "unbiased random subset of matching rows instead of the most recent ones."));
+                    "unbiased random subset of matching rows instead of the most recent ones.",
+                    PatroniClusterEventService.RequiredPermissions, PatroniClusterEventService.RequiresLandlord));
         }
     }
 }

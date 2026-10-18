@@ -5,8 +5,6 @@ nav_order: 6
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Logging
 
 Logging is provided by Log4Net which is a .Net port of the populate Log4J package.

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,13 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseWorkflowMacroExecution;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseWorkflowMacroExecution;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -26,21 +29,18 @@ using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = global::Jube.Case.Notification;
-using EngineSendHttpEndpoint = global::Jube.Case.SendHttpEndpoint;
+using EngineNotification = Jube.Case.Notification;
+using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 
 namespace Jube.Service.Query.CaseWorkflowMacroExecution
 {
-    using EntryPayload = Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .EntityAnalysisModelInstanceEntryPayload;
+    using EntryPayload = EntityAnalysisModelInstanceEntryPayload;
     using EntryPayloadExtensions =
-        Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .Extensions.EntityAnalysisModelInstanceEntryPayloadExtensions;
+        EntityAnalysisModelInstanceEntryPayloadExtensions;
 
     public sealed class CaseWorkflowMacroExecutionService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowMacroRepository caseWorkflowMacroRepository;
@@ -73,6 +73,8 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
             caseWorkflowMacroRepository = new CaseWorkflowMacroRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowMacroExecutionService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -137,6 +139,7 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
         {
             using var op = OperationScope.Start("CaseWorkflowMacroExecution", "Execute", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -150,6 +153,7 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
 
                 var existingCase = await caseRepository.GetByIdActiveOnlyAsync(model.CaseId, token)
                     .ConfigureAwait(false);
+
                 if (existingCase == null)
                 {
                     throw NotFound();
@@ -157,6 +161,7 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
 
                 var caseWorkflowMacro = await caseWorkflowMacroRepository
                     .GetByIdActiveOnlyAsync(model.CaseWorkflowMacroId, token).ConfigureAwait(false);
+
                 if (caseWorkflowMacro == null)
                 {
                     throw NotFound();
@@ -164,12 +169,14 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
 
                 var caseWorkflowStatus = await caseWorkflowStatusRepository
                     .GetByGuidAsync(existingCase.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+
                 if (caseWorkflowStatus == null)
                 {
                     throw NotFound();
                 }
 
                 EntryPayload? context;
+
                 try
                 {
                     context = JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
@@ -186,6 +193,7 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
                 if (caseWorkflowMacro.EnableNotification == 1)
                 {
                     var notification = new EngineNotification(log, dynamicEnvironment);
+
                     var notificationSubject =
                         EntryPayloadExtensions.ReplaceTokens(context, caseWorkflowMacro.NotificationSubject);
                     var notificationDestination =
@@ -221,6 +229,7 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
                 }
 
                 op.Rows(1);
+
                 return model;
             }
             catch (ForbiddenException)
@@ -257,8 +266,8 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
         }
 
         private string PreparePostBodyString(CaseWorkflowMacroExecutionDto model, Data.Poco.Case existingCase,
-            EntryPayload payload, Data.Poco.CaseWorkflowStatus caseWorkflowStatus,
-            Data.Poco.CaseWorkflowMacro caseWorkflowMacro)
+            EntryPayload payload, CaseWorkflowStatus caseWorkflowStatus,
+            CaseWorkflowMacro caseWorkflowMacro)
         {
             var jObject = JObject.FromObject(model, jsonSerializationHelper.ArchiveJsonSerializer);
             jObject["caseWorkflowMacroName"] = caseWorkflowMacro.Name;

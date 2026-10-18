@@ -15,7 +15,10 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.EntityAnalysisModelDictionary
 {
@@ -50,6 +53,10 @@ namespace Jube.Dto.EntityAnalysisModelDictionary
         [FormField(Group = "Output", Order = 10, Widget = "switch")]
         [NewDefault(false)]
         public bool ResponsePayload { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this Dictionary is available for lookup during model invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

@@ -11,12 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Repository.UserRegistryApiKey.Interfaces;
+
 namespace Jube.Service.Repository.UserRegistryApiKey
 {
     public sealed class NullUserRegistryApiKeyCacheInvalidator : IUserRegistryApiKeyCacheInvalidator
     {
         public static readonly NullUserRegistryApiKeyCacheInvalidator Instance = new();
-
         public Task PublishCreatedAsync(string apiKeyHash, CancellationToken token = default) => Task.CompletedTask;
         public Task PublishRemovedAsync(string apiKeyHash, CancellationToken token = default) => Task.CompletedTask;
     }

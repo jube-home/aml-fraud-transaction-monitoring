@@ -6,9 +6,6 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Users
 
 All user interactions in the user interface are subject to authentication and authorisation. Authentication rooted in a

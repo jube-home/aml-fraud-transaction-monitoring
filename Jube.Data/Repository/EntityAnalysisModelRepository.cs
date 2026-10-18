@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 
 namespace Jube.Data.Repository
 {
@@ -22,6 +23,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using AutoMapper;
     using Context;
+    using Extensions;
     using LinqToDB;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
@@ -105,6 +107,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -154,6 +157,33 @@ namespace Jube.Data.Repository
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
         }
 
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModel
+                .Where(d => d.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                            && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModel>> GetApprovedAsync(
+            int approvalsRequired = 1,
+            CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModel
+                .Where(w =>
+                    w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModel, EntityAnalysisModelVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModel, nameof(EntityAnalysisModelVersion.EntityAnalysisModelId),
+                    tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
+        }
+
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
         {
             var existing = await dbContext.EntityAnalysisModel
@@ -200,33 +230,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModel
-                .Where(d => d.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                            && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
-        public async Task<IEnumerable<EntityAnalysisModel>> GetApprovedAsync(
-            int approvalsRequired = 1,
-            CancellationToken token = default)
-        {
-            var current = await dbContext.EntityAnalysisModel
-                .Where(w =>
-                    w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return await new GetApprovedEntityQuery<EntityAnalysisModel, EntityAnalysisModelVersion>(dbContext,
-                    EntityApprovalKind.EntityAnalysisModel, nameof(EntityAnalysisModelVersion.EntityAnalysisModelId),
-                    tenantRegistryId)
-                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

@@ -50,6 +50,29 @@ resharper_csharp_braces_for_using = required
 resharper_csharp_braces_for_lock = required
 resharper_csharp_braces_for_fixed = required
 
+# House style: a member that spills onto more than one line (a multi-line property, field
+# initializer, or method) always gets a blank line above and below it, so it reads as its own
+# paragraph rather than running into its neighbours. A member that fits on one line does not get
+# a mandatory blank line from its neighbour -- adjacent one-liners (e.g. a run of simple
+# properties on a DTO) are written with no blank line between them by default; grouping some of
+# them with a blank line for a logical sub-grouping is still allowed, at the author's discretion,
+# which is why there is no *_single_line_* key forcing that blank line away -- only
+# csharp_keep_blank_lines_in_declarations capping how many can pile up.
+resharper_csharp_blank_lines_around_property = 1
+resharper_csharp_blank_lines_around_auto_property = 1
+resharper_csharp_blank_lines_around_field = 1
+resharper_csharp_blank_lines_around_invocable = 1
+csharp_keep_blank_lines_in_declarations = 1
+
+# House style: this solution's real localization (the IStringLocalizer/.resx pipeline wired
+# through Jube.App) always looks strings up by a runtime-computed resource key, never by a
+# literal string passed straight into a localizable-annotated parameter -- so ReSharper's generic
+# "pass a literal to a Localizable(true) BCL parameter" heuristic (e.g. an ArgumentException
+# message) has no true positives anywhere in this codebase; it only ever catches developer-facing
+# guard/validation text that was never going to be localized. Disabled solution-wide instead of
+# suppressing it call site by call site or file by file forever.
+resharper_localizable_element_highlighting = none
+
 [Accord.*/**.cs]
 dotnet_naming_rule.constants_are_pascal_case.severity = none
 dotnet_naming_rule.non_public_fields_are_camel_case.severity = none
@@ -57,8 +80,24 @@ dotnet_naming_rule.non_public_fields_are_camel_case.severity = none
 csharp_style_namespace_declarations = unset
 resharper_csharp_can_use_global_alias = unset
 resharper_csharp_qualified_using_at_nested_scope = unset
+resharper_check_namespace_highlighting = none
+resharper_redundant_extends_list_entry_highlighting = none
+resharper_virtual_member_call_in_constructor_highlighting = none
+resharper_parameter_hides_member_highlighting = none
+resharper_local_variable_hides_member_highlighting = none
+resharper_empty_general_catch_clause_highlighting = none
+resharper_possible_interface_member_ambiguity_highlighting = none
+resharper_unused_parameter_global_highlighting = none
+resharper_unused_parameter_local_highlighting = none
+resharper_value_parameter_not_used_highlighting = none
+dotnet_diagnostic.CS1574.severity = none
+dotnet_diagnostic.CS1584.severity = none
+dotnet_diagnostic.CS1658.severity = none
 
 [{Jube.Dictionary,Jube.Cache}/**.cs]
 # Pre-existing, unrelated use of 'global::' (e.g. global::System.DateTime in extension-method
 # files) predates this convention -- leave Rider's default behaviour alone here.
 resharper_csharp_can_use_global_alias = unset
+
+[**/*.Generated.cs]
+generated_code = true

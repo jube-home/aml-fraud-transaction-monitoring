@@ -31,11 +31,13 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<CaseWorkflowFormEntryValue>> GetByCaseWorkflowFormEntryIdActiveOnlyAsync(int caseWorkflowFormEntryId, CancellationToken token = default)
+        public async Task<IEnumerable<CaseWorkflowFormEntryValue>> GetByCaseWorkflowFormEntryIdActiveOnlyAsync(
+            int caseWorkflowFormEntryId, CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowFormEntryValue.Where(w
                     => w.CaseWorkflowsFormsEntry.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId ==
@@ -55,7 +57,8 @@ namespace Jube.Data.Repository
                                .Any(rr => dbContext.UserRegistry
                                    .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
                        && dbContext.CaseWorkflowStatusRole
-                           .Where(r => r.CaseWorkflowStatusGuid == w.CaseWorkflowsFormsEntry.Case.CaseWorkflowStatus.Guid
+                           .Where(r => r.CaseWorkflowStatusGuid ==
+                                       w.CaseWorkflowsFormsEntry.Case.CaseWorkflowStatus.Guid
                                        && (r.Deleted == 0 || r.Deleted == null))
                            .Any(r => dbContext.RoleRegistry
                                .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
@@ -65,9 +68,11 @@ namespace Jube.Data.Repository
                 .OrderByDescending(o => o.Id).ToListAsync(token);
         }
 
-        public async Task<CaseWorkflowFormEntryValue> InsertAsync(CaseWorkflowFormEntryValue model, CancellationToken token = default)
+        public async Task<CaseWorkflowFormEntryValue> InsertAsync(CaseWorkflowFormEntryValue model,
+            CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
     }

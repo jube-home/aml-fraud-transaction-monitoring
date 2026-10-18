@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,11 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.OtlpDispatchCounter;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.OtlpDispatchCounter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +31,6 @@ namespace Jube.Service.OtlpDispatchCounter
     public sealed class OtlpDispatchCounterService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -54,6 +54,9 @@ namespace Jube.Service.OtlpDispatchCounter
             this.permissionValidation = permissionValidation;
             repository = new OtlpDispatchCounterRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<OtlpDispatchCounterService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -137,12 +140,16 @@ namespace Jube.Service.OtlpDispatchCounter
         {
             using var op = OperationScope.Start("OtlpDispatchCounter", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OtlpDispatchCounter.List: entry take={clampedTake} user={userName}");
@@ -171,6 +178,7 @@ namespace Jube.Service.OtlpDispatchCounter
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"OtlpDispatchCounter.List: {dtos.Count} rows user={userName}");
@@ -186,6 +194,7 @@ namespace Jube.Service.OtlpDispatchCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"OtlpDispatchCounter.List: cancelled user={userName}");

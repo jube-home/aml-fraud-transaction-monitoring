@@ -15,6 +15,11 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.EntityAnalysisModelInlineScript
 {
     [FormEndpoint("EntityAnalysisModelInlineScript")]
@@ -39,6 +44,10 @@ namespace Jube.Dto.EntityAnalysisModelInlineScript
         [FormField(Group = "Script", Order = 10, Widget = "select")]
         [Lookup("/api/EntityAnalysisInlineScript", TextField = "name", ValueField = "id")]
         public int EntityAnalysisInlineScriptId { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this Inline Script participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]

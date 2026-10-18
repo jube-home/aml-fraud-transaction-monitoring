@@ -1,115 +1,114 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Distributions.Reflection
 {
-    using Accord.Statistics.Distributions.Univariate;
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using System.Reflection;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Discovers the parameters of a <see cref="IDistribution">probability distribution</see>
-    ///   and helps determine their range and whether then can be constructed automatically from
-    ///   their indicated parameter ranges.
+    ///     Discovers the parameters of a <see cref="IDistribution">probability distribution</see>
+    ///     and helps determine their range and whether then can be constructed automatically from
+    ///     their indicated parameter ranges.
     /// </summary>
-    /// 
-    /// <seealso cref="DistributionConstructorInfo"/>
-    /// 
+    /// <seealso cref="DistributionConstructorInfo" />
     public class DistributionParameterInfo
     {
         /// <summary>
-        ///   Gets the reflection parameter information.
+        ///     Initializes a new instance of the <see cref="DistributionParameterInfo" /> class.
         /// </summary>
-        /// 
-        public ParameterInfo ParameterInfo { get; private set; }
-
-        /// <summary>
-        ///   Gets the name of this parameter.
-        /// </summary>
-        /// 
-        public string Name { get { return ParameterInfo.Name; } }
-
-        /// <summary>
-        ///   Gets the position of this parameter in the declaration of the constructor.
-        /// </summary>
-        /// 
-        public int Position { get { return ParameterInfo.Position; } }
-
-
-        /// <summary>
-        ///   Gets the range of valid values for this parameter (i.e. in a <see cref="NormalDistribution"/>,
-        ///   the standard deviation parameter cannot be negative).
-        /// </summary>
-        /// 
-        public DoubleRange Range { get; private set; }
-
-        /// <summary>
-        ///   Gets the default value for this parameter (i.e. in a <see cref="NormalDistribution"/>,
-        ///   the default value for the mean is 0).
-        /// </summary>
-        /// 
-        public double DefaultValue { get; private set; }
-
-        /// <summary>
-        ///   Gets a value indicating whether it is possible to discover enough
-        ///   information about this constructor such that the distribution can
-        ///   be constructed using reflection.
-        /// </summary>
-        /// 
-        /// <value><c>true</c> if this instance is buildable; otherwise, <c>false</c>.</value>
-        /// 
-        public bool IsBuildable { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DistributionParameterInfo" /> class.
-        /// </summary>
-        /// 
         /// <param name="parameterInfo">The parameter information.</param>
-        /// 
         public DistributionParameterInfo(ParameterInfo parameterInfo)
         {
-            this.ParameterInfo = parameterInfo;
-            this.IsBuildable = true;
+            ParameterInfo = parameterInfo;
+            IsBuildable = true;
 
             DoubleRange range;
             if (!TryGetRange(parameterInfo, out range))
-                this.IsBuildable = false;
+            {
+                IsBuildable = false;
+            }
 
             double value;
             if (!TryGetDefault(parameterInfo, out value))
-                this.IsBuildable = false;
+            {
+                IsBuildable = false;
+            }
 
-            this.Range = range;
-            this.DefaultValue = value;
+            Range = range;
+            DefaultValue = value;
         }
 
+        /// <summary>
+        ///     Gets the reflection parameter information.
+        /// </summary>
+        public ParameterInfo ParameterInfo { get; }
 
         /// <summary>
-        ///   Tries to get the valid range of a distribution's parameter.
+        ///     Gets the name of this parameter.
         /// </summary>
-        /// 
+        public string Name => ParameterInfo.Name;
+
+        /// <summary>
+        ///     Gets the position of this parameter in the declaration of the constructor.
+        /// </summary>
+        public int Position => ParameterInfo.Position;
+
+        /// <summary>
+        ///     Gets the range of valid values for this parameter (i.e. in a <see cref="NormalDistribution" />,
+        ///     the standard deviation parameter cannot be negative).
+        /// </summary>
+        public DoubleRange Range { get; }
+
+        /// <summary>
+        ///     Gets the default value for this parameter (i.e. in a <see cref="NormalDistribution" />,
+        ///     the default value for the mean is 0).
+        /// </summary>
+        public double DefaultValue { get; }
+
+        /// <summary>
+        ///     Gets a value indicating whether it is possible to discover enough
+        ///     information about this constructor such that the distribution can
+        ///     be constructed using reflection.
+        /// </summary>
+        /// <value><c>true</c> if this instance is buildable; otherwise, <c>false</c>.</value>
+        public bool IsBuildable { get; private set; }
+
+        /// <summary>
+        ///     Tries to get the valid range of a distribution's parameter.
+        /// </summary>
         public static bool TryGetRange(ParameterInfo parameter, out DoubleRange range)
         {
             range = new DoubleRange(0, 0);
@@ -122,20 +121,24 @@ namespace Accord.Statistics.Distributions.Reflection
 #else
                 if (!parameter.ParameterType.IsEnum)
 #endif
+                {
                     return false;
+                }
 
-                Array enumValues = Enum.GetValues(parameter.ParameterType);
-                int[] intValues = new int[enumValues.Length];
-                for (int i = 0; i < intValues.Length; i++)
+                var enumValues = Enum.GetValues(parameter.ParameterType);
+                var intValues = new int[enumValues.Length];
+                for (var i = 0; i < intValues.Length; i++)
+                {
                     intValues[i] = (int)enumValues.GetValue(i);
+                }
 
                 Array.Sort(intValues);
                 range = new DoubleRange(intValues[0], intValues[intValues.Length - 1]);
                 return true;
             }
 
-            double min = (double)Convert.ChangeType(attrb.Minimum, typeof(double));
-            double max = (double)Convert.ChangeType(attrb.Maximum, typeof(double));
+            var min = (double)Convert.ChangeType(attrb.Minimum, typeof(double));
+            var max = (double)Convert.ChangeType(attrb.Maximum, typeof(double));
 
             range = new DoubleRange(min, max);
 
@@ -143,9 +146,8 @@ namespace Accord.Statistics.Distributions.Reflection
         }
 
         /// <summary>
-        ///   Tries to get the default value of a distribution's parameter.
+        ///     Tries to get the default value of a distribution's parameter.
         /// </summary>
-        /// 
         public static bool TryGetDefault(ParameterInfo parameter, out double value)
         {
             var attrb = parameter.GetCustomAttribute<DefaultValueAttribute>();
@@ -168,32 +170,41 @@ namespace Accord.Statistics.Distributions.Reflection
             value = 0;
 
             if (a is PositiveAttribute || a is PositiveIntegerAttribute)
+            {
                 value = 1;
+            }
 
             else if (a is NegativeAttribute || a is NegativeIntegerAttribute)
+            {
                 value = -1;
+            }
 
             else if (a is UnitAttribute)
+            {
                 value = 0.5;
+            }
 
 
             if (value < range.Min)
+            {
                 value = range.Min;
+            }
 
             if (value > range.Max)
+            {
                 value = range.Max;
+            }
 
             return true;
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return String.Format("{0} ({1}-{2}, default: {3})", this.Name, this.Range.Min, this.Range.Max, this.DefaultValue);
+            return string.Format("{0} ({1}-{2}, default: {3})", Name, Range.Min, Range.Max, DefaultValue);
         }
-
     }
 }

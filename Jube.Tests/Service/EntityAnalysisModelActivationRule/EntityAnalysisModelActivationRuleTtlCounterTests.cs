@@ -43,6 +43,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             {
                 await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
                     .Where(w => w.EntityAnalysisModelActivationRuleId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -51,6 +52,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -60,6 +62,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext);
+
             var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
 
@@ -112,6 +115,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
         private async Task<int> CreateParentModelAsync(DbContext dbContext)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -122,6 +126,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 

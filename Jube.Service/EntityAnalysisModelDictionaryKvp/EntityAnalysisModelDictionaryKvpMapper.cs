@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 : new EntityAnalysisModelDictionaryKvpDto
                 {
                     Id = dictionaryKvp.Id,
+                    Guid = dictionaryKvp.Guid,
                     EntityAnalysisModelDictionaryId = dictionaryKvp.EntityAnalysisModelDictionaryId.GetValueOrDefault(),
                     KvpKey = dictionaryKvp.KvpKey,
                     KvpValue = dictionaryKvp.KvpValue,

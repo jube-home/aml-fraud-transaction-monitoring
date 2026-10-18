@@ -13,15 +13,17 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Data.Query.GetPendingEntityApprovalEntityIdsQuery;
 using Jube.Data.Query.GetRejectedEntityApprovalEntityIdsQuery;
-using Jube.Data.Query;
+using Jube.Data.Query.GetRoleRegistryPermissionByRoleRegistryIdQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.TreeChildren;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.TreeChildren;
 using Jube.Service.Observability;
+using Jube.Service.Query.TreeChildren.Models;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using LinqToDB;
@@ -34,8 +36,8 @@ namespace Jube.Service.Query.TreeChildren
     {
         private const string PendingColour = "orange";
         private const string RejectedColour = "purple";
-        private static readonly int[] ViewPendingApprovalsPermissions = [45];
-        private static readonly int[] ViewApprovalStatePermissions = [45, 44];
+        private static readonly int[] viewPendingApprovalsPermissions = [45];
+        private static readonly int[] viewApprovalStatePermissions = [45, 44];
         private readonly int approvalsRequired;
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
@@ -111,6 +113,7 @@ namespace Jube.Service.Query.TreeChildren
         {
             using var op = OperationScope.Start("TreeChildren", node.Route, userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TreeChildren.{node.Route}: entry user={userName}");
@@ -123,10 +126,13 @@ namespace Jube.Service.Query.TreeChildren
 
                 var dtos = (await load(token).ConfigureAwait(false)).Select(map).ToList();
                 await MarkPendingAsync(node, dtos, token).ConfigureAwait(false);
+
                 dtos.RemoveAll(d => d is EntityAnalysisModelTreeChildDto child && child.Deleted
                                                                                && child.Color != PendingColour &&
                                                                                child.Color != RejectedColour);
+
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"TreeChildren.{node.Route}: {dtos.Count} rows user={userName}");
@@ -156,7 +162,7 @@ namespace Jube.Service.Query.TreeChildren
             CancellationToken token)
         {
             if (!node.ApprovalKind.HasValue || dtos.Count == 0
-                                            || !permissionValidation.Validate(ViewApprovalStatePermissions))
+                                            || !permissionValidation.Validate(viewApprovalStatePermissions))
             {
                 return;
             }
@@ -171,12 +177,13 @@ namespace Jube.Service.Query.TreeChildren
 
             var pendingQuery = new GetPendingEntityApprovalEntityIdsQuery(dbContext, tenantRegistryId);
             var rejectedQuery = new GetRejectedEntityApprovalEntityIdsQuery(dbContext, tenantRegistryId);
-            var canSeePending = permissionValidation.Validate(ViewPendingApprovalsPermissions);
+            var canSeePending = permissionValidation.Validate(viewPendingApprovalsPermissions);
 
             var pending = canSeePending
                 ? await pendingQuery.ExecuteAsync(node.ApprovalKind.Value, modelId.Value, approvalsRequired, token)
                     .ConfigureAwait(false)
                 : new HashSet<int>();
+
             var rejected = await rejectedQuery.ExecuteAsync(node.ApprovalKind.Value, modelId.Value, token)
                 .ConfigureAwait(false);
 
@@ -287,7 +294,7 @@ namespace Jube.Service.Query.TreeChildren
             int id = 0, CancellationToken token = default)
         {
             return RunAsync(TreeChildrenNodes.RoleRegistryPermission,
-                t => new GetRoleRegistryPermissionByRoleRegistryGuidQuery(dbContext, userName)
+                t => new GetRoleRegistryPermissionByRoleRegistryIdQuery(dbContext, userName)
                     .ExecuteAsync(id, t),
                 e => TreeChildrenMapper.ToRoleRegistryChild(e.Id, e.Name, e.Active, e.RoleRegistryGuid), token);
         }

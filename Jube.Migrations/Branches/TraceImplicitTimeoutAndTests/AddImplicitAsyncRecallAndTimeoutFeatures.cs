@@ -118,35 +118,35 @@ namespace Jube.Migrations.Branches.TraceImplicitTimeoutAndTests
                 .WithColumn("ResultTypeId").AsInt32().Nullable()
                 .WithColumn("Compiled").AsByte().Nullable()
                 .WithColumn("CompileError").AsString().Nullable();
-            
+
             Insert.IntoTable("DictionaryEvalExpression").Row(new
             {
                 Name = "ShoutString",
                 Expression = "value.ToUpper()",
                 ResultTypeId = 1
             });
-            
+
             Insert.IntoTable("DictionaryEvalExpression").Row(new
             {
                 Name = "WhatIsLength",
                 Expression = "value.Length",
                 ResultTypeId = 2
             });
-            
+
             Insert.IntoTable("DictionaryEvalExpression").Row(new
             {
                 Name = "HalfLength",
                 Expression = "value.Length / 2.0",
                 ResultTypeId = 3
             });
-            
+
             Insert.IntoTable("DictionaryEvalExpression").Row(new
             {
                 Name = "ParseStringAsDate",
                 Expression = "DateTime.Parse(value)",
                 ResultTypeId = 4
             });
-            
+
             Insert.IntoTable("DictionaryEvalExpression").Row(new
             {
                 Name = "IsGmailEmail",
@@ -203,20 +203,24 @@ namespace Jube.Migrations.Branches.TraceImplicitTimeoutAndTests
         {
             Alter.Table("EntityAnalysisModel").AddColumn("EnableLogsInfo").AsByte().Nullable();
             Alter.Table("EntityAnalysisModel").AddColumn("EnableLogsWarnThreshold").AsByte().Nullable();
+
             Execute.Sql("""
                         UPDATE "EntityAnalysisModel"
                         SET "EnableLogsInfo" = CASE WHEN "Logs" = 1 THEN 1 ELSE 0 END,
                             "EnableLogsWarnThreshold" = CASE WHEN "Logs" = 2 THEN 1 ELSE 0 END
                         """);
+
             Delete.Column("Logs").FromTable("EntityAnalysisModel");
 
             Alter.Table("EntityAnalysisModelVersion").AddColumn("EnableLogsInfo").AsByte().Nullable();
             Alter.Table("EntityAnalysisModelVersion").AddColumn("EnableLogsWarnThreshold").AsByte().Nullable();
+
             Execute.Sql("""
                         UPDATE "EntityAnalysisModelVersion"
                         SET "EnableLogsInfo" = CASE WHEN "Logs" = 1 THEN 1 ELSE 0 END,
                             "EnableLogsWarnThreshold" = CASE WHEN "Logs" = 2 THEN 1 ELSE 0 END
                         """);
+
             Delete.Column("Logs").FromTable("EntityAnalysisModelVersion");
         }
 
@@ -327,6 +331,7 @@ namespace Jube.Migrations.Branches.TraceImplicitTimeoutAndTests
                 .WithColumn("Instance").AsString(255).Nullable();
 
             IndexDateColumn("EntityAnalysisModelResponseTimePipelineCounter", "CreatedDate");
+
             Create.Index().OnTable("EntityAnalysisModelResponseTimePipelineCounter").OnColumn("StageId")
                 .Ascending();
             Create.Index().OnTable("EntityAnalysisModelResponseTimePipelineCounter")
@@ -1004,6 +1009,7 @@ namespace Jube.Migrations.Branches.TraceImplicitTimeoutAndTests
                 Id = 42,
                 Name = "Read Write OpenTelemetry Log Counter"
             });
+
             Insert.IntoTable("RoleRegistryPermission").Row(new
             {
                 RoleRegistryId = 1,
@@ -1020,6 +1026,7 @@ namespace Jube.Migrations.Branches.TraceImplicitTimeoutAndTests
                 Id = 43,
                 Name = "Read Write OpenTelemetry Exclude"
             });
+
             Insert.IntoTable("RoleRegistryPermission").Row(new
             {
                 RoleRegistryId = 1,

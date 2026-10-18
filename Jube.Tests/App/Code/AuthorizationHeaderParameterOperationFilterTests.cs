@@ -58,6 +58,7 @@ namespace Jube.Test.App.Code
 
             act.Should().NotThrow();
             operation.Security.Should().HaveCount(1);
+
             operation.Security[0].Keys.Select(key => key.Reference.Id)
                 .Should().BeEquivalentTo("Bearer", "ApiKey");
         }

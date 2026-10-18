@@ -5,8 +5,6 @@ nav_order: 3
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Parent Objects
 
 To Create,  Update and Delete a parent object, in this example a Model,  a similar user interface exists to list, expand upon then edit entries.  

@@ -1,0 +1,2450 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-4bafd734" viewBox="0 0 720 480" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-4bafd734-t jc-4bafd734-d">
+    <title id="jc-4bafd734-t">Kernel ridge regressor</title>
+    <desc id="jc-4bafd734-d">A kernel ridge regressor predicts the training mean 7.418 plus a weighted sum of the
+        Gaussian kernel, gamma 0.25 similarity to each stored training row. Each row is drawn on the standardised scale
+        and coloured by whether its dual weight pulls nearby predictions up or down; hover for the weight. The axes are
+        the two principal components of the stored rows: the first is led by amount +0.7, velocity +0.7, merchant_risk
+        -0.09; the second is led by account_age +0.7, merchant_risk -0.7, velocity -0.09.
+    </desc>
+    <style>
+        .jc-4bafd734{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-4bafd734:not([data-theme="light"]),.jc-4bafd734:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-4bafd734:not([data-theme="light"]),.jc-4bafd734[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-4bafd734
+        text{fill:var(--jc-text);font-size:12px}.jc-4bafd734 .bg{fill:var(--jc-surface)}.jc-4bafd734
+        .ttl{font-size:16px;font-weight:600}.jc-4bafd734 .sub{fill:var(--jc-text2)}.jc-4bafd734
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-4bafd734 .at{fill:var(--jc-text2);font-weight:500}.jc-4bafd734
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-4bafd734
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-4bafd734
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-4bafd734 .ref.s0,.jc-4bafd734
+        .ref.s1,.jc-4bafd734 .ref.s2,.jc-4bafd734 .ref.s3,.jc-4bafd734 .ref.s4,.jc-4bafd734 .ref.s5,.jc-4bafd734
+        .ref.s6,.jc-4bafd734 .ref.s7{stroke:var(--sc)}.jc-4bafd734
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-4bafd734
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-4bafd734
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-4bafd734
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-4bafd734 .wh,.jc-4bafd734
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-4bafd734
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-4bafd734
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-4bafd734
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-4bafd734 .cd.hollow{fill:var(--jc-surface)}.jc-4bafd734
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-4bafd734
+        .ar.off{fill-opacity:0}.jc-4bafd734 .ring{font-size:10px}.jc-4bafd734
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-4bafd734 .needle{fill:var(--jc-text);stroke:none}.jc-4bafd734
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-4bafd734
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-4bafd734
+        .big{font-size:28px;font-weight:600}.jc-4bafd734 .rg0,.jc-4bafd734 .rg1,.jc-4bafd734
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-4bafd734 .rg0{fill-opacity:.1}.jc-4bafd734
+        .rg1{fill-opacity:.2}.jc-4bafd734 .rg2{fill-opacity:.32}.jc-4bafd734
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-4bafd734
+        .bar.part{fill-opacity:.35}.jc-4bafd734 .lgt{fill:var(--jc-text2)}.jc-4bafd734
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-4bafd734
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-4bafd734
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-4bafd734
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-4bafd734 .bar{fill:var(--sc)}.jc-4bafd734
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-4bafd734
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4bafd734
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4bafd734
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-4bafd734
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-4bafd734
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-4bafd734 .mk:hover .pt.h,.jc-4bafd734 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-4bafd734 .pt.sm{fill-opacity:.55;stroke:none}.jc-4bafd734
+        .na{fill:var(--jc-grid)}.jc-4bafd734 .mk:hover .sl,.jc-4bafd734 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-4bafd734
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-4bafd734
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-4bafd734
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-4bafd734
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-4bafd734
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-4bafd734 .ctr{text-anchor:middle}.jc-4bafd734
+        .end{text-anchor:end}.jc-4bafd734 .mid{dominant-baseline:central}.jc-4bafd734 .mk{outline:none}.jc-4bafd734
+        .m,.jc-4bafd734 .pt,.jc-4bafd734 .bub,.jc-4bafd734 .bar,.jc-4bafd734 .ov,.jc-4bafd734 .sl,.jc-4bafd734
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-4bafd734 .mk:hover .m,.jc-4bafd734 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-4bafd734 .mk:hover .pt,.jc-4bafd734 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-4bafd734 .mk:hover .bub,.jc-4bafd734 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-4bafd734 .mk:hover .bar,.jc-4bafd734 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-4bafd734 .mk:hover .ov,.jc-4bafd734 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-4bafd734 .mk:hover .sl,.jc-4bafd734 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-4bafd734 .mk:hover .box,.jc-4bafd734 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-4bafd734 .mk:hover .wk,.jc-4bafd734 .mk:focus-visible
+        .wk,.jc-4bafd734 .mk:hover .cd,.jc-4bafd734 .mk:focus-visible .cd{stroke-width:2.5}.jc-4bafd734 .mk:hover
+        .cell,.jc-4bafd734 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-4bafd734 .mk:hover
+        .vl,.jc-4bafd734 .mk:focus-visible .vl,.jc-4bafd734 .mk:hover .cx,.jc-4bafd734 .mk:focus-visible
+        .cx{opacity:1}.jc-4bafd734 .mk:hover .mkr,.jc-4bafd734 .mk:focus-visible .mkr{stroke-width:3}.jc-4bafd734
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-4bafd734
+        .mk:hover .tt,.jc-4bafd734 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-4bafd734
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-4bafd734
+        .tx{fill:var(--jc-text);font-size:12px}.jc-4bafd734 .tx.b{font-weight:600}.jc-4bafd734
+        .tsw{fill:var(--sc)}.jc-4bafd734 .lg{cursor:default;transition:opacity .15s ease}.jc-4bafd734 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-4bafd734 .sr{transition:opacity .15s ease}.jc-4bafd734:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-4bafd734:has(.mk:hover) .mk:not(:hover) .pt,.jc-4bafd734:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-4bafd734:has(.mk:hover) .mk:not(:hover) .bar,.jc-4bafd734:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-4bafd734:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-4bafd734:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-4bafd734 .s0{--sc:var(--jc-c0)}.jc-4bafd734 .s0
+        .on{fill:var(--jc-ct0)}.jc-4bafd734:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-4bafd734:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-4bafd734:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-4bafd734:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-4bafd734:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-4bafd734
+        .s1{--sc:var(--jc-c1)}.jc-4bafd734 .s1 .on{fill:var(--jc-ct1)}.jc-4bafd734:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-4bafd734:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-4bafd734:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-4bafd734:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-4bafd734:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-4bafd734,.jc-4bafd734 *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Kernel ridge regressor</text>
+    <text class="sub" x="16" y="50">144 support rows, Gaussian kernel, gamma 0.25</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="155.16" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Pulls the prediction down</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="187.16" y="62" width="138.72" height="18"/>
+        <rect class="sw" x="189.16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="207.16" y="75">Pulls the prediction up</text>
+    </g>
+    <line class="gl" x1="51.9" y1="426" x2="704" y2="426"/>
+    <text class="tk end mid" x="43.9" y="426">-3</text>
+    <line class="gl" x1="51.9" y1="370" x2="704" y2="370"/>
+    <text class="tk end mid" x="43.9" y="370">-2</text>
+    <line class="gl" x1="51.9" y1="314" x2="704" y2="314"/>
+    <text class="tk end mid" x="43.9" y="314">-1</text>
+    <line class="gl" x1="51.9" y1="258" x2="704" y2="258"/>
+    <text class="tk end mid" x="43.9" y="258">0</text>
+    <line class="gl" x1="51.9" y1="202" x2="704" y2="202"/>
+    <text class="tk end mid" x="43.9" y="202">1</text>
+    <line class="gl" x1="51.9" y1="146" x2="704" y2="146"/>
+    <text class="tk end mid" x="43.9" y="146">2</text>
+    <line class="gl" x1="51.9" y1="90" x2="704" y2="90"/>
+    <text class="tk end mid" x="43.9" y="90">3</text>
+    <line class="gl" x1="51.9" y1="90" x2="51.9" y2="426"/>
+    <text class="tk ctr" x="51.9" y="442">-3</text>
+    <line class="gl" x1="145.06" y1="90" x2="145.06" y2="426"/>
+    <text class="tk ctr" x="145.06" y="442">-2</text>
+    <line class="gl" x1="238.21" y1="90" x2="238.21" y2="426"/>
+    <text class="tk ctr" x="238.21" y="442">-1</text>
+    <line class="gl" x1="331.37" y1="90" x2="331.37" y2="426"/>
+    <text class="tk ctr" x="331.37" y="442">0</text>
+    <line class="gl" x1="424.53" y1="90" x2="424.53" y2="426"/>
+    <text class="tk ctr" x="424.53" y="442">1</text>
+    <line class="gl" x1="517.69" y1="90" x2="517.69" y2="426"/>
+    <text class="tk ctr" x="517.69" y="442">2</text>
+    <line class="gl" x1="610.84" y1="90" x2="610.84" y2="426"/>
+    <text class="tk ctr" x="610.84" y="442">3</text>
+    <line class="gl" x1="704" y1="90" x2="704" y2="426"/>
+    <text class="tk ctr" x="704" y="442">4</text>
+    <line class="ax" x1="51.9" y1="426" x2="704" y2="426"/>
+    <line class="ax" x1="51.9" y1="90" x2="51.9" y2="426"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 2, dual weight -0.4147, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.059, Principal component 2 (33% of variance): 0.1062">
+            <title>Support row 2, dual weight -0.4147, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.059, Principal component 2 (33% of variance): 0.1062
+            </title>
+            <circle class="hit" cx="325.87" cy="252.05" r="9"/>
+            <circle class="pt" cx="325.87" cy="252.05" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="187.41" y="159.55" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="197.41" y="177.55">Support row 2, dual weight -0.4147</text>
+                <rect class="tsw s0" x="197.41" y="185.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="211.41" y="194.55">Pulls the prediction down</text>
+                <text class="tx" x="197.41" y="211.55">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="197.41" y="228.55">Principal component 2 (33% of variance): 0.10…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 3, dual weight -0.0829, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.935, Principal component 2 (33% of variance): -0.4609">
+            <title>Support row 3, dual weight -0.0829, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.935, Principal component 2 (33% of variance): -0.4609
+            </title>
+            <circle class="hit" cx="511.67" cy="283.81" r="9"/>
+            <circle class="pt" cx="511.67" cy="283.81" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="371.89" y="191.31" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="381.89" y="209.31">Support row 3, dual weight -0.0829</text>
+                <rect class="tsw s0" x="381.89" y="217.31" width="9" height="9" rx="2"/>
+                <text class="tx b" x="395.89" y="226.31">Pulls the prediction down</text>
+                <text class="tx" x="381.89" y="243.31">Principal component 1 (39.5% of variance): 1.9…</text>
+                <text class="tx" x="381.89" y="260.31">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 5, dual weight -0.0981, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.9816, Principal component 2 (33% of variance): 1.845">
+            <title>Support row 5, dual weight -0.0981, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.9816, Principal component 2 (33% of variance): 1.845
+            </title>
+            <circle class="hit" cx="239.93" cy="154.68" r="9"/>
+            <circle class="pt" cx="239.93" cy="154.68" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="101.47" y="160.18" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="111.47" y="178.18">Support row 5, dual weight -0.0981</text>
+                <rect class="tsw s0" x="111.47" y="186.18" width="9" height="9" rx="2"/>
+                <text class="tx b" x="125.47" y="195.18">Pulls the prediction down</text>
+                <text class="tx" x="111.47" y="212.18">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="111.47" y="229.18">Principal component 2 (33% of variance): 1.845</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 7, dual weight -0.5785, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.7245, Principal component 2 (33% of variance): 1.329">
+            <title>Support row 7, dual weight -0.5785, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.7245, Principal component 2 (33% of variance): 1.329
+            </title>
+            <circle class="hit" cx="398.86" cy="183.56" r="9"/>
+            <circle class="pt" cx="398.86" cy="183.56" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="259.08" y="91.06" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="269.08" y="109.06">Support row 7, dual weight -0.5785</text>
+                <rect class="tsw s0" x="269.08" y="117.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="283.08" y="126.06">Pulls the prediction down</text>
+                <text class="tx" x="269.08" y="143.06">Principal component 1 (39.5% of variance): 0.7…</text>
+                <text class="tx" x="269.08" y="160.06">Principal component 2 (33% of variance): 1.329</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 8, dual weight -0.4461, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.3831, Principal component 2 (33% of variance): -0.2483">
+            <title>Support row 8, dual weight -0.4461, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.3831, Principal component 2 (33% of variance): -0.2483
+            </title>
+            <circle class="hit" cx="367.06" cy="271.9" r="9"/>
+            <circle class="pt" cx="367.06" cy="271.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="227.28" y="179.4" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="237.28" y="197.4">Support row 8, dual weight -0.4461</text>
+                <rect class="tsw s0" x="237.28" y="205.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="251.28" y="214.4">Pulls the prediction down</text>
+                <text class="tx" x="237.28" y="231.4">Principal component 1 (39.5% of variance): 0.3…</text>
+                <text class="tx" x="237.28" y="248.4">Principal component 2 (33% of variance): -0.2…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 9, dual weight -0.3562, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.08, Principal component 2 (33% of variance): 0.9261">
+            <title>Support row 9, dual weight -0.3562, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.08, Principal component 2 (33% of variance): 0.9261
+            </title>
+            <circle class="hit" cx="431.95" cy="206.14" r="9"/>
+            <circle class="pt" cx="431.95" cy="206.14" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="292.41" y="113.64" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="302.41" y="131.64">Support row 9, dual weight -0.3562</text>
+                <rect class="tsw s0" x="302.41" y="139.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="316.41" y="148.64">Pulls the prediction down</text>
+                <text class="tx" x="302.41" y="165.64">Principal component 1 (39.5% of variance): 1.08</text>
+                <text class="tx" x="302.41" y="182.64">Principal component 2 (33% of variance): 0.92…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 11, dual weight -0.5143, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.2711, Principal component 2 (33% of variance): 1.088">
+            <title>Support row 11, dual weight -0.5143, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.2711, Principal component 2 (33% of variance): 1.088
+            </title>
+            <circle class="hit" cx="356.63" cy="197.06" r="9"/>
+            <circle class="pt" cx="356.63" cy="197.06" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="216.85" y="104.56" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="226.85" y="122.56">Support row 11, dual weight -0.5143</text>
+                <rect class="tsw s0" x="226.85" y="130.56" width="9" height="9" rx="2"/>
+                <text class="tx b" x="240.85" y="139.56">Pulls the prediction down</text>
+                <text class="tx" x="226.85" y="156.56">Principal component 1 (39.5% of variance): 0.2…</text>
+                <text class="tx" x="226.85" y="173.56">Principal component 2 (33% of variance): 1.088</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 13, dual weight -0.9151, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.1432, Principal component 2 (33% of variance): -0.6882">
+            <title>Support row 13, dual weight -0.9151, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.1432, Principal component 2 (33% of variance): -0.6882
+            </title>
+            <circle class="hit" cx="318.03" cy="296.54" r="9"/>
+            <circle class="pt" cx="318.03" cy="296.54" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="179.57" y="204.04" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="189.57" y="222.04">Support row 13, dual weight -0.9151</text>
+                <rect class="tsw s0" x="189.57" y="230.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="203.57" y="239.04">Pulls the prediction down</text>
+                <text class="tx" x="189.57" y="256.04">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="189.57" y="273.04">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 15, dual weight -0.28, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.842, Principal component 2 (33% of variance): -1.175">
+            <title>Support row 15, dual weight -0.28, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.842, Principal component 2 (33% of variance): -1.175
+            </title>
+            <circle class="hit" cx="252.93" cy="323.78" r="9"/>
+            <circle class="pt" cx="252.93" cy="323.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="114.47" y="231.28" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="124.47" y="249.28">Support row 15, dual weight -0.28</text>
+                <rect class="tsw s0" x="124.47" y="257.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="138.47" y="266.28">Pulls the prediction down</text>
+                <text class="tx" x="124.47" y="283.28">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="124.47" y="300.28">Principal component 2 (33% of variance): -1.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 16, dual weight -0.0836, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.3832, Principal component 2 (33% of variance): 0.08804">
+            <title>Support row 16, dual weight -0.0836, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.3832, Principal component 2 (33% of variance): 0.08804
+            </title>
+            <circle class="hit" cx="295.67" cy="253.07" r="9"/>
+            <circle class="pt" cx="295.67" cy="253.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="157.21" y="160.57" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="167.21" y="178.57">Support row 16, dual weight -0.0836</text>
+                <rect class="tsw s0" x="167.21" y="186.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="181.21" y="195.57">Pulls the prediction down</text>
+                <text class="tx" x="167.21" y="212.57">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="167.21" y="229.57">Principal component 2 (33% of variance): 0.08…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 17, dual weight -1.2408, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.087, Principal component 2 (33% of variance): -1.743">
+            <title>Support row 17, dual weight -1.2408, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.087, Principal component 2 (33% of variance): -1.743
+            </title>
+            <circle class="hit" cx="230.14" cy="355.62" r="9"/>
+            <circle class="pt" cx="230.14" cy="355.62" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="91.68" y="263.12" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="101.68" y="281.12">Support row 17, dual weight -1.2408</text>
+                <rect class="tsw s0" x="101.68" y="289.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="115.68" y="298.12">Pulls the prediction down</text>
+                <text class="tx" x="101.68" y="315.12">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="101.68" y="332.12">Principal component 2 (33% of variance): -1.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 18, dual weight -0.5004, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.578, Principal component 2 (33% of variance): 0.1197">
+            <title>Support row 18, dual weight -0.5004, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.578, Principal component 2 (33% of variance): 0.1197
+            </title>
+            <circle class="hit" cx="184.36" cy="251.3" r="9"/>
+            <circle class="pt" cx="184.36" cy="251.3" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="158.8" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="176.8">Support row 18, dual weight -0.5004</text>
+                <rect class="tsw s0" x="61.9" y="184.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="193.8">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="210.8">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="227.8">Principal component 2 (33% of variance): 0.11…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 20, dual weight -1.663, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.55, Principal component 2 (33% of variance): -0.4949">
+            <title>Support row 20, dual weight -1.663, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.55, Principal component 2 (33% of variance): -0.4949
+            </title>
+            <circle class="hit" cx="93.8" cy="285.72" r="9"/>
+            <circle class="pt" cx="93.8" cy="285.72" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="193.22" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="211.22">Support row 20, dual weight -1.663</text>
+                <rect class="tsw s0" x="61.9" y="219.22" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="228.22">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="245.22">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="262.22">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 23, dual weight -0.3115, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.5599, Principal component 2 (33% of variance): -0.6123">
+            <title>Support row 23, dual weight -0.3115, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.5599, Principal component 2 (33% of variance): -0.6123
+            </title>
+            <circle class="hit" cx="383.53" cy="292.29" r="9"/>
+            <circle class="pt" cx="383.53" cy="292.29" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="243.75" y="199.79" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="253.75" y="217.79">Support row 23, dual weight -0.3115</text>
+                <rect class="tsw s0" x="253.75" y="225.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="267.75" y="234.79">Pulls the prediction down</text>
+                <text class="tx" x="253.75" y="251.79">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="253.75" y="268.79">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 25, dual weight -0.5029, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.2669, Principal component 2 (33% of variance): -1.537">
+            <title>Support row 25, dual weight -0.5029, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.2669, Principal component 2 (33% of variance): -1.537
+            </title>
+            <circle class="hit" cx="306.51" cy="344.07" r="9"/>
+            <circle class="pt" cx="306.51" cy="344.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="168.05" y="251.57" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="178.05" y="269.57">Support row 25, dual weight -0.5029</text>
+                <rect class="tsw s0" x="178.05" y="277.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="192.05" y="286.57">Pulls the prediction down</text>
+                <text class="tx" x="178.05" y="303.57">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="178.05" y="320.57">Principal component 2 (33% of variance): -1.5…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 27, dual weight -0.7777, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.156, Principal component 2 (33% of variance): 1.488">
+            <title>Support row 27, dual weight -0.7777, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.156, Principal component 2 (33% of variance): 1.488
+            </title>
+            <circle class="hit" cx="223.69" cy="174.69" r="9"/>
+            <circle class="pt" cx="223.69" cy="174.69" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="85.23" y="180.19" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="95.23" y="198.19">Support row 27, dual weight -0.7777</text>
+                <rect class="tsw s0" x="95.23" y="206.19" width="9" height="9" rx="2"/>
+                <text class="tx b" x="109.23" y="215.19">Pulls the prediction down</text>
+                <text class="tx" x="95.23" y="232.19">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="95.23" y="249.19">Principal component 2 (33% of variance): 1.488</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 32, dual weight -0.4651, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.1985, Principal component 2 (33% of variance): 0.9368">
+            <title>Support row 32, dual weight -0.4651, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.1985, Principal component 2 (33% of variance): 0.9368
+            </title>
+            <circle class="hit" cx="312.88" cy="205.54" r="9"/>
+            <circle class="pt" cx="312.88" cy="205.54" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="174.42" y="113.04" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="184.42" y="131.04">Support row 32, dual weight -0.4651</text>
+                <rect class="tsw s0" x="184.42" y="139.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="198.42" y="148.04">Pulls the prediction down</text>
+                <text class="tx" x="184.42" y="165.04">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="184.42" y="182.04">Principal component 2 (33% of variance): 0.93…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 33, dual weight -1.5102, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.794, Principal component 2 (33% of variance): 1.243">
+            <title>Support row 33, dual weight -1.5102, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.794, Principal component 2 (33% of variance): 1.243
+            </title>
+            <circle class="hit" cx="164.26" cy="188.4" r="9"/>
+            <circle class="pt" cx="164.26" cy="188.4" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="95.9" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="113.9">Support row 33, dual weight -1.5102</text>
+                <rect class="tsw s0" x="61.9" y="121.9" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="130.9">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="147.9">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="164.9">Principal component 2 (33% of variance): 1.243</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 34, dual weight -0.0319, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.5943, Principal component 2 (33% of variance): -0.6712">
+            <title>Support row 34, dual weight -0.0319, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.5943, Principal component 2 (33% of variance): -0.6712
+            </title>
+            <circle class="hit" cx="386.74" cy="295.59" r="9"/>
+            <circle class="pt" cx="386.74" cy="295.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.96" y="203.09" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.96" y="221.09">Support row 34, dual weight -0.0319</text>
+                <rect class="tsw s0" x="256.96" y="229.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.96" y="238.09">Pulls the prediction down</text>
+                <text class="tx" x="256.96" y="255.09">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="256.96" y="272.09">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 36, dual weight -0.1871, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.01412, Principal component 2 (33% of variance): 1.154">
+            <title>Support row 36, dual weight -0.1871, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.01412, Principal component 2 (33% of variance): 1.154
+            </title>
+            <circle class="hit" cx="330.06" cy="193.39" r="9"/>
+            <circle class="pt" cx="330.06" cy="193.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="191.6" y="100.89" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="201.6" y="118.89">Support row 36, dual weight -0.1871</text>
+                <rect class="tsw s0" x="201.6" y="126.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="215.6" y="135.89">Pulls the prediction down</text>
+                <text class="tx" x="201.6" y="152.89">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="201.6" y="169.89">Principal component 2 (33% of variance): 1.154</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 37, dual weight -1.6277, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.097, Principal component 2 (33% of variance): 0.2724">
+            <title>Support row 37, dual weight -1.6277, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.097, Principal component 2 (33% of variance): 0.2724
+            </title>
+            <circle class="hit" cx="433.56" cy="242.74" r="9"/>
+            <circle class="pt" cx="433.56" cy="242.74" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="293.78" y="150.24" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="303.78" y="168.24">Support row 37, dual weight -1.6277</text>
+                <rect class="tsw s0" x="303.78" y="176.24" width="9" height="9" rx="2"/>
+                <text class="tx b" x="317.78" y="185.24">Pulls the prediction down</text>
+                <text class="tx" x="303.78" y="202.24">Principal component 1 (39.5% of variance): 1.0…</text>
+                <text class="tx" x="303.78" y="219.24">Principal component 2 (33% of variance): 0.27…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 38, dual weight -0.0848, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.44, Principal component 2 (33% of variance): -0.7426">
+            <title>Support row 38, dual weight -0.0848, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.44, Principal component 2 (33% of variance): -0.7426
+            </title>
+            <circle class="hit" cx="465.55" cy="299.58" r="9"/>
+            <circle class="pt" cx="465.55" cy="299.58" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="326.01" y="207.08" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="336.01" y="225.08">Support row 38, dual weight -0.0848</text>
+                <rect class="tsw s0" x="336.01" y="233.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="350.01" y="242.08">Pulls the prediction down</text>
+                <text class="tx" x="336.01" y="259.08">Principal component 1 (39.5% of variance): 1.44</text>
+                <text class="tx" x="336.01" y="276.08">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 39, dual weight -0.0506, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.6802, Principal component 2 (33% of variance): -1.157">
+            <title>Support row 39, dual weight -0.0506, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.6802, Principal component 2 (33% of variance): -1.157
+            </title>
+            <circle class="hit" cx="268.01" cy="322.79" r="9"/>
+            <circle class="pt" cx="268.01" cy="322.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="129.55" y="230.29" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="139.55" y="248.29">Support row 39, dual weight -0.0506</text>
+                <rect class="tsw s0" x="139.55" y="256.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="153.55" y="265.29">Pulls the prediction down</text>
+                <text class="tx" x="139.55" y="282.29">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="139.55" y="299.29">Principal component 2 (33% of variance): -1.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 46, dual weight -1.0893, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.1091, Principal component 2 (33% of variance): 1.159">
+            <title>Support row 46, dual weight -1.0893, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.1091, Principal component 2 (33% of variance): 1.159
+            </title>
+            <circle class="hit" cx="341.53" cy="193.1" r="9"/>
+            <circle class="pt" cx="341.53" cy="193.1" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="201.75" y="100.6" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="211.75" y="118.6">Support row 46, dual weight -1.0893</text>
+                <rect class="tsw s0" x="211.75" y="126.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="225.75" y="135.6">Pulls the prediction down</text>
+                <text class="tx" x="211.75" y="152.6">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="211.75" y="169.6">Principal component 2 (33% of variance): 1.159</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 47, dual weight -1.7058, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.109, Principal component 2 (33% of variance): -1.457">
+            <title>Support row 47, dual weight -1.7058, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.109, Principal component 2 (33% of variance): -1.457
+            </title>
+            <circle class="hit" cx="134.86" cy="339.61" r="9"/>
+            <circle class="pt" cx="134.86" cy="339.61" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="247.11" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="265.11">Support row 47, dual weight -1.7058</text>
+                <rect class="tsw s0" x="61.9" y="273.11" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="282.11">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="299.11">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="316.11">Principal component 2 (33% of variance): -1.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 48, dual weight -0.6413, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.8335, Principal component 2 (33% of variance): 1.607">
+            <title>Support row 48, dual weight -0.6413, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.8335, Principal component 2 (33% of variance): 1.607
+            </title>
+            <circle class="hit" cx="253.73" cy="168.03" r="9"/>
+            <circle class="pt" cx="253.73" cy="168.03" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="115.27" y="173.53" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="125.27" y="191.53">Support row 48, dual weight -0.6413</text>
+                <rect class="tsw s0" x="125.27" y="199.53" width="9" height="9" rx="2"/>
+                <text class="tx b" x="139.27" y="208.53">Pulls the prediction down</text>
+                <text class="tx" x="125.27" y="225.53">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="125.27" y="242.53">Principal component 2 (33% of variance): 1.607</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 51, dual weight -0.3402, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.8159, Principal component 2 (33% of variance): 1.181">
+            <title>Support row 51, dual weight -0.3402, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.8159, Principal component 2 (33% of variance): 1.181
+            </title>
+            <circle class="hit" cx="407.38" cy="191.88" r="9"/>
+            <circle class="pt" cx="407.38" cy="191.88" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="267.6" y="99.38" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="277.6" y="117.38">Support row 51, dual weight -0.3402</text>
+                <rect class="tsw s0" x="277.6" y="125.38" width="9" height="9" rx="2"/>
+                <text class="tx b" x="291.6" y="134.38">Pulls the prediction down</text>
+                <text class="tx" x="277.6" y="151.38">Principal component 1 (39.5% of variance): 0.8…</text>
+                <text class="tx" x="277.6" y="168.38">Principal component 2 (33% of variance): 1.181</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 54, dual weight -0.9747, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.7201, Principal component 2 (33% of variance): -1.186">
+            <title>Support row 54, dual weight -0.9747, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.7201, Principal component 2 (33% of variance): -1.186
+            </title>
+            <circle class="hit" cx="398.45" cy="324.42" r="9"/>
+            <circle class="pt" cx="398.45" cy="324.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="258.67" y="231.92" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="268.67" y="249.92">Support row 54, dual weight -0.9747</text>
+                <rect class="tsw s0" x="268.67" y="257.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="282.67" y="266.92">Pulls the prediction down</text>
+                <text class="tx" x="268.67" y="283.92">Principal component 1 (39.5% of variance): 0.7…</text>
+                <text class="tx" x="268.67" y="300.92">Principal component 2 (33% of variance): -1.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 56, dual weight -0.0992, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.328, Principal component 2 (33% of variance): 0.2965">
+            <title>Support row 56, dual weight -0.0992, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.328, Principal component 2 (33% of variance): 0.2965
+            </title>
+            <circle class="hit" cx="455.06" cy="241.39" r="9"/>
+            <circle class="pt" cx="455.06" cy="241.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="315.28" y="148.89" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="325.28" y="166.89">Support row 56, dual weight -0.0992</text>
+                <rect class="tsw s0" x="325.28" y="174.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="339.28" y="183.89">Pulls the prediction down</text>
+                <text class="tx" x="325.28" y="200.89">Principal component 1 (39.5% of variance): 1.3…</text>
+                <text class="tx" x="325.28" y="217.89">Principal component 2 (33% of variance): 0.29…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 57, dual weight -0.789, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.05699, Principal component 2 (33% of variance): -0.843">
+            <title>Support row 57, dual weight -0.789, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.05699, Principal component 2 (33% of variance): -0.843
+            </title>
+            <circle class="hit" cx="336.68" cy="305.21" r="9"/>
+            <circle class="pt" cx="336.68" cy="305.21" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="196.9" y="212.71" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="206.9" y="230.71">Support row 57, dual weight -0.789</text>
+                <rect class="tsw s0" x="206.9" y="238.71" width="9" height="9" rx="2"/>
+                <text class="tx b" x="220.9" y="247.71">Pulls the prediction down</text>
+                <text class="tx" x="206.9" y="264.71">Principal component 1 (39.5% of variance): 0.0…</text>
+                <text class="tx" x="206.9" y="281.71">Principal component 2 (33% of variance): -0.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 58, dual weight -2.2977, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.135, Principal component 2 (33% of variance): -1.54">
+            <title>Support row 58, dual weight -2.2977, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.135, Principal component 2 (33% of variance): -1.54
+            </title>
+            <circle class="hit" cx="132.48" cy="344.26" r="9"/>
+            <circle class="pt" cx="132.48" cy="344.26" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="251.76" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="269.76">Support row 58, dual weight -2.2977</text>
+                <rect class="tsw s0" x="61.9" y="277.76" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="286.76">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="303.76">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="320.76">Principal component 2 (33% of variance): -1.54</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 59, dual weight -0.2363, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.339, Principal component 2 (33% of variance): -0.6851">
+            <title>Support row 59, dual weight -0.2363, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.339, Principal component 2 (33% of variance): -0.6851
+            </title>
+            <circle class="hit" cx="206.63" cy="296.36" r="9"/>
+            <circle class="pt" cx="206.63" cy="296.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="68.17" y="203.86" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="78.17" y="221.86">Support row 59, dual weight -0.2363</text>
+                <rect class="tsw s0" x="78.17" y="229.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="92.17" y="238.86">Pulls the prediction down</text>
+                <text class="tx" x="78.17" y="255.86">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="78.17" y="272.86">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 60, dual weight -0.499, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.255, Principal component 2 (33% of variance): -0.1384">
+            <title>Support row 60, dual weight -0.499, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.255, Principal component 2 (33% of variance): -0.1384
+            </title>
+            <circle class="hit" cx="214.48" cy="265.75" r="9"/>
+            <circle class="pt" cx="214.48" cy="265.75" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="76.02" y="173.25" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="86.02" y="191.25">Support row 60, dual weight -0.499</text>
+                <rect class="tsw s0" x="86.02" y="199.25" width="9" height="9" rx="2"/>
+                <text class="tx b" x="100.02" y="208.25">Pulls the prediction down</text>
+                <text class="tx" x="86.02" y="225.25">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="86.02" y="242.25">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 62, dual weight -3.0225, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.356, Principal component 2 (33% of variance): 2.346">
+            <title>Support row 62, dual weight -3.0225, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.356, Principal component 2 (33% of variance): 2.346
+            </title>
+            <circle class="hit" cx="111.87" cy="126.62" r="9"/>
+            <circle class="pt" cx="111.87" cy="126.62" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="132.12" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="150.12">Support row 62, dual weight -3.0225</text>
+                <rect class="tsw s0" x="61.9" y="158.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="167.12">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="184.12">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="201.12">Principal component 2 (33% of variance): 2.346</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 63, dual weight -0.1562, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.577, Principal component 2 (33% of variance): -0.6791">
+            <title>Support row 63, dual weight -0.1562, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.577, Principal component 2 (33% of variance): -0.6791
+            </title>
+            <circle class="hit" cx="478.27" cy="296.03" r="9"/>
+            <circle class="pt" cx="478.27" cy="296.03" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="338.49" y="203.53" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="348.49" y="221.53">Support row 63, dual weight -0.1562</text>
+                <rect class="tsw s0" x="348.49" y="229.53" width="9" height="9" rx="2"/>
+                <text class="tx b" x="362.49" y="238.53">Pulls the prediction down</text>
+                <text class="tx" x="348.49" y="255.53">Principal component 1 (39.5% of variance): 1.5…</text>
+                <text class="tx" x="348.49" y="272.53">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 65, dual weight -1.2406, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.257, Principal component 2 (33% of variance): 0.3841">
+            <title>Support row 65, dual weight -1.2406, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.257, Principal component 2 (33% of variance): 0.3841
+            </title>
+            <circle class="hit" cx="121.07" cy="236.49" r="9"/>
+            <circle class="pt" cx="121.07" cy="236.49" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="143.99" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="161.99">Support row 65, dual weight -1.2406</text>
+                <rect class="tsw s0" x="61.9" y="169.99" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="178.99">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="195.99">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="212.99">Principal component 2 (33% of variance): 0.38…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 67, dual weight -0.4562, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.8638, Principal component 2 (33% of variance): -1.806">
+            <title>Support row 67, dual weight -0.4562, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.8638, Principal component 2 (33% of variance): -1.806
+            </title>
+            <circle class="hit" cx="250.9" cy="359.13" r="9"/>
+            <circle class="pt" cx="250.9" cy="359.13" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="112.44" y="266.63" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="122.44" y="284.63">Support row 67, dual weight -0.4562</text>
+                <rect class="tsw s0" x="122.44" y="292.63" width="9" height="9" rx="2"/>
+                <text class="tx b" x="136.44" y="301.63">Pulls the prediction down</text>
+                <text class="tx" x="122.44" y="318.63">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="122.44" y="335.63">Principal component 2 (33% of variance): -1.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 69, dual weight -0.0592, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.165, Principal component 2 (33% of variance): -0.787">
+            <title>Support row 69, dual weight -0.0592, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.165, Principal component 2 (33% of variance): -0.787
+            </title>
+            <circle class="hit" cx="222.84" cy="302.07" r="9"/>
+            <circle class="pt" cx="222.84" cy="302.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="84.38" y="209.57" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="94.38" y="227.57">Support row 69, dual weight -0.0592</text>
+                <rect class="tsw s0" x="94.38" y="235.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="108.38" y="244.57">Pulls the prediction down</text>
+                <text class="tx" x="94.38" y="261.57">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="94.38" y="278.57">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 71, dual weight -0.0917, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.5891, Principal component 2 (33% of variance): -0.5512">
+            <title>Support row 71, dual weight -0.0917, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.5891, Principal component 2 (33% of variance): -0.5512
+            </title>
+            <circle class="hit" cx="386.25" cy="288.87" r="9"/>
+            <circle class="pt" cx="386.25" cy="288.87" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.47" y="196.37" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.47" y="214.37">Support row 71, dual weight -0.0917</text>
+                <rect class="tsw s0" x="256.47" y="222.37" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.47" y="231.37">Pulls the prediction down</text>
+                <text class="tx" x="256.47" y="248.37">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="256.47" y="265.37">Principal component 2 (33% of variance): -0.5…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 77, dual weight -0.3135, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.01672, Principal component 2 (33% of variance): -1.702">
+            <title>Support row 77, dual weight -0.3135, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.01672, Principal component 2 (33% of variance): -1.702
+            </title>
+            <circle class="hit" cx="329.81" cy="353.3" r="9"/>
+            <circle class="pt" cx="329.81" cy="353.3" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="191.35" y="260.8" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="201.35" y="278.8">Support row 77, dual weight -0.3135</text>
+                <rect class="tsw s0" x="201.35" y="286.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="215.35" y="295.8">Pulls the prediction down</text>
+                <text class="tx" x="201.35" y="312.8">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="201.35" y="329.8">Principal component 2 (33% of variance): -1.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 78, dual weight -0.1681, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.2664, Principal component 2 (33% of variance): -0.7336">
+            <title>Support row 78, dual weight -0.1681, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.2664, Principal component 2 (33% of variance): -0.7336
+            </title>
+            <circle class="hit" cx="356.19" cy="299.08" r="9"/>
+            <circle class="pt" cx="356.19" cy="299.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="216.41" y="206.58" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="226.41" y="224.58">Support row 78, dual weight -0.1681</text>
+                <rect class="tsw s0" x="226.41" y="232.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="240.41" y="241.58">Pulls the prediction down</text>
+                <text class="tx" x="226.41" y="258.58">Principal component 1 (39.5% of variance): 0.2…</text>
+                <text class="tx" x="226.41" y="275.58">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 81, dual weight -0.6591, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.37, Principal component 2 (33% of variance): 0.5534">
+            <title>Support row 81, dual weight -0.6591, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.37, Principal component 2 (33% of variance): 0.5534
+            </title>
+            <circle class="hit" cx="459.03" cy="227.01" r="9"/>
+            <circle class="pt" cx="459.03" cy="227.01" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="319.49" y="134.51" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="329.49" y="152.51">Support row 81, dual weight -0.6591</text>
+                <rect class="tsw s0" x="329.49" y="160.51" width="9" height="9" rx="2"/>
+                <text class="tx b" x="343.49" y="169.51">Pulls the prediction down</text>
+                <text class="tx" x="329.49" y="186.51">Principal component 1 (39.5% of variance): 1.37</text>
+                <text class="tx" x="329.49" y="203.51">Principal component 2 (33% of variance): 0.55…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 87, dual weight -0.5302, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.155, Principal component 2 (33% of variance): -0.9874">
+            <title>Support row 87, dual weight -0.5302, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.155, Principal component 2 (33% of variance): -0.9874
+            </title>
+            <circle class="hit" cx="223.74" cy="313.29" r="9"/>
+            <circle class="pt" cx="223.74" cy="313.29" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="85.28" y="220.79" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="95.28" y="238.79">Support row 87, dual weight -0.5302</text>
+                <rect class="tsw s0" x="95.28" y="246.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="109.28" y="255.79">Pulls the prediction down</text>
+                <text class="tx" x="95.28" y="272.79">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="95.28" y="289.79">Principal component 2 (33% of variance): -0.9…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 89, dual weight -0.7561, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.683, Principal component 2 (33% of variance): 2.457">
+            <title>Support row 89, dual weight -0.7561, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.683, Principal component 2 (33% of variance): 2.457
+            </title>
+            <circle class="hit" cx="174.57" cy="120.4" r="9"/>
+            <circle class="pt" cx="174.57" cy="120.4" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="125.9" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="143.9">Support row 89, dual weight -0.7561</text>
+                <rect class="tsw s0" x="61.9" y="151.9" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="160.9">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="177.9">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="194.9">Principal component 2 (33% of variance): 2.457</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 90, dual weight -2.1414, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.403, Principal component 2 (33% of variance): 0.03962">
+            <title>Support row 90, dual weight -2.1414, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.403, Principal component 2 (33% of variance): 0.03962
+            </title>
+            <circle class="hit" cx="107.55" cy="255.78" r="9"/>
+            <circle class="pt" cx="107.55" cy="255.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="163.28" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="181.28">Support row 90, dual weight -2.1414</text>
+                <rect class="tsw s0" x="61.9" y="189.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="198.28">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="215.28">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="232.28">Principal component 2 (33% of variance): 0.03…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 91, dual weight -0.3136, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.297, Principal component 2 (33% of variance): -0.7256">
+            <title>Support row 91, dual weight -0.3136, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.297, Principal component 2 (33% of variance): -0.7256
+            </title>
+            <circle class="hit" cx="210.57" cy="298.63" r="9"/>
+            <circle class="pt" cx="210.57" cy="298.63" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="72.11" y="206.13" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="82.11" y="224.13">Support row 91, dual weight -0.3136</text>
+                <rect class="tsw s0" x="82.11" y="232.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="96.11" y="241.13">Pulls the prediction down</text>
+                <text class="tx" x="82.11" y="258.13">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="82.11" y="275.13">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 92, dual weight -1.1982, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.502, Principal component 2 (33% of variance): 0.05436">
+            <title>Support row 92, dual weight -1.1982, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.502, Principal component 2 (33% of variance): 0.05436
+            </title>
+            <circle class="hit" cx="471.26" cy="254.96" r="9"/>
+            <circle class="pt" cx="471.26" cy="254.96" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="331.48" y="162.46" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="341.48" y="180.46">Support row 92, dual weight -1.1982</text>
+                <rect class="tsw s0" x="341.48" y="188.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="355.48" y="197.46">Pulls the prediction down</text>
+                <text class="tx" x="341.48" y="214.46">Principal component 1 (39.5% of variance): 1.5…</text>
+                <text class="tx" x="341.48" y="231.46">Principal component 2 (33% of variance): 0.05…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 95, dual weight -2.6508, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.641, Principal component 2 (33% of variance): -0.5874">
+            <title>Support row 95, dual weight -2.6508, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.641, Principal component 2 (33% of variance): -0.5874
+            </title>
+            <circle class="hit" cx="85.35" cy="290.9" r="9"/>
+            <circle class="pt" cx="85.35" cy="290.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="198.4" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="216.4">Support row 95, dual weight -2.6508</text>
+                <rect class="tsw s0" x="61.9" y="224.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="233.4">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="250.4">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="267.4">Principal component 2 (33% of variance): -0.5…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 96, dual weight -0.2862, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.462, Principal component 2 (33% of variance): -0.1594">
+            <title>Support row 96, dual weight -0.2862, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.462, Principal component 2 (33% of variance): -0.1594
+            </title>
+            <circle class="hit" cx="195.16" cy="266.92" r="9"/>
+            <circle class="pt" cx="195.16" cy="266.92" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="56.7" y="174.42" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="66.7" y="192.42">Support row 96, dual weight -0.2862</text>
+                <rect class="tsw s0" x="66.7" y="200.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="80.7" y="209.42">Pulls the prediction down</text>
+                <text class="tx" x="66.7" y="226.42">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="66.7" y="243.42">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 97, dual weight -0.57, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.8629, Principal component 2 (33% of variance): -1.12">
+            <title>Support row 97, dual weight -0.57, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.8629, Principal component 2 (33% of variance): -1.12
+            </title>
+            <circle class="hit" cx="250.98" cy="320.71" r="9"/>
+            <circle class="pt" cx="250.98" cy="320.71" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="112.52" y="228.21" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="122.52" y="246.21">Support row 97, dual weight -0.57</text>
+                <rect class="tsw s0" x="122.52" y="254.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="136.52" y="263.21">Pulls the prediction down</text>
+                <text class="tx" x="122.52" y="280.21">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="122.52" y="297.21">Principal component 2 (33% of variance): -1.12</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 98, dual weight -0.3412, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.4767, Principal component 2 (33% of variance): 0.1692">
+            <title>Support row 98, dual weight -0.3412, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.4767, Principal component 2 (33% of variance): 0.1692
+            </title>
+            <circle class="hit" cx="375.78" cy="248.52" r="9"/>
+            <circle class="pt" cx="375.78" cy="248.52" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="236" y="156.02" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="246" y="174.02">Support row 98, dual weight -0.3412</text>
+                <rect class="tsw s0" x="246" y="182.02" width="9" height="9" rx="2"/>
+                <text class="tx b" x="260" y="191.02">Pulls the prediction down</text>
+                <text class="tx" x="246" y="208.02">Principal component 1 (39.5% of variance): 0.4…</text>
+                <text class="tx" x="246" y="225.02">Principal component 2 (33% of variance): 0.16…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 100, dual weight -0.475, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.1067, Principal component 2 (33% of variance): 0.7433">
+            <title>Support row 100, dual weight -0.475, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.1067, Principal component 2 (33% of variance): 0.7433
+            </title>
+            <circle class="hit" cx="341.31" cy="216.37" r="9"/>
+            <circle class="pt" cx="341.31" cy="216.37" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="201.53" y="123.87" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="211.53" y="141.87">Support row 100, dual weight -0.475</text>
+                <rect class="tsw s0" x="211.53" y="149.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="225.53" y="158.87">Pulls the prediction down</text>
+                <text class="tx" x="211.53" y="175.87">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="211.53" y="192.87">Principal component 2 (33% of variance): 0.74…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 105, dual weight -0.9399, Pulls the prediction down, Principal component 1 (39.5% of variance): -2.202, Principal component 2 (33% of variance): 1.031">
+            <title>Support row 105, dual weight -0.9399, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -2.202, Principal component 2 (33% of variance): 1.031
+            </title>
+            <circle class="hit" cx="126.23" cy="200.29" r="9"/>
+            <circle class="pt" cx="126.23" cy="200.29" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="107.79" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="125.79">Support row 105, dual weight -0.9399</text>
+                <rect class="tsw s0" x="61.9" y="133.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="142.79">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="159.79">Principal component 1 (39.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="176.79">Principal component 2 (33% of variance): 1.031</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 106, dual weight -0.3893, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.2047, Principal component 2 (33% of variance): 0.4099">
+            <title>Support row 106, dual weight -0.3893, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.2047, Principal component 2 (33% of variance): 0.4099
+            </title>
+            <circle class="hit" cx="312.3" cy="235.05" r="9"/>
+            <circle class="pt" cx="312.3" cy="235.05" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="173.84" y="142.55" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="183.84" y="160.55">Support row 106, dual weight -0.3893</text>
+                <rect class="tsw s0" x="183.84" y="168.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="197.84" y="177.55">Pulls the prediction down</text>
+                <text class="tx" x="183.84" y="194.55">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="183.84" y="211.55">Principal component 2 (33% of variance): 0.40…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 108, dual weight -0.485, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.03037, Principal component 2 (33% of variance): -1.876">
+            <title>Support row 108, dual weight -0.485, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.03037, Principal component 2 (33% of variance): -1.876
+            </title>
+            <circle class="hit" cx="328.54" cy="363.05" r="9"/>
+            <circle class="pt" cx="328.54" cy="363.05" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="190.08" y="270.55" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="200.08" y="288.55">Support row 108, dual weight -0.485</text>
+                <rect class="tsw s0" x="200.08" y="296.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="214.08" y="305.55">Pulls the prediction down</text>
+                <text class="tx" x="200.08" y="322.55">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="200.08" y="339.55">Principal component 2 (33% of variance): -1.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 109, dual weight -0.7085, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.2169, Principal component 2 (33% of variance): -2.029">
+            <title>Support row 109, dual weight -0.7085, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.2169, Principal component 2 (33% of variance): -2.029
+            </title>
+            <circle class="hit" cx="311.16" cy="371.63" r="9"/>
+            <circle class="pt" cx="311.16" cy="371.63" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="172.7" y="279.13" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="182.7" y="297.13">Support row 109, dual weight -0.7085</text>
+                <rect class="tsw s0" x="182.7" y="305.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="196.7" y="314.13">Pulls the prediction down</text>
+                <text class="tx" x="182.7" y="331.13">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="182.7" y="348.13">Principal component 2 (33% of variance): -2.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 110, dual weight -0.9608, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.3953, Principal component 2 (33% of variance): -0.08344">
+            <title>Support row 110, dual weight -0.9608, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.3953, Principal component 2 (33% of variance): -0.08344
+            </title>
+            <circle class="hit" cx="368.2" cy="262.67" r="9"/>
+            <circle class="pt" cx="368.2" cy="262.67" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="228.42" y="170.17" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="238.42" y="188.17">Support row 110, dual weight -0.9608</text>
+                <rect class="tsw s0" x="238.42" y="196.17" width="9" height="9" rx="2"/>
+                <text class="tx b" x="252.42" y="205.17">Pulls the prediction down</text>
+                <text class="tx" x="238.42" y="222.17">Principal component 1 (39.5% of variance): 0.3…</text>
+                <text class="tx" x="238.42" y="239.17">Principal component 2 (33% of variance): -0.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 113, dual weight -0.1795, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.579, Principal component 2 (33% of variance): -0.1161">
+            <title>Support row 113, dual weight -0.1795, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.579, Principal component 2 (33% of variance): -0.1161
+            </title>
+            <circle class="hit" cx="385.31" cy="264.5" r="9"/>
+            <circle class="pt" cx="385.31" cy="264.5" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="245.53" y="172" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="255.53" y="190">Support row 113, dual weight -0.1795</text>
+                <rect class="tsw s0" x="255.53" y="198" width="9" height="9" rx="2"/>
+                <text class="tx b" x="269.53" y="207">Pulls the prediction down</text>
+                <text class="tx" x="255.53" y="224">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="255.53" y="241">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 118, dual weight -0.2463, Pulls the prediction down, Principal component 1 (39.5% of variance): 1.196, Principal component 2 (33% of variance): 0.4599">
+            <title>Support row 118, dual weight -0.2463, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 1.196, Principal component 2 (33% of variance): 0.4599
+            </title>
+            <circle class="hit" cx="442.74" cy="232.24" r="9"/>
+            <circle class="pt" cx="442.74" cy="232.24" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="302.96" y="139.74" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="312.96" y="157.74">Support row 118, dual weight -0.2463</text>
+                <rect class="tsw s0" x="312.96" y="165.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="326.96" y="174.74">Pulls the prediction down</text>
+                <text class="tx" x="312.96" y="191.74">Principal component 1 (39.5% of variance): 1.1…</text>
+                <text class="tx" x="312.96" y="208.74">Principal component 2 (33% of variance): 0.45…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 119, dual weight -0.6113, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.533, Principal component 2 (33% of variance): 0.9135">
+            <title>Support row 119, dual weight -0.6113, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.533, Principal component 2 (33% of variance): 0.9135
+            </title>
+            <circle class="hit" cx="188.6" cy="206.85" r="9"/>
+            <circle class="pt" cx="188.6" cy="206.85" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="114.35" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="132.35">Support row 119, dual weight -0.6113</text>
+                <rect class="tsw s0" x="61.9" y="140.35" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="149.35">Pulls the prediction down</text>
+                <text class="tx" x="61.9" y="166.35">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="183.35">Principal component 2 (33% of variance): 0.91…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 120, dual weight -0.2594, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.6713, Principal component 2 (33% of variance): -1.044">
+            <title>Support row 120, dual weight -0.2594, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.6713, Principal component 2 (33% of variance): -1.044
+            </title>
+            <circle class="hit" cx="393.9" cy="316.45" r="9"/>
+            <circle class="pt" cx="393.9" cy="316.45" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="254.12" y="223.95" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="264.12" y="241.95">Support row 120, dual weight -0.2594</text>
+                <rect class="tsw s0" x="264.12" y="249.95" width="9" height="9" rx="2"/>
+                <text class="tx b" x="278.12" y="258.95">Pulls the prediction down</text>
+                <text class="tx" x="264.12" y="275.95">Principal component 1 (39.5% of variance): 0.6…</text>
+                <text class="tx" x="264.12" y="292.95">Principal component 2 (33% of variance): -1.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 121, dual weight -1.7707, Pulls the prediction down, Principal component 1 (39.5% of variance): -1.232, Principal component 2 (33% of variance): -1.844">
+            <title>Support row 121, dual weight -1.7707, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -1.232, Principal component 2 (33% of variance): -1.844
+            </title>
+            <circle class="hit" cx="216.58" cy="361.27" r="9"/>
+            <circle class="pt" cx="216.58" cy="361.27" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="78.12" y="268.77" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="88.12" y="286.77">Support row 121, dual weight -1.7707</text>
+                <rect class="tsw s0" x="88.12" y="294.77" width="9" height="9" rx="2"/>
+                <text class="tx b" x="102.12" y="303.77">Pulls the prediction down</text>
+                <text class="tx" x="88.12" y="320.77">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="88.12" y="337.77">Principal component 2 (33% of variance): -1.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 126, dual weight -0.3817, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.2134, Principal component 2 (33% of variance): -2.264">
+            <title>Support row 126, dual weight -0.3817, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.2134, Principal component 2 (33% of variance): -2.264
+            </title>
+            <circle class="hit" cx="311.5" cy="384.79" r="9"/>
+            <circle class="pt" cx="311.5" cy="384.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="173.04" y="292.29" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="183.04" y="310.29">Support row 126, dual weight -0.3817</text>
+                <rect class="tsw s0" x="183.04" y="318.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="197.04" y="327.29">Pulls the prediction down</text>
+                <text class="tx" x="183.04" y="344.29">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="183.04" y="361.29">Principal component 2 (33% of variance): -2.2…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 130, dual weight -0.208, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.7386, Principal component 2 (33% of variance): 1.189">
+            <title>Support row 130, dual weight -0.208, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.7386, Principal component 2 (33% of variance): 1.189
+            </title>
+            <circle class="hit" cx="262.56" cy="191.42" r="9"/>
+            <circle class="pt" cx="262.56" cy="191.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="124.1" y="98.92" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="134.1" y="116.92">Support row 130, dual weight -0.208</text>
+                <rect class="tsw s0" x="134.1" y="124.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="148.1" y="133.92">Pulls the prediction down</text>
+                <text class="tx" x="134.1" y="150.92">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="134.1" y="167.92">Principal component 2 (33% of variance): 1.189</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 135, dual weight -0.1331, Pulls the prediction down, Principal component 1 (39.5% of variance): 0.9224, Principal component 2 (33% of variance): -0.4373">
+            <title>Support row 135, dual weight -0.1331, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): 0.9224, Principal component 2 (33% of variance): -0.4373
+            </title>
+            <circle class="hit" cx="417.3" cy="282.49" r="9"/>
+            <circle class="pt" cx="417.3" cy="282.49" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="277.52" y="189.99" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="287.52" y="207.99">Support row 135, dual weight -0.1331</text>
+                <rect class="tsw s0" x="287.52" y="215.99" width="9" height="9" rx="2"/>
+                <text class="tx b" x="301.52" y="224.99">Pulls the prediction down</text>
+                <text class="tx" x="287.52" y="241.99">Principal component 1 (39.5% of variance): 0.9…</text>
+                <text class="tx" x="287.52" y="258.99">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 141, dual weight -0.5602, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.1138, Principal component 2 (33% of variance): 0.4912">
+            <title>Support row 141, dual weight -0.5602, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.1138, Principal component 2 (33% of variance): 0.4912
+            </title>
+            <circle class="hit" cx="320.77" cy="230.49" r="9"/>
+            <circle class="pt" cx="320.77" cy="230.49" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="182.31" y="137.99" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="192.31" y="155.99">Support row 141, dual weight -0.5602</text>
+                <rect class="tsw s0" x="192.31" y="163.99" width="9" height="9" rx="2"/>
+                <text class="tx b" x="206.31" y="172.99">Pulls the prediction down</text>
+                <text class="tx" x="192.31" y="189.99">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="192.31" y="206.99">Principal component 2 (33% of variance): 0.49…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 142, dual weight -0.6545, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.6736, Principal component 2 (33% of variance): 0.9258">
+            <title>Support row 142, dual weight -0.6545, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.6736, Principal component 2 (33% of variance): 0.9258
+            </title>
+            <circle class="hit" cx="268.62" cy="206.16" r="9"/>
+            <circle class="pt" cx="268.62" cy="206.16" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="130.16" y="113.66" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="140.16" y="131.66">Support row 142, dual weight -0.6545</text>
+                <rect class="tsw s0" x="140.16" y="139.66" width="9" height="9" rx="2"/>
+                <text class="tx b" x="154.16" y="148.66">Pulls the prediction down</text>
+                <text class="tx" x="140.16" y="165.66">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="140.16" y="182.66">Principal component 2 (33% of variance): 0.92…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 144, dual weight -0.0487, Pulls the prediction down, Principal component 1 (39.5% of variance): -0.6271, Principal component 2 (33% of variance): -0.8491">
+            <title>Support row 144, dual weight -0.0487, Pulls the prediction down, Principal component 1 (39.5% of
+                variance): -0.6271, Principal component 2 (33% of variance): -0.8491
+            </title>
+            <circle class="hit" cx="272.95" cy="305.55" r="9"/>
+            <circle class="pt" cx="272.95" cy="305.55" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="134.49" y="213.05" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="144.49" y="231.05">Support row 144, dual weight -0.0487</text>
+                <rect class="tsw s0" x="144.49" y="239.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="158.49" y="248.05">Pulls the prediction down</text>
+                <text class="tx" x="144.49" y="265.05">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="144.49" y="282.05">Principal component 2 (33% of variance): -0.8…</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 1, dual weight 0.5368, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.5575, Principal component 2 (33% of variance): 0.0248">
+            <title>Support row 1, dual weight 0.5368, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.5575, Principal component 2 (33% of variance): 0.0248
+            </title>
+            <circle class="hit" cx="383.31" cy="256.61" r="9"/>
+            <circle class="pt" cx="383.31" cy="256.61" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="243.53" y="164.11" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="253.53" y="182.11">Support row 1, dual weight 0.5368</text>
+                <rect class="tsw s1" x="253.53" y="190.11" width="9" height="9" rx="2"/>
+                <text class="tx b" x="267.53" y="199.11">Pulls the prediction up</text>
+                <text class="tx" x="253.53" y="216.11">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="253.53" y="233.11">Principal component 2 (33% of variance): 0.02…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 4, dual weight 0.8723, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.0383, Principal component 2 (33% of variance): -0.1294">
+            <title>Support row 4, dual weight 0.8723, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.0383, Principal component 2 (33% of variance): -0.1294
+            </title>
+            <circle class="hit" cx="327.8" cy="265.24" r="9"/>
+            <circle class="pt" cx="327.8" cy="265.24" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="189.34" y="172.74" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="199.34" y="190.74">Support row 4, dual weight 0.8723</text>
+                <rect class="tsw s1" x="199.34" y="198.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="213.34" y="207.74">Pulls the prediction up</text>
+                <text class="tx" x="199.34" y="224.74">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="199.34" y="241.74">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 6, dual weight 0.7289, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.7729, Principal component 2 (33% of variance): -0.7365">
+            <title>Support row 6, dual weight 0.7289, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.7729, Principal component 2 (33% of variance): -0.7365
+            </title>
+            <circle class="hit" cx="259.37" cy="299.24" r="9"/>
+            <circle class="pt" cx="259.37" cy="299.24" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="120.91" y="206.74" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="130.91" y="224.74">Support row 6, dual weight 0.7289</text>
+                <rect class="tsw s1" x="130.91" y="232.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="144.91" y="241.74">Pulls the prediction up</text>
+                <text class="tx" x="130.91" y="258.74">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="130.91" y="275.74">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 10, dual weight 0.5545, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.242, Principal component 2 (33% of variance): -1.971">
+            <title>Support row 10, dual weight 0.5545, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.242, Principal component 2 (33% of variance): -1.971
+            </title>
+            <circle class="hit" cx="447.07" cy="368.36" r="9"/>
+            <circle class="pt" cx="447.07" cy="368.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="307.29" y="275.86" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="317.29" y="293.86">Support row 10, dual weight 0.5545</text>
+                <rect class="tsw s1" x="317.29" y="301.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="331.29" y="310.86">Pulls the prediction up</text>
+                <text class="tx" x="317.29" y="327.86">Principal component 1 (39.5% of variance): 1.2…</text>
+                <text class="tx" x="317.29" y="344.86">Principal component 2 (33% of variance): -1.9…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 12, dual weight 0.2263, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.5512, Principal component 2 (33% of variance): -1.379">
+            <title>Support row 12, dual weight 0.2263, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.5512, Principal component 2 (33% of variance): -1.379
+            </title>
+            <circle class="hit" cx="280.03" cy="335.24" r="9"/>
+            <circle class="pt" cx="280.03" cy="335.24" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="141.57" y="242.74" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="151.57" y="260.74">Support row 12, dual weight 0.2263</text>
+                <rect class="tsw s1" x="151.57" y="268.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="165.57" y="277.74">Pulls the prediction up</text>
+                <text class="tx" x="151.57" y="294.74">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="151.57" y="311.74">Principal component 2 (33% of variance): -1.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 14, dual weight 0.6146, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.1017, Principal component 2 (33% of variance): 2.414">
+            <title>Support row 14, dual weight 0.6146, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.1017, Principal component 2 (33% of variance): 2.414
+            </title>
+            <circle class="hit" cx="321.9" cy="122.81" r="9"/>
+            <circle class="pt" cx="321.9" cy="122.81" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="183.44" y="128.31" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="193.44" y="146.31">Support row 14, dual weight 0.6146</text>
+                <rect class="tsw s1" x="193.44" y="154.31" width="9" height="9" rx="2"/>
+                <text class="tx b" x="207.44" y="163.31">Pulls the prediction up</text>
+                <text class="tx" x="193.44" y="180.31">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="193.44" y="197.31">Principal component 2 (33% of variance): 2.414</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 19, dual weight 0.7916, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.3887, Principal component 2 (33% of variance): -0.5339">
+            <title>Support row 19, dual weight 0.7916, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.3887, Principal component 2 (33% of variance): -0.5339
+            </title>
+            <circle class="hit" cx="295.16" cy="287.9" r="9"/>
+            <circle class="pt" cx="295.16" cy="287.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="156.7" y="195.4" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="166.7" y="213.4">Support row 19, dual weight 0.7916</text>
+                <rect class="tsw s1" x="166.7" y="221.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="180.7" y="230.4">Pulls the prediction up</text>
+                <text class="tx" x="166.7" y="247.4">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="166.7" y="264.4">Principal component 2 (33% of variance): -0.5…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 21, dual weight 0.0941, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.7059, Principal component 2 (33% of variance): -0.7059">
+            <title>Support row 21, dual weight 0.0941, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.7059, Principal component 2 (33% of variance): -0.7059
+            </title>
+            <circle class="hit" cx="397.13" cy="297.53" r="9"/>
+            <circle class="pt" cx="397.13" cy="297.53" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="257.35" y="205.03" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="267.35" y="223.03">Support row 21, dual weight 0.0941</text>
+                <rect class="tsw s1" x="267.35" y="231.03" width="9" height="9" rx="2"/>
+                <text class="tx b" x="281.35" y="240.03">Pulls the prediction up</text>
+                <text class="tx" x="267.35" y="257.03">Principal component 1 (39.5% of variance): 0.7…</text>
+                <text class="tx" x="267.35" y="274.03">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 22, dual weight 0.4725, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.8276, Principal component 2 (33% of variance): -0.09479">
+            <title>Support row 22, dual weight 0.4725, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.8276, Principal component 2 (33% of variance): -0.09479
+            </title>
+            <circle class="hit" cx="254.27" cy="263.31" r="9"/>
+            <circle class="pt" cx="254.27" cy="263.31" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="115.81" y="170.81" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="125.81" y="188.81">Support row 22, dual weight 0.4725</text>
+                <rect class="tsw s1" x="125.81" y="196.81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="139.81" y="205.81">Pulls the prediction up</text>
+                <text class="tx" x="125.81" y="222.81">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="125.81" y="239.81">Principal component 2 (33% of variance): -0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 24, dual weight 0.0943, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.4122, Principal component 2 (33% of variance): 2.807">
+            <title>Support row 24, dual weight 0.0943, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.4122, Principal component 2 (33% of variance): 2.807
+            </title>
+            <circle class="hit" cx="292.97" cy="100.79" r="9"/>
+            <circle class="pt" cx="292.97" cy="100.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="154.51" y="106.29" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="164.51" y="124.29">Support row 24, dual weight 0.0943</text>
+                <rect class="tsw s1" x="164.51" y="132.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="178.51" y="141.29">Pulls the prediction up</text>
+                <text class="tx" x="164.51" y="158.29">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="164.51" y="175.29">Principal component 2 (33% of variance): 2.807</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 26, dual weight 0.0106, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.402, Principal component 2 (33% of variance): -0.6911">
+            <title>Support row 26, dual weight 0.0106, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.402, Principal component 2 (33% of variance): -0.6911
+            </title>
+            <circle class="hit" cx="461.94" cy="296.7" r="9"/>
+            <circle class="pt" cx="461.94" cy="296.7" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="322.16" y="204.2" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="332.16" y="222.2">Support row 26, dual weight 0.0106</text>
+                <rect class="tsw s1" x="332.16" y="230.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="346.16" y="239.2">Pulls the prediction up</text>
+                <text class="tx" x="332.16" y="256.2">Principal component 1 (39.5% of variance): 1.4…</text>
+                <text class="tx" x="332.16" y="273.2">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 28, dual weight 0.2779, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.409, Principal component 2 (33% of variance): -0.05757">
+            <title>Support row 28, dual weight 0.2779, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.409, Principal component 2 (33% of variance): -0.05757
+            </title>
+            <circle class="hit" cx="200.11" cy="261.22" r="9"/>
+            <circle class="pt" cx="200.11" cy="261.22" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="61.65" y="168.72" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="71.65" y="186.72">Support row 28, dual weight 0.2779</text>
+                <rect class="tsw s1" x="71.65" y="194.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="85.65" y="203.72">Pulls the prediction up</text>
+                <text class="tx" x="71.65" y="220.72">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="71.65" y="237.72">Principal component 2 (33% of variance): -0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 29, dual weight 1.8965, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.839, Principal component 2 (33% of variance): -0.3415">
+            <title>Support row 29, dual weight 1.8965, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.839, Principal component 2 (33% of variance): -0.3415
+            </title>
+            <circle class="hit" cx="409.53" cy="277.12" r="9"/>
+            <circle class="pt" cx="409.53" cy="277.12" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="269.75" y="184.62" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="279.75" y="202.62">Support row 29, dual weight 1.8965</text>
+                <rect class="tsw s1" x="279.75" y="210.62" width="9" height="9" rx="2"/>
+                <text class="tx b" x="293.75" y="219.62">Pulls the prediction up</text>
+                <text class="tx" x="279.75" y="236.62">Principal component 1 (39.5% of variance): 0.8…</text>
+                <text class="tx" x="279.75" y="253.62">Principal component 2 (33% of variance): -0.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 30, dual weight 0.404, Pulls the prediction up, Principal component 1 (39.5% of variance): 2.134, Principal component 2 (33% of variance): 0.2067">
+            <title>Support row 30, dual weight 0.404, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 2.134, Principal component 2 (33% of variance): 0.2067
+            </title>
+            <circle class="hit" cx="530.13" cy="246.42" r="9"/>
+            <circle class="pt" cx="530.13" cy="246.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="390.35" y="153.92" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="400.35" y="171.92">Support row 30, dual weight 0.404</text>
+                <rect class="tsw s1" x="400.35" y="179.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="414.35" y="188.92">Pulls the prediction up</text>
+                <text class="tx" x="400.35" y="205.92">Principal component 1 (39.5% of variance): 2.1…</text>
+                <text class="tx" x="400.35" y="222.92">Principal component 2 (33% of variance): 0.20…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 31, dual weight 0.0191, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.439, Principal component 2 (33% of variance): 1.236">
+            <title>Support row 31, dual weight 0.0191, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.439, Principal component 2 (33% of variance): 1.236
+            </title>
+            <circle class="hit" cx="197.29" cy="188.8" r="9"/>
+            <circle class="pt" cx="197.29" cy="188.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="58.83" y="96.3" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="68.83" y="114.3">Support row 31, dual weight 0.0191</text>
+                <rect class="tsw s1" x="68.83" y="122.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="82.83" y="131.3">Pulls the prediction up</text>
+                <text class="tx" x="68.83" y="148.3">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="68.83" y="165.3">Principal component 2 (33% of variance): 1.236</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 35, dual weight 0.3723, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.169, Principal component 2 (33% of variance): -0.07905">
+            <title>Support row 35, dual weight 0.3723, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.169, Principal component 2 (33% of variance): -0.07905
+            </title>
+            <circle class="hit" cx="440.25" cy="262.43" r="9"/>
+            <circle class="pt" cx="440.25" cy="262.43" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="300.47" y="169.93" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="310.47" y="187.93">Support row 35, dual weight 0.3723</text>
+                <rect class="tsw s1" x="310.47" y="195.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="324.47" y="204.93">Pulls the prediction up</text>
+                <text class="tx" x="310.47" y="221.93">Principal component 1 (39.5% of variance): 1.1…</text>
+                <text class="tx" x="310.47" y="238.93">Principal component 2 (33% of variance): -0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 40, dual weight 0.0771, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.8865, Principal component 2 (33% of variance): -0.6711">
+            <title>Support row 40, dual weight 0.0771, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.8865, Principal component 2 (33% of variance): -0.6711
+            </title>
+            <circle class="hit" cx="413.96" cy="295.58" r="9"/>
+            <circle class="pt" cx="413.96" cy="295.58" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="274.18" y="203.08" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="284.18" y="221.08">Support row 40, dual weight 0.0771</text>
+                <rect class="tsw s1" x="284.18" y="229.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="298.18" y="238.08">Pulls the prediction up</text>
+                <text class="tx" x="284.18" y="255.08">Principal component 1 (39.5% of variance): 0.8…</text>
+                <text class="tx" x="284.18" y="272.08">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 41, dual weight 0.8761, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.1805, Principal component 2 (33% of variance): 1.284">
+            <title>Support row 41, dual weight 0.8761, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.1805, Principal component 2 (33% of variance): 1.284
+            </title>
+            <circle class="hit" cx="314.56" cy="186.07" r="9"/>
+            <circle class="pt" cx="314.56" cy="186.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="176.1" y="93.57" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="186.1" y="111.57">Support row 41, dual weight 0.8761</text>
+                <rect class="tsw s1" x="186.1" y="119.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="200.1" y="128.57">Pulls the prediction up</text>
+                <text class="tx" x="186.1" y="145.57">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="186.1" y="162.57">Principal component 2 (33% of variance): 1.284</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 42, dual weight 0.5087, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.283, Principal component 2 (33% of variance): -1.115">
+            <title>Support row 42, dual weight 0.5087, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.283, Principal component 2 (33% of variance): -1.115
+            </title>
+            <circle class="hit" cx="211.87" cy="320.47" r="9"/>
+            <circle class="pt" cx="211.87" cy="320.47" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="73.41" y="227.97" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="83.41" y="245.97">Support row 42, dual weight 0.5087</text>
+                <rect class="tsw s1" x="83.41" y="253.97" width="9" height="9" rx="2"/>
+                <text class="tx b" x="97.41" y="262.97">Pulls the prediction up</text>
+                <text class="tx" x="83.41" y="279.97">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="83.41" y="296.97">Principal component 2 (33% of variance): -1.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 43, dual weight 7.3491, Pulls the prediction up, Principal component 1 (39.5% of variance): 3.575, Principal component 2 (33% of variance): 2.551">
+            <title>Support row 43, dual weight 7.3491, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 3.575, Principal component 2 (33% of variance): 2.551
+            </title>
+            <circle class="hit" cx="664.39" cy="115.14" r="9"/>
+            <circle class="pt" cx="664.39" cy="115.14" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="120.64" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="138.64">Support row 43, dual weight 7.3491</text>
+                <rect class="tsw s1" x="434.44" y="146.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="155.64">Pulls the prediction up</text>
+                <text class="tx" x="434.44" y="172.64">Principal component 1 (39.5% of variance): 3.5…</text>
+                <text class="tx" x="434.44" y="189.64">Principal component 2 (33% of variance): 2.551</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 44, dual weight 1.001, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.5299, Principal component 2 (33% of variance): -1.212">
+            <title>Support row 44, dual weight 1.001, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.5299, Principal component 2 (33% of variance): -1.212
+            </title>
+            <circle class="hit" cx="380.73" cy="325.9" r="9"/>
+            <circle class="pt" cx="380.73" cy="325.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="240.95" y="233.4" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="250.95" y="251.4">Support row 44, dual weight 1.001</text>
+                <rect class="tsw s1" x="250.95" y="259.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="264.95" y="268.4">Pulls the prediction up</text>
+                <text class="tx" x="250.95" y="285.4">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="250.95" y="302.4">Principal component 2 (33% of variance): -1.2…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 45, dual weight 0.3708, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.3476, Principal component 2 (33% of variance): -0.8852">
+            <title>Support row 45, dual weight 0.3708, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.3476, Principal component 2 (33% of variance): -0.8852
+            </title>
+            <circle class="hit" cx="298.99" cy="307.57" r="9"/>
+            <circle class="pt" cx="298.99" cy="307.57" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="160.53" y="215.07" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="170.53" y="233.07">Support row 45, dual weight 0.3708</text>
+                <rect class="tsw s1" x="170.53" y="241.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="184.53" y="250.07">Pulls the prediction up</text>
+                <text class="tx" x="170.53" y="267.07">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="170.53" y="284.07">Principal component 2 (33% of variance): -0.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 49, dual weight 0.0084, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.02, Principal component 2 (33% of variance): 1.453">
+            <title>Support row 49, dual weight 0.0084, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.02, Principal component 2 (33% of variance): 1.453
+            </title>
+            <circle class="hit" cx="236.31" cy="176.65" r="9"/>
+            <circle class="pt" cx="236.31" cy="176.65" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="97.85" y="90" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="107.85" y="108">Support row 49, dual weight 0.0084</text>
+                <rect class="tsw s1" x="107.85" y="116" width="9" height="9" rx="2"/>
+                <text class="tx b" x="121.85" y="125">Pulls the prediction up</text>
+                <text class="tx" x="107.85" y="142">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="107.85" y="159">Principal component 2 (33% of variance): 1.453</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 50, dual weight 2.9278, Pulls the prediction up, Principal component 1 (39.5% of variance): 3.613, Principal component 2 (33% of variance): -0.6504">
+            <title>Support row 50, dual weight 2.9278, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 3.613, Principal component 2 (33% of variance): -0.6504
+            </title>
+            <circle class="hit" cx="667.91" cy="294.42" r="9"/>
+            <circle class="pt" cx="667.91" cy="294.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="201.92" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="219.92">Support row 50, dual weight 2.9278</text>
+                <rect class="tsw s1" x="434.44" y="227.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="236.92">Pulls the prediction up</text>
+                <text class="tx" x="434.44" y="253.92">Principal component 1 (39.5% of variance): 3.6…</text>
+                <text class="tx" x="434.44" y="270.92">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 52, dual weight 4.6105, Pulls the prediction up, Principal component 1 (39.5% of variance): 3.989, Principal component 2 (33% of variance): -0.4451">
+            <title>Support row 52, dual weight 4.6105, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 3.989, Principal component 2 (33% of variance): -0.4451
+            </title>
+            <circle class="hit" cx="703.01" cy="282.93" r="9"/>
+            <circle class="pt" cx="703.01" cy="282.93" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="190.43" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="208.43">Support row 52, dual weight 4.6105</text>
+                <rect class="tsw s1" x="434.44" y="216.43" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="225.43">Pulls the prediction up</text>
+                <text class="tx" x="434.44" y="242.43">Principal component 1 (39.5% of variance): 3.9…</text>
+                <text class="tx" x="434.44" y="259.43">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 53, dual weight 0.0693, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.2444, Principal component 2 (33% of variance): 0.8702">
+            <title>Support row 53, dual weight 0.0693, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.2444, Principal component 2 (33% of variance): 0.8702
+            </title>
+            <circle class="hit" cx="354.14" cy="209.27" r="9"/>
+            <circle class="pt" cx="354.14" cy="209.27" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="214.36" y="116.77" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="224.36" y="134.77">Support row 53, dual weight 0.0693</text>
+                <rect class="tsw s1" x="224.36" y="142.77" width="9" height="9" rx="2"/>
+                <text class="tx b" x="238.36" y="151.77">Pulls the prediction up</text>
+                <text class="tx" x="224.36" y="168.77">Principal component 1 (39.5% of variance): 0.2…</text>
+                <text class="tx" x="224.36" y="185.77">Principal component 2 (33% of variance): 0.87…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 55, dual weight 0.2157, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.2431, Principal component 2 (33% of variance): -0.759">
+            <title>Support row 55, dual weight 0.2157, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.2431, Principal component 2 (33% of variance): -0.759
+            </title>
+            <circle class="hit" cx="308.72" cy="300.5" r="9"/>
+            <circle class="pt" cx="308.72" cy="300.5" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="170.26" y="208" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="180.26" y="226">Support row 55, dual weight 0.2157</text>
+                <rect class="tsw s1" x="180.26" y="234" width="9" height="9" rx="2"/>
+                <text class="tx b" x="194.26" y="243">Pulls the prediction up</text>
+                <text class="tx" x="180.26" y="260">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="180.26" y="277">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 61, dual weight 1.28, Pulls the prediction up, Principal component 1 (39.5% of variance): 2.814, Principal component 2 (33% of variance): -0.4246">
+            <title>Support row 61, dual weight 1.28, Pulls the prediction up, Principal component 1 (39.5% of variance):
+                2.814, Principal component 2 (33% of variance): -0.4246
+            </title>
+            <circle class="hit" cx="593.48" cy="281.78" r="9"/>
+            <circle class="pt" cx="593.48" cy="281.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="189.28" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="207.28">Support row 61, dual weight 1.28</text>
+                <rect class="tsw s1" x="434.44" y="215.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="224.28">Pulls the prediction up</text>
+                <text class="tx" x="434.44" y="241.28">Principal component 1 (39.5% of variance): 2.8…</text>
+                <text class="tx" x="434.44" y="258.28">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 64, dual weight 0.0161, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.65, Principal component 2 (33% of variance): 0.2981">
+            <title>Support row 64, dual weight 0.0161, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.65, Principal component 2 (33% of variance): 0.2981
+            </title>
+            <circle class="hit" cx="177.7" cy="241.31" r="9"/>
+            <circle class="pt" cx="177.7" cy="241.31" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="148.81" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="166.81">Support row 64, dual weight 0.0161</text>
+                <rect class="tsw s1" x="61.9" y="174.81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="183.81">Pulls the prediction up</text>
+                <text class="tx" x="61.9" y="200.81">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="217.81">Principal component 2 (33% of variance): 0.29…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 66, dual weight 0.2853, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.1603, Principal component 2 (33% of variance): 1.028">
+            <title>Support row 66, dual weight 0.2853, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.1603, Principal component 2 (33% of variance): 1.028
+            </title>
+            <circle class="hit" cx="346.3" cy="200.41" r="9"/>
+            <circle class="pt" cx="346.3" cy="200.41" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="206.52" y="107.91" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="216.52" y="125.91">Support row 66, dual weight 0.2853</text>
+                <rect class="tsw s1" x="216.52" y="133.91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="230.52" y="142.91">Pulls the prediction up</text>
+                <text class="tx" x="216.52" y="159.91">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="216.52" y="176.91">Principal component 2 (33% of variance): 1.028</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 68, dual weight 0.6791, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.046, Principal component 2 (33% of variance): 2.246">
+            <title>Support row 68, dual weight 0.6791, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.046, Principal component 2 (33% of variance): 2.246
+            </title>
+            <circle class="hit" cx="428.8" cy="132.22" r="9"/>
+            <circle class="pt" cx="428.8" cy="132.22" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="289.02" y="137.72" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="299.02" y="155.72">Support row 68, dual weight 0.6791</text>
+                <rect class="tsw s1" x="299.02" y="163.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="313.02" y="172.72">Pulls the prediction up</text>
+                <text class="tx" x="299.02" y="189.72">Principal component 1 (39.5% of variance): 1.0…</text>
+                <text class="tx" x="299.02" y="206.72">Principal component 2 (33% of variance): 2.246</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 70, dual weight 0.7172, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.133, Principal component 2 (33% of variance): 0.9405">
+            <title>Support row 70, dual weight 0.7172, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.133, Principal component 2 (33% of variance): 0.9405
+            </title>
+            <circle class="hit" cx="225.85" cy="205.33" r="9"/>
+            <circle class="pt" cx="225.85" cy="205.33" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="87.39" y="112.83" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="97.39" y="130.83">Support row 70, dual weight 0.7172</text>
+                <rect class="tsw s1" x="97.39" y="138.83" width="9" height="9" rx="2"/>
+                <text class="tx b" x="111.39" y="147.83">Pulls the prediction up</text>
+                <text class="tx" x="97.39" y="164.83">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="97.39" y="181.83">Principal component 2 (33% of variance): 0.94…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 72, dual weight 0.4075, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.158, Principal component 2 (33% of variance): -0.1015">
+            <title>Support row 72, dual weight 0.4075, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.158, Principal component 2 (33% of variance): -0.1015
+            </title>
+            <circle class="hit" cx="223.5" cy="263.68" r="9"/>
+            <circle class="pt" cx="223.5" cy="263.68" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="85.04" y="171.18" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="95.04" y="189.18">Support row 72, dual weight 0.4075</text>
+                <rect class="tsw s1" x="95.04" y="197.18" width="9" height="9" rx="2"/>
+                <text class="tx b" x="109.04" y="206.18">Pulls the prediction up</text>
+                <text class="tx" x="95.04" y="223.18">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="95.04" y="240.18">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 73, dual weight 0.3195, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.765, Principal component 2 (33% of variance): 0.3887">
+            <title>Support row 73, dual weight 0.3195, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.765, Principal component 2 (33% of variance): 0.3887
+            </title>
+            <circle class="hit" cx="166.92" cy="236.23" r="9"/>
+            <circle class="pt" cx="166.92" cy="236.23" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="143.73" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="161.73">Support row 73, dual weight 0.3195</text>
+                <rect class="tsw s1" x="61.9" y="169.73" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="178.73">Pulls the prediction up</text>
+                <text class="tx" x="61.9" y="195.73">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="212.73">Principal component 2 (33% of variance): 0.38…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 74, dual weight 1.2678, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.46, Principal component 2 (33% of variance): 0.2072">
+            <title>Support row 74, dual weight 1.2678, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.46, Principal component 2 (33% of variance): 0.2072
+            </title>
+            <circle class="hit" cx="467.42" cy="246.39" r="9"/>
+            <circle class="pt" cx="467.42" cy="246.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="327.88" y="153.89" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="337.88" y="171.89">Support row 74, dual weight 1.2678</text>
+                <rect class="tsw s1" x="337.88" y="179.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="351.88" y="188.89">Pulls the prediction up</text>
+                <text class="tx" x="337.88" y="205.89">Principal component 1 (39.5% of variance): 1.46</text>
+                <text class="tx" x="337.88" y="222.89">Principal component 2 (33% of variance): 0.20…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 75, dual weight 0.3369, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.1786, Principal component 2 (33% of variance): -1.018">
+            <title>Support row 75, dual weight 0.3369, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.1786, Principal component 2 (33% of variance): -1.018
+            </title>
+            <circle class="hit" cx="314.73" cy="315" r="9"/>
+            <circle class="pt" cx="314.73" cy="315" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="176.27" y="222.5" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="186.27" y="240.5">Support row 75, dual weight 0.3369</text>
+                <rect class="tsw s1" x="186.27" y="248.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="200.27" y="257.5">Pulls the prediction up</text>
+                <text class="tx" x="186.27" y="274.5">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="186.27" y="291.5">Principal component 2 (33% of variance): -1.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 76, dual weight 0.2406, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.334, Principal component 2 (33% of variance): 0.6662">
+            <title>Support row 76, dual weight 0.2406, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.334, Principal component 2 (33% of variance): 0.6662
+            </title>
+            <circle class="hit" cx="300.25" cy="220.69" r="9"/>
+            <circle class="pt" cx="300.25" cy="220.69" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="161.79" y="128.19" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="171.79" y="146.19">Support row 76, dual weight 0.2406</text>
+                <rect class="tsw s1" x="171.79" y="154.19" width="9" height="9" rx="2"/>
+                <text class="tx b" x="185.79" y="163.19">Pulls the prediction up</text>
+                <text class="tx" x="171.79" y="180.19">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="171.79" y="197.19">Principal component 2 (33% of variance): 0.66…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 79, dual weight 0.4902, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.105, Principal component 2 (33% of variance): 1.017">
+            <title>Support row 79, dual weight 0.4902, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.105, Principal component 2 (33% of variance): 1.017
+            </title>
+            <circle class="hit" cx="228.46" cy="201.04" r="9"/>
+            <circle class="pt" cx="228.46" cy="201.04" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="90" y="108.54" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="100" y="126.54">Support row 79, dual weight 0.4902</text>
+                <rect class="tsw s1" x="100" y="134.54" width="9" height="9" rx="2"/>
+                <text class="tx b" x="114" y="143.54">Pulls the prediction up</text>
+                <text class="tx" x="100" y="160.54">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="100" y="177.54">Principal component 2 (33% of variance): 1.017</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 80, dual weight 1.0033, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.343, Principal component 2 (33% of variance): -0.4048">
+            <title>Support row 80, dual weight 1.0033, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.343, Principal component 2 (33% of variance): -0.4048
+            </title>
+            <circle class="hit" cx="456.45" cy="280.67" r="9"/>
+            <circle class="pt" cx="456.45" cy="280.67" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="316.67" y="188.17" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="326.67" y="206.17">Support row 80, dual weight 1.0033</text>
+                <rect class="tsw s1" x="326.67" y="214.17" width="9" height="9" rx="2"/>
+                <text class="tx b" x="340.67" y="223.17">Pulls the prediction up</text>
+                <text class="tx" x="326.67" y="240.17">Principal component 1 (39.5% of variance): 1.3…</text>
+                <text class="tx" x="326.67" y="257.17">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 82, dual weight 0.0381, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.05256, Principal component 2 (33% of variance): -0.5441">
+            <title>Support row 82, dual weight 0.0381, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.05256, Principal component 2 (33% of variance): -0.5441
+            </title>
+            <circle class="hit" cx="336.27" cy="288.47" r="9"/>
+            <circle class="pt" cx="336.27" cy="288.47" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="196.49" y="195.97" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="206.49" y="213.97">Support row 82, dual weight 0.0381</text>
+                <rect class="tsw s1" x="206.49" y="221.97" width="9" height="9" rx="2"/>
+                <text class="tx b" x="220.49" y="230.97">Pulls the prediction up</text>
+                <text class="tx" x="206.49" y="247.97">Principal component 1 (39.5% of variance): 0.0…</text>
+                <text class="tx" x="206.49" y="264.97">Principal component 2 (33% of variance): -0.5…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 83, dual weight 0.0767, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.136, Principal component 2 (33% of variance): 1.194">
+            <title>Support row 83, dual weight 0.0767, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.136, Principal component 2 (33% of variance): 1.194
+            </title>
+            <circle class="hit" cx="437.22" cy="191.15" r="9"/>
+            <circle class="pt" cx="437.22" cy="191.15" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="297.44" y="98.65" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="307.44" y="116.65">Support row 83, dual weight 0.0767</text>
+                <rect class="tsw s1" x="307.44" y="124.65" width="9" height="9" rx="2"/>
+                <text class="tx b" x="321.44" y="133.65">Pulls the prediction up</text>
+                <text class="tx" x="307.44" y="150.65">Principal component 1 (39.5% of variance): 1.1…</text>
+                <text class="tx" x="307.44" y="167.65">Principal component 2 (33% of variance): 1.194</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 84, dual weight 0.3722, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.8768, Principal component 2 (33% of variance): 0.2727">
+            <title>Support row 84, dual weight 0.3722, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.8768, Principal component 2 (33% of variance): 0.2727
+            </title>
+            <circle class="hit" cx="249.69" cy="242.73" r="9"/>
+            <circle class="pt" cx="249.69" cy="242.73" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="111.23" y="150.23" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="121.23" y="168.23">Support row 84, dual weight 0.3722</text>
+                <rect class="tsw s1" x="121.23" y="176.23" width="9" height="9" rx="2"/>
+                <text class="tx b" x="135.23" y="185.23">Pulls the prediction up</text>
+                <text class="tx" x="121.23" y="202.23">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="121.23" y="219.23">Principal component 2 (33% of variance): 0.27…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 85, dual weight 0.2698, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.2444, Principal component 2 (33% of variance): 1.093">
+            <title>Support row 85, dual weight 0.2698, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.2444, Principal component 2 (33% of variance): 1.093
+            </title>
+            <circle class="hit" cx="308.6" cy="196.77" r="9"/>
+            <circle class="pt" cx="308.6" cy="196.77" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="170.14" y="104.27" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="180.14" y="122.27">Support row 85, dual weight 0.2698</text>
+                <rect class="tsw s1" x="180.14" y="130.27" width="9" height="9" rx="2"/>
+                <text class="tx b" x="194.14" y="139.27">Pulls the prediction up</text>
+                <text class="tx" x="180.14" y="156.27">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="180.14" y="173.27">Principal component 2 (33% of variance): 1.093</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 86, dual weight 0.5228, Pulls the prediction up, Principal component 1 (39.5% of variance): 2.105, Principal component 2 (33% of variance): 0.2377">
+            <title>Support row 86, dual weight 0.5228, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 2.105, Principal component 2 (33% of variance): 0.2377
+            </title>
+            <circle class="hit" cx="527.5" cy="244.69" r="9"/>
+            <circle class="pt" cx="527.5" cy="244.69" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="387.72" y="152.19" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="397.72" y="170.19">Support row 86, dual weight 0.5228</text>
+                <rect class="tsw s1" x="397.72" y="178.19" width="9" height="9" rx="2"/>
+                <text class="tx b" x="411.72" y="187.19">Pulls the prediction up</text>
+                <text class="tx" x="397.72" y="204.19">Principal component 1 (39.5% of variance): 2.1…</text>
+                <text class="tx" x="397.72" y="221.19">Principal component 2 (33% of variance): 0.23…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 88, dual weight 0.4037, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.1222, Principal component 2 (33% of variance): 1.467">
+            <title>Support row 88, dual weight 0.4037, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.1222, Principal component 2 (33% of variance): 1.467
+            </title>
+            <circle class="hit" cx="342.76" cy="175.85" r="9"/>
+            <circle class="pt" cx="342.76" cy="175.85" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="202.98" y="181.35" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="212.98" y="199.35">Support row 88, dual weight 0.4037</text>
+                <rect class="tsw s1" x="212.98" y="207.35" width="9" height="9" rx="2"/>
+                <text class="tx b" x="226.98" y="216.35">Pulls the prediction up</text>
+                <text class="tx" x="212.98" y="233.35">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="212.98" y="250.35">Principal component 2 (33% of variance): 1.467</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 93, dual weight 0.1664, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.7937, Principal component 2 (33% of variance): -1.144">
+            <title>Support row 93, dual weight 0.1664, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.7937, Principal component 2 (33% of variance): -1.144
+            </title>
+            <circle class="hit" cx="257.43" cy="322.05" r="9"/>
+            <circle class="pt" cx="257.43" cy="322.05" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="118.97" y="229.55" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="128.97" y="247.55">Support row 93, dual weight 0.1664</text>
+                <rect class="tsw s1" x="128.97" y="255.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.97" y="264.55">Pulls the prediction up</text>
+                <text class="tx" x="128.97" y="281.55">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="128.97" y="298.55">Principal component 2 (33% of variance): -1.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 94, dual weight 0.5956, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.093, Principal component 2 (33% of variance): -1.495">
+            <title>Support row 94, dual weight 0.5956, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.093, Principal component 2 (33% of variance): -1.495
+            </title>
+            <circle class="hit" cx="433.18" cy="341.7" r="9"/>
+            <circle class="pt" cx="433.18" cy="341.7" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="293.4" y="249.2" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="303.4" y="267.2">Support row 94, dual weight 0.5956</text>
+                <rect class="tsw s1" x="303.4" y="275.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="317.4" y="284.2">Pulls the prediction up</text>
+                <text class="tx" x="303.4" y="301.2">Principal component 1 (39.5% of variance): 1.0…</text>
+                <text class="tx" x="303.4" y="318.2">Principal component 2 (33% of variance): -1.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 99, dual weight 0.2165, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.3726, Principal component 2 (33% of variance): 0.8703">
+            <title>Support row 99, dual weight 0.2165, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.3726, Principal component 2 (33% of variance): 0.8703
+            </title>
+            <circle class="hit" cx="296.66" cy="209.26" r="9"/>
+            <circle class="pt" cx="296.66" cy="209.26" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="158.2" y="116.76" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="168.2" y="134.76">Support row 99, dual weight 0.2165</text>
+                <rect class="tsw s1" x="168.2" y="142.76" width="9" height="9" rx="2"/>
+                <text class="tx b" x="182.2" y="151.76">Pulls the prediction up</text>
+                <text class="tx" x="168.2" y="168.76">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="168.2" y="185.76">Principal component 2 (33% of variance): 0.87…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 101, dual weight 0.1713, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.049, Principal component 2 (33% of variance): -1.49">
+            <title>Support row 101, dual weight 0.1713, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.049, Principal component 2 (33% of variance): -1.49
+            </title>
+            <circle class="hit" cx="233.69" cy="341.43" r="9"/>
+            <circle class="pt" cx="233.69" cy="341.43" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="95.23" y="248.93" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="105.23" y="266.93">Support row 101, dual weight 0.1713</text>
+                <rect class="tsw s1" x="105.23" y="274.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="119.23" y="283.93">Pulls the prediction up</text>
+                <text class="tx" x="105.23" y="300.93">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="105.23" y="317.93">Principal component 2 (33% of variance): -1.49</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 102, dual weight 0.3128, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.04301, Principal component 2 (33% of variance): -1.734">
+            <title>Support row 102, dual weight 0.3128, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.04301, Principal component 2 (33% of variance): -1.734
+            </title>
+            <circle class="hit" cx="335.38" cy="355.12" r="9"/>
+            <circle class="pt" cx="335.38" cy="355.12" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="195.6" y="262.62" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="205.6" y="280.62">Support row 102, dual weight 0.3128</text>
+                <rect class="tsw s1" x="205.6" y="288.62" width="9" height="9" rx="2"/>
+                <text class="tx b" x="219.6" y="297.62">Pulls the prediction up</text>
+                <text class="tx" x="205.6" y="314.62">Principal component 1 (39.5% of variance): 0.0…</text>
+                <text class="tx" x="205.6" y="331.62">Principal component 2 (33% of variance): -1.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 103, dual weight 0.5533, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.5864, Principal component 2 (33% of variance): -0.4951">
+            <title>Support row 103, dual weight 0.5533, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.5864, Principal component 2 (33% of variance): -0.4951
+            </title>
+            <circle class="hit" cx="386" cy="285.72" r="9"/>
+            <circle class="pt" cx="386" cy="285.72" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.22" y="193.22" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.22" y="211.22">Support row 103, dual weight 0.5533</text>
+                <rect class="tsw s1" x="256.22" y="219.22" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.22" y="228.22">Pulls the prediction up</text>
+                <text class="tx" x="256.22" y="245.22">Principal component 1 (39.5% of variance): 0.5…</text>
+                <text class="tx" x="256.22" y="262.22">Principal component 2 (33% of variance): -0.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 104, dual weight 0.6945, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.01878, Principal component 2 (33% of variance): 2.271">
+            <title>Support row 104, dual weight 0.6945, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.01878, Principal component 2 (33% of variance): 2.271
+            </title>
+            <circle class="hit" cx="333.12" cy="130.83" r="9"/>
+            <circle class="pt" cx="333.12" cy="130.83" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="193.34" y="136.33" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="203.34" y="154.33">Support row 104, dual weight 0.6945</text>
+                <rect class="tsw s1" x="203.34" y="162.33" width="9" height="9" rx="2"/>
+                <text class="tx b" x="217.34" y="171.33">Pulls the prediction up</text>
+                <text class="tx" x="203.34" y="188.33">Principal component 1 (39.5% of variance): 0.0…</text>
+                <text class="tx" x="203.34" y="205.33">Principal component 2 (33% of variance): 2.271</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 107, dual weight 2.3838, Pulls the prediction up, Principal component 1 (39.5% of variance): 2.064, Principal component 2 (33% of variance): -0.6883">
+            <title>Support row 107, dual weight 2.3838, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 2.064, Principal component 2 (33% of variance): -0.6883
+            </title>
+            <circle class="hit" cx="523.61" cy="296.55" r="9"/>
+            <circle class="pt" cx="523.61" cy="296.55" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="383.83" y="204.05" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="393.83" y="222.05">Support row 107, dual weight 2.3838</text>
+                <rect class="tsw s1" x="393.83" y="230.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="407.83" y="239.05">Pulls the prediction up</text>
+                <text class="tx" x="393.83" y="256.05">Principal component 1 (39.5% of variance): 2.0…</text>
+                <text class="tx" x="393.83" y="273.05">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 111, dual weight 0.167, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.6259, Principal component 2 (33% of variance): 0.3246">
+            <title>Support row 111, dual weight 0.167, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.6259, Principal component 2 (33% of variance): 0.3246
+            </title>
+            <circle class="hit" cx="389.68" cy="239.82" r="9"/>
+            <circle class="pt" cx="389.68" cy="239.82" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="249.9" y="147.32" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="259.9" y="165.32">Support row 111, dual weight 0.167</text>
+                <rect class="tsw s1" x="259.9" y="173.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="273.9" y="182.32">Pulls the prediction up</text>
+                <text class="tx" x="259.9" y="199.32">Principal component 1 (39.5% of variance): 0.6…</text>
+                <text class="tx" x="259.9" y="216.32">Principal component 2 (33% of variance): 0.32…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 112, dual weight 0.4117, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.196, Principal component 2 (33% of variance): 1.007">
+            <title>Support row 112, dual weight 0.4117, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.196, Principal component 2 (33% of variance): 1.007
+            </title>
+            <circle class="hit" cx="442.79" cy="201.59" r="9"/>
+            <circle class="pt" cx="442.79" cy="201.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="303.01" y="109.09" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="313.01" y="127.09">Support row 112, dual weight 0.4117</text>
+                <rect class="tsw s1" x="313.01" y="135.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="327.01" y="144.09">Pulls the prediction up</text>
+                <text class="tx" x="313.01" y="161.09">Principal component 1 (39.5% of variance): 1.1…</text>
+                <text class="tx" x="313.01" y="178.09">Principal component 2 (33% of variance): 1.007</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 114, dual weight 0.5253, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.011, Principal component 2 (33% of variance): 0.4132">
+            <title>Support row 114, dual weight 0.5253, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.011, Principal component 2 (33% of variance): 0.4132
+            </title>
+            <circle class="hit" cx="425.56" cy="234.86" r="9"/>
+            <circle class="pt" cx="425.56" cy="234.86" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="285.78" y="142.36" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="295.78" y="160.36">Support row 114, dual weight 0.5253</text>
+                <rect class="tsw s1" x="295.78" y="168.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="309.78" y="177.36">Pulls the prediction up</text>
+                <text class="tx" x="295.78" y="194.36">Principal component 1 (39.5% of variance): 1.0…</text>
+                <text class="tx" x="295.78" y="211.36">Principal component 2 (33% of variance): 0.41…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 115, dual weight 0.8478, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.384, Principal component 2 (33% of variance): 0.08884">
+            <title>Support row 115, dual weight 0.8478, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.384, Principal component 2 (33% of variance): 0.08884
+            </title>
+            <circle class="hit" cx="202.45" cy="253.03" r="9"/>
+            <circle class="pt" cx="202.45" cy="253.03" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="63.99" y="160.53" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="73.99" y="178.53">Support row 115, dual weight 0.8478</text>
+                <rect class="tsw s1" x="73.99" y="186.53" width="9" height="9" rx="2"/>
+                <text class="tx b" x="87.99" y="195.53">Pulls the prediction up</text>
+                <text class="tx" x="73.99" y="212.53">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="73.99" y="229.53">Principal component 2 (33% of variance): 0.08…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 116, dual weight 0.5052, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.395, Principal component 2 (33% of variance): 0.8372">
+            <title>Support row 116, dual weight 0.5052, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.395, Principal component 2 (33% of variance): 0.8372
+            </title>
+            <circle class="hit" cx="201.38" cy="211.12" r="9"/>
+            <circle class="pt" cx="201.38" cy="211.12" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="62.92" y="118.62" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="72.92" y="136.62">Support row 116, dual weight 0.5052</text>
+                <rect class="tsw s1" x="72.92" y="144.62" width="9" height="9" rx="2"/>
+                <text class="tx b" x="86.92" y="153.62">Pulls the prediction up</text>
+                <text class="tx" x="72.92" y="170.62">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="72.92" y="187.62">Principal component 2 (33% of variance): 0.83…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 117, dual weight 0.4053, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.893, Principal component 2 (33% of variance): -0.1443">
+            <title>Support row 117, dual weight 0.4053, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.893, Principal component 2 (33% of variance): -0.1443
+            </title>
+            <circle class="hit" cx="248.18" cy="266.08" r="9"/>
+            <circle class="pt" cx="248.18" cy="266.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="109.72" y="173.58" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="119.72" y="191.58">Support row 117, dual weight 0.4053</text>
+                <rect class="tsw s1" x="119.72" y="199.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="133.72" y="208.58">Pulls the prediction up</text>
+                <text class="tx" x="119.72" y="225.58">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="119.72" y="242.58">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 122, dual weight 0.4089, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.446, Principal component 2 (33% of variance): 0.7">
+            <title>Support row 122, dual weight 0.4089, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.446, Principal component 2 (33% of variance): 0.7
+            </title>
+            <circle class="hit" cx="466.11" cy="218.8" r="9"/>
+            <circle class="pt" cx="466.11" cy="218.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="326.33" y="126.3" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="336.33" y="144.3">Support row 122, dual weight 0.4089</text>
+                <rect class="tsw s1" x="336.33" y="152.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="350.33" y="161.3">Pulls the prediction up</text>
+                <text class="tx" x="336.33" y="178.3">Principal component 1 (39.5% of variance): 1.4…</text>
+                <text class="tx" x="336.33" y="195.3">Principal component 2 (33% of variance): 0.7</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 123, dual weight 0.1921, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.579, Principal component 2 (33% of variance): 1.523">
+            <title>Support row 123, dual weight 0.1921, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.579, Principal component 2 (33% of variance): 1.523
+            </title>
+            <circle class="hit" cx="478.44" cy="172.72" r="9"/>
+            <circle class="pt" cx="478.44" cy="172.72" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="338.66" y="178.22" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="348.66" y="196.22">Support row 123, dual weight 0.1921</text>
+                <rect class="tsw s1" x="348.66" y="204.22" width="9" height="9" rx="2"/>
+                <text class="tx b" x="362.66" y="213.22">Pulls the prediction up</text>
+                <text class="tx" x="348.66" y="230.22">Principal component 1 (39.5% of variance): 1.5…</text>
+                <text class="tx" x="348.66" y="247.22">Principal component 2 (33% of variance): 1.523</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 124, dual weight 1.7568, Pulls the prediction up, Principal component 1 (39.5% of variance): 2.231, Principal component 2 (33% of variance): 1.486">
+            <title>Support row 124, dual weight 1.7568, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 2.231, Principal component 2 (33% of variance): 1.486
+            </title>
+            <circle class="hit" cx="539.18" cy="174.8" r="9"/>
+            <circle class="pt" cx="539.18" cy="174.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="399.4" y="180.3" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="409.4" y="198.3">Support row 124, dual weight 1.7568</text>
+                <rect class="tsw s1" x="409.4" y="206.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="423.4" y="215.3">Pulls the prediction up</text>
+                <text class="tx" x="409.4" y="232.3">Principal component 1 (39.5% of variance): 2.2…</text>
+                <text class="tx" x="409.4" y="249.3">Principal component 2 (33% of variance): 1.486</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 125, dual weight 0.0539, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.7224, Principal component 2 (33% of variance): 2.221">
+            <title>Support row 125, dual weight 0.0539, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.7224, Principal component 2 (33% of variance): 2.221
+            </title>
+            <circle class="hit" cx="264.08" cy="133.64" r="9"/>
+            <circle class="pt" cx="264.08" cy="133.64" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="125.62" y="139.14" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="135.62" y="157.14">Support row 125, dual weight 0.0539</text>
+                <rect class="tsw s1" x="135.62" y="165.14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="149.62" y="174.14">Pulls the prediction up</text>
+                <text class="tx" x="135.62" y="191.14">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="135.62" y="208.14">Principal component 2 (33% of variance): 2.221</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 127, dual weight 0.7121, Pulls the prediction up, Principal component 1 (39.5% of variance): -0.4976, Principal component 2 (33% of variance): -0.7248">
+            <title>Support row 127, dual weight 0.7121, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -0.4976, Principal component 2 (33% of variance): -0.7248
+            </title>
+            <circle class="hit" cx="285.01" cy="298.59" r="9"/>
+            <circle class="pt" cx="285.01" cy="298.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="146.55" y="206.09" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="156.55" y="224.09">Support row 127, dual weight 0.7121</text>
+                <rect class="tsw s1" x="156.55" y="232.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="170.55" y="241.09">Pulls the prediction up</text>
+                <text class="tx" x="156.55" y="258.09">Principal component 1 (39.5% of variance): -0.…</text>
+                <text class="tx" x="156.55" y="275.09">Principal component 2 (33% of variance): -0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 128, dual weight 0.5137, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.4233, Principal component 2 (33% of variance): 1.355">
+            <title>Support row 128, dual weight 0.5137, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.4233, Principal component 2 (33% of variance): 1.355
+            </title>
+            <circle class="hit" cx="370.8" cy="182.12" r="9"/>
+            <circle class="pt" cx="370.8" cy="182.12" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="231.02" y="90" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="241.02" y="108">Support row 128, dual weight 0.5137</text>
+                <rect class="tsw s1" x="241.02" y="116" width="9" height="9" rx="2"/>
+                <text class="tx b" x="255.02" y="125">Pulls the prediction up</text>
+                <text class="tx" x="241.02" y="142">Principal component 1 (39.5% of variance): 0.4…</text>
+                <text class="tx" x="241.02" y="159">Principal component 2 (33% of variance): 1.355</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 129, dual weight 0.0599, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.1634, Principal component 2 (33% of variance): -0.148">
+            <title>Support row 129, dual weight 0.0599, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.1634, Principal component 2 (33% of variance): -0.148
+            </title>
+            <circle class="hit" cx="346.59" cy="266.29" r="9"/>
+            <circle class="pt" cx="346.59" cy="266.29" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="206.81" y="173.79" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="216.81" y="191.79">Support row 129, dual weight 0.0599</text>
+                <rect class="tsw s1" x="216.81" y="199.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="230.81" y="208.79">Pulls the prediction up</text>
+                <text class="tx" x="216.81" y="225.79">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="216.81" y="242.79">Principal component 2 (33% of variance): -0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 131, dual weight 0.4007, Pulls the prediction up, Principal component 1 (39.5% of variance): -1.52, Principal component 2 (33% of variance): -0.6485">
+            <title>Support row 131, dual weight 0.4007, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): -1.52, Principal component 2 (33% of variance): -0.6485
+            </title>
+            <circle class="hit" cx="189.76" cy="294.32" r="9"/>
+            <circle class="pt" cx="189.76" cy="294.32" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="201.82" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="219.82">Support row 131, dual weight 0.4007</text>
+                <rect class="tsw s1" x="61.9" y="227.82" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="236.82">Pulls the prediction up</text>
+                <text class="tx" x="61.9" y="253.82">Principal component 1 (39.5% of variance): -1.…</text>
+                <text class="tx" x="61.9" y="270.82">Principal component 2 (33% of variance): -0.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 132, dual weight 0.0001, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.32, Principal component 2 (33% of variance): -0.8028">
+            <title>Support row 132, dual weight 0.0001, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.32, Principal component 2 (33% of variance): -0.8028
+            </title>
+            <circle class="hit" cx="454.36" cy="302.96" r="9"/>
+            <circle class="pt" cx="454.36" cy="302.96" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="314.82" y="210.46" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="324.82" y="228.46">Support row 132, dual weight 0.0001</text>
+                <rect class="tsw s1" x="324.82" y="236.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="338.82" y="245.46">Pulls the prediction up</text>
+                <text class="tx" x="324.82" y="262.46">Principal component 1 (39.5% of variance): 1.32</text>
+                <text class="tx" x="324.82" y="279.46">Principal component 2 (33% of variance): -0.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 133, dual weight 0.102, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.244, Principal component 2 (33% of variance): -0.3155">
+            <title>Support row 133, dual weight 0.102, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.244, Principal component 2 (33% of variance): -0.3155
+            </title>
+            <circle class="hit" cx="354.1" cy="275.67" r="9"/>
+            <circle class="pt" cx="354.1" cy="275.67" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="214.32" y="183.17" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="224.32" y="201.17">Support row 133, dual weight 0.102</text>
+                <rect class="tsw s1" x="224.32" y="209.17" width="9" height="9" rx="2"/>
+                <text class="tx b" x="238.32" y="218.17">Pulls the prediction up</text>
+                <text class="tx" x="224.32" y="235.17">Principal component 1 (39.5% of variance): 0.2…</text>
+                <text class="tx" x="224.32" y="252.17">Principal component 2 (33% of variance): -0.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 134, dual weight 1.603, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.835, Principal component 2 (33% of variance): 0.9361">
+            <title>Support row 134, dual weight 1.603, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.835, Principal component 2 (33% of variance): 0.9361
+            </title>
+            <circle class="hit" cx="502.28" cy="205.58" r="9"/>
+            <circle class="pt" cx="502.28" cy="205.58" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="362.5" y="113.08" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="372.5" y="131.08">Support row 134, dual weight 1.603</text>
+                <rect class="tsw s1" x="372.5" y="139.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="386.5" y="148.08">Pulls the prediction up</text>
+                <text class="tx" x="372.5" y="165.08">Principal component 1 (39.5% of variance): 1.8…</text>
+                <text class="tx" x="372.5" y="182.08">Principal component 2 (33% of variance): 0.93…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 136, dual weight 0.9492, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.6014, Principal component 2 (33% of variance): -2.668">
+            <title>Support row 136, dual weight 0.9492, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.6014, Principal component 2 (33% of variance): -2.668
+            </title>
+            <circle class="hit" cx="387.39" cy="407.43" r="9"/>
+            <circle class="pt" cx="387.39" cy="407.43" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="247.61" y="314.93" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="257.61" y="332.93">Support row 136, dual weight 0.9492</text>
+                <rect class="tsw s1" x="257.61" y="340.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="271.61" y="349.93">Pulls the prediction up</text>
+                <text class="tx" x="257.61" y="366.93">Principal component 1 (39.5% of variance): 0.6…</text>
+                <text class="tx" x="257.61" y="383.93">Principal component 2 (33% of variance): -2.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 137, dual weight 0.7688, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.4797, Principal component 2 (33% of variance): -0.0155">
+            <title>Support row 137, dual weight 0.7688, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.4797, Principal component 2 (33% of variance): -0.0155
+            </title>
+            <circle class="hit" cx="376.06" cy="258.87" r="9"/>
+            <circle class="pt" cx="376.06" cy="258.87" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="236.28" y="166.37" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="246.28" y="184.37">Support row 137, dual weight 0.7688</text>
+                <rect class="tsw s1" x="246.28" y="192.37" width="9" height="9" rx="2"/>
+                <text class="tx b" x="260.28" y="201.37">Pulls the prediction up</text>
+                <text class="tx" x="246.28" y="218.37">Principal component 1 (39.5% of variance): 0.4…</text>
+                <text class="tx" x="246.28" y="235.37">Principal component 2 (33% of variance): -0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 138, dual weight 0.2837, Pulls the prediction up, Principal component 1 (39.5% of variance): 1.226, Principal component 2 (33% of variance): -1.986">
+            <title>Support row 138, dual weight 0.2837, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 1.226, Principal component 2 (33% of variance): -1.986
+            </title>
+            <circle class="hit" cx="445.57" cy="369.23" r="9"/>
+            <circle class="pt" cx="445.57" cy="369.23" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="305.79" y="276.73" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="315.79" y="294.73">Support row 138, dual weight 0.2837</text>
+                <rect class="tsw s1" x="315.79" y="302.73" width="9" height="9" rx="2"/>
+                <text class="tx b" x="329.79" y="311.73">Pulls the prediction up</text>
+                <text class="tx" x="315.79" y="328.73">Principal component 1 (39.5% of variance): 1.2…</text>
+                <text class="tx" x="315.79" y="345.73">Principal component 2 (33% of variance): -1.9…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 139, dual weight 1.2091, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.4757, Principal component 2 (33% of variance): 1.65">
+            <title>Support row 139, dual weight 1.2091, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.4757, Principal component 2 (33% of variance): 1.65
+            </title>
+            <circle class="hit" cx="375.69" cy="165.63" r="9"/>
+            <circle class="pt" cx="375.69" cy="165.63" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="235.91" y="171.13" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="245.91" y="189.13">Support row 139, dual weight 1.2091</text>
+                <rect class="tsw s1" x="245.91" y="197.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="259.91" y="206.13">Pulls the prediction up</text>
+                <text class="tx" x="245.91" y="223.13">Principal component 1 (39.5% of variance): 0.4…</text>
+                <text class="tx" x="245.91" y="240.13">Principal component 2 (33% of variance): 1.65</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 140, dual weight 0.6218, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.123, Principal component 2 (33% of variance): 0.7997">
+            <title>Support row 140, dual weight 0.6218, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.123, Principal component 2 (33% of variance): 0.7997
+            </title>
+            <circle class="hit" cx="342.83" cy="213.22" r="9"/>
+            <circle class="pt" cx="342.83" cy="213.22" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="203.05" y="120.72" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="213.05" y="138.72">Support row 140, dual weight 0.6218</text>
+                <rect class="tsw s1" x="213.05" y="146.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="227.05" y="155.72">Pulls the prediction up</text>
+                <text class="tx" x="213.05" y="172.72">Principal component 1 (39.5% of variance): 0.1…</text>
+                <text class="tx" x="213.05" y="189.72">Principal component 2 (33% of variance): 0.79…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Support row 143, dual weight 0.3829, Pulls the prediction up, Principal component 1 (39.5% of variance): 0.7651, Principal component 2 (33% of variance): -2.179">
+            <title>Support row 143, dual weight 0.3829, Pulls the prediction up, Principal component 1 (39.5% of
+                variance): 0.7651, Principal component 2 (33% of variance): -2.179
+            </title>
+            <circle class="hit" cx="402.64" cy="380.02" r="9"/>
+            <circle class="pt" cx="402.64" cy="380.02" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="262.86" y="287.52" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="272.86" y="305.52">Support row 143, dual weight 0.3829</text>
+                <rect class="tsw s1" x="272.86" y="313.52" width="9" height="9" rx="2"/>
+                <text class="tx b" x="286.86" y="322.52">Pulls the prediction up</text>
+                <text class="tx" x="272.86" y="339.52">Principal component 1 (39.5% of variance): 0.7…</text>
+                <text class="tx" x="272.86" y="356.52">Principal component 2 (33% of variance): -2.1…</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="377.95" y="460">Principal component 1 (39.5% of variance)</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 258) rotate(-90)">Principal component 2 (33% of variance)
+    </text>
+</svg>

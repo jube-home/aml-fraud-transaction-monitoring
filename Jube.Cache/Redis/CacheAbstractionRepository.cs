@@ -14,7 +14,7 @@
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
 using Jube.Cache.Redis.Models;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using StackExchange.Redis;
 
@@ -34,6 +34,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
+
                     var redisHSetKey = $"{name}";
 
                     await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey, redisHSetKey)
@@ -57,6 +58,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
+
                     var redisHSetKey = $"{name}";
 
                     await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, value)
@@ -79,7 +81,9 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
+
                     var redisHSetKey = $"{name}";
+
                     var redisValue = await resilientRedisResilientRedisDatabase
                         .HashGetAsync(redisKey, redisHSetKey, CommandFlags.PreferReplica).ConfigureAwait(false);
 
@@ -114,11 +118,13 @@ namespace Jube.Cache.Redis
                     .Select(async group =>
                     {
                         var abstractionRuleNames = group.Select(request => request.AbstractionRuleName).ToArray();
+
                         try
                         {
                             var redisKey =
                                 $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:" +
                                 $"{group.Key.SearchKey}:{group.Key.SearchValue}";
+
                             var redisHSetKeys = Array.ConvertAll(abstractionRuleNames, name => (RedisValue)name);
 
                             var redisValues = await resilientRedisResilientRedisDatabase

@@ -17,13 +17,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Query;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using LinqToDB;
 using LinqToDB.Data;
 using Xunit;
 using Xunit.Abstractions;
+using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 
 namespace Jube.Test.Service.Query.ModelFieldReflection
 {
@@ -116,9 +116,11 @@ namespace Jube.Test.Service.Query.ModelFieldReflection
             foreach (var (table, byGuid) in tables)
             {
                 var column = byGuid ? "EntityAnalysisModelGuid" : "EntityAnalysisModelId";
+
                 var parameter = byGuid
                     ? new DataParameter("p", model.ModelGuid, DataType.Guid)
                     : new DataParameter("p", model.ModelId, DataType.Int32);
+
                 await dbContext.ExecuteAsync($"UPDATE \"{table}\" SET \"Deleted\" = 0 WHERE \"{column}\" = @p",
                     parameter);
             }
@@ -129,7 +131,9 @@ namespace Jube.Test.Service.Query.ModelFieldReflection
         {
             var query = new GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery(dbContext,
                 model.TenantRegistryId);
+
             var fields = await query.ExecuteAsync(model.ModelId, 5, reporting);
+
             return [.. fields.Select(s => s.Name).OrderBy(s => s, StringComparer.Ordinal)];
         }
 
@@ -146,6 +150,7 @@ namespace Jube.Test.Service.Query.ModelFieldReflection
             baseline.Should().NotBeEmpty();
 
             var changed = 0;
+
             foreach (var (kind, idsOf, set) in kinds)
             {
                 var ids = await idsOf(dbContext, model);
@@ -199,6 +204,7 @@ namespace Jube.Test.Service.Query.ModelFieldReflection
             baseline.Count(name => name.StartsWith("List.", StringComparison.Ordinal)).Should().BeGreaterThan(0);
 
             await set(dbContext, ids, 0);
+
             (await FieldNamesAsync(dbContext, model, false))
                 .Count(name => name.StartsWith("List.", StringComparison.Ordinal))
                 .Should().Be(0);

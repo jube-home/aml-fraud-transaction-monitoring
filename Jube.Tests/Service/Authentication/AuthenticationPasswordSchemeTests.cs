@@ -11,7 +11,6 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Test.Infrastructure;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -20,6 +19,8 @@ using FluentAssertions;
 using Jube.Data.Security;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
 using AuthEngine = Jube.Service.Authentication.Authentication;
@@ -156,6 +157,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
 
         var wrong = await service.ByUserNamePasswordAsync(
             new AuthenticationRequestDto { UserName = user.Name, Password = "nope" }, Context());
+
         var right = await service.ByUserNamePasswordAsync(
             new AuthenticationRequestDto { UserName = user.Name, Password = DefaultPassword }, Context());
 
@@ -215,6 +217,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
             }),
             _ => new TestUser($"{Prefix}Nobody", "", 0, "")
         };
+
         await using var db = Fx.GetDbContext();
 
         var outcome = await Service(db).WirePasswordHashAsync(new AuthenticationSchemaRequestDto(user.Name),
@@ -246,6 +249,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
 
         var known = await service.WirePasswordHashAsync(new AuthenticationSchemaRequestDto(wire0.Name),
             NegotiateIdentity.Anonymous);
+
         var unknown = await service.WirePasswordHashAsync(new AuthenticationSchemaRequestDto($"{Prefix}Ghost"),
             NegotiateIdentity.Anonymous);
 
@@ -338,6 +342,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
     {
         var user = await AddUserAsync("EncTamper");
         var bytes = Convert.FromBase64String(TestRsa.Encrypt(user.Password));
+
         var text = tamper switch
         {
             "flip-first" => Convert.ToBase64String(bytes.Select((b, i) => i == 0 ? (byte)(b ^ 1) : b).ToArray()),
@@ -454,8 +459,10 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
         reloaded.Password.Should().Be(FastHashScheme.Stored("Brand#NewPassword12", HashKey));
         reloaded.FailedPasswordCount.Should().Be(0);
         reloaded.PasswordLocked.Should().Be(0);
+
         reloaded.PasswordExpiryDate.Should().BeCloseTo(Clock.GetUtcNow().UtcDateTime.AddDays(90),
             TimeSpan.FromSeconds(1));
+
         Hash.HashCalls.Should().Be(1);
         (await LoginAsync(user.Name, "Brand#NewPassword12")).Kind.Should().Be(AuthenticationOutcomeKind.Ok);
         (await LoginAsync(user.Name, user.Password)).Kind.Should().Be(AuthenticationOutcomeKind.Unauthorized);
@@ -578,6 +585,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
         params (string, string)[] env)
     {
         await using var db = Fx.GetDbContext();
+
         return await Service(db, env).ChangePasswordAsync(new ChangePasswordRequestDto(current, next),
             new NegotiateIdentity(identityName != null, identityName));
     }
@@ -592,6 +600,7 @@ public sealed class AuthenticationPasswordSchemeTests(DatabaseFixture fx) : Auth
         AssertPlainOutcome(outcome, AuthenticationOutcomeKind.Ok);
         var reloaded = await ReloadAsync(user);
         reloaded.Password.Should().Be(FastHashScheme.Stored("Brand#NewPassword12", HashKey));
+
         reloaded.PasswordExpiryDate.Should().BeCloseTo(Clock.GetUtcNow().UtcDateTime.AddDays(90),
             TimeSpan.FromSeconds(1));
     }

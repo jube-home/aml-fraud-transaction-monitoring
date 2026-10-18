@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.PermissionSpecification;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.PermissionSpecification;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +30,6 @@ namespace Jube.Service.Repository.PermissionSpecification
     public sealed class PermissionSpecificationService
     {
         private static readonly int[] permissions = [36];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -53,6 +52,8 @@ namespace Jube.Service.Repository.PermissionSpecification
             this.permissionValidation = permissionValidation;
             repository = new SpecificationRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<PermissionSpecificationService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -107,6 +108,7 @@ namespace Jube.Service.Repository.PermissionSpecification
         {
             using var op = OperationScope.Start("PermissionSpecification", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PermissionSpecification.List: entry user={userName}");
@@ -115,9 +117,11 @@ namespace Jube.Service.Repository.PermissionSpecification
             try
             {
                 EnsurePermitted("PermissionSpecification.List");
+
                 var dtos = PermissionSpecificationMapper.ToDto(
                     await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PermissionSpecification.List: {dtos.Count} rows user={userName}");
@@ -155,6 +159,7 @@ namespace Jube.Service.Repository.PermissionSpecification
         {
             using var op = OperationScope.Start("PermissionSpecification", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PermissionSpecification.List: entry user={userName} take={take} afterId={afterId}");
@@ -164,11 +169,13 @@ namespace Jube.Service.Repository.PermissionSpecification
             {
                 EnsurePermitted("PermissionSpecification.List");
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = PermissionSpecificationMapper
                     .ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(dto => dto.Id)
                     .Where(dto => afterId == null || dto.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 

@@ -6,9 +6,6 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Visualisation Parameters
 
 The concept of visualisations in Jube is that SQL is executed against the database and presented in either grid or chart

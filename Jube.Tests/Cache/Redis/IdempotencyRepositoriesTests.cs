@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -113,10 +113,12 @@ namespace Jube.Test.Cache.Redis
         {
             _ = keyPrefix;
             var log = new TestLog();
+
             var fake = new FakeHybridResilientRedisDatabase
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.SetAddAsync)
             };
+
             var checkAndClaim = factory(fake, new LogAdapter(log));
 
             var result = await checkAndClaim(1, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
@@ -132,10 +134,12 @@ namespace Jube.Test.Cache.Redis
         {
             _ = keyPrefix;
             var log = new TestLog();
+
             var fake = new FakeHybridResilientRedisDatabase
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.SetContainsAsync)
             };
+
             var checkAndClaim = factory(fake, new LogAdapter(log));
 
             var result = await checkAndClaim(1, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());

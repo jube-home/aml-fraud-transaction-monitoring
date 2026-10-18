@@ -32,12 +32,19 @@ $.get("/api/EntityAnalysisInlineScript",
 
         if (typeof id === "undefined") {
             ReadyNew();
+            window.AskJoobySetPageContext?.("EntityAnalysisModelInlineScript", "new", {[parentKeyName]: parentKey});
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
                     inlineScript.data("kendoDropDownList").value(data.entityAnalysisInlineScriptId);
 
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("EntityAnalysisModelInlineScript", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     }

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 

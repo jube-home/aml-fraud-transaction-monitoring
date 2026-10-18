@@ -11,10 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Data.Query.Models
 {
-    using System.Collections.Generic;
-
     public class RuleParseEnvironmentDto
     {
         public List<string> Tokens { get; set; } = [];
@@ -29,6 +34,7 @@ namespace Jube.Data.Query.Models
         public List<string> AbstractionCalculations { get; set; }
         public List<string> HttpAdaptations { get; set; }
         public List<string> ExhaustiveAdaptations { get; set; }
+        public List<string> AdvancedAnalyticsAdaptations { get; set; }
         public List<string> ActivationRules { get; set; }
     }
 }

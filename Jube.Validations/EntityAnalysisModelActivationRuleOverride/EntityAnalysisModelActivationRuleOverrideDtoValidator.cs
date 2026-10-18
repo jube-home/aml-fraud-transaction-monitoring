@@ -27,7 +27,6 @@ namespace Jube.Validations.EntityAnalysisModelActivationRuleOverride
         private const int MaxOverrideKeyLength = 256;
         private const int MaxOverrideKeyValueLength = 256;
         private const int MaxEntityAnalysisModelActivationRuleNameLength = 256;
-
         private readonly EntityAnalysisModelRepository models;
         private readonly EntityAnalysisModelActivationRuleRepository rules;
 
@@ -99,6 +98,7 @@ namespace Jube.Validations.EntityAnalysisModelActivationRuleOverride
 
                     var entityAnalysisModel = await entityAnalysisModelRepository
                         .GetByGuidAsync(dto.EntityAnalysisModelGuid, cancellation);
+
                     if (entityAnalysisModel == null)
                     {
                         return true;
@@ -106,6 +106,7 @@ namespace Jube.Validations.EntityAnalysisModelActivationRuleOverride
 
                     var entityAnalysisModelActivationRule = await entityAnalysisModelActivationRuleRepository
                         .GetByNameEntityAnalysisModelIdAsync(name, entityAnalysisModel.Id, cancellation);
+
                     return entityAnalysisModelActivationRule != null;
                 })
                 .WithMessage(_ =>

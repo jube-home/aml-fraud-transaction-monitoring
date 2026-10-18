@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-framework.net
 //
-// Copyright © César Souza, 2009-2017
+// Copyright Â© CÃ©sar Souza, 2009-2017
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -53,100 +53,83 @@
 //    OF SUCH DAMAGE.
 //   
 
+using System;
+using System.Collections.Generic;
+using Accord.Math;
+using Accord.Math.Distances;
+using Accord.Math.Random;
+
 namespace Accord.Collections
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using Accord.Collections;
-    using Accord.Math;
-    using Accord.Math.Distances;
-    using Accord.Compat;
-
 #if !MONO
     /// <summary>
-    ///   Base class for <see cref="VPTree">Vantage-Point Trees</see>.
+    ///     Base class for <see cref="VPTree">Vantage-Point Trees</see>.
     /// </summary>
-    /// 
     /// <typeparam name="TPoint">The type for the position vector of each node.</typeparam>
     /// <typeparam name="TNode">The class type for the nodes of the tree.</typeparam>
-    /// 
-    /// <seealso cref="VPTree"/>
-    /// <seealso cref="VPTree{TPoint, TData}"/>
-    /// <seealso cref="VPTree{TPoint}"/>
-    /// 
+    /// <seealso cref="VPTree" />
+    /// <seealso cref="VPTree{TPoint, TData}" />
+    /// <seealso cref="VPTree{TPoint}" />
     [Serializable]
     public class VPTreeBase<TPoint, TNode> : BinaryTree<TNode>, IEnumerable<TNode>
         where TNode : VPTreeNodeBase<TPoint, TNode>, new()
     {
-        double tau;
-        IDistance<TPoint> distance;
+        private IDistance<TPoint> distance;
+        private double tau;
 
         /// <summary>
-        ///   Gets or set the distance function used to
-        ///   measure distances amongst points on this tree
+        ///     Initializes a new instance of the <see cref="VPTreeBase{TPoint, TNode}" /> class.
         /// </summary>
-        ///
-        public IDistance<TPoint> Distance
-        {
-            get { return distance; }
-            set { distance = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the radius of the nodes in the tree.
-        /// </summary>
-        /// 
-        public double Radius
-        {
-            get { return tau; }
-            set { tau = value; }
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="VPTreeBase{TPoint, TNode}"/> class.
-        /// </summary>
-        /// 
         /// <param name="distance">The distance to use when comparing points.</param>
-        /// 
         public VPTreeBase(IDistance<TPoint> distance)
         {
-            this.Distance = distance;
+            Distance = distance;
         }
 
-
+        /// <summary>
+        ///     Gets or set the distance function used to
+        ///     measure distances amongst points on this tree
+        /// </summary>
+        public IDistance<TPoint> Distance
+        {
+            get => distance;
+            set => distance = value;
+        }
 
         /// <summary>
-        ///   Retrieves a fixed point of nearest points to a given point.
+        ///     Gets or sets the radius of the nodes in the tree.
         /// </summary>
-        ///
+        public double Radius
+        {
+            get => tau;
+            set => tau = value;
+        }
+
+        /// <summary>
+        ///     Retrieves a fixed point of nearest points to a given point.
+        /// </summary>
         /// <param name="position">The queried point.</param>
         /// <param name="neighbors">The number of neighbors to retrieve.</param>
-        ///
         /// <returns>A list of neighbor points, ordered by distance.</returns>
-        ///
         public List<NodeDistance<TNode>> Nearest(TPoint position, int neighbors)
         {
             return Nearest(position, neighbors, new List<NodeDistance<TNode>>());
         }
 
         /// <summary>
-        ///   Retrieves a fixed point of nearest points to a given point.
+        ///     Retrieves a fixed point of nearest points to a given point.
         /// </summary>
-        ///
         /// <param name="position">The queried point.</param>
         /// <param name="neighbors">The number of neighbors to retrieve.</param>
         /// <param name="results">The list where to store results.</param>
-        ///
         /// <returns>A list of neighbor points, ordered by distance.</returns>
-        ///
         public List<NodeDistance<TNode>> Nearest(TPoint position, int neighbors, List<NodeDistance<TNode>> results)
         {
             // Use a priority queue to store intermediate results on
-            var heap = new PriorityQueue<TNode>(neighbors, order: PriorityOrder.Maximum);
+            var heap = new PriorityQueue<TNode>(neighbors, PriorityOrder.Maximum);
 
             // Variable that tracks the distance to the farthest point in our results
-            tau = Double.MaxValue;
+            tau = double.MaxValue;
 
             // Perform the search
             search(Root, position, neighbors, heap);
@@ -165,9 +148,6 @@ namespace Accord.Collections
             return results;
         }
 
-
-
-
         // Function that (recursively) fills the tree
         internal TNode buildFromPoints(TPoint[] items, int lower, int upper, bool inPlace)
         {
@@ -177,9 +157,11 @@ namespace Accord.Collections
             }
 
             if (upper == lower)
+            {
                 return null;
+            }
 
-            var rand = Accord.Math.Random.Generator.Random;
+            var rand = Generator.Random;
 
             // Lower index is center of current node
             var node = new TNode();
@@ -189,21 +171,20 @@ namespace Accord.Collections
             if (upper - lower > 1)
             {
                 // Choose an arbitrary point and move it to the start
-                int i = rand.Next(lower, upper);
+                var i = rand.Next(lower, upper);
                 items.Swap(lower, i);
 
                 // Partition around the median distance
-                int median = (upper + lower) / 2;
-                TPoint e = items[lower];
+                var median = (upper + lower) / 2;
+                var e = items[lower];
 
-                Func<TPoint, TPoint, int> comparer = (TPoint x, TPoint y) =>
+                Func<TPoint, TPoint, int> comparer = (x, y) =>
                     Distance.Distance(e, x).CompareTo(Distance.Distance(e, y));
 
-                Sort.NthElement(items,
-                   first: lower + 1,
-                   last: upper,
-                   n: median,
-                   compare: comparer);
+                items.NthElement(lower + 1,
+                    upper,
+                    median,
+                    comparer);
 
                 //std::nth_element(_items.begin() + lower + 1,
                 //                 _items.begin() + median,
@@ -215,8 +196,8 @@ namespace Accord.Collections
 
                 // Recursively build tree
                 node.Position = e;
-                node.Left = buildFromPoints(items, lower + 1, median, inPlace: true);
-                node.Right = buildFromPoints(items, median, upper, inPlace: true);
+                node.Left = buildFromPoints(items, lower + 1, median, true);
+                node.Right = buildFromPoints(items, median, upper, true);
             }
 
             // Return result
@@ -227,24 +208,33 @@ namespace Accord.Collections
         internal void search(TNode node, TPoint target, int k, PriorityQueue<TNode> heap)
         {
             if (node == null)
-                return;     // indicates that we're done here
+            {
+                return; // indicates that we're done here
+            }
 
             // Compute distance between target and current node
-            double dist = Distance.Distance(node.Position, target);
+            var dist = Distance.Distance(node.Position, target);
 
             // If current node within radius tau
             if (dist < tau)
             {
                 if (heap.Count == k)
-                    heap.Dequeue();                 // remove furthest node from result list (if we already have k results)
-                heap.Enqueue(node, dist);           // add current node to result list
+                {
+                    heap.Dequeue(); // remove furthest node from result list (if we already have k results)
+                }
+
+                heap.Enqueue(node, dist); // add current node to result list
                 if (heap.Count == k)
-                    tau = heap.First.Priority;     // update value of tau (farthest point in result list)
+                {
+                    tau = heap.First.Priority; // update value of tau (farthest point in result list)
+                }
             }
 
             // Return if we arrived at a leaf
             if (node.Left == null && node.Right == null)
+            {
                 return;
+            }
 
             // If the target lies within the radius of ball
             if (dist < node.Threshold)

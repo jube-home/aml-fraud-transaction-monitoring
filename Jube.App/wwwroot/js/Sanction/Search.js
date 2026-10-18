@@ -61,6 +61,8 @@ const aggregationSchemaFields = {
 };
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("Search", "search", null);
+
     $("#Distance").kendoSlider({
         increaseButtonTitle: "Right",
         decreaseButtonTitle: "Left",
@@ -167,6 +169,11 @@ $(document).ready(function () {
 
                 $("#AggregationsTotal").data("kendoGrid").dataSource.data([response.aggregations.total]);
                 $("#AggregationsBySource").data("kendoGrid").dataSource.data(response.aggregations.bySource);
+
+                window.AskJoobySetPageContext?.("Search", "search", {
+                    multiPartString: $("#MultiPartString").val(),
+                    matchCount: response.entries.length
+                });
             }).fail(DisplayValidationErrors);
         }
     });

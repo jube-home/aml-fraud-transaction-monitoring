@@ -18,6 +18,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
+using Jube.LoadTest.Models;
 
 namespace Jube.LoadTest
 {
@@ -42,11 +43,9 @@ namespace Jube.LoadTest
                 : null;
 
         private readonly Channel<ResponseSample> responseSampleChannel = Channel.CreateUnbounded<ResponseSample>();
-
         private readonly Lock statsLock = new();
         private readonly Stopwatch swTotal = new();
         private readonly Lock windowLock = new();
-
         private int errors;
         private int implicitTimeouts;
         private int implicitTimeoutsTotal;
@@ -59,7 +58,6 @@ namespace Jube.LoadTest
 
         private (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? latestRedisStats;
         private int requests;
-
         private int throttledTicks;
         private List<double> windowResponseTimesMs = [];
 
@@ -89,6 +87,7 @@ namespace Jube.LoadTest
 
             using var durationCts = new CancellationTokenSource(TimeSpan.FromSeconds(settings.DurationSeconds));
             using var writerCts = new CancellationTokenSource();
+
             using var concurrencyGate =
                 new SemaphoreSlim(settings.MaxConcurrentInFlight, settings.MaxConcurrentInFlight);
 
@@ -172,8 +171,10 @@ namespace Jube.LoadTest
                     }
 
                     Interlocked.Increment(ref inFlightCount);
+
                     inFlight.Add(DispatchAsync(payload, settings.Uri, client, concurrencyGate, currentTxnId,
                         accountId));
+
                     inFlight.RemoveAll(t => t.IsCompleted);
                 }
             }
@@ -204,6 +205,7 @@ namespace Jube.LoadTest
             var buffer = new byte[8];
             RandomNumberGenerator.Fill(buffer);
             var offset = BitConverter.ToUInt64(buffer) % range;
+
             return fromInclusive + (long)offset;
         }
 
@@ -212,12 +214,15 @@ namespace Jube.LoadTest
             if (keyGenerator == null)
             {
                 Console.WriteLine($"Key distribution: uniform-random over pool={settings.KeyPoolSize:N0} keys.");
+
                 return;
             }
 
             const double topFraction = 0.01;
+
             var topShare =
                 ZipfianKeyGenerator.EstimateTopFractionShare(settings.KeyPoolSize, settings.KeySkew, topFraction);
+
             var topCount = Math.Max(1, (long)(settings.KeyPoolSize * topFraction));
 
             Console.WriteLine(
@@ -229,6 +234,7 @@ namespace Jube.LoadTest
             long txnId, long accountId)
         {
             var sw = Stopwatch.StartNew();
+
             try
             {
                 var implicitTimedOut = await SendToJubeAndAwaitResponseAsync(payload, uri, client);
@@ -237,6 +243,7 @@ namespace Jube.LoadTest
                 var elapsedMs = sw.Elapsed.TotalMilliseconds;
                 Interlocked.Increment(ref requests);
                 allResponseTimesMs.Add(elapsedMs);
+
                 lock (windowLock)
                 {
                     windowResponseTimesMs.Add(elapsedMs);
@@ -295,6 +302,7 @@ namespace Jube.LoadTest
             try
             {
                 using var document = JsonDocument.Parse(responseJson);
+
                 return document.RootElement.TryGetProperty("ImplicitAsyncTimedOut", out var flag) &&
                        flag.ValueKind == JsonValueKind.True;
             }
@@ -336,8 +344,10 @@ namespace Jube.LoadTest
 
                 IReadOnlyDictionary<string, (double CpuPercent, double MemMiB)>? containerStats;
                 (double CpuPercent, double MemUsedMiB)? hostStats;
+
                 (double Connections, double TxnPerSec, double CacheHitPct, double TempMiBPerSec,
                     double ReplicationLagSeconds, double ReplicaCount)? postgresStats;
+
                 (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? redisStats;
 
                 lock (statsLock)
@@ -366,10 +376,13 @@ namespace Jube.LoadTest
                 var containerStats = settings.SampleContainerStats
                     ? await containerStatsSampler.SampleAsync(CancellationToken.None)
                     : null;
+
                 var hostStats = settings.SampleHostStats ? hostStatsSampler.Sample() : null;
+
                 var postgresStats = postgresStatsSampler != null
                     ? await postgresStatsSampler.SampleAsync(CancellationToken.None)
                     : null;
+
                 var redisStats = redisStatsSampler != null
                     ? await redisStatsSampler.SampleAsync()
                     : null;
@@ -464,6 +477,7 @@ namespace Jube.LoadTest
         private (double min, double max, double median, double avg) SwapWindowAndSummarise()
         {
             List<double> snapshot;
+
             lock (windowLock)
             {
                 snapshot = windowResponseTimesMs;
@@ -485,6 +499,7 @@ namespace Jube.LoadTest
             var max = values[^1];
             var avg = values.Average();
             var mid = values.Count / 2;
+
             var median = values.Count % 2 == 0
                 ? (values[mid - 1] + values[mid]) / 2.0
                 : values[mid];
@@ -500,16 +515,21 @@ namespace Jube.LoadTest
             Console.WriteLine();
             Console.WriteLine("Load test summary");
             Console.WriteLine("------------------");
+
             Console.WriteLine(
                 $"Target rate:        {settings.TargetRequestsPerSecond}/s over {settings.DurationSeconds}s");
+
             Console.WriteLine($"Dispatched:         {totalDispatched}");
             Console.WriteLine($"Succeeded:          {allTimes.Count}");
             Console.WriteLine($"Errors:             {totalDispatched - allTimes.Count}");
+
             Console.WriteLine(
                 $"Implicit timeouts:  {implicitTimeoutsTotal} " +
                 $"({(allTimes.Count == 0 ? 0 : 100.0 * implicitTimeoutsTotal / allTimes.Count):F2}% of succeeded)");
+
             Console.WriteLine(
                 $"Response time (ms): min={stats.min:F1} max={stats.max:F1} median={stats.median:F1} avg={stats.avg:F1}");
+
             Console.WriteLine($"TPS CSV written to: {Path.GetFullPath(settings.OutputPath)}");
 
             if (settings.ResponseSampleRate > 0)

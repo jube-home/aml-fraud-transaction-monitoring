@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Working Uploading and Recalling Files
 It is possible to upload files to a Case Key Value combination,  with these files being centrally stored in the database.
 

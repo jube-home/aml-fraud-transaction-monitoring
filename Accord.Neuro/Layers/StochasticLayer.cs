@@ -1,111 +1,103 @@
-﻿// Accord Neural Net Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Neuro.ActivationFunctions;
+using Accord.Neuro.Neurons;
 
 namespace Accord.Neuro.Layers
 {
-    using Accord.Neuro.ActivationFunctions;
-    using Accord.Neuro.Neurons;
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Stochastic Activation Layer.
+    ///     Stochastic Activation Layer.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   This class represents a layer of <see cref="StochasticNeuron">stochastic neurons</see>.
+    ///     This class represents a layer of <see cref="StochasticNeuron">stochastic neurons</see>.
     /// </remarks>
-    /// 
     [Serializable]
     public class StochasticLayer : ActivationLayer
     {
-
-        private new StochasticNeuron[] neurons;
-        private double[] sample;
-
         /// <summary>
-        ///   Gets the layer's neurons.
+        ///     Initializes a new instance of the <see cref="StochasticLayer" /> class.
         /// </summary>
-        /// 
-        public new StochasticNeuron[] Neurons
-        {
-            get { return neurons; }
-        }
-
-        /// <summary>
-        ///   Gets the layer's sample values generated in the last
-        ///   call of any of the <see cref="Generate"/> methods.
-        /// </summary>
-        /// 
-        public double[] Sample
-        {
-            get { return sample; }
-        }
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="StochasticLayer"/> class.
-        /// </summary>
-        /// 
         /// <param name="neuronsCount">Layer's neurons count.</param>
         /// <param name="inputsCount">Layer's inputs count.</param>
-        /// 
         public StochasticLayer(int neuronsCount, int inputsCount)
-            : this(new BernoulliFunction(alpha: 1), neuronsCount, inputsCount) { }
+            : this(new BernoulliFunction(1), neuronsCount, inputsCount)
+        {
+        }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="StochasticLayer"/> class.
+        ///     Initializes a new instance of the <see cref="StochasticLayer" /> class.
         /// </summary>
-        /// 
         /// <param name="function">The activation function for the neurons in the layer.</param>
         /// <param name="neuronsCount">The neurons count.</param>
         /// <param name="inputsCount">The inputs count.</param>
-        /// 
         public StochasticLayer(IStochasticFunction function, int neuronsCount, int inputsCount)
             : base(neuronsCount, inputsCount, function)
         {
-            neurons = new StochasticNeuron[neuronsCount];
-            for (int i = 0; i < neurons.Length; i++)
-                base.neurons[i] = this.neurons[i] =
+            Neurons = new StochasticNeuron[neuronsCount];
+            for (var i = 0; i < Neurons.Length; i++)
+            {
+                base.neurons[i] = Neurons[i] =
                     new StochasticNeuron(inputsCount, function);
+            }
         }
 
+        /// <summary>
+        ///     Gets the layer's neurons.
+        /// </summary>
+        public new StochasticNeuron[] Neurons { get; }
 
         /// <summary>
-        ///   Compute output vector of the layer.
+        ///     Gets the layer's sample values generated in the last
+        ///     call of any of the <see cref="Generate" /> methods.
         /// </summary>
-        /// 
+        public double[] Sample { get; private set; }
+
+        /// <summary>
+        ///     Compute output vector of the layer.
+        /// </summary>
         /// <param name="input">Input vector.</param>
-        /// 
         /// <returns>
-        ///   Returns layer's output vector.
+        ///     Returns layer's output vector.
         /// </returns>
-        /// 
         public override double[] Compute(double[] input)
         {
-            double[] output = new double[neuronsCount];
+            var output = new double[neuronsCount];
 
-            for (int i = 0; i < neurons.Length; i++)
-                output[i] = neurons[i].Compute(input);
+            for (var i = 0; i < Neurons.Length; i++)
+            {
+                output[i] = Neurons[i].Compute(input);
+            }
 
             this.output = output;
 
@@ -113,45 +105,44 @@ namespace Accord.Neuro.Layers
         }
 
         /// <summary>
-        ///   Compute probability vector of the layer.
+        ///     Compute probability vector of the layer.
         /// </summary>
-        /// 
         /// <param name="input">Input vector.</param>
-        /// 
         /// <returns>
-        ///   Returns layer's probability vector.
+        ///     Returns layer's probability vector.
         /// </returns>
-        /// 
         public double[] Generate(double[] input)
         {
-            double[] sample = new double[neuronsCount];
-            double[] output = new double[neuronsCount];
+            var sample = new double[neuronsCount];
+            var output = new double[neuronsCount];
 
-            for (int i = 0; i < neurons.Length; i++)
+            for (var i = 0; i < Neurons.Length; i++)
             {
-                output[i] = neurons[i].Compute(input);
-                sample[i] = neurons[i].Generate(output[i]);
+                output[i] = Neurons[i].Compute(input);
+                sample[i] = Neurons[i].Generate(output[i]);
             }
 
-            this.sample = sample;
+            this.Sample = sample;
             this.output = output;
 
             return sample;
         }
 
         /// <summary>
-        ///   Copy the weights of another layer in reversed order. This
-        ///   can be used to update visible layers from hidden layers and
-        ///   vice-versa.
+        ///     Copy the weights of another layer in reversed order. This
+        ///     can be used to update visible layers from hidden layers and
+        ///     vice-versa.
         /// </summary>
-        /// 
         /// <param name="layer">The layer to copy the weights from.</param>
-        /// 
         public void CopyReversedWeightsFrom(StochasticLayer layer)
         {
-            for (int i = 0; i < Neurons.Length; i++)
-                for (int j = 0; j < inputsCount; j++)
-                    this.Neurons[i].Weights[j] = layer.Neurons[j].Weights[i];
+            for (var i = 0; i < Neurons.Length; i++)
+            {
+                for (var j = 0; j < inputsCount; j++)
+                {
+                    Neurons[i].Weights[j] = layer.Neurons[j].Weights[i];
+                }
+            }
         }
     }
 }

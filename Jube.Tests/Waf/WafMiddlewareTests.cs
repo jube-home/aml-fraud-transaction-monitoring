@@ -31,7 +31,8 @@ namespace Jube.Test.Waf
         {
             return TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
-                ["WafEnabled"] = enabled ? "True" : "False"
+                ["WafEnabled"] = enabled ? "True" : "False",
+                ["WafMaxInspectionMilliseconds"] = "10000"
             });
         }
 
@@ -41,6 +42,7 @@ namespace Jube.Test.Waf
             var context = new DefaultHttpContext();
             context.Request.Method = method;
             context.Request.Path = path;
+
             if (queryValue != null)
             {
                 context.Request.QueryString = new QueryString("?q=" + queryValue);
@@ -55,12 +57,14 @@ namespace Jube.Test.Waf
             }
 
             context.Response.Body = new MemoryStream();
+
             return context;
         }
 
         private static WafMiddleware Middleware(RequestDelegate next, bool enabled)
         {
             var environment = Environment(enabled);
+
             return new WafMiddleware(next, new WafInspector(WafTestRuleSets.SeededRegistry(), environment),
                 environment, TestLog.NoOp);
         }
@@ -69,11 +73,14 @@ namespace Jube.Test.Waf
         public async Task AJsonBodyAttackIsBlockedWithForbiddenAndDoesNotReachTheEndpointAsync()
         {
             var reached = false;
+
             var middleware = Middleware(_ =>
             {
                 reached = true;
+
                 return Task.CompletedTask;
             }, true);
+
             var context = Context("POST", "/api/Test", "application/json", "{\"name\":\"<script>alert(1)</script>\"}");
 
             await middleware.InvokeAsync(context);
@@ -87,11 +94,13 @@ namespace Jube.Test.Waf
         {
             const string body = "{\"narrative\":\"an ordinary payment to ACME\"}";
             string? downstreamBody = null;
+
             var middleware = Middleware(async ctx =>
             {
                 using var reader = new StreamReader(ctx.Request.Body);
                 downstreamBody = await reader.ReadToEndAsync();
             }, true);
+
             var context = Context("POST", "/api/Test", "application/json", body);
 
             await middleware.InvokeAsync(context);
@@ -104,11 +113,14 @@ namespace Jube.Test.Waf
         public async Task WhenDisabledAnAttackPassesThroughAsync()
         {
             var reached = false;
+
             var middleware = Middleware(_ =>
             {
                 reached = true;
+
                 return Task.CompletedTask;
             }, false);
+
             var context = Context("POST", "/api/Test", "application/json", "{\"name\":\"<script>alert(1)</script>\"}");
 
             await middleware.InvokeAsync(context);
@@ -121,11 +133,14 @@ namespace Jube.Test.Waf
         public async Task AQueryStringAttackIsBlockedAsync()
         {
             var reached = false;
+
             var middleware = Middleware(_ =>
             {
                 reached = true;
+
                 return Task.CompletedTask;
             }, true);
+
             var context = Context("GET", "/api/Test", null, null, "1%20UNION%20SELECT%20x");
 
             await middleware.InvokeAsync(context);
@@ -138,11 +153,14 @@ namespace Jube.Test.Waf
         public async Task APathTraversalAttackIsBlockedAsync()
         {
             var reached = false;
+
             var middleware = Middleware(_ =>
             {
                 reached = true;
+
                 return Task.CompletedTask;
             }, true);
+
             var context = Context("GET", "/api/Test/../../etc/passwd", null, null);
 
             await middleware.InvokeAsync(context);

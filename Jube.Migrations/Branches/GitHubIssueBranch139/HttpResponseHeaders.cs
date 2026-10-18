@@ -20,6 +20,11 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
     {
         public override void Up()
         {
+            if (Schema.Table("HttpResponseHeader").Exists())
+            {
+                return;
+            }
+
             Create.Table("HttpResponseHeader")
                 .WithColumn("Id").AsInt32().Identity().PrimaryKey()
                 .WithColumn("Header").AsString().NotNullable()

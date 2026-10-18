@@ -11,35 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class ExhaustiveSearchInstanceTrialInstanceVariableRepository(DbContext dbContext)
     {
-        public async Task<ExhaustiveSearchInstanceTrialInstanceVariable> InsertAsync(ExhaustiveSearchInstanceTrialInstanceVariable model, CancellationToken token = default)
+        public async Task<ExhaustiveSearchInstanceTrialInstanceVariable> InsertAsync(
+            ExhaustiveSearchInstanceTrialInstanceVariable model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
         public Task DeleteAllByExhaustiveSearchInstanceTrialInstanceIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceTrialInstanceVariable
-                .Where(d => d.Id == id && (d.Deleted == 0 || d.Deleted == null))
+                .Where(d => d.ExhaustiveSearchInstanceTrialInstanceId == id && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
         }
 
-        public async Task UpdateAsRemovedByExhaustiveSearchInstanceVariableIdAsync(int exhaustiveSearchInstanceVariableId,
+        public async Task UpdateAsRemovedByExhaustiveSearchInstanceVariableIdAsync(
+            int exhaustiveSearchInstanceVariableId,
             int exhaustiveSearchInstanceTrialInstanceId, CancellationToken token = default)
         {
             var records = await dbContext.ExhaustiveSearchInstanceTrialInstanceVariable
@@ -65,7 +68,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceTrialInstanceVariable
                 .Where(d =>
@@ -75,6 +79,15 @@ namespace Jube.Data.Repository
                 .Set(s => s.ImportId, importId)
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public Task SetVariableIdAsync(int exhaustiveSearchInstanceTrialInstanceVariableId,
+            int? exhaustiveSearchInstanceVariableId, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstanceTrialInstanceVariable
+                .Where(w => w.Id == exhaustiveSearchInstanceTrialInstanceVariableId)
+                .Set(s => s.ExhaustiveSearchInstanceVariableId, exhaustiveSearchInstanceVariableId)
                 .UpdateAsync(token);
         }
     }

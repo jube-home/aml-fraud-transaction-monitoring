@@ -32,30 +32,6 @@ namespace Jube.Test.Repository
         private readonly List<int> modelIds = [];
         private int tenantRegistryId;
 
-        public async Task InitializeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            tenantRegistryId = await dbContext.UserInTenant
-                .Where(w => w.User == fx.Seed.UserWithPermission)
-                .Select(s => s.TenantRegistryId)
-                .FirstAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-
-            await dbContext.EntityAnalysisModelEngineSnapshot
-                .Where(w => instances.Contains(w.Instance)).DeleteAsync();
-            await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
-                .Where(w => instances.Contains(w.Instance)).DeleteAsync();
-            await dbContext.GetTable<EntityAnalysisModelVersion>()
-                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
-            await dbContext.EntityAnalysisModel
-                .Where(w => modelIds.Contains(w.Id)).DeleteAsync();
-        }
-
         private async Task<int> SeedModelAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -75,6 +51,7 @@ namespace Jube.Test.Repository
 
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
+
             return model.Id;
         }
 
@@ -83,12 +60,39 @@ namespace Jube.Test.Repository
             await using var dbContext = fx.GetDbContext();
 
             instances.Add(instance);
+
             await dbContext.InsertAsync(new EntityAnalysisModelSynchronisationNodeStatusEntry
             {
                 Instance = instance,
                 HeartbeatDate = heartbeat,
                 TenantRegistryId = tenantRegistryId
             });
+        }
+
+        public async Task InitializeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            await dbContext.EntityAnalysisModelEngineSnapshot
+                .Where(w => instances.Contains(w.Instance)).DeleteAsync();
+            await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .Where(w => instances.Contains(w.Instance)).DeleteAsync();
+
+            await dbContext.GetTable<EntityAnalysisModelVersion>()
+                .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await dbContext.EntityAnalysisModel
+                .Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         [Fact]
@@ -150,6 +154,7 @@ namespace Jube.Test.Repository
             await SeedNodeAsync(dead, now.AddMinutes(-10));
 
             await using var dbContext = fx.GetDbContext();
+
             await new EntityAnalysisModelSynchronisationNodeStatusEntryRepository(dbContext)
                 .DeleteSilentAsync(tenantRegistryId, self, now);
 

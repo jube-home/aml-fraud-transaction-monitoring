@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Dto.Query.EntityAnalysisModelSample;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelSample;
 using Jube.Service.Query.EntityAnalysisModelSample;
 using Jube.Service.Reactivity;
@@ -65,7 +65,6 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         private readonly List<int> createdRoleRegistryIds = [];
         private readonly List<int> createdTenantRegistryIds = [];
         private readonly List<string> createdUserNames = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -75,9 +74,11 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var modelIds = createdModelIds.Select(id => (int?)id).ToList();
 
             await dbContext.Archive.Where(w => createdArchiveIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId))
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => modelIds.Contains(w.EntityAnalysisModelId))
                 .DeleteAsync();
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
@@ -125,6 +126,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             createdTenantRegistryIds.Add(tenantRegistryId);
 
             var roleRegistryGuid = Guid.NewGuid();
+
             var roleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleRegistryGuid,
@@ -147,6 +149,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             }
 
             var userName = $"{DatabaseFixture.Prefix}SmpUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -157,6 +160,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
                 Active = 1, PasswordLocked = 0, Deleted = 0, Version = 1,
                 CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
@@ -172,6 +176,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             byte deleted = 0, params (string Name, int DataTypeId)[] xpaths)
         {
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}SmpModel{Guid.NewGuid():N}"[..40],
@@ -209,6 +214,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         {
             var entry = entryGuid ?? Guid.NewGuid();
             var reference = referenceDate ?? new DateTime(2026, 3, 1, 10, 0, 0, DateTimeKind.Utc);
+
             var json =
                 $"{{\"entityAnalysisModelInstanceEntryGuid\":\"{entry}\",\"responseElevation\":{{\"value\":12.5}}," +
                 $"\"prevailingEntityAnalysisModelActivationRuleId\":7,\"entityAnalysisModelGuid\":\"{modelGuid}\"," +
@@ -255,6 +261,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -263,6 +270,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -280,6 +288,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             ex.Code.Should().Be("PermissionDenied");
             ex.RequiredSpecifications.Should().BeEquivalentTo([40]);
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                     .CountAsync(w => w.EntityAnalysisModelId == modelId))
                 .Should().Be(0);
@@ -320,24 +329,28 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         public static IEnumerable<object[]> InvalidOptions()
         {
             var ok = Guid.NewGuid();
+
             yield return
             [
                 new EntityAnalysisModelSampleOptionsDto
                     { EntityAnalysisModelGuid = Guid.Empty, DateFrom = windowFrom, DateTo = windowTo, Sample = 0.5 },
                 "An Entity Analysis Model must be selected."
             ];
+
             yield return
             [
                 new EntityAnalysisModelSampleOptionsDto
                     { EntityAnalysisModelGuid = ok, DateFrom = null, DateTo = windowTo, Sample = 0.5 },
                 "A start date is required."
             ];
+
             yield return
             [
                 new EntityAnalysisModelSampleOptionsDto
                     { EntityAnalysisModelGuid = ok, DateFrom = windowFrom, DateTo = null, Sample = 0.5 },
                 "An end date is required."
             ];
+
             yield return
             [
                 new EntityAnalysisModelSampleOptionsDto
@@ -356,6 +369,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
                     { EntityAnalysisModelGuid = ok, DateFrom = windowFrom, DateTo = windowTo, Sample = 1.01 },
                 "Sample rate must be between 0 and 1."
             ];
+
             yield return
             [
                 new EntityAnalysisModelSampleOptionsDto
@@ -373,6 +387,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var (userName, _) = await CreateUserWithPermissionAsync(dbContext, 40);
             var log = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, log);
+
             var before = await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                 .CountAsync(w => w.CreatedUser == userName);
 
@@ -380,9 +395,11 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             ex.Code.Should().Be("ValidationFailed");
             ex.Result.Errors.Select(e => e.ErrorMessage).Should().Contain(expectedMessage);
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                     .CountAsync(w => w.CreatedUser == userName))
                 .Should().Be(before);
+
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
         }
 
@@ -418,6 +435,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var service = await BuildServiceAsync(dbContext, userName);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(Opts(modelGuid)));
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                     .CountAsync(w => w.EntityAnalysisModelId == modelId))
                 .Should().Be(0);
@@ -431,6 +449,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var (userB, tenantB) = await CreateUserWithPermissionAsync(dbContext, 40);
             var (modelAId, modelAGuid) = await CreateModelAsync(dbContext, tenantA, 0, fiveTypes);
             var (modelBId, modelBGuid) = await CreateModelAsync(dbContext, tenantB, 0, fiveTypes);
+
             await InsertArchiveAsync(dbContext, modelAId, modelAGuid,
                 "{\"aString\":\"secretA\",\"bInt\":1,\"cFloat\":1.5,\"dDate\":\"2026-02-01T08:30:00Z\",\"eBool\":true}");
             await InsertArchiveAsync(dbContext, modelBId, modelBGuid,
@@ -458,9 +477,11 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var (userName, tenantId) = await CreateUserWithPermissionAsync(dbContext, 40);
             var (modelId, modelGuid) = await CreateModelAsync(dbContext, tenantId, 0, fiveTypes);
             var entry = Guid.NewGuid();
+
             await InsertArchiveAsync(dbContext, modelId, modelGuid,
                 "{\"aString\":\"plain\",\"bInt\":42,\"cFloat\":3.5,\"dDate\":\"2026-02-01T08:30:00Z\",\"eBool\":true}",
                 entry);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var file = await service.ExecuteAsync(Opts(modelGuid));
@@ -468,10 +489,13 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             file.ContentType.Should().Be("text/csv");
             var lines = Lines(file);
             lines.Should().HaveCount(2);
+
             lines[0].Should().Be(StaticHeader +
                                  ",\"Payload.aString\",\"Payload.bInt\",\"Payload.cFloat\",\"Payload.dDate\",\"Payload.eBool\"");
+
             lines[1].Should().Be(ExpectedRow(entry, modelGuid,
                 "\"plain\",42,3.5,2026-02-01T08:30:00.0000000Z,1"));
+
             Text(file).Should().EndWith("\n");
         }
 
@@ -512,9 +536,11 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var (userName, tenantId) = await CreateUserWithPermissionAsync(dbContext, 40);
             var (modelId, modelGuid) = await CreateModelAsync(dbContext, tenantId, 0, fiveTypes);
             var entry = Guid.NewGuid();
+
             await InsertArchiveAsync(dbContext, modelId, modelGuid,
                 "{\"aString\":{\"nested\":1},\"bInt\":\"abc\",\"cFloat\":\"xyz\",\"dDate\":\"not-a-date\",\"eBool\":true}",
                 entry);
+
             var log = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, log);
 
@@ -563,16 +589,19 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             var (modelId, modelGuid) = await CreateModelAsync(dbContext, tenantId, 0, ("aString", 1));
             await InsertArchiveAsync(dbContext, modelId, modelGuid, "{\"aString\":\"in1\"}");
             await InsertArchiveAsync(dbContext, modelId, modelGuid, "{\"aString\":\"in2\"}");
+
             await InsertArchiveAsync(dbContext, modelId, modelGuid, "{\"aString\":\"tooEarly\"}",
                 referenceDate: new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
             await InsertArchiveAsync(dbContext, modelId, modelGuid, "{\"aString\":\"tooLate\"}",
                 referenceDate: new DateTime(2027, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var file = await service.ExecuteAsync(Opts(modelGuid));
 
             var text = Text(file);
             Lines(file).Should().HaveCount(3);
+
             text.Should().Contain("\"in1\"").And.Contain("\"in2\"")
                 .And.NotContain("tooEarly").And.NotContain("tooLate");
         }
@@ -620,6 +649,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             file.FileName.Should().MatchRegex($"^sample_{modelId}_\\d{{14}}\\.csv$");
             file.ContentType.Should().Be("text/csv");
             var stamp = Regex.Match(file.FileName, @"_(\d{14})\.csv$").Groups[1].Value;
+
             DateTime.ParseExact(stamp, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture)
                 .Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
         }
@@ -639,6 +669,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             var rows = await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                 .Where(w => w.EntityAnalysisModelId == modelId).ToListAsync();
+
             var row = rows.Should().ContainSingle().Subject;
             row.InError.Should().Be(0);
             row.ErrorStack.Should().BeNull();
@@ -707,6 +738,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             var rows = await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                 .Where(w => w.EntityAnalysisModelId == modelId).OrderBy(o => o.Id).ToListAsync();
+
             rows.Select(r => r.InError).Should().Equal((byte?)1, (byte?)0);
         }
 
@@ -723,6 +755,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExecuteAsync(Opts(modelGuid), cts.Token));
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
                     .CountAsync(w => w.EntityAnalysisModelId == modelId, token: CancellationToken.None))
                 .Should().Be(0);
@@ -765,6 +798,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
                 typeof(EntityAnalysisModelSampleService).GetMethod(
                         nameof(EntityAnalysisModelSampleService.ExecuteAsync)).Required()
                     .GetCustomAttribute<ServiceOperationAttribute>();
+
             attribute = attribute.Required();
 
             attribute.Should().NotBeNull();

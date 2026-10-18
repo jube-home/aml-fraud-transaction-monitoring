@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,20 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.RuleVocabulary;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddRuleVocabulary(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "RuleVocabularyList", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists the keywords, allowed words and rule functions rule text may use."),
-            new ServiceToolDescriptor(
-                "RuleVocabularyDescribe", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Describes a rule word, with every function signature.")
-        ]);
+        static partial void AddRuleVocabulary(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "RuleVocabularyList", OperationKind.Read, true,
+                    false,
+                    "Lists the keywords, allowed words and rule functions rule text may use.",
+                    RuleVocabularyService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "RuleVocabularyDescribe", OperationKind.Read, true,
+                    false,
+                    "Describes a rule word, with every function signature.",
+                    RuleVocabularyService.RequiredPermissions)
+            ]);
+        }
     }
 }

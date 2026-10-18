@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,20 +15,21 @@ using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Parser;
-using Jube.Dto.Filter;
-using Jube.Dto.RuleExecution;
-using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
-using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
+using Jube.Dto.Filter;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Validation;
+using Jube.Parser;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelAbstractionRule;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.Parser.Dependency;
 using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelAbstractionRule;
 using Jube.Validations.RuleScript;
@@ -47,6 +48,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         private static readonly int[] writePermissions = [13];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelAbstractionRuleRepository repository;
@@ -54,7 +56,6 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
-        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelAbstractionRuleDtoValidator validator;
 
         private EntityAnalysisModelAbstractionRuleService(DbContext dbContext, string userName,
@@ -70,11 +71,17 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelAbstractionRuleRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelAbstractionRuleDtoValidator(repository, strings,
                 new RuleScriptParser(dbContext, tenantRegistryId));
+
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<EntityAnalysisModelAbstractionRuleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -131,6 +138,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.List: entry user={userName}");
@@ -139,9 +147,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionRule.List");
+
                 var dtos = EntityAnalysisModelAbstractionRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.List: {dtos.Count} rows user={userName}");
@@ -157,6 +167,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.List: cancelled user={userName}");
@@ -183,6 +194,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -192,10 +204,12 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             try
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelAbstractionRule.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelAbstractionRuleMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdDescAsync(entityAnalysisModelId, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -212,6 +226,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -223,9 +238,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelAbstractionRule.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -240,6 +257,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Get: entry id={id} user={userName}");
@@ -249,6 +267,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelAbstractionRule.Get");
                 var abstractionRule = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (abstractionRule == null)
                 {
                     if (log.IsDebugEnabled)
@@ -261,6 +280,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 }
 
                 op.Entity(abstractionRule.Id);
+
                 return EntityAnalysisModelAbstractionRuleMapper.ToDto(abstractionRule);
             }
             catch (ForbiddenException)
@@ -271,6 +291,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.Get: cancelled id={id} user={userName}");
@@ -282,6 +303,70 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelAbstractionRule.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one Abstraction Rule by its Guid, scoped to the calling user's " +
+                     "tenant. Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionRuleGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<EntityAnalysisModelAbstractionRuleDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Abstraction Rule.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionRule.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "EntityAnalysisModelAbstractionRule.GetByGuid");
+                var abstractionRule = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (abstractionRule == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"EntityAnalysisModelAbstractionRule.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(abstractionRule.Id);
+
+                return EntityAnalysisModelAbstractionRuleMapper.ToDto(abstractionRule);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelAbstractionRule.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error(
+                    $"EntityAnalysisModelAbstractionRule.GetByGuid: unexpected failure guid={guid} user={userName}",
+                    ex);
+
                 throw;
             }
         }
@@ -299,7 +384,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -330,6 +417,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.ListPaged: cancelled user={userName}");
@@ -355,6 +443,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.FilterFields: entry user={userName}");
@@ -366,6 +455,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelAbstractionRuleDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -405,6 +495,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -414,10 +505,13 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionRule.Filter");
+
                 var rows = EntityAnalysisModelAbstractionRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -455,6 +549,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Count: entry groupBy={groupBy} user={userName}");
@@ -463,10 +558,13 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionRule.Count");
+
                 var rows = EntityAnalysisModelAbstractionRuleMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -497,6 +595,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Create: entry user={userName} name={model?.Name}");
@@ -509,6 +608,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionRule.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -550,6 +650,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.Create: cancelled user={userName}");
@@ -560,8 +661,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelAbstractionRule.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -577,6 +680,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Validate: entry id={model?.Id} user={userName}");
@@ -589,6 +693,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -623,6 +728,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "ParseRule", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.ParseRule: entry id={model?.Id} user={userName}");
@@ -635,7 +741,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
 
                 var results = await validator.ValidateAsync(model,
                     o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -671,6 +779,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Execute", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Execute: entry id={model?.Id} user={userName}");
@@ -687,7 +796,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                     model.RuleScriptTypeId == 1 ? model.BuilderRuleScript : model.CoderRuleScript,
                     model.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
                     model.RuleScriptTypeId == 1, false, context, token).ConfigureAwait(false);
+
                 op.Rows(result.Errors.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -727,12 +838,16 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "BuildRuleFromBuilderJson",
                 userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             try
             {
                 EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionRule.BuildRuleFromBuilderJson");
+
                 var result = await BuilderRuleComposer.ComposeAsync(dbContext, tenantRegistryId,
                     entityAnalysisModelId, RuleParse.AbstractionRule, builderJson, token).ConfigureAwait(false);
+
                 op.Rows(result.Errors.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -748,9 +863,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelAbstractionRule.BuildRuleFromBuilderJson: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -766,6 +883,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Update: entry id={model?.Id} user={userName}");
@@ -777,6 +895,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionRule.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -789,6 +908,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 }
 
                 AbstractionRulePoco saved;
+
                 try
                 {
                     saved = await repository
@@ -836,6 +956,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.Update: cancelled id={model?.Id} user={userName}");
@@ -846,9 +967,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelAbstractionRule.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -865,6 +988,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionRule", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelAbstractionRule.Delete: entry id={id} user={userName}");
@@ -877,6 +1001,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 try
                 {
                     var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                     if (existing != null)
                     {
                         var dependents = await deleteValidator
@@ -885,6 +1010,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                                     existing.EntityAnalysisModelId),
                                 token)
                             .ConfigureAwait(false);
+
                         if (!dependents.IsValid)
                         {
                             throw new DtoValidationException(dependents);
@@ -930,6 +1056,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelAbstractionRule.Delete: cancelled id={id} user={userName}");
@@ -940,8 +1067,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelAbstractionRule.Delete: unexpected failure id={id} user={userName}",
                     ex);
+
                 throw;
             }
         }

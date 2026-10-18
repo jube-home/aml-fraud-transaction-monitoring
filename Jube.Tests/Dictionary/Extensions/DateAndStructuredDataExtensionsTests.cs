@@ -82,6 +82,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void AddBusinessDaysAgreesWithBusinessDaysUntil()
         {
             var start = new DateTime(2026, 9, 23);
+
             for (var n = 1; n <= 40; n++)
             {
                 start.BusinessDaysUntil(start.AddBusinessDays(n)).Should().Be(n);
@@ -133,8 +134,10 @@ namespace Jube.Test.Dictionary.Extensions
         {
             new DateTime(2026, 9, 23, 12, 0, 0, DateTimeKind.Utc).ToIso8601String().Should()
                 .Be("2026-09-23T12:00:00.0000000Z");
+
             "23/09/2026 14:05".ToDateTimeWithFormat("dd/MM/yyyy HH:mm").Should()
                 .Be(new DateTime(2026, 9, 23, 14, 5, 0));
+
             "2026-13-01".ToDateTimeWithFormat("yyyy-MM-dd").Should().BeNull();
         }
 

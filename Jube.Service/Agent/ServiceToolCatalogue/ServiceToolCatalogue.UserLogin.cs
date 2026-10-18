@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.UserLogin;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -24,7 +27,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "schemes (Username/Password, Negotiate, OAuth/OpenID Connect), most recent first, capped " +
                     "at 100000, with optional date-range and substring search (CreatedUser, RemoteIp, " +
                     "UserAgent, FailureMessage) filters, not scoped to any tenant. Also accepts samplePercentage " +
-                    "(0-100) to draw an unbiased random subset of matching rows instead of the most recent ones."));
+                    "(0-100) to draw an unbiased random subset of matching rows instead of the most recent ones.",
+                    UserLoginService.RequiredPermissions));
         }
     }
 }

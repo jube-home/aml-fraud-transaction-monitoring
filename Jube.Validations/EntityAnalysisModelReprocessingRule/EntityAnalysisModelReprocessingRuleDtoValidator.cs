@@ -27,7 +27,6 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
     {
         private const int MaxNameLength = 256;
         private const int MaxRuleScriptLength = 65536;
-
         private static readonly byte[] allowedRuleScriptTypeIds = [1, 2];
         private static readonly string[] allowedReprocessingIntervals = ["n", "h", "d", "m"];
 
@@ -59,6 +58,7 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.NameAlreadyExists])
@@ -147,6 +147,7 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
             {
                 using var document = JsonDocument.Parse(value,
                     new JsonDocumentOptions { MaxDepth = 64 });
+
                 return true;
             }
             catch (JsonException)

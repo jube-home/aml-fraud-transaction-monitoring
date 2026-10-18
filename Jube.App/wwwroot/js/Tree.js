@@ -495,16 +495,7 @@ $(document).ready(function () {
     }
 
     function resizeSplitter() {
-        const outerSplitter = splitter.data("kendoSplitter");
-        let headerOffset;
-        if ($('#TenantsWrapper').length) {
-            headerOffset = 110;
-        } else {
-            headerOffset = 80;
-        }
-
-        outerSplitter.wrapper.height(browserWindow.height() - headerOffset);
-        outerSplitter.resize();
+        splitter.data("kendoSplitter").resize();
     }
 
     resizeSplitter();
@@ -765,5 +756,9 @@ function attachOriginalIndex(nodes) {
         }
     });
 }
+
+$(function () {
+    window.AskJoobySetPageContext?.("Tree", "readonly", null);
+});
 
 //# sourceURL=Tree.js

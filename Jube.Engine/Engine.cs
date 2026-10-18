@@ -15,6 +15,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache;
+using Jube.Data.Context;
+using Jube.Engine.AdvancedAnalytics.Training;
 using Jube.Engine.BackgroundTasks.Context;
 using Jube.Engine.BackgroundTasks.TaskStarters;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
@@ -24,6 +26,7 @@ using Jube.Engine.Observability;
 using Jube.TaskCancellation.Interfaces;
 using log4net;
 using RabbitMQ.Client;
+using Jube.Analytics;
 
 namespace Jube.Engine
 {
@@ -64,8 +67,10 @@ namespace Jube.Engine
             {
                 await SpinWaitAndConvergeCacheServiceAsync(Context.Services.TaskCoordinator.CancellationToken)
                     .ConfigureAwait(false);
+
                 await StartSanctionsTaskAsync().ConfigureAwait(false);
                 await StartEntityModelServerAsync().ConfigureAwait(false);
+
                 await Task.WhenAll(
                         SpinWaitAndConvergeSanctionsAsync(Context.Services.TaskCoordinator.CancellationToken),
                         SpinWaitEntityModelsAsync(Context.Services.TaskCoordinator.CancellationToken))
@@ -89,6 +94,7 @@ namespace Jube.Engine
                 StartInfrastructureHealthMetricsPurge();
                 StartTaggingStorage();
                 StartExhaustiveTrainingServer();
+                StartAdvancedAnalyticsTrainingServer();
                 StartCaseCreation();
 
                 if (Context.Services.Log.IsInfoEnabled)
@@ -122,9 +128,11 @@ namespace Jube.Engine
                 }
 
                 var threadCount = int.Parse(Context.Services.DynamicEnvironment.AppSettings("CaseCreationThreads"));
+
                 for (i = 1; i <= threadCount; i++)
                 {
                     var caseCreationTaskStarter = new CaseCreationTaskStarter(Context);
+
                     Context.Tasks.CaseCreationTasks.Add(Context.Services.TaskCoordinator.RunAsync("CaseCreationTask",
                         _ => caseCreationTaskStarter.StartAsync()));
 
@@ -178,6 +186,7 @@ namespace Jube.Engine
             }
 
             var amqpTaskStarter = new AmqpTaskStarter(Context);
+
             Context.Tasks.AmqpTask =
                 Context.Services.TaskCoordinator.RunAsync("AmqpTask", _ => amqpTaskStarter.StartAsync());
         }
@@ -191,6 +200,7 @@ namespace Jube.Engine
             }
 
             var notificationsViaAmqpStarter = new NotificationsViaAmqpStarter(Context);
+
             Context.Tasks.NotificationsViaAmqp = Context.Services.TaskCoordinator.RunAsync("NotificationsViaAmqpTask",
                 _ => notificationsViaAmqpStarter.StartAsync());
         }
@@ -209,6 +219,7 @@ namespace Jube.Engine
             }
 
             var sanctionsTaskStarter = new SanctionsTaskStarter(Context);
+
             Context.Tasks.SanctionsTask =
                 Context.Services.TaskCoordinator.RunAsync("SanctionsTask", _ => sanctionsTaskStarter.StartAsync());
 
@@ -235,12 +246,45 @@ namespace Jube.Engine
 
             var exhaustiveTrainingStarter = new Training(Context.Services.Log, Context.Services.DynamicEnvironment,
                 Context.JsonSerializationHelper);
+
             Context.Tasks.ExhaustiveTrainingTask = Context.Services.TaskCoordinator.RunAsync("ExhaustiveTrainingTask",
                 token => exhaustiveTrainingStarter.StartAsync(token));
 
             if (Context.Services.Log.IsInfoEnabled)
             {
                 Context.Services.Log.Info("Start: Starting Exhaustive Training Server.");
+            }
+        }
+
+        private void StartAdvancedAnalyticsTrainingServer()
+        {
+            AdvancedAnalyticsTrainingSettings.Current =
+                AdvancedAnalyticsTrainingSettings.FromSettings(Context.Services.DynamicEnvironment.AppSettings);
+
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableAdvancedAnalyticsTraining")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Starting Advanced Analytics Training Server.");
+            }
+
+            var connectionString = Context.Services.DynamicEnvironment.AppSettings("ConnectionString");
+
+            var advancedAnalyticsTrainingWorker = new AdvancedAnalyticsTrainingWorker(Context.Services.Log,
+                AdvancedAnalyticsTrainingSettings.Current,
+                () => DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString,
+                    Context.Services.Log));
+
+            Context.Tasks.AdvancedAnalyticsTrainingTask = Context.Services.TaskCoordinator.RunAsync(
+                "AdvancedAnalyticsTrainingTask", advancedAnalyticsTrainingWorker.StartAsync);
+
+            if (Context.Services.Log.IsInfoEnabled)
+            {
+                Context.Services.Log.Info("Start: Starting Advanced Analytics Training Server.");
             }
         }
 
@@ -252,6 +296,7 @@ namespace Jube.Engine
             }
 
             var taggingStarter = new TaggingStarter(Context);
+
             Context.Tasks.TaggingTask =
                 Context.Services.TaskCoordinator.RunAsync("TaggingTask", _ => taggingStarter.StartAsync());
 
@@ -269,6 +314,7 @@ namespace Jube.Engine
             }
 
             var manageCountersStarter = new ManageCountersStarter(Context);
+
             Context.Tasks.ManageCountersTask =
                 Context.Services.TaskCoordinator.RunAsync("CountersTask", _ => manageCountersStarter.StartAsync());
 
@@ -286,6 +332,7 @@ namespace Jube.Engine
             }
 
             var applicationLogEntryStarter = new ApplicationLogEntryStarter(Context);
+
             Context.Tasks.ApplicationLogEntryTask = Context.Services.TaskCoordinator.RunAsync(
                 "ApplicationLogEntryTask", _ => applicationLogEntryStarter.StartAsync());
 
@@ -303,6 +350,7 @@ namespace Jube.Engine
             }
 
             var infrastructureHealthMetricsStarter = new InfrastructureHealthMetricsStarter(Context);
+
             Context.Tasks.InfrastructureHealthMetricsTask = Context.Services.TaskCoordinator.RunAsync(
                 "InfrastructureHealthMetricsTask", _ => infrastructureHealthMetricsStarter.StartAsync());
 
@@ -320,6 +368,7 @@ namespace Jube.Engine
             }
 
             var infrastructureHealthMetricsPurgeStarter = new InfrastructureHealthMetricsPurgeStarter(Context);
+
             Context.Tasks.InfrastructureHealthMetricsPurgeTask = Context.Services.TaskCoordinator.RunAsync(
                 "InfrastructureHealthMetricsPurgeTask", _ => infrastructureHealthMetricsPurgeStarter.StartAsync());
 
@@ -343,6 +392,7 @@ namespace Jube.Engine
                 }
 
                 var asyncHttpContextCorrelationStarter = new AsyncHttpContextCorrelationStarter(Context);
+
                 Context.Tasks.AsyncHttpContextCorrelationTasks.Add(
                     Context.Services.TaskCoordinator.RunAsync("AsyncHttpContextCorrelationTask",
                         _ => asyncHttpContextCorrelationStarter.StartAsync()));
@@ -368,6 +418,7 @@ namespace Jube.Engine
             }
 
             var caseAutomationStarter = new CaseAutomationStarter(Context);
+
             Context.Tasks.CaseAutomationTask =
                 Context.Services.TaskCoordinator.RunAsync("CasesAutomationTask",
                     _ => caseAutomationStarter.StartAsync());
@@ -392,6 +443,7 @@ namespace Jube.Engine
             }
 
             var notificationsViaConcurrentQueueStarter = new NotificationsViaConcurrentQueueStarter(Context);
+
             Context.Tasks.NotificationsViaConcurrentQueueTask = Context.Services.TaskCoordinator.RunAsync(
                 "NotificationRelayFromConcurrentQueueTask", _ => notificationsViaConcurrentQueueStarter.StartAsync());
 
@@ -422,6 +474,7 @@ namespace Jube.Engine
 
             Context.Tasks.EntityAnalysisModelManager =
                 new EntityAnalysisModelManager.EntityAnalysisModelManager(Context);
+
             Context.Tasks.EntityAnalysisModelManagerTask = Context.Services.TaskCoordinator.RunAsync(
                 "EntityAnalysisModelManagerTask", _ => Context.Tasks.EntityAnalysisModelManager.StartAsync());
 

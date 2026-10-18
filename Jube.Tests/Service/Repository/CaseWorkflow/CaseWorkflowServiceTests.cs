@@ -24,6 +24,7 @@ using Jube.Dto.Repository.CaseWorkflow;
 using Jube.Service.Exceptions.Repository.CaseWorkflow;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseWorkflow;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -47,7 +48,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
 
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -57,13 +57,18 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             await dbContext.GetTable<Data.Poco.CaseWorkflowVersion>()
                 .Where(w => w.CaseWorkflowId != null && createdCaseWorkflowIds.Contains(w.CaseWorkflowId.Value))
                 .DeleteAsync();
+
             var caseWorkflowGuids1 = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids1.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -78,6 +83,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -88,6 +94,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -109,6 +116,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             }).ConfigureAwait(false);
 
             createdCaseWorkflowIds.Add(caseWorkflowId);
+
             return caseWorkflowId;
         }
 
@@ -361,6 +369,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             await service.DeleteAsync(created.Id);
 
             (await service.GetByIdAsync(created.Id)).Should().BeNull();
+
             (await dbContext.CaseWorkflow.Where(w => w.Id == created.Id).Select(w => w.Deleted)
                 .FirstAsync()).Should().Be(1);
         }
@@ -456,6 +465,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var dto = ValidDto(modelId,
                 $"{DatabaseFixture.Prefix}{new string('a', 256 - DatabaseFixture.Prefix.Length)}");
 
@@ -889,6 +899,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
         public async Task InsertWithBlankNameUsesFrenchMessageUnderFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
@@ -918,6 +929,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             names.Should().Contain("CaseWorkflowList").And.Contain("CaseWorkflowListByModelActiveOnly")
                 .And.Contain("CaseWorkflowGet").And.Contain("CaseWorkflowCreate")
                 .And.Contain("CaseWorkflowUpdate").And.Contain("CaseWorkflowDelete");
+
             names.Should().OnlyHaveUniqueItems();
         }
 
@@ -927,6 +939,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             for (var i = 0; i < 3; i++)
             {
                 var saved = await service.InsertAsync(ValidDto(modelId));

@@ -57,6 +57,7 @@ public static class MonitoringPayloads
     public static IEnumerable<string> Sqli()
     {
         var all = new HashSet<string>(StringComparer.Ordinal);
+
         foreach (var seed in sqlSeeds)
         {
             all.Add(seed);
@@ -80,6 +81,7 @@ public static class MonitoringPayloads
     public static string CaseMix(string value)
     {
         var chars = value.ToCharArray();
+
         for (var i = 0; i < chars.Length; i += 2)
         {
             chars[i] = char.ToUpperInvariant(chars[i]);

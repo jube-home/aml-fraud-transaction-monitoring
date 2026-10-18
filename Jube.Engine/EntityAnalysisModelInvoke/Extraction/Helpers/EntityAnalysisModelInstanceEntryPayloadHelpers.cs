@@ -25,9 +25,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
     public static class EntityAnalysisModelInstanceEntryPayloadHelpers
     {
         public static EntityAnalysisModelInstanceEntryPayload Create(EntityAnalysisModel model,
-            Guid entityAnalysisModelInstanceEntryGuid = default, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = null)
+            Guid entityAnalysisModelInstanceEntryGuid = default,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = null)
         {
             snapshot ??= model.Snapshot;
+
             return new EntityAnalysisModelInstanceEntryPayload
             {
                 EntityAnalysisModelName = model.Instance.Name,
@@ -50,6 +52,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
                 HttpAdaptation =
                     new PooledDictionary<string, Adaptation>(snapshot.EntityAnalysisModelAdaptations.Count),
                 ExhaustiveAdaptation = new PooledDictionary<string, double>(snapshot.ExhaustiveModels.Count),
+                ExhaustiveAdaptationDetail =
+                    new PooledDictionary<string, Adaptation>(snapshot.ExhaustiveModels.Count),
+                AdvancedAnalyticsAdaptation =
+                    new PooledDictionary<string, double>(snapshot.AdvancedAnalyticsModels.Count),
+                AdvancedAnalyticsAdaptationDetail =
+                    new PooledDictionary<string, Adaptation>(snapshot.AdvancedAnalyticsModels.Count),
                 InvokeTaskPerformance = new InvokeTaskPerformance(),
                 CreatedDate = DateTime.UtcNow,
                 ArchiveKeys = []

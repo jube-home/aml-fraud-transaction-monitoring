@@ -22,7 +22,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.CaseBySessionCaseSearchCompile;
 using Jube.Service.Observability;
@@ -34,13 +34,13 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.CaseBySessionCaseSearchCompile.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using log4net;
 using JubeDynamicEnvironment = Jube.DynamicEnvironment.DynamicEnvironment;
 
 namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
@@ -71,7 +71,6 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
         private readonly List<int> createdCompiledIds = [];
         private readonly List<int> createdModelIds = [];
         private readonly List<Guid> createdXPathGuids = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -80,26 +79,37 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
 
             await dbContext.GetTable<Data.Poco.CaseEvent>()
                 .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.SessionCaseSearchCompiledSqlExecution>()
                 .Where(w => createdCompiledIds.Contains(w.SessionCaseSearchCompiledSqlId)).DeleteAsync();
+
             await dbContext.SessionCaseSearchCompiledSql.Where(w => createdCompiledIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathRole>()
                 .Where(w => createdXPathGuids.Contains(w.CaseWorkflowXPathGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowXPath.Where(w => createdCaseWorkflowIds.Contains(w.CaseWorkflowId ?? 0))
                 .DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -116,6 +126,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             bool withXPath = false)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, ownerUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -130,6 +141,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
                 .Where(u => u.Name == ownerUser).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var workflowGuid = Guid.NewGuid();
+
             var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -156,6 +168,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             });
 
             var statusGuid = Guid.NewGuid();
+
             var statusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -185,6 +198,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             if (withXPath)
             {
                 var xPathGuid = Guid.NewGuid();
+
                 await dbContext.InsertAsync(new Data.Poco.CaseWorkflowXPath
                 {
                     Guid = xPathGuid,
@@ -203,7 +217,9 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
                     CreatedUser = ownerUser,
                     CreatedDate = DateTime.UtcNow,
                 });
+
                 createdXPathGuids.Add(xPathGuid);
+
                 await dbContext.InsertAsync(new Data.Poco.CaseWorkflowXPathRole
                 {
                     CaseWorkflowXPathGuid = xPathGuid,
@@ -216,6 +232,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             }
 
             var caseKeyValue = $"{DatabaseFixture.Prefix}Ckv{Guid.NewGuid():N}";
+
             var caseId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.Case
             {
                 EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
@@ -244,6 +261,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             createdCaseIds.Add(caseId);
 
             var tokens = new List<object> { caseKeyValue, workflowGuid, ownerUser };
+
             var whereSql = "from \"Case\",\"CaseWorkflow\",\"EntityAnalysisModel\",\"TenantRegistry\"," +
                            "\"CaseWorkflowStatus\",\"UserInTenant\"" +
                            " where \"EntityAnalysisModel\".\"Id\" = \"CaseWorkflow\".\"EntityAnalysisModelId\"" +
@@ -256,6 +274,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
                            " and \"UserInTenant\".\"User\" = (@3)";
 
             var compiledGuid = Guid.NewGuid();
+
             var compiledId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.SessionCaseSearchCompiledSql
             {
                 Guid = compiledGuid,
@@ -294,6 +313,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -302,6 +322,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -321,6 +342,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             log.Entries.Should().Contain(e => e.Level == "WARN" && e.Message.Contains(fx.Seed.UserWithoutPermission));
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
             (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId)).Locked.Should().Be(0);
+
             (await dbContext.GetTable<Data.Poco.CaseEvent>().CountAsync(e => e.CaseId == seeded.CaseId))
                 .Should().Be(0);
         }
@@ -427,9 +449,12 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             var ex = await Assert.ThrowsAsync<NotFoundException>(() => service.GetAsync(seeded.CompiledGuid));
 
             ex.Code.Should().Be("NotFound");
+
             ex.Message.Should().Be(localizers.Create(typeof(CaseBySessionCaseSearchCompileResources))
                 [CaseBySessionCaseSearchCompileResources.NotFound].Value);
+
             (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId)).LockedUser.Should().Be("someone-else");
+
             (await dbContext.GetTable<Data.Poco.CaseEvent>().CountAsync(e => e.CaseId == seeded.CaseId))
                 .Should().Be(0);
             (await dbContext.GetTable<Data.Poco.SessionCaseSearchCompiledSqlExecution>()
@@ -470,6 +495,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             await Assert.ThrowsAsync<NullReferenceException>(() => service.GetAsync(seeded.CompiledGuid));
 
             (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId)).Locked.Should().Be(0);
+
             (await dbContext.GetTable<Data.Poco.SessionCaseSearchCompiledSqlExecution>()
                 .CountAsync(e => e.SessionCaseSearchCompiledSqlId == seeded.CompiledId)).Should().Be(0);
         }
@@ -499,6 +525,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
 
             (await act.Should().ThrowAsync<Exception>()).Which.Should().NotBeOfType<ForbiddenException>();
             (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId)).Locked.Should().Be(0);
+
             (await dbContext.GetTable<Data.Poco.CaseEvent>().CountAsync(e => e.CaseId == seeded.CaseId))
                 .Should().Be(0);
         }
@@ -514,6 +541,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
 
             (await act.Should().ThrowAsync<Exception>()).Which.Should().NotBeOfType<ForbiddenException>();
             (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId)).Locked.Should().Be(0);
+
             (await dbContext.GetTable<Data.Poco.CaseEvent>().CountAsync(e => e.CaseId == seeded.CaseId))
                 .Should().Be(0);
         }
@@ -536,11 +564,14 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
         {
             await using var dbContext = fx.GetDbContext();
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission);
+
             var roleRegistryGuid = await dbContext.UserRegistry
                 .Where(u => u.Name == fx.Seed.UserWithPermission).Select(u => u.RoleRegistryGuid).FirstAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(r => r.CaseWorkflowGuid == seeded.WorkflowGuid && r.RoleRegistryGuid == roleRegistryGuid)
                 .DeleteAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var act = () => service.GetAsync(seeded.CompiledGuid);
@@ -586,8 +617,10 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
 
             auditLog.Entries.Should().ContainSingle().Which.Message.Should()
                 .Contain("area=CaseBySessionCaseSearchCompile").And.Contain("op=Get").And.Contain("outcome=ok");
+
             activities.Should().ContainSingle(a => a.OperationName == "CaseBySessionCaseSearchCompile.Get")
                 .Which.GetTagItem("jube.outcome").Should().Be("ok");
+
             bus.Published.Should().BeEmpty();
         }
 
@@ -598,9 +631,12 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             var bus = new CapturingBus();
             var auditForbidden = new TestLog();
             var auditNotFound = new TestLog();
+
             var forbidden = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
                 auditLog: auditForbidden, serviceChangeBus: bus);
+
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission, lockedUser: "someone-else");
+
             var notFound = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, auditLog: auditNotFound,
                 serviceChangeBus: bus);
 

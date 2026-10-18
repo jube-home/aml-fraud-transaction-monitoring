@@ -28,6 +28,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var largest = value;
+
             foreach (var other in others ?? [])
             {
                 if (double.IsNaN(other))
@@ -49,6 +50,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var smallest = value;
+
             foreach (var other in others ?? [])
             {
                 if (double.IsNaN(other))
@@ -66,12 +68,14 @@ namespace Jube.Dictionary.Extensions
         {
             var all = new List<double> { value };
             all.AddRange(others ?? []);
+
             if (all.Any(x => !double.IsFinite(x) || x < 0))
             {
                 return null;
             }
 
             var total = all.Sum();
+
             if (total <= 0)
             {
                 return null;
@@ -83,12 +87,14 @@ namespace Jube.Dictionary.Extensions
         internal static double Herfindahl(double value, double[]? others)
         {
             var shares = Shares(value, others);
+
             return shares is null ? double.NaN : Finite(shares.Sum(s => s * s));
         }
 
         internal static double EntropyBits(double value, double[]? others)
         {
             var shares = Shares(value, others);
+
             return shares is null ? double.NaN : Finite(-shares.Where(s => s > 0).Sum(s => s * Math.Log2(s)) + 0.0);
         }
 

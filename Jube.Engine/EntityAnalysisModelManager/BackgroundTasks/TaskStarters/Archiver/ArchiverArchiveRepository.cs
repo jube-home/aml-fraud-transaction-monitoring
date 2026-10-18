@@ -48,6 +48,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 var dbContext =
                     DataConnectionDbContext.GetResilientDbContextDataConnection(
                         dynamicEnvironment.AppSettings("ConnectionString"), log);
+
                 dbContext.CommandTimeout = 0;
 
                 if (log.IsInfoEnabled)
@@ -56,13 +57,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 }
 
                 var repositoryArchive = new ArchiveRepository(dbContext);
+
                 try
                 {
                     await repositoryArchive.BulkCopyAsync(bulkInsertMessageBuffer.Archive, token).ConfigureAwait(false);
 
                     await cacheService.CacheWalRepository.FlushWalAsync(tenantRegistryId, entityAnalysisModelGuid,
                         Dns.GetHostName(),
-                        bulkInsertMessageBuffer.Archive.Select(s => s.EntityAnalysisModelInstanceEntryGuid).ToArray());
+                        [.. bulkInsertMessageBuffer.Archive.Select(s => s.EntityAnalysisModelInstanceEntryGuid)]);
 
                     bulkInsertMessageBuffer.Archive.Clear();
                 }
@@ -73,6 +75,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 }
 
                 var repositoryArchiveKeys = new ArchiveKeyRepository(dbContext);
+
                 try
                 {
                     // ReSharper disable once MethodSupportsCancellation

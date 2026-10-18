@@ -21,16 +21,17 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
         public override void Up()
         {
             Alter.Table("EntityAnalysisModelSanction").AddColumn("AggregationTypeId").AsByte().Nullable();
+
             Update.Table("EntityAnalysisModelSanction").Set(new
             {
                 AggregationTypeId = 2
             }).AllRows();
+
             Alter.Table("EntityAnalysisModelSanctionVersion").AddColumn("AggregationTypeId").AsByte().Nullable();
         }
 
         public override void Down()
         {
-
         }
     }
 }

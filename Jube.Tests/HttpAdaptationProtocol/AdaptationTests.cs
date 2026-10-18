@@ -16,7 +16,7 @@ using Jube.HttpAdaptationProtocol;
 using Jube.HttpAdaptationProtocol.Calibration;
 using Jube.HttpAdaptationProtocol.Contribution;
 using Jube.HttpAdaptationProtocol.Journey;
-using Jube.HttpAdaptationProtocol.Model;
+using Jube.HttpAdaptationProtocol.Models;
 using Newtonsoft.Json;
 using Xunit;
 

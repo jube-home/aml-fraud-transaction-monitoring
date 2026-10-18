@@ -6,9 +6,6 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # HTTP API Invocation Trace Log
 
 Understanding what happened step by step during an invocation has typically meant enabling log4net INFO logging and

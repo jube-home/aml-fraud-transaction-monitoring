@@ -54,6 +54,7 @@ namespace Jube.Validations.Repository.VisualisationRegistryParameter
                 {
                     var existing = await repository
                         .GetByNameVisualisationRegistryIdAsync(name, dto.VisualisationRegistryId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[VisualisationRegistryParameterResources.NameAlreadyExists])

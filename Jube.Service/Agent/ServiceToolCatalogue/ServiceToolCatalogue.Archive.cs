@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.Archive;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddArchive(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ArchiveTag", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Replaces the full Tag set on an archived transaction, scoped to the caller's tenant.")
-        ]);
+        static partial void AddArchive(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ArchiveTag", OperationKind.Write, true, false,
+                    "Replaces the full Tag set on an archived transaction, scoped to the caller's tenant.",
+                    ArchiveService.RequiredPermissions)
+            ]);
+        }
     }
 }

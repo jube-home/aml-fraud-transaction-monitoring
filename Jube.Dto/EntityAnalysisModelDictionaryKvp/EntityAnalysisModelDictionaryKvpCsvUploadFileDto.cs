@@ -14,7 +14,11 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
 {
     [Description("One CSV file to import into a Dictionary. Each line is 'key,value[,deleteExpiryDate]' where " +

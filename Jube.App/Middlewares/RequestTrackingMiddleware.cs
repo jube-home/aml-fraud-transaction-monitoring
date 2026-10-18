@@ -24,6 +24,7 @@ namespace Jube.App.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             Interlocked.Increment(ref activeRequests);
+
             try
             {
                 await next(context).ConfigureAwait(false);
@@ -39,7 +40,6 @@ namespace Jube.App.Middlewares
             while (activeRequests > 0 && !cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(100, cancellationToken).ConfigureAwait(false);
-
             }
         }
     }

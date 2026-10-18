@@ -1,0 +1,177 @@
+{
+  "distributions": [
+    [
+      {
+        "mean": 0.8833545938638758,
+        "median": 0.8833545938638758,
+        "variance": 0.3399504954451649,
+        "standardDeviation": 0.5830527381336656,
+        "mode": 0.8833545938638758,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.8794608964023005,
+        "quartiles": {
+          "min": 0.4900914981689583,
+          "max": 1.2766176895587933,
+          "length": 0.7865261913898349
+        }
+      },
+      {
+        "mean": 0.9711779266554756,
+        "median": 0.9711779266554756,
+        "variance": 0.22417760324494254,
+        "standardDeviation": 0.47347397314418727,
+        "mode": 0.9711779266554756,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.671280198377396,
+        "quartiles": {
+          "min": 0.6518245847851065,
+          "max": 1.2905312685258448,
+          "length": 0.6387066837407382
+        }
+      },
+      {
+        "mean": 2.009518524519875,
+        "median": 2.009518524519875,
+        "variance": 1.6602631216834847,
+        "standardDeviation": 1.2885119796429851,
+        "mode": 2.009518524519875,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 1.6724265816275639,
+        "quartiles": {
+          "min": 1.1404304012458195,
+          "max": 2.8786066477939305,
+          "length": 1.738176246548111
+        }
+      },
+      {
+        "mean": 0.408251033791225,
+        "median": 0.408251033791225,
+        "variance": 0.0821361084507509,
+        "standardDeviation": 0.28659397839234324,
+        "mode": 0.408251033791225,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.1692497589016171,
+        "quartiles": {
+          "min": 0.2149463328976722,
+          "max": 0.6015557346847779,
+          "length": 0.3866094017871057
+        }
+      }
+    ],
+    [
+      {
+        "mean": 2.5042379580690706,
+        "median": 2.5042379580690706,
+        "variance": 0.27015459168207495,
+        "standardDeviation": 0.5197639768992027,
+        "mode": 2.5042379580690706,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.7645580721800436,
+        "quartiles": {
+          "min": 2.1536624831294056,
+          "max": 2.8548134330087356,
+          "length": 0.70115094987933
+        }
+      },
+      {
+        "mean": 2.0189789908223226,
+        "median": 2.0189789908223226,
+        "variance": 0.20533636987894013,
+        "standardDeviation": 0.45314056304742806,
+        "mode": 2.0189789908223226,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.6273856252773666,
+        "quartiles": {
+          "min": 1.7133403256487512,
+          "max": 2.324617655995894,
+          "length": 0.6112773303471428
+        }
+      },
+      {
+        "mean": 0.8909240679074657,
+        "median": 0.8909240679074657,
+        "variance": 1.1443815860198499,
+        "standardDeviation": 1.0697577230475366,
+        "mode": 0.8909240679074657,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 1.4863707289816337,
+        "quartiles": {
+          "min": 0.16938344851880371,
+          "max": 1.6124646872961277,
+          "length": 1.443081238777324
+        }
+      },
+      {
+        "mean": 0.5303009573569522,
+        "median": 0.5303009573569522,
+        "variance": 0.08346386776617365,
+        "standardDeviation": 0.28890113839542697,
+        "mode": 0.5303009573569522,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "support": {
+          "min": "-Infinity",
+          "max": "Infinity",
+          "length": "Infinity"
+        },
+        "entropy": 0.1772678021349609,
+        "quartiles": {
+          "min": 0.335440100689257,
+          "max": 0.7251618140246473,
+          "length": 0.3897217133353903
+        }
+      }
+    ]
+  ],
+  "classCount": 2,
+  "inputCount": 4,
+  "priors": [
+    0.5,
+    0.5
+  ],
+  "numberOfClasses": 2,
+  "numberOfInputs": 4,
+  "numberOfOutputs": 2
+}

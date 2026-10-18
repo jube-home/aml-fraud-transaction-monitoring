@@ -20,51 +20,56 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+using System;
+
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Beta prime distribution.
+    ///     Beta prime distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In probability theory and statistics, the beta prime distribution (also known as inverted 
-    ///   beta distribution or beta distribution of the second kind) is an absolutely continuous 
-    ///   probability distribution defined for <c>x > 0</c> with two parameters α and β, having the
-    ///   probability density function:</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         In probability theory and statistics, the beta prime distribution (also known as inverted
+    ///         beta distribution or beta distribution of the second kind) is an absolutely continuous
+    ///         probability distribution defined for <c>x > 0</c> with two parameters α and β, having the
+    ///         probability density function:
+    ///     </para>
+    ///     <code>
     ///           x^(α-1) (1+x)^(-α-β)
     ///   f(x) =  --------------------
     ///                 B(α,β)
     /// </code>
-    /// 
-    /// <para>
-    ///   where B is the <see cref="Beta">Beta function</see>. While the related beta distribution is
-    ///   the conjugate prior distribution of the parameter of a <see cref="BernoulliDistribution">Bernoulli
-    ///   distribution</see> expressed as a probability, the beta prime distribution is the conjugate prior
-    ///   distribution of the parameter of a Bernoulli distribution expressed in odds. The distribution is 
-    ///   a Pearson type VI distribution.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Beta_prime_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Beta Prime distribution. Available on: 
-    ///       http://en.wikipedia.org/wiki/Beta_prime_distribution </a></description></item>
-    ///   </list></para>     
+    ///     <para>
+    ///         where B is the <see cref="Beta">Beta function</see>. While the related beta distribution is
+    ///         the conjugate prior distribution of the parameter of a
+    ///         <see cref="BernoulliDistribution">
+    ///             Bernoulli
+    ///             distribution
+    ///         </see>
+    ///         expressed as a probability, the beta prime distribution is the conjugate prior
+    ///         distribution of the parameter of a Bernoulli distribution expressed in odds. The distribution is
+    ///         a Pearson type VI distribution.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Beta_prime_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Beta Prime distribution. Available on:
+    ///                         http://en.wikipedia.org/wiki/Beta_prime_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   The following example shows how to create and test the main characteristics
-    ///   of an Beta prime distribution given its two non-negative shape parameters: </para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         The following example shows how to create and test the main characteristics
+    ///         of an Beta prime distribution given its two non-negative shape parameters:
+    ///     </para>
+    ///     <code>
     /// // Create a new Beta-Prime distribution with shape (4,2)
     /// var betaPrime = new BetaPrimeDistribution(alpha: 4, beta: 2);
     /// 
@@ -86,241 +91,211 @@ namespace Accord.Statistics.Distributions.Univariate
     /// string str = betaPrime.ToString(CultureInfo.InvariantCulture); // BetaPrime(x; α = 4, β = 2)
     /// </code>
     /// </example>
-    /// 
     [Serializable]
     public class BetaPrimeDistribution : UnivariateContinuousDistribution
     {
-
         // Distribution parameters
-        double alpha; // shape (α)
-        double beta;  // shape (β)
 
         /// <summary>
-        ///   Constructs a new Beta-Prime distribution with the given 
-        ///   two non-negative shape parameters <c>a</c> and <c>b</c>.
+        ///     Constructs a new Beta-Prime distribution with the given
+        ///     two non-negative shape parameters <c>a</c> and <c>b</c>.
         /// </summary>
-        /// 
         /// <param name="alpha">The distribution's non-negative shape parameter a.</param>
         /// <param name="beta">The distribution's non-negative shape parameter b.</param>
-        /// 
         public BetaPrimeDistribution([Positive] double alpha, [Positive] double beta)
         {
             if (alpha <= 0)
+            {
                 throw new ArgumentOutOfRangeException("alpha", "The shape parameter alpha must be positive.");
+            }
 
             if (beta < 0)
+            {
                 throw new ArgumentOutOfRangeException("beta", "The shape parameter beta must be positive.");
+            }
 
 
-            this.alpha = alpha;
-            this.beta = beta;
+            this.Alpha = alpha;
+            this.Beta = beta;
         }
 
         /// <summary>
-        ///   Gets the distribution's non-negative shape parameter a.
+        ///     Gets the distribution's non-negative shape parameter a.
         /// </summary>
-        /// 
-        public double Alpha
-        {
-            get { return alpha; }
-        }
+        public double Alpha { get; }
 
         /// <summary>
-        ///   Gets the distribution's non-negative shape parameter b.
+        ///     Gets the distribution's non-negative shape parameter b.
         /// </summary>
-        /// 
-        public double Beta
-        {
-            get { return beta; }
-        }
+        public double Beta { get; }
 
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mean value.
+        ///     The distribution's mean value.
         /// </value>
-        /// 
         public override double Mean
         {
             get
             {
-                if (beta > 1)
-                    return alpha / (beta - 1);
+                if (Beta > 1)
+                {
+                    return Alpha / (Beta - 1);
+                }
 
-                return Double.PositiveInfinity;
+                return double.PositiveInfinity;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the mode for this distribution.
+        ///     Gets the mode for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mode value.
+        ///     The distribution's mode value.
         /// </value>
-        /// 
         public override double Mode
         {
             get
             {
-                if (alpha >= 1)
-                    return (alpha - 1) / (beta + 1);
+                if (Alpha >= 1)
+                {
+                    return (Alpha - 1) / (Beta + 1);
+                }
 
                 return 0.0;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///     Gets the variance for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's variance.
+        ///     The distribution's variance.
         /// </value>
-        /// 
         public override double Variance
         {
             get
             {
-                if (beta > 2.0)
+                if (Beta > 2.0)
                 {
-                    double num = alpha * (alpha + beta - 1);
-                    double den = (beta - 2) * Math.Pow(beta - 1, 2);
+                    var num = Alpha * (Alpha + Beta - 1);
+                    var den = (Beta - 2) * System.Math.Pow(Beta - 1, 2);
                     return num / den;
                 }
-                else if (beta > 1.0)
+
+                if (Beta > 1.0)
                 {
-                    return Double.PositiveInfinity;
+                    return double.PositiveInfinity;
                 }
 
                 return double.NaN;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Not supported.
+        ///     Not supported.
         /// </summary>
-        /// 
         public override double Entropy
         {
-            get { return double.NaN; }
-            set { throw new NotImplementedException();}
+            get => double.NaN;
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the support interval for this distribution, which 
-        ///   for the Beta- Prime distribution ranges from 0 to all 
-        ///   positive numbers.
+        ///     Gets the support interval for this distribution, which
+        ///     for the Beta- Prime distribution ranges from 0 to all
+        ///     positive numbers.
         /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
         /// </value>
-        /// 
         public override DoubleRange Support
         {
-            get { return new DoubleRange(0, Double.PositiveInfinity); }
-            set { throw new NotImplementedException();}
+            get => new(0, double.PositiveInfinity);
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
         /// </remarks>
-        /// 
         protected internal override double InnerDistributionFunction([Positive] double x)
         {
-            return Accord.Math.Beta.Incomplete(alpha, beta, x / (1 + x));
+            return Math.Beta.Incomplete(Alpha, Beta, x / (1 + x));
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
         protected internal override double InnerProbabilityDensityFunction([Positive] double x)
         {
-            double num = Math.Pow(x, alpha - 1) * Math.Pow(1 + x, -alpha - beta);
-            double den = Accord.Math.Beta.Function(alpha, beta);
+            var num = System.Math.Pow(x, Alpha - 1) * System.Math.Pow(1 + x, -Alpha - Beta);
+            var den = Math.Beta.Function(Alpha, Beta);
             return num / den;
         }
 
         /// <summary>
-        ///   Gets the log-probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the log-probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The logarithm of the probability of <c>x</c>
-        ///   occurring in the current distribution.
+        ///     The logarithm of the probability of <c>x</c>
+        ///     occurring in the current distribution.
         /// </returns>
-        /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
         protected internal override double InnerLogProbabilityDensityFunction([Positive] double x)
         {
-            double num = (alpha - 1) * Math.Log(x) + (-alpha - beta) * Math.Log(1 + x);
-            double den = Accord.Math.Beta.Log(alpha, beta);
+            var num = (Alpha - 1) * System.Math.Log(x) + (-Alpha - Beta) * System.Math.Log(1 + x);
+            var den = Math.Beta.Log(Alpha, Beta);
             return num - den;
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
-            return new BetaPrimeDistribution(this.alpha, this.beta);
+            return new BetaPrimeDistribution(Alpha, Beta);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format(formatProvider, "BetaPrime(x; α = {0}, β = {1})",
-                alpha.ToString(format, formatProvider),
-                beta.ToString(format, formatProvider));
+            return string.Format(formatProvider, "BetaPrime(x; α = {0}, β = {1})",
+                Alpha.ToString(format, formatProvider),
+                Beta.ToString(format, formatProvider));
         }
-
     }
 }

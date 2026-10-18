@@ -138,6 +138,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void RomanNumeralsRoundTrip(int value, string roman)
         {
             value.ToRomanNumerals().Should().Be(roman);
+
             if (roman.Length > 0)
             {
                 roman.ToLowerInvariant().FromRomanNumerals().Should().Be(value);

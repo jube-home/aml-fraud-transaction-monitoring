@@ -1,37 +1,45 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing.Power
 {
-    using System;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Power analysis for one-sample T-Tests.
+    ///     Power analysis for one-sample T-Tests.
     /// </summary>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     /// // When creating a power analysis, we have three things we can
     /// // change. We can always freely configure two of those things
     /// // and then ask the analysis to give us the third.
@@ -71,112 +79,102 @@ namespace Accord.Statistics.Testing.Power
     /// double samples = analysis.Samples; // We would need around 199 samples.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="TTest"/>
-    /// <seealso cref="TwoSampleTTestPowerAnalysis"/>
-    /// <seealso cref="ZTestPowerAnalysis"/>
-    /// 
+    /// <seealso cref="TTest" />
+    /// <seealso cref="TwoSampleTTestPowerAnalysis" />
+    /// <seealso cref="ZTestPowerAnalysis" />
     [Serializable]
     public class TTestPowerAnalysis : BaseOneSamplePowerAnalysis
     {
-
         /// <summary>
-        ///   Creates a new <see cref="TTestPowerAnalysis"/>.
+        ///     Creates a new <see cref="TTestPowerAnalysis" />.
         /// </summary>
-        /// 
         /// <param name="hypothesis">The hypothesis tested.</param>
-        /// 
         public TTestPowerAnalysis(OneSampleHypothesis hypothesis)
             : base((DistributionTail)hypothesis)
         {
         }
 
         /// <summary>
-        ///   Creates a new <see cref="TTestPowerAnalysis"/>.
+        ///     Creates a new <see cref="TTestPowerAnalysis" />.
         /// </summary>
-        /// 
         /// <param name="test">The test to create the analysis for.</param>
-        /// 
         public TTestPowerAnalysis(TwoSampleTTest test)
             : base(test.Tail)
         {
-            this.Power = test.Analysis.Power;
-            this.Size = test.Analysis.Size;
-            this.Effect = test.Analysis.Effect;
-            this.Samples = test.Analysis.Samples;
+            Power = test.Analysis.Power;
+            Size = test.Analysis.Size;
+            Effect = test.Analysis.Effect;
+            Samples = test.Analysis.Samples;
         }
 
         /// <summary>
-        ///  Computes the power for a test with givens values of
-        ///  <see cref="IPowerAnalysis.Effect">effect size</see> and <see cref="IPowerAnalysis.Samples">
-        ///  number of samples</see> under <see cref="IPowerAnalysis.Size"/>.
+        ///     Computes the power for a test with givens values of
+        ///     <see cref="IPowerAnalysis.Effect">effect size</see> and
+        ///     <see cref="IPowerAnalysis.Samples">
+        ///         number of samples
+        ///     </see>
+        ///     under <see cref="IPowerAnalysis.Size" />.
         /// </summary>
-        /// 
         /// <returns>
-        ///  The power for the test under the given conditions.
+        ///     The power for the test under the given conditions.
         /// </returns>
-        /// 
         public override void ComputePower()
         {
-            double delta = Effect * Math.Sqrt(Samples);
-            double df = (Samples - 1);
+            var delta = Effect * System.Math.Sqrt(Samples);
+            var df = Samples - 1;
 
-            TDistribution td = new TDistribution(df);
-            NoncentralTDistribution nt = new NoncentralTDistribution(df, delta);
+            var td = new TDistribution(df);
+            var nt = new NoncentralTDistribution(df, delta);
 
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    {
-                        double Ta = td.InverseDistributionFunction(1.0 - Size / 2);
-                        double pa = nt.ComplementaryDistributionFunction(+Ta);
-                        double pb = nt.DistributionFunction(-Ta);
-                        Power = pa + pb;
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(1.0 - Size / 2);
+                    var pa = nt.ComplementaryDistributionFunction(+Ta);
+                    var pb = nt.DistributionFunction(-Ta);
+                    Power = pa + pb;
+                    break;
+                }
 
                 case DistributionTail.OneLower:
-                    {
-                        double Ta = td.InverseDistributionFunction(Size);
-                        Power = nt.DistributionFunction(Ta);
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(Size);
+                    Power = nt.DistributionFunction(Ta);
+                    break;
+                }
 
                 case DistributionTail.OneUpper:
-                    {
-                        double Ta = td.InverseDistributionFunction(1.0 - Size);
-                        Power = nt.ComplementaryDistributionFunction(Ta);
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(1.0 - Size);
+                    Power = nt.ComplementaryDistributionFunction(Ta);
+                    break;
+                }
 
                 default:
                     throw new InvalidOperationException();
             }
         }
 
-
         /// <summary>
-        ///   Estimates the number of samples necessary to attain the
-        ///   required power level for the given effect size.
+        ///     Estimates the number of samples necessary to attain the
+        ///     required power level for the given effect size.
         /// </summary>
-        /// 
         /// <param name="delta">The minimum detectable difference.</param>
         /// <param name="standardDeviation">The difference standard deviation.</param>
         /// <param name="power">The desired power level. Default is 0.8.</param>
         /// <param name="alpha">The desired significance level. Default is 0.05.</param>
         /// <param name="hypothesis">The alternative hypothesis (research hypothesis) to be tested.</param>
-        /// 
         /// <returns>The required number of samples.</returns>
-        /// 
         public static TTestPowerAnalysis GetSampleSize(double delta,
             double standardDeviation = 1, double power = 0.8, double alpha = 0.05,
             OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
-            TTestPowerAnalysis analysis = new TTestPowerAnalysis(hypothesis)
+            var analysis = new TTestPowerAnalysis(hypothesis)
             {
                 Effect = delta / standardDeviation,
                 Size = alpha,
-                Power = power,
+                Power = power
             };
 
             analysis.ComputeSamples();
@@ -185,32 +183,27 @@ namespace Accord.Statistics.Testing.Power
         }
 
         /// <summary>
-        ///   Estimates the number of samples necessary to attain the
-        ///   required power level for the given effect size.
+        ///     Estimates the number of samples necessary to attain the
+        ///     required power level for the given effect size.
         /// </summary>
-        /// 
         /// <param name="sampleSize">The number of observations in the sample.</param>
         /// <param name="power">The desired power level. Default is 0.8.</param>
         /// <param name="alpha">The desired significance level. Default is 0.05.</param>
         /// <param name="hypothesis">The alternative hypothesis (research hypothesis) to be tested.</param>
-        /// 
         /// <returns>The required number of samples.</returns>
-        /// 
         public static TTestPowerAnalysis GetEffectSize(int sampleSize, double power = 0.8, double alpha = 0.05,
             OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
-            TTestPowerAnalysis analysis = new TTestPowerAnalysis(hypothesis)
+            var analysis = new TTestPowerAnalysis(hypothesis)
             {
                 Samples = sampleSize,
                 Size = alpha,
-                Power = power,
+                Power = power
             };
 
             analysis.ComputeEffect();
 
             return analysis;
         }
-
-
     }
 }

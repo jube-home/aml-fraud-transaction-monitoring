@@ -16,8 +16,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Data.Query;
     using Data.Repository;
+    using Jube.Data.Query.GetEntityAnalysisModelApiUsersQuery;
 
     public static class SyncEntityAnalysisModelApiUsersExtensions
     {

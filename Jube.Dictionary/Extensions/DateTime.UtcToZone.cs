@@ -19,6 +19,7 @@ namespace Jube.Dictionary.Extensions
         {
             var zone = TimeZoneSupport.Find(zoneId) ??
                        throw new TimeZoneNotFoundException($"Unknown time zone '{zoneId}'.");
+
             return DateTime.SpecifyKind(
                 TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(@this, DateTimeKind.Utc), zone),
                 DateTimeKind.Unspecified);

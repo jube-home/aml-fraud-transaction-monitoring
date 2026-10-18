@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,18 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseWorkflowFormEntryByCaseKeyValue;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowFormEntryByCaseKeyValue(List<ServiceToolDescriptor> tools) =>
+        static partial void AddCaseWorkflowFormEntryByCaseKeyValue(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "CaseWorkflowFormEntryByCaseKeyValueGet", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
+                    "CaseWorkflowFormEntryByCaseKeyValueGet", OperationKind.Read, true,
+                    false,
                     "Lists Case Workflow Form Entries for a Case Key and Case Key Value, newest case first, " +
-                    "limited to the caller's tenant and to Case Workflows and Statuses the caller's role holds.")
+                    "limited to the caller's tenant and to Case Workflows and Statuses the caller's role holds.",
+                    CaseWorkflowFormEntryByCaseKeyValueService.RequiredPermissions)
             ]);
+        }
     }
 }

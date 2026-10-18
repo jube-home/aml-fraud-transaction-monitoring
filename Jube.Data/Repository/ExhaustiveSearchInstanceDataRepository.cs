@@ -24,9 +24,11 @@ namespace Jube.Data.Repository
 
     public class ExhaustiveSearchInstanceDataRepository(DbContext dbContext)
     {
-        public async Task<ExhaustiveSearchInstanceData> InsertAsync(ExhaustiveSearchInstanceData model, CancellationToken token = default)
+        public async Task<ExhaustiveSearchInstanceData> InsertAsync(ExhaustiveSearchInstanceData model,
+            CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -38,7 +40,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceData
                 .Where(d =>

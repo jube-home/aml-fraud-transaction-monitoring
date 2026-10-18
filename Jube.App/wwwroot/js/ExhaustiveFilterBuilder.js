@@ -13,6 +13,7 @@
 
 let where;
 let select;
+let builderValidationInterval;
 
 function getExhaustiveFilter() {
     let value;
@@ -41,7 +42,7 @@ function FilterExists(name, filters) {
     return false;
 }
 
-function initExhaustiveFilterBuilder(entityAnalysisModelId, data) {
+function initExhaustiveFilterBuilder(entityAnalysisModelId, data, completionsUrl) {
     if (typeof select !== "undefined") {
         select.queryBuilder('destroy');
     }
@@ -54,95 +55,105 @@ function initExhaustiveFilterBuilder(entityAnalysisModelId, data) {
         where.queryBuilder('destroy');
     }
 
-    $.getJSON("../api/Completions/ByEntityAnalysisModelId",
-        {
-            entityAnalysisModelId: entityAnalysisModelId
-        }
-        , function (completionsData) {
-            completions = completionsData;
+    const url = completionsUrl || ("../api/Completions/ByEntityAnalysisModelId?entityAnalysisModelId="
+        + entityAnalysisModelId);
 
-            $.getScript('../js/builder/query-builder.standalone.min.js', function () {
-                $('<link/>', {
-                    rel: 'stylesheet',
-                    type: 'text/css',
-                    href: '/styles/query-builder.default.min.css'
-                }).appendTo('head');
+    $.getJSON(url, function (completionsData) {
+        completions = completionsData;
 
-                let rulesFilter;
-                if (data) {
-                    rulesFilter = data.filterJson;
-                }
+        $.getScript('../js/builder/query-builder.standalone.min.js', function () {
+            $('<link/>', {
+                rel: 'stylesheet',
+                type: 'text/css',
+                href: '/styles/query-builder.default.min.css'
+            }).appendTo('head');
 
-                let filters = [];
+            let rulesFilter;
+            if (data) {
+                rulesFilter = data.filterJson;
+            }
 
-                for (const completion of completions) {
-                    if (!FilterExists(completion.name, filters)) {
-                        if (completion.dataType === "string") {
-                            let filter = {
-                                optgroup: completion.group,
-                                id: completion.name,
-                                field: completion.field,
-                                label: completion.name,
-                                type: completion.dataType
-                            };
-                            filters.push(filter);
-                        } else if (completion.dataType === "integer") {
-                            let filter = {
-                                optgroup: completion.group,
-                                id: completion.name,
-                                field: completion.field,
-                                label: completion.name,
-                                type: 'integer'
-                            };
-                            filters.push(filter);
-                        } else if (completion.dataType === "double") {
-                            let filter = {
-                                optgroup: completion.group,
-                                id: completion.name,
-                                field: completion.field,
-                                label: completion.name,
-                                type: 'integer'
-                            };
-                            filters.push(filter);
-                        } else if (completion.dataType === "boolean") {
-                            let filter = {
-                                optgroup: completion.group,
-                                id: completion.name,
-                                field: completion.field,
-                                label: completion.name,
-                                type: 'string',
-                                input: "radio",
-                                default_value: "True",
-                                values: {
-                                    'True': 'Yes',
-                                    'False': 'No'
-                                },
-                                operators: ['equal']
-                            };
-                            filters.push(filter);
-                        }
+            let filters = [];
+
+            for (const completion of completions) {
+                if (!FilterExists(completion.name, filters)) {
+                    if (completion.dataType === "string") {
+                        let filter = {
+                            optgroup: completion.group,
+                            id: completion.name,
+                            field: completion.field,
+                            label: completion.name,
+                            type: completion.dataType
+                        };
+                        filters.push(filter);
+                    } else if (completion.dataType === "integer") {
+                        let filter = {
+                            optgroup: completion.group,
+                            id: completion.name,
+                            field: completion.field,
+                            label: completion.name,
+                            type: 'integer'
+                        };
+                        filters.push(filter);
+                    } else if (completion.dataType === "double") {
+                        let filter = {
+                            optgroup: completion.group,
+                            id: completion.name,
+                            field: completion.field,
+                            label: completion.name,
+                            type: 'integer'
+                        };
+                        filters.push(filter);
+                    } else if (completion.dataType === "boolean") {
+                        let filter = {
+                            optgroup: completion.group,
+                            id: completion.name,
+                            field: completion.field,
+                            label: completion.name,
+                            type: 'string',
+                            input: "radio",
+                            default_value: "True",
+                            values: {
+                                'True': 'Yes',
+                                'False': 'No'
+                            },
+                            operators: ['equal']
+                        };
+                        filters.push(filter);
                     }
                 }
+            }
 
-                where = $('#Where').queryBuilder({
-                    filters: filters,
-                    operators: [
-                        {type: 'equal', optgroup: 'basic'},
-                        {type: 'less', optgroup: 'basic'},
-                        {type: 'less_or_equal', optgroup: 'basic'},
-                        {type: 'greater', optgroup: 'basic'},
-                        {type: 'begins_with', optgroup: 'basic'},
-                        {type: 'contains', optgroup: 'basic'},
-                        {type: 'ends_with', optgroup: 'basic'}
-                    ],
-                    rules: rulesFilter
-                });
+            if (builderValidationInterval) {
+                clearInterval(builderValidationInterval);
+                builderValidationInterval = undefined;
+            }
 
-                validateBuilder()
+            if (filters.length === 0) {
+                $('#Where').html(
+                    '<div class="hint">No filterable columns are available for this data source yet.</div>');
+                return;
+            }
 
-                builderValidationInterval = setInterval(validateBuilder, 1300);
+            where = $('#Where').queryBuilder({
+                filters: filters,
+                operators: [
+                    {type: 'equal', optgroup: 'basic'},
+                    {type: 'less', optgroup: 'basic'},
+                    {type: 'less_or_equal', optgroup: 'basic'},
+                    {type: 'greater', optgroup: 'basic'},
+                    {type: 'begins_with', optgroup: 'basic'},
+                    {type: 'contains', optgroup: 'basic'},
+                    {type: 'ends_with', optgroup: 'basic'}
+                ],
+                rules: rulesFilter
             });
+
+            validateBuilder()
+
+            builderValidationInterval = setInterval(validateBuilder, 1300);
         });
+    });
 }
 
 //# sourceURL=ExhaustiveFilterBuilder.js

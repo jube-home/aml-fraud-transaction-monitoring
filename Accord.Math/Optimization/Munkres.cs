@@ -78,257 +78,235 @@
 //   POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Accord.Math.Optimization
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Hungarian method for solving the assignment problem, also known
-    ///   as the Kuhn–Munkres algorithm or Munkres assignment algorithm. 
+    ///     Hungarian method for solving the assignment problem, also known
+    ///     as the Kuhn–Munkres algorithm or Munkres assignment algorithm.
     /// </summary>
-    /// 
-    ///   
     /// <remarks>
-    /// <para>
-    ///   The Hungarian method is a combinatorial optimization algorithm that solves the assignment
-    ///   problem in polynomial time and which anticipated later primal-dual methods. It was developed
-    ///   and published in 1955 by Harold Kuhn, who gave the name "Hungarian method" because the algorithm 
-    ///   was largely based on the earlier works of two Hungarian mathematicians: Dénes Kőnig and Jenő
-    ///   Egerváry.</para>
-    /// <para>
-    ///   James Munkres reviewed the algorithm in 1957 and observed that it is (strongly) polynomial. 
-    ///   Since then the algorithm has been known also as the Kuhn–Munkres algorithm or Munkres assignment
-    ///   algorithm.The time complexity of the original algorithm was O(n^4), however Edmonds and Karp, and 
-    ///   independently Tomizawa noticed that it can be modified to achieve an O(n^3) running time. Ford and 
-    ///   Fulkerson extended the method to general transportation problems. In 2006, it was discovered that
-    ///   Carl Gustav Jacobi had solved the assignment problem in the 19th century, and the solution had been
-    ///   published posthumously in 1890 in Latin.</para>
-    /// 
-    /// <para>
-    ///   This code has been based on the original MIT-licensed code by R.A. Pilgrim, available in 
-    ///   http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html, and on the BSD-licensed code
-    ///   by Yi Cao, available in http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3-
-    /// </para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3-">
-    ///       Yi Cao (2011). Hungarian Algorithm for Linear Assignment Problems (V2.3). Available in http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3- </a></description></item>
-    ///     <item><description><a href="http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html">
-    ///       R. A. Pilgrim (2000). Munkres' Assignment Algorithm Modified for 
-    ///       Rectangular Matrices. Available in http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html </a></description></item>
-    ///     <item><description><a href="https://en.wikipedia.org/wiki/Hungarian_algorithm">
-    ///       Wikipedia contributors. "Hungarian algorithm." Wikipedia, The Free Encyclopedia.
-    ///       Wikipedia, The Free Encyclopedia, 23 Jan. 2016. </a></description></item>
-    ///   </list>
-    /// </para>   
+    ///     <para>
+    ///         The Hungarian method is a combinatorial optimization algorithm that solves the assignment
+    ///         problem in polynomial time and which anticipated later primal-dual methods. It was developed
+    ///         and published in 1955 by Harold Kuhn, who gave the name "Hungarian method" because the algorithm
+    ///         was largely based on the earlier works of two Hungarian mathematicians: Dénes Kőnig and Jenő
+    ///         Egerváry.
+    ///     </para>
+    ///     <para>
+    ///         James Munkres reviewed the algorithm in 1957 and observed that it is (strongly) polynomial.
+    ///         Since then the algorithm has been known also as the Kuhn–Munkres algorithm or Munkres assignment
+    ///         algorithm.The time complexity of the original algorithm was O(n^4), however Edmonds and Karp, and
+    ///         independently Tomizawa noticed that it can be modified to achieve an O(n^3) running time. Ford and
+    ///         Fulkerson extended the method to general transportation problems. In 2006, it was discovered that
+    ///         Carl Gustav Jacobi had solved the assignment problem in the 19th century, and the solution had been
+    ///         published posthumously in 1890 in Latin.
+    ///     </para>
+    ///     <para>
+    ///         This code has been based on the original MIT-licensed code by R.A. Pilgrim, available in
+    ///         http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html, and on the BSD-licensed code
+    ///         by Yi Cao, available in
+    ///         http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3-
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a
+    ///                         href="http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3-">
+    ///                         Yi Cao (2011). Hungarian Algorithm for Linear Assignment Problems (V2.3). Available in
+    ///                         http://fr.mathworks.com/matlabcentral/fileexchange/20652-hungarian-algorithm-for-linear-assignment-problems--v2-3-
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html">
+    ///                         R. A. Pilgrim (2000). Munkres' Assignment Algorithm Modified for
+    ///                         Rectangular Matrices. Available in http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="https://en.wikipedia.org/wiki/Hungarian_algorithm">
+    ///                         Wikipedia contributors. "Hungarian algorithm." Wikipedia, The Free Encyclopedia.
+    ///                         Wikipedia, The Free Encyclopedia, 23 Jan. 2016.
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code source="Unit Tests\Accord.Tests.Math\Optimization\MunkresTest.cs" region="doc_example" />
+    ///     <code source="Unit Tests\Accord.Tests.Math\Optimization\MunkresTest.cs" region="doc_example" />
     /// </example>
-    /// 
-    /// <seealso cref="Accord.Math.Optimization.IOptimizationMethod" />
-    /// 
+    /// <seealso cref="IOptimizationMethod" />
     public class Munkres : IOptimizationMethod
     {
-        private double[][] originalMatrix;
-        private double[][] costMatrix;
-        private double[][] validCost;
-        private bool[][] stars;
-        private bool[] rowCover;
         private bool[] colCover;
-        internal int[] starZ;
-        internal int[] primeZ;
-        private bool[][] validMap;
+        private double[][] costMatrix;
 
-        private double tolerance = 1e-10;
-
-        private double[] minRow;
-        private double[] minCol;
-
-        internal bool[] validRow;
-        internal bool[] validCol;
-
-        private int path_row_0;
-        private int path_col_0;
+        private int n;
+        private int nCols;
 
         private int nRows;
-        private int nCols;
-        private int n;
+        private int path_col_0;
+
+        private int path_row_0;
+        internal int[] primeZ;
+        private bool[] rowCover;
+        internal int[] starZ;
+        private bool[][] stars;
+
+        internal bool[] validCol;
+        private double[][] validCost;
+        private bool[][] validMap;
+
+        internal bool[] validRow;
 
         /// <summary>
-        ///   Gets the minimum values across the cost matrix's rows.
+        ///     Initializes a new instance of the <see cref="Munkres" /> class.
         /// </summary>
-        /// 
-        public double[] MinRow { get { return minRow; } }
-
-        /// <summary>
-        ///   Gets the minimum values across the cost matrix's columns.
-        /// </summary>
-        /// 
-        public double[] MinCol { get { return minCol; } }
-
-        /// <summary>
-        ///   Gets a boolean mask indicating which rows contain at least one valid element.
-        /// </summary>
-        /// 
-        public bool[] ValidRow { get { return validRow; } }
-
-        /// <summary>
-        ///   Gets a boolean mask indicating which columns contain at least one valid element.
-        /// </summary>
-        /// 
-        public bool[] ValidCol { get { return validCol; } }
-
-        /// <summary>
-        ///   Gets or sets the tolerance value used when performing cost 
-        ///   comparisons. Default is 1e-10. If the algorithm takes too
-        ///   much time to finish, try decreasing this value.
-        /// </summary>
-        /// 
-        public double Tolerance
-        {
-            get { return tolerance; }
-            set { tolerance = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the cost matrix for this assignment algorithm. This is
-        ///   a (W x T) matrix where N corresponds to the <see cref="NumberOfWorkers"/>
-        ///   and T to the <see cref="NumberOfTasks"/>.
-        /// </summary>
-        /// 
-        /// <value>The cost matrix.</value>
-        /// 
-        public double[][] CostMatrix { get { return originalMatrix; } }
-
-        /// <summary>
-        /// Gets or sets the number of variables in this optimization problem
-        /// (<see cref="NumberOfTasks"/> * <see cref="NumberOfWorkers"/>).
-        /// </summary>
-        /// 
-        public int NumberOfVariables
-        {
-            get { return NumberOfTasks * NumberOfWorkers; }
-            set { throw new InvalidOperationException(); }
-        }
-
-        /// <summary>
-        ///   Gets the number of variables (free parameters)
-        ///   in the optimization problem. In the assigment
-        ///   problem, this gives the number of jobs (or tasks)
-        ///   to be performed.
-        /// </summary>
-        /// 
-        /// <value>The number of tasks in the assignment problem.</value>
-        /// 
-        public int NumberOfTasks
-        {
-            get { return originalMatrix.Columns(); }
-        }
-
-        /// <summary>
-        ///   Gets or sets the number of workers in the assignment algorithm.
-        ///   The workers are the entites that can be assigned jobs according
-        ///   to the costs in the <see cref="CostMatrix"/>.
-        /// </summary>
-        /// 
-        /// <value>The number of workers.</value>
-        /// 
-        public int NumberOfWorkers
-        {
-            get { return originalMatrix.Rows(); }
-        }
-
-        /// <summary>
-        /// Gets the current solution found, the values of
-        /// the parameters which optimizes the function.
-        /// </summary>
-        /// 
-        /// <value>The solution.</value>
-        /// 
-        public double[] Solution { get; set; }
-
-        /// <summary>
-        ///   Gets the output of the function at the current <see cref="Solution" />.
-        /// </summary>
-        /// 
-        /// <value>The value.</value>
-        /// 
-        public double Value { get; protected set; }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Munkres"/> class.
-        /// </summary>
-        /// 
         /// <param name="numberOfJobs">The number of jobs (tasks) that can be assigned.</param>
         /// <param name="numberOfWorkers">The number of workers that can receive an assignment.</param>
-        /// 
         public Munkres(int numberOfJobs, int numberOfWorkers)
         {
             init(Jagged.Zeros(numberOfWorkers, numberOfJobs));
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Munkres"/> class.
+        ///     Initializes a new instance of the <see cref="Munkres" /> class.
         /// </summary>
-        /// 
-        /// <param name="costMatrix">The cost matrix where each row represents
-        ///   a worker, each column represents a task, and each individual element
-        ///   represents how much it costs for a particular worker to receive (be
-        ///   assigned) a particular task.</param>
-        /// 
+        /// <param name="costMatrix">
+        ///     The cost matrix where each row represents
+        ///     a worker, each column represents a task, and each individual element
+        ///     represents how much it costs for a particular worker to receive (be
+        ///     assigned) a particular task.
+        /// </param>
         public Munkres(double[][] costMatrix)
         {
             init(costMatrix);
         }
 
-        private void init(double[][] costMatrix)
+        /// <summary>
+        ///     Gets the minimum values across the cost matrix's rows.
+        /// </summary>
+        public double[] MinRow { get; private set; }
+
+        /// <summary>
+        ///     Gets the minimum values across the cost matrix's columns.
+        /// </summary>
+        public double[] MinCol { get; private set; }
+
+        /// <summary>
+        ///     Gets a boolean mask indicating which rows contain at least one valid element.
+        /// </summary>
+        public bool[] ValidRow => validRow;
+
+        /// <summary>
+        ///     Gets a boolean mask indicating which columns contain at least one valid element.
+        /// </summary>
+        public bool[] ValidCol => validCol;
+
+        /// <summary>
+        ///     Gets or sets the tolerance value used when performing cost
+        ///     comparisons. Default is 1e-10. If the algorithm takes too
+        ///     much time to finish, try decreasing this value.
+        /// </summary>
+        public double Tolerance { get; set; } = 1e-10;
+
+        /// <summary>
+        ///     Gets or sets the cost matrix for this assignment algorithm. This is
+        ///     a (W x T) matrix where N corresponds to the <see cref="NumberOfWorkers" />
+        ///     and T to the <see cref="NumberOfTasks" />.
+        /// </summary>
+        /// <value>The cost matrix.</value>
+        public double[][] CostMatrix { get; private set; }
+
+        /// <summary>
+        ///     Gets the number of variables (free parameters)
+        ///     in the optimization problem. In the assigment
+        ///     problem, this gives the number of jobs (or tasks)
+        ///     to be performed.
+        /// </summary>
+        /// <value>The number of tasks in the assignment problem.</value>
+        public int NumberOfTasks => CostMatrix.Columns();
+
+        /// <summary>
+        ///     Gets or sets the number of workers in the assignment algorithm.
+        ///     The workers are the entites that can be assigned jobs according
+        ///     to the costs in the <see cref="CostMatrix" />.
+        /// </summary>
+        /// <value>The number of workers.</value>
+        public int NumberOfWorkers => CostMatrix.Rows();
+
+        /// <summary>
+        ///     Gets or sets the number of variables in this optimization problem
+        ///     (<see cref="NumberOfTasks" /> * <see cref="NumberOfWorkers" />).
+        /// </summary>
+        public int NumberOfVariables
         {
-            this.originalMatrix = costMatrix;
-            this.Solution = new double[NumberOfWorkers];
+            get => NumberOfTasks * NumberOfWorkers;
+            set => throw new InvalidOperationException();
         }
 
         /// <summary>
-        ///   Finds the minimum value of a function. The solution vector
-        ///   will be made available at the <see cref="Solution" /> property.
+        ///     Gets the current solution found, the values of
+        ///     the parameters which optimizes the function.
         /// </summary>
-        /// 
-        /// <returns>Returns <c>true</c> if the method converged to a <see cref="Solution" />.
-        /// In this case, the found value will also be available at the <see cref="Value" />
-        /// property.</returns>
-        /// 
+        /// <value>The solution.</value>
+        public double[] Solution { get; set; }
+
+        /// <summary>
+        ///     Gets the output of the function at the current <see cref="Solution" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public double Value { get; protected set; }
+
+        /// <summary>
+        ///     Finds the minimum value of a function. The solution vector
+        ///     will be made available at the <see cref="Solution" /> property.
+        /// </summary>
+        /// <returns>
+        ///     Returns <c>true</c> if the method converged to a <see cref="Solution" />.
+        ///     In this case, the found value will also be available at the <see cref="Value" />
+        ///     property.
+        /// </returns>
         public bool Minimize()
         {
-            return run(originalMatrix.Copy());
+            return run(CostMatrix.Copy());
         }
 
-
         /// <summary>
-        ///   Finds the maximum value of a function. The solution vector
-        ///   will be made available at the <see cref="Solution" /> property.
+        ///     Finds the maximum value of a function. The solution vector
+        ///     will be made available at the <see cref="Solution" /> property.
         /// </summary>
-        /// 
-        /// <returns>Returns <c>true</c> if the method converged to a <see cref="Solution" />.
-        /// In this case, the found value will also be available at the <see cref="Value" />
-        /// property.</returns>
-        /// 
+        /// <returns>
+        ///     Returns <c>true</c> if the method converged to a <see cref="Solution" />.
+        ///     In this case, the found value will also be available at the <see cref="Value" />
+        ///     property.
+        /// </returns>
         public bool Maximize()
         {
-            return run(originalMatrix.Multiply(-1));
+            return run(CostMatrix.Multiply(-1));
+        }
+
+        private void init(double[][] costMatrix)
+        {
+            CostMatrix = costMatrix;
+            Solution = new double[NumberOfWorkers];
         }
 
         private bool run(double[][] m)
         {
-            this.costMatrix = m;
+            costMatrix = m;
 
-            int step = 0;
+            var step = 0;
 
             while (step >= 0)
             {
@@ -337,7 +315,6 @@ namespace Accord.Math.Optimization
 
             return true;
         }
-
 
         internal int RunStep(int step)
         {
@@ -364,13 +341,10 @@ namespace Accord.Math.Optimization
             }
         }
 
-
         /// <summary>
-        ///  Preprocesses the cost matrix to remove infinities and invalid values.
+        ///     Preprocesses the cost matrix to remove infinities and invalid values.
         /// </summary>
-        /// 
         /// <returns>Go to step 1.</returns>
-        /// 
         private int step_zero()
         {
             validRow = new bool[NumberOfWorkers];
@@ -379,81 +353,86 @@ namespace Accord.Math.Optimization
 
 
             double sum = 0;
-            double max = Double.NegativeInfinity;
+            var max = double.NegativeInfinity;
 
-            for (int i = 0; i < validRow.Length; i++)
+            for (var i = 0; i < validRow.Length; i++)
             {
-                for (int j = 0; j < validCol.Length; j++)
+                for (var j = 0; j < validCol.Length; j++)
                 {
-                    double v = Math.Abs(costMatrix[i][j]);
+                    var v = System.Math.Abs(costMatrix[i][j]);
 
-                    if (!Double.IsInfinity(v) && !Double.IsNaN(v))
+                    if (!double.IsInfinity(v) && !double.IsNaN(v))
                     {
                         validMap[i][j] = validRow[i] = validCol[j] = true;
 
                         sum += v;
                         if (v > max)
+                        {
                             max = v;
+                        }
                     }
                 }
             }
 
-            double bigM = Math.Pow(10, Math.Ceiling(Math.Log10(sum)) + 1);
-            for (int i = 0; i < costMatrix.Length; i++)
-                for (int j = 0; j < costMatrix[i].Length; j++)
+            var bigM = System.Math.Pow(10, System.Math.Ceiling(System.Math.Log10(sum)) + 1);
+            for (var i = 0; i < costMatrix.Length; i++)
+            {
+                for (var j = 0; j < costMatrix[i].Length; j++)
+                {
                     if (!validMap[i][j])
-                        costMatrix[i][j] = Math.Sign(costMatrix[i][j]) * bigM;
+                    {
+                        costMatrix[i][j] = System.Math.Sign(costMatrix[i][j]) * bigM;
+                    }
+                }
+            }
 
-            nRows = validRow.Count(x => x);
-            nCols = validCol.Count(x => x);
-            n = Math.Max(nRows, nCols);
+            nRows = Enumerable.Count(validRow, x => x);
+            nCols = Enumerable.Count(validCol, x => x);
+            n = System.Math.Max(nRows, nCols);
 
             if (n == 0)
+            {
                 throw new InvalidOperationException("There are no valid values in the cost matrix.");
+            }
 
             validCost = costMatrix.Get(validRow, validCol, result: Jagged.Create(n, n, 10.0 * max));
 
-            this.rowCover = new bool[n];
-            this.colCover = new bool[n];
-            this.stars = Jagged.Create(n, n, false);
+            rowCover = new bool[n];
+            colCover = new bool[n];
+            stars = Jagged.Create(n, n, false);
 
             return 1;
         }
 
         /// <summary>
-        ///  For each row of the cost matrix, find the smallest element
-        ///  and subtract it from every element in its row.
+        ///     For each row of the cost matrix, find the smallest element
+        ///     and subtract it from every element in its row.
         /// </summary>
-        /// 
         /// <returns>Go to step 2.</returns>
-        /// 
         private int step_one()
         {
-            minRow = Matrix.Min(validCost, dimension: 1);
-            minCol = Matrix.Min(validCost.Subtract(MinRow, dimension: (VectorType)1), dimension: 0);
+            MinRow = validCost.Min(1);
+            MinCol = validCost.Subtract(MinRow, (VectorType)1).Min(0);
 
             return 2;
         }
 
         /// <summary>
-        ///   Find a zero (Z) in the resulting matrix. If there is no starred 
-        ///   zero in its row or column, star Z. Repeat for each element in the 
-        ///   matrix.
+        ///     Find a zero (Z) in the resulting matrix. If there is no starred
+        ///     zero in its row or column, star Z. Repeat for each element in the
+        ///     matrix.
         /// </summary>
-        /// 
         /// <returns>Go to step 3.</returns>
-        /// 
         private int step_two()
         {
-            double[][] min;
-            stars = findZeros(validCost, minRow, minCol, out min);
+            stars = findZeros(validCost, MinRow, MinCol, out _);
 
             starZ = Vector.Create(n, -1);
             primeZ = Vector.Create(n, -1);
 
-            for (int j = 0; j < stars[0].Length; j++)
+            for (var j = 0; j < stars[0].Length; j++)
             {
-                for (int i = 0; i < stars.Length; i++)
+                for (var i = 0; i < stars.Length; i++)
                 {
                     if (stars[i][j])
                     {
@@ -470,36 +449,36 @@ namespace Accord.Math.Optimization
         internal static bool[][] findZeros(double[][] C, double[] minRow, double[] minCol, out double[][] min)
         {
             min = Jagged.CreateAs(C);
-            for (int r = 0; r < minRow.Length; r++)
-                for (int c = 0; c < minCol.Length; c++)
+            for (var r = 0; r < minRow.Length; r++)
+            {
+                for (var c = 0; c < minCol.Length; c++)
+                {
                     min[r][c] = minRow[r] + minCol[c];
+                }
+            }
 
             return Elementwise.Equals(C, min);
         }
 
         /// <summary>
-        ///   Cover each column containing a starred zero. If K columns are covered, 
-        ///   the starred zeros describe a complete set of unique assignments. In this 
-        ///   case, go to DONE, otherwise, go to Step 4.
+        ///     Cover each column containing a starred zero. If K columns are covered,
+        ///     the starred zeros describe a complete set of unique assignments. In this
+        ///     case, go to DONE, otherwise, go to Step 4.
         /// </summary>
-        /// 
         /// <returns>If K columns are covered, returns 7. Otherwise, returns 4.</returns>
-        /// 
         private int step_three()
         {
             colCover.Clear();
             rowCover.Clear();
             primeZ.Clear();
 
-            bool done = true;
-            int count = 0;
-            for (int i = 0; i < starZ.Length; i++)
+            var done = true;
+            for (var i = 0; i < starZ.Length; i++)
             {
-                int j = starZ[i];
+                var j = starZ[i];
                 if (j >= 0)
                 {
                     colCover[j] = true;
-                    count++;
                 }
                 else
                 {
@@ -508,24 +487,24 @@ namespace Accord.Math.Optimization
             }
 
             if (done)
+            {
                 return 7; // done
+            }
+
             return 4;
         }
 
-
         /// <summary>
-        ///   Find a noncovered zero and prime it. If there is no starred zero 
-        ///   in the row containing this primed zero, Go to Step 5. Otherwise, 
-        ///   cover this row and uncover the column containing the starred zero. 
-        ///   Continue in this manner until there are no uncovered zeros left. 
-        ///   Save the smallest uncovered value and Go to Step 6.        
+        ///     Find a noncovered zero and prime it. If there is no starred zero
+        ///     in the row containing this primed zero, Go to Step 5. Otherwise,
+        ///     cover this row and uncover the column containing the starred zero.
+        ///     Continue in this manner until there are no uncovered zeros left.
+        ///     Save the smallest uncovered value and Go to Step 6.
         /// </summary>
-        /// 
         /// <returns>Goes to step 5 or 6.</returns>
-        /// 
         private int step_four()
         {
-            List<Tuple<int, int>> zeros = find_all_zeros();
+            var zeros = find_all_zeros();
 
             while (zeros.Count > 0)
             {
@@ -533,9 +512,11 @@ namespace Accord.Math.Optimization
                 path_col_0 = zeros[0].Item2;
                 primeZ[path_row_0] = path_col_0;
 
-                int stz = starZ[path_row_0];
+                var stz = starZ[path_row_0];
                 if (stz == -1)
+                {
                     return 5;
+                }
 
                 rowCover[path_row_0] = true;
                 colCover[stz] = false;
@@ -543,16 +524,20 @@ namespace Accord.Math.Optimization
                 zeros.RemoveAll(x => x.Item1 == path_row_0);
 
                 // Update
-                for (int r = 0; r < Math.Min(costMatrix.Length, rowCover.Length); r++)
+                for (var r = 0; r < System.Math.Min(costMatrix.Length, rowCover.Length); r++)
                 {
                     if (rowCover[r])
+                    {
                         continue;
+                    }
 
-                    double a = costMatrix[r][stz];
-                    double b = MinRow[r] + MinCol[stz];
+                    var a = costMatrix[r][stz];
+                    var b = MinRow[r] + MinCol[stz];
 
-                    if (a.IsEqual(b, rtol: tolerance))
+                    if (a.IsEqual(b, rtol: Tolerance))
+                    {
                         zeros.Add(Tuple.Create(r, stz));
+                    }
                 }
             }
 
@@ -562,21 +547,27 @@ namespace Accord.Math.Optimization
         private List<Tuple<int, int>> find_all_zeros()
         {
             var zeros = new List<Tuple<int, int>>();
-            for (int c = 0; c < colCover.Length; c++)
+            for (var c = 0; c < colCover.Length; c++)
             {
                 if (colCover[c])
+                {
                     continue;
+                }
 
-                for (int r = 0; r < rowCover.Length; r++)
+                for (var r = 0; r < rowCover.Length; r++)
                 {
                     if (rowCover[r])
+                    {
                         continue;
+                    }
 
-                    double a = validCost[r][c];
-                    double b = MinCol[c] + MinRow[r];
+                    var a = validCost[r][c];
+                    var b = MinCol[c] + MinRow[r];
 
-                    if (a.IsEqual(b, rtol: tolerance))
+                    if (a.IsEqual(b, rtol: Tolerance))
+                    {
                         zeros.Add(Tuple.Create(r, c));
+                    }
                 }
             }
 
@@ -584,20 +575,18 @@ namespace Accord.Math.Optimization
         }
 
         /// <summary>
-        ///   Construct a series of alternating primed and starred zeros as follows.  
-        ///   Let Z0 represent the uncovered primed zero found in Step 4. Let Z1 denote 
-        ///   the starred zero in the column of Z0 (if any). Let Z2 denote the primed zero 
-        ///   in the row of Z1 (there will always be one). Continue until the series 
-        ///   terminates at a primed zero that has no starred zero in its column.  
-        ///   Unstar each starred zero of the series, star each primed zero of the series, 
-        ///   erase all primes and uncover every line in the matrix.  
+        ///     Construct a series of alternating primed and starred zeros as follows.
+        ///     Let Z0 represent the uncovered primed zero found in Step 4. Let Z1 denote
+        ///     the starred zero in the column of Z0 (if any). Let Z2 denote the primed zero
+        ///     in the row of Z1 (there will always be one). Continue until the series
+        ///     terminates at a primed zero that has no starred zero in its column.
+        ///     Unstar each starred zero of the series, star each primed zero of the series,
+        ///     erase all primes and uncover every line in the matrix.
         /// </summary>
-        /// 
         /// <returns>Return to Step 3.</returns>
-        /// 
         private int step_five()
         {
-            int rowZ1 = Array.IndexOf(starZ, path_col_0);
+            var rowZ1 = Array.IndexOf(starZ, path_col_0);
             starZ[path_row_0] = path_col_0;
 
             while (rowZ1 >= 0)
@@ -612,25 +601,30 @@ namespace Accord.Math.Optimization
             return 3;
         }
 
-
         /// <summary>
-        ///   Add the value found in Step 4 to every element of each covered row, and subtract 
-        ///   it from every element of each uncovered column.  
+        ///     Add the value found in Step 4 to every element of each covered row, and subtract
+        ///     it from every element of each uncovered column.
         /// </summary>
-        /// 
         /// <returns>Return to step 4.</returns>
-        /// 
         private int step_six()
         {
-            double minval = find_smallest();
+            var minval = find_smallest();
 
-            for (int r = 0; r < rowCover.Length; r++)
+            for (var r = 0; r < rowCover.Length; r++)
+            {
                 if (rowCover[r])
-                    minRow[r] -= minval;
+                {
+                    MinRow[r] -= minval;
+                }
+            }
 
-            for (int c = 0; c < colCover.Length; c++)
+            for (var c = 0; c < colCover.Length; c++)
+            {
                 if (!colCover[c])
-                    minCol[c] += minval;
+                {
+                    MinCol[c] += minval;
+                }
+            }
 
             return 4;
         }
@@ -638,21 +632,27 @@ namespace Accord.Math.Optimization
         //methods to support step 6
         private double find_smallest()
         {
-            double minval = Double.PositiveInfinity;
-            for (int c = 0; c < colCover.Length; c++)
+            var minval = double.PositiveInfinity;
+            for (var c = 0; c < colCover.Length; c++)
             {
                 if (colCover[c])
+                {
                     continue;
+                }
 
-                for (int r = 0; r < rowCover.Length; r++)
+                for (var r = 0; r < rowCover.Length; r++)
                 {
                     if (rowCover[r])
+                    {
                         continue;
+                    }
 
-                    double v = validCost[r][c] - (MinRow[r] + MinCol[c]);
+                    var v = validCost[r][c] - (MinRow[r] + MinCol[c]);
 
                     if (v < minval)
+                    {
                         minval = v;
+                    }
                 }
             }
 
@@ -668,10 +668,10 @@ namespace Accord.Math.Optimization
             //                     (http://csclab.murraystate.edu/~bob.pilgrim/445/munkres.html)
             double value = 0;
 
-            for (int i = 0; i < nRows; i++)
+            for (var i = 0; i < nRows; i++)
             {
-                Solution[i] = Double.NaN;
-                int j = starZ[i];
+                Solution[i] = double.NaN;
+                var j = starZ[i];
 
                 if (j >= 0 && j < nCols && validMap[i][j])
                 {
@@ -683,7 +683,5 @@ namespace Accord.Math.Optimization
             Value = value;
             return -1;
         }
-
-
     }
 }

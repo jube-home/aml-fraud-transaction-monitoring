@@ -17,6 +17,7 @@ namespace Jube.Engine.Integrity
     using System.Collections.Generic;
     using System.Linq;
     using Parser.Dependency;
+    using Parser.Dependency.Models;
 
     public sealed record ModelGraphNode(string Id, string Label, string Kind, bool Active, string Detail);
 
@@ -44,6 +45,7 @@ namespace Jube.Engine.Integrity
             ArgumentNullException.ThrowIfNull(graph);
 
             var nodes = new Dictionary<string, ModelGraphNode>(StringComparer.Ordinal);
+
             foreach (var entity in graph.Entities)
             {
                 nodes.TryAdd(NodeId(entity), new ModelGraphNode(NodeId(entity), entity.Name, entity.Kind.ToString(),
@@ -51,12 +53,15 @@ namespace Jube.Engine.Integrity
             }
 
             var edges = new List<ModelGraphEdge>();
+
             foreach (var dependency in graph.Dependencies)
             {
                 var name = string.IsNullOrEmpty(dependency.Namespace)
                     ? dependency.Name
                     : $"{dependency.Namespace}.{dependency.Name}";
+
                 string to;
+
                 if (dependency.Target == null)
                 {
                     to = $"{Missing}:{name}";
@@ -68,6 +73,7 @@ namespace Jube.Engine.Integrity
                 }
 
                 var from = NodeId(dependency.Dependent);
+
                 if (from == to)
                 {
                     continue;
@@ -75,6 +81,7 @@ namespace Jube.Engine.Integrity
 
                 var ruleText = dependency.Kind == ModelDependencyKind.RuleText;
                 var edge = new ModelGraphEdge(from, to, ruleText ? name : dependency.Kind.ToString(), !ruleText);
+
                 if (!edges.Contains(edge))
                 {
                     edges.Add(edge);
@@ -84,6 +91,7 @@ namespace Jube.Engine.Integrity
             var keep = focus == null
                 ? nodes.Keys.ToHashSet(StringComparer.Ordinal)
                 : Neighbourhood(NodeId(focus), edges, radius);
+
             var truncated = false;
 
             if (keep.Count > maxNodes)
@@ -91,20 +99,25 @@ namespace Jube.Engine.Integrity
                 var degree = edges.SelectMany(e => new[] { e.From, e.To })
                     .GroupBy(n => n, StringComparer.Ordinal)
                     .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+
                 var focusId = focus == null ? null : NodeId(focus);
+
                 keep = keep
                     .OrderByDescending(n => n == focusId)
                     .ThenByDescending(n => degree.GetValueOrDefault(n))
                     .ThenBy(n => n, StringComparer.Ordinal)
                     .Take(maxNodes)
                     .ToHashSet(StringComparer.Ordinal);
+
                 truncated = true;
             }
 
             return new ModelGraph(
-                nodes.Values.Where(n => keep.Contains(n.Id)).OrderBy(n => n.Kind, StringComparer.Ordinal)
-                    .ThenBy(n => n.Label, StringComparer.Ordinal).ToList(),
-                edges.Where(e => keep.Contains(e.From) && keep.Contains(e.To)).ToList(),
+                [
+                    .. nodes.Values.Where(n => keep.Contains(n.Id)).OrderBy(n => n.Kind, StringComparer.Ordinal)
+                        .ThenBy(n => n.Label, StringComparer.Ordinal)
+                ],
+                [.. edges.Where(e => keep.Contains(e.From) && keep.Contains(e.To))],
                 truncated,
                 focus == null ? null : NodeId(focus));
         }
@@ -113,9 +126,11 @@ namespace Jube.Engine.Integrity
         {
             var keep = new HashSet<string>(StringComparer.Ordinal) { focus };
             var frontier = new List<string> { focus };
+
             for (var step = 0; step < Math.Max(radius, 0) && frontier.Count > 0; step++)
             {
                 var next = new List<string>();
+
                 foreach (var edge in edges)
                 {
                     if (frontier.Contains(edge.From) && keep.Add(edge.To))

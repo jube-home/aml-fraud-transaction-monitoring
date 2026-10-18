@@ -18,6 +18,7 @@ using Jube.Cache;
 using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -26,6 +27,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         public static async Task<Context> CheckIntegrityAndUpsertAsync(this Context context, CacheService cacheService)
         {
             var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 var referenceDate = await cacheService.CacheReferenceDateRepository

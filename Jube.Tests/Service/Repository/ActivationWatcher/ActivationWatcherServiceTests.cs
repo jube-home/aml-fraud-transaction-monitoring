@@ -62,6 +62,7 @@ namespace Jube.Test.Service.Repository.ActivationWatcher
         private static async Task<int> ResolveTenantRegistryIdAsync(DbContext dbContext, string userName)
         {
             var tenantRegistryId = await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, userName);
+
             return tenantRegistryId.Required();
         }
 
@@ -103,6 +104,7 @@ namespace Jube.Test.Service.Repository.ActivationWatcher
             await CreateSampleAsync(dbContext, tenantRegistryId, key, "KeyValueA");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var result =
                 await service.ReplayAsync(DateTimeOffset.UtcNow.AddHours(-1), DateTimeOffset.UtcNow.AddHours(1));
 
@@ -128,6 +130,7 @@ namespace Jube.Test.Service.Repository.ActivationWatcher
             await CreateSampleAsync(dbContext, tenantARegistryId, keyInOtherTenant, "KeyValueA");
 
             var tenantBService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             var result = await tenantBService.ReplayAsync(DateTimeOffset.UtcNow.AddHours(-1),
                 DateTimeOffset.UtcNow.AddHours(1));
 

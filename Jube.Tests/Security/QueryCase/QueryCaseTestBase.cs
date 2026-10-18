@@ -26,9 +26,7 @@ namespace Jube.Test.Security.QueryCase;
 public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper output) : PenTestBase(fx, output)
 {
     protected static readonly TimeSpan BlindBound = TimeSpan.FromSeconds(6);
-
     protected QueryCaseSeeder Seeder { get; } = new(fx);
-
     protected string UserA => Fx.Seed.UserWithPermission;
     protected string UserB => Fx.Seed.UserTenantB;
 
@@ -39,7 +37,6 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
     }
 
     protected static string Q(string value) => Uri.EscapeDataString(value);
-
     protected static byte[] Utf8(string value) => Encoding.UTF8.GetBytes(value);
 
     protected static List<JsonElement>? ArrayOf(PenTestResponse response)
@@ -47,6 +44,7 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
         try
         {
             using var document = JsonDocument.Parse(response.Body);
+
             return document.RootElement.ValueKind == JsonValueKind.Array
                 ? [.. document.RootElement.EnumerateArray().Select(e => e.Clone())]
                 : null;
@@ -67,22 +65,26 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
             }
 
             value = candidate.Value;
+
             return true;
         }
 
         value = default;
+
         return false;
     }
 
     protected static List<int> IntsOf(PenTestResponse response, string property)
     {
         var rows = ArrayOf(response) ?? [];
+
         return
         [
             .. rows.Where(r => r.ValueKind == JsonValueKind.Object && TryGet(r, property, out _))
                 .Select(r =>
                 {
                     TryGet(r, property, out var v);
+
                     return v.GetInt32();
                 })
         ];
@@ -107,8 +109,10 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
     protected static IEnumerable<string> Mutate(string seed)
     {
         yield return seed;
+
         yield return string.Concat(seed.Select((c, i) =>
             i % 2 == 0 ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c)));
+
         yield return seed.Replace(" ", "/**/");
         yield return seed.Replace(" ", "\t");
         yield return $" {seed} ";
@@ -145,6 +149,7 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
         {
             var response = await SendAsync(As(user));
             run.Expect(response.IsRejection, response, "BFLA", $"{user} must be refused (403)");
+
             foreach (var marker in secretMarkers)
             {
                 run.Expect(!response.Body.Contains(marker, StringComparison.OrdinalIgnoreCase), response, "LEAK-MARKER",
@@ -154,6 +159,7 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
 
         var landlord = await SendAsync(As(PenTestUser.Landlord));
         run.Expect(foreignAcceptable(landlord), landlord, "LANDLORD-BOLA", "landlord obtained tenant data");
+
         foreach (var marker in secretMarkers)
         {
             run.Expect(!landlord.Body.Contains(marker, StringComparison.OrdinalIgnoreCase), landlord, "LANDLORD-LEAK",
@@ -162,6 +168,7 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
 
         var foreign = await SendAsync(As(PenTestUser.TenantB));
         run.Expect(foreignAcceptable(foreign), foreign, "BOLA", "tenant B response not the not-found equivalent");
+
         foreach (var marker in secretMarkers)
         {
             run.Expect(!foreign.Body.Contains(marker, StringComparison.OrdinalIgnoreCase), foreign, "BOLA-LEAK",
@@ -181,6 +188,7 @@ public abstract class QueryCaseTestBase(DatabaseFixture fx, ITestOutputHelper ou
         {
             var response = run.Check(await client.SendAsync(method, target, method == "GET" ? null : Utf8("{}"),
                 method == "GET" ? null : "application/json"));
+
             run.Expect(!response.IsSuccess, response, "VERB-SUCCEEDED", method);
         }
     }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,9 +16,10 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.Icons;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.Icons;
 using Jube.Service.Observability;
+using Jube.Service.Query.Icons.Interfaces;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using log4net;
@@ -29,7 +30,6 @@ namespace Jube.Service.Query.Icons
     public sealed class IconsService
     {
         private static readonly int[] permissions = [24];
-
         private readonly ILog auditLog;
         private readonly IIconFileSource iconFileSource;
         private readonly ILog log;
@@ -52,6 +52,8 @@ namespace Jube.Service.Query.Icons
             this.permissionValidation = permissionValidation;
             this.iconFileSource = iconFileSource;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<IconsService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -103,9 +105,12 @@ namespace Jube.Service.Query.Icons
         public Task<List<IconDto>> GetAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+
             using var op = OperationScope.Start("Icons", "Get", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             const string name = "Icons.Get";
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"{name}: entry user={userName}");
@@ -116,6 +121,7 @@ namespace Jube.Service.Query.Icons
                 EnsurePermitted(name);
                 var icons = iconFileSource.GetFileNames().Select(IconsMapper.ToDto).ToList();
                 op.Rows(icons.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"{name}: {icons.Count} rows user={userName}");
@@ -123,16 +129,19 @@ namespace Jube.Service.Query.Icons
 
                 return Task.FromResult(icons);
             }
+
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
                 throw;
             }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
                 throw;
             }
+
             catch (Exception ex)
             {
                 op.Error(ex);

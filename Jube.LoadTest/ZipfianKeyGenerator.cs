@@ -25,7 +25,8 @@ namespace Jube.LoadTest
         {
             if (numberOfElements < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(numberOfElements), "Key pool must contain at least one key.");
+                throw new ArgumentOutOfRangeException(nameof(numberOfElements),
+                    "Key pool must contain at least one key.");
             }
 
             if (exponent <= 0)
@@ -47,6 +48,7 @@ namespace Jube.LoadTest
             {
                 var u = hIntegralNumberOfElements +
                         random.NextDouble() * (HIntegral(0.5) - hIntegralNumberOfElements);
+
                 var x = HIntegralInverse(u);
                 var k = (long)(x + 0.5);
 
@@ -77,6 +79,7 @@ namespace Jube.LoadTest
             {
                 var weight = Math.Pow(k, -exponent);
                 totalSum += weight;
+
                 if (k <= topCount)
                 {
                     topSum += weight;
@@ -94,12 +97,14 @@ namespace Jube.LoadTest
         private double HIntegral(double x)
         {
             var logX = Math.Log(x);
+
             return Helper2((1.0 - exponent) * logX) * logX;
         }
 
         private double HIntegralInverse(double x)
         {
             var t = x * (1.0 - exponent);
+
             if (t < -1.0)
             {
                 t = -1.0;

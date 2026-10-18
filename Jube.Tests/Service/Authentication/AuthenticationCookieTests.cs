@@ -41,12 +41,12 @@ public sealed class AuthenticationCookieTests
     private const string Key = "an-adequately-long-unit-test-signing-key-0123456789";
     private const string Issuer = "http://localhost:5001";
     private const string Audience = "http://localhost:5001";
-
     private static readonly DateTimeOffset noon = new(DateTime.UtcNow.Date.AddHours(12), TimeSpan.Zero);
 
     private static Jube.DynamicEnvironment.DynamicEnvironment Env(params (string Key, string Value)[] overrides)
     {
         var settings = new Dictionary<string, string> { ["JWTKey"] = Key };
+
         foreach (var (k, v) in overrides)
         {
             settings[k] = v;
@@ -60,6 +60,7 @@ public sealed class AuthenticationCookieTests
     {
         var context = new DefaultHttpContext();
         var dto = AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response, env, user, clock);
+
         return (dto, [.. SetCookieHeaderValue.ParseList(context.Response.Headers.SetCookie)], context);
     }
 
@@ -67,6 +68,7 @@ public sealed class AuthenticationCookieTests
         string issuer = Issuer, string audience = Audience, bool viaCookie = false)
     {
         var options = new HybridAuthOptions { JwtKey = key, JwtValidIssuer = issuer, JwtValidAudience = audience };
+
         var handler = new HybridAuthHandler(new StaticOptionsMonitor<HybridAuthOptions>(options),
             NullLoggerFactory.Instance, UrlEncoder.Default, null,
             TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -75,7 +77,9 @@ public sealed class AuthenticationCookieTests
                                        ?? Environment.GetEnvironmentVariable("ConnectionString")
                                        ?? "unit-test-ConnectionString"
             }), TestLog.NoOp);
+
         var context = new DefaultHttpContext();
+
         if (viaCookie)
         {
             context.Request.Headers.Cookie = $"authentication-jwt={token}";
@@ -86,6 +90,7 @@ public sealed class AuthenticationCookieTests
         }
 
         await handler.InitializeAsync(new AuthenticationScheme("Hybrid", null, typeof(HybridAuthHandler)), context);
+
         return await handler.AuthenticateAsync();
     }
 
@@ -98,6 +103,7 @@ public sealed class AuthenticationCookieTests
     {
         var padded = segment.Replace('-', '+').Replace('_', '/');
         padded = padded.PadRight(padded.Length + (4 - padded.Length % 4) % 4, '=');
+
         return Encoding.UTF8.GetString(Convert.FromBase64String(padded));
     }
 
@@ -112,14 +118,17 @@ public sealed class AuthenticationCookieTests
         var (dto, cookies, _) = Issue("alice", Env(("SessionCookie", session), ("SecureHttpCookie", secure)), clock);
 
         cookies.Select(c => c.Name.Value).Should().Equal("authentication-jwt");
+
         foreach (var cookie in cookies)
         {
             cookie.Path.Value.Should().Be("/");
             cookie.HttpOnly.Should().BeTrue();
             cookie.Secure.Should().Be(secure == "True");
+
             cookie.SameSite.Should().Be(secure == "True"
                 ? Microsoft.Net.Http.Headers.SameSiteMode.Strict
                 : Microsoft.Net.Http.Headers.SameSiteMode.Lax);
+
             if (session == "True")
             {
                 cookie.Expires.Should().BeNull();
@@ -139,6 +148,7 @@ public sealed class AuthenticationCookieTests
     public void StrictCookieFalse_IssuesLaxWhenSecure()
     {
         var clock = new FakeClock(noon);
+
         var (_, cookies, _) = Issue("alice",
             Env(("SecureHttpCookie", "True"), ("StrictCookie", "False")), clock);
 
@@ -174,6 +184,7 @@ public sealed class AuthenticationCookieTests
         cookies.Should().OnlyContain(c => c.Expires == null && !c.Secure
                                                             && c.SameSite == Microsoft.Net.Http.Headers.SameSiteMode
                                                                 .Lax);
+
         cookies.Select(c => c.Name.Value).Should().Equal("authentication-jwt");
         cookies.Single().HttpOnly.Should().BeTrue();
     }
@@ -187,8 +198,10 @@ public sealed class AuthenticationCookieTests
         cookies.Should().HaveCount(1);
         cookies[0].Value.Value.Should().Be(dto.Token);
         context.Response.Headers.SetCookie.ToString().Should().NotContain("authentication-expiry");
+
         context.Response.Headers[SessionExpiry.HeaderName].ToString().Should()
             .Be(dto.Expiration.ToString("O", CultureInfo.InvariantCulture));
+
         SessionExpiry.Resolve(context).Should().Be(dto.Expiration);
         dto.Expiration.Should().Be(noon.UtcDateTime.AddMinutes(15));
         dto.Expiration.Kind.Should().Be(DateTimeKind.Utc);
@@ -233,10 +246,13 @@ public sealed class AuthenticationCookieTests
         header.RootElement.GetProperty("typ").GetString().Should().Be("JWT");
         payload.RootElement.GetProperty("iss").GetString().Should().Be(Issuer);
         payload.RootElement.GetProperty("aud").GetString().Should().Be(Audience);
+
         payload.RootElement.GetProperty("exp").GetInt64().Should()
             .Be(noon.AddMinutes(15).ToUnixTimeSeconds());
+
         payload.RootElement.GetProperty("iat").GetInt64().Should().Be(noon.ToUnixTimeSeconds());
         payload.RootElement.GetProperty("nbf").GetInt64().Should().Be(noon.ToUnixTimeSeconds());
+
         payload.RootElement.EnumerateObject().Select(p => p.Name).Should().NotContain(
             ["password", "hash", "salt", "email", "role", "roles", "tenant"]);
     }
@@ -300,6 +316,7 @@ public sealed class AuthenticationCookieTests
     {
         var (dto, _, _) = Issue("alice", Env());
         var parts = dto.Token.Required().Split('.');
+
         var tampered = tamper switch
         {
             "flip-signature" => $"{parts[0]}.{parts[1]}.{(parts[2][0] == 'A' ? 'B' : 'A')}{parts[2][1..]}",
@@ -327,6 +344,7 @@ public sealed class AuthenticationCookieTests
     {
         var (dto, _, _) = Issue("alice", Env());
         var parts = dto.Token.Required().Split('.');
+
         var malformed = kind switch
         {
             "extra-segment" => dto.Token + ".AAAA",
@@ -384,6 +402,7 @@ public sealed class AuthenticationCookieTests
         var result = await ValidateAsync(dto.Token);
 
         result.Succeeded.Should().Be(valid);
+
         if (!valid)
         {
             result.Failure.Required().Message.Should().Contain("expired");
@@ -413,6 +432,7 @@ public sealed class AuthenticationCookieTests
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow.AddHours(-1));
         var (dto, _, context) = Issue("alice", Env(), clock);
+
         context.Response.Headers[SessionExpiry.HeaderName] =
             DateTime.UtcNow.AddYears(1).ToString("O", CultureInfo.InvariantCulture);
 
@@ -437,9 +457,12 @@ public sealed class AuthenticationCookieTests
     {
         var env = Env();
         var context = new DefaultHttpContext();
+
         var unsignedJwtShapedCookie =
             $"{B64("{\"alg\":\"none\",\"typ\":\"JWT\"}")}.{B64("{\"sub\":\"someone\"}")}.";
+
         context.Request.Headers.Cookie = $"authentication-jwt={unsignedJwtShapedCookie}";
+
         context.User = new ClaimsPrincipal(new ClaimsIdentity(
         [
             new Claim(ClaimTypes.Name, "service-account"),
@@ -457,9 +480,12 @@ public sealed class AuthenticationCookieTests
     {
         var env = Env();
         var context = new DefaultHttpContext();
+
         var unsignedJwtShapedCookie =
             $"{B64("{\"alg\":\"none\",\"typ\":\"JWT\"}")}.{B64("{\"sub\":\"someone\"}")}.";
+
         context.Request.Headers.Cookie = $"authentication-jwt={unsignedJwtShapedCookie}";
+
         context.User = new ClaimsPrincipal(new ClaimsIdentity(
         [
             new Claim(ClaimTypes.Name, "alice")

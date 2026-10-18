@@ -1,0 +1,377 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 378" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-be7cbbf8-t jc-be7cbbf8-d">
+    <title id="jc-be7cbbf8-t">Input sensitivity</title>
+    <desc id="jc-be7cbbf8-d">Neural network diagram with 3 layers of 4, 3, 1 nodes and 15 connections; connection
+        thickness shows weight magnitude and colour its sign.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="378" rx="8"/>
+    <text class="ttl" x="16" y="32">Input sensitivity</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="44.64" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Input</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="76.64" y="44" width="55.2" height="18"/>
+        <rect class="sw" x="78.64" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="96.64" y="57">Hidden</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="149.84" y="44" width="53.76" height="18"/>
+        <rect class="sw" x="151.84" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="169.84" y="57">Output</text>
+    </g>
+    <g transform="translate(77.45 72)">
+        <text class="ph ctr" x="71.16" y="12">Input</text>
+        <text class="ph ctr" x="261.16" y="12">Hidden 1</text>
+        <text class="kn ctr" x="261.16" y="27">Sigmoid, alpha 2</text>
+        <text class="ph ctr" x="451.16" y="12">Output</text>
+        <text class="kn ctr" x="451.16" y="27">Sigmoid, alpha 2</text>
+        <g class="mk x0 eg e0 e4" tabindex="0" role="graphics-symbol" aria-label="amount to h1.1, Weight: 0.182">
+            <title>amount to h1.1, Weight: 0.182</title>
+            <path class="eh" d="M85.16 67C166.16 67 166.16 90 247.16 90"/>
+            <path class="ep sd7" d="M85.16 67C166.16 67 166.16 90 247.16 90" stroke-width="0.96"/>
+            <text class="ant ctr" x="125.34" y="65.39">0.182</text>
+        </g>
+        <g class="mk x1 eg e1 e4" tabindex="0" role="graphics-symbol" aria-label="velocity to h1.1, Weight: 0.809">
+            <title>velocity to h1.1, Weight: 0.809</title>
+            <path class="eh" d="M85.16 113C166.16 113 166.16 90 247.16 90"/>
+            <path class="ep sd8" d="M85.16 113C166.16 113 166.16 90 247.16 90" stroke-width="2.19"/>
+            <text class="ant ctr" x="147.39" y="102.52">0.809</text>
+        </g>
+        <g class="mk x2 eg e2 e4" tabindex="0" role="graphics-symbol" aria-label="country to h1.1, Weight: 0.141">
+            <title>country to h1.1, Weight: 0.141</title>
+            <path class="eh" d="M85.16 159C166.16 159 166.16 90 247.16 90"/>
+            <path class="ep sd7" d="M85.16 159C166.16 159 166.16 90 247.16 90" stroke-width="0.88"/>
+            <text class="ant ctr" x="166.16" y="120.5">0.141</text>
+        </g>
+        <g class="mk x3 eg e3 e4" tabindex="0" role="graphics-symbol" aria-label="age to h1.1, Weight: 0.042">
+            <title>age to h1.1, Weight: 0.042</title>
+            <path class="eh" d="M85.16 205C166.16 205 166.16 90 247.16 90"/>
+            <path class="ep sd7" d="M85.16 205C166.16 205 166.16 90 247.16 90" stroke-width="0.68"/>
+            <text class="ant ctr" x="184.93" y="118.4">0.042</text>
+        </g>
+        <g class="mk x4 eg e0 e5" tabindex="0" role="graphics-symbol" aria-label="amount to h1.2, Weight: -0.869">
+            <title>amount to h1.2, Weight: -0.869</title>
+            <path class="eh" d="M85.16 67C166.16 67 166.16 136 247.16 136"/>
+            <path class="ep sd1" d="M85.16 67C166.16 67 166.16 136 247.16 136" stroke-width="2.3"/>
+            <text class="ant ctr" x="206.98" y="124.82">-0.869</text>
+        </g>
+        <g class="mk x5 eg e1 e5" tabindex="0" role="graphics-symbol" aria-label="velocity to h1.2, Weight: -0.673">
+            <title>velocity to h1.2, Weight: -0.673</title>
+            <path class="eh" d="M85.16 113C166.16 113 166.16 136 247.16 136"/>
+            <path class="ep sd2" d="M85.16 113C166.16 113 166.16 136 247.16 136" stroke-width="1.92"/>
+            <text class="ant ctr" x="125.34" y="111.39">-0.673</text>
+        </g>
+        <g class="mk x6 eg e2 e5" tabindex="0" role="graphics-symbol" aria-label="country to h1.2, Weight: -1.734">
+            <title>country to h1.2, Weight: -1.734</title>
+            <path class="eh" d="M85.16 159C166.16 159 166.16 136 247.16 136"/>
+            <path class="ep sd0" d="M85.16 159C166.16 159 166.16 136 247.16 136" stroke-width="4"/>
+            <text class="ant ctr" x="147.39" y="148.52">-1.734</text>
+        </g>
+        <g class="mk x7 eg e3 e5" tabindex="0" role="graphics-symbol" aria-label="age to h1.2, Weight: -0.995">
+            <title>age to h1.2, Weight: -0.995</title>
+            <path class="eh" d="M85.16 205C166.16 205 166.16 136 247.16 136"/>
+            <path class="ep sd1" d="M85.16 205C166.16 205 166.16 136 247.16 136" stroke-width="2.55"/>
+            <text class="ant ctr" x="166.16" y="166.5">-0.995</text>
+        </g>
+        <g class="mk x8 eg e0 e6" tabindex="0" role="graphics-symbol" aria-label="amount to h1.3, Weight: -1.02">
+            <title>amount to h1.3, Weight: -1.02</title>
+            <path class="eh" d="M85.16 67C166.16 67 166.16 182 247.16 182"/>
+            <path class="ep sd1" d="M85.16 67C166.16 67 166.16 182 247.16 182" stroke-width="2.6"/>
+            <text class="ant ctr" x="184.93" y="145.6">-1.02</text>
+        </g>
+        <g class="mk x9 eg e1 e6" tabindex="0" role="graphics-symbol" aria-label="velocity to h1.3, Weight: -0.255">
+            <title>velocity to h1.3, Weight: -0.255</title>
+            <path class="eh" d="M85.16 113C166.16 113 166.16 182 247.16 182"/>
+            <path class="ep sd3" d="M85.16 113C166.16 113 166.16 182 247.16 182" stroke-width="1.1"/>
+            <text class="ant ctr" x="206.98" y="170.82">-0.255</text>
+        </g>
+        <g class="mk x10 eg e2 e6" tabindex="0" role="graphics-symbol" aria-label="country to h1.3, Weight: -0.211">
+            <title>country to h1.3, Weight: -0.211</title>
+            <path class="eh" d="M85.16 159C166.16 159 166.16 182 247.16 182"/>
+            <path class="ep sd3" d="M85.16 159C166.16 159 166.16 182 247.16 182" stroke-width="1.01"/>
+            <text class="ant ctr" x="125.34" y="157.39">-0.211</text>
+        </g>
+        <g class="mk x11 eg e3 e6" tabindex="0" role="graphics-symbol" aria-label="age to h1.3, Weight: 0.153">
+            <title>age to h1.3, Weight: 0.153</title>
+            <path class="eh" d="M85.16 205C166.16 205 166.16 182 247.16 182"/>
+            <path class="ep sd7" d="M85.16 205C166.16 205 166.16 182 247.16 182" stroke-width="0.9"/>
+            <text class="ant ctr" x="147.39" y="194.52">0.153</text>
+        </g>
+        <g class="mk x12 eg e4 e7" tabindex="0" role="graphics-symbol" aria-label="h1.1 to y, Weight: -0.192">
+            <title>h1.1 to y, Weight: -0.192</title>
+            <path class="eh" d="M275.16 90C356.16 90 356.16 136 437.16 136"/>
+            <path class="ep sd3" d="M275.16 90C356.16 90 356.16 136 437.16 136" stroke-width="0.98"/>
+            <text class="ant ctr" x="356.16" y="109">-0.192</text>
+        </g>
+        <g class="mk x13 eg e5 e7" tabindex="0" role="graphics-symbol" aria-label="h1.2 to y, Weight: -0.918">
+            <title>h1.2 to y, Weight: -0.918</title>
+            <path class="eh" d="M275.16 136C356.16 136 356.16 136 437.16 136"/>
+            <path class="ep sd1" d="M275.16 136C356.16 136 356.16 136 437.16 136" stroke-width="2.4"/>
+            <text class="ant ctr" x="374.93" y="132">-0.918</text>
+        </g>
+        <g class="mk x14 eg e6 e7" tabindex="0" role="graphics-symbol" aria-label="h1.3 to y, Weight: -0.186">
+            <title>h1.3 to y, Weight: -0.186</title>
+            <path class="eh" d="M275.16 182C356.16 182 356.16 136 437.16 136"/>
+            <path class="ep sd3" d="M275.16 182C356.16 182 356.16 136 437.16 136" stroke-width="0.96"/>
+            <text class="ant ctr" x="396.98" y="136.78">-0.186</text>
+        </g>
+        <g class="mk n0 nd s0 j4 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="amount, Input layer: Input, Input sensitivity: 0.31">
+            <title>amount, Input layer: Input, Input sensitivity: 0.31</title>
+            <circle class="nb" cx="71.16" cy="67" r="14"/>
+            <circle class="nt nq8" cx="71.16" cy="67" r="14"/>
+        </g>
+        <text class="lbl end mid" x="49.16" y="67">amount</text>
+        <g class="mk n1 nd s0 j4 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="velocity, Input layer: Input, Input sensitivity: 0.14">
+            <title>velocity, Input layer: Input, Input sensitivity: 0.14</title>
+            <circle class="nb" cx="71.16" cy="113" r="14"/>
+            <circle class="nt nq4" cx="71.16" cy="113" r="14"/>
+        </g>
+        <text class="lbl end mid" x="49.16" y="113">velocity</text>
+        <g class="mk n2 nd s0 j4 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="country, Input layer: Input, Input sensitivity: 0.03">
+            <title>country, Input layer: Input, Input sensitivity: 0.03</title>
+            <circle class="nb" cx="71.16" cy="159" r="14"/>
+            <circle class="nt nq1" cx="71.16" cy="159" r="14"/>
+        </g>
+        <text class="lbl end mid" x="49.16" y="159">country</text>
+        <g class="mk n3 nd s0 j4 j5 j6" tabindex="0" role="graphics-symbol" aria-label="age, Input layer: Input">
+            <title>age, Input layer: Input</title>
+            <circle class="nb" cx="71.16" cy="205" r="14"/>
+            <circle class="nt" cx="71.16" cy="205" r="14"/>
+        </g>
+        <text class="lbl end mid" x="49.16" y="205">age</text>
+        <g class="mk n4 nd s2 j0 j1 j2 j3 j7" tabindex="0" role="graphics-symbol"
+           aria-label="h1.1, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1">
+            <title>h1.1, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1</title>
+            <circle class="nb" cx="261.16" cy="90" r="14"/>
+            <circle class="nt" cx="261.16" cy="90" r="14"/>
+            <text class="lbl ctr mid" x="261.16" y="90">h1.1</text>
+        </g>
+        <g class="mk n5 nd s2 j0 j1 j2 j3 j7" tabindex="0" role="graphics-symbol"
+           aria-label="h1.2, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1">
+            <title>h1.2, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1</title>
+            <circle class="nb" cx="261.16" cy="136" r="14"/>
+            <circle class="nt" cx="261.16" cy="136" r="14"/>
+            <text class="lbl ctr mid" x="261.16" y="136">h1.2</text>
+        </g>
+        <g class="mk n6 nd s2 j0 j1 j2 j3 j7" tabindex="0" role="graphics-symbol"
+           aria-label="h1.3, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1">
+            <title>h1.3, Hidden layer: Hidden 1, Activation: Sigmoid, alpha 2, Connections in: 4, out: 1</title>
+            <circle class="nb" cx="261.16" cy="182" r="14"/>
+            <circle class="nt" cx="261.16" cy="182" r="14"/>
+            <text class="lbl ctr mid" x="261.16" y="182">h1.3</text>
+        </g>
+        <g class="mk n7 nd s1 j4 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="y, Output layer: Output, Activation: Sigmoid, alpha 2, Connections in: 3, out: 0">
+            <title>y, Output layer: Output, Activation: Sigmoid, alpha 2, Connections in: 3, out: 0</title>
+            <circle class="nb" cx="451.16" cy="136" r="14"/>
+            <circle class="nt" cx="451.16" cy="136" r="14"/>
+        </g>
+        <text class="lbl mid" x="473.16" y="136">y</text>
+    </g>
+    <text class="key" x="77.45" y="327">Weight</text>
+    <text class="kn" x="121.77" y="327">-1.734</text>
+    <rect class="cell d0" x="157.59" y="316" width="16" height="14"/>
+    <rect class="cell d1" x="173.59" y="316" width="16" height="14"/>
+    <rect class="cell d2" x="189.59" y="316" width="16" height="14"/>
+    <rect class="cell d3" x="205.59" y="316" width="16" height="14"/>
+    <rect class="cell d4" x="221.59" y="316" width="16" height="14"/>
+    <rect class="cell d5" x="237.59" y="316" width="16" height="14"/>
+    <rect class="cell d6" x="253.59" y="316" width="16" height="14"/>
+    <rect class="cell d7" x="269.59" y="316" width="16" height="14"/>
+    <rect class="cell d8" x="285.59" y="316" width="16" height="14"/>
+    <rect class="cell d9" x="301.59" y="316" width="16" height="14"/>
+    <rect class="cell d10" x="317.59" y="316" width="16" height="14"/>
+    <text class="kn" x="339.59" y="327">+1.734</text>
+    <text class="kn" x="385.41" y="327">thickness = magnitude</text>
+    <text class="key" x="77.45" y="351">Input sensitivity</text>
+    <text class="kn" x="166.65" y="351">low</text>
+    <rect class="cell q0" x="189.77" y="340" width="16" height="14"/>
+    <rect class="cell q1" x="205.77" y="340" width="16" height="14"/>
+    <rect class="cell q2" x="221.77" y="340" width="16" height="14"/>
+    <rect class="cell q3" x="237.77" y="340" width="16" height="14"/>
+    <rect class="cell q4" x="253.77" y="340" width="16" height="14"/>
+    <rect class="cell q5" x="269.77" y="340" width="16" height="14"/>
+    <rect class="cell q6" x="285.77" y="340" width="16" height="14"/>
+    <rect class="cell q7" x="301.77" y="340" width="16" height="14"/>
+    <rect class="cell q8" x="317.77" y="340" width="16" height="14"/>
+    <text class="kn" x="339.77" y="351">high</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="191.06" y="96.5" width="105.1" height="44" rx="6"/>
+                <text class="tx b" x="201.06" y="114.5">amount to h1.1</text>
+                <text class="tx" x="201.06" y="131.5">Weight: 0.182</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="189.6" y="119.5" width="108.02" height="44" rx="6"/>
+                <text class="tx b" x="199.6" y="137.5">velocity to h1.1</text>
+                <text class="tx" x="199.6" y="154.5">Weight: 0.809</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="190.74" y="142.5" width="105.73" height="44" rx="6"/>
+                <text class="tx b" x="200.74" y="160.5">country to h1.1</text>
+                <text class="tx" x="200.74" y="177.5">Weight: 0.141</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="196.65" y="165.5" width="93.92" height="44" rx="6"/>
+                <text class="tx b" x="206.65" y="183.5">age to h1.1</text>
+                <text class="tx" x="206.65" y="200.5">Weight: 0.042</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="191.06" y="119.5" width="105.1" height="44" rx="6"/>
+                <text class="tx b" x="201.06" y="137.5">amount to h1.2</text>
+                <text class="tx" x="201.06" y="154.5">Weight: -0.869</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="189.6" y="142.5" width="108.02" height="44" rx="6"/>
+                <text class="tx b" x="199.6" y="160.5">velocity to h1.2</text>
+                <text class="tx" x="199.6" y="177.5">Weight: -0.673</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="190.74" y="165.5" width="105.73" height="44" rx="6"/>
+                <text class="tx b" x="200.74" y="183.5">country to h1.2</text>
+                <text class="tx" x="200.74" y="200.5">Weight: -1.734</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="194.61" y="188.5" width="98" height="44" rx="6"/>
+                <text class="tx b" x="204.61" y="206.5">age to h1.2</text>
+                <text class="tx" x="204.61" y="223.5">Weight: -0.995</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="191.06" y="142.5" width="105.1" height="44" rx="6"/>
+                <text class="tx b" x="201.06" y="160.5">amount to h1.3</text>
+                <text class="tx" x="201.06" y="177.5">Weight: -1.02</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="189.6" y="165.5" width="108.02" height="44" rx="6"/>
+                <text class="tx b" x="199.6" y="183.5">velocity to h1.3</text>
+                <text class="tx" x="199.6" y="200.5">Weight: -0.255</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="190.74" y="188.5" width="105.73" height="44" rx="6"/>
+                <text class="tx b" x="200.74" y="206.5">country to h1.3</text>
+                <text class="tx" x="200.74" y="223.5">Weight: -0.211</text>
+            </g>
+        </g>
+        <g class="tp tx11">
+            <g class="tt">
+                <rect class="tb" x="196.65" y="211.5" width="93.92" height="44" rx="6"/>
+                <text class="tx b" x="206.65" y="229.5">age to h1.3</text>
+                <text class="tx" x="206.65" y="246.5">Weight: 0.153</text>
+            </g>
+        </g>
+        <g class="tp tx12">
+            <g class="tt">
+                <rect class="tb" x="384.61" y="131" width="98" height="44" rx="6"/>
+                <text class="tx b" x="394.61" y="149">h1.1 to y</text>
+                <text class="tx" x="394.61" y="166">Weight: -0.192</text>
+            </g>
+        </g>
+        <g class="tp tx13">
+            <g class="tt">
+                <rect class="tb" x="384.61" y="154" width="98" height="44" rx="6"/>
+                <text class="tx b" x="394.61" y="172">h1.2 to y</text>
+                <text class="tx" x="394.61" y="189">Weight: -0.918</text>
+            </g>
+        </g>
+        <g class="tp tx14">
+            <g class="tt">
+                <rect class="tb" x="384.61" y="177" width="98" height="44" rx="6"/>
+                <text class="tx b" x="394.61" y="195">h1.3 to y</text>
+                <text class="tx" x="394.61" y="212">Weight: -0.186</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="158.61" y="109" width="136.16" height="61" rx="6"/>
+                <text class="tx b" x="168.61" y="127">amount</text>
+                <text class="tx" x="168.61" y="144">Input layer: Input</text>
+                <text class="tx" x="168.61" y="161">Input sensitivity: 0.31</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="158.61" y="155" width="136.16" height="61" rx="6"/>
+                <text class="tx b" x="168.61" y="173">velocity</text>
+                <text class="tx" x="168.61" y="190">Input layer: Input</text>
+                <text class="tx" x="168.61" y="207">Input sensitivity: 0.14</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="158.61" y="201" width="136.16" height="61" rx="6"/>
+                <text class="tx b" x="168.61" y="219">country</text>
+                <text class="tx" x="168.61" y="236">Input layer: Input</text>
+                <text class="tx" x="168.61" y="253">Input sensitivity: 0.03</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="158.61" y="255" width="109.76" height="44" rx="6"/>
+                <text class="tx b" x="168.61" y="273">age</text>
+                <text class="tx" x="168.61" y="290">Input layer: Input</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="348.61" y="123" width="170.84" height="78" rx="6"/>
+                <text class="tx b" x="358.61" y="141">h1.1</text>
+                <text class="tx" x="358.61" y="158">Hidden layer: Hidden 1</text>
+                <text class="tx" x="358.61" y="175">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="358.61" y="192">Connections in: 4, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="348.61" y="169" width="170.84" height="78" rx="6"/>
+                <text class="tx b" x="358.61" y="187">h1.2</text>
+                <text class="tx" x="358.61" y="204">Hidden layer: Hidden 1</text>
+                <text class="tx" x="358.61" y="221">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="358.61" y="238">Connections in: 4, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="348.61" y="215" width="170.84" height="78" rx="6"/>
+                <text class="tx b" x="358.61" y="233">h1.3</text>
+                <text class="tx" x="358.61" y="250">Hidden layer: Hidden 1</text>
+                <text class="tx" x="358.61" y="267">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="358.61" y="284">Connections in: 4, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="347.77" y="169" width="170.84" height="78" rx="6"/>
+                <text class="tx b" x="357.77" y="187">y</text>
+                <text class="tx" x="357.77" y="204">Output layer: Output</text>
+                <text class="tx" x="357.77" y="221">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="357.77" y="238">Connections in: 3, out: 0</text>
+            </g>
+        </g>
+    </g>
+</svg>

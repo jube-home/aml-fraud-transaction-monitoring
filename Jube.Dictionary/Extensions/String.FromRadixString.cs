@@ -18,12 +18,14 @@ namespace Jube.Dictionary.Extensions
         public static long FromRadixString(this string? @this, int radix)
         {
             var text = (@this ?? "").Trim().ToLowerInvariant();
+
             if (radix is < 2 or > 36 || text.Length == 0)
             {
                 throw new FormatException("A radix from 2 to 36 and a non-empty digit string are required.");
             }
 
             var negative = text[0] == '-';
+
             if (negative)
             {
                 text = text[1..];
@@ -35,9 +37,11 @@ namespace Jube.Dictionary.Extensions
             }
 
             long value = 0;
+
             foreach (var c in text)
             {
                 var digit = c is >= '0' and <= '9' ? c - '0' : c is >= 'a' and <= 'z' ? c - 'a' + 10 : 99;
+
                 if (digit >= radix)
                 {
                     throw new FormatException($"'{c}' is not a digit in base {radix}.");

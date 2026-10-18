@@ -53,18 +53,16 @@
 //    OF SUCH DAMAGE.
 //   
 
+using System;
+using Accord.Math;
+
 namespace Accord.Collections
 {
-    using Accord.Math;
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Region of space in a Space-Partitioning Tree. Represents an axis-aligned 
-    ///   bounding box stored as a center with half-dimensions to represent the boundaries 
-    ///   of this quad tree.
+    ///     Region of space in a Space-Partitioning Tree. Represents an axis-aligned
+    ///     bounding box stored as a center with half-dimensions to represent the boundaries
+    ///     of this quad tree.
     /// </summary>
-    /// 
     [Serializable]
     public class SPCell
     {
@@ -72,41 +70,9 @@ namespace Accord.Collections
         private double[] width;
 
         /// <summary>
-        ///   Gets the dimensions of the space delimited
-        ///   by this spatial cell.
+        ///     Initializes a new instance of the <see cref="SPCell" /> class.
         /// </summary>
-        /// 
-        public int Dimension
-        {
-            get { return corner.Length; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the starting point of this spatial cell.
-        /// </summary>
-        /// 
-        public double[] Corner
-        {
-            get { return corner; }
-            set { corner = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the width of this spatial cell.
-        /// </summary>
-        /// 
-        public double[] Width
-        {
-            get { return width; }
-            set { width = value; }
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="SPCell"/> class.
-        /// </summary>
-        /// 
         /// <param name="dimension">The number of dimensions of the space.</param>
-        /// 
         public SPCell(int dimension)
         {
             corner = new double[dimension];
@@ -114,35 +80,58 @@ namespace Accord.Collections
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="SPCell"/> class.
+        ///     Initializes a new instance of the <see cref="SPCell" /> class.
         /// </summary>
-        /// 
         /// <param name="corner">The starting point of this spatial cell.</param>
         /// <param name="width">The widths of this spatial cell.</param>
-        /// 
         public SPCell(double[] corner, double[] width)
         {
-            this.corner = corner.MemberwiseClone();
-            this.width = width.MemberwiseClone();
+            this.corner = Matrix.MemberwiseClone(corner);
+            this.width = Matrix.MemberwiseClone(width);
         }
 
         /// <summary>
-        ///   Determines whether a point lies inside this cell.
+        ///     Gets the dimensions of the space delimited
+        ///     by this spatial cell.
         /// </summary>
-        /// 
+        public int Dimension => corner.Length;
+
+        /// <summary>
+        ///     Gets or sets the starting point of this spatial cell.
+        /// </summary>
+        public double[] Corner
+        {
+            get => corner;
+            set => corner = value;
+        }
+
+        /// <summary>
+        ///     Gets or sets the width of this spatial cell.
+        /// </summary>
+        public double[] Width
+        {
+            get => width;
+            set => width = value;
+        }
+
+        /// <summary>
+        ///     Determines whether a point lies inside this cell.
+        /// </summary>
         /// <param name="point">The point.</param>
-        /// 
         /// <returns>True if the point is contained inside this cell; otherwise, false.</returns>
-        /// 
         public bool Contains(double[] point)
         {
-            for (int d = 0; d < corner.Length; d++)
+            for (var d = 0; d < corner.Length; d++)
             {
                 if (corner[d] - width[d] > point[d])
+                {
                     return false;
+                }
 
                 if (corner[d] + width[d] < point[d])
+                {
                     return false;
+                }
             }
 
             return true;

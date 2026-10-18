@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.QueryBuilder;
 using Jube.Dto.Filter;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Xunit;
 
@@ -52,14 +52,18 @@ namespace Jube.Test.Service.Agent
         {
             var services = ListingServices().ToList();
 
-            services.Should().HaveCount(39);
+            services.Should().HaveCount(40);
+
             foreach (var service in services)
             {
                 var row = RowType(service);
+
                 service.GetMethod("FilterFieldsAsync")!.ReturnType.Should()
                     .Be(typeof(Task<List<FilterFieldDto>>), service.Name);
+
                 service.GetMethod("FilterAsync")!.ReturnType.Should()
                     .Be(typeof(Task<>).MakeGenericType(typeof(FilterResultDto<>).MakeGenericType(row)), service.Name);
+
                 service.GetMethod("CountAsync")!.ReturnType.Should()
                     .Be(typeof(Task<FilterCountResultDto>), service.Name);
             }
@@ -85,6 +89,7 @@ namespace Jube.Test.Service.Agent
                     attribute!.Name.Should().Be(area + suffix, service.Name);
                     attribute.Kind.Should().Be(OperationKind.Read, service.Name);
                     attribute.Idempotent.Should().BeTrue(service.Name);
+
                     catalogue.Where(t => t.Name == attribute.Name).Should().ContainSingle(attribute.Name)
                         .Which.Kind.Should().Be(OperationKind.Read);
                 }

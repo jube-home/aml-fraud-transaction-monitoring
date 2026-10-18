@@ -1,59 +1,72 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.ComponentModel;
+using Accord.Diagnostics;
+using Accord.Math;
+using Accord.Statistics.Distributions.Fitting;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Distributions.Fitting;
-    using System.ComponentModel;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Triangular distribution.
+    ///     Triangular distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In probability theory and statistics, the triangular distribution is a continuous
-    ///   probability distribution with lower limit a, upper limit b and mode c, where a &lt; 
-    ///   b and a ≤ c ≤ b.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="https://en.wikipedia.org/wiki/Triangular_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Triangular distribution. Available on: 
-    ///       https://en.wikipedia.org/wiki/Triangular_distribution </a></description></item>
-    ///   </list></para> 
+    ///     <para>
+    ///         In probability theory and statistics, the triangular distribution is a continuous
+    ///         probability distribution with lower limit a, upper limit b and mode c, where a &lt;
+    ///         b and a ≤ c ≤ b.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="https://en.wikipedia.org/wiki/Triangular_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Triangular distribution. Available on:
+    ///                         https://en.wikipedia.org/wiki/Triangular_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   This example shows how to create a Triangular distribution
-    ///   with minimum 1, maximum 6, and most common value 3.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         This example shows how to create a Triangular distribution
+    ///         with minimum 1, maximum 6, and most common value 3.
+    ///     </para>
+    ///     <code>
     /// // Create a new Triangular distribution (1, 3, 6).
     /// var trig = new TriangularDistribution(a: 1, b: 6, c: 3);
     /// 
@@ -75,27 +88,22 @@ namespace Accord.Statistics.Distributions.Univariate
     /// string str = trig.ToString(CultureInfo.InvariantCulture); // Triangular(x; a = 1, b = 6, c = 3)
     /// </code>
     /// </example>
-    /// 
     [Serializable]
     public class TriangularDistribution : UnivariateContinuousDistribution,
         ISampleableDistribution<double>, IFittableDistribution<double, TriangularOptions>
     {
-
         // Distribution parameters
-        private double a;
-        private double b;
         private double c;
 
         /// <summary>
-        ///   Constructs a Triangular distribution
-        ///   with the given parameters a, b and c.
+        ///     Constructs a Triangular distribution
+        ///     with the given parameters a, b and c.
         /// </summary>
-        /// 
         /// <param name="min">The minimum possible value in the distribution (a).</param>
         /// <param name="max">The maximum possible value in the distribution (b).</param>
         /// <param name="mode">The most common value in the distribution (c).</param>
-        /// 
-        public TriangularDistribution([Real, DefaultValue(0)] double min, [Real(minimum: 1e-300), DefaultValue(1)] double max, [Real, DefaultValue(0.5)] double mode)
+        public TriangularDistribution([Real] [DefaultValue(0)] double min,
+            [Real(1e-300)] [DefaultValue(1)] double max, [Real] [DefaultValue(0.5)] double mode)
         {
             if (min >= max)
             {
@@ -112,350 +120,343 @@ namespace Accord.Statistics.Distributions.Univariate
             initialize(min, max, mode);
         }
 
+        /// <summary>
+        ///     Gets the triangular parameter A (the minimum value).
+        /// </summary>
+        public double Min { get; private set; }
 
         /// <summary>
-        ///   Gets the triangular parameter A (the minimum value).
+        ///     Gets the triangular parameter B (the maximum value).
         /// </summary>
-        /// 
-        public double Min { get { return a; } }
+        public double Max { get; private set; }
 
         /// <summary>
-        ///   Gets the triangular parameter B (the maximum value).
+        ///     Gets the mean for this distribution,
+        ///     defined as (a + b + c) / 3.
         /// </summary>
-        /// 
-        public double Max { get { return b; } }
-
-
-        /// <summary>
-        ///   Gets the mean for this distribution, 
-        ///   defined as (a + b + c) / 3.
-        /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mean value.
+        ///     The distribution's mean value.
         /// </value>
-        /// 
         public override double Mean
         {
-            get { return (a + b + c) / 3.0; }
-            set {} //Not Implemented.
+            get => (Min + Max + c) / 3.0;
+            set { } //Not Implemented.
         }
 
-
         /// <summary>
-        ///   Gets the median for this distribution.
+        ///     Gets the median for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's median value.
+        ///     The distribution's median value.
         /// </value>
-        /// 
         public override double Median
         {
             get
             {
                 double median;
-                if (c >= (a + b) / 2.0)
+                if (c >= (Min + Max) / 2.0)
                 {
-                    median = a + Math.Sqrt((b - a) * (c - a)) / Constants.Sqrt2;
+                    median = Min + System.Math.Sqrt((Max - Min) * (c - Min)) / Constants.Sqrt2;
                 }
                 else
                 {
-                    median = b - Math.Sqrt((b - a) * (b - c)) / Constants.Sqrt2;
+                    median = Max - System.Math.Sqrt((Max - Min) * (Max - c)) / Constants.Sqrt2;
                 }
 
-                Accord.Diagnostics.Debug.Assert(median.IsEqual(base.Median, 1e-5));
+                Debug.Assert(median.IsEqual(base.Median, 1e-5));
 
                 return median;
             }
         }
 
-
         /// <summary>
-        ///   Gets the variance for this distribution, defined
-        ///   as (a² + b² + c² - ab - ac - bc) / 18.
+        ///     Gets the variance for this distribution, defined
+        ///     as (a² + b² + c² - ab - ac - bc) / 18.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's variance.
+        ///     The distribution's variance.
         /// </value>
-        /// 
         public override double Variance
         {
-            get { return (a * a + b * b + c * c - a * b - a * c - b * c) / 18; }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the mode for this distribution,
-        ///   also known as the triangular's <c>c</c>.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's mode value.
-        /// </value>
-        /// 
-        public override double Mode
-        {
-            get { return c; }
+            get => (Min * Min + Max * Max + c * c - Min * Max - Min * c - Max * c) / 18;
             set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the distribution support, defined as (<see cref="Min"/>, <see cref="Max"/>).
+        ///     Gets the mode for this distribution,
+        ///     also known as the triangular's <c>c</c>.
         /// </summary>
-        /// 
+        /// <value>
+        ///     The distribution's mode value.
+        /// </value>
+        public override double Mode
+        {
+            get => c;
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the distribution support, defined as (<see cref="Min" />, <see cref="Max" />).
+        /// </summary>
         public override DoubleRange Support
         {
-            get { return new DoubleRange(a, b); }
-            set {} //Not Implemented.
+            get => new(Min, Max);
+            set { } //Not Implemented.
         }
 
-
         /// <summary>
-        ///   Gets the entropy for this distribution, 
-        ///   defined as 0.5 + log((max-min)/2)).
+        ///     Gets the entropy for this distribution,
+        ///     defined as 0.5 + log((max-min)/2)).
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's entropy.
+        ///     The distribution's entropy.
         /// </value>
-        /// 
         public override double Entropy
         {
-            get { return 0.5 + Math.Log((b - a) / 2); }
-            set {} //Not Implemented.
+            get => 0.5 + System.Math.Log((Max - Min) / 2);
+            set { } //Not Implemented.
         }
 
-
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Fits the underlying distribution to a given set of observations.
         /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        protected internal override double InnerDistributionFunction(double x)
+        /// <param name="observations">
+        ///     The array of observations to fit the model against.
+        ///     The array elements can be either of type double (for univariate data) or type
+        ///     double[] (for multivariate data).
+        /// </param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting,
+        ///     such as regularization constants and additional parameters.
+        /// </param>
+        public void Fit(double[] observations, double[] weights, TriangularOptions options)
         {
-            if (x >= a && x <= c)
-                return ((x - a) * (x - a)) / ((b - a) * (c - a));
-            return 1 - ((b - x) * (b - x)) / ((b - a) * (b - c));
+            var fixMax = true;
+            var fixMin = true;
+            var sorted = false;
+            var imax = -1;
+            var imin = -1;
+            var method = TriangularEstimationMethod.MeanMaxMin;
+
+            if (options != null)
+            {
+                fixMax = options.FixMax;
+                fixMin = options.FixMin;
+                method = options.Method;
+                sorted = options.IsSorted;
+                imin = options.MinIndex;
+                imax = options.MaxIndex;
+            }
+
+            var min = Min;
+            var max = Max;
+
+
+            if (!sorted)
+            {
+                Array.Sort(observations, weights);
+            }
+
+            if (!fixMin)
+            {
+                min = GetMin(observations, weights, out imin);
+            }
+
+            if (!fixMax)
+            {
+                max = GetMax(observations, weights, out imax);
+            }
+
+            if (imin == -1)
+            {
+                imin = FindMin(observations, min);
+            }
+
+            if (imax == -1)
+            {
+                imax = FindMax(observations, max);
+            }
+
+
+            var mode = GetMode(observations, weights, method, min, max, imax, imin);
+
+            initialize(min, max, mode);
         }
 
-
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
-        /// </returns>
-        /// 
-        protected internal override double InnerProbabilityDensityFunction(double x)
-        {
-            if (x >= a && x <= c)
-                return (2 * (x - a)) / ((b - a) * (c - a));
-            return (2 * (b - x)) / ((b - a) * (b - c));
-        }
-
-
-        /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
-            return new TriangularDistribution(a, b, c);
+            return new TriangularDistribution(Min, Max, c);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Generates a random vector of observations from the current distribution.
         /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString(string format, IFormatProvider formatProvider)
-        {
-            return String.Format(formatProvider, "Triangular(x; a = {0}, b = {1}, c = {2})",
-                a.ToString(format, formatProvider),
-                b.ToString(format, formatProvider),
-                c.ToString(format, formatProvider));
-        }
-
-
-        private void initialize(double min, double max, double mode)
-        {
-            this.a = min;
-            this.b = max;
-            this.c = mode;
-        }
-
-        /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
-        /// </summary>
-        /// 
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
         public override double[] Generate(int samples, double[] result, Random source)
         {
-            double Fc = DistributionFunction(c);
+            var Fc = DistributionFunction(c);
 
             UniformContinuousDistribution.Random(samples, result, source);
 
-            for (int i = 0; i < samples; i++)
+            for (var i = 0; i < samples; i++)
             {
-                double u = result[i];
+                var u = result[i];
 
                 if (u < Fc)
-                    result[i] = a + Math.Sqrt(u * (b - a) * (c - a));
+                {
+                    result[i] = Min + System.Math.Sqrt(u * (Max - Min) * (c - Min));
+                }
                 else
-                    result[i] = b - Math.Sqrt((1 - u) * (b - a) * (b - c));
+                {
+                    result[i] = Max - System.Math.Sqrt((1 - u) * (Max - Min) * (Max - c));
+                }
             }
 
             return result;
         }
 
         /// <summary>
-        ///   Generates a random observation from the current distribution.
+        ///     Generates a random observation from the current distribution.
         /// </summary>
-        /// 
         /// <returns>A random observations drawn from this distribution.</returns>
-        /// 
         public override double Generate(Random source)
         {
-            double u = UniformContinuousDistribution.Random(source);
-            double Fc = DistributionFunction(c);
+            var u = UniformContinuousDistribution.Random(source);
+            var Fc = DistributionFunction(c);
 
             if (u < Fc)
-                return a + Math.Sqrt(u * (b - a) * (c - a));
-            return b - Math.Sqrt((1 - u) * (b - a) * (b - c));
+            {
+                return Min + System.Math.Sqrt(u * (Max - Min) * (c - Min));
+            }
+
+            return Max - System.Math.Sqrt((1 - u) * (Max - Min) * (Max - c));
         }
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        protected internal override double InnerDistributionFunction(double x)
+        {
+            if (x >= Min && x <= c)
+            {
+                return (x - Min) * (x - Min) / ((Max - Min) * (c - Min));
+            }
+
+            return 1 - (Max - x) * (Max - x) / ((Max - Min) * (Max - c));
+        }
+
+        /// <summary>
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
+        /// </returns>
+        protected internal override double InnerProbabilityDensityFunction(double x)
+        {
+            if (x >= Min && x <= c)
+            {
+                return 2 * (x - Min) / ((Max - Min) * (c - Min));
+            }
+
+            return 2 * (Max - x) / ((Max - Min) * (Max - c));
+        }
+
+        /// <summary>
+        ///     Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format(formatProvider, "Triangular(x; a = {0}, b = {1}, c = {2})",
+                Min.ToString(format, formatProvider),
+                Max.ToString(format, formatProvider),
+                c.ToString(format, formatProvider));
+        }
+
+        private void initialize(double min, double max, double mode)
+        {
+            Min = min;
+            Max = max;
+            c = mode;
+        }
+
+        /// <summary>
+        ///     Fits the underlying distribution to a given set of observations.
+        /// </summary>
         /// <param name="observations">
-        ///   The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting,
-        ///   such as regularization constants and additional parameters.</param>
-        /// 
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting,
+        ///     such as regularization constants and additional parameters.
+        /// </param>
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             Fit(observations, weights, options as TriangularOptions);
         }
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///     Fits the underlying distribution to a given set of observations.
         /// </summary>
-        /// 
         /// <param name="observations">
-        ///   The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting,
-        ///   such as regularization constants and additional parameters.</param>
-        /// 
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting,
+        ///     such as regularization constants and additional parameters.
+        /// </param>
         public override void Fit(double[] observations, int[] weights, IFittingOptions options)
         {
             Fit(observations, weights, options as TriangularOptions);
         }
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///     Fits the underlying distribution to a given set of observations.
         /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against.
-        ///   The array elements can be either of type double (for univariate data) or type
-        ///   double[] (for multivariate data).
+        /// <param name="observations">
+        ///     The array of observations to fit the model against.
+        ///     The array elements can be either of type double (for univariate data) or type
+        ///     double[] (for multivariate data).
         /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, 
-        ///   such as regularization constants and additional parameters.</param>
-        ///   
-        public void Fit(double[] observations, double[] weights, TriangularOptions options)
-        {
-            bool fixMax = true;
-            bool fixMin = true;
-            bool sorted = false;
-            int imax = -1;
-            int imin = -1;
-            TriangularEstimationMethod method = TriangularEstimationMethod.MeanMaxMin;
-
-            if (options != null)
-            {
-                fixMax = options.FixMax;
-                fixMin = options.FixMin;
-                method = options.Method;
-                sorted = options.IsSorted;
-                imin = options.MinIndex;
-                imax = options.MaxIndex;
-            }
-
-            double min = this.Min;
-            double max = this.Max;
-            double mode = this.Mode;
-
-
-            if (!sorted)
-                Array.Sort(observations, weights);
-
-            if (!fixMin)
-                min = GetMin(observations, weights, out imin);
-
-            if (!fixMax)
-                max = GetMax(observations, weights, out imax);
-
-            if (imin == -1)
-                imin = FindMin(observations, min);
-
-            if (imax == -1)
-                imax = FindMax(observations, max);
-
-
-            mode = GetMode(observations, weights, method, min, max, imax, imin);
-
-            initialize(min, max, mode);
-        }
-
-        /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
-        /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against.
-        ///   The array elements can be either of type double (for univariate data) or type
-        ///   double[] (for multivariate data).
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting,
+        ///     such as regularization constants and additional parameters.
         /// </param>
-        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, 
-        ///   such as regularization constants and additional parameters.</param>
-        ///   
         public void Fit(double[] observations, int[] weights, TriangularOptions options)
         {
-            bool fixMax = true;
-            bool fixMin = true;
-            bool sorted = false;
-            int imax = -1;
-            int imin = -1;
-            TriangularEstimationMethod method = TriangularEstimationMethod.MeanMaxMin;
+            var fixMax = true;
+            var fixMin = true;
+            var sorted = false;
+            var imax = -1;
+            var imin = -1;
+            var method = TriangularEstimationMethod.MeanMaxMin;
 
             if (options != null)
             {
@@ -467,110 +468,124 @@ namespace Accord.Statistics.Distributions.Univariate
                 imax = options.MaxIndex;
             }
 
-            double min = this.Min;
-            double max = this.Max;
-            double mode = this.Mode;
+            var min = Min;
+            var max = Max;
 
 
             if (!sorted)
+            {
                 Array.Sort(observations, weights);
+            }
 
             if (!fixMin)
+            {
                 min = GetMin(observations, weights, out imin);
+            }
 
             if (!fixMax)
+            {
                 max = GetMax(observations, weights, out imax);
+            }
 
             if (imin == -1)
+            {
                 imin = FindMin(observations, min);
+            }
 
             if (imax == -1)
+            {
                 imax = FindMax(observations, max);
+            }
 
 
-            mode = GetMode(observations, weights, method, min, max, imax, imin);
+            var mode = GetMode(observations, weights, method, min, max, imax, imin);
 
             initialize(min, max, mode);
         }
 
         /// <summary>
-        ///   Gets the minimum value in a set of weighted observations.
+        ///     Gets the minimum value in a set of weighted observations.
         /// </summary>
-        /// 
         public static double GetMin(double[] observations, double[] weights, out int imin)
         {
             imin = 0;
             if (weights == null)
+            {
                 return observations[imin];
+            }
 
-            return observations.WeightedMin(weights, out imin, alreadySorted: true);
+            return observations.WeightedMin(weights, out imin, true);
         }
 
         /// <summary>
-        ///   Gets the maximum value in a set of weighted observations.
+        ///     Gets the maximum value in a set of weighted observations.
         /// </summary>
-        /// 
         public static double GetMax(double[] observations, double[] weights, out int imax)
         {
             imax = observations.Length - 1;
             if (weights == null)
+            {
                 return observations[imax];
+            }
 
-            return observations.WeightedMax(weights, out imax, alreadySorted: true);
+            return observations.WeightedMax(weights, out imax, true);
         }
 
         /// <summary>
-        ///   Finds the index of the last largest value in a set of observations.
+        ///     Finds the index of the last largest value in a set of observations.
         /// </summary>
-        /// 
         public static int FindMax(double[] observations, double max)
         {
-            int imax = observations.Length - 1;
+            var imax = observations.Length - 1;
             while (observations[imax] > max)
+            {
                 imax++;
+            }
+
             return imax;
         }
 
         /// <summary>
-        ///   Finds the index of the first smallest value in a set of observations.
+        ///     Finds the index of the first smallest value in a set of observations.
         /// </summary>
-        /// 
         public static int FindMin(double[] observations, double min)
         {
-            int imin = 0;
+            var imin = 0;
             while (observations[imin] < min)
+            {
                 imin++;
+            }
+
             return imin;
         }
 
         /// <summary>
-        ///   Finds the index of the first smallest value in a set of weighted observations.
+        ///     Finds the index of the first smallest value in a set of weighted observations.
         /// </summary>
-        /// 
         public static double GetMin(double[] observations, int[] weights, out int imin)
         {
             imin = 0;
             if (weights == null)
+            {
                 return observations[imin];
+            }
 
-            return observations.WeightedMin(weights, out imin, alreadySorted: true);
+            return observations.WeightedMin(weights, out imin, true);
         }
 
         /// <summary>
-        ///   Finds the index of the last largest value in a set of weighted observations.
+        ///     Finds the index of the last largest value in a set of weighted observations.
         /// </summary>
-        /// 
         public static double GetMax(double[] observations, int[] weights, out int imax)
         {
             imax = observations.Length - 1;
             if (weights == null)
+            {
                 return observations[imax];
+            }
 
-            return observations.WeightedMax(weights, out imax, alreadySorted: true);
+            return observations.WeightedMax(weights, out imax, true);
         }
-
-
-
 
         private static double GetMode(double[] observations, double[] weights, TriangularEstimationMethod method,
             double min, double max, int imax, int imin)
@@ -586,7 +601,6 @@ namespace Accord.Statistics.Distributions.Univariate
             throw new NotSupportedException("Unsupported estimation method: " + method);
         }
 
-
         private static double GetMode(double[] observations, int[] weights, TriangularEstimationMethod method,
             double min, double max, int imax, int imin)
         {
@@ -598,8 +612,6 @@ namespace Accord.Statistics.Distributions.Univariate
                     return WeightedMode(observations, weights, imax, imin);
                 case TriangularEstimationMethod.Bisection:
                     break;
-                default:
-                    break;
             }
 
             throw new NotSupportedException("Unsupported estimation method: " + method);
@@ -607,14 +619,14 @@ namespace Accord.Statistics.Distributions.Univariate
 
         private static double WeightedMode(double[] observations, double[] weights, int imax, int imin)
         {
-            double currentValue = observations[imin];
-            double currentCount = weights[imin];
+            var currentValue = observations[imin];
+            var currentCount = weights[imin];
 
-            double bestValue = currentValue;
-            double bestCount = currentCount;
+            var bestValue = currentValue;
+            var bestCount = currentCount;
 
 
-            for (int i = imin + 1; i <= imax; i++)
+            for (var i = imin + 1; i <= imax; i++)
             {
                 if (currentValue == observations[i])
                 {
@@ -638,14 +650,14 @@ namespace Accord.Statistics.Distributions.Univariate
 
         private static double WeightedMode(double[] observations, int[] weights, int imax, int imin)
         {
-            double currentValue = observations[imin];
+            var currentValue = observations[imin];
             double currentCount = weights[imin];
 
-            double bestValue = currentValue;
-            double bestCount = currentCount;
+            var bestValue = currentValue;
+            var bestCount = currentCount;
 
 
-            for (int i = imin + 1; i <= imax; i++)
+            for (var i = imin + 1; i <= imax; i++)
             {
                 if (currentValue.Equals(observations[i]))
                 {
@@ -667,22 +679,26 @@ namespace Accord.Statistics.Distributions.Univariate
             return bestValue;
         }
 
-        private static double MeanMaxMin(double[] observations, double[] weights, double min, double max, int imax, int imin)
+        private static double MeanMaxMin(double[] observations, double[] weights, double min, double max, int imax,
+            int imin)
         {
             double mean;
 
             if (weights == null)
             {
                 double sum = 0;
-                for (int i = imin; i <= imax; i++)
+                for (var i = imin; i <= imax; i++)
+                {
                     sum += observations[i];
+                }
+
                 mean = sum / (imax - imin);
             }
             else
             {
                 double sum = 0;
                 double weightSum = 0;
-                for (int i = imin; i <= imax; i++)
+                for (var i = imin; i <= imax; i++)
                 {
                     sum += weights[i] * observations[i];
                     weightSum += weights[i];
@@ -694,22 +710,26 @@ namespace Accord.Statistics.Distributions.Univariate
             return 3 * mean - max - min;
         }
 
-        private static double MeanMaxMin(double[] observations, int[] weights, double min, double max, int imax, int imin)
+        private static double MeanMaxMin(double[] observations, int[] weights, double min, double max, int imax,
+            int imin)
         {
             double mean;
 
             if (weights == null)
             {
                 double sum = 0;
-                for (int i = imin; i <= imax; i++)
+                for (var i = imin; i <= imax; i++)
+                {
                     sum += observations[i];
+                }
+
                 mean = sum / (imax - imin);
             }
             else
             {
                 double sum = 0;
                 double weightSum = 0;
-                for (int i = imin; i <= imax; i++)
+                for (var i = imin; i <= imax; i++)
                 {
                     sum += weights[i] * observations[i];
                     weightSum += weights[i];

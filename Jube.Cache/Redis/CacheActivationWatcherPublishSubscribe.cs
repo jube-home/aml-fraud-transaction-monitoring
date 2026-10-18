@@ -12,7 +12,7 @@
  */
 
 using Jube.Cache.Observability;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.TaskCancellation;
 using log4net;
 using StackExchange.Redis;

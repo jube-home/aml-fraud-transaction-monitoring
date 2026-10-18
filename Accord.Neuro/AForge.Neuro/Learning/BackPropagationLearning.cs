@@ -12,18 +12,17 @@
 
 namespace Accord.Neuro.Learning
 {
-    using System;
-
     /// <summary>
-    /// Back propagation learning algorithm.
+    ///     Back propagation learning algorithm.
     /// </summary>
-    /// 
-    /// <remarks><para>The class implements back propagation learning algorithm,
-    /// which is widely used for training multi-layer neural networks with
-    /// continuous activation functions.</para>
-    /// 
-    /// <para>Sample usage (training network to calculate XOR function):</para>
-    /// <code>
+    /// <remarks>
+    ///     <para>
+    ///         The class implements back propagation learning algorithm,
+    ///         which is widely used for training multi-layer neural networks with
+    ///         continuous activation functions.
+    ///     </para>
+    ///     <para>Sample usage (training network to calculate XOR function):</para>
+    ///     <code>
     /// // initialize input and output values
     /// double[][] input = new double[4][] {
     ///     new double[] {0, 0}, new double[] {0, 1},
@@ -51,73 +50,31 @@ namespace Accord.Neuro.Learning
     /// }
     /// </code>
     /// </remarks>
-    /// 
-    /// <seealso cref="EvolutionaryLearning"/>
-    /// 
+    /// <seealso cref="EvolutionaryLearning" />
     public class BackPropagationLearning : ISupervisedLearning
     {
         // network to teach
-        private ActivationNetwork network;
-        // learning rate
-        private double learningRate = 0.1;
-        // momentum
-        private double momentum = 0.0;
+        private readonly ActivationNetwork network;
 
         // neuron's errors
-        private double[][] neuronErrors = null;
-        // weight's updates
-        private double[][][] weightsUpdates = null;
+        private readonly double[][] neuronErrors;
+
         // threshold's updates
-        private double[][] thresholdsUpdates = null;
+        private readonly double[][] thresholdsUpdates;
+
+        // weight's updates
+        private readonly double[][][] weightsUpdates;
+
+        // learning rate
+        private double learningRate = 0.1;
+
+        // momentum
+        private double momentum;
 
         /// <summary>
-        /// Learning rate, [0, 1].
+        ///     Initializes a new instance of the <see cref="BackPropagationLearning" /> class.
         /// </summary>
-        /// 
-        /// <remarks><para>The value determines speed of learning.</para>
-        /// 
-        /// <para>Default value equals to <b>0.1</b>.</para>
-        /// </remarks>
-        ///
-        public double LearningRate
-        {
-            get { return learningRate; }
-            set
-            {
-                learningRate = Math.Max(0.0, Math.Min(1.0, value));
-            }
-        }
-
-        /// <summary>
-        /// Momentum, [0, 1].
-        /// </summary>
-        /// 
-        /// <remarks><para>The value determines the portion of previous weight's update
-        /// to use on current iteration. Weight's update values are calculated on
-        /// each iteration depending on neuron's error. The momentum specifies the amount
-        /// of update to use from previous iteration and the amount of update
-        /// to use from current iteration. If the value is equal to 0.1, for example,
-        /// then 0.1 portion of previous update and 0.9 portion of current update are used
-        /// to update weight's value.</para>
-        /// 
-        /// <para>Default value equals to <b>0.0</b>.</para>
-        ///	</remarks>
-        /// 
-        public double Momentum
-        {
-            get { return momentum; }
-            set
-            {
-                momentum = Math.Max(0.0, Math.Min(1.0, value));
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BackPropagationLearning"/> class.
-        /// </summary>
-        /// 
         /// <param name="network">Network to teach.</param>
-        /// 
         public BackPropagationLearning(ActivationNetwork network)
         {
             this.network = network;
@@ -128,16 +85,16 @@ namespace Accord.Neuro.Learning
             thresholdsUpdates = new double[network.Layers.Length][];
 
             // initialize errors and deltas arrays for each layer
-            for (int i = 0; i < network.Layers.Length; i++)
+            for (var i = 0; i < network.Layers.Length; i++)
             {
-                Layer layer = network.Layers[i];
+                var layer = network.Layers[i];
 
                 neuronErrors[i] = new double[layer.Neurons.Length];
                 weightsUpdates[i] = new double[layer.Neurons.Length][];
                 thresholdsUpdates[i] = new double[layer.Neurons.Length];
 
                 // for each neuron
-                for (int j = 0; j < weightsUpdates[i].Length; j++)
+                for (var j = 0; j < weightsUpdates[i].Length; j++)
                 {
                     weightsUpdates[i][j] = new double[layer.InputsCount];
                 }
@@ -145,25 +102,61 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        /// Runs learning iteration.
+        ///     Learning rate, [0, 1].
         /// </summary>
-        /// 
+        /// <remarks>
+        ///     <para>The value determines speed of learning.</para>
+        ///     <para>Default value equals to <b>0.1</b>.</para>
+        /// </remarks>
+        public double LearningRate
+        {
+            get => learningRate;
+            set => learningRate = System.Math.Max(0.0, System.Math.Min(1.0, value));
+        }
+
+        /// <summary>
+        ///     Momentum, [0, 1].
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The value determines the portion of previous weight's update
+        ///         to use on current iteration. Weight's update values are calculated on
+        ///         each iteration depending on neuron's error. The momentum specifies the amount
+        ///         of update to use from previous iteration and the amount of update
+        ///         to use from current iteration. If the value is equal to 0.1, for example,
+        ///         then 0.1 portion of previous update and 0.9 portion of current update are used
+        ///         to update weight's value.
+        ///     </para>
+        ///     <para>Default value equals to <b>0.0</b>.</para>
+        /// </remarks>
+        public double Momentum
+        {
+            get => momentum;
+            set => momentum = System.Math.Max(0.0, System.Math.Min(1.0, value));
+        }
+
+        /// <summary>
+        ///     Runs learning iteration.
+        /// </summary>
         /// <param name="input">Input vector.</param>
         /// <param name="output">Desired output vector.</param>
-        /// 
-        /// <returns>Returns squared error (difference between current network's output and
-        /// desired output) divided by 2.</returns>
-        /// 
-        /// <remarks><para>Runs one learning iteration and updates neuron's
-        /// weights.</para></remarks>
-        ///
+        /// <returns>
+        ///     Returns squared error (difference between current network's output and
+        ///     desired output) divided by 2.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         Runs one learning iteration and updates neuron's
+        ///         weights.
+        ///     </para>
+        /// </remarks>
         public double Run(double[] input, double[] output)
         {
             // compute the network's output
             network.Compute(input);
 
             // calculate network error
-            double error = CalculateError(output);
+            var error = CalculateError(output);
 
             // calculate weights updates
             CalculateUpdates(input);
@@ -175,24 +168,26 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        /// Runs learning epoch.
+        ///     Runs learning epoch.
         /// </summary>
-        /// 
         /// <param name="input">Array of input vectors.</param>
         /// <param name="output">Array of output vectors.</param>
-        /// 
-        /// <returns>Returns summary learning error for the epoch. See <see cref="Run"/>
-        /// method for details about learning error calculation.</returns>
-        /// 
-        /// <remarks><para>The method runs one learning epoch, by calling <see cref="Run"/> method
-        /// for each vector provided in the <paramref name="input"/> array.</para></remarks>
-        /// 
+        /// <returns>
+        ///     Returns summary learning error for the epoch. See <see cref="Run" />
+        ///     method for details about learning error calculation.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The method runs one learning epoch, by calling <see cref="Run" /> method
+        ///         for each vector provided in the <paramref name="input" /> array.
+        ///     </para>
+        /// </remarks>
         public double RunEpoch(double[][] input, double[][] output)
         {
-            double error = 0.0;
+            var error = 0.0;
 
             // run learning procedure for all samples
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
             {
                 error += Run(input[i], output[i]);
             }
@@ -201,15 +196,11 @@ namespace Accord.Neuro.Learning
             return error;
         }
 
-
         /// <summary>
-        /// Calculates error values for all neurons of the network.
+        ///     Calculates error values for all neurons of the network.
         /// </summary>
-        /// 
         /// <param name="desiredOutput">Desired output vector.</param>
-        /// 
         /// <returns>Returns summary squared error of the last layer divided by 2.</returns>
-        /// 
         private double CalculateError(double[] desiredOutput)
         {
             // current and the next layers
@@ -221,13 +212,13 @@ namespace Accord.Neuro.Learning
             // neuron's output value
             double output;
             // layers count
-            int layersCount = network.Layers.Length;
+            var layersCount = network.Layers.Length;
 
             // calculate error values for the last layer first
             layer = network.Layers[layersCount - 1];
             errors = neuronErrors[layersCount - 1];
 
-            for (int i = 0; i < layer.Neurons.Length; i++)
+            for (var i = 0; i < layer.Neurons.Length; i++)
             {
                 output = layer.Neurons[i].Output;
                 // error of the neuron
@@ -235,11 +226,11 @@ namespace Accord.Neuro.Learning
                 // error multiplied with activation function's derivative
                 errors[i] = e * (layer.Neurons[i] as ActivationNeuron).ActivationFunction.Derivative2(output);
                 // squre the error and sum it
-                error += (e * e);
+                error += e * e;
             }
 
             // calculate error values for other layers
-            for (int j = layersCount - 2; j >= 0; j--)
+            for (var j = layersCount - 2; j >= 0; j--)
             {
                 layer = network.Layers[j];
                 layerNext = network.Layers[j + 1];
@@ -247,15 +238,18 @@ namespace Accord.Neuro.Learning
                 errorsNext = neuronErrors[j + 1];
 
                 // for all neurons of the layer
-                for (int i = 0; i < layer.Neurons.Length; i++)
+                for (var i = 0; i < layer.Neurons.Length; i++)
                 {
                     sum = 0.0;
                     // for all neurons of the next layer
-                    for (int k = 0; k < layerNext.Neurons.Length; k++)
+                    for (var k = 0; k < layerNext.Neurons.Length; k++)
                     {
                         sum += errorsNext[k] * layerNext.Neurons[k].Weights[i];
                     }
-                    errors[i] = sum * (layer.Neurons[i] as ActivationNeuron).ActivationFunction.Derivative2(layer.Neurons[i].Output);
+
+                    errors[i] = sum *
+                                (layer.Neurons[i] as ActivationNeuron).ActivationFunction.Derivative2(layer.Neurons[i]
+                                    .Output);
                 }
             }
 
@@ -264,32 +258,30 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        /// Calculate weights updates.
+        ///     Calculate weights updates.
         /// </summary>
-        /// 
         /// <param name="input">Network's input vector.</param>
-        /// 
         private void CalculateUpdates(double[] input)
         {
             // 1 - calculate updates for the first layer
-            Layer layer = network.Layers[0];
-            double[] errors = neuronErrors[0];
-            double[][] layerWeightsUpdates = weightsUpdates[0];
-            double[] layerThresholdUpdates = thresholdsUpdates[0];
+            var layer = network.Layers[0];
+            var errors = neuronErrors[0];
+            var layerWeightsUpdates = weightsUpdates[0];
+            var layerThresholdUpdates = thresholdsUpdates[0];
 
             // cache for frequently used values
-            double cachedMomentum = learningRate * momentum;
-            double cached1mMomentum = learningRate * (1 - momentum);
+            var cachedMomentum = learningRate * momentum;
+            var cached1mMomentum = learningRate * (1 - momentum);
             double cachedError;
 
             // for each neuron of the layer
-            for (int i = 0; i < layer.Neurons.Length; i++)
+            for (var i = 0; i < layer.Neurons.Length; i++)
             {
                 cachedError = errors[i] * cached1mMomentum;
-                double[] neuronWeightUpdates = layerWeightsUpdates[i];
+                var neuronWeightUpdates = layerWeightsUpdates[i];
 
                 // for each weight of the neuron
-                for (int j = 0; j < neuronWeightUpdates.Length; j++)
+                for (var j = 0; j < neuronWeightUpdates.Length; j++)
                 {
                     // calculate weight update
                     neuronWeightUpdates[j] = cachedMomentum * neuronWeightUpdates[j] + cachedError * input[j];
@@ -300,25 +292,26 @@ namespace Accord.Neuro.Learning
             }
 
             // 2 - for all other layers
-            for (int k = 1; k < network.Layers.Length; k++)
+            for (var k = 1; k < network.Layers.Length; k++)
             {
-                Layer layerPrev = network.Layers[k - 1];
+                var layerPrev = network.Layers[k - 1];
                 layer = network.Layers[k];
                 errors = neuronErrors[k];
                 layerWeightsUpdates = weightsUpdates[k];
                 layerThresholdUpdates = thresholdsUpdates[k];
 
                 // for each neuron of the layer
-                for (int i = 0; i < layer.Neurons.Length; i++)
+                for (var i = 0; i < layer.Neurons.Length; i++)
                 {
                     cachedError = errors[i] * cached1mMomentum;
-                    double[] neuronWeightUpdates = layerWeightsUpdates[i];
+                    var neuronWeightUpdates = layerWeightsUpdates[i];
 
                     // for each synapse of the neuron
-                    for (int j = 0; j < neuronWeightUpdates.Length; j++)
+                    for (var j = 0; j < neuronWeightUpdates.Length; j++)
                     {
                         // calculate weight update
-                        neuronWeightUpdates[j] = cachedMomentum * neuronWeightUpdates[j] + cachedError * layerPrev.Neurons[j].Output;
+                        neuronWeightUpdates[j] = cachedMomentum * neuronWeightUpdates[j] +
+                                                 cachedError * layerPrev.Neurons[j].Output;
                     }
 
                     // calculate threshold update
@@ -328,9 +321,8 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        /// Update network's weights.
+        ///     Update network's weights.
         /// </summary>
-        /// 
         private void UpdateNetwork()
         {
             // current neuron
@@ -345,24 +337,25 @@ namespace Accord.Neuro.Learning
             double[] neuronWeightUpdates;
 
             // for each layer of the network
-            for (int i = 0; i < network.Layers.Length; i++)
+            for (var i = 0; i < network.Layers.Length; i++)
             {
                 layer = network.Layers[i];
                 layerWeightsUpdates = weightsUpdates[i];
                 layerThresholdUpdates = thresholdsUpdates[i];
 
                 // for each neuron of the layer
-                for (int j = 0; j < layer.Neurons.Length; j++)
+                for (var j = 0; j < layer.Neurons.Length; j++)
                 {
                     neuron = layer.Neurons[j] as ActivationNeuron;
                     neuronWeightUpdates = layerWeightsUpdates[j];
 
                     // for each weight of the neuron
-                    for (int k = 0; k < neuron.Weights.Length; k++)
+                    for (var k = 0; k < neuron.Weights.Length; k++)
                     {
                         // update weight
                         neuron.Weights[k] += neuronWeightUpdates[k];
                     }
+
                     // update treshold
                     neuron.Threshold += layerThresholdUpdates[j];
                 }

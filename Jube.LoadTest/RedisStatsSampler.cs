@@ -21,7 +21,6 @@ namespace Jube.LoadTest
         private static readonly TimeSpan SampleTimeout = TimeSpan.FromSeconds(1);
         private Task<IConnectionMultiplexer>? connecting;
         private (long Hits, long Misses)? lastSample;
-
         private IConnectionMultiplexer? multiplexer;
 
         public void Dispose()
@@ -29,20 +28,25 @@ namespace Jube.LoadTest
             multiplexer?.Dispose();
         }
 
-        public async Task<(double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)?> SampleAsync()
+        public async Task<(double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)?>
+            SampleAsync()
         {
             IConnectionMultiplexer? mux;
+
             try
             {
                 mux = await GetMultiplexerAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await Console.Error.WriteLineAsync($"redis stats sampling failed to connect: {ex.Message}").ConfigureAwait(false);
+                await Console.Error.WriteLineAsync($"redis stats sampling failed to connect: {ex.Message}")
+                    .ConfigureAwait(false);
+
                 return null;
             }
 
             var server = mux?.GetServers().FirstOrDefault(s => s.IsConnected);
+
             if (server == null)
             {
                 return null;
@@ -73,7 +77,8 @@ namespace Jube.LoadTest
                 var misses = (long)GetDouble("keyspace_misses");
 
                 var hitRatePct = 0.0;
-                if (lastSample is {} last)
+
+                if (lastSample is { } last)
                 {
                     var hitDelta = hits - last.Hits;
                     var missDelta = misses - last.Misses;
@@ -88,6 +93,7 @@ namespace Jube.LoadTest
             catch (Exception ex)
             {
                 await Console.Error.WriteLineAsync($"redis stats sampling failed: {ex.Message}").ConfigureAwait(false);
+
                 return null;
             }
         }
@@ -102,6 +108,7 @@ namespace Jube.LoadTest
             connecting ??= ConnectAsync();
 
             var completed = await Task.WhenAny(connecting, Task.Delay(SampleTimeout)).ConfigureAwait(false);
+
             if (completed != connecting)
             {
                 return null;
@@ -110,6 +117,7 @@ namespace Jube.LoadTest
             try
             {
                 multiplexer = await connecting.ConfigureAwait(false);
+
                 return multiplexer;
             }
             finally
@@ -122,6 +130,7 @@ namespace Jube.LoadTest
         {
             var options = ConfigurationOptions.Parse(connectionString);
             options.AllowAdmin = true;
+
             return await ConnectionMultiplexer.ConnectAsync(options).ConfigureAwait(false);
         }
     }

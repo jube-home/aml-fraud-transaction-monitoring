@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Service.Query.TreeChildren;
+using Jube.Service.Query.TreeChildren.Models;
 
 namespace Jube.Test.Service.Query.TreeChildren.Models
 {

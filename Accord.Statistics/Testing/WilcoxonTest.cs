@@ -1,124 +1,117 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing
 {
-    using System;
-    using Accord.Statistics.Distributions.Univariate;
-    using System.Linq;
-    using Accord.Math;
-    using System.Collections.Generic;
-
     /// <summary>
-    ///   Base class for Wilcoxon's W tests.
+    ///     Base class for Wilcoxon's W tests.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   This is a base class which doesn't need to be used directly.
-    ///   Instead, you may wish to call <see cref="WilcoxonSignedRankTest"/>
-    ///   and <see cref="TwoSampleWilcoxonSignedRankTest"/>.
+    ///     This is a base class which doesn't need to be used directly.
+    ///     Instead, you may wish to call <see cref="WilcoxonSignedRankTest" />
+    ///     and <see cref="TwoSampleWilcoxonSignedRankTest" />.
     /// </remarks>
-    /// 
-    /// <seealso cref="WilcoxonSignedRankTest"/>
-    /// <seealso cref="TwoSampleWilcoxonSignedRankTest"/>
-    /// 
-    /// <seealso cref="Accord.Statistics.Distributions.Univariate.WilcoxonDistribution"/>
-    /// 
+    /// <seealso cref="WilcoxonSignedRankTest" />
+    /// <seealso cref="TwoSampleWilcoxonSignedRankTest" />
+    /// <seealso cref="WilcoxonDistribution" />
     public class WilcoxonTest : HypothesisTest<WilcoxonDistribution>
     {
         private bool hasTies;
 
         /// <summary>
-        ///   Gets the number of samples being tested.
+        ///     Creates a new Wilcoxon's W+ test.
         /// </summary>
-        /// 
-        public int NumberOfSamples { get { return StatisticDistribution.NumberOfSamples; } }
-
-        /// <summary>
-        ///   Gets the signs for each of the <see cref="Delta"/> differences.
-        /// </summary>
-        /// 
-        public int[] Signs { get; protected set; }
-
-        /// <summary>
-        ///   Gets the differences between the samples.
-        /// </summary>
-        /// 
-        public double[] Delta { get; protected set; }
-
-        /// <summary>
-        ///   Gets the rank statistics for the differences.
-        /// </summary>
-        /// 
-        public double[] Ranks { get; protected set; }
-
-        /// <summary>
-        ///   Gets wether the samples to be ranked contain zeros.
-        /// </summary>
-        /// 
-        public bool HasZeros { get; private set; }
-
-        /// <summary>
-        ///   Gets wether the samples to be ranked contain ties.
-        /// </summary>
-        /// 
-        public bool HasTies { get { return hasTies; } }
-
-        /// <summary>
-        ///   Gets whether we are using a exact test.
-        /// </summary>
-        /// 
-        public bool IsExact { get; private set; }
-
-        /// <summary>
-        ///   Creates a new Wilcoxon's W+ test.
-        /// </summary>
-        /// 
         /// <param name="signs">The signs for the sample differences.</param>
         /// <param name="diffs">The differences between samples.</param>
         /// <param name="tail">The distribution tail to test.</param>
-        /// 
         public WilcoxonTest(int[] signs, double[] diffs, DistributionTail tail)
         {
-            Compute(signs, diffs, tail, null, adjustForTies: true);
+            Compute(signs, diffs, tail, null, true);
         }
 
         /// <summary>
-        ///   Creates a new Wilcoxon's W+ test.
+        ///     Creates a new Wilcoxon's W+ test.
         /// </summary>
-        /// 
         protected WilcoxonTest()
         {
         }
 
         /// <summary>
-        ///   Computes the Wilcoxon Signed-Rank test.
+        ///     Gets the number of samples being tested.
         /// </summary>
-        /// 
-        protected void Compute(int[] signs, double[] diffs, DistributionTail tail, 
+        public int NumberOfSamples => StatisticDistribution.NumberOfSamples;
+
+        /// <summary>
+        ///     Gets the signs for each of the <see cref="Delta" /> differences.
+        /// </summary>
+        public int[] Signs { get; protected set; }
+
+        /// <summary>
+        ///     Gets the differences between the samples.
+        /// </summary>
+        public double[] Delta { get; protected set; }
+
+        /// <summary>
+        ///     Gets the rank statistics for the differences.
+        /// </summary>
+        public double[] Ranks { get; protected set; }
+
+        /// <summary>
+        ///     Gets wether the samples to be ranked contain zeros.
+        /// </summary>
+        public bool HasZeros { get; private set; }
+
+        /// <summary>
+        ///     Gets wether the samples to be ranked contain ties.
+        /// </summary>
+        public bool HasTies => hasTies;
+
+        /// <summary>
+        ///     Gets whether we are using a exact test.
+        /// </summary>
+        public bool IsExact { get; private set; }
+
+        /// <summary>
+        ///     Computes the Wilcoxon Signed-Rank test.
+        /// </summary>
+        protected void Compute(int[] signs, double[] diffs, DistributionTail tail,
             bool? exact, bool adjustForTies)
         {
-            int[] nonZeros = diffs.Find(x => x != 0);
-            this.HasZeros = nonZeros.Length != diffs.Length;
+            var nonZeros = diffs.Find(x => x != 0);
+            HasZeros = nonZeros.Length != diffs.Length;
 
             if (HasZeros)
             {
@@ -129,74 +122,79 @@ namespace Accord.Statistics.Testing
                 diffs = diffs.Get(nonZeros);
             }
 
-            this.Signs = signs;
-            this.Delta = diffs;
-            this.Ranks = Delta.Rank(hasTies: out hasTies, adjustForTies: adjustForTies);
+            Signs = signs;
+            Delta = diffs;
+            Ranks = Delta.Rank(out hasTies, adjustForTies: adjustForTies);
 
-            double W = WilcoxonDistribution.WPositive(Signs, Ranks);
+            var W = WilcoxonDistribution.WPositive(Signs, Ranks);
 
-            this.Compute(W, Ranks, tail, exact);
+            Compute(W, Ranks, tail, exact);
         }
 
         /// <summary>
-        ///   Computes the Wilcoxon Signed-Rank test.
+        ///     Computes the Wilcoxon Signed-Rank test.
         /// </summary>
-        /// 
         protected void Compute(double statistic, double[] ranks, DistributionTail tail, bool? exact)
         {
-            if (this.HasZeros)
+            if (HasZeros)
             {
                 if (!exact.HasValue)
+                {
                     exact = false;
+                }
 
                 if (exact == true)
-                    throw new ArgumentException("An exact test cannot be computed when there are zeros in the samples (or when paired samples are the same in a paired test).");
+                {
+                    throw new ArgumentException(
+                        "An exact test cannot be computed when there are zeros in the samples (or when paired samples are the same in a paired test).");
+                }
             }
 
-            this.Statistic = statistic;
-            this.Tail = tail;
+            Statistic = statistic;
+            Tail = tail;
 
             if (ranks.Length != 0)
             {
-                this.StatisticDistribution = new WilcoxonDistribution(ranks, exact)
+                StatisticDistribution = new WilcoxonDistribution(ranks, exact)
                 {
-                    Correction = (Tail == DistributionTail.TwoTail) ? ContinuityCorrection.Midpoint : ContinuityCorrection.KeepInside
+                    Correction = Tail == DistributionTail.TwoTail
+                        ? ContinuityCorrection.Midpoint
+                        : ContinuityCorrection.KeepInside
                 };
 
-                this.IsExact = this.StatisticDistribution.Exact;
+                IsExact = StatisticDistribution.Exact;
             }
             else
             {
-                this.StatisticDistribution = null;
-                this.IsExact = exact.GetValueOrDefault(false);
+                StatisticDistribution = null;
+                IsExact = exact.GetValueOrDefault(false);
             }
 
-            this.PValue = StatisticToPValue(Statistic);
+            PValue = StatisticToPValue(Statistic);
 
-            this.OnSizeChanged();
+            OnSizeChanged();
         }
 
         /// <summary>
-        ///   Converts a given test statistic to a p-value.
+        ///     Converts a given test statistic to a p-value.
         /// </summary>
-        /// 
         /// <param name="x">The value of the test statistic.</param>
-        /// 
         /// <returns>The p-value for the given statistic.</returns>
-        /// 
         public override double StatisticToPValue(double x)
         {
             if (StatisticDistribution == null)
-                return Double.NaN; // return NaN to match R's behavior
+            {
+                return double.NaN; // return NaN to match R's behavior
+            }
 
             double p;
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    double a = StatisticDistribution.DistributionFunction(x);
-                    double b = StatisticDistribution.ComplementaryDistributionFunction(x);
-                    double c = Math.Min(a, b);
-                    p = Math.Min(2 * c, 1);
+                    var a = StatisticDistribution.DistributionFunction(x);
+                    var b = StatisticDistribution.ComplementaryDistributionFunction(x);
+                    var c = System.Math.Min(a, b);
+                    p = System.Math.Min(2 * c, 1);
                     break;
 
                 case DistributionTail.OneLower:
@@ -210,17 +208,15 @@ namespace Accord.Statistics.Testing
                 default:
                     throw new InvalidOperationException();
             }
+
             return p;
         }
 
         /// <summary>
-        ///   Converts a given p-value to a test statistic.
+        ///     Converts a given p-value to a test statistic.
         /// </summary>
-        /// 
         /// <param name="p">The p-value.</param>
-        /// 
         /// <returns>The test statistic which would generate the given p-value.</returns>
-        /// 
         public override double PValueToStatistic(double p)
         {
             double b;
@@ -241,6 +237,5 @@ namespace Accord.Statistics.Testing
 
             return b;
         }
-
     }
 }

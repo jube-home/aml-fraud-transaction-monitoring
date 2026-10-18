@@ -13,7 +13,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Jube.Service.Query.Icons;
+using Jube.Service.Query.Icons.Interfaces;
 
 namespace Jube.Test.Service.Query.Icons.Models
 {

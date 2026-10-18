@@ -28,6 +28,7 @@ namespace Jube.Data.Repository
             ExhaustiveSearchInstancePromotedTrialInstanceSensitivity model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -41,12 +42,14 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstancePromotedTrialInstanceSensitivity
                 .Where(d =>
                     d.ExhaustiveSearchInstanceTrialInstanceVariable.ExhaustiveSearchInstanceTrialInstance
-                        .ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                        .ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId ==
+                    tenantRegistryIdOutsideOfInstance
                     && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.ImportId, importId)
                 .Set(s => s.Deleted, Convert.ToByte(1))

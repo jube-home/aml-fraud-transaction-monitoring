@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,11 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Validation;
 using Jube.Dto.OpenTelemetryLogCounter;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.OpenTelemetryLogCounter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -57,6 +58,9 @@ namespace Jube.Service.OpenTelemetryLogCounter
             repository = new OpenTelemetryLogCounterRepository(dbContext, userName);
             validator = new OpenTelemetryLogCounterDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<OpenTelemetryLogCounterService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -109,6 +113,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.List: entry user={userName}");
@@ -117,9 +122,11 @@ namespace Jube.Service.OpenTelemetryLogCounter
             try
             {
                 EnsurePermitted("OpenTelemetryLogCounter.List");
+
                 var dtos = OpenTelemetryLogCounterMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 return dtos;
             }
             catch (ForbiddenException)
@@ -150,6 +157,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.Get: entry id={id} user={userName}");
@@ -159,12 +167,14 @@ namespace Jube.Service.OpenTelemetryLogCounter
             {
                 EnsurePermitted("OpenTelemetryLogCounter.Get");
                 var row = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (row == null)
                 {
                     return null;
                 }
 
                 op.Entity(row.Id);
+
                 return OpenTelemetryLogCounterMapper.ToDto(row);
             }
             catch (ForbiddenException)
@@ -194,6 +204,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "Create", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.Create: entry user={userName}");
@@ -205,6 +216,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
                 EnsurePermitted("OpenTelemetryLogCounter.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -264,6 +276,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.Validate: entry id={model?.Id} user={userName}");
@@ -276,6 +289,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -306,6 +320,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.Update: entry id={model?.Id} user={userName}");
@@ -317,6 +332,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
                 EnsurePermitted("OpenTelemetryLogCounter.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -329,6 +345,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
                 }
 
                 LogCounterPoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(OpenTelemetryLogCounterMapper.ToPoco(model), token)
@@ -382,8 +399,10 @@ namespace Jube.Service.OpenTelemetryLogCounter
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"OpenTelemetryLogCounter.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -399,6 +418,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             using var op = OperationScope.Start("OpenTelemetryLogCounter", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryLogCounter.Delete: entry id={id} user={userName}");

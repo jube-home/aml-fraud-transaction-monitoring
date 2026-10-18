@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,6 +41,7 @@ namespace Jube.Test.RuleParser
             var parsed = BuilderProfile.Parse(json, BuilderFilter.Catalogue(typeof(Row)));
             parsed.Valid.Should().BeTrue(string.Join("; ", parsed.Errors.Select(e => e.Message)));
             var predicate = BuilderFilter.Compile<Row>(parsed.Group);
+
             return [.. rows.Where(predicate).Select(r => r.Id)];
         }
 
@@ -56,6 +58,7 @@ namespace Jube.Test.RuleParser
 
             fields.Keys.Should().BeEquivalentTo("Id", "Name", "Active", "Weight", "Count", "Interval", "CreatedDate",
                 "Guid");
+
             fields["Id"].Type.Should().Be(BuilderFieldType.Integer);
             fields["Count"].Type.Should().Be(BuilderFieldType.Integer);
             fields["Name"].Type.Should().Be(BuilderFieldType.String);
@@ -183,6 +186,7 @@ namespace Jube.Test.RuleParser
 
             result.Valid.Should().BeFalse();
             result.Items.Should().BeEmpty();
+
             result.Errors.Should().ContainSingle(e =>
                 e.ErrorCode == "OperatorInvalid" && e.PropertyName == "$.rules[0].operator");
         }
@@ -194,8 +198,10 @@ namespace Jube.Test.RuleParser
 
             result.Valid.Should().BeTrue();
             result.Count.Should().Be(4);
+
             result.Groups.Select(g => (g.Value, g.Count)).Should()
                 .Equal(("True", 2), (null, 1), ("False", 1));
+
             result.GroupsTruncated.Should().BeFalse();
         }
 
@@ -203,6 +209,7 @@ namespace Jube.Test.RuleParser
         public void DtoCountFiltersBeforeCountingAndRefusesAnUnknownGroupBy()
         {
             DtoFilter.Count(rows, Rule("Interval", "equal", "\"d\""), null).Count.Should().Be(2);
+
             DtoFilter.Count(rows, null, "Nope").Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "FieldUnknown" && e.PropertyName == "groupBy");
         }
@@ -213,6 +220,7 @@ namespace Jube.Test.RuleParser
             var fields = DtoFilter.Fields<Row>().ToDictionary(f => f.Name);
 
             fields["Guid"].Operators.Should().Equal("equal", "not_equal");
+
             fields["CreatedDate"].Operators.Should().StartWith([
                 "equal", "not_equal", "less", "less_or_equal",
                 "greater", "greater_or_equal", "between", "not_between"
@@ -220,6 +228,7 @@ namespace Jube.Test.RuleParser
                 "is_weekday", "is_weekend",
                 "is_end_of_month", "same_day_as"
             ]);
+
             fields["Name"].DataType.Should().Be("String");
         }
 
@@ -236,6 +245,7 @@ namespace Jube.Test.RuleParser
                     ["Count"] = row.Count, ["Interval"] = row.Interval, ["CreatedDate"] = row.CreatedDate,
                     ["Guid"] = row.Guid
                 };
+
                 foreach (var (name, value) in expected)
                 {
                     fields[name].Property.GetValue(row).Should().Be(value, name);

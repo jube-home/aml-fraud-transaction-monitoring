@@ -5,8 +5,6 @@ nav_order: 5
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Locked and Active
 
 For every parent object and child object there exists an Active and Locked switch. In the case of a parent object:

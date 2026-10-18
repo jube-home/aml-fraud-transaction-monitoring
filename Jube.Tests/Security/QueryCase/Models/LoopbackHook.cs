@@ -37,11 +37,13 @@ internal sealed class LoopbackHook : IDisposable
         BaseUrl = $"http://127.0.0.1:{port}/";
         listener.Prefixes.Add(BaseUrl);
         listener.Start();
+
         _ = Task.Run(async () =>
         {
             while (listener.IsListening)
             {
                 HttpListenerContext context;
+
                 try
                 {
                     context = await listener.GetContextAsync();
@@ -53,9 +55,11 @@ internal sealed class LoopbackHook : IDisposable
 
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
                 var body = await reader.ReadToEndAsync();
+
                 var headers = context.Request.Headers.AllKeys.Where(k => k != null)
                     .ToDictionary(k => k.Required(), k => context.Request.Headers[k] ?? "",
                         StringComparer.OrdinalIgnoreCase);
+
                 lock (requests)
                 {
                     requests.Add(new Received(context.Request.HttpMethod, context.Request.RawUrl ?? "", body,

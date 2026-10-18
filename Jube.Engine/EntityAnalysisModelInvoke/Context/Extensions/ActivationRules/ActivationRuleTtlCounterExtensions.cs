@@ -20,6 +20,7 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Extensions;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
@@ -39,6 +40,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 $"is incrementing TTL counter {evaluateActivationRule.EntityAnalysisModelTtlCounterGuid} as this is enabled in the activation rule.");
 
             var target = FindTargetTtlCounter(evaluateActivationRule, availableModels, context.AvailableSnapshots);
+
             if (target == null)
             {
                 return;
@@ -104,6 +106,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                 var incrementValue = ResolveIncrementValue(foundTtlCounter,
                     context.EntityAnalysisModelInstanceEntryPayload.Payload);
+
                 if (foundTtlCounter.EnableSum)
                 {
                     context.TraceLog(
@@ -160,6 +163,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         foundTtlCounter.Name, out var ttlCounterValue))
                 {
                     ttlCounterValue += incrementValue;
+
                     context.EntityAnalysisModelInstanceEntryPayload.TtlCounter[
                         foundTtlCounter.Name] = ttlCounterValue;
                 }
@@ -184,7 +188,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
         private static (EntityAnalysisModel Model, EntityAnalysisModelTtlCounter TtlCounter)?
             FindTargetTtlCounter(EntityAnalysisModelActivationRule evaluateActivationRule,
                 IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
-                IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> snapshots)
+                IReadOnlyDictionary<int,
+                    Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> snapshots)
         {
             foreach (var (key, model) in availableModels)
             {

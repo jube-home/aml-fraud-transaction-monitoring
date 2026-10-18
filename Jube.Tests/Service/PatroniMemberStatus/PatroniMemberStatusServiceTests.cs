@@ -88,6 +88,7 @@ namespace Jube.Test.Service.PatroniMemberStatus
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -283,6 +284,7 @@ namespace Jube.Test.Service.PatroniMemberStatus
             await CreateEntryAsync(dbContext, name, lagBytes: 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: name, sortField: "lagBytes",
                 sortDirection: ascendingKeyword);
 
@@ -324,6 +326,7 @@ namespace Jube.Test.Service.PatroniMemberStatus
         {
             await using var dbContext = fx.GetDbContext();
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, name);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,20 +15,21 @@ using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Parser;
-using Jube.Dto.Filter;
-using Jube.Dto.RuleExecution;
-using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
-using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelInlineFunction;
+using Jube.Dto.Filter;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Validation;
+using Jube.Parser;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelInlineFunction;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.Parser.Dependency;
 using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelInlineFunction;
 using Jube.Validations.RuleScript;
@@ -47,6 +48,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         private static readonly int[] writePermissions = [8];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelInlineFunctionRepository repository;
@@ -54,7 +56,6 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
-        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelInlineFunctionDtoValidator validator;
 
         private EntityAnalysisModelInlineFunctionService(DbContext dbContext, string userName, int tenantRegistryId,
@@ -70,12 +71,18 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelInlineFunctionRepository(dbContext, userName);
+
             validator = new EntityAnalysisModelInlineFunctionDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName),
                 new RuleScriptParser(dbContext, tenantRegistryId));
+
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
+        public static IReadOnlyList<int> ReadPermissions => readPermissions;
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<EntityAnalysisModelInlineFunctionService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -131,6 +138,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.List: entry user={userName}");
@@ -139,9 +147,11 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.List");
+
                 var dtos = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.List: {dtos.Count} rows user={userName}");
@@ -157,6 +167,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.List: cancelled user={userName}");
@@ -183,6 +194,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -192,9 +204,11 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             try
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelInlineFunction.ListByEntityAnalysisModelId");
+
                 var dtos = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -211,6 +225,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -222,9 +237,11 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelInlineFunction.ListByEntityAnalysisModelId: unexpected failure entityAnalysisModelId={entityAnalysisModelId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -239,6 +256,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Get: entry id={id} user={userName}");
@@ -248,6 +266,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             {
                 EnsurePermitted(readPermissions, "EntityAnalysisModelInlineFunction.Get");
                 var inlineFunction = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (inlineFunction == null)
                 {
                     if (log.IsDebugEnabled)
@@ -260,6 +279,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 }
 
                 op.Entity(inlineFunction.Id);
+
                 return EntityAnalysisModelInlineFunctionMapper.ToDto(inlineFunction);
             }
             catch (ForbiddenException)
@@ -270,6 +290,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.Get: cancelled id={id} user={userName}");
@@ -281,6 +302,69 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelInlineFunction.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one Inline Function by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<EntityAnalysisModelInlineFunctionDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the Inline Function.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "GetByGuid", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(readPermissions, "EntityAnalysisModelInlineFunction.GetByGuid");
+                var inlineFunction = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (inlineFunction == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"EntityAnalysisModelInlineFunction.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(inlineFunction.Id);
+
+                return EntityAnalysisModelInlineFunctionMapper.ToDto(inlineFunction);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelInlineFunction.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error(
+                    $"EntityAnalysisModelInlineFunction.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+
                 throw;
             }
         }
@@ -298,7 +382,9 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -329,6 +415,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.ListPaged: cancelled user={userName}");
@@ -354,6 +441,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.FilterFields: entry user={userName}");
@@ -365,6 +453,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisModelInlineFunctionDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -404,6 +493,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -413,10 +503,13 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.Filter");
+
                 var rows = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -454,6 +547,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Count: entry groupBy={groupBy} user={userName}");
@@ -462,10 +556,13 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.Count");
+
                 var rows = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -496,6 +593,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Create: entry user={userName} name={model?.Name}");
@@ -507,6 +605,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 EnsurePermitted(writePermissions, "EntityAnalysisModelInlineFunction.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -546,6 +645,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.Create: cancelled user={userName}");
@@ -556,8 +656,10 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelInlineFunction.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+
                 throw;
             }
         }
@@ -573,6 +675,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Validate: entry id={model?.Id} user={userName}");
@@ -585,6 +688,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -619,6 +723,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "ParseRule", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.ParseRule: entry id={model?.Id} user={userName}");
@@ -631,7 +736,9 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
 
                 var results = await validator.ValidateAsync(model,
                     o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -667,6 +774,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Execute", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Execute: entry id={model?.Id} user={userName}");
@@ -683,7 +791,9 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                     model.FunctionScript,
                     "FunctionScript",
                     null, false, context, token).ConfigureAwait(false);
+
                 op.Rows(result.Errors.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -716,6 +826,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Update: entry id={model?.Id} user={userName}");
@@ -727,6 +838,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 EnsurePermitted(writePermissions, "EntityAnalysisModelInlineFunction.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -739,6 +851,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 }
 
                 InlineFunctionPoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(EntityAnalysisModelInlineFunctionMapper.ToPoco(model), token)
@@ -785,6 +898,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.Update: cancelled id={model?.Id} user={userName}");
@@ -795,9 +909,11 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelInlineFunction.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -813,6 +929,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelInlineFunction.Delete: entry id={id} user={userName}");
@@ -825,6 +942,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 try
                 {
                     var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                     if (existing != null)
                     {
                         var dependents = await deleteValidator
@@ -833,6 +951,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                                     existing.EntityAnalysisModelId),
                                 token)
                             .ConfigureAwait(false);
+
                         if (!dependents.IsValid)
                         {
                             throw new DtoValidationException(dependents);
@@ -878,6 +997,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelInlineFunction.Delete: cancelled id={id} user={userName}");

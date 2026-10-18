@@ -12,12 +12,14 @@
  */
 
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Jube.Validations
 {
     public static class JsonText
     {
         private const int MaxLength = 1_048_576;
+        private static readonly Regex unicodeEscape = new(@"\\u([0-9a-fA-F]{4})", RegexOptions.Compiled);
 
         public static bool IsAcceptable(string? value)
         {
@@ -36,15 +38,59 @@ namespace Jube.Validations
                 return false;
             }
 
+            if (HasUnpairedSurrogateEscape(value))
+            {
+                return false;
+            }
+
             try
             {
                 using var document = JsonDocument.Parse(value);
+
                 return true;
             }
             catch (JsonException)
             {
                 return false;
             }
+        }
+
+        private static bool HasUnpairedSurrogateEscape(string value)
+        {
+            var matches = unicodeEscape.Matches(value);
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var codeUnit = Convert.ToInt32(matches[i].Groups[1].Value, 16);
+
+                var isHighSurrogate = codeUnit is >= 0xD800 and <= 0xDBFF;
+                var isLowSurrogate = codeUnit is >= 0xDC00 and <= 0xDFFF;
+
+                if (!isHighSurrogate && !isLowSurrogate)
+                {
+                    continue;
+                }
+
+                var followedByMatchingLowSurrogate = isHighSurrogate
+                                                     && i + 1 < matches.Count
+                                                     && matches[i + 1].Index == matches[i].Index + matches[i].Length
+                                                     && Convert.ToInt32(matches[i + 1].Groups[1].Value, 16) is >= 0xDC00
+                                                         and <= 0xDFFF;
+
+                var precededByMatchingHighSurrogate = isLowSurrogate
+                                                      && i > 0
+                                                      && matches[i - 1].Index + matches[i - 1].Length ==
+                                                      matches[i].Index
+                                                      && Convert.ToInt32(matches[i - 1].Groups[1].Value, 16) is
+                                                          >= 0xD800 and <= 0xDBFF;
+
+                if (!followedByMatchingLowSurrogate && !precededByMatchingHighSurrogate)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -32,12 +32,15 @@ namespace Jube.Test.Infrastructure
                     : [.. requiredKeys, .. overrides.Keys];
 
                 var originalValues = new string?[keys.Length];
+
                 for (var i = 0; i < keys.Length; i++)
                 {
                     originalValues[i] = Environment.GetEnvironmentVariable(keys[i]);
+
                     var value = overrides != null && overrides.TryGetValue(keys[i], out var overrideValue)
                         ? overrideValue
                         : $"unit-test-{keys[i]}";
+
                     Environment.SetEnvironmentVariable(keys[i], value);
                 }
 

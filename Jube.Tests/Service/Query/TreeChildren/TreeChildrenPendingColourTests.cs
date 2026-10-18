@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,23 +42,27 @@ namespace Jube.Test.Service.Query.TreeChildren
 
         private readonly List<int> modelIds = [];
         private readonly List<int> xPathIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.GetTable<Poco.EntityAnalysisModelRequestXpathVersion>()
                 .Where(w => xPathIds.Contains(w.EntityAnalysisModelRequestXpathId!.Value)).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => xPathIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Poco.EntityAnalysisModelVersion>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
         }
 
         private async Task<(int ModelId, int XPathId)> SeedAsync(string maker, int version)
         {
             await using var dbContext = fx.GetDbContext();
+
             var tenantId = await dbContext.UserInTenant
                 .Where(w => w.User == fx.Seed.UserWithPermission)
                 .Select(s => s.TenantRegistryId)
@@ -75,10 +80,12 @@ namespace Jube.Test.Service.Query.TreeChildren
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             modelIds.Add(model.Id);
 
             var name = $"ZzTreeP{Guid.NewGuid():N}"[..20];
+
             var xPathId = await dbContext.InsertWithInt32IdentityAsync(new Poco.EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = model.Id,
@@ -105,6 +112,7 @@ namespace Jube.Test.Service.Query.TreeChildren
                 new NullServiceChangeBus());
 
             var children = await service.GetRequestXPathAsync(modelId);
+
             return children.SingleOrDefault(c => c.Key == xPathId)?.Color;
         }
 

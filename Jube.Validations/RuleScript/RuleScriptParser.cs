@@ -17,7 +17,9 @@ using Jube.Data.Context;
 using Jube.Data.Query;
 using Jube.Data.Query.Models;
 using Jube.Parser;
+using Jube.Parser.Models;
 using log4net;
+using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 
 namespace Jube.Validations.RuleScript
 {
@@ -26,9 +28,7 @@ namespace Jube.Validations.RuleScript
         public const string RuleSetName = "RuleScript";
         public const string SaveRuleSets = "default," + RuleSetName;
         public const string ErrorCode = "RuleScriptInvalid";
-
         private static readonly ILog log = LogManager.GetLogger(typeof(RuleScriptParser));
-
         private readonly Dictionary<(int, int), RuleParseEnvironmentDto> environments = new();
 
         public async Task ValidateAsync<T>(ValidationContext<T> context, int entityAnalysisModelId,
@@ -56,6 +56,7 @@ namespace Jube.Validations.RuleScript
                 {
                     ErrorCode = ErrorCode
                 });
+
                 return;
             }
 
@@ -76,6 +77,7 @@ namespace Jube.Validations.RuleScript
             {
                 environment = await new GetRuleParseEnvironmentQuery(dbContext, tenantRegistryId)
                     .ExecuteAsync(entityAnalysisModelId, ruleParseType, token).ConfigureAwait(false);
+
                 environments[(entityAnalysisModelId, ruleParseType)] = environment;
             }
 

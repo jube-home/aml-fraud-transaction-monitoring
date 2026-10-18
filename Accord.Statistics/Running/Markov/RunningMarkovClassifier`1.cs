@@ -1,122 +1,113 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions;
+using Accord.Statistics.Models.Markov;
+
 #pragma warning disable 612, 618
 
 namespace Accord.Statistics.Running
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Hidden Markov Classifier filter for general state distributions.
+    ///     Hidden Markov Classifier filter for general state distributions.
     /// </summary>
-    /// 
-    /// <seealso cref="HiddenMarkovClassifier{TDistribution}"/>
-    /// <seealso cref="RunningMarkovClassifier"/>
-    /// 
+    /// <seealso cref="HiddenMarkovClassifier{TDistribution}" />
+    /// <seealso cref="RunningMarkovClassifier" />
     [Serializable]
     public class RunningMarkovClassifier<TDistribution> : IRunning<double[]>
         where TDistribution : IDistribution
     {
-
         private RunningMarkovStatistics<TDistribution>[] models;
         private RunningMarkovStatistics<TDistribution> threshold;
 
         /// <summary>
-        ///   Gets the <see cref="HiddenMarkovClassifier{TDistribution}"/> used in this filter.
+        ///     Creates a new <see cref="RunningMarkovClassifier&lt;TDistribution&gt;" />.
         /// </summary>
-        /// 
+        /// <param name="model">The hidden Markov classifier model.</param>
+        public RunningMarkovClassifier(HiddenMarkovClassifier<TDistribution> model)
+        {
+            Classifier = model;
+
+            Responses = new double[model.Classes];
+            models = new RunningMarkovStatistics<TDistribution>[model.Classes];
+            for (var i = 0; i < model.Classes; i++)
+            {
+                models[i] = new RunningMarkovStatistics<TDistribution>(model[i]);
+            }
+
+            if (model.Threshold != null)
+            {
+                threshold = new RunningMarkovStatistics<TDistribution>(model.Threshold);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="HiddenMarkovClassifier{TDistribution}" /> used in this filter.
+        /// </summary>
         public HiddenMarkovClassifier<TDistribution> Classifier { get; private set; }
 
         /// <summary>
-        ///   Gets the class response probabilities measuring
-        ///   the likelihood of the current sequence belonging
-        ///   to each of the classes.
+        ///     Gets the class response probabilities measuring
+        ///     the likelihood of the current sequence belonging
+        ///     to each of the classes.
         /// </summary>
-        /// 
         public double[] Responses { get; private set; }
 
         /// <summary>
-        ///   Gets the current classification label for
-        ///   the sequence up to the current observation.
+        ///     Gets the current classification label for
+        ///     the sequence up to the current observation.
         /// </summary>
-        /// 
         public int Classification { get; private set; }
 
         /// <summary>
-        ///   Gets the current rejection threshold level 
-        ///   generated by classifier's threshold model.
+        ///     Gets the current rejection threshold level
+        ///     generated by classifier's threshold model.
         /// </summary>
-        /// 
         public double Threshold { get; private set; }
 
         /// <summary>
-        ///   Creates a new <see cref="RunningMarkovClassifier&lt;TDistribution&gt;"/>.
+        ///     Registers the occurrence of a value.
         /// </summary>
-        /// 
-        /// <param name="model">The hidden Markov classifier model.</param>
-        ///         
-        public RunningMarkovClassifier(HiddenMarkovClassifier<TDistribution> model)
-        {
-            this.Classifier = model;
-
-            this.Responses = new double[model.Classes];
-            this.models = new RunningMarkovStatistics<TDistribution>[model.Classes];
-            for (int i = 0; i < model.Classes; i++)
-                this.models[i] = new RunningMarkovStatistics<TDistribution>(model[i]);
-
-            if (model.Threshold != null)
-                this.threshold = new RunningMarkovStatistics<TDistribution>(model.Threshold);
-        }
-
-        /// <summary>
-        ///   Registers the occurrence of a value.
-        /// </summary>
-        /// 
         /// <param name="value">The value to be registered.</param>
-        /// 
-        public void Push(double value)
-        {
-            Push(new double[] { value });
-        }
-
-        /// <summary>
-        ///   Registers the occurrence of a value.
-        /// </summary>
-        /// 
-        /// <param name="value">The value to be registered.</param>
-        /// 
         public void Push(double[] value)
         {
             Classification = -1;
-            double max = Double.NegativeInfinity;
+            var max = double.NegativeInfinity;
 
-            for (int i = 0; i < models.Length; i++)
+            for (var i = 0; i < models.Length; i++)
             {
                 models[i].Push(value);
-                double prior = Math.Log(Classifier.Priors[i]);
+                var prior = System.Math.Log(Classifier.Priors[i]);
                 Responses[i] = prior + models[i].LogForward;
 
                 if (Responses[i] > max)
@@ -129,50 +120,82 @@ namespace Accord.Statistics.Running
             if (threshold != null)
             {
                 threshold.Push(value);
-                double prior = Math.Log(Classifier.Sensitivity);
+                var prior = System.Math.Log(Classifier.Sensitivity);
                 Threshold = prior + threshold.LogForward;
 
                 if (Threshold > max)
+                {
                     Classification = -1;
+                }
             }
         }
 
         /// <summary>
-        ///   Checks the classification after the insertion
-        ///   of a new value without registering this value.
+        ///     Clears all measures previously computed.
         /// </summary>
-        /// 
+        public void Clear()
+        {
+            for (var i = 0; i < models.Length; i++)
+            {
+                models[i].Clear();
+            }
+
+            if (threshold != null)
+            {
+                threshold.Clear();
+            }
+
+            for (var i = 0; i < Responses.Length; i++)
+            {
+                Responses[i] = 0;
+            }
+
+            Threshold = 0;
+
+            Classification = -1;
+        }
+
+        /// <summary>
+        ///     Registers the occurrence of a value.
+        /// </summary>
+        /// <param name="value">The value to be registered.</param>
+        public void Push(double value)
+        {
+            Push(new[] { value });
+        }
+
+        /// <summary>
+        ///     Checks the classification after the insertion
+        ///     of a new value without registering this value.
+        /// </summary>
         /// <param name="logLikelihood">
-        ///   The next log-likelihood if the occurrence of 
-        ///   <paramref name="value"/> is registered.
+        ///     The next log-likelihood if the occurrence of
+        ///     <paramref name="value" /> is registered.
         /// </param>
         /// <param name="value">The value to be checked.</param>
-        /// 
         public int Peek(double value, out double logLikelihood)
         {
             return Peek(new[] { value }, out logLikelihood);
         }
 
         /// <summary>
-        ///   Checks the classification after the insertion
-        ///   of a new value without registering this value.
+        ///     Checks the classification after the insertion
+        ///     of a new value without registering this value.
         /// </summary>
-        /// 
         /// <param name="logLikelihood">
-        ///   The next log-likelihood if the occurrence of 
-        ///   <paramref name="value"/> is registered.
+        ///     The next log-likelihood if the occurrence of
+        ///     <paramref name="value" /> is registered.
         /// </param>
         /// <param name="value">The value to be checked.</param>
-        /// 
         public int Peek(double[] value, out double logLikelihood)
         {
-            int imax = -1;
-            logLikelihood = Double.NegativeInfinity;
+            var imax = -1;
+            logLikelihood = double.NegativeInfinity;
 
-            for (int i = 0; i < models.Length; i++)
+            for (var i = 0; i < models.Length; i++)
             {
-                double peek = models[i].Peek(value);
-                double prior = Math.Log(Classifier.Priors[i]);
+                var peek = models[i].Peek(value);
+                var prior = System.Math.Log(Classifier.Priors[i]);
                 Responses[i] = prior + peek;
 
                 if (Responses[i] > logLikelihood)
@@ -184,8 +207,8 @@ namespace Accord.Statistics.Running
 
             if (threshold != null)
             {
-                double peek = threshold.Peek(value);
-                double prior = Classifier.Sensitivity;
+                var peek = threshold.Peek(value);
+                var prior = Classifier.Sensitivity;
                 Threshold = prior + peek;
 
                 if (Threshold > logLikelihood)
@@ -197,25 +220,5 @@ namespace Accord.Statistics.Running
 
             return imax;
         }
-
-        /// <summary>
-        ///   Clears all measures previously computed.
-        /// </summary>
-        /// 
-        public void Clear()
-        {
-            for (int i = 0; i < models.Length; i++)
-                models[i].Clear();
-
-            if (threshold != null)
-                threshold.Clear();
-
-            for (int i = 0; i < Responses.Length; i++)
-                Responses[i] = 0;
-            Threshold = 0;
-
-            Classification = -1;
-        }
-
     }
 }

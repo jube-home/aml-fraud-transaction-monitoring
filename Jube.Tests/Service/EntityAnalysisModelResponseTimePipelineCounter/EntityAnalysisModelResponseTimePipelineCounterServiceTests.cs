@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +69,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -84,6 +86,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter
         private async Task<(int Id, Guid Guid)> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -94,6 +97,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -325,6 +329,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter
             await CreateCounterAsync(dbContext, modelGuid, InvokeStage.Gateway, 4, 1000, 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result =
                 await service.ListAsync(sortField: "totalMicroseconds", sortDirection: ascendingKeyword);
 
@@ -377,6 +382,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter
             }
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(2, stageId: (int)InvokeStage.Parse,
                 from: DateTime.UtcNow.AddMinutes(-1));
 

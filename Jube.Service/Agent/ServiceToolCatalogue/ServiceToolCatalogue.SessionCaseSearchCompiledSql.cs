@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.SessionCaseSearchCompiledSql;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddSessionCaseSearchCompiledSql(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "SessionCaseSearchCompiledSqlGetLast", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Returns the caller's own most recently compiled Session Case Search (or a NotFound placeholder); " +
-                "a search flagged for rebuild is recompiled first.")
-        ]);
+        static partial void AddSessionCaseSearchCompiledSql(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "SessionCaseSearchCompiledSqlGetLast", OperationKind.Read, true, false,
+                    "Returns the caller's own most recently compiled Session Case Search (or a NotFound placeholder); " +
+                    "a search flagged for rebuild is recompiled first.",
+                    SessionCaseSearchCompiledSqlService.RequiredPermissions)
+            ]);
+        }
     }
 }

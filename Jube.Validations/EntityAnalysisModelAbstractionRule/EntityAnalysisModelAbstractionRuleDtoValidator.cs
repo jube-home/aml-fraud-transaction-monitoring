@@ -26,7 +26,6 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
     {
         private const int MaxNameLength = 256;
         private const int MaxRuleScriptLength = 65536;
-
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
         private static readonly string[] allowedSearchIntervals = ["s", "n", "h", "d"];
         private static readonly int[] allowedOffsetTypeIds = [1, 2, 3, 4];
@@ -64,6 +63,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.NameAlreadyExists])

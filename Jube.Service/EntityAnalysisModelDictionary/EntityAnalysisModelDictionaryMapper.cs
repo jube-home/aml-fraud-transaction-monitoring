@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 : new EntityAnalysisModelDictionaryDto
                 {
                     Id = dictionary.Id,
+                    Guid = dictionary.Guid,
                     EntityAnalysisModelGuid = dictionary.EntityAnalysisModelGuid,
                     Name = dictionary.Name,
                     DataName = dictionary.DataName,

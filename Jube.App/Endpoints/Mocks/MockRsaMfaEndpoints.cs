@@ -154,6 +154,7 @@ namespace Jube.App.Endpoints.Mocks
 
             var successful = true;
             var serializer = JsonSerializer.Create(apiSettings);
+
             serializer.Error += (_, args) =>
             {
                 successful = false;
@@ -165,6 +166,7 @@ namespace Jube.App.Endpoints.Mocks
                 await using var jsonReader = new JsonTextReader(new StringReader(text));
                 jsonReader.MaxDepth = 32;
                 var dto = serializer.Deserialize<MockRsaMfaRequestDto>(jsonReader);
+
                 return successful ? dto : null;
             }
             catch (JsonException)

@@ -57,6 +57,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             {
                 await dbContext.GetTable<EntityAnalysisModelAbstractionRuleVersion>()
                     .Where(w => w.EntityAnalysisModelAbstractionRuleId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -65,8 +66,10 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             {
                 await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -91,6 +94,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
                 });
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -149,6 +153,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
 
             result.IsValid.Should().BeTrue();
             result.Errors.Should().BeEmpty();
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>().CountAsync(w => w.Name == name))
                 .Should().Be(0);
         }
@@ -166,10 +171,12 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             var result = await service.ValidateAsync(dto);
 
             result.IsValid.Should().BeFalse();
+
             result.Errors.Select(e => (e.PropertyName, e.ErrorCode)).Should().Contain([
                 ("Name", "NameNotEmpty"), ("SearchInterval", "SearchIntervalInvalid"),
                 ("RuleScriptTypeId", "RuleScriptTypeIdInvalid")
             ]);
+
             result.Errors.Should().OnlyContain(e => e.Message.Length > 0 && e.Line == null);
         }
 
@@ -234,6 +241,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             var result = await service.ParseRuleAsync(NewDto(modelId, UniqueName("Unknown")));
 
             result.IsValid.Should().BeFalse();
+
             result.Errors.Should().NotBeEmpty().And.OnlyContain(e =>
                 e.PropertyName == "BuilderRuleScript" && e.ErrorCode == "RuleScriptInvalid" && e.Line != null);
         }
@@ -249,6 +257,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             dto.SearchInterval = "x";
 
             (await service.ParseRuleAsync(dto)).IsValid.Should().BeTrue();
+
             (await service.ValidateAsync(dto)).Errors.Select(e => e.ErrorCode).Should()
                 .Contain("NameNotEmpty").And.Contain("SearchIntervalInvalid").And.NotContain("RuleScriptInvalid");
         }
@@ -294,6 +303,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
 
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid" &&
                                                    e.PropertyName == "BuilderRuleScript");
+
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>().CountAsync(w => w.Name == name))
                 .Should().Be(0);
         }

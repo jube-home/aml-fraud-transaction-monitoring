@@ -11,12 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Reactivity.Models;
+
 namespace Jube.Service.Reactivity.Interfaces
 {
     public interface IServiceChangeBus
     {
         Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default);
-
         IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler);
     }
 }

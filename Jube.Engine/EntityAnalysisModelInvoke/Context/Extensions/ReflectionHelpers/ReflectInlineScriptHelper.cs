@@ -38,6 +38,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
             catch (Exception ex)
             {
                 context.Log.Error($"Error executing Inline Script {entityAnalysisModelInlineScript.Id}:", ex);
+
                 return false;
             }
 
@@ -79,7 +80,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                     {
                         case string s:
                             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(prop.Key, s);
-                            context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot, 
+
+                            context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot,
                                 context.EntityAnalysisModelInstanceEntryPayload, context.Log, prop.Key);
 
                             if (prop.Value.ReportTable)

@@ -264,6 +264,7 @@ namespace Jube.Test.Service.PostgresLogEntry
 
             var descending = await service.ListAsync(search: prefix, sortField: "level",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.Level).Should().Equal("WARNING", "LOG", "ERROR");
         }
 
@@ -279,6 +280,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "ERROR", prefix);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: prefix, sortField: "level",
                 sortDirection: ascendingKeyword);
 
@@ -321,6 +323,7 @@ namespace Jube.Test.Service.PostgresLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var prefix = $"{DatabaseFixture.Prefix}{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, "LOG", prefix);

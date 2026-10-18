@@ -5,8 +5,6 @@ nav_order: 7
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Report Table
 When request payload data has concluded processing, a comprehensive payload comes to rest as JSONB in a table of name Archive in the database.  The format of the data is largely the same as the response payload returned via HTTP response or AMQP,  except the Response Payload configuration will be ignored, and it will contain all elements processed:
 
@@ -49,7 +47,7 @@ Toggling the Report Table field, followed by a synchronise (as is explained in d
 
 ![Image](CurrencyUpdatedForReportTable.png)
 
-The key values will be promoted on a forward basis only,  and there is no functionality to retroactively fill, hence this would need to be done via SQL should it be required (in the future this may be supported by the CLI).  To inspect:
+The key values will be promoted on a forward basis only,  and there is no functionality to retroactively fill, hence this would need to be done via SQL should it be required.  To inspect:
 
 ```sql
 select * from "ArchiveKey"

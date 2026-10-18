@@ -14,7 +14,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache;
-using Jube.Service.Repository.UserRegistryApiKey;
+using Jube.Service.Repository.UserRegistryApiKey.Interfaces;
 
 namespace Jube.App.Code
 {

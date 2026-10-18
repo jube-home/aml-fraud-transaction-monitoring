@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Working Activations
 At the point a case is created a copy of the event is stored alongside the case record.  In this event payload there is a list of the Activation Rules that were matched upon,  stored in their order of priority and match.  The Activations tab exists to write out these activations in a convenient form representing the one to many relationship that exist between transaction or event (one) and Activation (many), insofar as one transaction or event may have many matches:
 

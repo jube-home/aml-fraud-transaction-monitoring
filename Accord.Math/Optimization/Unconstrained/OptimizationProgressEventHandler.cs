@@ -1,103 +1,47 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Math.Optimization
 {
-    using System;
-
     /// <summary>
-    ///   Optimization progress event arguments.
+    ///     Optimization progress event arguments.
     /// </summary>
     public class OptimizationProgressEventArgs : EventArgs
     {
         /// <summary>
-        ///   Gets the current iteration of the method.
+        ///     Initializes a new instance of the <see cref="OptimizationProgressEventArgs" /> class.
         /// </summary>
-        /// 
-        public int Iteration { get; private set; }
-
-        /// <summary>
-        ///   Gets the number of function evaluations performed.
-        /// </summary>
-        /// 
-        public int Evaluations { get; private set; }
-
-        /// <summary>
-        ///   Gets the current gradient of the function being optimized.
-        /// </summary>
-        /// 
-        public double[] Gradient { get; private set; }
-
-        /// <summary>
-        ///   Gets the norm of the current <see cref="Gradient"/>.
-        /// </summary>
-        /// 
-        public double GradientNorm { get; private set; }
-
-        /// <summary>
-        ///   Gets the current solution parameters for the problem.
-        /// </summary>
-        /// 
-        public double[] Solution { get; private set; }
-
-        /// <summary>
-        ///   Gets the norm of the current <see cref="Solution"/>.
-        /// </summary>
-        /// 
-        public double SolutionNorm { get; private set; }
-
-        /// <summary>
-        ///   Gets the value of the function to be optimized
-        ///   at the current proposed <see cref="Solution"/>.
-        /// </summary>
-        /// 
-        public double Value { get; private set; }
-
-        /// <summary>
-        ///   Gets the current step size.
-        /// </summary>
-        /// 
-        public double Step { get; private set; }
-
-
-        /// <summary>
-        ///   Gets or sets a value indicating whether the
-        ///   optimization process is about to terminate.
-        /// </summary>
-        /// 
-        /// <value><c>true</c> if finished; otherwise, <c>false</c>.</value>
-        /// 
-        public bool Finished { get; private set; }
-
-        /// <summary>
-        ///   An user-defined value associated with this object.
-        /// </summary>
-        /// 
-        public object Tag { get; set; }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="OptimizationProgressEventArgs"/> class.
-        /// </summary>
-        /// 
         /// <param name="iteration">The current iteration of the optimization method.</param>
         /// <param name="evaluations">The number of function evaluations performed.</param>
         /// <param name="gradient">The current gradient of the function.</param>
@@ -107,7 +51,6 @@ namespace Accord.Math.Optimization
         /// <param name="value">The value of the function evaluated at the current solution.</param>
         /// <param name="stp">The current step size.</param>
         /// <param name="finished"><c>True</c> if the method is about to terminate, <c>false</c> otherwise.</param>
-        /// 
         public OptimizationProgressEventArgs(
             int iteration, int evaluations,
             double[] gradient, double gnorm,
@@ -115,20 +58,77 @@ namespace Accord.Math.Optimization
             double value, double stp, bool finished)
         {
             if (gradient != null)
-                this.Gradient = (double[])gradient.Clone();
+            {
+                Gradient = (double[])gradient.Clone();
+            }
 
             if (solution != null)
-                this.Solution = (double[])solution.Clone();
+            {
+                Solution = (double[])solution.Clone();
+            }
 
-            this.Value = value;
-            this.GradientNorm = gnorm;
-            this.SolutionNorm = xnorm;
+            Value = value;
+            GradientNorm = gnorm;
+            SolutionNorm = xnorm;
 
-            this.Iteration = iteration;
-            this.Evaluations = evaluations;
+            Iteration = iteration;
+            Evaluations = evaluations;
 
-            this.Finished = finished;
-            this.Step = stp;
+            Finished = finished;
+            Step = stp;
         }
+
+        /// <summary>
+        ///     Gets the current iteration of the method.
+        /// </summary>
+        public int Iteration { get; private set; }
+
+        /// <summary>
+        ///     Gets the number of function evaluations performed.
+        /// </summary>
+        public int Evaluations { get; private set; }
+
+        /// <summary>
+        ///     Gets the current gradient of the function being optimized.
+        /// </summary>
+        public double[] Gradient { get; private set; }
+
+        /// <summary>
+        ///     Gets the norm of the current <see cref="Gradient" />.
+        /// </summary>
+        public double GradientNorm { get; private set; }
+
+        /// <summary>
+        ///     Gets the current solution parameters for the problem.
+        /// </summary>
+        public double[] Solution { get; private set; }
+
+        /// <summary>
+        ///     Gets the norm of the current <see cref="Solution" />.
+        /// </summary>
+        public double SolutionNorm { get; private set; }
+
+        /// <summary>
+        ///     Gets the value of the function to be optimized
+        ///     at the current proposed <see cref="Solution" />.
+        /// </summary>
+        public double Value { get; private set; }
+
+        /// <summary>
+        ///     Gets the current step size.
+        /// </summary>
+        public double Step { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the
+        ///     optimization process is about to terminate.
+        /// </summary>
+        /// <value><c>true</c> if finished; otherwise, <c>false</c>.</value>
+        public bool Finished { get; private set; }
+
+        /// <summary>
+        ///     An user-defined value associated with this object.
+        /// </summary>
+        public object Tag { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static string TokenAt(this string? @this, string? separator, int index)
         {
             var tokens = (@this ?? "").Split(string.IsNullOrEmpty(separator) ? " " : separator);
+
             if (index < 0)
             {
                 index += tokens.Length;

@@ -14,13 +14,14 @@
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query;
+using Jube.Data.Query.GetEntityVersionHistoryQuery;
 using Jube.Data.Repository;
 using Jube.Resources;
 using Jube.Service.Exceptions.Query.EntityVersionHistory;
+using Jube.Service.Query.Interfaces;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
-using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.TenantRegistryVersionHistory
 {
@@ -41,6 +42,7 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
             this.permissionValidation = permissionValidation;
             this.log = log;
             this.strings = strings;
+
             query = new GetEntityVersionHistoryQuery<TenantRegistryVersion>(dbContext,
                 nameof(TenantRegistryVersion.TenantRegistryId));
         }
@@ -90,12 +92,14 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetById");
             var version = await query.ByIdAsync(id, token).ConfigureAwait(false);
+
             return version;
         }
 
         public Task<List<TenantRegistryVersion>> GetByParentIdAsync(int parentId, CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetByParentId");
+
             return query.ByParentIdAsync(parentId, token);
         }
 
@@ -103,6 +107,7 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
             CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetByDateRange");
+
             return query.ByDateRangeAsync(parentId, from, to, token);
         }
 
@@ -111,6 +116,7 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetByIdAndDateRange");
             var version = await query.ByIdAndDateRangeAsync(id, from, to, token).ConfigureAwait(false);
+
             return version;
         }
 
@@ -118,6 +124,7 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetLatest");
             var version = await query.LatestAsync(parentId, token).ConfigureAwait(false);
+
             return version;
         }
 
@@ -125,6 +132,7 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
             CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.Compare");
+
             return query.CompareAsync(fromId, toId, token);
         }
 

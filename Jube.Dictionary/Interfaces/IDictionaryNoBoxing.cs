@@ -13,25 +13,19 @@
 
 namespace Jube.Dictionary.Interfaces
 {
-    using Models;
-
     public interface IDictionaryNoBoxing<TKey> where TKey : notnull
     {
         InternalValue this[TKey key] { get; set; }
-
         int Count { get; }
         bool ContainsKey(TKey key);
         bool Remove(TKey key);
         bool TryGetValue(TKey key, out InternalValue value);
-
         bool TryAdd(TKey key, string? value);
         bool TryAdd(TKey key, double value);
         bool TryAdd(TKey key, bool value);
         bool TryAdd(TKey key, DateTime value);
         bool TryAdd(TKey key, int value);
-
         void Clear();
-
         DictionaryNoBoxing<TKey>.Enumerator GetEnumerator();
     }
 }

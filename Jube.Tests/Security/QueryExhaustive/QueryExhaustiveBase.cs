@@ -33,7 +33,6 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
 {
     private const int NonExistentId = 2147479999;
     private const int MaxBodyBytes = 1024 * 1024;
-
     private QueryExhaustiveWorld? worldOrNull;
 
     protected QueryExhaustiveWorld World
@@ -43,7 +42,6 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     }
 
     protected abstract string RouteName { get; }
-
     protected abstract int IdOf(Set set);
 
     protected virtual string Fingerprint(Set set)
@@ -72,7 +70,6 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     }
 
     protected string PathFor(int id) => $"/api/{RouteName}/{id.ToString(CultureInfo.InvariantCulture)}";
-
     protected Task<PenTestResponse> GetAsAsync(PenTestUser user, int id) => As(user).GetAsync(PathFor(id));
 
     private static bool IsValidJson(string body)
@@ -80,6 +77,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         try
         {
             using var _ = JsonDocument.Parse(body);
+
             return true;
         }
         catch (JsonException)
@@ -89,7 +87,6 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     }
 
     private static bool Same(PenTestResponse a, PenTestResponse b) => a.Status == b.Status && a.Body == b.Body;
-
     private static readonly Regex nonFiniteToken = MyNonFiniteRegex();
 
     [GeneratedRegex("NaN|Infinity", RegexOptions.CultureInvariant)]
@@ -99,10 +96,13 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     {
         run.Expect(response.Status == 200, response, rule + "-STATUS", "expected 200");
         run.Expect(IsValidJson(response.Body), response, rule + "-JSON", "body is not valid JSON");
+
         run.Expect(!nonFiniteToken.IsMatch(response.Body), response, rule + "-NONFINITE",
             "NaN/Infinity leaked into the payload");
+
         run.Expect(response.BodyBytes.Length < MaxBodyBytes, response, rule + "-SIZE",
             $"{response.BodyBytes.Length} bytes");
+
         run.Expect((response.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase),
             response, rule + "-CONTENT-TYPE", response.ContentType ?? "none");
     }
@@ -111,6 +111,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     public async Task AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync()
     {
         var run = NewRun($"{RouteName} own data");
+
         foreach (var (user, set, other) in new[]
                  {
                      (PenTestUser.WithPermission, World.A, World.B), (PenTestUser.TenantB, World.B, World.A)
@@ -118,11 +119,14 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         {
             var response = run.Check(await GetAsAsync(user, IdOf(set)));
             CheckWellFormed(run, response, "OWN");
+
             run.Expect(PenTestMarker.Carries(response, Fingerprint(set)), response, "OWN-DATA",
                 $"{user} did not receive its own data ({Fingerprint(set)})");
+
             run.Expect(!PenTestMarker.Carries(response, Fingerprint(other)) ||
                        Fingerprint(other) == Fingerprint(set), response, "OWN-FOREIGN-DATA",
                 $"{user} received the other tenant's data ({Fingerprint(other)})");
+
             foreach (var marker in AbsentMarkers)
             {
                 run.Expect(!PenTestMarker.Carries(response, marker), response, "OWN-SOFT-DELETED",
@@ -160,8 +164,10 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         await run.ForEachAsync(refused, async item =>
         {
             var response = run.Check(await item.Client.GetAsync(PathFor(id)));
+
             run.Expect(response.IsRejection || response.Status == 403, response, "AUTHZ-NOT-REFUSED",
                 $"{item.Who} was not refused");
+
             run.Expect(!PenTestMarker.Carries(response, fingerprintA), response, "AUTHZ-LEAK",
                 $"{item.Who} saw tenant data");
         });
@@ -189,6 +195,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         run.Expect(Same(baselineA, baselineB), baselineB, "BASELINE-DIFFERS", "non-existent id differs per tenant");
 
         var probes = new List<(PenTestUser User, string What, int Id, PenTestResponse Baseline, string Forbidden)>();
+
         foreach (var set in new[] { World.A, World.Edge, World.Deleted, World.Empty })
         {
             probes.Add((PenTestUser.TenantB, $"tenant B reads tenant A set {set.Tag}", IdOf(set), baselineB,
@@ -201,14 +208,17 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         await run.ForEachAsync(probes, async probe =>
         {
             var response = run.Check(await GetAsAsync(probe.User, probe.Id));
+
             run.Expect(Same(response, probe.Baseline), response, "IDOR-DISTINGUISHABLE",
                 $"{probe.What}: response differs from a non-existent id ({probe.Baseline.Status})");
+
             run.Expect(!PenTestMarker.Carries(response, probe.Forbidden), response, "IDOR-LEAK",
                 probe.What);
         });
 
         var foreign = new List<double>();
         var missing = new List<double>();
+
         for (var i = 0; i < 7; i++)
         {
             foreign.Add((await GetAsAsync(PenTestUser.TenantB, IdOf(World.A))).Elapsed.TotalMilliseconds);
@@ -216,6 +226,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         }
 
         var delta = Math.Abs(foreign.Order().ElementAt(3) - missing.Order().ElementAt(3));
+
         run.Expect(delta < 1500, baselineB, "IDOR-TIMING",
             $"median difference {delta:F0}ms between foreign and missing");
 
@@ -227,6 +238,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     {
         var run = NewRun($"{RouteName} enumeration");
         var ids = World.All.Select(IdOf).Where(i => i > 0).Distinct().ToList();
+
         var candidates = ids.SelectMany(i => Enumerable.Range(-6, 13).Select(d => i + d)).Where(i => i > 0)
             .Distinct().ToList();
 
@@ -234,10 +246,12 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         {
             var forbidden = Fingerprint(user == PenTestUser.WithPermission ? World.B : World.A);
             var own = Fingerprint(user == PenTestUser.WithPermission ? World.A : World.B);
+
             await run.ForEachAsync(candidates, async id =>
             {
                 var response = run.Check(await GetAsAsync(user, id));
                 run.Expect(response.Status == 200, response, "ENUM-STATUS-NOT-UNIFORM", $"id {id}");
+
                 run.Expect(!PenTestMarker.Carries(response, forbidden) ||
                            forbidden == own, response, "ENUM-FOREIGN-DATA",
                     $"id {id} returned the other tenant's data");
@@ -253,6 +267,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var run = NewRun($"{RouteName} soft deleted");
         var baseline = run.Check(await GetAsAsync(PenTestUser.WithPermission, NonExistentId));
         var own = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.A)));
+
         foreach (var marker in AbsentMarkers)
         {
             run.Expect(!PenTestMarker.Carries(own, marker), own, "SOFT-DELETED-ROW",
@@ -260,6 +275,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         }
 
         var deleted = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.Deleted)));
+
         run.Expect(Same(deleted, baseline), deleted, "SOFT-DELETED-INSTANCE",
             "a soft-deleted search instance still serves its data");
 
@@ -270,6 +286,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     public async Task EmptyResult_IsAWellFormedEmptyDocumentAsync()
     {
         var run = NewRun($"{RouteName} empty");
+
         foreach (var id in new[] { IdOf(World.Empty), NonExistentId })
         {
             var response = run.Check(await GetAsAsync(PenTestUser.WithPermission, id));
@@ -296,6 +313,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var id = IdOf(World.A);
         var first = run.Check(await GetAsAsync(PenTestUser.WithPermission, id));
         var responses = new System.Collections.Concurrent.ConcurrentBag<PenTestResponse>();
+
         await run.ForEachAsync(Enumerable.Range(0, 48),
             async _ =>
             {
@@ -316,6 +334,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var run = NewRun($"{RouteName} id boundaries");
         var before = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.A)));
         var forbiddenA = Fingerprint(World.B);
+
         var raw = new List<string>
         {
             "0", "-0", "+0", "1", "-1", "+1", "01", "0001", "2147483647", "2147483648", "-2147483648", "-2147483649",
@@ -330,11 +349,13 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         raw.AddRange(GenerateInjectionPayloads());
 
         var targets = new HashSet<string>();
+
         foreach (var value in raw)
         {
             var escaped = Uri.EscapeDataString(value);
             targets.Add($"/api/{RouteName}/{escaped}");
             targets.Add($"/api/{RouteName}/{Uri.EscapeDataString(escaped)}");
+
             if (value.Length < 200 && !value.Contains('/') && RawSafe().IsMatch(value))
             {
                 targets.Add($"/api/{RouteName}/{value}");
@@ -342,12 +363,16 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         }
 
         var user = As(PenTestUser.WithPermission);
+
         await run.ForEachAsync(targets, async target =>
         {
             var response = run.Check(await user.GetAsync(target), TimeSpan.FromSeconds(4));
+
             run.Expect(response.Status is 200 or 400 or 403 or 404 or 405 or 414 or 431, response, "BOUNDARY-STATUS",
                 $"unexpected status {response.Status}");
+
             run.Expect(!PenTestMarker.Carries(response, forbiddenA), response, "BOUNDARY-FOREIGN-DATA");
+
             if (response.Status == 200)
             {
                 run.Expect(IsValidJson(response.Body), response, "BOUNDARY-JSON");
@@ -378,6 +403,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             "?" + string.Join("&", Enumerable.Range(0, 300).Select(i => $"p{i}=v{i}")),
             "?token=eyJhbGciOiJub25lIn0.e30.", "?access_token=garbage", "?jwt=garbage", "#fragment", "?"
         };
+
         foreach (var q in queries.ToList())
         {
             queries.Add(q.Replace("=", "%3D", StringComparison.Ordinal));
@@ -387,7 +413,9 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         {
             var response = run.Check(await As(PenTestUser.WithPermission).GetAsync(PathFor(id) + q),
                 TimeSpan.FromSeconds(4));
+
             run.Expect(!response.IsServerError, response, "QUERY-5XX");
+
             if (response.IsSuccess)
             {
                 run.Expect(Same(response, baseline), response, "QUERY-CHANGES-RESULT", q.Length > 60 ? q[..60] : q);
@@ -410,14 +438,18 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             ("User-Agent", "' OR 1=1--"), ("User-Agent", "${jndi:ldap://x/a}"), ("Host", "evil.example"),
             ("X-Custom", new string('A', 7000)), ("Cookie", "authentication-jwt=garbage")
         };
+
         await run.ForEachAsync(headers, async header =>
         {
             var response = run.Check(await As(PenTestUser.WithPermission).SendAsync("GET", PathFor(id), null, null,
                 [header], TimeSpan.FromSeconds(10)));
+
             run.Expect(!response.IsServerError, response, "HEADER-5XX", header.Name);
             var text = response.Body + string.Join("|", response.Headers.Select(h => h.Value));
+
             run.Expect(!text.Contains("evil.example", StringComparison.Ordinal), response, "HEADER-REFLECTED",
                 header.Name);
+
             if (response.Status == 200 && header.Name is not ("Range" or "Cookie" or "Host"))
             {
                 run.Expect(Same(response, baseline), response, "HEADER-CHANGES-RESULT", header.Name);
@@ -433,6 +465,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var run = NewRun($"{RouteName} verbs");
         var id = IdOf(World.A);
         var before = run.Check(await GetAsAsync(PenTestUser.WithPermission, id));
+
         var bodies = new (string Method, byte[]? Body, string? ContentType)[]
         {
             ("POST", null, null), ("POST", Encoding.UTF8.GetBytes("{\"id\":1,\"deleted\":1}"), "application/json"),
@@ -442,6 +475,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             ("PROPFIND", null, null), ("LOCK", null, null), ("GET ", null, null),
             ("SEARCH", null, null), ("PURGE", null, null), ("MOVE", null, null), ("COPY", null, null)
         };
+
         foreach (var user in new[] { PenTestUser.WithPermission, PenTestUser.Anonymous })
         {
             await run.ForEachAsync(bodies, async b =>
@@ -449,6 +483,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
                 var client = user == PenTestUser.Anonymous ? Anonymous : As(user);
                 var response = run.Check(await client.SendAsync(b.Method, PathFor(id), b.Body, b.ContentType));
                 run.Expect(!response.IsServerError, response, "VERB-5XX", b.Method);
+
                 run.Expect(!response.IsSuccess || b.Method is "OPTIONS" or "HEAD", response, "VERB-SERVED",
                     $"{b.Method} was served");
             });
@@ -459,12 +494,13 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         await run.AssertCleanAsync(Output);
     }
 
-    protected static IEnumerable<string> GenerateInjectionPayloads()
+    internal static IEnumerable<string> GenerateInjectionPayloads()
     {
         string[] leads = ["1", "-1", "0", "1'", "1\"", "1)", "1'))", "'", "\\"];
         string[] joins = [" OR ", " or ", "/**/OR/**/", "||", " AND ", " oR/*x*/", "%0aOR%0a"];
         string[] truths = ["1=1", "'a'='a'", "2>1", "true", "1 LIKE 1", "1=1 --"];
         string[] tails = ["--", "#", ";--", "/*", "-- -", ""];
+
         string[] stacked =
         [
             ";select pg_sleep(5)--", ";SELECT pg_sleep(5);--", "';select pg_sleep(5)--", ") union select null--",
@@ -480,6 +516,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         ];
 
         var seen = new HashSet<string>();
+
         foreach (var lead in leads)
         {
             foreach (var join in joins)
@@ -489,6 +526,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
                     foreach (var tail in tails)
                     {
                         var basic = lead + join + truth + tail;
+
                         foreach (var variant in Mutate(basic))
                         {
                             seen.Add(variant);
@@ -519,8 +557,10 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
     private static IEnumerable<string> Mutate(string s)
     {
         yield return s;
+
         yield return new string(s.Select((c, i) => i % 2 == 0 ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c))
             .ToArray());
+
         yield return s.Replace(" ", "/**/", StringComparison.Ordinal);
         yield return s.Replace(" ", "%09", StringComparison.Ordinal);
         yield return s.Replace(" ", " ", StringComparison.Ordinal);

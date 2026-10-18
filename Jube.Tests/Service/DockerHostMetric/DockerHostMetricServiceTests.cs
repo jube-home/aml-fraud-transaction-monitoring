@@ -97,6 +97,7 @@ namespace Jube.Test.Service.DockerHostMetric
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -291,10 +292,12 @@ namespace Jube.Test.Service.DockerHostMetric
 
             var ascending = await service.ListAsync(search: instance, sortField: "memTotalBytes",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.MemTotalBytes).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: instance, sortField: "memTotalBytes",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.MemTotalBytes).Should().Equal(3000, 2000, 1000);
         }
 
@@ -310,6 +313,7 @@ namespace Jube.Test.Service.DockerHostMetric
             await CreateEntryAsync(dbContext, instance, memTotalBytes: 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "memTotalBytes",
                 sortDirection: ascendingKeyword);
 
@@ -325,6 +329,7 @@ namespace Jube.Test.Service.DockerHostMetric
             await CreateEntryAsync(dbContext, instance, memTotalBytes: 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "memTotalBytes",
                 sortDirection: "banana");
 
@@ -352,6 +357,7 @@ namespace Jube.Test.Service.DockerHostMetric
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, instance);

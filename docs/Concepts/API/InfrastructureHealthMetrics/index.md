@@ -6,9 +6,6 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Infrastructure Health Metrics
 
 [Application Log Entry](../ApplicationLogEntry/index.html) captures problems as they're logged. Infrastructure Health
@@ -124,7 +121,7 @@ queries, not per-minute history -- documented in their own page,
   up with the application, and it shows up here before it shows up as elevated invocation response times. It also
   carries counts of the multiplexer's own diagnostic events -- `ConnectionFailedCount`, `ConnectionRestoredCount`,
   `ErrorMessageCount`, `InternalErrorCount`, `ConfigurationChangedCount`, `ConfigurationChangedBroadcastCount` -- which
-  previously only ever reached log4net. Unlike the queue-depth and operation-count columns above, these six are
+  otherwise reach only log4net. Unlike the queue-depth and operation-count columns above, these six are
   **per-minute counts, not cumulative**: each is atomically read and reset to zero at sample time
   (`RedisConnectionDiagnosticsCounters.TakeSnapshot()`), so a row's value is "how many of this event happened in that
   one minute," not a running total since process start -- the question these answer is simply whether one tripped, and
@@ -225,14 +222,14 @@ unset, the calls go out unauthenticated -- correct only against an etcd cluster 
 
 Note what this does *not* need a token for: `/version`, `/health` and `/metrics` are plain HTTP handlers on the client
 port rather than v3 RPCs, and answer unauthenticated even with auth on. Because `EtcdMemberStatus` is assembled from a
-mix of those three handlers and the authenticated v3 RPCs, a wrong or missing credential is a *partial* failure, and it
-used to be an invisible one: the sampler parsed etcd's JSON error body without first checking the response status, so a
-refusal was read as though it were a reply with no fields in it, and a row was still written -- `Version`,
+mix of those three handlers and the authenticated v3 RPCs, a wrong or missing credential is a *partial* failure, and an easy
+one to misread: a sampler that parsed etcd's JSON error body without first checking the response status would read a
+refusal as though it were a reply with no fields in it, and still write a row -- `Version`,
 `ClusterVersion`, `HealthOk` and every Prometheus-derived column correct, `MemberId`, `LeaderId`, `DbSizeBytes`,
 `RaftIndex`, `RaftTerm` and `RaftAppliedIndex` all null, and `AlarmCount` reading `0`, which asserts "no etcd alarms"
 rather than "alarms unknown".
 
-`EtcdApiResponse.TryRead` now gates every v3 response on its status code, and rejects an etcd error envelope
+`EtcdApiResponse.TryRead` therefore gates every v3 response on its status code, and rejects an etcd error envelope
 (`{"error":..., "code":...}`) even if one arrives with a success status. A rejected call yields no payload rather than
 an empty one, so no half-populated row is written at all, and the reason -- etcd's own message, verbatim, with the
 endpoint that produced it -- is carried on the sampler's `LastError` and logged by

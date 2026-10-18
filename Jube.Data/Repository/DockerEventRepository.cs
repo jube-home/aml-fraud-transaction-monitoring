@@ -32,56 +32,6 @@ namespace Jube.Data.Repository
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        private IQueryable<DockerEvent> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
-            double? samplePercentage)
-        {
-            var query = dbContext.DockerEvent.AsQueryable();
-
-            if (from.HasValue)
-            {
-                query = query.Where(w => w.OccurredDate >= from.Value);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(w => w.OccurredDate <= to.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var lowerSearch = search.ToLower();
-                query = query.Where(w =>
-                    (w.EventType != null && w.EventType.ToLower().Contains(lowerSearch)) ||
-                    (w.Action != null && w.Action.ToLower().Contains(lowerSearch)) ||
-                    (w.ActorName != null && w.ActorName.ToLower().Contains(lowerSearch)));
-            }
-
-            if (samplePercentage.HasValue)
-            {
-                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
-            }
-
-            return query;
-        }
-
-        private static IOrderedQueryable<DockerEvent> ApplySort(
-            IQueryable<DockerEvent> query, string sortField, string sortDirection)
-        {
-            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
-            return sortField switch
-            {
-                "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
-                "eventType" => query.OrderByField(o => o.EventType, descending),
-                "action" => query.OrderByField(o => o.Action, descending),
-                "actorId" => query.OrderByField(o => o.ActorId, descending),
-                "actorName" => query.OrderByField(o => o.ActorName, descending),
-                "scope" => query.OrderByField(o => o.Scope, descending),
-                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
-                "instance" => query.OrderByField(o => o.Instance, descending),
-                _ => query.OrderByField(o => o.Id, true)
-            };
-        }
-
         public async Task<IEnumerable<DockerEvent>> GetLastAsync(int take, DateTime? from, DateTime? to,
             string search, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
@@ -103,6 +53,58 @@ namespace Jube.Data.Repository
             double? samplePercentage, int statisticsCap, CancellationToken token = default)
         {
             return Task.FromResult(new PayloadStatistics(new Dictionary<string, ColumnStatistics>()));
+        }
+
+        private IQueryable<DockerEvent> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
+            double? samplePercentage)
+        {
+            var query = dbContext.DockerEvent.AsQueryable();
+
+            if (from.HasValue)
+            {
+                query = query.Where(w => w.OccurredDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(w => w.OccurredDate <= to.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.ToLower();
+
+                query = query.Where(w =>
+                    (w.EventType != null && w.EventType.ToLower().Contains(lowerSearch)) ||
+                    (w.Action != null && w.Action.ToLower().Contains(lowerSearch)) ||
+                    (w.ActorName != null && w.ActorName.ToLower().Contains(lowerSearch)));
+            }
+
+            if (samplePercentage.HasValue)
+            {
+                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
+            }
+
+            return query;
+        }
+
+        private static IOrderedQueryable<DockerEvent> ApplySort(
+            IQueryable<DockerEvent> query, string sortField, string sortDirection)
+        {
+            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+            return sortField switch
+            {
+                "occurredDate" => query.OrderByField(o => o.OccurredDate, descending),
+                "eventType" => query.OrderByField(o => o.EventType, descending),
+                "action" => query.OrderByField(o => o.Action, descending),
+                "actorId" => query.OrderByField(o => o.ActorId, descending),
+                "actorName" => query.OrderByField(o => o.ActorName, descending),
+                "scope" => query.OrderByField(o => o.Scope, descending),
+                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
+                "instance" => query.OrderByField(o => o.Instance, descending),
+                _ => query.OrderByField(o => o.Id, true)
+            };
         }
     }
 }

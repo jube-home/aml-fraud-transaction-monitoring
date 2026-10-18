@@ -13,11 +13,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Accord.Neuro;
+using Jube.Data.Poco;
 using Jube.Test.Engine.Sanctions;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -26,6 +30,8 @@ using Jube.Test.Service.Invoke.Models;
 using LinqToDB;
 using Xunit;
 using Xunit.Abstractions;
+using ExhaustiveSearchInstancePromotedTrialInstanceVariable =
+    Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstancePromotedTrialInstanceVariable;
 
 namespace Jube.Test.Service.Invoke
 {
@@ -39,12 +45,14 @@ namespace Jube.Test.Service.Invoke
         private const string Json = "application/json";
         private const string JsonUtf8 = "application/json; charset=utf-8";
         private const string ModelRoute = "/api/Invoke/EntityAnalysisModel/";
-
         private ModelInvokeHost Api => fixture.Api;
         private ModelScaffold Model => fixture.Shared;
         private string User => fixture.Shared.UserName;
 
-        private static byte[] Bytes(string value) => Encoding.UTF8.GetBytes(value);
+        private static byte[] Bytes(string value)
+        {
+            return Encoding.UTF8.GetBytes(value);
+        }
 
         private static Task<T> WithHostAsync<T>(ModelInvokeHost host, Func<ModelInvokeHost, Task<T>> action)
         {
@@ -62,6 +70,7 @@ namespace Jube.Test.Service.Invoke
         {
             var errorsBefore = fixture.Engine.Log.Entries.Count(e => e.Level == "ERROR"
                                                                      && e.Message.Contains("Entity Invoke"));
+
             var response = await Api.InvokeAsync(Model, Payloads.Example());
 
             Assert.Equal(200, response.Status);
@@ -70,6 +79,7 @@ namespace Jube.Test.Service.Invoke
             Assert.Equal("0987654321", response.String("EntityInstanceEntryId"));
             Assert.StartsWith("2018-08-19", response.String("ReferenceDate").Required());
             Assert.True(Guid.TryParse(response.String("EntityAnalysisModelInstanceEntryGuid"), out _));
+
             Assert.Equal(errorsBefore, fixture.Engine.Log.Entries.Count(e => e.Level == "ERROR"
                                                                              && e.Message.Contains("Entity Invoke")));
         }
@@ -127,6 +137,7 @@ namespace Jube.Test.Service.Invoke
         public async Task Invoke_AsyncThenCallback_DeliversTheResponseOfTheAsynchronousInvocationAsync()
         {
             var unique = "cb-" + Guid.NewGuid().ToString("N")[..12];
+
             var token = await Api.SendAsync("POST", ModelRoute + Model.ModelGuid + "/Async", User,
                 Payloads.Example().With("TxnId", unique).ToBytes(), Json);
             Assert.Equal(200, token.Status);
@@ -194,12 +205,15 @@ namespace Jube.Test.Service.Invoke
         public async Task Invoke_WhenTheEngineHitsAnError_Returns500WithAnEmptyBodyAndLogsItAsync()
         {
             const string segment = "";
+
             var cache = (fixture.Engine.FindActiveModel(Model.ModelGuid) ??
                          throw new InvalidOperationException("The model is not synchronised.")).Services.CacheService;
+
             var original = cache.CacheReferenceDateRepository;
 
             InvokeResponse response;
             cache.CacheReferenceDateRepository = null;
+
             try
             {
                 response = await Api.SendAsync("POST", ModelRoute + Model.ModelGuid + segment, User,
@@ -212,6 +226,7 @@ namespace Jube.Test.Service.Invoke
 
             Assert.Equal(500, response.Status);
             Assert.Empty(response.BodyBytes);
+
             Assert.Contains(fixture.Engine.Log.Entries,
                 e => e.Level == "ERROR" && e.Message.Contains("Returning 500"));
 
@@ -246,7 +261,7 @@ namespace Jube.Test.Service.Invoke
         public async Task Invoke_WithoutAContentLength_Returns400Async()
         {
             var response = await Api.SendAsync("POST", ModelRoute + Model.ModelGuid, User,
-                Payloads.Example().ToBytes(), Json, sendContentLength: false);
+                Payloads.Example().ToBytes(), Json, false);
 
             Assert.Equal(400, response.Status);
             Assert.Equal(JsonUtf8, response.ContentType);
@@ -275,6 +290,7 @@ namespace Jube.Test.Service.Invoke
         {
             var environment = ModelEngineHost.CreateEnvironment(
                 new Dictionary<string, string> { ["EnablePublicInvokeController"] = "False" });
+
             var host = await ModelInvokeHost.StartAsync(environment, fixture.Engine.Log, fixture.Engine.Engine);
 
             var response = await WithHostAsync(host, h => h.InvokeAsync(Model, Payloads.Example()));
@@ -335,6 +351,7 @@ namespace Jube.Test.Service.Invoke
             var gateOff = await ModelInvokeHost.StartAsync(
                 ModelEngineHost.CreateEnvironment(new Dictionary<string, string>
                     { ["EnablePublicInvokeController"] = "False" }), fixture.Engine.Log, fixture.Engine.Engine);
+
             var noEngine = await ModelInvokeHost.StartAsync(fixture.Engine.Environment, fixture.Engine.Log, null);
             var path = "/api/Invoke/ExhaustiveSearchInstance/" + Model.ModelGuid;
 
@@ -348,20 +365,23 @@ namespace Jube.Test.Service.Invoke
         {
             var engineModel = fixture.Engine.FindActiveModel(Model.ModelGuid) ??
                               throw new InvalidOperationException("The model is not synchronised.");
-            var instance = new global::Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstance
+
+            var instance = new Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstance
             {
                 Name = "InvokeTestExhaustive",
                 Id = -1,
                 Guid = Guid.NewGuid(),
-                TopologyNetwork = new Accord.Neuro.ActivationNetwork(new Accord.Neuro.SigmoidFunction(), 2,
+                TopologyNetwork = new ActivationNetwork(new SigmoidFunction(), 2,
                     [], 1)
             };
-            instance.NetworkVariablesInOrder.Add(new global::Jube.Engine.Exhaustive.Models
-                .ExhaustiveSearchInstancePromotedTrialInstanceVariable { Name = "Amount", NormalisationTypeId = 1 });
-            instance.NetworkVariablesInOrder.Add(new global::Jube.Engine.Exhaustive.Models
-                .ExhaustiveSearchInstancePromotedTrialInstanceVariable { Name = "Count", NormalisationTypeId = 1 });
+
+            instance.NetworkVariablesInOrder.Add(new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Name = "Amount", NormalisationTypeId = 1 });
+            instance.NetworkVariablesInOrder.Add(new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Name = "Count", NormalisationTypeId = 1 });
 
             engineModel.Snapshot.ExhaustiveModels.Add(instance);
+
             try
             {
                 return await action(instance.Guid);
@@ -385,8 +405,8 @@ namespace Jube.Test.Service.Invoke
                 "/api/Invoke/ExhaustiveSearchInstance/" + guid, User, Bytes(body), Json));
 
             Assert.Equal(200, response.Status);
-            Assert.Equal(JsonValueKind.Number, response.Json.ValueKind);
-            Assert.InRange(response.Json.GetDouble(), 0, 1);
+            Assert.Equal(JsonValueKind.Object, response.Json.ValueKind);
+            Assert.InRange(response.Json.GetProperty("score").GetDouble(), 0, 1);
         }
 
         [Theory]
@@ -480,6 +500,7 @@ namespace Jube.Test.Service.Invoke
             Assert.InRange(DateTime.UtcNow - started, TimeSpan.FromMilliseconds(1500), TimeSpan.FromSeconds(6));
 
             started = DateTime.UtcNow;
+
             response = await Api.SendAsync("GET",
                 $"/api/Invoke/EntityAnalysisModel/Callback/{Guid.NewGuid()}?timeout=30000", User);
 
@@ -490,18 +511,20 @@ namespace Jube.Test.Service.Invoke
         [Fact]
         public async Task Callback_ClientAbandoningTheRequest_CancelsTheServerSideWaitAsync()
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(400));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            using var remainder = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => Api.SendAsync("GET",
                 $"/api/Invoke/EntityAnalysisModel/Callback/{Guid.NewGuid()}?timeout=30000", User,
                 cancellationToken: cts.Token));
 
             var deadline = DateTime.UtcNow.AddSeconds(10);
+
             while (DateTime.UtcNow < deadline && !fixture.Engine.Log.Entries.Any(e =>
                        e.Level == "ERROR" && e.Message.Contains("Callback Fetch") &&
                        e.Message.Contains("TaskCanceledException")))
             {
-                await Task.Delay(100, CancellationToken.None);
+                await Task.Delay(100, remainder.Token);
             }
 
             Assert.Contains(fixture.Engine.Log.Entries, e => e.Level == "ERROR" &&
@@ -509,7 +532,7 @@ namespace Jube.Test.Service.Invoke
                                                              e.Message.Contains("TaskCanceledException"));
 
             Assert.Equal(200,
-                (await Api.InvokeAsync(Model, Payloads.Example(), cancellationToken: CancellationToken.None)).Status);
+                (await Api.InvokeAsync(Model, Payloads.Example(), cancellationToken: remainder.Token)).Status);
         }
 
         [Theory]
@@ -519,20 +542,25 @@ namespace Jube.Test.Service.Invoke
             bool userWithoutTenant)
         {
             var unique = "cbt-" + Guid.NewGuid().ToString("N")[..12];
+
             var token = await Api.SendAsync("POST", ModelRoute + Model.ModelGuid + "/Async", User,
                 Payloads.Example().With("TxnId", unique).ToBytes(), Json);
             Assert.Equal(200, token.Status);
             var entryGuid = token.String("entityAnalysisModelInstanceEntryGuid");
             var stranger = userWithoutTenant ? database.Seed.UserNoTenant : database.Seed.UserTenantB;
 
-            var foreign = System.Diagnostics.Stopwatch.StartNew();
+            var foreign = Stopwatch.StartNew();
+
             var refused = await Api.SendAsync("GET",
                 $"/api/Invoke/EntityAnalysisModel/Callback/{entryGuid}?timeout=2", stranger);
+
             foreign.Stop();
 
-            var unknown = System.Diagnostics.Stopwatch.StartNew();
+            var unknown = Stopwatch.StartNew();
+
             var missing = await Api.SendAsync("GET",
                 $"/api/Invoke/EntityAnalysisModel/Callback/{Guid.NewGuid()}?timeout=2", stranger);
+
             unknown.Stop();
 
             Assert.Equal(408, refused.Status);
@@ -540,8 +568,10 @@ namespace Jube.Test.Service.Invoke
             Assert.Empty(refused.BodyBytes);
             Assert.Equal(missing.ContentType, refused.ContentType);
             Assert.DoesNotContain(unique, refused.Body, StringComparison.Ordinal);
+
             Assert.True(foreign.Elapsed >= TimeSpan.FromMilliseconds(900),
                 $"the refusal took {foreign.ElapsedMilliseconds} ms: an immediate answer reveals that the guid exists");
+
             output.WriteLine($"foreign {foreign.ElapsedMilliseconds} ms, unknown {unknown.ElapsedMilliseconds} ms");
 
             var owner = await Api.SendAsync("GET",
@@ -574,6 +604,7 @@ namespace Jube.Test.Service.Invoke
             var gateOff = await ModelInvokeHost.StartAsync(
                 ModelEngineHost.CreateEnvironment(new Dictionary<string, string>
                     { ["EnablePublicInvokeController"] = "False" }), fixture.Engine.Log, fixture.Engine.Engine);
+
             var noEngine = await ModelInvokeHost.StartAsync(fixture.Engine.Environment, fixture.Engine.Log, null);
             var path = $"/api/Invoke/EntityAnalysisModel/Callback/{Guid.NewGuid()}?timeout=0";
 
@@ -603,10 +634,11 @@ namespace Jube.Test.Service.Invoke
         public async Task Sanction_FindsAnEntryImportedAfterTheEngineStartedWithinTheChangePollAsync()
         {
             int sourceId;
+
             await using (var dbContext = database.GetDbContext())
             {
                 sourceId = await dbContext.InsertWithInt32IdentityAsync(
-                    new Data.Poco.SanctionEntrySource
+                    new SanctionEntrySource
                     {
                         Name = $"{DatabaseFixture.Prefix}InvokePoll{Guid.NewGuid():N}"[..40], Severity = 2,
                         Delimiter = ',', MultiPartStringIndex = "0", ReferenceIndex = 0,
@@ -618,8 +650,10 @@ namespace Jube.Test.Service.Invoke
             try
             {
                 const string phrase = "zzinvokepollquux zzinvokepollcorge";
+
                 var before = await Api.SendAsync("GET",
                     "/api/Invoke/Sanction?multiPartString=" + Uri.EscapeDataString(phrase), User);
+
                 Assert.DoesNotContain("REF-" + phrase, before.Body);
 
                 await SanctionsChangePollTests.ImportAsync(database, sourceId,
@@ -627,12 +661,14 @@ namespace Jube.Test.Service.Invoke
 
                 var found = false;
                 var deadline = DateTime.UtcNow.AddSeconds(30);
+
                 while (!found && DateTime.UtcNow < deadline)
                 {
                     var response = await Api.SendAsync("GET",
                         "/api/Invoke/Sanction?multiPartString=" + Uri.EscapeDataString(phrase), User);
                     Assert.Equal(200, response.Status);
                     found = response.Body.Contains("REF-" + phrase, StringComparison.Ordinal);
+
                     if (!found)
                     {
                         await Task.Delay(250);
@@ -678,8 +714,10 @@ namespace Jube.Test.Service.Invoke
             var response = await Api.SendAsync("GET", "/api/Invoke/Sanction" + query, User);
 
             Assert.Equal(400, response.Status);
+
             var messages = response.Json.GetProperty("errors").EnumerateArray()
                 .Select(e => e.GetProperty("errorMessage").GetString()).ToList();
+
             Assert.Contains(messages, m => m is not null && m.Contains(expected, StringComparison.OrdinalIgnoreCase));
             Assert.DoesNotContain("Exception", response.Body, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("   at ", response.Body, StringComparison.Ordinal);
@@ -736,7 +774,9 @@ namespace Jube.Test.Service.Invoke
                 "Infinity", "+Infinity", "0x10", "1.5", "1,5", "[]", "{}", "null", "true", "9999999999999999999999",
                 "1' OR '1'='1", "1;SELECT pg_sleep(5)", "%00", "\u0660", "١٢", "1e-400", "-0", "+1", " 1 ", "0.0000001"
             };
+
             var queries = new List<string>();
+
             foreach (var value in numbers.Select(Uri.EscapeDataString))
             {
                 queries.Add("?multiPartString=a&distance=" + value);
@@ -755,6 +795,7 @@ namespace Jube.Test.Service.Invoke
             }
 
             var started = DateTime.UtcNow;
+
             foreach (var query in queries)
             {
                 var response = await Api.SendAsync("GET", "/api/Invoke/Sanction" + query, User);
@@ -773,6 +814,7 @@ namespace Jube.Test.Service.Invoke
             var gateOff = await ModelInvokeHost.StartAsync(
                 ModelEngineHost.CreateEnvironment(new Dictionary<string, string>
                     { ["EnablePublicInvokeController"] = "False" }), fixture.Engine.Log, fixture.Engine.Engine);
+
             var noEngine = await ModelInvokeHost.StartAsync(fixture.Engine.Environment, fixture.Engine.Log, null);
 
             Assert.Equal(404,
@@ -796,6 +838,7 @@ namespace Jube.Test.Service.Invoke
             var engineOff = await ModelInvokeHost.StartAsync(
                 ModelEngineHost.CreateEnvironment(new Dictionary<string, string> { ["EnableEngine"] = "False" }),
                 fixture.Engine.Log, fixture.Engine.Engine);
+
             var noEngine = await ModelInvokeHost.StartAsync(fixture.Engine.Environment, fixture.Engine.Log, null);
 
             Assert.Equal(404,
@@ -817,6 +860,7 @@ namespace Jube.Test.Service.Invoke
             var key = casing == "camel"
                 ? "entityAnalysisModelInstanceEntryGuid"
                 : "EntityAnalysisModelInstanceEntryGuid";
+
             return Bytes($"{{\"{key}\":\"{Guid.NewGuid()}\"}}");
         }
 
@@ -888,6 +932,7 @@ namespace Jube.Test.Service.Invoke
             var gateOff = await ModelInvokeHost.StartAsync(
                 ModelEngineHost.CreateEnvironment(new Dictionary<string, string>
                     { ["EnablePublicInvokeController"] = "False" }), fixture.Engine.Log, fixture.Engine.Engine);
+
             var noEngine = await ModelInvokeHost.StartAsync(fixture.Engine.Environment, fixture.Engine.Log, null);
 
             Assert.Equal(404,
@@ -907,11 +952,14 @@ namespace Jube.Test.Service.Invoke
 
             Assert.Equal(200, response.Status);
             Assert.NotEmpty(response.ActivatedRules);
+
             Assert.True(response.ResponseElevationValue > 0,
                 "an activated rule with response elevation raises the elevation; activated: " +
                 string.Join(",", response.ActivatedRules) + "; elevation: " + response.ResponseElevationValue);
+
             Assert.All(response.ActivatedRules,
                 rule => Assert.True(response.Find("Activation", rule, "Visible") != null));
+
             Assert.Equal(accountId, response.PayloadField("AccountId"));
         }
 
@@ -946,9 +994,10 @@ namespace Jube.Test.Service.Invoke
             var response = await Api.InvokeAsync(Model, payload);
 
             Assert.Equal(200, response.Status);
+
             Assert.InRange(DateTime.UtcNow - DateTime.Parse(response.String("ReferenceDate") ?? string.Empty,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AdjustToUniversal), TimeSpan.Zero - TimeSpan.FromSeconds(5),
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AdjustToUniversal), TimeSpan.Zero - TimeSpan.FromSeconds(5),
                 TimeSpan.FromMinutes(1));
         }
 

@@ -36,6 +36,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             try
             {
                 var value = json.SelectToken(xPath)?.ToString();
+
                 if (value == null && !string.IsNullOrEmpty(defaultValue))
                 {
                     return new Selection(defaultValue, true, null);
@@ -60,16 +61,20 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     if (int.TryParse(value, out var intValue))
                     {
                         converted = intValue;
+
                         return true;
                     }
 
                     converted = null;
+
                     return false;
                 case 4:
                     converted = ConvertDate(value, defaultFallback, defaultValue, assumeLocal, utcNow);
+
                     return true;
                 case 5:
                     converted = value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
+
                     return true;
                 case 3:
                 case 6:
@@ -77,13 +82,16 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     if (double.TryParse(value, out var doubleValue))
                     {
                         converted = doubleValue;
+
                         return true;
                     }
 
                     converted = null;
+
                     return false;
                 default:
                     converted = value;
+
                     return true;
             }
         }
@@ -116,6 +124,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             }
 
             var token = json?.SelectToken(referenceDateXPath);
+
             return token == null ? utcNow : ParseDate(token.Value<string>(), assumeLocal, utcNow);
         }
 

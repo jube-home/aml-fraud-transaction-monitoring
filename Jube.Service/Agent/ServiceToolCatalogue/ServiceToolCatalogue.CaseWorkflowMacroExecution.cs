@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseWorkflowMacroExecution;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowMacroExecution(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowMacroExecutionExecute", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Executes an active case workflow macro against a case, sending the macro's configured " +
-                "notification and/or HTTP endpoint call. Does not modify stored data.")
-        ]);
+        static partial void AddCaseWorkflowMacroExecution(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowMacroExecutionExecute", OperationKind.Write, false, false,
+                    "Executes an active case workflow macro against a case, sending the macro's configured " +
+                    "notification and/or HTTP endpoint call. Does not modify stored data.",
+                    CaseWorkflowMacroExecutionService.RequiredPermissions)
+            ]);
+        }
     }
 }

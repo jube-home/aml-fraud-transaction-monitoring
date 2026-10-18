@@ -60,6 +60,7 @@ namespace Jube.App.Endpoints.Query
             bool activationsOnly = false, double responseElevation = 0)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (string.IsNullOrEmpty(drillName) || drillValue == null)
             {
                 return TypedResults.BadRequest();
@@ -79,14 +80,17 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CaseJournalService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus,
                     dynamicEnvironment.AppSettings("ReportConnectionString"), token);
+
                 var result = await service.GetAsync(drillName, drillValue, caseWorkflowGuid.GetValueOrDefault(), limit,
                     activationsOnly,
                     responseElevation, token);
+
                 return TypedResults.Content(JsonConvert.SerializeObject(result, serializerSettings),
                     "application/json");
             }
@@ -120,6 +124,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

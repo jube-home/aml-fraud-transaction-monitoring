@@ -24,14 +24,15 @@ namespace Jube.App.Pages.Model
     [Authorize]
     public class Integrity : PageModel
     {
+        private readonly PermissionValidation permissionValidation;
         public const int Permission = 60;
         public const int SynchronisationPermission = 5;
         public bool CanSynchronise { get; private set; }
-        private readonly PermissionValidation permissionValidation;
 
         public Integrity(ILog log, DynamicEnvironment dynamicEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             var userName = httpContextAccessor.HttpContext?.User.Identity?.Name;
+
             permissionValidation = new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"),
                 userName, log);
         }
@@ -39,6 +40,7 @@ namespace Jube.App.Pages.Model
         public ActionResult OnGet()
         {
             CanSynchronise = permissionValidation.Validate([SynchronisationPermission]);
+
             return permissionValidation.Validate([Permission]) ? new PageResult() : Forbid();
         }
     }

@@ -10,48 +10,45 @@
 // Cezary.Wagner@gmail.com
 //
 
+using System;
+using System.Diagnostics;
+using Accord.Genetic;
+
 namespace Accord.Neuro.Learning
 {
-    using Accord.Genetic;
-    using System;
-    using System.Diagnostics;
-
     /// <summary>
-    /// Fitness function used for chromosomes representing collection of neural network's weights.
+    ///     Fitness function used for chromosomes representing collection of neural network's weights.
     /// </summary>
-    /// 
     internal class EvolutionaryFitness : IFitnessFunction
     {
-        // neural network for which fitness will be calculated
-        private ActivationNetwork network;
-
         // input data samples for neural network
-        private double[][] input;
+        private readonly double[][] input;
+
+        // neural network for which fitness will be calculated
+        private readonly ActivationNetwork network;
 
         // output data samples for neural network (desired output)
-        private double[][] output;
+        private readonly double[][] output;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EvolutionaryFitness"/> class.
+        ///     Initializes a new instance of the <see cref="EvolutionaryFitness" /> class.
         /// </summary>
-        /// 
         /// <param name="network">Neural network for which fitness will be calculated.</param>
         /// <param name="input">Input data samples for neural network.</param>
         /// <param name="output">Output data sampels for neural network (desired output).</param>
-        /// 
         /// <exception cref="ArgumentException">Length of inputs and outputs arrays must be equal and greater than 0.</exception>
         /// <exception cref="ArgumentException">Length of each input vector must be equal to neural network's inputs count.</exception>
-        /// 
-        public EvolutionaryFitness( ActivationNetwork network, double[][] input, double[][] output )
+        public EvolutionaryFitness(ActivationNetwork network, double[][] input, double[][] output)
         {
-            if ( ( input.Length == 0 ) || ( input.Length != output.Length ) )
+            if (input.Length == 0 || input.Length != output.Length)
             {
-                throw new ArgumentException( "Length of inputs and outputs arrays must be equal and greater than 0." );
+                throw new ArgumentException("Length of inputs and outputs arrays must be equal and greater than 0.");
             }
 
-            if ( network.InputsCount != input[0].Length )
+            if (network.InputsCount != input[0].Length)
             {
-                throw new ArgumentException( "Length of each input vector must be equal to neural network's inputs count." );
+                throw new ArgumentException(
+                    "Length of each input vector must be equal to neural network's inputs count.");
             }
 
             this.network = network;
@@ -60,59 +57,60 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        /// Evaluates chromosome.
+        ///     Evaluates chromosome.
         /// </summary>
-        /// 
         /// <param name="chromosome">Chromosome to evaluate.</param>
-        /// 
         /// <returns>Returns chromosome's fitness value.</returns>
-        ///
-        /// <remarks>The method calculates fitness value of the specified
-        /// chromosome.</remarks>
-        ///
-        public double Evaluate( IChromosome chromosome )
+        /// <remarks>
+        ///     The method calculates fitness value of the specified
+        ///     chromosome.
+        /// </remarks>
+        public double Evaluate(IChromosome chromosome)
         {
-            DoubleArrayChromosome daChromosome = (DoubleArrayChromosome) chromosome;
-            double[] chromosomeGenes = daChromosome.Value;
+            var daChromosome = (DoubleArrayChromosome)chromosome;
+            var chromosomeGenes = daChromosome.Value;
             // total number of weight in neural network
-            int totalNumberOfWeights = 0;
+            var totalNumberOfWeights = 0;
 
             // asign new weights and thresholds to network from the given chromosome
-            for ( int i = 0, layersCount = network.Layers.Length; i < layersCount; i++ )
+            for (int i = 0, layersCount = network.Layers.Length; i < layersCount; i++)
             {
-                Layer layer = network.Layers[i];
+                var layer = network.Layers[i];
 
-                for ( int j = 0; j < layer.Neurons.Length; j++ )
+                for (var j = 0; j < layer.Neurons.Length; j++)
                 {
-                    ActivationNeuron neuron = layer.Neurons[j] as ActivationNeuron;
+                    var neuron = layer.Neurons[j] as ActivationNeuron;
 
-                    for ( int k = 0; k < neuron.Weights.Length; k++ )
+                    for (var k = 0; k < neuron.Weights.Length; k++)
                     {
                         neuron.Weights[k] = chromosomeGenes[totalNumberOfWeights++];
                     }
+
                     neuron.Threshold = chromosomeGenes[totalNumberOfWeights++];
                 }
             }
 
             // post check if all values are processed and lenght of chromosome
             // is equal to network size
-            Debug.Assert( totalNumberOfWeights == daChromosome.Length );
+            Debug.Assert(totalNumberOfWeights == daChromosome.Length);
 
             double totalError = 0;
 
-            for ( int i = 0, inputVectorsAmount = input.Length; i < inputVectorsAmount; i++ )
+            for (int i = 0, inputVectorsAmount = input.Length; i < inputVectorsAmount; i++)
             {
-                double[] computedOutput = network.Compute( input[i] );
+                var computedOutput = network.Compute(input[i]);
 
-                for ( int j = 0, outputLength = output[0].Length; j < outputLength; j++ )
+                for (int j = 0, outputLength = output[0].Length; j < outputLength; j++)
                 {
-                    double error = output[i][j] - computedOutput[j];
+                    var error = output[i][j] - computedOutput[j];
                     totalError += error * error;
                 }
             }
 
-            if ( totalError > 0 )
+            if (totalError > 0)
+            {
                 return 1.0 / totalError;
+            }
 
             // zero error means the best fitness
             return double.MaxValue;

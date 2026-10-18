@@ -97,6 +97,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     EnableTtlCounter = modelFlagEnableTtlCounter
                 }
             };
+
             model.Snapshot.ModelTtlCounters.Add(counter);
 
             return (model, counter);
@@ -229,8 +230,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Flag", "present");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", 42.5);
+
             var (model, counter) = NewTargetModel("Flag", "CurrencyAmount",
                 true);
+
             var rule = NewRule(model.Instance.Guid, counter.Guid);
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
             var cacheService = TestCacheService.Create(out _);
@@ -256,6 +259,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var expiryKey =
                 $"TtlCounterEntryExpiry:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{rule.EntityAnalysisModelGuidTtlCounter:N}:{counter.Guid:N}:{counter.TtlCounterDataName}";
+
             (await redis.SortedSetLengthAsync(expiryKey)).Should().Be(1);
         }
 
@@ -274,6 +278,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var expiryKey =
                 $"TtlCounterEntryExpiry:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{rule.EntityAnalysisModelGuidTtlCounter:N}:{counter.Guid:N}:{counter.TtlCounterDataName}";
+
             (await redis.SortedSetLengthAsync(expiryKey)).Should().Be(0);
             context.EntityAnalysisModelInstanceEntryPayload.TtlCounter[counter.Name].Should().Be(1);
         }

@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-2f6e83da" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-2f6e83da-t jc-2f6e83da-d">
+    <title id="jc-2f6e83da-t">Cases by team and type</title>
+    <desc id="jc-2f6e83da-d">Treemap of 3 groups totalling 1690. Largest: Fraud 860, AML 570, Sanctions 260.</desc>
+    <style>
+        .jc-2f6e83da{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-2f6e83da:not([data-theme="light"]),.jc-2f6e83da:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-2f6e83da:not([data-theme="light"]),.jc-2f6e83da[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-2f6e83da
+        text{fill:var(--jc-text);font-size:12px}.jc-2f6e83da .bg{fill:var(--jc-surface)}.jc-2f6e83da
+        .ttl{font-size:16px;font-weight:600}.jc-2f6e83da .sub{fill:var(--jc-text2)}.jc-2f6e83da
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-2f6e83da .at{fill:var(--jc-text2);font-weight:500}.jc-2f6e83da
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-2f6e83da
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-2f6e83da
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-2f6e83da .ref.s0,.jc-2f6e83da
+        .ref.s1,.jc-2f6e83da .ref.s2,.jc-2f6e83da .ref.s3,.jc-2f6e83da .ref.s4,.jc-2f6e83da .ref.s5,.jc-2f6e83da
+        .ref.s6,.jc-2f6e83da .ref.s7{stroke:var(--sc)}.jc-2f6e83da
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-2f6e83da
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-2f6e83da
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-2f6e83da
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-2f6e83da .wh,.jc-2f6e83da
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-2f6e83da
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-2f6e83da
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-2f6e83da
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-2f6e83da .cd.hollow{fill:var(--jc-surface)}.jc-2f6e83da
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-2f6e83da
+        .ar.off{fill-opacity:0}.jc-2f6e83da .ring{font-size:10px}.jc-2f6e83da
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-2f6e83da .needle{fill:var(--jc-text);stroke:none}.jc-2f6e83da
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-2f6e83da
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-2f6e83da
+        .big{font-size:28px;font-weight:600}.jc-2f6e83da .rg0,.jc-2f6e83da .rg1,.jc-2f6e83da
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-2f6e83da .rg0{fill-opacity:.1}.jc-2f6e83da
+        .rg1{fill-opacity:.2}.jc-2f6e83da .rg2{fill-opacity:.32}.jc-2f6e83da
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-2f6e83da
+        .bar.part{fill-opacity:.35}.jc-2f6e83da .lgt{fill:var(--jc-text2)}.jc-2f6e83da
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-2f6e83da
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-2f6e83da
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-2f6e83da
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-2f6e83da .bar{fill:var(--sc)}.jc-2f6e83da
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-2f6e83da
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-2f6e83da
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-2f6e83da
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-2f6e83da
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-2f6e83da
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-2f6e83da .mk:hover .pt.h,.jc-2f6e83da .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-2f6e83da .pt.sm{fill-opacity:.55;stroke:none}.jc-2f6e83da
+        .na{fill:var(--jc-grid)}.jc-2f6e83da .mk:hover .sl,.jc-2f6e83da .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-2f6e83da
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-2f6e83da
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-2f6e83da
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-2f6e83da
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-2f6e83da
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-2f6e83da .ctr{text-anchor:middle}.jc-2f6e83da
+        .end{text-anchor:end}.jc-2f6e83da .mid{dominant-baseline:central}.jc-2f6e83da .mk{outline:none}.jc-2f6e83da
+        .m,.jc-2f6e83da .pt,.jc-2f6e83da .bub,.jc-2f6e83da .bar,.jc-2f6e83da .ov,.jc-2f6e83da .sl,.jc-2f6e83da
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-2f6e83da .mk:hover .m,.jc-2f6e83da .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-2f6e83da .mk:hover .pt,.jc-2f6e83da .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-2f6e83da .mk:hover .bub,.jc-2f6e83da .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-2f6e83da .mk:hover .bar,.jc-2f6e83da .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-2f6e83da .mk:hover .ov,.jc-2f6e83da .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-2f6e83da .mk:hover .sl,.jc-2f6e83da .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-2f6e83da .mk:hover .box,.jc-2f6e83da .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-2f6e83da .mk:hover .wk,.jc-2f6e83da .mk:focus-visible
+        .wk,.jc-2f6e83da .mk:hover .cd,.jc-2f6e83da .mk:focus-visible .cd{stroke-width:2.5}.jc-2f6e83da .mk:hover
+        .cell,.jc-2f6e83da .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-2f6e83da .mk:hover
+        .vl,.jc-2f6e83da .mk:focus-visible .vl,.jc-2f6e83da .mk:hover .cx,.jc-2f6e83da .mk:focus-visible
+        .cx{opacity:1}.jc-2f6e83da .mk:hover .mkr,.jc-2f6e83da .mk:focus-visible .mkr{stroke-width:3}.jc-2f6e83da
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-2f6e83da
+        .mk:hover .tt,.jc-2f6e83da .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-2f6e83da
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-2f6e83da
+        .tx{fill:var(--jc-text);font-size:12px}.jc-2f6e83da .tx.b{font-weight:600}.jc-2f6e83da
+        .tsw{fill:var(--sc)}.jc-2f6e83da .lg{cursor:default;transition:opacity .15s ease}.jc-2f6e83da .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-2f6e83da .sr{transition:opacity .15s ease}.jc-2f6e83da:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-2f6e83da:has(.mk:hover) .mk:not(:hover) .pt,.jc-2f6e83da:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-2f6e83da:has(.mk:hover) .mk:not(:hover) .bar,.jc-2f6e83da:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-2f6e83da:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-2f6e83da:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-2f6e83da .s0{--sc:var(--jc-c0)}.jc-2f6e83da .s0
+        .on{fill:var(--jc-ct0)}.jc-2f6e83da:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-2f6e83da:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-2f6e83da:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-2f6e83da:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-2f6e83da:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-2f6e83da
+        .s1{--sc:var(--jc-c1)}.jc-2f6e83da .s1 .on{fill:var(--jc-ct1)}.jc-2f6e83da:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-2f6e83da:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-2f6e83da:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-2f6e83da:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-2f6e83da:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-2f6e83da
+        .s2{--sc:var(--jc-c2)}.jc-2f6e83da .s2 .on{fill:var(--jc-ct2)}.jc-2f6e83da:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-2f6e83da:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-2f6e83da:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-2f6e83da:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-2f6e83da:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-2f6e83da,.jc-2f6e83da
+        *{transition:none!important;animation:none!important}}.jc-2f6e83da .q0{fill:var(--jc-q0)}.jc-2f6e83da
+        .qt0{fill:var(--jc-qt0)}.jc-2f6e83da .q1{fill:var(--jc-q1)}.jc-2f6e83da .qt1{fill:var(--jc-qt1)}.jc-2f6e83da
+        .q2{fill:var(--jc-q2)}.jc-2f6e83da .qt2{fill:var(--jc-qt2)}.jc-2f6e83da .q3{fill:var(--jc-q3)}.jc-2f6e83da
+        .qt3{fill:var(--jc-qt3)}.jc-2f6e83da .q4{fill:var(--jc-q4)}.jc-2f6e83da .qt4{fill:var(--jc-qt4)}.jc-2f6e83da
+        .q5{fill:var(--jc-q5)}.jc-2f6e83da .qt5{fill:var(--jc-qt5)}.jc-2f6e83da .q6{fill:var(--jc-q6)}.jc-2f6e83da
+        .qt6{fill:var(--jc-qt6)}.jc-2f6e83da .q7{fill:var(--jc-q7)}.jc-2f6e83da .qt7{fill:var(--jc-qt7)}.jc-2f6e83da
+        .q8{fill:var(--jc-q8)}.jc-2f6e83da .qt8{fill:var(--jc-qt8)}.jc-2f6e83da .d0{fill:var(--jc-d0)}.jc-2f6e83da
+        .dt0{fill:var(--jc-dt0)}.jc-2f6e83da .d1{fill:var(--jc-d1)}.jc-2f6e83da .dt1{fill:var(--jc-dt1)}.jc-2f6e83da
+        .d2{fill:var(--jc-d2)}.jc-2f6e83da .dt2{fill:var(--jc-dt2)}.jc-2f6e83da .d3{fill:var(--jc-d3)}.jc-2f6e83da
+        .dt3{fill:var(--jc-dt3)}.jc-2f6e83da .d4{fill:var(--jc-d4)}.jc-2f6e83da .dt4{fill:var(--jc-dt4)}.jc-2f6e83da
+        .d5{fill:var(--jc-d5)}.jc-2f6e83da .dt5{fill:var(--jc-dt5)}.jc-2f6e83da .d6{fill:var(--jc-d6)}.jc-2f6e83da
+        .dt6{fill:var(--jc-dt6)}.jc-2f6e83da .d7{fill:var(--jc-d7)}.jc-2f6e83da .dt7{fill:var(--jc-dt7)}.jc-2f6e83da
+        .d8{fill:var(--jc-d8)}.jc-2f6e83da .dt8{fill:var(--jc-dt8)}.jc-2f6e83da .d9{fill:var(--jc-d9)}.jc-2f6e83da
+        .dt9{fill:var(--jc-dt9)}.jc-2f6e83da .d10{fill:var(--jc-d10)}.jc-2f6e83da .dt10{fill:var(--jc-dt10)}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Cases by team and type</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="49.68" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Fraud</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="81.68" y="44" width="45.12" height="18"/>
+        <rect class="sw" x="83.68" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="101.68" y="57">AML</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="144.8" y="44" width="72.24" height="18"/>
+        <rect class="sw" x="146.8" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="164.8" y="57">Sanctions</text>
+    </g>
+    <g class="sr s0">
+        <rect class="tgroup" x="24" y="72" width="301.25" height="312"/>
+        <text class="lbl" x="30" y="85">Fraud</text>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud / Card, Value: 420, Of group: 48.8%, Of total: 24.9%">
+            <title>Fraud / Card, Value: 420, Of group: 48.8%, Of total: 24.9%</title>
+            <rect class="cell bar m" x="24" y="90" width="147.12" height="294"/>
+            <text class="lbl on" x="30" y="105">Card</text>
+            <text class="lbl on" x="30" y="119">420</text>
+            <g class="tt">
+                <rect class="tb" x="44.48" y="149" width="106.16" height="78" rx="6"/>
+                <rect class="tsw s0" x="54.48" y="158" width="9" height="9" rx="2"/>
+                <text class="tx b" x="68.48" y="167">Fraud / Card</text>
+                <text class="tx" x="54.48" y="184">Value: 420</text>
+                <text class="tx" x="54.48" y="201">Of group: 48.8%</text>
+                <text class="tx" x="54.48" y="218">Of total: 24.9%</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud / Account takeover, Value: 260, Of group: 30.2%, Of total: 15.4%">
+            <title>Fraud / Account takeover, Value: 260, Of group: 30.2%, Of total: 15.4%</title>
+            <rect class="cell bar m" x="171.12" y="90" width="154.13" height="173.73"/>
+            <text class="lbl on" x="177.12" y="105">Account takeover</text>
+            <text class="lbl on" x="177.12" y="119">260</text>
+            <g class="tt">
+                <rect class="tb" x="158.3" y="88.86" width="179.77" height="78" rx="6"/>
+                <rect class="tsw s0" x="168.3" y="97.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="182.3" y="106.86">Fraud / Account takeover</text>
+                <text class="tx" x="168.3" y="123.86">Value: 260</text>
+                <text class="tx" x="168.3" y="140.86">Of group: 30.2%</text>
+                <text class="tx" x="168.3" y="157.86">Of total: 15.4%</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud / Authorised push, Value: 180, Of group: 20.9%, Of total: 10.7%">
+            <title>Fraud / Authorised push, Value: 180, Of group: 20.9%, Of total: 10.7%</title>
+            <rect class="cell bar m" x="171.12" y="263.73" width="154.13" height="120.27"/>
+            <text class="lbl on" x="177.12" y="278.73">Authorised push</text>
+            <text class="lbl on" x="177.12" y="292.73">180</text>
+            <g class="tt">
+                <rect class="tb" x="162.25" y="235.86" width="171.88" height="78" rx="6"/>
+                <rect class="tsw s0" x="172.25" y="244.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="186.25" y="253.86">Fraud / Authorised push</text>
+                <text class="tx" x="172.25" y="270.86">Value: 180</text>
+                <text class="tx" x="172.25" y="287.86">Of group: 20.9%</text>
+                <text class="tx" x="172.25" y="304.86">Of total: 10.7%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <rect class="tgroup" x="325.25" y="72" width="290.75" height="214.27"/>
+        <text class="lbl" x="331.25" y="85">AML</text>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="AML / Structuring, Value: 300, Of group: 52.6%, Of total: 17.8%">
+            <title>AML / Structuring, Value: 300, Of group: 52.6%, Of total: 17.8%</title>
+            <rect class="cell bar m" x="325.25" y="90" width="153.02" height="196.27"/>
+            <text class="lbl on" x="331.25" y="105">Structuring</text>
+            <text class="lbl on" x="331.25" y="119">300</text>
+            <g class="tt">
+                <rect class="tb" x="332.87" y="100.13" width="137.8" height="78" rx="6"/>
+                <rect class="tsw s1" x="342.87" y="109.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="356.87" y="118.13">AML / Structuring</text>
+                <text class="tx" x="342.87" y="135.13">Value: 300</text>
+                <text class="tx" x="342.87" y="152.13">Of group: 52.6%</text>
+                <text class="tx" x="342.87" y="169.13">Of total: 17.8%</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="AML / Layering, Value: 150, Of group: 26.3%, Of total: 8.9%">
+            <title>AML / Layering, Value: 150, Of group: 26.3%, Of total: 8.9%</title>
+            <rect class="cell bar m" x="478.28" y="90" width="137.72" height="109.04"/>
+            <text class="lbl on" x="484.28" y="105">Layering</text>
+            <text class="lbl on" x="484.28" y="119">150</text>
+            <g class="tt">
+                <rect class="tb" x="484.73" y="154.52" width="124.82" height="78" rx="6"/>
+                <rect class="tsw s1" x="494.73" y="163.52" width="9" height="9" rx="2"/>
+                <text class="tx b" x="508.73" y="172.52">AML / Layering</text>
+                <text class="tx" x="494.73" y="189.52">Value: 150</text>
+                <text class="tx" x="494.73" y="206.52">Of group: 26.3%</text>
+                <text class="tx" x="494.73" y="223.52">Of total: 8.9%</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="AML / Mule, Value: 120, Of group: 21.1%, Of total: 7.1%">
+            <title>AML / Mule, Value: 120, Of group: 21.1%, Of total: 7.1%</title>
+            <rect class="cell bar m" x="478.28" y="199.04" width="137.72" height="87.23"/>
+            <text class="lbl on" x="484.28" y="214.04">Mule</text>
+            <text class="lbl on" x="484.28" y="228.04">120</text>
+            <g class="tt">
+                <rect class="tb" x="494.06" y="154.65" width="106.16" height="78" rx="6"/>
+                <rect class="tsw s1" x="504.06" y="163.65" width="9" height="9" rx="2"/>
+                <text class="tx b" x="518.06" y="172.65">AML / Mule</text>
+                <text class="tx" x="504.06" y="189.65">Value: 120</text>
+                <text class="tx" x="504.06" y="206.65">Of group: 21.1%</text>
+                <text class="tx" x="504.06" y="223.65">Of total: 7.1%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <rect class="tgroup" x="325.25" y="286.27" width="290.75" height="97.73"/>
+        <text class="lbl" x="331.25" y="299.27">Sanctions</text>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="Sanctions / Name match, Value: 200, Of group: 76.9%, Of total: 11.8%">
+            <title>Sanctions / Name match, Value: 200, Of group: 76.9%, Of total: 11.8%</title>
+            <rect class="cell bar m" x="325.25" y="304.27" width="223.65" height="79.73"/>
+            <text class="lbl on" x="331.25" y="319.27">Name match</text>
+            <text class="lbl on" x="331.25" y="333.27">200</text>
+            <g class="tt">
+                <rect class="tb" x="349.61" y="256.13" width="174.94" height="78" rx="6"/>
+                <rect class="tsw s2" x="359.61" y="265.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="373.61" y="274.13">Sanctions / Name match</text>
+                <text class="tx" x="359.61" y="291.13">Value: 200</text>
+                <text class="tx" x="359.61" y="308.13">Of group: 76.9%</text>
+                <text class="tx" x="359.61" y="325.13">Of total: 11.8%</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="Sanctions / Country, Value: 60, Of group: 23.1%, Of total: 3.6%">
+            <title>Sanctions / Country, Value: 60, Of group: 23.1%, Of total: 3.6%</title>
+            <rect class="cell bar m" x="548.9" y="304.27" width="67.1" height="79.73"/>
+            <text class="lbl on" x="554.9" y="319.27">Country</text>
+            <text class="lbl on" x="554.9" y="333.27">60</text>
+            <g class="tt">
+                <rect class="tb" x="468.28" y="256.13" width="147.72" height="78" rx="6"/>
+                <rect class="tsw s2" x="478.28" y="265.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="492.28" y="274.13">Sanctions / Country</text>
+                <text class="tx" x="478.28" y="291.13">Value: 60</text>
+                <text class="tx" x="478.28" y="308.13">Of group: 23.1%</text>
+                <text class="tx" x="478.28" y="325.13">Of total: 3.6%</text>
+            </g>
+        </g>
+    </g>
+</svg>

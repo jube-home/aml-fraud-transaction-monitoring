@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -12,13 +12,14 @@
  */
 
 using System.ComponentModel;
+using System.Net;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseWorkflowDisplayExecution;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseWorkflowDisplayExecution;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -33,7 +34,6 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
     public sealed class CaseWorkflowDisplayExecutionService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowDisplayRepository caseWorkflowDisplayRepository;
@@ -62,6 +62,8 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
             caseWorkflowDisplayRepository = new CaseWorkflowDisplayRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowDisplayExecutionService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -120,6 +122,7 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
         {
             using var op = OperationScope.Start("CaseWorkflowDisplayExecution", "Execute", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -132,6 +135,7 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
 
                 var existingCase = await caseRepository.GetByIdActiveOnlyAsync(model.CaseId, token)
                     .ConfigureAwait(false);
+
                 if (existingCase == null)
                 {
                     throw NotFound("case", model.CaseId);
@@ -139,6 +143,7 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
 
                 var caseWorkflowDisplay = await caseWorkflowDisplayRepository
                     .GetByIdActiveOnlyAsync(model.CaseWorkflowDisplayId, token).ConfigureAwait(false);
+
                 if (caseWorkflowDisplay == null)
                 {
                     throw NotFound("display", model.CaseWorkflowDisplayId);
@@ -146,12 +151,14 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
 
                 var caseWorkflowStatus = await caseWorkflowStatusRepository
                     .GetByGuidAsync(existingCase.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+
                 if (caseWorkflowStatus == null)
                 {
                     throw NotFound("status", model.CaseId);
                 }
 
                 EntityAnalysisModelInstanceEntryPayload? payload;
+
                 try
                 {
                     payload = JsonConvert.DeserializeObject<EntityAnalysisModelInstanceEntryPayload>(
@@ -166,9 +173,10 @@ namespace Jube.Service.Query.CaseWorkflowDisplayExecution
                 payload ??= new EntityAnalysisModelInstanceEntryPayload();
 
                 var replacedHtml = payload.ReplaceTokens(caseWorkflowDisplay.Html,
-                    value => System.Net.WebUtility.HtmlEncode(value));
+                    value => WebUtility.HtmlEncode(value));
 
                 op.Rows(1);
+
                 return replacedHtml;
             }
             catch (ForbiddenException)

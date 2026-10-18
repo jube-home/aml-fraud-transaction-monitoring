@@ -1,40 +1,48 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing.Power
 {
-    using System;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Power analysis for two-sample T-Tests.
+    ///     Power analysis for two-sample T-Tests.
     /// </summary>
-    /// 
     /// <example>
-    /// <para>
-    ///   There are different ways a power analysis test can be conducted.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         There are different ways a power analysis test can be conducted.
+    ///     </para>
+    ///     <code>
     /// // Let's say we have two samples, and we would like to know whether those
     /// // samples have the same mean. For this, we can perform a two sample T-Test:
     /// double[] A = { 5.0, 6.0, 7.9, 6.95, 5.3, 10.0, 7.48, 9.4, 7.6, 8.0, 6.22 };
@@ -57,7 +65,7 @@ namespace Accord.Statistics.Testing.Power
     /// // characteristics of the test (because it has been already done), 
     /// // but we can measure some important features that may indicate 
     /// // whether the test is trustworthy or not.
-    ///
+    /// 
     /// // One of the first things would be to check for the test's power.
     /// // A test's power is 1 minus the probability of rejecting the null
     /// // hypothesis when the null hypothesis is actually false. It is
@@ -81,12 +89,11 @@ namespace Accord.Statistics.Testing.Power
     /// // different when they are less than 2 std. dev. apart, we would
     /// // need to do repeat our experiment differently.
     /// </code>
-    /// 
-    /// <para>
-    ///   Another way to create the power analysis is to pass the
-    ///   hypothesis test to the t-test power analysis constructor.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         Another way to create the power analysis is to pass the
+    ///         hypothesis test to the t-test power analysis constructor.
+    ///     </para>
+    ///     <code>
     /// // Create an a posteriori analysis of the experiment
     /// var analysis = new TwoSampleTTestPowerAnalysis(test);
     /// 
@@ -105,15 +112,14 @@ namespace Accord.Statistics.Testing.Power
     /// 
     /// double detectableEffect = analysis.Effect; // we would detect a difference of 1.290514
     /// </code>
-    /// 
-    /// <para>
-    ///   However, to achieve this 80%, we would need to redo our experiment
-    ///   more carefully. Assuming we are going to redo our experiment, we will
-    ///   have more freedom about what we can change and what we can not. For 
-    ///   better addressing those points, we will create an a priori analysis 
-    ///   of the experiment:</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         However, to achieve this 80%, we would need to redo our experiment
+    ///         more carefully. Assuming we are going to redo our experiment, we will
+    ///         have more freedom about what we can change and what we can not. For
+    ///         better addressing those points, we will create an a priori analysis
+    ///         of the experiment:
+    ///     </para>
+    ///     <code>
     /// // We would like to know how many samples we would need to gather in
     /// // order to achieve a 80% power test which can detect an effect size
     /// // of one standard deviation:
@@ -135,105 +141,99 @@ namespace Accord.Statistics.Testing.Power
     /// // need with the required 80% power.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="IPowerAnalysis"/>
-    /// <seealso cref="TTestPowerAnalysis"/>
-    /// <seealso cref="TwoSampleZTestPowerAnalysis"/>
-    /// 
+    /// <seealso cref="IPowerAnalysis" />
+    /// <seealso cref="TTestPowerAnalysis" />
+    /// <seealso cref="TwoSampleZTestPowerAnalysis" />
     [Serializable]
     public class TwoSampleTTestPowerAnalysis : BaseTwoSamplePowerAnalysis
     {
-
         /// <summary>
-        ///   Creates a new <see cref="TTestPowerAnalysis"/>.
+        ///     Creates a new <see cref="TTestPowerAnalysis" />.
         /// </summary>
-        /// 
         /// <param name="hypothesis">The hypothesis tested.</param>
-        /// 
         public TwoSampleTTestPowerAnalysis(TwoSampleHypothesis hypothesis)
-            : base((DistributionTail)hypothesis) { }
-
-        /// <summary>
-        ///   Creates a new <see cref="TTestPowerAnalysis"/>.
-        /// </summary>
-        /// 
-        /// <param name="test">The test to create the analysis for.</param>
-        /// 
-        public TwoSampleTTestPowerAnalysis(TwoSampleTTest test)
-            : base(test.Tail)
+            : base((DistributionTail)hypothesis)
         {
-            this.Power = test.Analysis.Power;
-            this.Size = test.Analysis.Size;
-            this.Effect = test.Analysis.Effect;
-            this.Samples1 = test.Analysis.Samples1;
-            this.Samples2 = test.Analysis.Samples2;
         }
 
         /// <summary>
-        ///  Computes the power for a test with givens values of
-        ///  <see cref="IPowerAnalysis.Effect">effect size</see> and <see cref="IPowerAnalysis.Samples">
-        ///  number of samples</see> under <see cref="IPowerAnalysis.Size"/>.
+        ///     Creates a new <see cref="TTestPowerAnalysis" />.
         /// </summary>
-        /// 
+        /// <param name="test">The test to create the analysis for.</param>
+        public TwoSampleTTestPowerAnalysis(TwoSampleTTest test)
+            : base(test.Tail)
+        {
+            Power = test.Analysis.Power;
+            Size = test.Analysis.Size;
+            Effect = test.Analysis.Effect;
+            Samples1 = test.Analysis.Samples1;
+            Samples2 = test.Analysis.Samples2;
+        }
+
+        /// <summary>
+        ///     Computes the power for a test with givens values of
+        ///     <see cref="IPowerAnalysis.Effect">effect size</see> and
+        ///     <see cref="IPowerAnalysis.Samples">
+        ///         number of samples
+        ///     </see>
+        ///     under <see cref="IPowerAnalysis.Size" />.
+        /// </summary>
         /// <returns>
-        ///  The power for the test under the given conditions.
+        ///     The power for the test under the given conditions.
         /// </returns>
-        /// 
         public override void ComputePower()
         {
-            double delta = Effect / Math.Sqrt(1.0 / Samples1 + 1.0 / Samples2);
-            double df = Samples1 + Samples2 - 2;
+            var delta = Effect / System.Math.Sqrt(1.0 / Samples1 + 1.0 / Samples2);
+            var df = Samples1 + Samples2 - 2;
 
-            TDistribution td = new TDistribution(df);
-            NoncentralTDistribution nt = new NoncentralTDistribution(df, delta);
+            var td = new TDistribution(df);
+            var nt = new NoncentralTDistribution(df, delta);
 
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    {
-                        double Ta = td.InverseDistributionFunction(1.0 - Size / 2);
-                        double pa = nt.ComplementaryDistributionFunction(+Ta);
-                        double pb = nt.DistributionFunction(-Ta);
-                        Power = pa + pb;
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(1.0 - Size / 2);
+                    var pa = nt.ComplementaryDistributionFunction(+Ta);
+                    var pb = nt.DistributionFunction(-Ta);
+                    Power = pa + pb;
+                    break;
+                }
 
                 case DistributionTail.OneLower:
-                    {
-                        double Ta = td.InverseDistributionFunction(Size);
-                        Power = nt.DistributionFunction(Ta);
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(Size);
+                    Power = nt.DistributionFunction(Ta);
+                    break;
+                }
 
                 case DistributionTail.OneUpper:
-                    {
-                        double Ta = td.InverseDistributionFunction(1.0 - Size);
-                        Power = nt.ComplementaryDistributionFunction(Ta);
-                        break;
-                    }
+                {
+                    var Ta = td.InverseDistributionFunction(1.0 - Size);
+                    Power = nt.ComplementaryDistributionFunction(Ta);
+                    break;
+                }
 
                 default:
                     throw new InvalidOperationException();
             }
         }
 
-
         /// <summary>
-        ///   Estimates the number of samples necessary to attain the
-        ///   required power level for the given effect size.
+        ///     Estimates the number of samples necessary to attain the
+        ///     required power level for the given effect size.
         /// </summary>
-        /// 
         /// <param name="delta">The minimum detectable difference.</param>
         /// <param name="standardDeviation">The difference standard deviation.</param>
         /// <param name="power">The desired power level. Default is 0.8.</param>
         /// <param name="alpha">The desired significance level. Default is 0.05.</param>
-        /// <param name="proportion">The proportion of observations in the second group
-        /// when compared to the first group. A proportion of 2:1 results in twice more
-        /// samples in the second group than in the first. Default is 1.</param>
+        /// <param name="proportion">
+        ///     The proportion of observations in the second group
+        ///     when compared to the first group. A proportion of 2:1 results in twice more
+        ///     samples in the second group than in the first. Default is 1.
+        /// </param>
         /// <param name="hypothesis">The alternative hypothesis (research hypothesis) to be tested.</param>
-        /// 
         /// <returns>The required number of samples.</returns>
-        /// 
         public static TwoSampleTTestPowerAnalysis GetSampleSize(double delta,
             double standardDeviation = 1, double proportion = 1.0, double power = 0.8, double alpha = 0.05,
             TwoSampleHypothesis hypothesis = TwoSampleHypothesis.ValuesAreDifferent)
@@ -242,7 +242,7 @@ namespace Accord.Statistics.Testing.Power
             {
                 Effect = delta / standardDeviation,
                 Size = alpha,
-                Power = power,
+                Power = power
             };
 
             analysis.ComputeSamples(proportion);
@@ -251,39 +251,37 @@ namespace Accord.Statistics.Testing.Power
         }
 
         /// <summary>
-        ///   Estimates the number of samples necessary to attain the
-        ///   required power level for the given effect size.
+        ///     Estimates the number of samples necessary to attain the
+        ///     required power level for the given effect size.
         /// </summary>
-        /// 
         /// <param name="delta">The minimum detectable difference.</param>
         /// <param name="variance1">The first sample variance.</param>
         /// <param name="variance2">The second sample variance.</param>
         /// <param name="power">The desired power level. Default is 0.8.</param>
         /// <param name="alpha">The desired significance level. Default is 0.05.</param>
-        /// <param name="proportion">The proportion of observations in the second group
-        /// when compared to the first group. A proportion of 2:1 results in twice more
-        /// samples in the second group than in the first. Default is 1.</param>
+        /// <param name="proportion">
+        ///     The proportion of observations in the second group
+        ///     when compared to the first group. A proportion of 2:1 results in twice more
+        ///     samples in the second group than in the first. Default is 1.
+        /// </param>
         /// <param name="hypothesis">The alternative hypothesis (research hypothesis) to be tested.</param>
-        /// 
         /// <returns>The required number of samples.</returns>
-        /// 
         public static TwoSampleTTestPowerAnalysis GetSampleSize(double delta,
             double variance1, double variance2, double proportion = 1.0, double power = 0.8,
             double alpha = 0.05, TwoSampleHypothesis hypothesis = TwoSampleHypothesis.ValuesAreDifferent)
         {
-            double standardDeviation = Math.Sqrt((variance1 + variance2) / 2.0);
+            var standardDeviation = System.Math.Sqrt((variance1 + variance2) / 2.0);
 
             var analysis = new TwoSampleTTestPowerAnalysis(hypothesis)
             {
                 Effect = delta / standardDeviation,
                 Size = alpha,
-                Power = power,
+                Power = power
             };
 
             analysis.ComputeSamples(proportion);
 
             return analysis;
         }
-
     }
 }

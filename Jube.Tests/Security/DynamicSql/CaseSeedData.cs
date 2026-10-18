@@ -36,6 +36,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         await using var db = fx.GetDbContext();
         var tenantId = (await db.UserInTenant.FirstAsync(u => u.User == ownerUser)).TenantRegistryId;
         var modelGuid = Guid.NewGuid();
+
         var modelId = await db.InsertWithInt32IdentityAsync(new EntityAnalysisModel
         {
             Name = $"{DatabaseFixture.Prefix}W12Model{Guid.NewGuid():N}"[..40],
@@ -52,6 +53,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
 
         var role = await db.UserRegistry.Where(u => u.Name == ownerUser).Select(u => u.RoleRegistryGuid).FirstAsync();
         var workflowGuid = Guid.NewGuid();
+
         var workflowId = await db.InsertWithInt32IdentityAsync(new CaseWorkflow
         {
             Name = $"{DatabaseFixture.Prefix}W12Flow{Guid.NewGuid():N}"[..40],
@@ -65,6 +67,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         });
         workflowIds.Add(workflowId);
         workflowGuids.Add(workflowGuid);
+
         await db.InsertAsync(new CaseWorkflowRole
         {
             CaseWorkflowGuid = workflowGuid,
@@ -76,6 +79,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         });
 
         var statusGuid = Guid.NewGuid();
+
         statusIds.Add(await db.InsertWithInt32IdentityAsync(new CaseWorkflowStatus
         {
             Name = $"{DatabaseFixture.Prefix}W12Status{Guid.NewGuid():N}"[..40],
@@ -90,6 +94,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
             CreatedUser = ownerUser,
             CreatedDate = DateTime.UtcNow
         }));
+
         await db.InsertAsync(new CaseWorkflowStatusRole
         {
             CaseWorkflowStatusGuid = statusGuid,
@@ -101,6 +106,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         });
 
         var key = caseKeyValue ?? $"{DatabaseFixture.Prefix}W12Ckv{Guid.NewGuid():N}";
+
         var caseId = await db.InsertWithInt32IdentityAsync(new Jube.Data.Poco.Case
         {
             EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
@@ -117,12 +123,14 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
             Json = "{}"
         });
         caseIds.Add(caseId);
+
         return new Seeded(workflowGuid, key, caseId, modelId, modelGuid);
     }
 
     public async Task AddXpathAsync(int modelId, string name, int dataTypeId)
     {
         await using var db = fx.GetDbContext();
+
         await db.InsertAsync(new EntityAnalysisModelRequestXpath
         {
             EntityAnalysisModelId = modelId,
@@ -143,11 +151,13 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
     {
         await using var db = fx.GetDbContext();
         var entry = Guid.NewGuid();
+
         var json =
             $"{{\"entityAnalysisModelInstanceEntryGuid\":\"{entry}\",\"responseElevation\":{{\"value\":12.5}}," +
             $"\"prevailingEntityAnalysisModelActivationRuleId\":7,\"entityAnalysisModelGuid\":\"{modelGuid}\"," +
             "\"entityAnalysisModelActivationRuleCount\":3,\"createdDate\":\"2026-03-01T10:00:00Z\"," +
             $"\"referenceDate\":\"{referenceDate:yyyy-MM-ddTHH:mm:ssZ}\",\"payload\":{payloadJson}}}";
+
         archiveIds.Add(await db.InsertWithInt64IdentityAsync(new Archive
         {
             Json = json,
@@ -164,14 +174,18 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
     public async Task DisposeAsync()
     {
         await using var db = fx.GetDbContext();
+
         var compiledIds = db.SessionCaseSearchCompiledSql.Where(w => workflowGuids.Contains(w.CaseWorkflowGuid))
             .Select(w => w.Id);
+
         await db.GetTable<SessionCaseSearchCompiledSqlExecution>()
             .Where(w => compiledIds.Contains(w.SessionCaseSearchCompiledSqlId)).DeleteAsync();
+
         await db.SessionCaseSearchCompiledSql.Where(w => workflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
         await db.GetTable<CaseEvent>().Where(w => caseIds.Contains(w.CaseId ?? 0)).DeleteAsync();
         await db.Case.Where(w => caseIds.Contains(w.Id)).DeleteAsync();
         var statusGuids = db.CaseWorkflowStatus.Where(s => statusIds.Contains(s.Id)).Select(s => s.Guid);
+
         await db.GetTable<CaseWorkflowStatusRole>().Where(w => statusGuids.Contains(w.CaseWorkflowStatusGuid))
             .DeleteAsync();
         await db.GetTable<CaseWorkflowRole>().Where(w => workflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
@@ -179,11 +193,15 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         await db.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).DeleteAsync();
         var models = modelIds.Select(id => (int?)id).ToList();
         await db.Archive.Where(w => archiveIds.Contains(w.Id)).DeleteAsync();
+
         await db.GetTable<EntityAnalysisModelSampleExecutionLog>().Where(w => models.Contains(w.EntityAnalysisModelId))
             .DeleteAsync();
+
         await db.EntityAnalysisModelRequestXpath.Where(w => models.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
         await db.GetTable<EntityAnalysisModelVersion>().Where(w => modelIds.Contains(w.EntityAnalysisModelId))
             .DeleteAsync();
+
         await db.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
     }
 }

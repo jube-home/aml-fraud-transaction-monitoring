@@ -44,6 +44,11 @@ function loadTemplate(id) {
             $("#RowHeight").data("kendoNumericTextBox").value(data.rowHeight);
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("VisualisationRegistry", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name
+            });
             validator.validate();
 
             $("#Template").show();
@@ -58,11 +63,13 @@ function showTemplate() {
     $("#RowHeight").data("kendoNumericTextBox").value(0);
 
     ReadyNew();
+    window.AskJoobySetPageContext?.("VisualisationRegistry", "new", null);
     $("#Template").show();
     $("#Homepage").hide();
 }
 
 function showHomePage() {
+    window.AskJoobySetPageContext?.("VisualisationRegistry", "list", null);
     $("#Template").hide();
     $("#Homepage").show();
     getRecords();

@@ -12,6 +12,7 @@
  */
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("SanctionsLoader", "readonly", null);
     const sanctionEntrySource = $("#SanctionEntrySource").kendoDropDownList({
         dataTextField: "text",
         dataValueField: "value"
@@ -45,6 +46,7 @@ $(document).ready(function () {
             allowedExtensions: [".csv"]
         },
         upload: function (e) {
+            AttachAntiforgeryHeader(e);
             e.data = {
                 Id: sanctionEntrySource.value()
             };

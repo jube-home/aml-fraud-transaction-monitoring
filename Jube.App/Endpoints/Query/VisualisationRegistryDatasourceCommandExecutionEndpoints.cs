@@ -60,16 +60,19 @@ namespace Jube.App.Endpoints.Query
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}/{id}: entry user={user}");
             }
 
             JArray parameters;
+
             try
             {
                 using var reader = new StreamReader(httpContext.Request.Body);
                 var body = await reader.ReadToEndAsync(token);
+
                 if (string.IsNullOrWhiteSpace(body))
                 {
                     if (log.IsWarnEnabled)
@@ -89,12 +92,15 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await VisualisationRegistryDatasourceCommandExecutionService.CreateAsync(dbContext, user,
                     log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
                 var result = await service.ExecuteAsync(id, parameters, token);
+
                 return TypedResults.Content(JsonConvert.SerializeObject(result, serializerSettings),
                     "application/json");
             }
@@ -138,6 +144,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"POST {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

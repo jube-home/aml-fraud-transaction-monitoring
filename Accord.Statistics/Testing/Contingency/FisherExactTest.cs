@@ -1,124 +1,140 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Diagnostics;
+using Accord.Statistics.Analysis;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing
 {
-    using System;
-    using Accord.Statistics.Analysis;
-    using Accord.Statistics.Distributions.Univariate;
-    using System.Diagnostics;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Fisher's exact test for contingency tables.
+    ///     Fisher's exact test for contingency tables.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   This test statistic distribution is the <see cref="HypergeometricDistribution">
-    ///   Hypergeometric</see>.</para>
+    ///     <para>
+    ///         This test statistic distribution is the
+    ///         <see cref="HypergeometricDistribution">
+    ///             Hypergeometric
+    ///         </see>
+    ///         .
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="HypergeometricDistribution"/>
-    /// 
+    /// <seealso cref="HypergeometricDistribution" />
     /// <example>
-    /// <code source="Unit Tests\Accord.Tests.Statistics\Testing\Contingency\FisherExactTestTest.cs" region="doc_test" />
+    ///     <code source="Unit Tests\Accord.Tests.Statistics\Testing\Contingency\FisherExactTestTest.cs" region="doc_test" />
     /// </example>
-    /// 
     [Serializable]
     public class FisherExactTest : HypothesisTest<HypergeometricDistribution>
     {
-
         /// <summary>
-        ///   Gets the alternative hypothesis under test. If the test is
-        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis
-        ///   can be rejected in favor of this alternative hypothesis.
+        ///     Constructs a new Fisher's exact test.
         /// </summary>
-        /// 
-        public OneSampleHypothesis Hypothesis { get; protected set; }
-
-        /// <summary>
-        ///   Constructs a new Fisher's exact test.
-        /// </summary>
-        /// 
         /// <param name="matrix">The matrix to be tested.</param>
         /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
-        /// 
         public FisherExactTest(ConfusionMatrix matrix,
             OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
             if (matrix == null)
+            {
                 throw new ArgumentNullException("matrix");
+            }
 
-            int[,] mat = matrix.Matrix;
+            var mat = matrix.Matrix;
 
-            int a = mat[0, 0];
-            int b = mat[0, 1];
-            int c = mat[1, 0];
-            int d = mat[1, 1];
+            var a = mat[0, 0];
+            var b = mat[0, 1];
+            var c = mat[1, 0];
+            var d = mat[1, 1];
 
-            int N = matrix.NumberOfSamples; // total number in population
-            int k = a;                      // number of success in sample
-            int m = a + b;                  // number of success in population
-            int n = a + c;                  // sample size
+            var N = matrix.NumberOfSamples; // total number in population
+            var k = a; // number of success in sample
+            var m = a + b; // number of success in population
+            var n = a + c; // sample size
 
             Debug.Assert(a + b + c + d == N);
 
-            Compute(statistic: k, populationSize: N, n: n, m: m, alternate: alternate);
+            Compute(k, N, n, m, alternate);
         }
 
         /// <summary>
-        ///   Computes the Fisher's exact test.
+        ///     Gets the alternative hypothesis under test. If the test is
+        ///     <see cref="IHypothesisTest.Significant" />, the null hypothesis
+        ///     can be rejected in favor of this alternative hypothesis.
         /// </summary>
-        /// 
+        public OneSampleHypothesis Hypothesis { get; protected set; }
+
+        /// <summary>
+        ///     Computes the Fisher's exact test.
+        /// </summary>
         protected void Compute(double statistic, int populationSize, int n, int m, OneSampleHypothesis alternate)
         {
-            this.Statistic = statistic;
-            this.StatisticDistribution = new HypergeometricDistribution(populationSize, m, n);
+            Statistic = statistic;
+            StatisticDistribution = new HypergeometricDistribution(populationSize, m, n);
 
-            this.Hypothesis = alternate;
-            this.Tail = (DistributionTail)alternate;
-            this.PValue = StatisticToPValue(Statistic);
+            Hypothesis = alternate;
+            Tail = (DistributionTail)alternate;
+            PValue = StatisticToPValue(Statistic);
         }
 
         /// <summary>
-        ///   Converts a given test statistic to a p-value.
+        ///     Converts a given test statistic to a p-value.
         /// </summary>
-        /// 
         /// <param name="x">The value of the test statistic.</param>
-        /// 
         /// <returns>The p-value for the given statistic.</returns>
-        /// 
         public override double StatisticToPValue(double x)
         {
             double p;
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2.0 * StatisticDistribution.DistributionFunction((int)x);
+                    var observed = StatisticDistribution.ProbabilityMassFunction((int)x);
+                    var threshold = observed * (1.0 + 1e-7);
+                    double sum = 0;
+                    var support = StatisticDistribution.Support;
+                    for (var k = support.Min; k <= support.Max; k++)
+                    {
+                        var pk = StatisticDistribution.ProbabilityMassFunction(k);
+                        if (pk <= threshold)
+                        {
+                            sum += pk;
+                        }
+                    }
+
+                    p = System.Math.Min(1.0, sum);
                     break;
 
                 case DistributionTail.OneUpper:
-                    p = StatisticDistribution.ComplementaryDistributionFunction((int)x, inclusive: true);
+                    p = StatisticDistribution.ComplementaryDistributionFunction((int)x, true);
                     break;
 
                 case DistributionTail.OneLower:
@@ -128,20 +144,18 @@ namespace Accord.Statistics.Testing
                 default:
                     throw new InvalidOperationException();
             }
+
             return p;
         }
 
         /// <summary>
-        ///   Converts a given p-value to a test statistic.
+        ///     Converts a given p-value to a test statistic.
         /// </summary>
-        /// 
         /// <param name="p">The p-value.</param>
-        /// 
         /// <returns>The test statistic which would generate the given p-value.</returns>
-        /// 
         public override double PValueToStatistic(double p)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

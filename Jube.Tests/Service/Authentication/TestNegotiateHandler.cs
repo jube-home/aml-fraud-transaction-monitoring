@@ -36,6 +36,7 @@ public sealed class TestNegotiateHandler(
         }
 
         var identity = new ClaimsIdentity([new Claim(ClaimTypes.Name, value.ToString())], Scheme.Name);
+
         return Task.FromResult(AuthenticateResult.Success(
             new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
     }
@@ -44,6 +45,7 @@ public sealed class TestNegotiateHandler(
     {
         Response.StatusCode = StatusCodes.Status401Unauthorized;
         Response.Headers.WWWAuthenticate = "Negotiate";
+
         return Task.CompletedTask;
     }
 }

@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
+using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
 using LinqToDB.Data;
@@ -128,21 +130,6 @@ namespace Jube.Data.Repository
                     && w.EnableOverride == 1 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> GetByCasesWorkflowIdAsync(int casesWorkflowId,
-            CancellationToken token = default)
-        {
-            var query =
-                from x in dbContext.EntityAnalysisModelRequestXpath
-                join m in dbContext.EntityAnalysisModel
-                    on x.EntityAnalysisModelId equals m.Id
-                join c in dbContext.CaseWorkflow on m.Id equals c.EntityAnalysisModelId
-                where (m.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                      && c.Id == casesWorkflowId && (x.Deleted == 0 || x.Deleted == null)
-                select x;
-
-            return await query.ToListAsync(token);
-        }
-
         public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> GetByEntityAnalysisModelIdByDataTypeAsync(
             int entityAnalysisModelId, CancellationToken token = default, params int[] dataTypeIds)
         {
@@ -184,6 +171,7 @@ namespace Jube.Data.Repository
                 model.CacheIndexId = cacheIndexId + 1;
 
                 model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
                 return model;
             }, token);
         }
@@ -197,6 +185,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
 
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -243,6 +232,40 @@ namespace Jube.Data.Repository
         public Task DeleteAsync(int id, CancellationToken token = default)
         {
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
+        }
+
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelRequestXpath
+                .Where(d =>
+                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelRequestXpath>>
+            GetApprovedByEntityAnalysisModelIdOrderByIdAsync(
+                int entityAnalysisModelId, int approvalsRequired = 1,
+                CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelRequestXpath
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelId == entityAnalysisModelId)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new
+                    GetApprovedEntityQuery<EntityAnalysisModelRequestXpath, EntityAnalysisModelRequestXpathVersion>(
+                        dbContext,
+                        EntityApprovalKind.EntityAnalysisModelRequestXPath,
+                        nameof(EntityAnalysisModelRequestXpathVersion.EntityAnalysisModelRequestXpathId),
+                        tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
 
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
@@ -293,40 +316,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModelRequestXpath
-                .Where(d =>
-                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
-        public async Task<IEnumerable<EntityAnalysisModelRequestXpath>>
-            GetApprovedByEntityAnalysisModelIdOrderByIdAsync(
-                int entityAnalysisModelId, int approvalsRequired = 1,
-                CancellationToken token = default)
-        {
-            var current = await dbContext.EntityAnalysisModelRequestXpath
-                .Where(w =>
-                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && w.EntityAnalysisModelId == entityAnalysisModelId)
-                .OrderBy(o => o.Id)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return await new
-                    GetApprovedEntityQuery<EntityAnalysisModelRequestXpath, EntityAnalysisModelRequestXpathVersion>(
-                        dbContext,
-                        EntityApprovalKind.EntityAnalysisModelRequestXPath,
-                        nameof(EntityAnalysisModelRequestXpathVersion.EntityAnalysisModelRequestXpathId),
-                        tenantRegistryId)
-                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

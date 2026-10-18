@@ -19,6 +19,7 @@ namespace Jube.Extensions
         {
             var dto = new DateTimeOffset(dateTime
                 .ToUniversalTime());
+
             return dto.ToUnixTimeMilliseconds();
         }
 

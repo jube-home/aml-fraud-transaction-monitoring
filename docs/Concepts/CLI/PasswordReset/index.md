@@ -6,8 +6,6 @@ parent: CLI
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # CLI Password Reset
 In the event of total password lock and unavailability of the application for all administrative users, the password can be reset via the CLI:
 

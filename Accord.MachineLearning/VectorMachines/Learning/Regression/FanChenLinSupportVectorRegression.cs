@@ -1,46 +1,51 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Optimization;
+using Accord.Statistics.Kernels;
 
 namespace Accord.MachineLearning.VectorMachines.Learning
 {
-    using Accord.Math.Optimization;
-    using Accord.Statistics.Kernels;
-    using Accord.Math;
-    using System;
-    using Accord.Math.Optimization.Losses;
-    using System.Threading;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Support vector regression using <see cref="FanChenLinQuadraticOptimization"/> (LibSVM) algorithm.
+    ///     Support vector regression using <see cref="FanChenLinQuadraticOptimization" /> (LibSVM) algorithm.
     /// </summary>
-    /// 
     public class FanChenLinSupportVectorRegression
         : BaseFanChenLinSupportVectorRegression<SupportVectorMachine, Linear, double[]>
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine Create(int inputs, Linear kernel)
         {
@@ -49,17 +54,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Support vector regression using <see cref="FanChenLinQuadraticOptimization"/> (LibSVM)  algorithm.
+    ///     Support vector regression using <see cref="FanChenLinQuadraticOptimization" /> (LibSVM)  algorithm.
     /// </summary>
-    /// 
     public class FanChenLinSupportVectorRegression<TKernel>
         : BaseFanChenLinSupportVectorRegression<SupportVectorMachine<TKernel>, TKernel, double[]>
         where TKernel : IKernel<double[]>
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine<TKernel> Create(int inputs, TKernel kernel)
         {
@@ -68,18 +72,17 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Support vector regression using <see cref="FanChenLinQuadraticOptimization"/>  (LibSVM) algorithm.
+    ///     Support vector regression using <see cref="FanChenLinQuadraticOptimization" />  (LibSVM) algorithm.
     /// </summary>
-    /// 
     public class FanChenLinSupportVectorRegression<TKernel, TInput>
         : BaseFanChenLinSupportVectorRegression<SupportVectorMachine<TKernel, TInput>, TKernel, TInput>
         where TKernel : IKernel<TInput>
         where TInput : ICloneable
     {
         /// <summary>
-        /// Creates an instance of the model to be learned. Inheritors
-        /// of this abstract class must define this method so new models
-        /// can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors
+        ///     of this abstract class must define this method so new models
+        ///     can be created from the training data.
         /// </summary>
         protected override SupportVectorMachine<TKernel, TInput> Create(int inputs, TKernel kernel)
         {
@@ -88,9 +91,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Base class for Fan-Chen-Lin (LibSVM) regression algorithms.
+    ///     Base class for Fan-Chen-Lin (LibSVM) regression algorithms.
     /// </summary>
-    /// 
     public abstract class BaseFanChenLinSupportVectorRegression<TModel, TKernel, TInput>
         : BaseSupportVectorRegression<TModel, TKernel, TInput>
         where TKernel : IKernel<TInput>
@@ -99,151 +101,132 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         where TInput : ICloneable
 #endif
     {
-
-        private double[] alpha;
-
-        double eps = 1e-3;
-        bool shrinking = true;
-        double rho = 1e-3;
-
         /// <summary>
-        ///   Constructs a new one-class support vector learning algorithm.
+        ///     Constructs a new one-class support vector learning algorithm.
         /// </summary>
-        /// 
         /// <param name="machine">A support vector machine.</param>
-        /// 
         public BaseFanChenLinSupportVectorRegression(TModel machine)
         {
-            this.Model = machine;
+            Model = machine;
         }
 
         /// <summary>
-        ///   Constructs a new one-class support vector learning algorithm.
+        ///     Constructs a new one-class support vector learning algorithm.
         /// </summary>
-        /// 
         public BaseFanChenLinSupportVectorRegression()
         {
-
         }
 
         /// <summary>
-        ///   Gets the value for the Lagrange multipliers
-        ///   (alpha) for every observation vector.
+        ///     Gets the value for the Lagrange multipliers
+        ///     (alpha) for every observation vector.
         /// </summary>
-        /// 
-        public double[] Lagrange { get { return alpha; } }
+        public double[] Lagrange { get; private set; }
 
         /// <summary>
-        ///   Convergence tolerance. Default value is 1e-3.
+        ///     Convergence tolerance. Default value is 1e-3.
         /// </summary>
-        /// 
         /// <remarks>
-        ///   The criterion for completing the model training process. The default is 0.001.
+        ///     The criterion for completing the model training process. The default is 0.001.
         /// </remarks>
-        /// 
-        public double Tolerance
-        {
-            get { return eps; }
-            set { eps = value; }
-        }
+        public double Tolerance { get; set; } = 1e-3;
 
         /// <summary>
-        ///   Gets or sets a value indicating whether to use 
-        ///   shrinking heuristics during learning. Default is true.
+        ///     Gets or sets a value indicating whether to use
+        ///     shrinking heuristics during learning. Default is true.
         /// </summary>
-        /// 
         /// <value>
-        ///   <c>true</c> to use shrinking; otherwise, <c>false</c>.
+        ///     <c>true</c> to use shrinking; otherwise, <c>false</c>.
         /// </value>
-        /// 
-        public bool Shrinking
-        {
-            get { return shrinking; }
-            set { shrinking = value; }
-        }
+        public bool Shrinking { get; set; } = true;
 
         /// <summary>
-        /// Runs the learning algorithm.
+        ///     Runs the learning algorithm.
         /// </summary>
-        /// 
         protected override void InnerRun()
         {
-            TInput[] x = Inputs;
-            double[] y = Outputs;
+            var x = Inputs;
+            var y = Outputs;
 
-            int l = Inputs.Length;
-            double[] alpha2 = new double[2 * l];
-            double[] linear_term = new double[2 * l];
-            int[] signs = new int[2 * l];
-            double[] c = new double[2 * l];
+            var l = Inputs.Length;
+            var alpha2 = new double[2 * l];
+            var linear_term = new double[2 * l];
+            var signs = new int[2 * l];
+            var c = new double[2 * l];
             //int[] sign = new int[2 * l];
-            int[] index = new int[2 * l];
+            var index = new int[2 * l];
 
-            for (int i = 0; i < l; i++)
+            for (var i = 0; i < l; i++)
             {
-                linear_term[i] = rho - y[i];
+                linear_term[i] = Epsilon - y[i];
                 signs[i] = +1;
                 c[i] = C[i];
                 index[i] = i;
 
-                linear_term[i + l] = rho + y[i];
+                linear_term[i + l] = Epsilon + y[i];
                 signs[i + l] = -1;
                 c[i + l] = C[i];
                 index[i + l] = i;
             }
 
-            Func<int, int[], int, double[], double[]> Q = (int i, int[] indices, int length, double[] row) =>
+            Func<int, int[], int, double[], double[]> Q = (i, indices, length, row) =>
             {
-                for (int j = 0; j < length; j++)
+                for (var j = 0; j < length; j++)
                 {
-                    int k = indices[j];
+                    var k = indices[j];
                     row[j] = signs[i] * signs[k] * Kernel.Function(x[index[i]], x[index[k]]);
                 }
+
                 return row;
             };
 
             var s = new FanChenLinQuadraticOptimization(2 * l, Q, linear_term, signs)
             {
-                Tolerance = eps,
-                Shrinking = this.shrinking,
+                Tolerance = Tolerance,
+                Shrinking = Shrinking,
                 Solution = alpha2,
                 Token = Token,
-                UpperBounds = c,
+                UpperBounds = c
             };
 
-            bool success = s.Minimize();
+            var success = s.Minimize();
 
-            this.alpha = new double[Inputs.Length];
-            for (int i = 0; i < alpha.Length; i++)
-                alpha[i] = alpha2[i] - alpha2[i + l];
+            Lagrange = new double[Inputs.Length];
+            for (var i = 0; i < Lagrange.Length; i++)
+            {
+                Lagrange[i] = alpha2[i] - alpha2[i + l];
+            }
 
-            int sv = 0;
-            for (int i = 0; i < alpha.Length; i++)
-                if (alpha[i] != 0)
+            var sv = 0;
+            for (var i = 0; i < Lagrange.Length; i++)
+            {
+                if (Lagrange[i] != 0)
+                {
                     sv++;
+                }
+            }
 
             Model.SupportVectors = new TInput[sv];
             Model.Weights = new double[sv];
 
-            for (int i = 0, j = 0; i < alpha.Length; i++)
+            for (int i = 0, j = 0; i < Lagrange.Length; i++)
             {
-                if (alpha[i] != 0)
+                if (Lagrange[i] != 0)
                 {
                     Model.SupportVectors[j] = Inputs[i];
-                    Model.Weights[j] = alpha[i];
+                    Model.Weights[j] = Lagrange[i];
                     j++;
                 }
             }
 
             Model.Threshold = -s.Rho;
 
-            if (success == false)
+            if (!success)
             {
                 throw new ConvergenceException("Convergence could not be attained. " +
-                            "Please reduce the cost of misclassification errors by reducing " +
-                            "the complexity parameter C or try a different kernel function.");
+                                               "Please reduce the cost of misclassification errors by reducing " +
+                                               "the complexity parameter C or try a different kernel function.");
             }
         }
-
     }
 }

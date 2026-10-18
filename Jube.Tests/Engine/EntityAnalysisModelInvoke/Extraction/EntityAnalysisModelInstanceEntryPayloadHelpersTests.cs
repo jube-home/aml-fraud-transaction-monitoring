@@ -38,6 +38,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
                     EnableRdbmsArchive = true
                 }
             };
+
             return model;
         }
 

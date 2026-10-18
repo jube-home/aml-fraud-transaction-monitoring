@@ -1,57 +1,71 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Statistics.Distributions.Fitting;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Poisson probability distribution.
+    ///     Poisson probability distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   <para>The Poisson distribution is a discrete probability distribution that
-    ///   expresses the probability of a number of events occurring in a fixed
-    ///   period of time if these events occur with a known average rate and
-    ///   independently of the time since the last event.</para>
-    ///   
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Poisson_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Poisson distribution. Available on:
-    ///       http://en.wikipedia.org/wiki/Poisson_distribution </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         The Poisson distribution is a discrete probability distribution that
+    ///         expresses the probability of a number of events occurring in a fixed
+    ///         period of time if these events occur with a known average rate and
+    ///         independently of the time since the last event.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Poisson_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Poisson distribution. Available on:
+    ///                         http://en.wikipedia.org/wiki/Poisson_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   The following example shows how to instantiate a new Poisson distribution
-    ///   with a given rate λ and how to compute its measures and associated functions.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         The following example shows how to instantiate a new Poisson distribution
+    ///         with a given rate λ and how to compute its measures and associated functions.
+    ///     </para>
+    ///     <code>
     /// // Create a new Poisson distribution with 
     /// var dist = new PoissonDistribution(lambda: 4.2);
     /// 
@@ -84,12 +98,11 @@ namespace Accord.Statistics.Distributions.Univariate
     /// // String representation
     /// string str = dist.ToString(CultureInfo.InvariantCulture); // "Poisson(x; λ = 4.2)"
     /// </code>
-    /// 
-    /// <para>
-    ///   This example shows hows to call the distribution function 
-    ///   to compute different types of probabilities. </para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         This example shows hows to call the distribution function
+    ///         to compute different types of probabilities.
+    ///     </para>
+    ///     <code>
     /// // Create a new Poisson distribution
     /// var dist = new PoissonDistribution(lambda: 4.2);
     /// 
@@ -109,40 +122,33 @@ namespace Accord.Statistics.Distributions.Univariate
     /// double greaterThanOrEqual = dist.ComplementaryDistributionFunction(k: 1, inclusive: true);
     /// </code>
     /// </example>
-    /// 
     [Serializable]
     public class PoissonDistribution : UnivariateDiscreteDistribution,
         IFittableDistribution<double, IFittingOptions>,
         ISampleableDistribution<int>
     {
-
-        // Distribution parameters
-        private double lambda; // λ
+        // Distribution measures
+        private double? entropy;
 
         // Derived values
         private double epml;
 
-        // Distribution measures
-        private double? entropy;
+        private bool immutable;
 
-        bool immutable;
-
+        // Distribution parameters
 
         /// <summary>
-        ///   Creates a new Poisson distribution with λ = 1.
+        ///     Creates a new Poisson distribution with λ = 1.
         /// </summary>
-        /// 
         public PoissonDistribution()
             : this(1)
         {
         }
 
         /// <summary>
-        ///   Creates a new Poisson distribution with the given λ (lambda).
+        ///     Creates a new Poisson distribution with the given λ (lambda).
         /// </summary>
-        /// 
         /// <param name="lambda">The Poisson's λ (lambda) parameter. Default is 1.</param>
-        /// 
         public PoissonDistribution([Positive] double lambda)
         {
             if (lambda <= 0)
@@ -154,306 +160,292 @@ namespace Accord.Statistics.Distributions.Univariate
             initialize(lambda);
         }
 
-        private void initialize(double lm)
-        {
-            if (lm <= 0)
-                lm = Constants.DoubleEpsilon;
-
-            this.lambda = lm;
-            this.epml = Math.Exp(-lm);
-
-            this.entropy = null;
-        }
+        /// <summary>
+        ///     Gets the Poisson's parameter λ (lambda).
+        /// </summary>
+        public double Lambda { get; private set; }
 
         /// <summary>
-        ///   Gets the Poisson's parameter λ (lambda).
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
-        public double Lambda
-        {
-            get { return lambda; }
-        }
-
-        /// <summary>
-        ///   Gets the mean for this distribution.
-        /// </summary>
-        /// 
         public override double Mean
         {
-            get { return lambda; }
-            set { throw new NotImplementedException();}
+            get => Lambda;
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///     Gets the variance for this distribution.
         /// </summary>
-        /// 
         public override double Variance
         {
-            get { return lambda; }
-            set { throw new NotImplementedException();}
+            get => Lambda;
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///     Gets the entropy for this distribution.
         /// </summary>
-        /// 
         /// <remarks>
-        ///   A closed form expression for the entropy of a Poisson
-        ///   distribution is unknown. This property returns an approximation
-        ///   for large lambda.
+        ///     A closed form expression for the entropy of a Poisson
+        ///     distribution is unknown. This property returns an approximation
+        ///     for large lambda.
         /// </remarks>
-        /// 
         public override double Entropy
         {
             get
             {
                 if (!entropy.HasValue)
                 {
-                    entropy = 0.5 * System.Math.Log(2.0 * System.Math.PI * lambda)
-                        - 1 / (12 * lambda)
-                        - 1 / (24 * lambda * lambda)
-                        - 19 / (360 * lambda * lambda * lambda);
+                    entropy = 0.5 * System.Math.Log(2.0 * System.Math.PI * Lambda)
+                              - 1 / (12 * Lambda)
+                              - 1 / (24 * Lambda * Lambda)
+                              - 19 / (360 * Lambda * Lambda * Lambda);
                 }
 
                 return entropy.Value;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the support interval for this distribution.
+        ///     Gets the support interval for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="IntRange" /> containing
-        ///   the support interval for this distribution.
+        ///     A <see cref="IntRange" /> containing
+        ///     the support interval for this distribution.
         /// </value>
-        /// 
-        public override IntRange Support
-        {
-            get { return new IntRange(0, Int32.MaxValue); }
-        }
+        public override IntRange Support => new(0, int.MaxValue);
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>k</c>.
+        ///     Gets the standard Poisson distribution,
+        ///     with lambda (rate) equal to 1.
         /// </summary>
-        /// 
-        /// <param name="k">
-        ///   A single point in the distribution range.</param>
-        ///   
-        /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerDistributionFunction(int k)
-        {
-            return Gamma.UpperIncomplete(k + 1, lambda);
-        }
+        public static PoissonDistribution Standard { get; } = new() { immutable = true };
 
         /// <summary>
-        ///   Gets the probability mass function (pmf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Fits the underlying distribution to a given set of observations.
         /// </summary>
-        /// 
-        /// <param name="k">
-        ///   A single point in the distribution range.</param>
-        ///   
-        /// <remarks>
-        ///   The Probability Mass Function (PMF) describes the
-        ///   probability that a given value <c>k</c> will occur.
-        /// </remarks>
-        /// 
-        /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.</returns>
-        ///   
-        protected internal override double InnerProbabilityMassFunction(int k)
-        {
-            return (Math.Pow(lambda, k) / Special.Factorial(k)) * epml;
-        }
-
-        /// <summary>
-        ///   Gets the log-probability mass function (pmf) for
-        ///   this distribution evaluated at point <c>k</c>.
-        /// </summary>
-        /// 
-        /// <param name="k">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The logarithm of the probability of <c>k</c>
-        ///   occurring in the current distribution.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Mass Function (PMF) describes the
-        ///   probability that a given value <c>k</c> will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerLogProbabilityMassFunction(int k)
-        {
-            return (k * Math.Log(lambda) - Special.LogFactorial(k)) - lambda;
-        }
-
-        /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
-        /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
+        /// <param name="observations">
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, such
-        ///   as regularization constants and additional parameters.</param>
-        ///   
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting, such
+        ///     as regularization constants and additional parameters.
+        /// </param>
         /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
+        ///     Although both double[] and double[][] arrays are supported,
+        ///     providing a double[] for a multivariate distribution or a
+        ///     double[][] for a univariate distribution may have a negative
+        ///     impact in performance.
         /// </remarks>
-        /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             if (immutable)
+            {
                 throw new InvalidOperationException("This object can not be modified.");
+            }
 
             if (options != null)
+            {
                 throw new ArgumentException("No options may be specified.");
+            }
 
             double mean;
 
             if (weights == null)
+            {
                 mean = observations.Mean();
+            }
             else
+            {
                 mean = observations.WeightedMean(weights);
+            }
 
             initialize(mean);
         }
 
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public override object Clone()
+        {
+            return new PoissonDistribution(Lambda);
+        }
 
         /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
+        ///     Generates a random vector of observations from the current distribution.
         /// </summary>
-        /// 
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        /// 
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
         public override int[] Generate(int samples, int[] result, Random source)
         {
-            if (lambda > 30)
+            if (Lambda > 30)
             {
-                for (int i = 0; i < samples; i++)
+                for (var i = 0; i < samples; i++)
+                {
                     result[i] = InverseDistributionFunction(source.NextDouble());
+                }
             }
             else
             {
-                for (int i = 0; i < samples; i++)
-                    result[i] = knuth(source, lambda);
+                for (var i = 0; i < samples; i++)
+                {
+                    result[i] = knuth(source, Lambda);
+                }
             }
 
             return result;
         }
 
         /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
+        ///     Generates a random observation from the current distribution.
         /// </summary>
-        /// 
-        /// <param name="samples">The number of samples to generate.</param>
-        /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        /// 
-        /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
-        public override double[] Generate(int samples, double[] result, Random source)
-        {
-            if (lambda > 30)
-            {
-                for (int i = 0; i < samples; i++)
-                    result[i] = InverseDistributionFunction(source.NextDouble());
-            }
-            else
-            {
-                for (int i = 0; i < samples; i++)
-                    result[i] = knuth(source, lambda);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///   Generates a random observation from the current distribution.
-        /// </summary>
-        /// 
         /// <returns>A random observations drawn from this distribution.</returns>
-        /// 
         public override int Generate(Random source)
         {
-            if (lambda > 30)
+            if (Lambda > 30)
+            {
                 return InverseDistributionFunction(source.NextDouble());
+            }
 
-            return knuth(source, lambda);
+            return knuth(source, Lambda);
+        }
+
+        private void initialize(double lm)
+        {
+            if (lm <= 0)
+            {
+                lm = Constants.DoubleEpsilon;
+            }
+
+            Lambda = lm;
+            epml = System.Math.Exp(-lm);
+
+            entropy = null;
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>k</c>.
+        /// </summary>
+        /// <param name="k">
+        ///     A single point in the distribution range.
+        /// </param>
+        /// <remarks>
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
+        /// </remarks>
+        protected internal override double InnerDistributionFunction(int k)
+        {
+            return Gamma.UpperIncomplete(k + 1, Lambda);
+        }
+
+        /// <summary>
+        ///     Gets the probability mass function (pmf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="k">
+        ///     A single point in the distribution range.
+        /// </param>
+        /// <remarks>
+        ///     The Probability Mass Function (PMF) describes the
+        ///     probability that a given value <c>k</c> will occur.
+        /// </remarks>
+        /// <returns>
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
+        /// </returns>
+        protected internal override double InnerProbabilityMassFunction(int k)
+        {
+            return System.Math.Pow(Lambda, k) / Special.Factorial(k) * epml;
+        }
+
+        /// <summary>
+        ///     Gets the log-probability mass function (pmf) for
+        ///     this distribution evaluated at point <c>k</c>.
+        /// </summary>
+        /// <param name="k">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The logarithm of the probability of <c>k</c>
+        ///     occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        ///     The Probability Mass Function (PMF) describes the
+        ///     probability that a given value <c>k</c> will occur.
+        /// </remarks>
+        protected internal override double InnerLogProbabilityMassFunction(int k)
+        {
+            return k * System.Math.Log(Lambda) - Special.LogFactorial(k) - Lambda;
+        }
+
+        /// <summary>
+        ///     Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <param name="result">The location where to store the samples.</param>
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        public override double[] Generate(int samples, double[] result, Random source)
+        {
+            if (Lambda > 30)
+            {
+                for (var i = 0; i < samples; i++)
+                {
+                    result[i] = InverseDistributionFunction(source.NextDouble());
+                }
+            }
+            else
+            {
+                for (var i = 0; i < samples; i++)
+                {
+                    result[i] = knuth(source, Lambda);
+                }
+            }
+
+            return result;
         }
 
         private static int knuth(Random random, double lambda)
         {
             // Knuth, 1969.
-            double p = 1.0;
-            double L = Math.Exp(-lambda);
+            var p = 1.0;
+            var L = System.Math.Exp(-lambda);
 
             int k;
 
             for (k = 0; p > L; k++)
+            {
                 p *= random.NextDouble();
+            }
 
             return k - 1;
         }
 
-
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
-        public override object Clone()
-        {
-            return new PoissonDistribution(lambda);
-        }
-
-
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format("Poisson(x; λ = {0})",
-                lambda.ToString(format, formatProvider));
+            return string.Format("Poisson(x; λ = {0})",
+                Lambda.ToString(format, formatProvider));
         }
-
-
-        /// <summary>
-        ///   Gets the standard Poisson distribution,
-        ///   with lambda (rate) equal to 1.
-        /// </summary>
-        /// 
-        public static PoissonDistribution Standard { get { return standard; } }
-
-        private static readonly PoissonDistribution standard = new PoissonDistribution() { immutable = true };
-
     }
 }

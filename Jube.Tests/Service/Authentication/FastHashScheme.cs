@@ -13,7 +13,7 @@
 
 using System;
 using System.Threading;
-using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
 using AuthEngine = Jube.Service.Authentication.Authentication;
 
 namespace Jube.Test.Service.Authentication;
@@ -23,7 +23,6 @@ public sealed class FastHashScheme : IPasswordHashScheme
     private int dummyVerifyCalls;
     private int hashCalls;
     private int verifyCalls;
-
     public int VerifyCalls => Volatile.Read(ref verifyCalls);
     public int HashCalls => Volatile.Read(ref hashCalls);
     public int DummyVerifyCalls => Volatile.Read(ref dummyVerifyCalls);
@@ -32,6 +31,7 @@ public sealed class FastHashScheme : IPasswordHashScheme
     public bool Verify(string? passwordHash, string password, string? key)
     {
         Interlocked.Increment(ref verifyCalls);
+
         if (passwordHash == Stored(AuthEngine.DummyPassword, key ?? String.Empty))
         {
             Interlocked.Increment(ref dummyVerifyCalls);

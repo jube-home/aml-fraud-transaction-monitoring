@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static DateTime AddBusinessDays(this DateTime @this, int businessDays)
         {
             var date = @this;
+
             if (businessDays == 0)
             {
                 return date;
@@ -28,9 +29,11 @@ namespace Jube.Dictionary.Extensions
             var weeks = (remaining - 1) / 5;
             date = date.AddDays(weeks * 7 * step);
             remaining -= weeks * 5;
+
             while (remaining > 0)
             {
                 date = date.AddDays(step);
+
                 if (date.DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday))
                 {
                     remaining--;

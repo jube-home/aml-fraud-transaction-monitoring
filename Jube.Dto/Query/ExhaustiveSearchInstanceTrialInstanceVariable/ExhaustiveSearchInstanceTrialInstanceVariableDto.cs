@@ -13,7 +13,11 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariable
 {
     [Description("One variable of the promoted trial instance of an Exhaustive Search Instance, with its " +
@@ -24,7 +28,6 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         public int Id { get; set; }
 
         [Description("Name of the variable.")] public string? Name { get; set; }
-
         [Description("Mean of the variable.")] public double Mean { get; set; }
 
         [Description("Maximum of the variable.")]
@@ -48,5 +51,18 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariable
 
         [Description("Integer Id of the processing type of the variable.")]
         public int ProcessingTypeId { get; set; }
+
+        [Description("Source field of a categorical indicator variable, null for an ordinary variable.")]
+        public string? CategoricalSourceName { get; set; }
+
+        [Description(
+            "Kind of a categorical indicator variable: 1 level, 2 other, 3 missing, null for an ordinary variable.")]
+        public byte? CategoricalKind { get; set; }
+
+        [Description("Level label of a categorical indicator variable, null for an ordinary variable.")]
+        public string? CategoricalLevel { get; set; }
+
+        [Description("Label of the reference level of the categorical source field, null for an ordinary variable.")]
+        public string? CategoricalReferenceLabel { get; set; }
     }
 }

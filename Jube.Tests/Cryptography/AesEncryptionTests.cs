@@ -42,6 +42,7 @@ namespace Jube.Test.Cryptography
             using var ms = new MemoryStream(cipherText);
             using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read);
             using var sr = new StreamReader(cs);
+
             return sr.ReadToEnd();
         }
 

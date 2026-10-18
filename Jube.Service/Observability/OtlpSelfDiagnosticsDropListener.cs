@@ -38,6 +38,7 @@ namespace Jube.Service.Observability
             }
 
             var payload = eventData.Payload;
+
             if (payload is not { Count: >= 3 })
             {
                 return;
@@ -74,6 +75,7 @@ namespace Jube.Service.Observability
 
             ServiceDiagnostics.OtlpDroppedCount.Add(droppedCount,
                 new KeyValuePair<string, object?>("signal", signal));
+
             OtlpDispatchCounters.OtlpDispatchCounters.RecordDropped(signal, droppedCount);
         }
     }

@@ -1,0 +1,2456 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-d6183e93" viewBox="0 0 720 480" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-d6183e93-t jc-d6183e93-d">
+    <title id="jc-d6183e93-t">K-nearest neighbours classifier</title>
+    <desc id="jc-d6183e93-d">A k-nearest neighbours classifier has no fitted structure: the model is its stored
+        reference rows, on the standardised scale. A new row takes the class mix of the 15 nearest of them. The axes are
+        the two principal components of the stored rows: the first is led by amount +0.67, velocity +0.67, merchant_risk
+        -0.29; the second is led by account_age +0.72, merchant_risk -0.64, velocity -0.23.
+    </desc>
+    <style>
+        .jc-d6183e93{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-d6183e93:not([data-theme="light"]),.jc-d6183e93:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-d6183e93:not([data-theme="light"]),.jc-d6183e93[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-d6183e93
+        text{fill:var(--jc-text);font-size:12px}.jc-d6183e93 .bg{fill:var(--jc-surface)}.jc-d6183e93
+        .ttl{font-size:16px;font-weight:600}.jc-d6183e93 .sub{fill:var(--jc-text2)}.jc-d6183e93
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-d6183e93 .at{fill:var(--jc-text2);font-weight:500}.jc-d6183e93
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-d6183e93
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-d6183e93
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-d6183e93 .ref.s0,.jc-d6183e93
+        .ref.s1,.jc-d6183e93 .ref.s2,.jc-d6183e93 .ref.s3,.jc-d6183e93 .ref.s4,.jc-d6183e93 .ref.s5,.jc-d6183e93
+        .ref.s6,.jc-d6183e93 .ref.s7{stroke:var(--sc)}.jc-d6183e93
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-d6183e93
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-d6183e93
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-d6183e93
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-d6183e93 .wh,.jc-d6183e93
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-d6183e93
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-d6183e93
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-d6183e93
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-d6183e93 .cd.hollow{fill:var(--jc-surface)}.jc-d6183e93
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-d6183e93
+        .ar.off{fill-opacity:0}.jc-d6183e93 .ring{font-size:10px}.jc-d6183e93
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-d6183e93 .needle{fill:var(--jc-text);stroke:none}.jc-d6183e93
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-d6183e93
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-d6183e93
+        .big{font-size:28px;font-weight:600}.jc-d6183e93 .rg0,.jc-d6183e93 .rg1,.jc-d6183e93
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-d6183e93 .rg0{fill-opacity:.1}.jc-d6183e93
+        .rg1{fill-opacity:.2}.jc-d6183e93 .rg2{fill-opacity:.32}.jc-d6183e93
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-d6183e93
+        .bar.part{fill-opacity:.35}.jc-d6183e93 .lgt{fill:var(--jc-text2)}.jc-d6183e93
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-d6183e93
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-d6183e93
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-d6183e93
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-d6183e93 .bar{fill:var(--sc)}.jc-d6183e93
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-d6183e93
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-d6183e93
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-d6183e93
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-d6183e93
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-d6183e93
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-d6183e93 .mk:hover .pt.h,.jc-d6183e93 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-d6183e93 .pt.sm{fill-opacity:.55;stroke:none}.jc-d6183e93
+        .na{fill:var(--jc-grid)}.jc-d6183e93 .mk:hover .sl,.jc-d6183e93 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-d6183e93
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-d6183e93
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-d6183e93
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-d6183e93
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-d6183e93
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-d6183e93 .ctr{text-anchor:middle}.jc-d6183e93
+        .end{text-anchor:end}.jc-d6183e93 .mid{dominant-baseline:central}.jc-d6183e93 .mk{outline:none}.jc-d6183e93
+        .m,.jc-d6183e93 .pt,.jc-d6183e93 .bub,.jc-d6183e93 .bar,.jc-d6183e93 .ov,.jc-d6183e93 .sl,.jc-d6183e93
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-d6183e93 .mk:hover .m,.jc-d6183e93 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-d6183e93 .mk:hover .pt,.jc-d6183e93 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-d6183e93 .mk:hover .bub,.jc-d6183e93 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-d6183e93 .mk:hover .bar,.jc-d6183e93 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-d6183e93 .mk:hover .ov,.jc-d6183e93 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-d6183e93 .mk:hover .sl,.jc-d6183e93 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-d6183e93 .mk:hover .box,.jc-d6183e93 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-d6183e93 .mk:hover .wk,.jc-d6183e93 .mk:focus-visible
+        .wk,.jc-d6183e93 .mk:hover .cd,.jc-d6183e93 .mk:focus-visible .cd{stroke-width:2.5}.jc-d6183e93 .mk:hover
+        .cell,.jc-d6183e93 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-d6183e93 .mk:hover
+        .vl,.jc-d6183e93 .mk:focus-visible .vl,.jc-d6183e93 .mk:hover .cx,.jc-d6183e93 .mk:focus-visible
+        .cx{opacity:1}.jc-d6183e93 .mk:hover .mkr,.jc-d6183e93 .mk:focus-visible .mkr{stroke-width:3}.jc-d6183e93
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-d6183e93
+        .mk:hover .tt,.jc-d6183e93 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-d6183e93
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-d6183e93
+        .tx{fill:var(--jc-text);font-size:12px}.jc-d6183e93 .tx.b{font-weight:600}.jc-d6183e93
+        .tsw{fill:var(--sc)}.jc-d6183e93 .lg{cursor:default;transition:opacity .15s ease}.jc-d6183e93 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-d6183e93 .sr{transition:opacity .15s ease}.jc-d6183e93:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-d6183e93:has(.mk:hover) .mk:not(:hover) .pt,.jc-d6183e93:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-d6183e93:has(.mk:hover) .mk:not(:hover) .bar,.jc-d6183e93:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-d6183e93:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-d6183e93:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-d6183e93 .s0{--sc:var(--jc-c0)}.jc-d6183e93 .s0
+        .on{fill:var(--jc-ct0)}.jc-d6183e93:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-d6183e93:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-d6183e93:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-d6183e93:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-d6183e93:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-d6183e93
+        .s1{--sc:var(--jc-c1)}.jc-d6183e93 .s1 .on{fill:var(--jc-ct1)}.jc-d6183e93:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-d6183e93:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-d6183e93:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-d6183e93:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-d6183e93:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-d6183e93,.jc-d6183e93 *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">K-nearest neighbours classifier</text>
+    <text class="sub" x="16" y="50">144 stored reference rows, k = 15</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="58.8" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Class 0</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="90.8" y="62" width="58.8" height="18"/>
+        <rect class="sw" x="92.8" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="110.8" y="75">Class 1</text>
+    </g>
+    <line class="gl" x1="51.9" y1="426" x2="704" y2="426"/>
+    <text class="tk end mid" x="43.9" y="426">-3</text>
+    <line class="gl" x1="51.9" y1="378" x2="704" y2="378"/>
+    <text class="tk end mid" x="43.9" y="378">-2</text>
+    <line class="gl" x1="51.9" y1="330" x2="704" y2="330"/>
+    <text class="tk end mid" x="43.9" y="330">-1</text>
+    <line class="gl" x1="51.9" y1="282" x2="704" y2="282"/>
+    <text class="tk end mid" x="43.9" y="282">0</text>
+    <line class="gl" x1="51.9" y1="234" x2="704" y2="234"/>
+    <text class="tk end mid" x="43.9" y="234">1</text>
+    <line class="gl" x1="51.9" y1="186" x2="704" y2="186"/>
+    <text class="tk end mid" x="43.9" y="186">2</text>
+    <line class="gl" x1="51.9" y1="138" x2="704" y2="138"/>
+    <text class="tk end mid" x="43.9" y="138">3</text>
+    <line class="gl" x1="51.9" y1="90" x2="704" y2="90"/>
+    <text class="tk end mid" x="43.9" y="90">4</text>
+    <line class="gl" x1="51.9" y1="90" x2="51.9" y2="426"/>
+    <text class="tk ctr" x="51.9" y="442">-4</text>
+    <line class="gl" x1="124.36" y1="90" x2="124.36" y2="426"/>
+    <text class="tk ctr" x="124.36" y="442">-3</text>
+    <line class="gl" x1="196.81" y1="90" x2="196.81" y2="426"/>
+    <text class="tk ctr" x="196.81" y="442">-2</text>
+    <line class="gl" x1="269.27" y1="90" x2="269.27" y2="426"/>
+    <text class="tk ctr" x="269.27" y="442">-1</text>
+    <line class="gl" x1="341.72" y1="90" x2="341.72" y2="426"/>
+    <text class="tk ctr" x="341.72" y="442">0</text>
+    <line class="gl" x1="414.18" y1="90" x2="414.18" y2="426"/>
+    <text class="tk ctr" x="414.18" y="442">1</text>
+    <line class="gl" x1="486.63" y1="90" x2="486.63" y2="426"/>
+    <text class="tk ctr" x="486.63" y="442">2</text>
+    <line class="gl" x1="559.09" y1="90" x2="559.09" y2="426"/>
+    <text class="tk ctr" x="559.09" y="442">3</text>
+    <line class="gl" x1="631.54" y1="90" x2="631.54" y2="426"/>
+    <text class="tk ctr" x="631.54" y="442">4</text>
+    <line class="gl" x1="704" y1="90" x2="704" y2="426"/>
+    <text class="tk ctr" x="704" y="442">5</text>
+    <line class="ax" x1="51.9" y1="426" x2="704" y2="426"/>
+    <line class="ax" x1="51.9" y1="90" x2="51.9" y2="426"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 1, class 0, Class 0, Principal component 1 (40.5% of variance): 0.1018, Principal component 2 (32.3% of variance): 1.22">
+            <title>Reference row 1, class 0, Class 0, Principal component 1 (40.5% of variance): 0.1018, Principal
+                component 2 (32.3% of variance): 1.22
+            </title>
+            <circle class="hit" cx="349.1" cy="223.44" r="9"/>
+            <circle class="pt" cx="349.1" cy="223.44" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="209.32" y="130.94" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="219.32" y="148.94">Reference row 1, class 0</text>
+                <rect class="tsw s0" x="219.32" y="156.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="233.32" y="165.94">Class 0</text>
+                <text class="tx" x="219.32" y="182.94">Principal component 1 (40.5% of variance): 0.1…</text>
+                <text class="tx" x="219.32" y="199.94">Principal component 2 (32.3% of variance): 1.22</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 5, class 0, Class 0, Principal component 1 (40.5% of variance): -0.5697, Principal component 2 (32.3% of variance): -1.216">
+            <title>Reference row 5, class 0, Class 0, Principal component 1 (40.5% of variance): -0.5697, Principal
+                component 2 (32.3% of variance): -1.216
+            </title>
+            <circle class="hit" cx="300.44" cy="340.35" r="9"/>
+            <circle class="pt" cx="300.44" cy="340.35" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="161.98" y="247.85" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="171.98" y="265.85">Reference row 5, class 0</text>
+                <rect class="tsw s0" x="171.98" y="273.85" width="9" height="9" rx="2"/>
+                <text class="tx b" x="185.98" y="282.85">Class 0</text>
+                <text class="tx" x="171.98" y="299.85">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="171.98" y="316.85">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 6, class 0, Class 0, Principal component 1 (40.5% of variance): -1.695, Principal component 2 (32.3% of variance): -0.5539">
+            <title>Reference row 6, class 0, Class 0, Principal component 1 (40.5% of variance): -1.695, Principal
+                component 2 (32.3% of variance): -0.5539
+            </title>
+            <circle class="hit" cx="218.92" cy="308.59" r="9"/>
+            <circle class="pt" cx="218.92" cy="308.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="80.46" y="216.09" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="90.46" y="234.09">Reference row 6, class 0</text>
+                <rect class="tsw s0" x="90.46" y="242.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="104.46" y="251.09">Class 0</text>
+                <text class="tx" x="90.46" y="268.09">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="90.46" y="285.09">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 10, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2278, Principal component 2 (32.3% of variance): 2.4">
+            <title>Reference row 10, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2278, Principal
+                component 2 (32.3% of variance): 2.4
+            </title>
+            <circle class="hit" cx="325.22" cy="166.81" r="9"/>
+            <circle class="pt" cx="325.22" cy="166.81" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="186.76" y="172.31" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="196.76" y="190.31">Reference row 10, class 0</text>
+                <rect class="tsw s0" x="196.76" y="198.31" width="9" height="9" rx="2"/>
+                <text class="tx b" x="210.76" y="207.31">Class 0</text>
+                <text class="tx" x="196.76" y="224.31">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="196.76" y="241.31">Principal component 2 (32.3% of variance): 2.4</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 13, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3306, Principal component 2 (32.3% of variance): 0.8142">
+            <title>Reference row 13, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3306, Principal
+                component 2 (32.3% of variance): 0.8142
+            </title>
+            <circle class="hit" cx="365.68" cy="242.92" r="9"/>
+            <circle class="pt" cx="365.68" cy="242.92" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="225.9" y="150.42" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="235.9" y="168.42">Reference row 13, class 0</text>
+                <rect class="tsw s0" x="235.9" y="176.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="249.9" y="185.42">Class 0</text>
+                <text class="tx" x="235.9" y="202.42">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="235.9" y="219.42">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 16, class 0, Class 0, Principal component 1 (40.5% of variance): -0.5285, Principal component 2 (32.3% of variance): -0.3618">
+            <title>Reference row 16, class 0, Class 0, Principal component 1 (40.5% of variance): -0.5285, Principal
+                component 2 (32.3% of variance): -0.3618
+            </title>
+            <circle class="hit" cx="303.43" cy="299.37" r="9"/>
+            <circle class="pt" cx="303.43" cy="299.37" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="164.97" y="206.87" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="174.97" y="224.87">Reference row 16, class 0</text>
+                <rect class="tsw s0" x="174.97" y="232.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="188.97" y="241.87">Class 0</text>
+                <text class="tx" x="174.97" y="258.87">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="174.97" y="275.87">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 17, class 0, Class 0, Principal component 1 (40.5% of variance): -2.563, Principal component 2 (32.3% of variance): 0.08164">
+            <title>Reference row 17, class 0, Class 0, Principal component 1 (40.5% of variance): -2.563, Principal
+                component 2 (32.3% of variance): 0.08164
+            </title>
+            <circle class="hit" cx="156.03" cy="278.08" r="9"/>
+            <circle class="pt" cx="156.03" cy="278.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="185.58" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="203.58">Reference row 17, class 0</text>
+                <rect class="tsw s0" x="61.9" y="211.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="220.58">Class 0</text>
+                <text class="tx" x="61.9" y="237.58">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="254.58">Principal component 2 (32.3% of variance): 0.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 23, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4779, Principal component 2 (32.3% of variance): -0.5407">
+            <title>Reference row 23, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4779, Principal
+                component 2 (32.3% of variance): -0.5407
+            </title>
+            <circle class="hit" cx="307.1" cy="307.96" r="9"/>
+            <circle class="pt" cx="307.1" cy="307.96" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="168.64" y="215.46" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="178.64" y="233.46">Reference row 23, class 0</text>
+                <rect class="tsw s0" x="178.64" y="241.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="192.64" y="250.46">Class 0</text>
+                <text class="tx" x="178.64" y="267.46">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="178.64" y="284.46">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 26, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4315, Principal component 2 (32.3% of variance): -1.368">
+            <title>Reference row 26, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4315, Principal
+                component 2 (32.3% of variance): -1.368
+            </title>
+            <circle class="hit" cx="310.46" cy="347.68" r="9"/>
+            <circle class="pt" cx="310.46" cy="347.68" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="172" y="255.18" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="182" y="273.18">Reference row 26, class 0</text>
+                <rect class="tsw s0" x="182" y="281.18" width="9" height="9" rx="2"/>
+                <text class="tx b" x="196" y="290.18">Class 0</text>
+                <text class="tx" x="182" y="307.18">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="182" y="324.18">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 29, class 0, Class 0, Principal component 1 (40.5% of variance): -1.758, Principal component 2 (32.3% of variance): 1.675">
+            <title>Reference row 29, class 0, Class 0, Principal component 1 (40.5% of variance): -1.758, Principal
+                component 2 (32.3% of variance): 1.675
+            </title>
+            <circle class="hit" cx="214.34" cy="201.59" r="9"/>
+            <circle class="pt" cx="214.34" cy="201.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="74.56" y="109.09" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="84.56" y="127.09">Reference row 29, class 0</text>
+                <rect class="tsw s0" x="84.56" y="135.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="98.56" y="144.09">Class 0</text>
+                <text class="tx" x="84.56" y="161.09">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="84.56" y="178.09">Principal component 2 (32.3% of variance): 1.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 33, class 0, Class 0, Principal component 1 (40.5% of variance): -1.105, Principal component 2 (32.3% of variance): 1.22">
+            <title>Reference row 33, class 0, Class 0, Principal component 1 (40.5% of variance): -1.105, Principal
+                component 2 (32.3% of variance): 1.22
+            </title>
+            <circle class="hit" cx="261.68" cy="223.42" r="9"/>
+            <circle class="pt" cx="261.68" cy="223.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="122.14" y="130.92" width="279.08" height="78" rx="6"/>
+                <text class="tx b" x="132.14" y="148.92">Reference row 33, class 0</text>
+                <rect class="tsw s0" x="132.14" y="156.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="146.14" y="165.92">Class 0</text>
+                <text class="tx" x="132.14" y="182.92">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="132.14" y="199.92">Principal component 2 (32.3% of variance): 1.22</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 34, class 0, Class 0, Principal component 1 (40.5% of variance): 0.9505, Principal component 2 (32.3% of variance): 0.2426">
+            <title>Reference row 34, class 0, Class 0, Principal component 1 (40.5% of variance): 0.9505, Principal
+                component 2 (32.3% of variance): 0.2426
+            </title>
+            <circle class="hit" cx="410.59" cy="270.36" r="9"/>
+            <circle class="pt" cx="410.59" cy="270.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="270.81" y="177.86" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="280.81" y="195.86">Reference row 34, class 0</text>
+                <rect class="tsw s0" x="280.81" y="203.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="294.81" y="212.86">Class 0</text>
+                <text class="tx" x="280.81" y="229.86">Principal component 1 (40.5% of variance): 0.9…</text>
+                <text class="tx" x="280.81" y="246.86">Principal component 2 (32.3% of variance): 0.2…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 36, class 0, Class 0, Principal component 1 (40.5% of variance): -3.313, Principal component 2 (32.3% of variance): -1.99">
+            <title>Reference row 36, class 0, Class 0, Principal component 1 (40.5% of variance): -3.313, Principal
+                component 2 (32.3% of variance): -1.99
+            </title>
+            <circle class="hit" cx="101.67" cy="377.51" r="9"/>
+            <circle class="pt" cx="101.67" cy="377.51" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="285.01" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="303.01">Reference row 36, class 0</text>
+                <rect class="tsw s0" x="61.9" y="311.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="320.01">Class 0</text>
+                <text class="tx" x="61.9" y="337.01">Principal component 1 (40.5% of variance): -3.…</text>
+                <text class="tx" x="61.9" y="354.01">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 38, class 0, Class 0, Principal component 1 (40.5% of variance): -1.895, Principal component 2 (32.3% of variance): 1.066">
+            <title>Reference row 38, class 0, Class 0, Principal component 1 (40.5% of variance): -1.895, Principal
+                component 2 (32.3% of variance): 1.066
+            </title>
+            <circle class="hit" cx="204.4" cy="230.83" r="9"/>
+            <circle class="pt" cx="204.4" cy="230.83" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.62" y="138.33" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="74.62" y="156.33">Reference row 38, class 0</text>
+                <rect class="tsw s0" x="74.62" y="164.33" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.62" y="173.33">Class 0</text>
+                <text class="tx" x="74.62" y="190.33">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="74.62" y="207.33">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 40, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4008, Principal component 2 (32.3% of variance): -2.216">
+            <title>Reference row 40, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4008, Principal
+                component 2 (32.3% of variance): -2.216
+            </title>
+            <circle class="hit" cx="370.77" cy="388.38" r="9"/>
+            <circle class="pt" cx="370.77" cy="388.38" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="230.99" y="295.88" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="240.99" y="313.88">Reference row 40, class 0</text>
+                <rect class="tsw s0" x="240.99" y="321.88" width="9" height="9" rx="2"/>
+                <text class="tx b" x="254.99" y="330.88">Class 0</text>
+                <text class="tx" x="240.99" y="347.88">Principal component 1 (40.5% of variance): 0.4…</text>
+                <text class="tx" x="240.99" y="364.88">Principal component 2 (32.3% of variance): -2.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 44, class 0, Class 0, Principal component 1 (40.5% of variance): 1.605, Principal component 2 (32.3% of variance): 0.5227">
+            <title>Reference row 44, class 0, Class 0, Principal component 1 (40.5% of variance): 1.605, Principal
+                component 2 (32.3% of variance): 0.5227
+            </title>
+            <circle class="hit" cx="458.02" cy="256.91" r="9"/>
+            <circle class="pt" cx="458.02" cy="256.91" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="318.24" y="164.41" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="328.24" y="182.41">Reference row 44, class 0</text>
+                <rect class="tsw s0" x="328.24" y="190.41" width="9" height="9" rx="2"/>
+                <text class="tx b" x="342.24" y="199.41">Class 0</text>
+                <text class="tx" x="328.24" y="216.41">Principal component 1 (40.5% of variance): 1.6…</text>
+                <text class="tx" x="328.24" y="233.41">Principal component 2 (32.3% of variance): 0.5…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 45, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4178, Principal component 2 (32.3% of variance): -0.2335">
+            <title>Reference row 45, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4178, Principal
+                component 2 (32.3% of variance): -0.2335
+            </title>
+            <circle class="hit" cx="372" cy="293.21" r="9"/>
+            <circle class="pt" cx="372" cy="293.21" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="232.22" y="200.71" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="242.22" y="218.71">Reference row 45, class 0</text>
+                <rect class="tsw s0" x="242.22" y="226.71" width="9" height="9" rx="2"/>
+                <text class="tx b" x="256.22" y="235.71">Class 0</text>
+                <text class="tx" x="242.22" y="252.71">Principal component 1 (40.5% of variance): 0.4…</text>
+                <text class="tx" x="242.22" y="269.71">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 47, class 0, Class 0, Principal component 1 (40.5% of variance): -1.414, Principal component 2 (32.3% of variance): -0.8833">
+            <title>Reference row 47, class 0, Class 0, Principal component 1 (40.5% of variance): -1.414, Principal
+                component 2 (32.3% of variance): -0.8833
+            </title>
+            <circle class="hit" cx="239.23" cy="324.4" r="9"/>
+            <circle class="pt" cx="239.23" cy="324.4" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="100.77" y="231.9" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="110.77" y="249.9">Reference row 47, class 0</text>
+                <rect class="tsw s0" x="110.77" y="257.9" width="9" height="9" rx="2"/>
+                <text class="tx b" x="124.77" y="266.9">Class 0</text>
+                <text class="tx" x="110.77" y="283.9">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="110.77" y="300.9">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 48, class 0, Class 0, Principal component 1 (40.5% of variance): -2.086, Principal component 2 (32.3% of variance): -0.5278">
+            <title>Reference row 48, class 0, Class 0, Principal component 1 (40.5% of variance): -2.086, Principal
+                component 2 (32.3% of variance): -0.5278
+            </title>
+            <circle class="hit" cx="190.57" cy="307.33" r="9"/>
+            <circle class="pt" cx="190.57" cy="307.33" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="52.11" y="214.83" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="62.11" y="232.83">Reference row 48, class 0</text>
+                <rect class="tsw s0" x="62.11" y="240.83" width="9" height="9" rx="2"/>
+                <text class="tx b" x="76.11" y="249.83">Class 0</text>
+                <text class="tx" x="62.11" y="266.83">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="62.11" y="283.83">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 49, class 0, Class 0, Principal component 1 (40.5% of variance): -1.416, Principal component 2 (32.3% of variance): 2.064">
+            <title>Reference row 49, class 0, Class 0, Principal component 1 (40.5% of variance): -1.416, Principal
+                component 2 (32.3% of variance): 2.064
+            </title>
+            <circle class="hit" cx="239.12" cy="182.93" r="9"/>
+            <circle class="pt" cx="239.12" cy="182.93" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="99.34" y="90.43" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="109.34" y="108.43">Reference row 49, class 0</text>
+                <rect class="tsw s0" x="109.34" y="116.43" width="9" height="9" rx="2"/>
+                <text class="tx b" x="123.34" y="125.43">Class 0</text>
+                <text class="tx" x="109.34" y="142.43">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="109.34" y="159.43">Principal component 2 (32.3% of variance): 2.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 51, class 0, Class 0, Principal component 1 (40.5% of variance): -2.393, Principal component 2 (32.3% of variance): 0.7836">
+            <title>Reference row 51, class 0, Class 0, Principal component 1 (40.5% of variance): -2.393, Principal
+                component 2 (32.3% of variance): 0.7836
+            </title>
+            <circle class="hit" cx="168.37" cy="244.39" r="9"/>
+            <circle class="pt" cx="168.37" cy="244.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="151.89" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="169.89">Reference row 51, class 0</text>
+                <rect class="tsw s0" x="61.9" y="177.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="186.89">Class 0</text>
+                <text class="tx" x="61.9" y="203.89">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="220.89">Principal component 2 (32.3% of variance): 0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 55, class 0, Class 0, Principal component 1 (40.5% of variance): 0.8991, Principal component 2 (32.3% of variance): -0.5045">
+            <title>Reference row 55, class 0, Class 0, Principal component 1 (40.5% of variance): 0.8991, Principal
+                component 2 (32.3% of variance): -0.5045
+            </title>
+            <circle class="hit" cx="406.87" cy="306.22" r="9"/>
+            <circle class="pt" cx="406.87" cy="306.22" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="267.09" y="213.72" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="277.09" y="231.72">Reference row 55, class 0</text>
+                <rect class="tsw s0" x="277.09" y="239.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="291.09" y="248.72">Class 0</text>
+                <text class="tx" x="277.09" y="265.72">Principal component 1 (40.5% of variance): 0.8…</text>
+                <text class="tx" x="277.09" y="282.72">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 58, class 0, Class 0, Principal component 1 (40.5% of variance): -0.909, Principal component 2 (32.3% of variance): 1.962">
+            <title>Reference row 58, class 0, Class 0, Principal component 1 (40.5% of variance): -0.909, Principal
+                component 2 (32.3% of variance): 1.962
+            </title>
+            <circle class="hit" cx="275.86" cy="187.8" r="9"/>
+            <circle class="pt" cx="275.86" cy="187.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="136.08" y="95.3" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="146.08" y="113.3">Reference row 58, class 0</text>
+                <rect class="tsw s0" x="146.08" y="121.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="160.08" y="130.3">Class 0</text>
+                <text class="tx" x="146.08" y="147.3">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="146.08" y="164.3">Principal component 2 (32.3% of variance): 1.9…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 67, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3801, Principal component 2 (32.3% of variance): -0.5947">
+            <title>Reference row 67, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3801, Principal
+                component 2 (32.3% of variance): -0.5947
+            </title>
+            <circle class="hit" cx="314.18" cy="310.54" r="9"/>
+            <circle class="pt" cx="314.18" cy="310.54" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="175.72" y="218.04" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="185.72" y="236.04">Reference row 67, class 0</text>
+                <rect class="tsw s0" x="185.72" y="244.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="199.72" y="253.04">Class 0</text>
+                <text class="tx" x="185.72" y="270.04">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="185.72" y="287.04">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 68, class 0, Class 0, Principal component 1 (40.5% of variance): 0.366, Principal component 2 (32.3% of variance): -0.1554">
+            <title>Reference row 68, class 0, Class 0, Principal component 1 (40.5% of variance): 0.366, Principal
+                component 2 (32.3% of variance): -0.1554
+            </title>
+            <circle class="hit" cx="368.24" cy="289.46" r="9"/>
+            <circle class="pt" cx="368.24" cy="289.46" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="228.46" y="196.96" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="238.46" y="214.96">Reference row 68, class 0</text>
+                <rect class="tsw s0" x="238.46" y="222.96" width="9" height="9" rx="2"/>
+                <text class="tx b" x="252.46" y="231.96">Class 0</text>
+                <text class="tx" x="238.46" y="248.96">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="238.46" y="265.96">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 70, class 0, Class 0, Principal component 1 (40.5% of variance): 0.5958, Principal component 2 (32.3% of variance): -1.068">
+            <title>Reference row 70, class 0, Class 0, Principal component 1 (40.5% of variance): 0.5958, Principal
+                component 2 (32.3% of variance): -1.068
+            </title>
+            <circle class="hit" cx="384.89" cy="333.26" r="9"/>
+            <circle class="pt" cx="384.89" cy="333.26" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="245.11" y="240.76" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="255.11" y="258.76">Reference row 70, class 0</text>
+                <rect class="tsw s0" x="255.11" y="266.76" width="9" height="9" rx="2"/>
+                <text class="tx b" x="269.11" y="275.76">Class 0</text>
+                <text class="tx" x="255.11" y="292.76">Principal component 1 (40.5% of variance): 0.5…</text>
+                <text class="tx" x="255.11" y="309.76">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 77, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2317, Principal component 2 (32.3% of variance): -0.574">
+            <title>Reference row 77, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2317, Principal
+                component 2 (32.3% of variance): -0.574
+            </title>
+            <circle class="hit" cx="324.93" cy="309.55" r="9"/>
+            <circle class="pt" cx="324.93" cy="309.55" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="186.47" y="217.05" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="196.47" y="235.05">Reference row 77, class 0</text>
+                <rect class="tsw s0" x="196.47" y="243.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="210.47" y="252.05">Class 0</text>
+                <text class="tx" x="196.47" y="269.05">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="196.47" y="286.05">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 78, class 0, Class 0, Principal component 1 (40.5% of variance): -0.9721, Principal component 2 (32.3% of variance): 0.3457">
+            <title>Reference row 78, class 0, Class 0, Principal component 1 (40.5% of variance): -0.9721, Principal
+                component 2 (32.3% of variance): 0.3457
+            </title>
+            <circle class="hit" cx="271.29" cy="265.41" r="9"/>
+            <circle class="pt" cx="271.29" cy="265.41" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="131.51" y="172.91" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="141.51" y="190.91">Reference row 78, class 0</text>
+                <rect class="tsw s0" x="141.51" y="198.91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="155.51" y="207.91">Class 0</text>
+                <text class="tx" x="141.51" y="224.91">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="141.51" y="241.91">Principal component 2 (32.3% of variance): 0.3…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 79, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3827, Principal component 2 (32.3% of variance): 1.076">
+            <title>Reference row 79, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3827, Principal
+                component 2 (32.3% of variance): 1.076
+            </title>
+            <circle class="hit" cx="369.45" cy="230.35" r="9"/>
+            <circle class="pt" cx="369.45" cy="230.35" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="229.67" y="137.85" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="239.67" y="155.85">Reference row 79, class 0</text>
+                <rect class="tsw s0" x="239.67" y="163.85" width="9" height="9" rx="2"/>
+                <text class="tx b" x="253.67" y="172.85">Class 0</text>
+                <text class="tx" x="239.67" y="189.85">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="239.67" y="206.85">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 80, class 0, Class 0, Principal component 1 (40.5% of variance): -0.6054, Principal component 2 (32.3% of variance): 3.512">
+            <title>Reference row 80, class 0, Class 0, Principal component 1 (40.5% of variance): -0.6054, Principal
+                component 2 (32.3% of variance): 3.512
+            </title>
+            <circle class="hit" cx="297.86" cy="113.4" r="9"/>
+            <circle class="pt" cx="297.86" cy="113.4" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="158.08" y="118.9" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="168.08" y="136.9">Reference row 80, class 0</text>
+                <rect class="tsw s0" x="168.08" y="144.9" width="9" height="9" rx="2"/>
+                <text class="tx b" x="182.08" y="153.9">Class 0</text>
+                <text class="tx" x="168.08" y="170.9">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="168.08" y="187.9">Principal component 2 (32.3% of variance): 3.5…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 82, class 0, Class 0, Principal component 1 (40.5% of variance): 0.8685, Principal component 2 (32.3% of variance): 1.275">
+            <title>Reference row 82, class 0, Class 0, Principal component 1 (40.5% of variance): 0.8685, Principal
+                component 2 (32.3% of variance): 1.275
+            </title>
+            <circle class="hit" cx="404.65" cy="220.82" r="9"/>
+            <circle class="pt" cx="404.65" cy="220.82" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="264.87" y="128.32" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="274.87" y="146.32">Reference row 82, class 0</text>
+                <rect class="tsw s0" x="274.87" y="154.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="288.87" y="163.32">Class 0</text>
+                <text class="tx" x="274.87" y="180.32">Principal component 1 (40.5% of variance): 0.8…</text>
+                <text class="tx" x="274.87" y="197.32">Principal component 2 (32.3% of variance): 1.2…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 85, class 0, Class 0, Principal component 1 (40.5% of variance): -1.156, Principal component 2 (32.3% of variance): 0.4525">
+            <title>Reference row 85, class 0, Class 0, Principal component 1 (40.5% of variance): -1.156, Principal
+                component 2 (32.3% of variance): 0.4525
+            </title>
+            <circle class="hit" cx="257.96" cy="260.28" r="9"/>
+            <circle class="pt" cx="257.96" cy="260.28" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="118.18" y="167.78" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="128.18" y="185.78">Reference row 85, class 0</text>
+                <rect class="tsw s0" x="128.18" y="193.78" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.18" y="202.78">Class 0</text>
+                <text class="tx" x="128.18" y="219.78">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="128.18" y="236.78">Principal component 2 (32.3% of variance): 0.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 90, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2768, Principal component 2 (32.3% of variance): 1.317">
+            <title>Reference row 90, class 0, Class 0, Principal component 1 (40.5% of variance): -0.2768, Principal
+                component 2 (32.3% of variance): 1.317
+            </title>
+            <circle class="hit" cx="321.67" cy="218.77" r="9"/>
+            <circle class="pt" cx="321.67" cy="218.77" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="181.89" y="126.27" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="191.89" y="144.27">Reference row 90, class 0</text>
+                <rect class="tsw s0" x="191.89" y="152.27" width="9" height="9" rx="2"/>
+                <text class="tx b" x="205.89" y="161.27">Class 0</text>
+                <text class="tx" x="191.89" y="178.27">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="191.89" y="195.27">Principal component 2 (32.3% of variance): 1.3…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 91, class 0, Class 0, Principal component 1 (40.5% of variance): -1.905, Principal component 2 (32.3% of variance): 0.8386">
+            <title>Reference row 91, class 0, Class 0, Principal component 1 (40.5% of variance): -1.905, Principal
+                component 2 (32.3% of variance): 0.8386
+            </title>
+            <circle class="hit" cx="203.72" cy="241.75" r="9"/>
+            <circle class="pt" cx="203.72" cy="241.75" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="63.94" y="149.25" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="73.94" y="167.25">Reference row 91, class 0</text>
+                <rect class="tsw s0" x="73.94" y="175.25" width="9" height="9" rx="2"/>
+                <text class="tx b" x="87.94" y="184.25">Class 0</text>
+                <text class="tx" x="73.94" y="201.25">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="73.94" y="218.25">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 92, class 0, Class 0, Principal component 1 (40.5% of variance): -1.882, Principal component 2 (32.3% of variance): -0.5187">
+            <title>Reference row 92, class 0, Class 0, Principal component 1 (40.5% of variance): -1.882, Principal
+                component 2 (32.3% of variance): -0.5187
+            </title>
+            <circle class="hit" cx="205.37" cy="306.9" r="9"/>
+            <circle class="pt" cx="205.37" cy="306.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="66.91" y="214.4" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="76.91" y="232.4">Reference row 92, class 0</text>
+                <rect class="tsw s0" x="76.91" y="240.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="90.91" y="249.4">Class 0</text>
+                <text class="tx" x="76.91" y="266.4">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="76.91" y="283.4">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 94, class 0, Class 0, Principal component 1 (40.5% of variance): -0.1665, Principal component 2 (32.3% of variance): -1.8">
+            <title>Reference row 94, class 0, Class 0, Principal component 1 (40.5% of variance): -0.1665, Principal
+                component 2 (32.3% of variance): -1.8
+            </title>
+            <circle class="hit" cx="329.66" cy="368.38" r="9"/>
+            <circle class="pt" cx="329.66" cy="368.38" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="191.2" y="275.88" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="201.2" y="293.88">Reference row 94, class 0</text>
+                <rect class="tsw s0" x="201.2" y="301.88" width="9" height="9" rx="2"/>
+                <text class="tx b" x="215.2" y="310.88">Class 0</text>
+                <text class="tx" x="201.2" y="327.88">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="201.2" y="344.88">Principal component 2 (32.3% of variance): -1.8</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 95, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7341, Principal component 2 (32.3% of variance): 1.734">
+            <title>Reference row 95, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7341, Principal
+                component 2 (32.3% of variance): 1.734
+            </title>
+            <circle class="hit" cx="288.53" cy="198.79" r="9"/>
+            <circle class="pt" cx="288.53" cy="198.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="148.75" y="106.29" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="158.75" y="124.29">Reference row 95, class 0</text>
+                <rect class="tsw s0" x="158.75" y="132.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="172.75" y="141.29">Class 0</text>
+                <text class="tx" x="158.75" y="158.29">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="158.75" y="175.29">Principal component 2 (32.3% of variance): 1.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 96, class 0, Class 0, Principal component 1 (40.5% of variance): 0.2255, Principal component 2 (32.3% of variance): -0.07883">
+            <title>Reference row 96, class 0, Class 0, Principal component 1 (40.5% of variance): 0.2255, Principal
+                component 2 (32.3% of variance): -0.07883
+            </title>
+            <circle class="hit" cx="358.06" cy="285.78" r="9"/>
+            <circle class="pt" cx="358.06" cy="285.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="218.28" y="193.28" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="228.28" y="211.28">Reference row 96, class 0</text>
+                <rect class="tsw s0" x="228.28" y="219.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="242.28" y="228.28">Class 0</text>
+                <text class="tx" x="228.28" y="245.28">Principal component 1 (40.5% of variance): 0.2…</text>
+                <text class="tx" x="228.28" y="262.28">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 97, class 0, Class 0, Principal component 1 (40.5% of variance): -1.734, Principal component 2 (32.3% of variance): -1.295">
+            <title>Reference row 97, class 0, Class 0, Principal component 1 (40.5% of variance): -1.734, Principal
+                component 2 (32.3% of variance): -1.295
+            </title>
+            <circle class="hit" cx="216.07" cy="344.14" r="9"/>
+            <circle class="pt" cx="216.07" cy="344.14" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="77.61" y="251.64" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="87.61" y="269.64">Reference row 97, class 0</text>
+                <rect class="tsw s0" x="87.61" y="277.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="101.61" y="286.64">Class 0</text>
+                <text class="tx" x="87.61" y="303.64">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="87.61" y="320.64">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 98, class 0, Class 0, Principal component 1 (40.5% of variance): -1.574, Principal component 2 (32.3% of variance): 1.154">
+            <title>Reference row 98, class 0, Class 0, Principal component 1 (40.5% of variance): -1.574, Principal
+                component 2 (32.3% of variance): 1.154
+            </title>
+            <circle class="hit" cx="227.7" cy="226.62" r="9"/>
+            <circle class="pt" cx="227.7" cy="226.62" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="87.92" y="134.12" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="97.92" y="152.12">Reference row 98, class 0</text>
+                <rect class="tsw s0" x="97.92" y="160.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="111.92" y="169.12">Class 0</text>
+                <text class="tx" x="97.92" y="186.12">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="97.92" y="203.12">Principal component 2 (32.3% of variance): 1.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 99, class 0, Class 0, Principal component 1 (40.5% of variance): 0.5129, Principal component 2 (32.3% of variance): -0.6038">
+            <title>Reference row 99, class 0, Class 0, Principal component 1 (40.5% of variance): 0.5129, Principal
+                component 2 (32.3% of variance): -0.6038
+            </title>
+            <circle class="hit" cx="378.88" cy="310.98" r="9"/>
+            <circle class="pt" cx="378.88" cy="310.98" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="239.1" y="218.48" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="249.1" y="236.48">Reference row 99, class 0</text>
+                <rect class="tsw s0" x="249.1" y="244.48" width="9" height="9" rx="2"/>
+                <text class="tx b" x="263.1" y="253.48">Class 0</text>
+                <text class="tx" x="249.1" y="270.48">Principal component 1 (40.5% of variance): 0.5…</text>
+                <text class="tx" x="249.1" y="287.48">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 100, class 0, Class 0, Principal component 1 (40.5% of variance): 0.6609, Principal component 2 (32.3% of variance): -0.1514">
+            <title>Reference row 100, class 0, Class 0, Principal component 1 (40.5% of variance): 0.6609, Principal
+                component 2 (32.3% of variance): -0.1514
+            </title>
+            <circle class="hit" cx="389.61" cy="289.27" r="9"/>
+            <circle class="pt" cx="389.61" cy="289.27" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="249.83" y="196.77" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="259.83" y="214.77">Reference row 100, class 0</text>
+                <rect class="tsw s0" x="259.83" y="222.77" width="9" height="9" rx="2"/>
+                <text class="tx b" x="273.83" y="231.77">Class 0</text>
+                <text class="tx" x="259.83" y="248.77">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="259.83" y="265.77">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 101, class 0, Class 0, Principal component 1 (40.5% of variance): -1.493, Principal component 2 (32.3% of variance): 0.4833">
+            <title>Reference row 101, class 0, Class 0, Principal component 1 (40.5% of variance): -1.493, Principal
+                component 2 (32.3% of variance): 0.4833
+            </title>
+            <circle class="hit" cx="233.56" cy="258.8" r="9"/>
+            <circle class="pt" cx="233.56" cy="258.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="93.78" y="166.3" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="103.78" y="184.3">Reference row 101, class 0</text>
+                <rect class="tsw s0" x="103.78" y="192.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="117.78" y="201.3">Class 0</text>
+                <text class="tx" x="103.78" y="218.3">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="103.78" y="235.3">Principal component 2 (32.3% of variance): 0.4…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 102, class 0, Class 0, Principal component 1 (40.5% of variance): -2.669, Principal component 2 (32.3% of variance): -0.6142">
+            <title>Reference row 102, class 0, Class 0, Principal component 1 (40.5% of variance): -2.669, Principal
+                component 2 (32.3% of variance): -0.6142
+            </title>
+            <circle class="hit" cx="148.33" cy="311.48" r="9"/>
+            <circle class="pt" cx="148.33" cy="311.48" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="218.98" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="236.98">Reference row 102, class 0</text>
+                <rect class="tsw s0" x="61.9" y="244.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="253.98">Class 0</text>
+                <text class="tx" x="61.9" y="270.98">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="287.98">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 103, class 0, Class 0, Principal component 1 (40.5% of variance): -0.6534, Principal component 2 (32.3% of variance): 0.8361">
+            <title>Reference row 103, class 0, Class 0, Principal component 1 (40.5% of variance): -0.6534, Principal
+                component 2 (32.3% of variance): 0.8361
+            </title>
+            <circle class="hit" cx="294.38" cy="241.86" r="9"/>
+            <circle class="pt" cx="294.38" cy="241.86" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="154.6" y="149.36" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="164.6" y="167.36">Reference row 103, class 0</text>
+                <rect class="tsw s0" x="164.6" y="175.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="178.6" y="184.36">Class 0</text>
+                <text class="tx" x="164.6" y="201.36">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="164.6" y="218.36">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 105, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7644, Principal component 2 (32.3% of variance): -0.07884">
+            <title>Reference row 105, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7644, Principal
+                component 2 (32.3% of variance): -0.07884
+            </title>
+            <circle class="hit" cx="286.34" cy="285.78" r="9"/>
+            <circle class="pt" cx="286.34" cy="285.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="147.88" y="193.28" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="157.88" y="211.28">Reference row 105, class 0</text>
+                <rect class="tsw s0" x="157.88" y="219.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="171.88" y="228.28">Class 0</text>
+                <text class="tx" x="157.88" y="245.28">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="157.88" y="262.28">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 106, class 0, Class 0, Principal component 1 (40.5% of variance): -1.543, Principal component 2 (32.3% of variance): -1.452">
+            <title>Reference row 106, class 0, Class 0, Principal component 1 (40.5% of variance): -1.543, Principal
+                component 2 (32.3% of variance): -1.452
+            </title>
+            <circle class="hit" cx="229.96" cy="351.71" r="9"/>
+            <circle class="pt" cx="229.96" cy="351.71" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="91.5" y="259.21" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="101.5" y="277.21">Reference row 106, class 0</text>
+                <rect class="tsw s0" x="101.5" y="285.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="115.5" y="294.21">Class 0</text>
+                <text class="tx" x="101.5" y="311.21">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="101.5" y="328.21">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 107, class 0, Class 0, Principal component 1 (40.5% of variance): 0.2061, Principal component 2 (32.3% of variance): -0.8161">
+            <title>Reference row 107, class 0, Class 0, Principal component 1 (40.5% of variance): 0.2061, Principal
+                component 2 (32.3% of variance): -0.8161
+            </title>
+            <circle class="hit" cx="356.66" cy="321.17" r="9"/>
+            <circle class="pt" cx="356.66" cy="321.17" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="216.88" y="228.67" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="226.88" y="246.67">Reference row 107, class 0</text>
+                <rect class="tsw s0" x="226.88" y="254.67" width="9" height="9" rx="2"/>
+                <text class="tx b" x="240.88" y="263.67">Class 0</text>
+                <text class="tx" x="226.88" y="280.67">Principal component 1 (40.5% of variance): 0.2…</text>
+                <text class="tx" x="226.88" y="297.67">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 108, class 0, Class 0, Principal component 1 (40.5% of variance): -0.8787, Principal component 2 (32.3% of variance): 1.712">
+            <title>Reference row 108, class 0, Class 0, Principal component 1 (40.5% of variance): -0.8787, Principal
+                component 2 (32.3% of variance): 1.712
+            </title>
+            <circle class="hit" cx="278.05" cy="199.8" r="9"/>
+            <circle class="pt" cx="278.05" cy="199.8" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="138.27" y="107.3" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="148.27" y="125.3">Reference row 108, class 0</text>
+                <rect class="tsw s0" x="148.27" y="133.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="162.27" y="142.3">Class 0</text>
+                <text class="tx" x="148.27" y="159.3">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="148.27" y="176.3">Principal component 2 (32.3% of variance): 1.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 110, class 0, Class 0, Principal component 1 (40.5% of variance): -1.366, Principal component 2 (32.3% of variance): 0.6359">
+            <title>Reference row 110, class 0, Class 0, Principal component 1 (40.5% of variance): -1.366, Principal
+                component 2 (32.3% of variance): 0.6359
+            </title>
+            <circle class="hit" cx="242.74" cy="251.47" r="9"/>
+            <circle class="pt" cx="242.74" cy="251.47" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="102.96" y="158.97" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="112.96" y="176.97">Reference row 110, class 0</text>
+                <rect class="tsw s0" x="112.96" y="184.97" width="9" height="9" rx="2"/>
+                <text class="tx b" x="126.96" y="193.97">Class 0</text>
+                <text class="tx" x="112.96" y="210.97">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="112.96" y="227.97">Principal component 2 (32.3% of variance): 0.6…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 111, class 0, Class 0, Principal component 1 (40.5% of variance): 0.91, Principal component 2 (32.3% of variance): 1.301">
+            <title>Reference row 111, class 0, Class 0, Principal component 1 (40.5% of variance): 0.91, Principal
+                component 2 (32.3% of variance): 1.301
+            </title>
+            <circle class="hit" cx="407.66" cy="219.53" r="9"/>
+            <circle class="pt" cx="407.66" cy="219.53" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="267.88" y="127.03" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="277.88" y="145.03">Reference row 111, class 0</text>
+                <rect class="tsw s0" x="277.88" y="153.03" width="9" height="9" rx="2"/>
+                <text class="tx b" x="291.88" y="162.03">Class 0</text>
+                <text class="tx" x="277.88" y="179.03">Principal component 1 (40.5% of variance): 0.91</text>
+                <text class="tx" x="277.88" y="196.03">Principal component 2 (32.3% of variance): 1.3…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 113, class 0, Class 0, Principal component 1 (40.5% of variance): -1.012, Principal component 2 (32.3% of variance): 0.159">
+            <title>Reference row 113, class 0, Class 0, Principal component 1 (40.5% of variance): -1.012, Principal
+                component 2 (32.3% of variance): 0.159
+            </title>
+            <circle class="hit" cx="268.38" cy="274.37" r="9"/>
+            <circle class="pt" cx="268.38" cy="274.37" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="128.6" y="181.87" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="138.6" y="199.87">Reference row 113, class 0</text>
+                <rect class="tsw s0" x="138.6" y="207.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="152.6" y="216.87">Class 0</text>
+                <text class="tx" x="138.6" y="233.87">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="138.6" y="250.87">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 115, class 0, Class 0, Principal component 1 (40.5% of variance): -0.8557, Principal component 2 (32.3% of variance): 0.09905">
+            <title>Reference row 115, class 0, Class 0, Principal component 1 (40.5% of variance): -0.8557, Principal
+                component 2 (32.3% of variance): 0.09905
+            </title>
+            <circle class="hit" cx="279.72" cy="277.25" r="9"/>
+            <circle class="pt" cx="279.72" cy="277.25" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="139.94" y="184.75" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="149.94" y="202.75">Reference row 115, class 0</text>
+                <rect class="tsw s0" x="149.94" y="210.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="163.94" y="219.75">Class 0</text>
+                <text class="tx" x="149.94" y="236.75">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="149.94" y="253.75">Principal component 2 (32.3% of variance): 0.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 116, class 0, Class 0, Principal component 1 (40.5% of variance): -0.9423, Principal component 2 (32.3% of variance): 0.8717">
+            <title>Reference row 116, class 0, Class 0, Principal component 1 (40.5% of variance): -0.9423, Principal
+                component 2 (32.3% of variance): 0.8717
+            </title>
+            <circle class="hit" cx="273.45" cy="240.16" r="9"/>
+            <circle class="pt" cx="273.45" cy="240.16" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="133.67" y="147.66" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="143.67" y="165.66">Reference row 116, class 0</text>
+                <rect class="tsw s0" x="143.67" y="173.66" width="9" height="9" rx="2"/>
+                <text class="tx b" x="157.67" y="182.66">Class 0</text>
+                <text class="tx" x="143.67" y="199.66">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="143.67" y="216.66">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 118, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4266, Principal component 2 (32.3% of variance): 1.805">
+            <title>Reference row 118, class 0, Class 0, Principal component 1 (40.5% of variance): -0.4266, Principal
+                component 2 (32.3% of variance): 1.805
+            </title>
+            <circle class="hit" cx="310.81" cy="195.37" r="9"/>
+            <circle class="pt" cx="310.81" cy="195.37" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="171.03" y="102.87" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="181.03" y="120.87">Reference row 118, class 0</text>
+                <rect class="tsw s0" x="181.03" y="128.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="195.03" y="137.87">Class 0</text>
+                <text class="tx" x="181.03" y="154.87">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="181.03" y="171.87">Principal component 2 (32.3% of variance): 1.8…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 121, class 0, Class 0, Principal component 1 (40.5% of variance): 1.065, Principal component 2 (32.3% of variance): -0.3843">
+            <title>Reference row 121, class 0, Class 0, Principal component 1 (40.5% of variance): 1.065, Principal
+                component 2 (32.3% of variance): -0.3843
+            </title>
+            <circle class="hit" cx="418.87" cy="300.45" r="9"/>
+            <circle class="pt" cx="418.87" cy="300.45" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="279.09" y="207.95" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="289.09" y="225.95">Reference row 121, class 0</text>
+                <rect class="tsw s0" x="289.09" y="233.95" width="9" height="9" rx="2"/>
+                <text class="tx b" x="303.09" y="242.95">Class 0</text>
+                <text class="tx" x="289.09" y="259.95">Principal component 1 (40.5% of variance): 1.0…</text>
+                <text class="tx" x="289.09" y="276.95">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 122, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3089, Principal component 2 (32.3% of variance): -1.157">
+            <title>Reference row 122, class 0, Class 0, Principal component 1 (40.5% of variance): 0.3089, Principal
+                component 2 (32.3% of variance): -1.157
+            </title>
+            <circle class="hit" cx="364.1" cy="337.52" r="9"/>
+            <circle class="pt" cx="364.1" cy="337.52" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="224.32" y="245.02" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="234.32" y="263.02">Reference row 122, class 0</text>
+                <rect class="tsw s0" x="234.32" y="271.02" width="9" height="9" rx="2"/>
+                <text class="tx b" x="248.32" y="280.02">Class 0</text>
+                <text class="tx" x="234.32" y="297.02">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="234.32" y="314.02">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 127, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4485, Principal component 2 (32.3% of variance): 1.176">
+            <title>Reference row 127, class 0, Class 0, Principal component 1 (40.5% of variance): 0.4485, Principal
+                component 2 (32.3% of variance): 1.176
+            </title>
+            <circle class="hit" cx="374.22" cy="225.56" r="9"/>
+            <circle class="pt" cx="374.22" cy="225.56" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="234.44" y="133.06" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="244.44" y="151.06">Reference row 127, class 0</text>
+                <rect class="tsw s0" x="244.44" y="159.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="258.44" y="168.06">Class 0</text>
+                <text class="tx" x="244.44" y="185.06">Principal component 1 (40.5% of variance): 0.4…</text>
+                <text class="tx" x="244.44" y="202.06">Principal component 2 (32.3% of variance): 1.1…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 129, class 0, Class 0, Principal component 1 (40.5% of variance): -0.06792, Principal component 2 (32.3% of variance): 0.982">
+            <title>Reference row 129, class 0, Class 0, Principal component 1 (40.5% of variance): -0.06792, Principal
+                component 2 (32.3% of variance): 0.982
+            </title>
+            <circle class="hit" cx="336.8" cy="234.87" r="9"/>
+            <circle class="pt" cx="336.8" cy="234.87" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="197.02" y="142.37" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="207.02" y="160.37">Reference row 129, class 0</text>
+                <rect class="tsw s0" x="207.02" y="168.37" width="9" height="9" rx="2"/>
+                <text class="tx b" x="221.02" y="177.37">Class 0</text>
+                <text class="tx" x="207.02" y="194.37">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="207.02" y="211.37">Principal component 2 (32.3% of variance): 0.9…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 131, class 0, Class 0, Principal component 1 (40.5% of variance): -1.189, Principal component 2 (32.3% of variance): -1.178">
+            <title>Reference row 131, class 0, Class 0, Principal component 1 (40.5% of variance): -1.189, Principal
+                component 2 (32.3% of variance): -1.178
+            </title>
+            <circle class="hit" cx="255.55" cy="338.56" r="9"/>
+            <circle class="pt" cx="255.55" cy="338.56" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="117.09" y="246.06" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="127.09" y="264.06">Reference row 131, class 0</text>
+                <rect class="tsw s0" x="127.09" y="272.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="141.09" y="281.06">Class 0</text>
+                <text class="tx" x="127.09" y="298.06">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="127.09" y="315.06">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 132, class 0, Class 0, Principal component 1 (40.5% of variance): -1.17, Principal component 2 (32.3% of variance): 0.7141">
+            <title>Reference row 132, class 0, Class 0, Principal component 1 (40.5% of variance): -1.17, Principal
+                component 2 (32.3% of variance): 0.7141
+            </title>
+            <circle class="hit" cx="256.96" cy="247.72" r="9"/>
+            <circle class="pt" cx="256.96" cy="247.72" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="117.18" y="155.22" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="127.18" y="173.22">Reference row 132, class 0</text>
+                <rect class="tsw s0" x="127.18" y="181.22" width="9" height="9" rx="2"/>
+                <text class="tx b" x="141.18" y="190.22">Class 0</text>
+                <text class="tx" x="127.18" y="207.22">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="127.18" y="224.22">Principal component 2 (32.3% of variance): 0.7…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 134, class 0, Class 0, Principal component 1 (40.5% of variance): -2.695, Principal component 2 (32.3% of variance): 0.001748">
+            <title>Reference row 134, class 0, Class 0, Principal component 1 (40.5% of variance): -2.695, Principal
+                component 2 (32.3% of variance): 0.001748
+            </title>
+            <circle class="hit" cx="146.44" cy="281.92" r="9"/>
+            <circle class="pt" cx="146.44" cy="281.92" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="189.42" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="207.42">Reference row 134, class 0</text>
+                <rect class="tsw s0" x="61.9" y="215.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="224.42">Class 0</text>
+                <text class="tx" x="61.9" y="241.42">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="258.42">Principal component 2 (32.3% of variance): 0.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 135, class 0, Class 0, Principal component 1 (40.5% of variance): 0.08119, Principal component 2 (32.3% of variance): 0.2068">
+            <title>Reference row 135, class 0, Class 0, Principal component 1 (40.5% of variance): 0.08119, Principal
+                component 2 (32.3% of variance): 0.2068
+            </title>
+            <circle class="hit" cx="347.61" cy="272.08" r="9"/>
+            <circle class="pt" cx="347.61" cy="272.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="207.83" y="179.58" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="217.83" y="197.58">Reference row 135, class 0</text>
+                <rect class="tsw s0" x="217.83" y="205.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="231.83" y="214.58">Class 0</text>
+                <text class="tx" x="217.83" y="231.58">Principal component 1 (40.5% of variance): 0.0…</text>
+                <text class="tx" x="217.83" y="248.58">Principal component 2 (32.3% of variance): 0.2…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 136, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3619, Principal component 2 (32.3% of variance): -1.188">
+            <title>Reference row 136, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3619, Principal
+                component 2 (32.3% of variance): -1.188
+            </title>
+            <circle class="hit" cx="315.5" cy="339.01" r="9"/>
+            <circle class="pt" cx="315.5" cy="339.01" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="177.04" y="246.51" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="187.04" y="264.51">Reference row 136, class 0</text>
+                <rect class="tsw s0" x="187.04" y="272.51" width="9" height="9" rx="2"/>
+                <text class="tx b" x="201.04" y="281.51">Class 0</text>
+                <text class="tx" x="187.04" y="298.51">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="187.04" y="315.51">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 137, class 0, Class 0, Principal component 1 (40.5% of variance): -1.533, Principal component 2 (32.3% of variance): -0.2782">
+            <title>Reference row 137, class 0, Class 0, Principal component 1 (40.5% of variance): -1.533, Principal
+                component 2 (32.3% of variance): -0.2782
+            </title>
+            <circle class="hit" cx="230.66" cy="295.35" r="9"/>
+            <circle class="pt" cx="230.66" cy="295.35" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="92.2" y="202.85" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="102.2" y="220.85">Reference row 137, class 0</text>
+                <rect class="tsw s0" x="102.2" y="228.85" width="9" height="9" rx="2"/>
+                <text class="tx b" x="116.2" y="237.85">Class 0</text>
+                <text class="tx" x="102.2" y="254.85">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="102.2" y="271.85">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 139, class 0, Class 0, Principal component 1 (40.5% of variance): -1.179, Principal component 2 (32.3% of variance): -0.4139">
+            <title>Reference row 139, class 0, Class 0, Principal component 1 (40.5% of variance): -1.179, Principal
+                component 2 (32.3% of variance): -0.4139
+            </title>
+            <circle class="hit" cx="256.26" cy="301.87" r="9"/>
+            <circle class="pt" cx="256.26" cy="301.87" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="117.8" y="209.37" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="127.8" y="227.37">Reference row 139, class 0</text>
+                <rect class="tsw s0" x="127.8" y="235.37" width="9" height="9" rx="2"/>
+                <text class="tx b" x="141.8" y="244.37">Class 0</text>
+                <text class="tx" x="127.8" y="261.37">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="127.8" y="278.37">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 141, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3272, Principal component 2 (32.3% of variance): 1.078">
+            <title>Reference row 141, class 0, Class 0, Principal component 1 (40.5% of variance): -0.3272, Principal
+                component 2 (32.3% of variance): 1.078
+            </title>
+            <circle class="hit" cx="318.01" cy="230.25" r="9"/>
+            <circle class="pt" cx="318.01" cy="230.25" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="178.23" y="137.75" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="188.23" y="155.75">Reference row 141, class 0</text>
+                <rect class="tsw s0" x="188.23" y="163.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="202.23" y="172.75">Class 0</text>
+                <text class="tx" x="188.23" y="189.75">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="188.23" y="206.75">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 142, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7904, Principal component 2 (32.3% of variance): 1.004">
+            <title>Reference row 142, class 0, Class 0, Principal component 1 (40.5% of variance): -0.7904, Principal
+                component 2 (32.3% of variance): 1.004
+            </title>
+            <circle class="hit" cx="284.46" cy="233.79" r="9"/>
+            <circle class="pt" cx="284.46" cy="233.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="144.68" y="141.29" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="154.68" y="159.29">Reference row 142, class 0</text>
+                <rect class="tsw s0" x="154.68" y="167.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="168.68" y="176.29">Class 0</text>
+                <text class="tx" x="154.68" y="193.29">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="154.68" y="210.29">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 143, class 0, Class 0, Principal component 1 (40.5% of variance): -1.072, Principal component 2 (32.3% of variance): 1.532">
+            <title>Reference row 143, class 0, Class 0, Principal component 1 (40.5% of variance): -1.072, Principal
+                component 2 (32.3% of variance): 1.532
+            </title>
+            <circle class="hit" cx="264.08" cy="208.45" r="9"/>
+            <circle class="pt" cx="264.08" cy="208.45" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="124.3" y="115.95" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="134.3" y="133.95">Reference row 143, class 0</text>
+                <rect class="tsw s0" x="134.3" y="141.95" width="9" height="9" rx="2"/>
+                <text class="tx b" x="148.3" y="150.95">Class 0</text>
+                <text class="tx" x="134.3" y="167.95">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="134.3" y="184.95">Principal component 2 (32.3% of variance): 1.5…</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 2, class 1, Class 1, Principal component 1 (40.5% of variance): -1.198, Principal component 2 (32.3% of variance): -0.3864">
+            <title>Reference row 2, class 1, Class 1, Principal component 1 (40.5% of variance): -1.198, Principal
+                component 2 (32.3% of variance): -0.3864
+            </title>
+            <circle class="hit" cx="254.9" cy="300.55" r="9"/>
+            <circle class="pt" cx="254.9" cy="300.55" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="116.44" y="208.05" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="126.44" y="226.05">Reference row 2, class 1</text>
+                <rect class="tsw s1" x="126.44" y="234.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="140.44" y="243.05">Class 1</text>
+                <text class="tx" x="126.44" y="260.05">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="126.44" y="277.05">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 3, class 1, Class 1, Principal component 1 (40.5% of variance): 1.245, Principal component 2 (32.3% of variance): -0.8521">
+            <title>Reference row 3, class 1, Class 1, Principal component 1 (40.5% of variance): 1.245, Principal
+                component 2 (32.3% of variance): -0.8521
+            </title>
+            <circle class="hit" cx="431.93" cy="322.9" r="9"/>
+            <circle class="pt" cx="431.93" cy="322.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="292.15" y="230.4" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="302.15" y="248.4">Reference row 3, class 1</text>
+                <rect class="tsw s1" x="302.15" y="256.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="316.15" y="265.4">Class 1</text>
+                <text class="tx" x="302.15" y="282.4">Principal component 1 (40.5% of variance): 1.2…</text>
+                <text class="tx" x="302.15" y="299.4">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 4, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6566, Principal component 2 (32.3% of variance): 1.117">
+            <title>Reference row 4, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6566, Principal
+                component 2 (32.3% of variance): 1.117
+            </title>
+            <circle class="hit" cx="389.29" cy="228.39" r="9"/>
+            <circle class="pt" cx="389.29" cy="228.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="249.51" y="135.89" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="259.51" y="153.89">Reference row 4, class 1</text>
+                <rect class="tsw s1" x="259.51" y="161.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="273.51" y="170.89">Class 1</text>
+                <text class="tx" x="259.51" y="187.89">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="259.51" y="204.89">Principal component 2 (32.3% of variance): 1.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 7, class 1, Class 1, Principal component 1 (40.5% of variance): 1.573, Principal component 2 (32.3% of variance): 2.067">
+            <title>Reference row 7, class 1, Class 1, Principal component 1 (40.5% of variance): 1.573, Principal
+                component 2 (32.3% of variance): 2.067
+            </title>
+            <circle class="hit" cx="455.72" cy="182.78" r="9"/>
+            <circle class="pt" cx="455.72" cy="182.78" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="315.94" y="90.28" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="325.94" y="108.28">Reference row 7, class 1</text>
+                <rect class="tsw s1" x="325.94" y="116.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="339.94" y="125.28">Class 1</text>
+                <text class="tx" x="325.94" y="142.28">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="325.94" y="159.28">Principal component 2 (32.3% of variance): 2.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 8, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7199, Principal component 2 (32.3% of variance): 0.1393">
+            <title>Reference row 8, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7199, Principal
+                component 2 (32.3% of variance): 0.1393
+            </title>
+            <circle class="hit" cx="289.56" cy="275.31" r="9"/>
+            <circle class="pt" cx="289.56" cy="275.31" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="149.78" y="182.81" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="159.78" y="200.81">Reference row 8, class 1</text>
+                <rect class="tsw s1" x="159.78" y="208.81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="173.78" y="217.81">Class 1</text>
+                <text class="tx" x="159.78" y="234.81">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="159.78" y="251.81">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 9, class 1, Class 1, Principal component 1 (40.5% of variance): 0.5858, Principal component 2 (32.3% of variance): 1.468">
+            <title>Reference row 9, class 1, Class 1, Principal component 1 (40.5% of variance): 0.5858, Principal
+                component 2 (32.3% of variance): 1.468
+            </title>
+            <circle class="hit" cx="384.17" cy="211.51" r="9"/>
+            <circle class="pt" cx="384.17" cy="211.51" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="244.39" y="119.01" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="254.39" y="137.01">Reference row 9, class 1</text>
+                <rect class="tsw s1" x="254.39" y="145.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="268.39" y="154.01">Class 1</text>
+                <text class="tx" x="254.39" y="171.01">Principal component 1 (40.5% of variance): 0.5…</text>
+                <text class="tx" x="254.39" y="188.01">Principal component 2 (32.3% of variance): 1.4…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 11, class 1, Class 1, Principal component 1 (40.5% of variance): 1.34, Principal component 2 (32.3% of variance): 0.7816">
+            <title>Reference row 11, class 1, Class 1, Principal component 1 (40.5% of variance): 1.34, Principal
+                component 2 (32.3% of variance): 0.7816
+            </title>
+            <circle class="hit" cx="438.79" cy="244.48" r="9"/>
+            <circle class="pt" cx="438.79" cy="244.48" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="299.01" y="151.98" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="309.01" y="169.98">Reference row 11, class 1</text>
+                <rect class="tsw s1" x="309.01" y="177.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="323.01" y="186.98">Class 1</text>
+                <text class="tx" x="309.01" y="203.98">Principal component 1 (40.5% of variance): 1.34</text>
+                <text class="tx" x="309.01" y="220.98">Principal component 2 (32.3% of variance): 0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 12, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2226, Principal component 2 (32.3% of variance): -0.7736">
+            <title>Reference row 12, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2226, Principal
+                component 2 (32.3% of variance): -0.7736
+            </title>
+            <circle class="hit" cx="325.6" cy="319.13" r="9"/>
+            <circle class="pt" cx="325.6" cy="319.13" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="187.14" y="226.63" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="197.14" y="244.63">Reference row 12, class 1</text>
+                <rect class="tsw s1" x="197.14" y="252.63" width="9" height="9" rx="2"/>
+                <text class="tx b" x="211.14" y="261.63">Class 1</text>
+                <text class="tx" x="197.14" y="278.63">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="197.14" y="295.63">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 14, class 1, Class 1, Principal component 1 (40.5% of variance): -0.4781, Principal component 2 (32.3% of variance): -0.6973">
+            <title>Reference row 14, class 1, Class 1, Principal component 1 (40.5% of variance): -0.4781, Principal
+                component 2 (32.3% of variance): -0.6973
+            </title>
+            <circle class="hit" cx="307.08" cy="315.47" r="9"/>
+            <circle class="pt" cx="307.08" cy="315.47" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="168.62" y="222.97" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="178.62" y="240.97">Reference row 14, class 1</text>
+                <rect class="tsw s1" x="178.62" y="248.97" width="9" height="9" rx="2"/>
+                <text class="tx b" x="192.62" y="257.97">Class 1</text>
+                <text class="tx" x="178.62" y="274.97">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="178.62" y="291.97">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 15, class 1, Class 1, Principal component 1 (40.5% of variance): -0.5474, Principal component 2 (32.3% of variance): 1.654">
+            <title>Reference row 15, class 1, Class 1, Principal component 1 (40.5% of variance): -0.5474, Principal
+                component 2 (32.3% of variance): 1.654
+            </title>
+            <circle class="hit" cx="302.06" cy="202.6" r="9"/>
+            <circle class="pt" cx="302.06" cy="202.6" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="162.28" y="110.1" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="172.28" y="128.1">Reference row 15, class 1</text>
+                <rect class="tsw s1" x="172.28" y="136.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="186.28" y="145.1">Class 1</text>
+                <text class="tx" x="172.28" y="162.1">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="172.28" y="179.1">Principal component 2 (32.3% of variance): 1.6…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 18, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6192, Principal component 2 (32.3% of variance): -0.003131">
+            <title>Reference row 18, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6192, Principal
+                component 2 (32.3% of variance): -0.003131
+            </title>
+            <circle class="hit" cx="386.59" cy="282.15" r="9"/>
+            <circle class="pt" cx="386.59" cy="282.15" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.81" y="189.65" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.81" y="207.65">Reference row 18, class 1</text>
+                <rect class="tsw s1" x="256.81" y="215.65" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.81" y="224.65">Class 1</text>
+                <text class="tx" x="256.81" y="241.65">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="256.81" y="258.65">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 19, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6118, Principal component 2 (32.3% of variance): 0.1935">
+            <title>Reference row 19, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6118, Principal
+                component 2 (32.3% of variance): 0.1935
+            </title>
+            <circle class="hit" cx="386.05" cy="272.71" r="9"/>
+            <circle class="pt" cx="386.05" cy="272.71" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.27" y="180.21" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.27" y="198.21">Reference row 19, class 1</text>
+                <rect class="tsw s1" x="256.27" y="206.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.27" y="215.21">Class 1</text>
+                <text class="tx" x="256.27" y="232.21">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="256.27" y="249.21">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 20, class 1, Class 1, Principal component 1 (40.5% of variance): -2.424, Principal component 2 (32.3% of variance): -1.062">
+            <title>Reference row 20, class 1, Class 1, Principal component 1 (40.5% of variance): -2.424, Principal
+                component 2 (32.3% of variance): -1.062
+            </title>
+            <circle class="hit" cx="166.08" cy="332.99" r="9"/>
+            <circle class="pt" cx="166.08" cy="332.99" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="51.9" y="240.49" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="61.9" y="258.49">Reference row 20, class 1</text>
+                <rect class="tsw s1" x="61.9" y="266.49" width="9" height="9" rx="2"/>
+                <text class="tx b" x="75.9" y="275.49">Class 1</text>
+                <text class="tx" x="61.9" y="292.49">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="61.9" y="309.49">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 21, class 1, Class 1, Principal component 1 (40.5% of variance): 2.283, Principal component 2 (32.3% of variance): 0.08494">
+            <title>Reference row 21, class 1, Class 1, Principal component 1 (40.5% of variance): 2.283, Principal
+                component 2 (32.3% of variance): 0.08494
+            </title>
+            <circle class="hit" cx="507.16" cy="277.92" r="9"/>
+            <circle class="pt" cx="507.16" cy="277.92" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="367.38" y="185.42" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="377.38" y="203.42">Reference row 21, class 1</text>
+                <rect class="tsw s1" x="377.38" y="211.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="391.38" y="220.42">Class 1</text>
+                <text class="tx" x="377.38" y="237.42">Principal component 1 (40.5% of variance): 2.2…</text>
+                <text class="tx" x="377.38" y="254.42">Principal component 2 (32.3% of variance): 0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 22, class 1, Class 1, Principal component 1 (40.5% of variance): 1.558, Principal component 2 (32.3% of variance): 0.1132">
+            <title>Reference row 22, class 1, Class 1, Principal component 1 (40.5% of variance): 1.558, Principal
+                component 2 (32.3% of variance): 0.1132
+            </title>
+            <circle class="hit" cx="454.61" cy="276.57" r="9"/>
+            <circle class="pt" cx="454.61" cy="276.57" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="314.83" y="184.07" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="324.83" y="202.07">Reference row 22, class 1</text>
+                <rect class="tsw s1" x="324.83" y="210.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="338.83" y="219.07">Class 1</text>
+                <text class="tx" x="324.83" y="236.07">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="324.83" y="253.07">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 24, class 1, Class 1, Principal component 1 (40.5% of variance): -0.04726, Principal component 2 (32.3% of variance): 1.053">
+            <title>Reference row 24, class 1, Class 1, Principal component 1 (40.5% of variance): -0.04726, Principal
+                component 2 (32.3% of variance): 1.053
+            </title>
+            <circle class="hit" cx="338.3" cy="231.47" r="9"/>
+            <circle class="pt" cx="338.3" cy="231.47" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="198.52" y="138.97" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="208.52" y="156.97">Reference row 24, class 1</text>
+                <rect class="tsw s1" x="208.52" y="164.97" width="9" height="9" rx="2"/>
+                <text class="tx b" x="222.52" y="173.97">Class 1</text>
+                <text class="tx" x="208.52" y="190.97">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="208.52" y="207.97">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 25, class 1, Class 1, Principal component 1 (40.5% of variance): -1.191, Principal component 2 (32.3% of variance): 0.3931">
+            <title>Reference row 25, class 1, Class 1, Principal component 1 (40.5% of variance): -1.191, Principal
+                component 2 (32.3% of variance): 0.3931
+            </title>
+            <circle class="hit" cx="255.41" cy="263.13" r="9"/>
+            <circle class="pt" cx="255.41" cy="263.13" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="115.63" y="170.63" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="125.63" y="188.63">Reference row 25, class 1</text>
+                <rect class="tsw s1" x="125.63" y="196.63" width="9" height="9" rx="2"/>
+                <text class="tx b" x="139.63" y="205.63">Class 1</text>
+                <text class="tx" x="125.63" y="222.63">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="125.63" y="239.63">Principal component 2 (32.3% of variance): 0.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 27, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3766, Principal component 2 (32.3% of variance): 1.294">
+            <title>Reference row 27, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3766, Principal
+                component 2 (32.3% of variance): 1.294
+            </title>
+            <circle class="hit" cx="369.01" cy="219.9" r="9"/>
+            <circle class="pt" cx="369.01" cy="219.9" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="229.23" y="127.4" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="239.23" y="145.4">Reference row 27, class 1</text>
+                <rect class="tsw s1" x="239.23" y="153.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="253.23" y="162.4">Class 1</text>
+                <text class="tx" x="239.23" y="179.4">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="239.23" y="196.4">Principal component 2 (32.3% of variance): 1.2…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 28, class 1, Class 1, Principal component 1 (40.5% of variance): 1.463, Principal component 2 (32.3% of variance): -0.932">
+            <title>Reference row 28, class 1, Class 1, Principal component 1 (40.5% of variance): 1.463, Principal
+                component 2 (32.3% of variance): -0.932
+            </title>
+            <circle class="hit" cx="447.73" cy="326.73" r="9"/>
+            <circle class="pt" cx="447.73" cy="326.73" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="307.95" y="234.23" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="317.95" y="252.23">Reference row 28, class 1</text>
+                <rect class="tsw s1" x="317.95" y="260.23" width="9" height="9" rx="2"/>
+                <text class="tx b" x="331.95" y="269.23">Class 1</text>
+                <text class="tx" x="317.95" y="286.23">Principal component 1 (40.5% of variance): 1.4…</text>
+                <text class="tx" x="317.95" y="303.23">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 30, class 1, Class 1, Principal component 1 (40.5% of variance): -0.1943, Principal component 2 (32.3% of variance): -1.752">
+            <title>Reference row 30, class 1, Class 1, Principal component 1 (40.5% of variance): -0.1943, Principal
+                component 2 (32.3% of variance): -1.752
+            </title>
+            <circle class="hit" cx="327.64" cy="366.07" r="9"/>
+            <circle class="pt" cx="327.64" cy="366.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="189.18" y="273.57" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="199.18" y="291.57">Reference row 30, class 1</text>
+                <rect class="tsw s1" x="199.18" y="299.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="213.18" y="308.57">Class 1</text>
+                <text class="tx" x="199.18" y="325.57">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="199.18" y="342.57">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 31, class 1, Class 1, Principal component 1 (40.5% of variance): 1.558, Principal component 2 (32.3% of variance): -0.9047">
+            <title>Reference row 31, class 1, Class 1, Principal component 1 (40.5% of variance): 1.558, Principal
+                component 2 (32.3% of variance): -0.9047
+            </title>
+            <circle class="hit" cx="454.62" cy="325.43" r="9"/>
+            <circle class="pt" cx="454.62" cy="325.43" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="314.84" y="232.93" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="324.84" y="250.93">Reference row 31, class 1</text>
+                <rect class="tsw s1" x="324.84" y="258.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="338.84" y="267.93">Class 1</text>
+                <text class="tx" x="324.84" y="284.93">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="324.84" y="301.93">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 32, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3434, Principal component 2 (32.3% of variance): -0.6533">
+            <title>Reference row 32, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3434, Principal
+                component 2 (32.3% of variance): -0.6533
+            </title>
+            <circle class="hit" cx="316.84" cy="313.36" r="9"/>
+            <circle class="pt" cx="316.84" cy="313.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="178.38" y="220.86" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="188.38" y="238.86">Reference row 32, class 1</text>
+                <rect class="tsw s1" x="188.38" y="246.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="202.38" y="255.86">Class 1</text>
+                <text class="tx" x="188.38" y="272.86">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="188.38" y="289.86">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 35, class 1, Class 1, Principal component 1 (40.5% of variance): 1.684, Principal component 2 (32.3% of variance): -0.1565">
+            <title>Reference row 35, class 1, Class 1, Principal component 1 (40.5% of variance): 1.684, Principal
+                component 2 (32.3% of variance): -0.1565
+            </title>
+            <circle class="hit" cx="463.73" cy="289.51" r="9"/>
+            <circle class="pt" cx="463.73" cy="289.51" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="323.95" y="197.01" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="333.95" y="215.01">Reference row 35, class 1</text>
+                <rect class="tsw s1" x="333.95" y="223.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="347.95" y="232.01">Class 1</text>
+                <text class="tx" x="333.95" y="249.01">Principal component 1 (40.5% of variance): 1.6…</text>
+                <text class="tx" x="333.95" y="266.01">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 37, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3851, Principal component 2 (32.3% of variance): 0.8303">
+            <title>Reference row 37, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3851, Principal
+                component 2 (32.3% of variance): 0.8303
+            </title>
+            <circle class="hit" cx="369.62" cy="242.14" r="9"/>
+            <circle class="pt" cx="369.62" cy="242.14" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="229.84" y="149.64" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="239.84" y="167.64">Reference row 37, class 1</text>
+                <rect class="tsw s1" x="239.84" y="175.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="253.84" y="184.64">Class 1</text>
+                <text class="tx" x="239.84" y="201.64">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="239.84" y="218.64">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 39, class 1, Class 1, Principal component 1 (40.5% of variance): 1.133, Principal component 2 (32.3% of variance): 1.076">
+            <title>Reference row 39, class 1, Class 1, Principal component 1 (40.5% of variance): 1.133, Principal
+                component 2 (32.3% of variance): 1.076
+            </title>
+            <circle class="hit" cx="423.81" cy="230.35" r="9"/>
+            <circle class="pt" cx="423.81" cy="230.35" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="284.03" y="137.85" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="294.03" y="155.85">Reference row 39, class 1</text>
+                <rect class="tsw s1" x="294.03" y="163.85" width="9" height="9" rx="2"/>
+                <text class="tx b" x="308.03" y="172.85">Class 1</text>
+                <text class="tx" x="294.03" y="189.85">Principal component 1 (40.5% of variance): 1.1…</text>
+                <text class="tx" x="294.03" y="206.85">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 41, class 1, Class 1, Principal component 1 (40.5% of variance): 3.448, Principal component 2 (32.3% of variance): -1.166">
+            <title>Reference row 41, class 1, Class 1, Principal component 1 (40.5% of variance): 3.448, Principal
+                component 2 (32.3% of variance): -1.166
+            </title>
+            <circle class="hit" cx="591.56" cy="337.95" r="9"/>
+            <circle class="pt" cx="591.56" cy="337.95" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="245.45" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="263.45">Reference row 41, class 1</text>
+                <rect class="tsw s1" x="434.44" y="271.45" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="280.45">Class 1</text>
+                <text class="tx" x="434.44" y="297.45">Principal component 1 (40.5% of variance): 3.4…</text>
+                <text class="tx" x="434.44" y="314.45">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 42, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3314, Principal component 2 (32.3% of variance): 0.8895">
+            <title>Reference row 42, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3314, Principal
+                component 2 (32.3% of variance): 0.8895
+            </title>
+            <circle class="hit" cx="365.73" cy="239.3" r="9"/>
+            <circle class="pt" cx="365.73" cy="239.3" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="225.95" y="146.8" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="235.95" y="164.8">Reference row 42, class 1</text>
+                <rect class="tsw s1" x="235.95" y="172.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="249.95" y="181.8">Class 1</text>
+                <text class="tx" x="235.95" y="198.8">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="235.95" y="215.8">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 43, class 1, Class 1, Principal component 1 (40.5% of variance): 1.529, Principal component 2 (32.3% of variance): 1.565">
+            <title>Reference row 43, class 1, Class 1, Principal component 1 (40.5% of variance): 1.529, Principal
+                component 2 (32.3% of variance): 1.565
+            </title>
+            <circle class="hit" cx="452.48" cy="206.89" r="9"/>
+            <circle class="pt" cx="452.48" cy="206.89" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="312.7" y="114.39" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="322.7" y="132.39">Reference row 43, class 1</text>
+                <rect class="tsw s1" x="322.7" y="140.39" width="9" height="9" rx="2"/>
+                <text class="tx b" x="336.7" y="149.39">Class 1</text>
+                <text class="tx" x="322.7" y="166.39">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="322.7" y="183.39">Principal component 2 (32.3% of variance): 1.5…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 46, class 1, Class 1, Principal component 1 (40.5% of variance): 1.296, Principal component 2 (32.3% of variance): -0.9258">
+            <title>Reference row 46, class 1, Class 1, Principal component 1 (40.5% of variance): 1.296, Principal
+                component 2 (32.3% of variance): -0.9258
+            </title>
+            <circle class="hit" cx="435.61" cy="326.44" r="9"/>
+            <circle class="pt" cx="435.61" cy="326.44" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="295.83" y="233.94" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="305.83" y="251.94">Reference row 46, class 1</text>
+                <rect class="tsw s1" x="305.83" y="259.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="319.83" y="268.94">Class 1</text>
+                <text class="tx" x="305.83" y="285.94">Principal component 1 (40.5% of variance): 1.2…</text>
+                <text class="tx" x="305.83" y="302.94">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 50, class 1, Class 1, Principal component 1 (40.5% of variance): -2.08, Principal component 2 (32.3% of variance): -1.005">
+            <title>Reference row 50, class 1, Class 1, Principal component 1 (40.5% of variance): -2.08, Principal
+                component 2 (32.3% of variance): -1.005
+            </title>
+            <circle class="hit" cx="190.98" cy="330.23" r="9"/>
+            <circle class="pt" cx="190.98" cy="330.23" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="52.52" y="237.73" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="62.52" y="255.73">Reference row 50, class 1</text>
+                <rect class="tsw s1" x="62.52" y="263.73" width="9" height="9" rx="2"/>
+                <text class="tx b" x="76.52" y="272.73">Class 1</text>
+                <text class="tx" x="62.52" y="289.73">Principal component 1 (40.5% of variance): -2.…</text>
+                <text class="tx" x="62.52" y="306.73">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 52, class 1, Class 1, Principal component 1 (40.5% of variance): 0.181, Principal component 2 (32.3% of variance): -0.7784">
+            <title>Reference row 52, class 1, Class 1, Principal component 1 (40.5% of variance): 0.181, Principal
+                component 2 (32.3% of variance): -0.7784
+            </title>
+            <circle class="hit" cx="354.84" cy="319.36" r="9"/>
+            <circle class="pt" cx="354.84" cy="319.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="215.06" y="226.86" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="225.06" y="244.86">Reference row 52, class 1</text>
+                <rect class="tsw s1" x="225.06" y="252.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="239.06" y="261.86">Class 1</text>
+                <text class="tx" x="225.06" y="278.86">Principal component 1 (40.5% of variance): 0.1…</text>
+                <text class="tx" x="225.06" y="295.86">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 53, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3938, Principal component 2 (32.3% of variance): -1.109">
+            <title>Reference row 53, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3938, Principal
+                component 2 (32.3% of variance): -1.109
+            </title>
+            <circle class="hit" cx="370.26" cy="335.25" r="9"/>
+            <circle class="pt" cx="370.26" cy="335.25" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="230.48" y="242.75" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="240.48" y="260.75">Reference row 53, class 1</text>
+                <rect class="tsw s1" x="240.48" y="268.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="254.48" y="277.75">Class 1</text>
+                <text class="tx" x="240.48" y="294.75">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="240.48" y="311.75">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 54, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9511, Principal component 2 (32.3% of variance): -0.788">
+            <title>Reference row 54, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9511, Principal
+                component 2 (32.3% of variance): -0.788
+            </title>
+            <circle class="hit" cx="410.64" cy="319.82" r="9"/>
+            <circle class="pt" cx="410.64" cy="319.82" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="270.86" y="227.32" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="280.86" y="245.32">Reference row 54, class 1</text>
+                <rect class="tsw s1" x="280.86" y="253.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="294.86" y="262.32">Class 1</text>
+                <text class="tx" x="280.86" y="279.32">Principal component 1 (40.5% of variance): 0.9…</text>
+                <text class="tx" x="280.86" y="296.32">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 56, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3968, Principal component 2 (32.3% of variance): -1.862">
+            <title>Reference row 56, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3968, Principal
+                component 2 (32.3% of variance): -1.862
+            </title>
+            <circle class="hit" cx="312.97" cy="371.36" r="9"/>
+            <circle class="pt" cx="312.97" cy="371.36" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="174.51" y="278.86" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="184.51" y="296.86">Reference row 56, class 1</text>
+                <rect class="tsw s1" x="184.51" y="304.86" width="9" height="9" rx="2"/>
+                <text class="tx b" x="198.51" y="313.86">Class 1</text>
+                <text class="tx" x="184.51" y="330.86">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="184.51" y="347.86">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 57, class 1, Class 1, Principal component 1 (40.5% of variance): 1.509, Principal component 2 (32.3% of variance): 0.06944">
+            <title>Reference row 57, class 1, Class 1, Principal component 1 (40.5% of variance): 1.509, Principal
+                component 2 (32.3% of variance): 0.06944
+            </title>
+            <circle class="hit" cx="451.08" cy="278.67" r="9"/>
+            <circle class="pt" cx="451.08" cy="278.67" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="311.3" y="186.17" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="321.3" y="204.17">Reference row 57, class 1</text>
+                <rect class="tsw s1" x="321.3" y="212.17" width="9" height="9" rx="2"/>
+                <text class="tx b" x="335.3" y="221.17">Class 1</text>
+                <text class="tx" x="321.3" y="238.17">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="321.3" y="255.17">Principal component 2 (32.3% of variance): 0.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 59, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9553, Principal component 2 (32.3% of variance): -1.582">
+            <title>Reference row 59, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9553, Principal
+                component 2 (32.3% of variance): -1.582
+            </title>
+            <circle class="hit" cx="410.94" cy="357.94" r="9"/>
+            <circle class="pt" cx="410.94" cy="357.94" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="271.16" y="265.44" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="281.16" y="283.44">Reference row 59, class 1</text>
+                <rect class="tsw s1" x="281.16" y="291.44" width="9" height="9" rx="2"/>
+                <text class="tx b" x="295.16" y="300.44">Class 1</text>
+                <text class="tx" x="281.16" y="317.44">Principal component 1 (40.5% of variance): 0.9…</text>
+                <text class="tx" x="281.16" y="334.44">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 60, class 1, Class 1, Principal component 1 (40.5% of variance): 0.7275, Principal component 2 (32.3% of variance): -0.6123">
+            <title>Reference row 60, class 1, Class 1, Principal component 1 (40.5% of variance): 0.7275, Principal
+                component 2 (32.3% of variance): -0.6123
+            </title>
+            <circle class="hit" cx="394.43" cy="311.39" r="9"/>
+            <circle class="pt" cx="394.43" cy="311.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="254.65" y="218.89" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="264.65" y="236.89">Reference row 60, class 1</text>
+                <rect class="tsw s1" x="264.65" y="244.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="278.65" y="253.89">Class 1</text>
+                <text class="tx" x="264.65" y="270.89">Principal component 1 (40.5% of variance): 0.7…</text>
+                <text class="tx" x="264.65" y="287.89">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 61, class 1, Class 1, Principal component 1 (40.5% of variance): 1.004, Principal component 2 (32.3% of variance): -0.7107">
+            <title>Reference row 61, class 1, Class 1, Principal component 1 (40.5% of variance): 1.004, Principal
+                component 2 (32.3% of variance): -0.7107
+            </title>
+            <circle class="hit" cx="414.47" cy="316.11" r="9"/>
+            <circle class="pt" cx="414.47" cy="316.11" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="274.69" y="223.61" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="284.69" y="241.61">Reference row 61, class 1</text>
+                <rect class="tsw s1" x="284.69" y="249.61" width="9" height="9" rx="2"/>
+                <text class="tx b" x="298.69" y="258.61">Class 1</text>
+                <text class="tx" x="284.69" y="275.61">Principal component 1 (40.5% of variance): 1.0…</text>
+                <text class="tx" x="284.69" y="292.61">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 62, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9055, Principal component 2 (32.3% of variance): -0.1058">
+            <title>Reference row 62, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9055, Principal
+                component 2 (32.3% of variance): -0.1058
+            </title>
+            <circle class="hit" cx="407.33" cy="287.08" r="9"/>
+            <circle class="pt" cx="407.33" cy="287.08" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="267.55" y="194.58" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="277.55" y="212.58">Reference row 62, class 1</text>
+                <rect class="tsw s1" x="277.55" y="220.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="291.55" y="229.58">Class 1</text>
+                <text class="tx" x="277.55" y="246.58">Principal component 1 (40.5% of variance): 0.9…</text>
+                <text class="tx" x="277.55" y="263.58">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 63, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2263, Principal component 2 (32.3% of variance): -0.8908">
+            <title>Reference row 63, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2263, Principal
+                component 2 (32.3% of variance): -0.8908
+            </title>
+            <circle class="hit" cx="325.32" cy="324.76" r="9"/>
+            <circle class="pt" cx="325.32" cy="324.76" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="186.86" y="232.26" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="196.86" y="250.26">Reference row 63, class 1</text>
+                <rect class="tsw s1" x="196.86" y="258.26" width="9" height="9" rx="2"/>
+                <text class="tx b" x="210.86" y="267.26">Class 1</text>
+                <text class="tx" x="196.86" y="284.26">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="196.86" y="301.26">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 64, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6205, Principal component 2 (32.3% of variance): -0.6893">
+            <title>Reference row 64, class 1, Class 1, Principal component 1 (40.5% of variance): 0.6205, Principal
+                component 2 (32.3% of variance): -0.6893
+            </title>
+            <circle class="hit" cx="386.68" cy="315.09" r="9"/>
+            <circle class="pt" cx="386.68" cy="315.09" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="246.9" y="222.59" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="256.9" y="240.59">Reference row 64, class 1</text>
+                <rect class="tsw s1" x="256.9" y="248.59" width="9" height="9" rx="2"/>
+                <text class="tx b" x="270.9" y="257.59">Class 1</text>
+                <text class="tx" x="256.9" y="274.59">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="256.9" y="291.59">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 65, class 1, Class 1, Principal component 1 (40.5% of variance): 0.0904, Principal component 2 (32.3% of variance): 0.1996">
+            <title>Reference row 65, class 1, Class 1, Principal component 1 (40.5% of variance): 0.0904, Principal
+                component 2 (32.3% of variance): 0.1996
+            </title>
+            <circle class="hit" cx="348.27" cy="272.42" r="9"/>
+            <circle class="pt" cx="348.27" cy="272.42" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="208.49" y="179.92" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="218.49" y="197.92">Reference row 65, class 1</text>
+                <rect class="tsw s1" x="218.49" y="205.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="232.49" y="214.92">Class 1</text>
+                <text class="tx" x="218.49" y="231.92">Principal component 1 (40.5% of variance): 0.0…</text>
+                <text class="tx" x="218.49" y="248.92">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 66, class 1, Class 1, Principal component 1 (40.5% of variance): 1.437, Principal component 2 (32.3% of variance): 0.298">
+            <title>Reference row 66, class 1, Class 1, Principal component 1 (40.5% of variance): 1.437, Principal
+                component 2 (32.3% of variance): 0.298
+            </title>
+            <circle class="hit" cx="445.81" cy="267.69" r="9"/>
+            <circle class="pt" cx="445.81" cy="267.69" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="306.03" y="175.19" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="316.03" y="193.19">Reference row 66, class 1</text>
+                <rect class="tsw s1" x="316.03" y="201.19" width="9" height="9" rx="2"/>
+                <text class="tx b" x="330.03" y="210.19">Class 1</text>
+                <text class="tx" x="316.03" y="227.19">Principal component 1 (40.5% of variance): 1.4…</text>
+                <text class="tx" x="316.03" y="244.19">Principal component 2 (32.3% of variance): 0.2…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 69, class 1, Class 1, Principal component 1 (40.5% of variance): -0.1876, Principal component 2 (32.3% of variance): -1.616">
+            <title>Reference row 69, class 1, Class 1, Principal component 1 (40.5% of variance): -0.1876, Principal
+                component 2 (32.3% of variance): -1.616
+            </title>
+            <circle class="hit" cx="328.13" cy="359.59" r="9"/>
+            <circle class="pt" cx="328.13" cy="359.59" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="189.67" y="267.09" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="199.67" y="285.09">Reference row 69, class 1</text>
+                <rect class="tsw s1" x="199.67" y="293.09" width="9" height="9" rx="2"/>
+                <text class="tx b" x="213.67" y="302.09">Class 1</text>
+                <text class="tx" x="199.67" y="319.09">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="199.67" y="336.09">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 71, class 1, Class 1, Principal component 1 (40.5% of variance): 4.195, Principal component 2 (32.3% of variance): 1.884">
+            <title>Reference row 71, class 1, Class 1, Principal component 1 (40.5% of variance): 4.195, Principal
+                component 2 (32.3% of variance): 1.884
+            </title>
+            <circle class="hit" cx="645.67" cy="191.57" r="9"/>
+            <circle class="pt" cx="645.67" cy="191.57" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="424.44" y="99.07" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="434.44" y="117.07">Reference row 71, class 1</text>
+                <rect class="tsw s1" x="434.44" y="125.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="448.44" y="134.07">Class 1</text>
+                <text class="tx" x="434.44" y="151.07">Principal component 1 (40.5% of variance): 4.1…</text>
+                <text class="tx" x="434.44" y="168.07">Principal component 2 (32.3% of variance): 1.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 72, class 1, Class 1, Principal component 1 (40.5% of variance): -1.334, Principal component 2 (32.3% of variance): -0.7919">
+            <title>Reference row 72, class 1, Class 1, Principal component 1 (40.5% of variance): -1.334, Principal
+                component 2 (32.3% of variance): -0.7919
+            </title>
+            <circle class="hit" cx="245.05" cy="320.01" r="9"/>
+            <circle class="pt" cx="245.05" cy="320.01" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="106.59" y="227.51" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="116.59" y="245.51">Reference row 72, class 1</text>
+                <rect class="tsw s1" x="116.59" y="253.51" width="9" height="9" rx="2"/>
+                <text class="tx b" x="130.59" y="262.51">Class 1</text>
+                <text class="tx" x="116.59" y="279.51">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="116.59" y="296.51">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 73, class 1, Class 1, Principal component 1 (40.5% of variance): 1.395, Principal component 2 (32.3% of variance): -0.5347">
+            <title>Reference row 73, class 1, Class 1, Principal component 1 (40.5% of variance): 1.395, Principal
+                component 2 (32.3% of variance): -0.5347
+            </title>
+            <circle class="hit" cx="442.77" cy="307.66" r="9"/>
+            <circle class="pt" cx="442.77" cy="307.66" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="302.99" y="215.16" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="312.99" y="233.16">Reference row 73, class 1</text>
+                <rect class="tsw s1" x="312.99" y="241.16" width="9" height="9" rx="2"/>
+                <text class="tx b" x="326.99" y="250.16">Class 1</text>
+                <text class="tx" x="312.99" y="267.16">Principal component 1 (40.5% of variance): 1.3…</text>
+                <text class="tx" x="312.99" y="284.16">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 74, class 1, Class 1, Principal component 1 (40.5% of variance): 0.1368, Principal component 2 (32.3% of variance): 2.912">
+            <title>Reference row 74, class 1, Class 1, Principal component 1 (40.5% of variance): 0.1368, Principal
+                component 2 (32.3% of variance): 2.912
+            </title>
+            <circle class="hit" cx="351.64" cy="142.21" r="9"/>
+            <circle class="pt" cx="351.64" cy="142.21" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="211.86" y="147.71" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="221.86" y="165.71">Reference row 74, class 1</text>
+                <rect class="tsw s1" x="221.86" y="173.71" width="9" height="9" rx="2"/>
+                <text class="tx b" x="235.86" y="182.71">Class 1</text>
+                <text class="tx" x="221.86" y="199.71">Principal component 1 (40.5% of variance): 0.1…</text>
+                <text class="tx" x="221.86" y="216.71">Principal component 2 (32.3% of variance): 2.9…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 75, class 1, Class 1, Principal component 1 (40.5% of variance): 0.4628, Principal component 2 (32.3% of variance): -0.04643">
+            <title>Reference row 75, class 1, Class 1, Principal component 1 (40.5% of variance): 0.4628, Principal
+                component 2 (32.3% of variance): -0.04643
+            </title>
+            <circle class="hit" cx="375.25" cy="284.23" r="9"/>
+            <circle class="pt" cx="375.25" cy="284.23" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="235.47" y="191.73" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="245.47" y="209.73">Reference row 75, class 1</text>
+                <rect class="tsw s1" x="245.47" y="217.73" width="9" height="9" rx="2"/>
+                <text class="tx b" x="259.47" y="226.73">Class 1</text>
+                <text class="tx" x="245.47" y="243.73">Principal component 1 (40.5% of variance): 0.4…</text>
+                <text class="tx" x="245.47" y="260.73">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 76, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2885, Principal component 2 (32.3% of variance): -1.579">
+            <title>Reference row 76, class 1, Class 1, Principal component 1 (40.5% of variance): -0.2885, Principal
+                component 2 (32.3% of variance): -1.579
+            </title>
+            <circle class="hit" cx="320.82" cy="357.79" r="9"/>
+            <circle class="pt" cx="320.82" cy="357.79" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="182.36" y="265.29" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="192.36" y="283.29">Reference row 76, class 1</text>
+                <rect class="tsw s1" x="192.36" y="291.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="206.36" y="300.29">Class 1</text>
+                <text class="tx" x="192.36" y="317.29">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="192.36" y="334.29">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 81, class 1, Class 1, Principal component 1 (40.5% of variance): 1.583, Principal component 2 (32.3% of variance): 0.3518">
+            <title>Reference row 81, class 1, Class 1, Principal component 1 (40.5% of variance): 1.583, Principal
+                component 2 (32.3% of variance): 0.3518
+            </title>
+            <circle class="hit" cx="456.43" cy="265.12" r="9"/>
+            <circle class="pt" cx="456.43" cy="265.12" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="316.65" y="172.62" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="326.65" y="190.62">Reference row 81, class 1</text>
+                <rect class="tsw s1" x="326.65" y="198.62" width="9" height="9" rx="2"/>
+                <text class="tx b" x="340.65" y="207.62">Class 1</text>
+                <text class="tx" x="326.65" y="224.62">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="326.65" y="241.62">Principal component 2 (32.3% of variance): 0.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 83, class 1, Class 1, Principal component 1 (40.5% of variance): 1.869, Principal component 2 (32.3% of variance): -1.343">
+            <title>Reference row 83, class 1, Class 1, Principal component 1 (40.5% of variance): 1.869, Principal
+                component 2 (32.3% of variance): -1.343
+            </title>
+            <circle class="hit" cx="477.18" cy="346.44" r="9"/>
+            <circle class="pt" cx="477.18" cy="346.44" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="337.4" y="253.94" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="347.4" y="271.94">Reference row 83, class 1</text>
+                <rect class="tsw s1" x="347.4" y="279.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="361.4" y="288.94">Class 1</text>
+                <text class="tx" x="347.4" y="305.94">Principal component 1 (40.5% of variance): 1.8…</text>
+                <text class="tx" x="347.4" y="322.94">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 84, class 1, Class 1, Principal component 1 (40.5% of variance): 0.4856, Principal component 2 (32.3% of variance): -0.3087">
+            <title>Reference row 84, class 1, Class 1, Principal component 1 (40.5% of variance): 0.4856, Principal
+                component 2 (32.3% of variance): -0.3087
+            </title>
+            <circle class="hit" cx="376.91" cy="296.82" r="9"/>
+            <circle class="pt" cx="376.91" cy="296.82" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="237.13" y="204.32" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="247.13" y="222.32">Reference row 84, class 1</text>
+                <rect class="tsw s1" x="247.13" y="230.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="261.13" y="239.32">Class 1</text>
+                <text class="tx" x="247.13" y="256.32">Principal component 1 (40.5% of variance): 0.4…</text>
+                <text class="tx" x="247.13" y="273.32">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 86, class 1, Class 1, Principal component 1 (40.5% of variance): 0.7678, Principal component 2 (32.3% of variance): 0.3575">
+            <title>Reference row 86, class 1, Class 1, Principal component 1 (40.5% of variance): 0.7678, Principal
+                component 2 (32.3% of variance): 0.3575
+            </title>
+            <circle class="hit" cx="397.35" cy="264.84" r="9"/>
+            <circle class="pt" cx="397.35" cy="264.84" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="257.57" y="172.34" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="267.57" y="190.34">Reference row 86, class 1</text>
+                <rect class="tsw s1" x="267.57" y="198.34" width="9" height="9" rx="2"/>
+                <text class="tx b" x="281.57" y="207.34">Class 1</text>
+                <text class="tx" x="267.57" y="224.34">Principal component 1 (40.5% of variance): 0.7…</text>
+                <text class="tx" x="267.57" y="241.34">Principal component 2 (32.3% of variance): 0.3…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 87, class 1, Class 1, Principal component 1 (40.5% of variance): 2.153, Principal component 2 (32.3% of variance): -1.029">
+            <title>Reference row 87, class 1, Class 1, Principal component 1 (40.5% of variance): 2.153, Principal
+                component 2 (32.3% of variance): -1.029
+            </title>
+            <circle class="hit" cx="497.73" cy="331.39" r="9"/>
+            <circle class="pt" cx="497.73" cy="331.39" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="357.95" y="238.89" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="367.95" y="256.89">Reference row 87, class 1</text>
+                <rect class="tsw s1" x="367.95" y="264.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="381.95" y="273.89">Class 1</text>
+                <text class="tx" x="367.95" y="290.89">Principal component 1 (40.5% of variance): 2.1…</text>
+                <text class="tx" x="367.95" y="307.89">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 88, class 1, Class 1, Principal component 1 (40.5% of variance): 1.508, Principal component 2 (32.3% of variance): -1.054">
+            <title>Reference row 88, class 1, Class 1, Principal component 1 (40.5% of variance): 1.508, Principal
+                component 2 (32.3% of variance): -1.054
+            </title>
+            <circle class="hit" cx="451" cy="332.58" r="9"/>
+            <circle class="pt" cx="451" cy="332.58" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="311.22" y="240.08" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="321.22" y="258.08">Reference row 88, class 1</text>
+                <rect class="tsw s1" x="321.22" y="266.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="335.22" y="275.08">Class 1</text>
+                <text class="tx" x="321.22" y="292.08">Principal component 1 (40.5% of variance): 1.5…</text>
+                <text class="tx" x="321.22" y="309.08">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 89, class 1, Class 1, Principal component 1 (40.5% of variance): 0.673, Principal component 2 (32.3% of variance): 1.041">
+            <title>Reference row 89, class 1, Class 1, Principal component 1 (40.5% of variance): 0.673, Principal
+                component 2 (32.3% of variance): 1.041
+            </title>
+            <circle class="hit" cx="390.48" cy="232.03" r="9"/>
+            <circle class="pt" cx="390.48" cy="232.03" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="250.7" y="139.53" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="260.7" y="157.53">Reference row 89, class 1</text>
+                <rect class="tsw s1" x="260.7" y="165.53" width="9" height="9" rx="2"/>
+                <text class="tx b" x="274.7" y="174.53">Class 1</text>
+                <text class="tx" x="260.7" y="191.53">Principal component 1 (40.5% of variance): 0.6…</text>
+                <text class="tx" x="260.7" y="208.53">Principal component 2 (32.3% of variance): 1.0…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 93, class 1, Class 1, Principal component 1 (40.5% of variance): 2.095, Principal component 2 (32.3% of variance): -2.084">
+            <title>Reference row 93, class 1, Class 1, Principal component 1 (40.5% of variance): 2.095, Principal
+                component 2 (32.3% of variance): -2.084
+            </title>
+            <circle class="hit" cx="493.52" cy="382.04" r="9"/>
+            <circle class="pt" cx="493.52" cy="382.04" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="353.74" y="289.54" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="363.74" y="307.54">Reference row 93, class 1</text>
+                <rect class="tsw s1" x="363.74" y="315.54" width="9" height="9" rx="2"/>
+                <text class="tx b" x="377.74" y="324.54">Class 1</text>
+                <text class="tx" x="363.74" y="341.54">Principal component 1 (40.5% of variance): 2.0…</text>
+                <text class="tx" x="363.74" y="358.54">Principal component 2 (32.3% of variance): -2.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 104, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9136, Principal component 2 (32.3% of variance): -0.3347">
+            <title>Reference row 104, class 1, Class 1, Principal component 1 (40.5% of variance): 0.9136, Principal
+                component 2 (32.3% of variance): -0.3347
+            </title>
+            <circle class="hit" cx="407.92" cy="298.07" r="9"/>
+            <circle class="pt" cx="407.92" cy="298.07" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="268.14" y="205.57" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="278.14" y="223.57">Reference row 104, class 1</text>
+                <rect class="tsw s1" x="278.14" y="231.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="292.14" y="240.57">Class 1</text>
+                <text class="tx" x="278.14" y="257.57">Principal component 1 (40.5% of variance): 0.9…</text>
+                <text class="tx" x="278.14" y="274.57">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 109, class 1, Class 1, Principal component 1 (40.5% of variance): 2.879, Principal component 2 (32.3% of variance): -0.8672">
+            <title>Reference row 109, class 1, Class 1, Principal component 1 (40.5% of variance): 2.879, Principal
+                component 2 (32.3% of variance): -0.8672
+            </title>
+            <circle class="hit" cx="550.29" cy="323.62" r="9"/>
+            <circle class="pt" cx="550.29" cy="323.62" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="410.51" y="231.12" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="420.51" y="249.12">Reference row 109, class 1</text>
+                <rect class="tsw s1" x="420.51" y="257.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="434.51" y="266.12">Class 1</text>
+                <text class="tx" x="420.51" y="283.12">Principal component 1 (40.5% of variance): 2.8…</text>
+                <text class="tx" x="420.51" y="300.12">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 112, class 1, Class 1, Principal component 1 (40.5% of variance): 1.794, Principal component 2 (32.3% of variance): -0.02306">
+            <title>Reference row 112, class 1, Class 1, Principal component 1 (40.5% of variance): 1.794, Principal
+                component 2 (32.3% of variance): -0.02306
+            </title>
+            <circle class="hit" cx="471.74" cy="283.11" r="9"/>
+            <circle class="pt" cx="471.74" cy="283.11" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="331.96" y="190.61" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="341.96" y="208.61">Reference row 112, class 1</text>
+                <rect class="tsw s1" x="341.96" y="216.61" width="9" height="9" rx="2"/>
+                <text class="tx b" x="355.96" y="225.61">Class 1</text>
+                <text class="tx" x="341.96" y="242.61">Principal component 1 (40.5% of variance): 1.7…</text>
+                <text class="tx" x="341.96" y="259.61">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 114, class 1, Class 1, Principal component 1 (40.5% of variance): -0.05265, Principal component 2 (32.3% of variance): 0.7674">
+            <title>Reference row 114, class 1, Class 1, Principal component 1 (40.5% of variance): -0.05265, Principal
+                component 2 (32.3% of variance): 0.7674
+            </title>
+            <circle class="hit" cx="337.91" cy="245.16" r="9"/>
+            <circle class="pt" cx="337.91" cy="245.16" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="198.13" y="152.66" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="208.13" y="170.66">Reference row 114, class 1</text>
+                <rect class="tsw s1" x="208.13" y="178.66" width="9" height="9" rx="2"/>
+                <text class="tx b" x="222.13" y="187.66">Class 1</text>
+                <text class="tx" x="208.13" y="204.66">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="208.13" y="221.66">Principal component 2 (32.3% of variance): 0.7…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 117, class 1, Class 1, Principal component 1 (40.5% of variance): 0.1308, Principal component 2 (32.3% of variance): -0.4696">
+            <title>Reference row 117, class 1, Class 1, Principal component 1 (40.5% of variance): 0.1308, Principal
+                component 2 (32.3% of variance): -0.4696
+            </title>
+            <circle class="hit" cx="351.2" cy="304.54" r="9"/>
+            <circle class="pt" cx="351.2" cy="304.54" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="211.42" y="212.04" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="221.42" y="230.04">Reference row 117, class 1</text>
+                <rect class="tsw s1" x="221.42" y="238.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="235.42" y="247.04">Class 1</text>
+                <text class="tx" x="221.42" y="264.04">Principal component 1 (40.5% of variance): 0.1…</text>
+                <text class="tx" x="221.42" y="281.04">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 119, class 1, Class 1, Principal component 1 (40.5% of variance): 1.167, Principal component 2 (32.3% of variance): -0.4713">
+            <title>Reference row 119, class 1, Class 1, Principal component 1 (40.5% of variance): 1.167, Principal
+                component 2 (32.3% of variance): -0.4713
+            </title>
+            <circle class="hit" cx="426.25" cy="304.62" r="9"/>
+            <circle class="pt" cx="426.25" cy="304.62" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="286.47" y="212.12" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="296.47" y="230.12">Reference row 119, class 1</text>
+                <rect class="tsw s1" x="296.47" y="238.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="310.47" y="247.12">Class 1</text>
+                <text class="tx" x="296.47" y="264.12">Principal component 1 (40.5% of variance): 1.1…</text>
+                <text class="tx" x="296.47" y="281.12">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 120, class 1, Class 1, Principal component 1 (40.5% of variance): 0.5107, Principal component 2 (32.3% of variance): -1.978">
+            <title>Reference row 120, class 1, Class 1, Principal component 1 (40.5% of variance): 0.5107, Principal
+                component 2 (32.3% of variance): -1.978
+            </title>
+            <circle class="hit" cx="378.72" cy="376.96" r="9"/>
+            <circle class="pt" cx="378.72" cy="376.96" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="238.94" y="284.46" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="248.94" y="302.46">Reference row 120, class 1</text>
+                <rect class="tsw s1" x="248.94" y="310.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="262.94" y="319.46">Class 1</text>
+                <text class="tx" x="248.94" y="336.46">Principal component 1 (40.5% of variance): 0.5…</text>
+                <text class="tx" x="248.94" y="353.46">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 123, class 1, Class 1, Principal component 1 (40.5% of variance): -0.06997, Principal component 2 (32.3% of variance): -1.069">
+            <title>Reference row 123, class 1, Class 1, Principal component 1 (40.5% of variance): -0.06997, Principal
+                component 2 (32.3% of variance): -1.069
+            </title>
+            <circle class="hit" cx="336.65" cy="333.3" r="9"/>
+            <circle class="pt" cx="336.65" cy="333.3" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="198.19" y="240.8" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="208.19" y="258.8">Reference row 123, class 1</text>
+                <rect class="tsw s1" x="208.19" y="266.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="222.19" y="275.8">Class 1</text>
+                <text class="tx" x="208.19" y="292.8">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="208.19" y="309.8">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 124, class 1, Class 1, Principal component 1 (40.5% of variance): 1.618, Principal component 2 (32.3% of variance): 2.893">
+            <title>Reference row 124, class 1, Class 1, Principal component 1 (40.5% of variance): 1.618, Principal
+                component 2 (32.3% of variance): 2.893
+            </title>
+            <circle class="hit" cx="458.95" cy="143.13" r="9"/>
+            <circle class="pt" cx="458.95" cy="143.13" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="319.17" y="148.63" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="329.17" y="166.63">Reference row 124, class 1</text>
+                <rect class="tsw s1" x="329.17" y="174.63" width="9" height="9" rx="2"/>
+                <text class="tx b" x="343.17" y="183.63">Class 1</text>
+                <text class="tx" x="329.17" y="200.63">Principal component 1 (40.5% of variance): 1.6…</text>
+                <text class="tx" x="329.17" y="217.63">Principal component 2 (32.3% of variance): 2.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 125, class 1, Class 1, Principal component 1 (40.5% of variance): -0.6405, Principal component 2 (32.3% of variance): -0.8244">
+            <title>Reference row 125, class 1, Class 1, Principal component 1 (40.5% of variance): -0.6405, Principal
+                component 2 (32.3% of variance): -0.8244
+            </title>
+            <circle class="hit" cx="295.31" cy="321.57" r="9"/>
+            <circle class="pt" cx="295.31" cy="321.57" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="156.85" y="229.07" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="166.85" y="247.07">Reference row 125, class 1</text>
+                <rect class="tsw s1" x="166.85" y="255.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="180.85" y="264.07">Class 1</text>
+                <text class="tx" x="166.85" y="281.07">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="166.85" y="298.07">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 126, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7341, Principal component 2 (32.3% of variance): -0.5185">
+            <title>Reference row 126, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7341, Principal
+                component 2 (32.3% of variance): -0.5185
+            </title>
+            <circle class="hit" cx="288.53" cy="306.89" r="9"/>
+            <circle class="pt" cx="288.53" cy="306.89" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="150.07" y="214.39" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="160.07" y="232.39">Reference row 126, class 1</text>
+                <rect class="tsw s1" x="160.07" y="240.39" width="9" height="9" rx="2"/>
+                <text class="tx b" x="174.07" y="249.39">Class 1</text>
+                <text class="tx" x="160.07" y="266.39">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="160.07" y="283.39">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 128, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3916, Principal component 2 (32.3% of variance): -2.134">
+            <title>Reference row 128, class 1, Class 1, Principal component 1 (40.5% of variance): -0.3916, Principal
+                component 2 (32.3% of variance): -2.134
+            </title>
+            <circle class="hit" cx="313.35" cy="384.45" r="9"/>
+            <circle class="pt" cx="313.35" cy="384.45" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="174.89" y="291.95" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="184.89" y="309.95">Reference row 128, class 1</text>
+                <rect class="tsw s1" x="184.89" y="317.95" width="9" height="9" rx="2"/>
+                <text class="tx b" x="198.89" y="326.95">Class 1</text>
+                <text class="tx" x="184.89" y="343.95">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="184.89" y="360.95">Principal component 2 (32.3% of variance): -2.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 130, class 1, Class 1, Principal component 1 (40.5% of variance): 1.434, Principal component 2 (32.3% of variance): 0.8248">
+            <title>Reference row 130, class 1, Class 1, Principal component 1 (40.5% of variance): 1.434, Principal
+                component 2 (32.3% of variance): 0.8248
+            </title>
+            <circle class="hit" cx="445.64" cy="242.41" r="9"/>
+            <circle class="pt" cx="445.64" cy="242.41" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="305.86" y="149.91" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="315.86" y="167.91">Reference row 130, class 1</text>
+                <rect class="tsw s1" x="315.86" y="175.91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="329.86" y="184.91">Class 1</text>
+                <text class="tx" x="315.86" y="201.91">Principal component 1 (40.5% of variance): 1.4…</text>
+                <text class="tx" x="315.86" y="218.91">Principal component 2 (32.3% of variance): 0.8…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 133, class 1, Class 1, Principal component 1 (40.5% of variance): 1.377, Principal component 2 (32.3% of variance): 0.1129">
+            <title>Reference row 133, class 1, Class 1, Principal component 1 (40.5% of variance): 1.377, Principal
+                component 2 (32.3% of variance): 0.1129
+            </title>
+            <circle class="hit" cx="441.53" cy="276.58" r="9"/>
+            <circle class="pt" cx="441.53" cy="276.58" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="301.75" y="184.08" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="311.75" y="202.08">Reference row 133, class 1</text>
+                <rect class="tsw s1" x="311.75" y="210.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="325.75" y="219.08">Class 1</text>
+                <text class="tx" x="311.75" y="236.08">Principal component 1 (40.5% of variance): 1.3…</text>
+                <text class="tx" x="311.75" y="253.08">Principal component 2 (32.3% of variance): 0.1…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 138, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3167, Principal component 2 (32.3% of variance): -1.313">
+            <title>Reference row 138, class 1, Class 1, Principal component 1 (40.5% of variance): 0.3167, Principal
+                component 2 (32.3% of variance): -1.313
+            </title>
+            <circle class="hit" cx="364.67" cy="345" r="9"/>
+            <circle class="pt" cx="364.67" cy="345" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="224.89" y="252.5" width="279.56" height="78" rx="6"/>
+                <text class="tx b" x="234.89" y="270.5">Reference row 138, class 1</text>
+                <rect class="tsw s1" x="234.89" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="248.89" y="287.5">Class 1</text>
+                <text class="tx" x="234.89" y="304.5">Principal component 1 (40.5% of variance): 0.3…</text>
+                <text class="tx" x="234.89" y="321.5">Principal component 2 (32.3% of variance): -1.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 140, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7581, Principal component 2 (32.3% of variance): -0.9227">
+            <title>Reference row 140, class 1, Class 1, Principal component 1 (40.5% of variance): -0.7581, Principal
+                component 2 (32.3% of variance): -0.9227
+            </title>
+            <circle class="hit" cx="286.79" cy="326.29" r="9"/>
+            <circle class="pt" cx="286.79" cy="326.29" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="148.33" y="233.79" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="158.33" y="251.79">Reference row 140, class 1</text>
+                <rect class="tsw s1" x="158.33" y="259.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="172.33" y="268.79">Class 1</text>
+                <text class="tx" x="158.33" y="285.79">Principal component 1 (40.5% of variance): -0.…</text>
+                <text class="tx" x="158.33" y="302.79">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Reference row 144, class 1, Class 1, Principal component 1 (40.5% of variance): -1.338, Principal component 2 (32.3% of variance): -0.2824">
+            <title>Reference row 144, class 1, Class 1, Principal component 1 (40.5% of variance): -1.338, Principal
+                component 2 (32.3% of variance): -0.2824
+            </title>
+            <circle class="hit" cx="244.79" cy="295.55" r="9"/>
+            <circle class="pt" cx="244.79" cy="295.55" r="4.5"/>
+            <g class="tt">
+                <rect class="tb" x="106.33" y="203.05" width="276.92" height="78" rx="6"/>
+                <text class="tx b" x="116.33" y="221.05">Reference row 144, class 1</text>
+                <rect class="tsw s1" x="116.33" y="229.05" width="9" height="9" rx="2"/>
+                <text class="tx b" x="130.33" y="238.05">Class 1</text>
+                <text class="tx" x="116.33" y="255.05">Principal component 1 (40.5% of variance): -1.…</text>
+                <text class="tx" x="116.33" y="272.05">Principal component 2 (32.3% of variance): -0.…</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="377.95" y="460">Principal component 1 (40.5% of variance)</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 258) rotate(-90)">Principal component 2 (32.3% of
+        variance)
+    </text>
+</svg>

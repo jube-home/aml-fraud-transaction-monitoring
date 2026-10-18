@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.EtcdMemberStatus;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -26,7 +29,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "alarms (NOSPACE/CORRUPT). Supports optional date-range and substring search " +
                     "(Endpoint/Name/HealthReason/Alarms) filters. Only populated when etcd is configured or " +
                     "discoverable, not scoped to any tenant. Also accepts samplePercentage (0-100) to draw an " +
-                    "unbiased random subset of matching rows instead of the most recent ones."));
+                    "unbiased random subset of matching rows instead of the most recent ones.",
+                    EtcdMemberStatusService.RequiredPermissions, EtcdMemberStatusService.RequiresLandlord));
         }
     }
 }

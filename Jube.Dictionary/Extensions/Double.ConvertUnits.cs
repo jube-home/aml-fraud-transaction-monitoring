@@ -20,13 +20,13 @@ namespace Jube.Dictionary.Extensions
             var from = (fromUnit ?? "").Trim().ToLowerInvariant();
             var to = (toUnit ?? "").Trim().ToLowerInvariant();
 
-            if (UnitSupport.Temperatures.Contains(from) && UnitSupport.Temperatures.Contains(to))
+            if (UnitSupport.temperatures.Contains(from) && UnitSupport.temperatures.Contains(to))
             {
                 return UnitSupport.FromKelvin(UnitSupport.ToKelvin(@this, from), to);
             }
 
-            if (!UnitSupport.Units.TryGetValue(from, out var source) ||
-                !UnitSupport.Units.TryGetValue(to, out var target) ||
+            if (!UnitSupport.units.TryGetValue(from, out var source) ||
+                !UnitSupport.units.TryGetValue(to, out var target) ||
                 source.Dimension != target.Dimension)
             {
                 return double.NaN;

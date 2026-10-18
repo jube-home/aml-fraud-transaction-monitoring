@@ -69,6 +69,7 @@ namespace Jube.App.Endpoints.Query
             var services = httpContext.RequestServices;
             var log = services.GetRequiredService<ILog>();
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {route}: entry user={user}");
@@ -77,11 +78,13 @@ namespace Jube.App.Endpoints.Query
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 services.GetRequiredService<DynamicEnvironment.DynamicEnvironment>().AppSettings("ConnectionString"),
                 log);
+
             try
             {
                 var service = await EntityAnalysisModelDependencyService.CreateAsync(dbContext, user, log,
                     services.GetRequiredService<IStringLocalizerFactory>(),
                     services.GetRequiredService<IServiceChangeBus>(), token).ConfigureAwait(false);
+
                 return TypedResults.Ok(await body(service, token).ConfigureAwait(false));
             }
             catch (ServiceException ex) when (ex.Code is "PermissionDenied" or "NotAuthenticated")
@@ -114,6 +117,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {route}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

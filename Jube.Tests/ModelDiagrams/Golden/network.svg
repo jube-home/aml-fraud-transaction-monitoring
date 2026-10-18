@@ -1,0 +1,2703 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-d9d42a32" viewBox="0 0 720 890" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-d9d42a32-t jc-d9d42a32-d">
+    <title id="jc-d9d42a32-t">Feed-forward network</title>
+    <desc id="jc-d9d42a32-d">Feed-forward network with 2 weighted layers.</desc>
+    <style>
+        .jc-d9d42a32{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-d9d42a32:not([data-theme="light"]),.jc-d9d42a32:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-d9d42a32:not([data-theme="light"]),.jc-d9d42a32[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-d9d42a32
+        text{fill:var(--jc-text);font-size:12px}.jc-d9d42a32 .bg{fill:var(--jc-surface)}.jc-d9d42a32
+        .ttl{font-size:16px;font-weight:600}.jc-d9d42a32 .sub{fill:var(--jc-text2)}.jc-d9d42a32
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-d9d42a32 .at{fill:var(--jc-text2);font-weight:500}.jc-d9d42a32
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-d9d42a32
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-d9d42a32
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-d9d42a32 .ref.s0,.jc-d9d42a32
+        .ref.s1,.jc-d9d42a32 .ref.s2,.jc-d9d42a32 .ref.s3,.jc-d9d42a32 .ref.s4,.jc-d9d42a32 .ref.s5,.jc-d9d42a32
+        .ref.s6,.jc-d9d42a32 .ref.s7{stroke:var(--sc)}.jc-d9d42a32
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-d9d42a32
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-d9d42a32
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-d9d42a32
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-d9d42a32 .wh,.jc-d9d42a32
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-d9d42a32
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-d9d42a32
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-d9d42a32
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-d9d42a32 .cd.hollow{fill:var(--jc-surface)}.jc-d9d42a32
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-d9d42a32
+        .ar.off{fill-opacity:0}.jc-d9d42a32 .ring{font-size:10px}.jc-d9d42a32
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-d9d42a32 .needle{fill:var(--jc-text);stroke:none}.jc-d9d42a32
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-d9d42a32
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-d9d42a32
+        .big{font-size:28px;font-weight:600}.jc-d9d42a32 .rg0,.jc-d9d42a32 .rg1,.jc-d9d42a32
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-d9d42a32 .rg0{fill-opacity:.1}.jc-d9d42a32
+        .rg1{fill-opacity:.2}.jc-d9d42a32 .rg2{fill-opacity:.32}.jc-d9d42a32
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-d9d42a32
+        .bar.part{fill-opacity:.35}.jc-d9d42a32 .lgt{fill:var(--jc-text2)}.jc-d9d42a32
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-d9d42a32
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-d9d42a32
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-d9d42a32
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-d9d42a32 .bar{fill:var(--sc)}.jc-d9d42a32
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-d9d42a32
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-d9d42a32
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-d9d42a32
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-d9d42a32
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-d9d42a32
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-d9d42a32 .mk:hover .pt.h,.jc-d9d42a32 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-d9d42a32 .pt.sm{fill-opacity:.55;stroke:none}.jc-d9d42a32
+        .na{fill:var(--jc-grid)}.jc-d9d42a32 .mk:hover .sl,.jc-d9d42a32 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-d9d42a32
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-d9d42a32
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-d9d42a32
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-d9d42a32
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-d9d42a32
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-d9d42a32 .ctr{text-anchor:middle}.jc-d9d42a32
+        .end{text-anchor:end}.jc-d9d42a32 .mid{dominant-baseline:central}.jc-d9d42a32 .mk{outline:none}.jc-d9d42a32
+        .m,.jc-d9d42a32 .pt,.jc-d9d42a32 .bub,.jc-d9d42a32 .bar,.jc-d9d42a32 .ov,.jc-d9d42a32 .sl,.jc-d9d42a32
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-d9d42a32 .mk:hover .m,.jc-d9d42a32 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-d9d42a32 .mk:hover .pt,.jc-d9d42a32 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-d9d42a32 .mk:hover .bub,.jc-d9d42a32 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-d9d42a32 .mk:hover .bar,.jc-d9d42a32 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-d9d42a32 .mk:hover .ov,.jc-d9d42a32 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-d9d42a32 .mk:hover .sl,.jc-d9d42a32 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-d9d42a32 .mk:hover .box,.jc-d9d42a32 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-d9d42a32 .mk:hover .wk,.jc-d9d42a32 .mk:focus-visible
+        .wk,.jc-d9d42a32 .mk:hover .cd,.jc-d9d42a32 .mk:focus-visible .cd{stroke-width:2.5}.jc-d9d42a32 .mk:hover
+        .cell,.jc-d9d42a32 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-d9d42a32 .mk:hover
+        .vl,.jc-d9d42a32 .mk:focus-visible .vl,.jc-d9d42a32 .mk:hover .cx,.jc-d9d42a32 .mk:focus-visible
+        .cx{opacity:1}.jc-d9d42a32 .mk:hover .mkr,.jc-d9d42a32 .mk:focus-visible .mkr{stroke-width:3}.jc-d9d42a32
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-d9d42a32
+        .mk:hover .tt,.jc-d9d42a32 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-d9d42a32
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-d9d42a32
+        .tx{fill:var(--jc-text);font-size:12px}.jc-d9d42a32 .tx.b{font-weight:600}.jc-d9d42a32
+        .tsw{fill:var(--sc)}.jc-d9d42a32 .lg{cursor:default;transition:opacity .15s ease}.jc-d9d42a32 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-d9d42a32 .sr{transition:opacity .15s ease}.jc-d9d42a32:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-d9d42a32:has(.mk:hover) .mk:not(:hover) .pt,.jc-d9d42a32:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-d9d42a32:has(.mk:hover) .mk:not(:hover) .bar,.jc-d9d42a32:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-d9d42a32:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-d9d42a32:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-d9d42a32 .s0{--sc:var(--jc-c0)}.jc-d9d42a32 .s0
+        .on{fill:var(--jc-ct0)}.jc-d9d42a32:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-d9d42a32:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-d9d42a32:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-d9d42a32:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s1{--sc:var(--jc-c1)}.jc-d9d42a32 .s1 .on{fill:var(--jc-ct1)}.jc-d9d42a32:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-d9d42a32:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-d9d42a32:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-d9d42a32:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s2{--sc:var(--jc-c2)}.jc-d9d42a32 .s2 .on{fill:var(--jc-ct2)}.jc-d9d42a32:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-d9d42a32:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-d9d42a32:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-d9d42a32:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s3{--sc:var(--jc-c3)}.jc-d9d42a32 .s3 .on{fill:var(--jc-ct3)}.jc-d9d42a32:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-d9d42a32:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-d9d42a32:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-d9d42a32:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s4{--sc:var(--jc-c4)}.jc-d9d42a32 .s4 .on{fill:var(--jc-ct4)}.jc-d9d42a32:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-d9d42a32:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-d9d42a32:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-d9d42a32:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s5{--sc:var(--jc-c5)}.jc-d9d42a32 .s5 .on{fill:var(--jc-ct5)}.jc-d9d42a32:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-d9d42a32:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-d9d42a32:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-d9d42a32:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s6{--sc:var(--jc-c6)}.jc-d9d42a32 .s6 .on{fill:var(--jc-ct6)}.jc-d9d42a32:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-d9d42a32:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-d9d42a32:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-d9d42a32:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-d9d42a32
+        .s7{--sc:var(--jc-c7)}.jc-d9d42a32 .s7 .on{fill:var(--jc-ct7)}.jc-d9d42a32:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-d9d42a32:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-d9d42a32:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-d9d42a32:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-d9d42a32:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-d9d42a32,.jc-d9d42a32
+        *{transition:none!important;animation:none!important}}.jc-d9d42a32 .q0{fill:var(--jc-q0)}.jc-d9d42a32
+        .qt0{fill:var(--jc-qt0)}.jc-d9d42a32 .q1{fill:var(--jc-q1)}.jc-d9d42a32 .qt1{fill:var(--jc-qt1)}.jc-d9d42a32
+        .q2{fill:var(--jc-q2)}.jc-d9d42a32 .qt2{fill:var(--jc-qt2)}.jc-d9d42a32 .q3{fill:var(--jc-q3)}.jc-d9d42a32
+        .qt3{fill:var(--jc-qt3)}.jc-d9d42a32 .q4{fill:var(--jc-q4)}.jc-d9d42a32 .qt4{fill:var(--jc-qt4)}.jc-d9d42a32
+        .q5{fill:var(--jc-q5)}.jc-d9d42a32 .qt5{fill:var(--jc-qt5)}.jc-d9d42a32 .q6{fill:var(--jc-q6)}.jc-d9d42a32
+        .qt6{fill:var(--jc-qt6)}.jc-d9d42a32 .q7{fill:var(--jc-q7)}.jc-d9d42a32 .qt7{fill:var(--jc-qt7)}.jc-d9d42a32
+        .q8{fill:var(--jc-q8)}.jc-d9d42a32 .qt8{fill:var(--jc-qt8)}.jc-d9d42a32 .d0{fill:var(--jc-d0)}.jc-d9d42a32
+        .dt0{fill:var(--jc-dt0)}.jc-d9d42a32 .d1{fill:var(--jc-d1)}.jc-d9d42a32 .dt1{fill:var(--jc-dt1)}.jc-d9d42a32
+        .d2{fill:var(--jc-d2)}.jc-d9d42a32 .dt2{fill:var(--jc-dt2)}.jc-d9d42a32 .d3{fill:var(--jc-d3)}.jc-d9d42a32
+        .dt3{fill:var(--jc-dt3)}.jc-d9d42a32 .d4{fill:var(--jc-d4)}.jc-d9d42a32 .dt4{fill:var(--jc-dt4)}.jc-d9d42a32
+        .d5{fill:var(--jc-d5)}.jc-d9d42a32 .dt5{fill:var(--jc-dt5)}.jc-d9d42a32 .d6{fill:var(--jc-d6)}.jc-d9d42a32
+        .dt6{fill:var(--jc-dt6)}.jc-d9d42a32 .d7{fill:var(--jc-d7)}.jc-d9d42a32 .dt7{fill:var(--jc-dt7)}.jc-d9d42a32
+        .d8{fill:var(--jc-d8)}.jc-d9d42a32 .dt8{fill:var(--jc-dt8)}.jc-d9d42a32 .d9{fill:var(--jc-d9)}.jc-d9d42a32
+        .dt9{fill:var(--jc-dt9)}.jc-d9d42a32 .d10{fill:var(--jc-d10)}.jc-d9d42a32 .dt10{fill:var(--jc-dt10)}.jc-d9d42a32
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-d9d42a32
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-d9d42a32 .nb.dash{stroke-dasharray:4
+        3}.jc-d9d42a32 .nd,.jc-d9d42a32 .eg,.jc-d9d42a32 .pn{transition:opacity .15s ease}.jc-d9d42a32 .mk:hover
+        .nb,.jc-d9d42a32 .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-d9d42a32
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-d9d42a32 .ep.en{stroke:var(--jc-axis)}.jc-d9d42a32
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-d9d42a32 .vt{fill:var(--jc-grid)}.jc-d9d42a32
+        .nt.lf{fill-opacity:.38}.jc-d9d42a32 .ep.ed{stroke-dasharray:5 4}.jc-d9d42a32
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-d9d42a32 .eg:hover .ep,.jc-d9d42a32
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-d9d42a32 .ah{fill:var(--jc-text2);stroke:none}.jc-d9d42a32 .mk:hover
+        .ah,.jc-d9d42a32 .mk:focus-visible .ah{fill:var(--jc-text)}.jc-d9d42a32
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-d9d42a32 .mk:hover
+        .hl,.jc-d9d42a32 .mk:focus-visible .hl{fill-opacity:.07}.jc-d9d42a32
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-d9d42a32 .mk:hover .bs,.jc-d9d42a32 .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-d9d42a32
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-d9d42a32
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-d9d42a32 .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-d9d42a32
+        .ph{font-size:12px;font-weight:600}.jc-d9d42a32 .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-d9d42a32
+        .tps{pointer-events:none}.jc-d9d42a32 .dsh{stroke-dasharray:3 3}.jc-d9d42a32
+        .ln.thin{stroke-width:1.5}.jc-d9d42a32 .ln.hi{stroke-width:2.5}.jc-d9d42a32
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-d9d42a32 .mk:hover .rb,.jc-d9d42a32 .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-d9d42a32
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-d9d42a32
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-d9d42a32
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-d9d42a32 .mk:hover .dmd,.jc-d9d42a32
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-d9d42a32 .mk:hover .ci,.jc-d9d42a32
+        .mk:focus-visible .ci{stroke-width:3}.jc-d9d42a32
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-d9d42a32 .mk:hover
+        .tri,.jc-d9d42a32 .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-d9d42a32
+        .cl{fill:var(--sc)}.jc-d9d42a32 .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-d9d42a32
+        .ax.dsh{stroke-dasharray:3 3}.jc-d9d42a32 .sd0{stroke:var(--jc-d0)}.jc-d9d42a32
+        .sd1{stroke:var(--jc-d1)}.jc-d9d42a32 .sd2{stroke:var(--jc-d2)}.jc-d9d42a32
+        .sd3{stroke:var(--jc-d3)}.jc-d9d42a32 .sd4{stroke:var(--jc-d4)}.jc-d9d42a32
+        .sd5{stroke:var(--jc-d5)}.jc-d9d42a32 .sd6{stroke:var(--jc-d6)}.jc-d9d42a32
+        .sd7{stroke:var(--jc-d7)}.jc-d9d42a32 .sd8{stroke:var(--jc-d8)}.jc-d9d42a32
+        .sd9{stroke:var(--jc-d9)}.jc-d9d42a32 .sd10{stroke:var(--jc-d10)}.jc-d9d42a32:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-d9d42a32:has(.eg:hover) .nd{opacity:.45}.jc-d9d42a32:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-d9d42a32:has(.lg.s0:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-d9d42a32:has(.lg.s1:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-d9d42a32:has(.lg.s2:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-d9d42a32:has(.lg.s3:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-d9d42a32:has(.lg.s4:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-d9d42a32:has(.lg.s5:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-d9d42a32:has(.lg.s6:hover) .eg{opacity:.3}.jc-d9d42a32:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-d9d42a32:has(.lg.s7:hover)
+        .eg{opacity:.3}.jc-d9d42a32:has(.mk.x0:hover,.mk.x0:focus-visible) .tp.tx0
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x1:hover,.mk.x1:focus-visible) .tp.tx1
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x2:hover,.mk.x2:focus-visible) .tp.tx2
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x3:hover,.mk.x3:focus-visible) .tp.tx3
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x4:hover,.mk.x4:focus-visible) .tp.tx4
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x5:hover,.mk.x5:focus-visible) .tp.tx5
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x6:hover,.mk.x6:focus-visible) .tp.tx6
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x7:hover,.mk.x7:focus-visible) .tp.tx7
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x8:hover,.mk.x8:focus-visible) .tp.tx8
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x9:hover,.mk.x9:focus-visible) .tp.tx9
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x10:hover,.mk.x10:focus-visible) .tp.tx10
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x11:hover,.mk.x11:focus-visible) .tp.tx11
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x12:hover,.mk.x12:focus-visible) .tp.tx12
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x13:hover,.mk.x13:focus-visible) .tp.tx13
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x14:hover,.mk.x14:focus-visible) .tp.tx14
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x15:hover,.mk.x15:focus-visible) .tp.tx15
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x16:hover,.mk.x16:focus-visible) .tp.tx16
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x17:hover,.mk.x17:focus-visible) .tp.tx17
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x18:hover,.mk.x18:focus-visible) .tp.tx18
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x19:hover,.mk.x19:focus-visible) .tp.tx19
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x20:hover,.mk.x20:focus-visible) .tp.tx20
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x21:hover,.mk.x21:focus-visible) .tp.tx21
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x22:hover,.mk.x22:focus-visible) .tp.tx22
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x23:hover,.mk.x23:focus-visible) .tp.tx23
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x24:hover,.mk.x24:focus-visible) .tp.tx24
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x25:hover,.mk.x25:focus-visible) .tp.tx25
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x26:hover,.mk.x26:focus-visible) .tp.tx26
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x27:hover,.mk.x27:focus-visible) .tp.tx27
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x28:hover,.mk.x28:focus-visible) .tp.tx28
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x29:hover,.mk.x29:focus-visible) .tp.tx29
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x30:hover,.mk.x30:focus-visible) .tp.tx30
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x31:hover,.mk.x31:focus-visible) .tp.tx31
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x32:hover,.mk.x32:focus-visible) .tp.tx32
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x33:hover,.mk.x33:focus-visible) .tp.tx33
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x34:hover,.mk.x34:focus-visible) .tp.tx34
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x35:hover,.mk.x35:focus-visible) .tp.tx35
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x36:hover,.mk.x36:focus-visible) .tp.tx36
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x37:hover,.mk.x37:focus-visible) .tp.tx37
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x38:hover,.mk.x38:focus-visible) .tp.tx38
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x39:hover,.mk.x39:focus-visible) .tp.tx39
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x40:hover,.mk.x40:focus-visible) .tp.tx40
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x41:hover,.mk.x41:focus-visible) .tp.tx41
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x42:hover,.mk.x42:focus-visible) .tp.tx42
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x43:hover,.mk.x43:focus-visible) .tp.tx43
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x44:hover,.mk.x44:focus-visible) .tp.tx44
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x45:hover,.mk.x45:focus-visible) .tp.tx45
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x46:hover,.mk.x46:focus-visible) .tp.tx46
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x47:hover,.mk.x47:focus-visible) .tp.tx47
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x48:hover,.mk.x48:focus-visible) .tp.tx48
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x49:hover,.mk.x49:focus-visible) .tp.tx49
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x50:hover,.mk.x50:focus-visible) .tp.tx50
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x51:hover,.mk.x51:focus-visible) .tp.tx51
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x52:hover,.mk.x52:focus-visible) .tp.tx52
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x53:hover,.mk.x53:focus-visible) .tp.tx53
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x54:hover,.mk.x54:focus-visible) .tp.tx54
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x55:hover,.mk.x55:focus-visible) .tp.tx55
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x56:hover,.mk.x56:focus-visible) .tp.tx56
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x57:hover,.mk.x57:focus-visible) .tp.tx57
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x58:hover,.mk.x58:focus-visible) .tp.tx58
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x59:hover,.mk.x59:focus-visible) .tp.tx59
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x60:hover,.mk.x60:focus-visible) .tp.tx60
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x61:hover,.mk.x61:focus-visible) .tp.tx61
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x62:hover,.mk.x62:focus-visible) .tp.tx62
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x63:hover,.mk.x63:focus-visible) .tp.tx63
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x64:hover,.mk.x64:focus-visible) .tp.tx64
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x65:hover,.mk.x65:focus-visible) .tp.tx65
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x66:hover,.mk.x66:focus-visible) .tp.tx66
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x67:hover,.mk.x67:focus-visible) .tp.tx67
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x68:hover,.mk.x68:focus-visible) .tp.tx68
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x69:hover,.mk.x69:focus-visible) .tp.tx69
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x70:hover,.mk.x70:focus-visible) .tp.tx70
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x71:hover,.mk.x71:focus-visible) .tp.tx71
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x72:hover,.mk.x72:focus-visible) .tp.tx72
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x73:hover,.mk.x73:focus-visible) .tp.tx73
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x74:hover,.mk.x74:focus-visible) .tp.tx74
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x75:hover,.mk.x75:focus-visible) .tp.tx75
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x76:hover,.mk.x76:focus-visible) .tp.tx76
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x77:hover,.mk.x77:focus-visible) .tp.tx77
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x78:hover,.mk.x78:focus-visible) .tp.tx78
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x79:hover,.mk.x79:focus-visible) .tp.tx79
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x80:hover,.mk.x80:focus-visible) .tp.tx80
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x81:hover,.mk.x81:focus-visible) .tp.tx81
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x82:hover,.mk.x82:focus-visible) .tp.tx82
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x83:hover,.mk.x83:focus-visible) .tp.tx83
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x84:hover,.mk.x84:focus-visible) .tp.tx84
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x85:hover,.mk.x85:focus-visible) .tp.tx85
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x86:hover,.mk.x86:focus-visible) .tp.tx86
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x87:hover,.mk.x87:focus-visible) .tp.tx87
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x88:hover,.mk.x88:focus-visible) .tp.tx88
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x89:hover,.mk.x89:focus-visible) .tp.tx89
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x90:hover,.mk.x90:focus-visible) .tp.tx90
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x91:hover,.mk.x91:focus-visible) .tp.tx91
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x92:hover,.mk.x92:focus-visible) .tp.tx92
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x93:hover,.mk.x93:focus-visible) .tp.tx93
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x94:hover,.mk.x94:focus-visible) .tp.tx94
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x95:hover,.mk.x95:focus-visible) .tp.tx95
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x96:hover,.mk.x96:focus-visible) .tp.tx96
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x97:hover,.mk.x97:focus-visible) .tp.tx97
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x98:hover,.mk.x98:focus-visible) .tp.tx98
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x99:hover,.mk.x99:focus-visible) .tp.tx99
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x100:hover,.mk.x100:focus-visible) .tp.tx100
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x101:hover,.mk.x101:focus-visible) .tp.tx101
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x102:hover,.mk.x102:focus-visible) .tp.tx102
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x103:hover,.mk.x103:focus-visible) .tp.tx103
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x104:hover,.mk.x104:focus-visible) .tp.tx104
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x105:hover,.mk.x105:focus-visible) .tp.tx105
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x106:hover,.mk.x106:focus-visible) .tp.tx106
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x107:hover,.mk.x107:focus-visible) .tp.tx107
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x108:hover,.mk.x108:focus-visible) .tp.tx108
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x109:hover,.mk.x109:focus-visible) .tp.tx109
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x110:hover,.mk.x110:focus-visible) .tp.tx110
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x111:hover,.mk.x111:focus-visible) .tp.tx111
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x112:hover,.mk.x112:focus-visible) .tp.tx112
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x113:hover,.mk.x113:focus-visible) .tp.tx113
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x114:hover,.mk.x114:focus-visible) .tp.tx114
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x115:hover,.mk.x115:focus-visible) .tp.tx115
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x116:hover,.mk.x116:focus-visible) .tp.tx116
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x117:hover,.mk.x117:focus-visible) .tp.tx117
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x118:hover,.mk.x118:focus-visible) .tp.tx118
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x119:hover,.mk.x119:focus-visible) .tp.tx119
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x120:hover,.mk.x120:focus-visible) .tp.tx120
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x121:hover,.mk.x121:focus-visible) .tp.tx121
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x122:hover,.mk.x122:focus-visible) .tp.tx122
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x123:hover,.mk.x123:focus-visible) .tp.tx123
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x124:hover,.mk.x124:focus-visible) .tp.tx124
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x125:hover,.mk.x125:focus-visible) .tp.tx125
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x126:hover,.mk.x126:focus-visible) .tp.tx126
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x127:hover,.mk.x127:focus-visible) .tp.tx127
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x128:hover,.mk.x128:focus-visible) .tp.tx128
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x129:hover,.mk.x129:focus-visible) .tp.tx129
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x130:hover,.mk.x130:focus-visible) .tp.tx130
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x131:hover,.mk.x131:focus-visible) .tp.tx131
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x132:hover,.mk.x132:focus-visible) .tp.tx132
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x133:hover,.mk.x133:focus-visible) .tp.tx133
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.x134:hover,.mk.x134:focus-visible) .tp.tx134
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n0:hover,.mk.n0:focus-visible) .tp.tn0
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n1:hover,.mk.n1:focus-visible) .tp.tn1
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n2:hover,.mk.n2:focus-visible) .tp.tn2
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n3:hover,.mk.n3:focus-visible) .tp.tn3
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n4:hover,.mk.n4:focus-visible) .tp.tn4
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n5:hover,.mk.n5:focus-visible) .tp.tn5
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n6:hover,.mk.n6:focus-visible) .tp.tn6
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n7:hover,.mk.n7:focus-visible) .tp.tn7
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n8:hover,.mk.n8:focus-visible) .tp.tn8
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n9:hover,.mk.n9:focus-visible) .tp.tn9
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n10:hover,.mk.n10:focus-visible) .tp.tn10
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n11:hover,.mk.n11:focus-visible) .tp.tn11
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n12:hover,.mk.n12:focus-visible) .tp.tn12
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n13:hover,.mk.n13:focus-visible) .tp.tn13
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n14:hover,.mk.n14:focus-visible) .tp.tn14
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n15:hover,.mk.n15:focus-visible) .tp.tn15
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n16:hover,.mk.n16:focus-visible) .tp.tn16
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n17:hover,.mk.n17:focus-visible) .tp.tn17
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n18:hover,.mk.n18:focus-visible) .tp.tn18
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n19:hover,.mk.n19:focus-visible) .tp.tn19
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n20:hover,.mk.n20:focus-visible) .tp.tn20
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n21:hover,.mk.n21:focus-visible) .tp.tn21
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n22:hover,.mk.n22:focus-visible) .tp.tn22
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n23:hover,.mk.n23:focus-visible) .tp.tn23
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n24:hover,.mk.n24:focus-visible) .tp.tn24
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n25:hover,.mk.n25:focus-visible) .tp.tn25
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n26:hover,.mk.n26:focus-visible) .tp.tn26
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n27:hover,.mk.n27:focus-visible) .tp.tn27
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n28:hover,.mk.n28:focus-visible) .tp.tn28
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n29:hover,.mk.n29:focus-visible) .tp.tn29
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n30:hover,.mk.n30:focus-visible) .tp.tn30
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.mk.n31:hover,.mk.n31:focus-visible) .tp.tn31
+        .tt{opacity:1;visibility:visible}.jc-d9d42a32:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .nd:not(.n0):not(.j0){opacity:.22}.jc-d9d42a32:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .eg:not(.e0){opacity:.07}.jc-d9d42a32:has(.nd.n0:hover,.nd.n0:focus-visible) .eg.e0
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .nd:not(.n1):not(.j1){opacity:.22}.jc-d9d42a32:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .eg:not(.e1){opacity:.07}.jc-d9d42a32:has(.nd.n1:hover,.nd.n1:focus-visible) .eg.e1
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .nd:not(.n2):not(.j2){opacity:.22}.jc-d9d42a32:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .eg:not(.e2){opacity:.07}.jc-d9d42a32:has(.nd.n2:hover,.nd.n2:focus-visible) .eg.e2
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .nd:not(.n3):not(.j3){opacity:.22}.jc-d9d42a32:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .eg:not(.e3){opacity:.07}.jc-d9d42a32:has(.nd.n3:hover,.nd.n3:focus-visible) .eg.e3
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .nd:not(.n4):not(.j4){opacity:.22}.jc-d9d42a32:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .eg:not(.e4){opacity:.07}.jc-d9d42a32:has(.nd.n4:hover,.nd.n4:focus-visible) .eg.e4
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .nd:not(.n5):not(.j5){opacity:.22}.jc-d9d42a32:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .eg:not(.e5){opacity:.07}.jc-d9d42a32:has(.nd.n5:hover,.nd.n5:focus-visible) .eg.e5
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .nd:not(.n6):not(.j6){opacity:.22}.jc-d9d42a32:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .eg:not(.e6){opacity:.07}.jc-d9d42a32:has(.nd.n6:hover,.nd.n6:focus-visible) .eg.e6
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n7:hover,.nd.n7:focus-visible)
+        .nd:not(.n7):not(.j7){opacity:.22}.jc-d9d42a32:has(.nd.n7:hover,.nd.n7:focus-visible)
+        .eg:not(.e7){opacity:.07}.jc-d9d42a32:has(.nd.n7:hover,.nd.n7:focus-visible) .eg.e7
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n8:hover,.nd.n8:focus-visible)
+        .nd:not(.n8):not(.j8){opacity:.22}.jc-d9d42a32:has(.nd.n8:hover,.nd.n8:focus-visible)
+        .eg:not(.e8){opacity:.07}.jc-d9d42a32:has(.nd.n8:hover,.nd.n8:focus-visible) .eg.e8
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n9:hover,.nd.n9:focus-visible)
+        .nd:not(.n9):not(.j9){opacity:.22}.jc-d9d42a32:has(.nd.n9:hover,.nd.n9:focus-visible)
+        .eg:not(.e9){opacity:.07}.jc-d9d42a32:has(.nd.n9:hover,.nd.n9:focus-visible) .eg.e9
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n10:hover,.nd.n10:focus-visible)
+        .nd:not(.n10):not(.j10){opacity:.22}.jc-d9d42a32:has(.nd.n10:hover,.nd.n10:focus-visible)
+        .eg:not(.e10){opacity:.07}.jc-d9d42a32:has(.nd.n10:hover,.nd.n10:focus-visible) .eg.e10
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n11:hover,.nd.n11:focus-visible)
+        .nd:not(.n11):not(.j11){opacity:.22}.jc-d9d42a32:has(.nd.n11:hover,.nd.n11:focus-visible)
+        .eg:not(.e11){opacity:.07}.jc-d9d42a32:has(.nd.n11:hover,.nd.n11:focus-visible) .eg.e11
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n12:hover,.nd.n12:focus-visible)
+        .nd:not(.n12):not(.j12){opacity:.22}.jc-d9d42a32:has(.nd.n12:hover,.nd.n12:focus-visible)
+        .eg:not(.e12){opacity:.07}.jc-d9d42a32:has(.nd.n12:hover,.nd.n12:focus-visible) .eg.e12
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n13:hover,.nd.n13:focus-visible)
+        .nd:not(.n13):not(.j13){opacity:.22}.jc-d9d42a32:has(.nd.n13:hover,.nd.n13:focus-visible)
+        .eg:not(.e13){opacity:.07}.jc-d9d42a32:has(.nd.n13:hover,.nd.n13:focus-visible) .eg.e13
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n14:hover,.nd.n14:focus-visible)
+        .nd:not(.n14):not(.j14){opacity:.22}.jc-d9d42a32:has(.nd.n14:hover,.nd.n14:focus-visible)
+        .eg:not(.e14){opacity:.07}.jc-d9d42a32:has(.nd.n14:hover,.nd.n14:focus-visible) .eg.e14
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n15:hover,.nd.n15:focus-visible)
+        .nd:not(.n15):not(.j15){opacity:.22}.jc-d9d42a32:has(.nd.n15:hover,.nd.n15:focus-visible)
+        .eg:not(.e15){opacity:.07}.jc-d9d42a32:has(.nd.n15:hover,.nd.n15:focus-visible) .eg.e15
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n16:hover,.nd.n16:focus-visible)
+        .nd:not(.n16):not(.j16){opacity:.22}.jc-d9d42a32:has(.nd.n16:hover,.nd.n16:focus-visible)
+        .eg:not(.e16){opacity:.07}.jc-d9d42a32:has(.nd.n16:hover,.nd.n16:focus-visible) .eg.e16
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n17:hover,.nd.n17:focus-visible)
+        .nd:not(.n17):not(.j17){opacity:.22}.jc-d9d42a32:has(.nd.n17:hover,.nd.n17:focus-visible)
+        .eg:not(.e17){opacity:.07}.jc-d9d42a32:has(.nd.n17:hover,.nd.n17:focus-visible) .eg.e17
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n18:hover,.nd.n18:focus-visible)
+        .nd:not(.n18):not(.j18){opacity:.22}.jc-d9d42a32:has(.nd.n18:hover,.nd.n18:focus-visible)
+        .eg:not(.e18){opacity:.07}.jc-d9d42a32:has(.nd.n18:hover,.nd.n18:focus-visible) .eg.e18
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n19:hover,.nd.n19:focus-visible)
+        .nd:not(.n19):not(.j19){opacity:.22}.jc-d9d42a32:has(.nd.n19:hover,.nd.n19:focus-visible)
+        .eg:not(.e19){opacity:.07}.jc-d9d42a32:has(.nd.n19:hover,.nd.n19:focus-visible) .eg.e19
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n20:hover,.nd.n20:focus-visible)
+        .nd:not(.n20):not(.j20){opacity:.22}.jc-d9d42a32:has(.nd.n20:hover,.nd.n20:focus-visible)
+        .eg:not(.e20){opacity:.07}.jc-d9d42a32:has(.nd.n20:hover,.nd.n20:focus-visible) .eg.e20
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n21:hover,.nd.n21:focus-visible)
+        .nd:not(.n21):not(.j21){opacity:.22}.jc-d9d42a32:has(.nd.n21:hover,.nd.n21:focus-visible)
+        .eg:not(.e21){opacity:.07}.jc-d9d42a32:has(.nd.n21:hover,.nd.n21:focus-visible) .eg.e21
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n22:hover,.nd.n22:focus-visible)
+        .nd:not(.n22):not(.j22){opacity:.22}.jc-d9d42a32:has(.nd.n22:hover,.nd.n22:focus-visible)
+        .eg:not(.e22){opacity:.07}.jc-d9d42a32:has(.nd.n22:hover,.nd.n22:focus-visible) .eg.e22
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n23:hover,.nd.n23:focus-visible)
+        .nd:not(.n23):not(.j23){opacity:.22}.jc-d9d42a32:has(.nd.n23:hover,.nd.n23:focus-visible)
+        .eg:not(.e23){opacity:.07}.jc-d9d42a32:has(.nd.n23:hover,.nd.n23:focus-visible) .eg.e23
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n24:hover,.nd.n24:focus-visible)
+        .nd:not(.n24):not(.j24){opacity:.22}.jc-d9d42a32:has(.nd.n24:hover,.nd.n24:focus-visible)
+        .eg:not(.e24){opacity:.07}.jc-d9d42a32:has(.nd.n24:hover,.nd.n24:focus-visible) .eg.e24
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n25:hover,.nd.n25:focus-visible)
+        .nd:not(.n25):not(.j25){opacity:.22}.jc-d9d42a32:has(.nd.n25:hover,.nd.n25:focus-visible)
+        .eg:not(.e25){opacity:.07}.jc-d9d42a32:has(.nd.n25:hover,.nd.n25:focus-visible) .eg.e25
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n26:hover,.nd.n26:focus-visible)
+        .nd:not(.n26):not(.j26){opacity:.22}.jc-d9d42a32:has(.nd.n26:hover,.nd.n26:focus-visible)
+        .eg:not(.e26){opacity:.07}.jc-d9d42a32:has(.nd.n26:hover,.nd.n26:focus-visible) .eg.e26
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n27:hover,.nd.n27:focus-visible)
+        .nd:not(.n27):not(.j27){opacity:.22}.jc-d9d42a32:has(.nd.n27:hover,.nd.n27:focus-visible)
+        .eg:not(.e27){opacity:.07}.jc-d9d42a32:has(.nd.n27:hover,.nd.n27:focus-visible) .eg.e27
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n28:hover,.nd.n28:focus-visible)
+        .nd:not(.n28):not(.j28){opacity:.22}.jc-d9d42a32:has(.nd.n28:hover,.nd.n28:focus-visible)
+        .eg:not(.e28){opacity:.07}.jc-d9d42a32:has(.nd.n28:hover,.nd.n28:focus-visible) .eg.e28
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n29:hover,.nd.n29:focus-visible)
+        .nd:not(.n29):not(.j29){opacity:.22}.jc-d9d42a32:has(.nd.n29:hover,.nd.n29:focus-visible)
+        .eg:not(.e29){opacity:.07}.jc-d9d42a32:has(.nd.n29:hover,.nd.n29:focus-visible) .eg.e29
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n30:hover,.nd.n30:focus-visible)
+        .nd:not(.n30):not(.j30){opacity:.22}.jc-d9d42a32:has(.nd.n30:hover,.nd.n30:focus-visible)
+        .eg:not(.e30){opacity:.07}.jc-d9d42a32:has(.nd.n30:hover,.nd.n30:focus-visible) .eg.e30
+        .ep{stroke-opacity:1}.jc-d9d42a32:has(.nd.n31:hover,.nd.n31:focus-visible)
+        .nd:not(.n31):not(.j31){opacity:.22}.jc-d9d42a32:has(.nd.n31:hover,.nd.n31:focus-visible)
+        .eg:not(.e31){opacity:.07}.jc-d9d42a32:has(.nd.n31:hover,.nd.n31:focus-visible) .eg.e31 .ep{stroke-opacity:1}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="890" rx="8"/>
+    <text class="ttl" x="16" y="32">Feed-forward network</text>
+    <text class="sub" x="16" y="50">26 inputs, 5 hiddens, 1 output</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="44.64" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Input</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="76.64" y="62" width="55.2" height="18"/>
+        <rect class="sw" x="78.64" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="96.64" y="75">Hidden</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="149.84" y="62" width="53.76" height="18"/>
+        <rect class="sw" x="151.84" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="169.84" y="75">Output</text>
+    </g>
+    <g transform="translate(66.31 90)">
+        <text class="ph ctr" x="177.72" y="12">Inputs</text>
+        <text class="ph ctr" x="367.72" y="12">Hidden 1</text>
+        <text class="kn ctr" x="367.72" y="27">Sigmoid, alpha 2</text>
+        <text class="ph ctr" x="557.72" y="12">Output</text>
+        <text class="kn ctr" x="557.72" y="27">Sigmoid, alpha 2</text>
+        <g class="mk x0 eg e0 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip to h1.1, Weight: -0.1564">
+            <title>Abstraction.IsChip to h1.1, Weight: -0.1564</title>
+            <path class="eh" d="M187.44 57.5C272.72 57.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 57.5C272.72 57.5 272.72 341 358 341" style="stroke-width:0.76"/>
+        </g>
+        <g class="mk x1 eg e1 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe to h1.1, Weight: 0.3331">
+            <title>Abstraction.IsSwipe to h1.1, Weight: 0.3331</title>
+            <path class="eh" d="M187.44 84.5C272.72 84.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 84.5C272.72 84.5 272.72 341 358 341" style="stroke-width:0.94"/>
+        </g>
+        <g class="mk x2 eg e2 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual to h1.1, Weight: -1.148">
+            <title>Abstraction.IsManual to h1.1, Weight: -1.148</title>
+            <path class="eh" d="M187.44 111.5C272.72 111.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 111.5C272.72 111.5 272.72 341 358 341" style="stroke-width:1.78"/>
+        </g>
+        <g class="mk x3 eg e3 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day to h1.1, Weight: -0.2154">
+            <title>Abstraction.CountTransactions1Day to h1.1, Weight: -0.2154</title>
+            <path class="eh" d="M187.44 138.5C272.72 138.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 138.5C272.72 138.5 272.72 341 358 341" style="stroke-width:0.82"/>
+        </g>
+        <g class="mk x4 eg e4 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated to h1.1, Weight: 0.03467">
+            <title>Abstraction.Authenticated to h1.1, Weight: 0.03467</title>
+            <path class="eh" d="M187.44 165.5C272.72 165.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 165.5C272.72 165.5 272.72 341 358 341" style="stroke-width:0.64"/>
+        </g>
+        <g class="mk x5 eg e5 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline… to h1.1, Weight: 0.3825">
+            <title>Abstraction.CountTransactionsPINDecline… to h1.1, Weight: 0.3825</title>
+            <path class="eh" d="M187.44 192.5C272.72 192.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 192.5C272.72 192.5 272.72 341 358 341" style="stroke-width:0.99"/>
+        </g>
+        <g class="mk x6 eg e6 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D… to h1.1, Weight: -0.6199">
+            <title>Abstraction.CountTransactionsDeclined1D… to h1.1, Weight: -0.6199</title>
+            <path class="eh" d="M187.44 219.5C272.72 219.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 219.5C272.72 219.5 272.72 341 358 341" style="stroke-width:1.23"/>
+        </g>
+        <g class="mk x7 eg e7 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day to h1.1, Weight: 0.04176">
+            <title>Abstraction.CountUnsafeTerminals1Day to h1.1, Weight: 0.04176</title>
+            <path class="eh" d="M187.44 246.5C272.72 246.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 246.5C272.72 246.5 272.72 341 358 341" style="stroke-width:0.64"/>
+        </g>
+        <g class="mk x8 eg e8 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day to h1.1, Weight: 0.0367">
+            <title>Abstraction.CountInPerson1Day to h1.1, Weight: 0.0367</title>
+            <path class="eh" d="M187.44 273.5C272.72 273.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 273.5C272.72 273.5 272.72 341 358 341" style="stroke-width:0.64"/>
+        </g>
+        <g class="mk x9 eg e9 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day to h1.1, Weight: -0.1307">
+            <title>Abstraction.CountInternet1Day to h1.1, Weight: -0.1307</title>
+            <path class="eh" d="M187.44 300.5C272.72 300.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 300.5C272.72 300.5 272.72 341 358 341" style="stroke-width:0.73"/>
+        </g>
+        <g class="mk x10 eg e10 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM to h1.1, Weight: -0.674">
+            <title>Abstraction.ATM to h1.1, Weight: -0.674</title>
+            <path class="eh" d="M187.44 327.5C272.72 327.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 327.5C272.72 327.5 272.72 341 358 341" style="stroke-width:1.29"/>
+        </g>
+        <g class="mk x11 eg e11 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day to h1.1, Weight: -1.115">
+            <title>Abstraction.CountATM1Day to h1.1, Weight: -1.115</title>
+            <path class="eh" d="M187.44 354.5C272.72 354.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 354.5C272.72 354.5 272.72 341 358 341" style="stroke-width:1.74"/>
+        </g>
+        <g class="mk x12 eg e12 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day to h1.1, Weight: -0.3993">
+            <title>Abstraction.CountOver30SEK1Day to h1.1, Weight: -0.3993</title>
+            <path class="eh" d="M187.44 381.5C272.72 381.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 381.5C272.72 381.5 272.72 341 358 341" style="stroke-width:1.01"/>
+        </g>
+        <g class="mk x13 eg e13 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson to h1.1, Weight: -0.3503">
+            <title>Abstraction.InPerson to h1.1, Weight: -0.3503</title>
+            <path class="eh" d="M187.44 408.5C272.72 408.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 408.5C272.72 408.5 272.72 341 358 341" style="stroke-width:0.96"/>
+        </g>
+        <g class="mk x14 eg e14 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt to h1.1, Weight: -0.2511">
+            <title>Abstraction.TransactionAmt to h1.1, Weight: -0.2511</title>
+            <path class="eh" d="M187.44 435.5C272.72 435.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 435.5C272.72 435.5 272.72 341 358 341" style="stroke-width:0.86"/>
+        </g>
+        <g class="mk x15 eg e15 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day to h1.1, Weight: -0.1886">
+            <title>Abstraction.SumTransactions1Day to h1.1, Weight: -0.1886</title>
+            <path class="eh" d="M187.44 462.5C272.72 462.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 462.5C272.72 462.5 272.72 341 358 341" style="stroke-width:0.79"/>
+        </g>
+        <g class="mk x16 eg e16 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day to h1.1, Weight: -0.5494">
+            <title>Abstraction.SumATMTransactions1Day to h1.1, Weight: -0.5494</title>
+            <path class="eh" d="M187.44 489.5C272.72 489.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 489.5C272.72 489.5 272.72 341 358 341" style="stroke-width:1.16"/>
+        </g>
+        <g class="mk x17 eg e17 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign to h1.1, Weight: -0.4524">
+            <title>Abstraction.Foreign to h1.1, Weight: -0.4524</title>
+            <path class="eh" d="M187.44 516.5C272.72 516.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 516.5C272.72 516.5 272.72 341 358 341" style="stroke-width:1.06"/>
+        </g>
+        <g class="mk x18 eg e18 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1… to h1.1, Weight: 0.03221">
+            <title>Abstraction.DifferentCountryTransactions1… to h1.1, Weight: 0.03221</title>
+            <path class="eh" d="M187.44 543.5C272.72 543.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 543.5C272.72 543.5 272.72 341 358 341" style="stroke-width:0.63"/>
+        </g>
+        <g class="mk x19 eg e19 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week to h1.1, Weight: -0.1178">
+            <title>Abstraction.DifferentMerchantTypes1Week to h1.1, Weight: -0.1178</title>
+            <path class="eh" d="M187.44 570.5C272.72 570.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 570.5C272.72 570.5 272.72 341 358 341" style="stroke-width:0.72"/>
+        </g>
+        <g class="mk x20 eg e20 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day to h1.1, Weight: 0.2398">
+            <title>Abstraction.DifferentDeclineReasons1Day to h1.1, Weight: 0.2398</title>
+            <path class="eh" d="M187.44 597.5C272.72 597.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 597.5C272.72 597.5 272.72 341 358 341" style="stroke-width:0.85"/>
+        </g>
+        <g class="mk x21 eg e21 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week to h1.1, Weight: 0.2996">
+            <title>Abstraction.DifferentCities1Week to h1.1, Weight: 0.2996</title>
+            <path class="eh" d="M187.44 624.5C272.72 624.5 272.72 341 358 341"/>
+            <path class="ep sd7" d="M187.44 624.5C272.72 624.5 272.72 341 358 341" style="stroke-width:0.91"/>
+        </g>
+        <g class="mk x22 eg e22 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo… to h1.1, Weight: -0.03364">
+            <title>Abstraction.CountSameMerchantUsedBefo… to h1.1, Weight: -0.03364</title>
+            <path class="eh" d="M187.44 651.5C272.72 651.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 651.5C272.72 651.5 272.72 341 358 341" style="stroke-width:0.63"/>
+        </g>
+        <g class="mk x23 eg e23 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad to h1.1, Weight: -0.627">
+            <title>Abstraction.HasBeenAbroad to h1.1, Weight: -0.627</title>
+            <path class="eh" d="M187.44 678.5C272.72 678.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 678.5C272.72 678.5 272.72 341 358 341" style="stroke-width:1.24"/>
+        </g>
+        <g class="mk x24 eg e24 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction to h1.1, Weight: -0.4065">
+            <title>Abstraction.CashTransaction to h1.1, Weight: -0.4065</title>
+            <path class="eh" d="M187.44 705.5C272.72 705.5 272.72 341 358 341"/>
+            <path class="ep sd3" d="M187.44 705.5C272.72 705.5 272.72 341 358 341" style="stroke-width:1.02"/>
+        </g>
+        <g class="mk x25 eg e25 e26" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry to h1.1, Weight: -0.5765">
+            <title>Abstraction.HighRiskCountry to h1.1, Weight: -0.5765</title>
+            <path class="eh" d="M187.44 732.5C272.72 732.5 272.72 341 358 341"/>
+            <path class="ep sd2" d="M187.44 732.5C272.72 732.5 272.72 341 358 341" style="stroke-width:1.19"/>
+        </g>
+        <g class="mk x26 eg e0 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip to h1.2, Weight: -0.1472">
+            <title>Abstraction.IsChip to h1.2, Weight: -0.1472</title>
+            <path class="eh" d="M187.44 57.5C272.72 57.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 57.5C272.72 57.5 272.72 368 358 368" style="stroke-width:0.75"/>
+        </g>
+        <g class="mk x27 eg e1 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe to h1.2, Weight: 1.274">
+            <title>Abstraction.IsSwipe to h1.2, Weight: 1.274</title>
+            <path class="eh" d="M187.44 84.5C272.72 84.5 272.72 368 358 368"/>
+            <path class="ep sd8" d="M187.44 84.5C272.72 84.5 272.72 368 358 368" style="stroke-width:1.9"/>
+        </g>
+        <g class="mk x28 eg e2 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual to h1.2, Weight: -1.015">
+            <title>Abstraction.IsManual to h1.2, Weight: -1.015</title>
+            <path class="eh" d="M187.44 111.5C272.72 111.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 111.5C272.72 111.5 272.72 368 358 368" style="stroke-width:1.64"/>
+        </g>
+        <g class="mk x29 eg e3 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day to h1.2, Weight: 0.8822">
+            <title>Abstraction.CountTransactions1Day to h1.2, Weight: 0.8822</title>
+            <path class="eh" d="M187.44 138.5C272.72 138.5 272.72 368 358 368"/>
+            <path class="ep sd8" d="M187.44 138.5C272.72 138.5 272.72 368 358 368" style="stroke-width:1.5"/>
+        </g>
+        <g class="mk x30 eg e4 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated to h1.2, Weight: 2.453">
+            <title>Abstraction.Authenticated to h1.2, Weight: 2.453</title>
+            <path class="eh" d="M187.44 165.5C272.72 165.5 272.72 368 358 368"/>
+            <path class="ep sd9" d="M187.44 165.5C272.72 165.5 272.72 368 358 368" style="stroke-width:3.11"/>
+        </g>
+        <g class="mk x31 eg e5 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline… to h1.2, Weight: -0.04984">
+            <title>Abstraction.CountTransactionsPINDecline… to h1.2, Weight: -0.04984</title>
+            <path class="eh" d="M187.44 192.5C272.72 192.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 192.5C272.72 192.5 272.72 368 358 368" style="stroke-width:0.65"/>
+        </g>
+        <g class="mk x32 eg e6 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D… to h1.2, Weight: 0.9081">
+            <title>Abstraction.CountTransactionsDeclined1D… to h1.2, Weight: 0.9081</title>
+            <path class="eh" d="M187.44 219.5C272.72 219.5 272.72 368 358 368"/>
+            <path class="ep sd8" d="M187.44 219.5C272.72 219.5 272.72 368 358 368" style="stroke-width:1.53"/>
+        </g>
+        <g class="mk x33 eg e7 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day to h1.2, Weight: -1.135">
+            <title>Abstraction.CountUnsafeTerminals1Day to h1.2, Weight: -1.135</title>
+            <path class="eh" d="M187.44 246.5C272.72 246.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 246.5C272.72 246.5 272.72 368 358 368" style="stroke-width:1.76"/>
+        </g>
+        <g class="mk x34 eg e8 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day to h1.2, Weight: 0.4918">
+            <title>Abstraction.CountInPerson1Day to h1.2, Weight: 0.4918</title>
+            <path class="eh" d="M187.44 273.5C272.72 273.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 273.5C272.72 273.5 272.72 368 358 368" style="stroke-width:1.1"/>
+        </g>
+        <g class="mk x35 eg e9 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day to h1.2, Weight: 2.713">
+            <title>Abstraction.CountInternet1Day to h1.2, Weight: 2.713</title>
+            <path class="eh" d="M187.44 300.5C272.72 300.5 272.72 368 358 368"/>
+            <path class="ep sd9" d="M187.44 300.5C272.72 300.5 272.72 368 358 368" style="stroke-width:3.38"/>
+        </g>
+        <g class="mk x36 eg e10 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM to h1.2, Weight: -0.05287">
+            <title>Abstraction.ATM to h1.2, Weight: -0.05287</title>
+            <path class="eh" d="M187.44 327.5C272.72 327.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 327.5C272.72 327.5 272.72 368 358 368" style="stroke-width:0.65"/>
+        </g>
+        <g class="mk x37 eg e11 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day to h1.2, Weight: -0.4666">
+            <title>Abstraction.CountATM1Day to h1.2, Weight: -0.4666</title>
+            <path class="eh" d="M187.44 354.5C272.72 354.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 354.5C272.72 354.5 272.72 368 358 368" style="stroke-width:1.08"/>
+        </g>
+        <g class="mk x38 eg e12 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day to h1.2, Weight: -0.4823">
+            <title>Abstraction.CountOver30SEK1Day to h1.2, Weight: -0.4823</title>
+            <path class="eh" d="M187.44 381.5C272.72 381.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 381.5C272.72 381.5 272.72 368 358 368" style="stroke-width:1.09"/>
+        </g>
+        <g class="mk x39 eg e13 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson to h1.2, Weight: 1.069">
+            <title>Abstraction.InPerson to h1.2, Weight: 1.069</title>
+            <path class="eh" d="M187.44 408.5C272.72 408.5 272.72 368 358 368"/>
+            <path class="ep sd8" d="M187.44 408.5C272.72 408.5 272.72 368 358 368" style="stroke-width:1.7"/>
+        </g>
+        <g class="mk x40 eg e14 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt to h1.2, Weight: -0.9401">
+            <title>Abstraction.TransactionAmt to h1.2, Weight: -0.9401</title>
+            <path class="eh" d="M187.44 435.5C272.72 435.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 435.5C272.72 435.5 272.72 368 358 368" style="stroke-width:1.56"/>
+        </g>
+        <g class="mk x41 eg e15 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day to h1.2, Weight: -0.8328">
+            <title>Abstraction.SumTransactions1Day to h1.2, Weight: -0.8328</title>
+            <path class="eh" d="M187.44 462.5C272.72 462.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 462.5C272.72 462.5 272.72 368 358 368" style="stroke-width:1.45"/>
+        </g>
+        <g class="mk x42 eg e16 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day to h1.2, Weight: -0.2337">
+            <title>Abstraction.SumATMTransactions1Day to h1.2, Weight: -0.2337</title>
+            <path class="eh" d="M187.44 489.5C272.72 489.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 489.5C272.72 489.5 272.72 368 358 368" style="stroke-width:0.84"/>
+        </g>
+        <g class="mk x43 eg e17 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign to h1.2, Weight: -1.009">
+            <title>Abstraction.Foreign to h1.2, Weight: -1.009</title>
+            <path class="eh" d="M187.44 516.5C272.72 516.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 516.5C272.72 516.5 272.72 368 358 368" style="stroke-width:1.63"/>
+        </g>
+        <g class="mk x44 eg e18 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1… to h1.2, Weight: 1.234">
+            <title>Abstraction.DifferentCountryTransactions1… to h1.2, Weight: 1.234</title>
+            <path class="eh" d="M187.44 543.5C272.72 543.5 272.72 368 358 368"/>
+            <path class="ep sd8" d="M187.44 543.5C272.72 543.5 272.72 368 358 368" style="stroke-width:1.86"/>
+        </g>
+        <g class="mk x45 eg e19 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week to h1.2, Weight: 0.545">
+            <title>Abstraction.DifferentMerchantTypes1Week to h1.2, Weight: 0.545</title>
+            <path class="eh" d="M187.44 570.5C272.72 570.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 570.5C272.72 570.5 272.72 368 358 368" style="stroke-width:1.16"/>
+        </g>
+        <g class="mk x46 eg e20 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day to h1.2, Weight: 0.1082">
+            <title>Abstraction.DifferentDeclineReasons1Day to h1.2, Weight: 0.1082</title>
+            <path class="eh" d="M187.44 597.5C272.72 597.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 597.5C272.72 597.5 272.72 368 358 368" style="stroke-width:0.71"/>
+        </g>
+        <g class="mk x47 eg e21 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week to h1.2, Weight: 0.3692">
+            <title>Abstraction.DifferentCities1Week to h1.2, Weight: 0.3692</title>
+            <path class="eh" d="M187.44 624.5C272.72 624.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 624.5C272.72 624.5 272.72 368 358 368" style="stroke-width:0.98"/>
+        </g>
+        <g class="mk x48 eg e22 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo… to h1.2, Weight: 0.2023">
+            <title>Abstraction.CountSameMerchantUsedBefo… to h1.2, Weight: 0.2023</title>
+            <path class="eh" d="M187.44 651.5C272.72 651.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 651.5C272.72 651.5 272.72 368 358 368" style="stroke-width:0.81"/>
+        </g>
+        <g class="mk x49 eg e23 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad to h1.2, Weight: 0.3387">
+            <title>Abstraction.HasBeenAbroad to h1.2, Weight: 0.3387</title>
+            <path class="eh" d="M187.44 678.5C272.72 678.5 272.72 368 358 368"/>
+            <path class="ep sd7" d="M187.44 678.5C272.72 678.5 272.72 368 358 368" style="stroke-width:0.95"/>
+        </g>
+        <g class="mk x50 eg e24 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction to h1.2, Weight: -0.2713">
+            <title>Abstraction.CashTransaction to h1.2, Weight: -0.2713</title>
+            <path class="eh" d="M187.44 705.5C272.72 705.5 272.72 368 358 368"/>
+            <path class="ep sd3" d="M187.44 705.5C272.72 705.5 272.72 368 358 368" style="stroke-width:0.88"/>
+        </g>
+        <g class="mk x51 eg e25 e27" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry to h1.2, Weight: -0.8779">
+            <title>Abstraction.HighRiskCountry to h1.2, Weight: -0.8779</title>
+            <path class="eh" d="M187.44 732.5C272.72 732.5 272.72 368 358 368"/>
+            <path class="ep sd2" d="M187.44 732.5C272.72 732.5 272.72 368 358 368" style="stroke-width:1.5"/>
+        </g>
+        <g class="mk x52 eg e0 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip to h1.3, Weight: 1.215">
+            <title>Abstraction.IsChip to h1.3, Weight: 1.215</title>
+            <path class="eh" d="M187.44 57.5C272.72 57.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 57.5C272.72 57.5 272.72 395 358 395" style="stroke-width:1.84"/>
+        </g>
+        <g class="mk x53 eg e1 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe to h1.3, Weight: -2.799">
+            <title>Abstraction.IsSwipe to h1.3, Weight: -2.799</title>
+            <path class="eh" d="M187.44 84.5C272.72 84.5 272.72 395 358 395"/>
+            <path class="ep sd0" d="M187.44 84.5C272.72 84.5 272.72 395 358 395" style="stroke-width:3.47"/>
+        </g>
+        <g class="mk x54 eg e2 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual to h1.3, Weight: 0.3126">
+            <title>Abstraction.IsManual to h1.3, Weight: 0.3126</title>
+            <path class="eh" d="M187.44 111.5C272.72 111.5 272.72 395 358 395"/>
+            <path class="ep sd7" d="M187.44 111.5C272.72 111.5 272.72 395 358 395" style="stroke-width:0.92"/>
+        </g>
+        <g class="mk x55 eg e3 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day to h1.3, Weight: -0.7374">
+            <title>Abstraction.CountTransactions1Day to h1.3, Weight: -0.7374</title>
+            <path class="eh" d="M187.44 138.5C272.72 138.5 272.72 395 358 395"/>
+            <path class="ep sd2" d="M187.44 138.5C272.72 138.5 272.72 395 358 395" style="stroke-width:1.36"/>
+        </g>
+        <g class="mk x56 eg e4 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated to h1.3, Weight: -0.3992">
+            <title>Abstraction.Authenticated to h1.3, Weight: -0.3992</title>
+            <path class="eh" d="M187.44 165.5C272.72 165.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 165.5C272.72 165.5 272.72 395 358 395" style="stroke-width:1.01"/>
+        </g>
+        <g class="mk x57 eg e5 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline… to h1.3, Weight: 1.218">
+            <title>Abstraction.CountTransactionsPINDecline… to h1.3, Weight: 1.218</title>
+            <path class="eh" d="M187.44 192.5C272.72 192.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 192.5C272.72 192.5 272.72 395 358 395" style="stroke-width:1.85"/>
+        </g>
+        <g class="mk x58 eg e6 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D… to h1.3, Weight: 1.119">
+            <title>Abstraction.CountTransactionsDeclined1D… to h1.3, Weight: 1.119</title>
+            <path class="eh" d="M187.44 219.5C272.72 219.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 219.5C272.72 219.5 272.72 395 358 395" style="stroke-width:1.75"/>
+        </g>
+        <g class="mk x59 eg e7 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day to h1.3, Weight: 0.00719">
+            <title>Abstraction.CountUnsafeTerminals1Day to h1.3, Weight: 0.00719</title>
+            <path class="eh" d="M187.44 246.5C272.72 246.5 272.72 395 358 395"/>
+            <path class="ep sd7" d="M187.44 246.5C272.72 246.5 272.72 395 358 395" style="stroke-width:0.61"/>
+        </g>
+        <g class="mk x60 eg e8 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day to h1.3, Weight: -0.2094">
+            <title>Abstraction.CountInPerson1Day to h1.3, Weight: -0.2094</title>
+            <path class="eh" d="M187.44 273.5C272.72 273.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 273.5C272.72 273.5 272.72 395 358 395" style="stroke-width:0.81"/>
+        </g>
+        <g class="mk x61 eg e9 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day to h1.3, Weight: -1.536">
+            <title>Abstraction.CountInternet1Day to h1.3, Weight: -1.536</title>
+            <path class="eh" d="M187.44 300.5C272.72 300.5 272.72 395 358 395"/>
+            <path class="ep sd2" d="M187.44 300.5C272.72 300.5 272.72 395 358 395" style="stroke-width:2.17"/>
+        </g>
+        <g class="mk x62 eg e10 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM to h1.3, Weight: 0.4469">
+            <title>Abstraction.ATM to h1.3, Weight: 0.4469</title>
+            <path class="eh" d="M187.44 327.5C272.72 327.5 272.72 395 358 395"/>
+            <path class="ep sd7" d="M187.44 327.5C272.72 327.5 272.72 395 358 395" style="stroke-width:1.06"/>
+        </g>
+        <g class="mk x63 eg e11 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day to h1.3, Weight: 0.8957">
+            <title>Abstraction.CountATM1Day to h1.3, Weight: 0.8957</title>
+            <path class="eh" d="M187.44 354.5C272.72 354.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 354.5C272.72 354.5 272.72 395 358 395" style="stroke-width:1.52"/>
+        </g>
+        <g class="mk x64 eg e12 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day to h1.3, Weight: -1.247">
+            <title>Abstraction.CountOver30SEK1Day to h1.3, Weight: -1.247</title>
+            <path class="eh" d="M187.44 381.5C272.72 381.5 272.72 395 358 395"/>
+            <path class="ep sd2" d="M187.44 381.5C272.72 381.5 272.72 395 358 395" style="stroke-width:1.88"/>
+        </g>
+        <g class="mk x65 eg e13 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson to h1.3, Weight: -0.5038">
+            <title>Abstraction.InPerson to h1.3, Weight: -0.5038</title>
+            <path class="eh" d="M187.44 408.5C272.72 408.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 408.5C272.72 408.5 272.72 395 358 395" style="stroke-width:1.12"/>
+        </g>
+        <g class="mk x66 eg e14 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt to h1.3, Weight: 0.57">
+            <title>Abstraction.TransactionAmt to h1.3, Weight: 0.57</title>
+            <path class="eh" d="M187.44 435.5C272.72 435.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 435.5C272.72 435.5 272.72 395 358 395" style="stroke-width:1.18"/>
+        </g>
+        <g class="mk x67 eg e15 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day to h1.3, Weight: -0.4395">
+            <title>Abstraction.SumTransactions1Day to h1.3, Weight: -0.4395</title>
+            <path class="eh" d="M187.44 462.5C272.72 462.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 462.5C272.72 462.5 272.72 395 358 395" style="stroke-width:1.05"/>
+        </g>
+        <g class="mk x68 eg e16 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day to h1.3, Weight: -0.1788">
+            <title>Abstraction.SumATMTransactions1Day to h1.3, Weight: -0.1788</title>
+            <path class="eh" d="M187.44 489.5C272.72 489.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 489.5C272.72 489.5 272.72 395 358 395" style="stroke-width:0.78"/>
+        </g>
+        <g class="mk x69 eg e17 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign to h1.3, Weight: 3.319">
+            <title>Abstraction.Foreign to h1.3, Weight: 3.319</title>
+            <path class="eh" d="M187.44 516.5C272.72 516.5 272.72 395 358 395"/>
+            <path class="ep sd10" d="M187.44 516.5C272.72 516.5 272.72 395 358 395" style="stroke-width:4"/>
+        </g>
+        <g class="mk x70 eg e18 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1… to h1.3, Weight: 0.06778">
+            <title>Abstraction.DifferentCountryTransactions1… to h1.3, Weight: 0.06778</title>
+            <path class="eh" d="M187.44 543.5C272.72 543.5 272.72 395 358 395"/>
+            <path class="ep sd7" d="M187.44 543.5C272.72 543.5 272.72 395 358 395" style="stroke-width:0.67"/>
+        </g>
+        <g class="mk x71 eg e19 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week to h1.3, Weight: -0.1921">
+            <title>Abstraction.DifferentMerchantTypes1Week to h1.3, Weight: -0.1921</title>
+            <path class="eh" d="M187.44 570.5C272.72 570.5 272.72 395 358 395"/>
+            <path class="ep sd3" d="M187.44 570.5C272.72 570.5 272.72 395 358 395" style="stroke-width:0.8"/>
+        </g>
+        <g class="mk x72 eg e20 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day to h1.3, Weight: -1.309">
+            <title>Abstraction.DifferentDeclineReasons1Day to h1.3, Weight: -1.309</title>
+            <path class="eh" d="M187.44 597.5C272.72 597.5 272.72 395 358 395"/>
+            <path class="ep sd2" d="M187.44 597.5C272.72 597.5 272.72 395 358 395" style="stroke-width:1.94"/>
+        </g>
+        <g class="mk x73 eg e21 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week to h1.3, Weight: 2.597">
+            <title>Abstraction.DifferentCities1Week to h1.3, Weight: 2.597</title>
+            <path class="eh" d="M187.44 624.5C272.72 624.5 272.72 395 358 395"/>
+            <path class="ep sd9" d="M187.44 624.5C272.72 624.5 272.72 395 358 395" style="stroke-width:3.26"/>
+        </g>
+        <g class="mk x74 eg e22 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo… to h1.3, Weight: 1.218">
+            <title>Abstraction.CountSameMerchantUsedBefo… to h1.3, Weight: 1.218</title>
+            <path class="eh" d="M187.44 651.5C272.72 651.5 272.72 395 358 395"/>
+            <path class="ep sd8" d="M187.44 651.5C272.72 651.5 272.72 395 358 395" style="stroke-width:1.85"/>
+        </g>
+        <g class="mk x75 eg e23 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad to h1.3, Weight: -0.7516">
+            <title>Abstraction.HasBeenAbroad to h1.3, Weight: -0.7516</title>
+            <path class="eh" d="M187.44 678.5C272.72 678.5 272.72 395 358 395"/>
+            <path class="ep sd2" d="M187.44 678.5C272.72 678.5 272.72 395 358 395" style="stroke-width:1.37"/>
+        </g>
+        <g class="mk x76 eg e24 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction to h1.3, Weight: 0.2098">
+            <title>Abstraction.CashTransaction to h1.3, Weight: 0.2098</title>
+            <path class="eh" d="M187.44 705.5C272.72 705.5 272.72 395 358 395"/>
+            <path class="ep sd7" d="M187.44 705.5C272.72 705.5 272.72 395 358 395" style="stroke-width:0.81"/>
+        </g>
+        <g class="mk x77 eg e25 e28" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry to h1.3, Weight: 2.385">
+            <title>Abstraction.HighRiskCountry to h1.3, Weight: 2.385</title>
+            <path class="eh" d="M187.44 732.5C272.72 732.5 272.72 395 358 395"/>
+            <path class="ep sd9" d="M187.44 732.5C272.72 732.5 272.72 395 358 395" style="stroke-width:3.04"/>
+        </g>
+        <g class="mk x78 eg e0 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip to h1.4, Weight: 0.1339">
+            <title>Abstraction.IsChip to h1.4, Weight: 0.1339</title>
+            <path class="eh" d="M187.44 57.5C272.72 57.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 57.5C272.72 57.5 272.72 422 358 422" style="stroke-width:0.74"/>
+        </g>
+        <g class="mk x79 eg e1 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe to h1.4, Weight: -0.5382">
+            <title>Abstraction.IsSwipe to h1.4, Weight: -0.5382</title>
+            <path class="eh" d="M187.44 84.5C272.72 84.5 272.72 422 358 422"/>
+            <path class="ep sd3" d="M187.44 84.5C272.72 84.5 272.72 422 358 422" style="stroke-width:1.15"/>
+        </g>
+        <g class="mk x80 eg e2 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual to h1.4, Weight: 0.2978">
+            <title>Abstraction.IsManual to h1.4, Weight: 0.2978</title>
+            <path class="eh" d="M187.44 111.5C272.72 111.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 111.5C272.72 111.5 272.72 422 358 422" style="stroke-width:0.91"/>
+        </g>
+        <g class="mk x81 eg e3 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day to h1.4, Weight: -0.9546">
+            <title>Abstraction.CountTransactions1Day to h1.4, Weight: -0.9546</title>
+            <path class="eh" d="M187.44 138.5C272.72 138.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 138.5C272.72 138.5 272.72 422 358 422" style="stroke-width:1.58"/>
+        </g>
+        <g class="mk x82 eg e4 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated to h1.4, Weight: -0.982">
+            <title>Abstraction.Authenticated to h1.4, Weight: -0.982</title>
+            <path class="eh" d="M187.44 165.5C272.72 165.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 165.5C272.72 165.5 272.72 422 358 422" style="stroke-width:1.61"/>
+        </g>
+        <g class="mk x83 eg e5 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline… to h1.4, Weight: 0.2667">
+            <title>Abstraction.CountTransactionsPINDecline… to h1.4, Weight: 0.2667</title>
+            <path class="eh" d="M187.44 192.5C272.72 192.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 192.5C272.72 192.5 272.72 422 358 422" style="stroke-width:0.87"/>
+        </g>
+        <g class="mk x84 eg e6 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D… to h1.4, Weight: -0.5839">
+            <title>Abstraction.CountTransactionsDeclined1D… to h1.4, Weight: -0.5839</title>
+            <path class="eh" d="M187.44 219.5C272.72 219.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 219.5C272.72 219.5 272.72 422 358 422" style="stroke-width:1.2"/>
+        </g>
+        <g class="mk x85 eg e7 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day to h1.4, Weight: -0.1923">
+            <title>Abstraction.CountUnsafeTerminals1Day to h1.4, Weight: -0.1923</title>
+            <path class="eh" d="M187.44 246.5C272.72 246.5 272.72 422 358 422"/>
+            <path class="ep sd3" d="M187.44 246.5C272.72 246.5 272.72 422 358 422" style="stroke-width:0.8"/>
+        </g>
+        <g class="mk x86 eg e8 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day to h1.4, Weight: -0.6215">
+            <title>Abstraction.CountInPerson1Day to h1.4, Weight: -0.6215</title>
+            <path class="eh" d="M187.44 273.5C272.72 273.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 273.5C272.72 273.5 272.72 422 358 422" style="stroke-width:1.24"/>
+        </g>
+        <g class="mk x87 eg e9 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day to h1.4, Weight: 0.3629">
+            <title>Abstraction.CountInternet1Day to h1.4, Weight: 0.3629</title>
+            <path class="eh" d="M187.44 300.5C272.72 300.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 300.5C272.72 300.5 272.72 422 358 422" style="stroke-width:0.97"/>
+        </g>
+        <g class="mk x88 eg e10 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM to h1.4, Weight: 0.1739">
+            <title>Abstraction.ATM to h1.4, Weight: 0.1739</title>
+            <path class="eh" d="M187.44 327.5C272.72 327.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 327.5C272.72 327.5 272.72 422 358 422" style="stroke-width:0.78"/>
+        </g>
+        <g class="mk x89 eg e11 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day to h1.4, Weight: 1.273">
+            <title>Abstraction.CountATM1Day to h1.4, Weight: 1.273</title>
+            <path class="eh" d="M187.44 354.5C272.72 354.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 354.5C272.72 354.5 272.72 422 358 422" style="stroke-width:1.9"/>
+        </g>
+        <g class="mk x90 eg e12 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day to h1.4, Weight: 0.6774">
+            <title>Abstraction.CountOver30SEK1Day to h1.4, Weight: 0.6774</title>
+            <path class="eh" d="M187.44 381.5C272.72 381.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 381.5C272.72 381.5 272.72 422 358 422" style="stroke-width:1.29"/>
+        </g>
+        <g class="mk x91 eg e13 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson to h1.4, Weight: 0.1077">
+            <title>Abstraction.InPerson to h1.4, Weight: 0.1077</title>
+            <path class="eh" d="M187.44 408.5C272.72 408.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 408.5C272.72 408.5 272.72 422 358 422" style="stroke-width:0.71"/>
+        </g>
+        <g class="mk x92 eg e14 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt to h1.4, Weight: 0.6255">
+            <title>Abstraction.TransactionAmt to h1.4, Weight: 0.6255</title>
+            <path class="eh" d="M187.44 435.5C272.72 435.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 435.5C272.72 435.5 272.72 422 358 422" style="stroke-width:1.24"/>
+        </g>
+        <g class="mk x93 eg e15 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day to h1.4, Weight: -0.1531">
+            <title>Abstraction.SumTransactions1Day to h1.4, Weight: -0.1531</title>
+            <path class="eh" d="M187.44 462.5C272.72 462.5 272.72 422 358 422"/>
+            <path class="ep sd3" d="M187.44 462.5C272.72 462.5 272.72 422 358 422" style="stroke-width:0.76"/>
+        </g>
+        <g class="mk x94 eg e16 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day to h1.4, Weight: -0.7508">
+            <title>Abstraction.SumATMTransactions1Day to h1.4, Weight: -0.7508</title>
+            <path class="eh" d="M187.44 489.5C272.72 489.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 489.5C272.72 489.5 272.72 422 358 422" style="stroke-width:1.37"/>
+        </g>
+        <g class="mk x95 eg e17 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign to h1.4, Weight: 0.5373">
+            <title>Abstraction.Foreign to h1.4, Weight: 0.5373</title>
+            <path class="eh" d="M187.44 516.5C272.72 516.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 516.5C272.72 516.5 272.72 422 358 422" style="stroke-width:1.15"/>
+        </g>
+        <g class="mk x96 eg e18 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1… to h1.4, Weight: 0.6297">
+            <title>Abstraction.DifferentCountryTransactions1… to h1.4, Weight: 0.6297</title>
+            <path class="eh" d="M187.44 543.5C272.72 543.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 543.5C272.72 543.5 272.72 422 358 422" style="stroke-width:1.25"/>
+        </g>
+        <g class="mk x97 eg e19 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week to h1.4, Weight: 0.01151">
+            <title>Abstraction.DifferentMerchantTypes1Week to h1.4, Weight: 0.01151</title>
+            <path class="eh" d="M187.44 570.5C272.72 570.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 570.5C272.72 570.5 272.72 422 358 422" style="stroke-width:0.61"/>
+        </g>
+        <g class="mk x98 eg e20 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day to h1.4, Weight: 0.7017">
+            <title>Abstraction.DifferentDeclineReasons1Day to h1.4, Weight: 0.7017</title>
+            <path class="eh" d="M187.44 597.5C272.72 597.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 597.5C272.72 597.5 272.72 422 358 422" style="stroke-width:1.32"/>
+        </g>
+        <g class="mk x99 eg e21 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week to h1.4, Weight: 0.5721">
+            <title>Abstraction.DifferentCities1Week to h1.4, Weight: 0.5721</title>
+            <path class="eh" d="M187.44 624.5C272.72 624.5 272.72 422 358 422"/>
+            <path class="ep sd8" d="M187.44 624.5C272.72 624.5 272.72 422 358 422" style="stroke-width:1.19"/>
+        </g>
+        <g class="mk x100 eg e22 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo… to h1.4, Weight: 0.362">
+            <title>Abstraction.CountSameMerchantUsedBefo… to h1.4, Weight: 0.362</title>
+            <path class="eh" d="M187.44 651.5C272.72 651.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 651.5C272.72 651.5 272.72 422 358 422" style="stroke-width:0.97"/>
+        </g>
+        <g class="mk x101 eg e23 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad to h1.4, Weight: -0.6872">
+            <title>Abstraction.HasBeenAbroad to h1.4, Weight: -0.6872</title>
+            <path class="eh" d="M187.44 678.5C272.72 678.5 272.72 422 358 422"/>
+            <path class="ep sd2" d="M187.44 678.5C272.72 678.5 272.72 422 358 422" style="stroke-width:1.3"/>
+        </g>
+        <g class="mk x102 eg e24 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction to h1.4, Weight: 0.1591">
+            <title>Abstraction.CashTransaction to h1.4, Weight: 0.1591</title>
+            <path class="eh" d="M187.44 705.5C272.72 705.5 272.72 422 358 422"/>
+            <path class="ep sd7" d="M187.44 705.5C272.72 705.5 272.72 422 358 422" style="stroke-width:0.76"/>
+        </g>
+        <g class="mk x103 eg e25 e29" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry to h1.4, Weight: -0.4005">
+            <title>Abstraction.HighRiskCountry to h1.4, Weight: -0.4005</title>
+            <path class="eh" d="M187.44 732.5C272.72 732.5 272.72 422 358 422"/>
+            <path class="ep sd3" d="M187.44 732.5C272.72 732.5 272.72 422 358 422" style="stroke-width:1.01"/>
+        </g>
+        <g class="mk x104 eg e0 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip to h1.5, Weight: -0.4662">
+            <title>Abstraction.IsChip to h1.5, Weight: -0.4662</title>
+            <path class="eh" d="M187.44 57.5C272.72 57.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 57.5C272.72 57.5 272.72 449 358 449" style="stroke-width:1.08"/>
+        </g>
+        <g class="mk x105 eg e1 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe to h1.5, Weight: -0.2973">
+            <title>Abstraction.IsSwipe to h1.5, Weight: -0.2973</title>
+            <path class="eh" d="M187.44 84.5C272.72 84.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 84.5C272.72 84.5 272.72 449 358 449" style="stroke-width:0.9"/>
+        </g>
+        <g class="mk x106 eg e2 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual to h1.5, Weight: 0.7877">
+            <title>Abstraction.IsManual to h1.5, Weight: 0.7877</title>
+            <path class="eh" d="M187.44 111.5C272.72 111.5 272.72 449 358 449"/>
+            <path class="ep sd8" d="M187.44 111.5C272.72 111.5 272.72 449 358 449" style="stroke-width:1.41"/>
+        </g>
+        <g class="mk x107 eg e3 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day to h1.5, Weight: -0.4079">
+            <title>Abstraction.CountTransactions1Day to h1.5, Weight: -0.4079</title>
+            <path class="eh" d="M187.44 138.5C272.72 138.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 138.5C272.72 138.5 272.72 449 358 449" style="stroke-width:1.02"/>
+        </g>
+        <g class="mk x108 eg e4 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated to h1.5, Weight: -0.374">
+            <title>Abstraction.Authenticated to h1.5, Weight: -0.374</title>
+            <path class="eh" d="M187.44 165.5C272.72 165.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 165.5C272.72 165.5 272.72 449 358 449" style="stroke-width:0.98"/>
+        </g>
+        <g class="mk x109 eg e5 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline… to h1.5, Weight: -0.1508">
+            <title>Abstraction.CountTransactionsPINDecline… to h1.5, Weight: -0.1508</title>
+            <path class="eh" d="M187.44 192.5C272.72 192.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 192.5C272.72 192.5 272.72 449 358 449" style="stroke-width:0.75"/>
+        </g>
+        <g class="mk x110 eg e6 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D… to h1.5, Weight: -1.103">
+            <title>Abstraction.CountTransactionsDeclined1D… to h1.5, Weight: -1.103</title>
+            <path class="eh" d="M187.44 219.5C272.72 219.5 272.72 449 358 449"/>
+            <path class="ep sd2" d="M187.44 219.5C272.72 219.5 272.72 449 358 449" style="stroke-width:1.73"/>
+        </g>
+        <g class="mk x111 eg e7 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day to h1.5, Weight: 0.3327">
+            <title>Abstraction.CountUnsafeTerminals1Day to h1.5, Weight: 0.3327</title>
+            <path class="eh" d="M187.44 246.5C272.72 246.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 246.5C272.72 246.5 272.72 449 358 449" style="stroke-width:0.94"/>
+        </g>
+        <g class="mk x112 eg e8 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day to h1.5, Weight: -0.2268">
+            <title>Abstraction.CountInPerson1Day to h1.5, Weight: -0.2268</title>
+            <path class="eh" d="M187.44 273.5C272.72 273.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 273.5C272.72 273.5 272.72 449 358 449" style="stroke-width:0.83"/>
+        </g>
+        <g class="mk x113 eg e9 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day to h1.5, Weight: -0.3142">
+            <title>Abstraction.CountInternet1Day to h1.5, Weight: -0.3142</title>
+            <path class="eh" d="M187.44 300.5C272.72 300.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 300.5C272.72 300.5 272.72 449 358 449" style="stroke-width:0.92"/>
+        </g>
+        <g class="mk x114 eg e10 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM to h1.5, Weight: 0.2883">
+            <title>Abstraction.ATM to h1.5, Weight: 0.2883</title>
+            <path class="eh" d="M187.44 327.5C272.72 327.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 327.5C272.72 327.5 272.72 449 358 449" style="stroke-width:0.9"/>
+        </g>
+        <g class="mk x115 eg e11 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day to h1.5, Weight: 0.6017">
+            <title>Abstraction.CountATM1Day to h1.5, Weight: 0.6017</title>
+            <path class="eh" d="M187.44 354.5C272.72 354.5 272.72 449 358 449"/>
+            <path class="ep sd8" d="M187.44 354.5C272.72 354.5 272.72 449 358 449" style="stroke-width:1.22"/>
+        </g>
+        <g class="mk x116 eg e12 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day to h1.5, Weight: 0.1019">
+            <title>Abstraction.CountOver30SEK1Day to h1.5, Weight: 0.1019</title>
+            <path class="eh" d="M187.44 381.5C272.72 381.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 381.5C272.72 381.5 272.72 449 358 449" style="stroke-width:0.7"/>
+        </g>
+        <g class="mk x117 eg e13 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson to h1.5, Weight: -0.1416">
+            <title>Abstraction.InPerson to h1.5, Weight: -0.1416</title>
+            <path class="eh" d="M187.44 408.5C272.72 408.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 408.5C272.72 408.5 272.72 449 358 449" style="stroke-width:0.75"/>
+        </g>
+        <g class="mk x118 eg e14 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt to h1.5, Weight: -0.1417">
+            <title>Abstraction.TransactionAmt to h1.5, Weight: -0.1417</title>
+            <path class="eh" d="M187.44 435.5C272.72 435.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 435.5C272.72 435.5 272.72 449 358 449" style="stroke-width:0.75"/>
+        </g>
+        <g class="mk x119 eg e15 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day to h1.5, Weight: 0.09555">
+            <title>Abstraction.SumTransactions1Day to h1.5, Weight: 0.09555</title>
+            <path class="eh" d="M187.44 462.5C272.72 462.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 462.5C272.72 462.5 272.72 449 358 449" style="stroke-width:0.7"/>
+        </g>
+        <g class="mk x120 eg e16 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day to h1.5, Weight: -0.1082">
+            <title>Abstraction.SumATMTransactions1Day to h1.5, Weight: -0.1082</title>
+            <path class="eh" d="M187.44 489.5C272.72 489.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 489.5C272.72 489.5 272.72 449 358 449" style="stroke-width:0.71"/>
+        </g>
+        <g class="mk x121 eg e17 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign to h1.5, Weight: 1.386">
+            <title>Abstraction.Foreign to h1.5, Weight: 1.386</title>
+            <path class="eh" d="M187.44 516.5C272.72 516.5 272.72 449 358 449"/>
+            <path class="ep sd8" d="M187.44 516.5C272.72 516.5 272.72 449 358 449" style="stroke-width:2.02"/>
+        </g>
+        <g class="mk x122 eg e18 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1… to h1.5, Weight: 0.2532">
+            <title>Abstraction.DifferentCountryTransactions1… to h1.5, Weight: 0.2532</title>
+            <path class="eh" d="M187.44 543.5C272.72 543.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 543.5C272.72 543.5 272.72 449 358 449" style="stroke-width:0.86"/>
+        </g>
+        <g class="mk x123 eg e19 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week to h1.5, Weight: -0.05818">
+            <title>Abstraction.DifferentMerchantTypes1Week to h1.5, Weight: -0.05818</title>
+            <path class="eh" d="M187.44 570.5C272.72 570.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 570.5C272.72 570.5 272.72 449 358 449" style="stroke-width:0.66"/>
+        </g>
+        <g class="mk x124 eg e20 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day to h1.5, Weight: 1.284">
+            <title>Abstraction.DifferentDeclineReasons1Day to h1.5, Weight: 1.284</title>
+            <path class="eh" d="M187.44 597.5C272.72 597.5 272.72 449 358 449"/>
+            <path class="ep sd8" d="M187.44 597.5C272.72 597.5 272.72 449 358 449" style="stroke-width:1.92"/>
+        </g>
+        <g class="mk x125 eg e21 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week to h1.5, Weight: 0.02649">
+            <title>Abstraction.DifferentCities1Week to h1.5, Weight: 0.02649</title>
+            <path class="eh" d="M187.44 624.5C272.72 624.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 624.5C272.72 624.5 272.72 449 358 449" style="stroke-width:0.63"/>
+        </g>
+        <g class="mk x126 eg e22 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo… to h1.5, Weight: -0.1254">
+            <title>Abstraction.CountSameMerchantUsedBefo… to h1.5, Weight: -0.1254</title>
+            <path class="eh" d="M187.44 651.5C272.72 651.5 272.72 449 358 449"/>
+            <path class="ep sd3" d="M187.44 651.5C272.72 651.5 272.72 449 358 449" style="stroke-width:0.73"/>
+        </g>
+        <g class="mk x127 eg e23 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad to h1.5, Weight: 0.3403">
+            <title>Abstraction.HasBeenAbroad to h1.5, Weight: 0.3403</title>
+            <path class="eh" d="M187.44 678.5C272.72 678.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 678.5C272.72 678.5 272.72 449 358 449" style="stroke-width:0.95"/>
+        </g>
+        <g class="mk x128 eg e24 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction to h1.5, Weight: 0.5065">
+            <title>Abstraction.CashTransaction to h1.5, Weight: 0.5065</title>
+            <path class="eh" d="M187.44 705.5C272.72 705.5 272.72 449 358 449"/>
+            <path class="ep sd7" d="M187.44 705.5C272.72 705.5 272.72 449 358 449" style="stroke-width:1.12"/>
+        </g>
+        <g class="mk x129 eg e25 e30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry to h1.5, Weight: -0.6392">
+            <title>Abstraction.HighRiskCountry to h1.5, Weight: -0.6392</title>
+            <path class="eh" d="M187.44 732.5C272.72 732.5 272.72 449 358 449"/>
+            <path class="ep sd2" d="M187.44 732.5C272.72 732.5 272.72 449 358 449" style="stroke-width:1.25"/>
+        </g>
+        <g class="mk x130 eg e26 e31" tabindex="0" role="graphics-symbol" aria-label="h1.1 to y, Weight: -0.3615">
+            <title>h1.1 to y, Weight: -0.3615</title>
+            <path class="eh" d="M377.44 341C462.72 341 462.72 395 548 395"/>
+            <path class="ep sd3" d="M377.44 341C462.72 341 462.72 395 548 395" style="stroke-width:0.97"/>
+        </g>
+        <g class="mk x131 eg e27 e31" tabindex="0" role="graphics-symbol" aria-label="h1.2 to y, Weight: -0.2811">
+            <title>h1.2 to y, Weight: -0.2811</title>
+            <path class="eh" d="M377.44 368C462.72 368 462.72 395 548 395"/>
+            <path class="ep sd3" d="M377.44 368C462.72 368 462.72 395 548 395" style="stroke-width:0.89"/>
+        </g>
+        <g class="mk x132 eg e28 e31" tabindex="0" role="graphics-symbol" aria-label="h1.3 to y, Weight: 0.3102">
+            <title>h1.3 to y, Weight: 0.3102</title>
+            <path class="eh" d="M377.44 395C462.72 395 462.72 395 548 395"/>
+            <path class="ep sd7" d="M377.44 395C462.72 395 462.72 395 548 395" style="stroke-width:0.92"/>
+        </g>
+        <g class="mk x133 eg e29 e31" tabindex="0" role="graphics-symbol" aria-label="h1.4 to y, Weight: 0.4627">
+            <title>h1.4 to y, Weight: 0.4627</title>
+            <path class="eh" d="M377.44 422C462.72 422 462.72 395 548 395"/>
+            <path class="ep sd7" d="M377.44 422C462.72 422 462.72 395 548 395" style="stroke-width:1.07"/>
+        </g>
+        <g class="mk x134 eg e30 e31" tabindex="0" role="graphics-symbol" aria-label="h1.5 to y, Weight: 0.5625">
+            <title>h1.5 to y, Weight: 0.5625</title>
+            <path class="eh" d="M377.44 449C462.72 449 462.72 395 548 395"/>
+            <path class="ep sd8" d="M377.44 449C462.72 449 462.72 395 548 395" style="stroke-width:1.18"/>
+        </g>
+        <g class="mk n0 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsChip, Input layer: Inputs">
+            <title>Abstraction.IsChip, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="57.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="57.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="57.5">Abstraction.IsChip</text>
+        <g class="mk n1 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsSwipe, Input layer: Inputs">
+            <title>Abstraction.IsSwipe, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="84.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="84.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="84.5">Abstraction.IsSwipe</text>
+        <g class="mk n2 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.IsManual, Input layer: Inputs">
+            <title>Abstraction.IsManual, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="111.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="111.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="111.5">Abstraction.IsManual</text>
+        <g class="mk n3 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactions1Day, Input layer: Inputs">
+            <title>Abstraction.CountTransactions1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="138.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="138.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="138.5">Abstraction.CountTransactio…</text>
+        <g class="mk n4 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Authenticated, Input layer: Inputs">
+            <title>Abstraction.Authenticated, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="165.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="165.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="165.5">Abstraction.Authenticated</text>
+        <g class="mk n5 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsPINDecline…, Input layer: Inputs">
+            <title>Abstraction.CountTransactionsPINDecline…, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="192.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="192.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="192.5">Abstraction.CountTransactio…</text>
+        <g class="mk n6 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountTransactionsDeclined1D…, Input layer: Inputs">
+            <title>Abstraction.CountTransactionsDeclined1D…, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="219.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="219.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="219.5">Abstraction.CountTransactio…</text>
+        <g class="mk n7 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountUnsafeTerminals1Day, Input layer: Inputs">
+            <title>Abstraction.CountUnsafeTerminals1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="246.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="246.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="246.5">Abstraction.CountUnsafeTer…</text>
+        <g class="mk n8 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInPerson1Day, Input layer: Inputs">
+            <title>Abstraction.CountInPerson1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="273.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="273.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="273.5">Abstraction.CountInPerson1…</text>
+        <g class="mk n9 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountInternet1Day, Input layer: Inputs">
+            <title>Abstraction.CountInternet1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="300.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="300.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="300.5">Abstraction.CountInternet1D…</text>
+        <g class="mk n10 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.ATM, Input layer: Inputs">
+            <title>Abstraction.ATM, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="327.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="327.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="327.5">Abstraction.ATM</text>
+        <g class="mk n11 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountATM1Day, Input layer: Inputs">
+            <title>Abstraction.CountATM1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="354.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="354.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="354.5">Abstraction.CountATM1Day</text>
+        <g class="mk n12 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountOver30SEK1Day, Input layer: Inputs">
+            <title>Abstraction.CountOver30SEK1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="381.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="381.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="381.5">Abstraction.CountOver30SE…</text>
+        <g class="mk n13 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.InPerson, Input layer: Inputs">
+            <title>Abstraction.InPerson, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="408.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="408.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="408.5">Abstraction.InPerson</text>
+        <g class="mk n14 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.TransactionAmt, Input layer: Inputs">
+            <title>Abstraction.TransactionAmt, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="435.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="435.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="435.5">Abstraction.TransactionAmt</text>
+        <g class="mk n15 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumTransactions1Day, Input layer: Inputs">
+            <title>Abstraction.SumTransactions1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="462.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="462.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="462.5">Abstraction.SumTransaction…</text>
+        <g class="mk n16 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.SumATMTransactions1Day, Input layer: Inputs">
+            <title>Abstraction.SumATMTransactions1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="489.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="489.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="489.5">Abstraction.SumATMTransa…</text>
+        <g class="mk n17 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.Foreign, Input layer: Inputs">
+            <title>Abstraction.Foreign, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="516.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="516.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="516.5">Abstraction.Foreign</text>
+        <g class="mk n18 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCountryTransactions1…, Input layer: Inputs">
+            <title>Abstraction.DifferentCountryTransactions1…, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="543.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="543.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="543.5">Abstraction.DifferentCountry…</text>
+        <g class="mk n19 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentMerchantTypes1Week, Input layer: Inputs">
+            <title>Abstraction.DifferentMerchantTypes1Week, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="570.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="570.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="570.5">Abstraction.DifferentMercha…</text>
+        <g class="mk n20 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentDeclineReasons1Day, Input layer: Inputs">
+            <title>Abstraction.DifferentDeclineReasons1Day, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="597.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="597.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="597.5">Abstraction.DifferentDecline…</text>
+        <g class="mk n21 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.DifferentCities1Week, Input layer: Inputs">
+            <title>Abstraction.DifferentCities1Week, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="624.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="624.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="624.5">Abstraction.DifferentCities1…</text>
+        <g class="mk n22 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CountSameMerchantUsedBefo…, Input layer: Inputs">
+            <title>Abstraction.CountSameMerchantUsedBefo…, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="651.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="651.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="651.5">Abstraction.CountSameMerc…</text>
+        <g class="mk n23 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HasBeenAbroad, Input layer: Inputs">
+            <title>Abstraction.HasBeenAbroad, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="678.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="678.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="678.5">Abstraction.HasBeenAbroad</text>
+        <g class="mk n24 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.CashTransaction, Input layer: Inputs">
+            <title>Abstraction.CashTransaction, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="705.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="705.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="705.5">Abstraction.CashTransaction</text>
+        <g class="mk n25 nd s0 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="Abstraction.HighRiskCountry, Input layer: Inputs">
+            <title>Abstraction.HighRiskCountry, Input layer: Inputs</title>
+            <circle class="nb" cx="177.72" cy="732.5" r="9.72"/>
+            <circle class="nt" cx="177.72" cy="732.5" r="9.72"/>
+        </g>
+        <text class="lbl end mid" x="160" y="732.5">Abstraction.HighRiskCountry</text>
+        <g class="mk n26 nd s2 j0 j1 j2 j3 j4 j5 j6 j7 j8 j9 j10 j11 j12 j13 j14 j15 j16 j17 j18 j19 j20 j21 j22 j23 j24 j25 j31"
+           tabindex="0" role="graphics-symbol"
+           aria-label="h1.1, Hidden layer: Hidden 1, Bias: -0.2502, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1">
+            <title>h1.1, Hidden layer: Hidden 1, Bias: -0.2502, Activation: Sigmoid, alpha 2, Connections in: 26, out:
+                1
+            </title>
+            <circle class="nb" cx="367.72" cy="341" r="9.72"/>
+            <circle class="nt" cx="367.72" cy="341" r="9.72"/>
+        </g>
+        <g class="mk n27 nd s2 j0 j1 j2 j3 j4 j5 j6 j7 j8 j9 j10 j11 j12 j13 j14 j15 j16 j17 j18 j19 j20 j21 j22 j23 j24 j25 j31"
+           tabindex="0" role="graphics-symbol"
+           aria-label="h1.2, Hidden layer: Hidden 1, Bias: 1.114, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1">
+            <title>h1.2, Hidden layer: Hidden 1, Bias: 1.114, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1
+            </title>
+            <circle class="nb" cx="367.72" cy="368" r="9.72"/>
+            <circle class="nt" cx="367.72" cy="368" r="9.72"/>
+        </g>
+        <g class="mk n28 nd s2 j0 j1 j2 j3 j4 j5 j6 j7 j8 j9 j10 j11 j12 j13 j14 j15 j16 j17 j18 j19 j20 j21 j22 j23 j24 j25 j31"
+           tabindex="0" role="graphics-symbol"
+           aria-label="h1.3, Hidden layer: Hidden 1, Bias: 0.2443, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1">
+            <title>h1.3, Hidden layer: Hidden 1, Bias: 0.2443, Activation: Sigmoid, alpha 2, Connections in: 26, out:
+                1
+            </title>
+            <circle class="nb" cx="367.72" cy="395" r="9.72"/>
+            <circle class="nt" cx="367.72" cy="395" r="9.72"/>
+        </g>
+        <g class="mk n29 nd s2 j0 j1 j2 j3 j4 j5 j6 j7 j8 j9 j10 j11 j12 j13 j14 j15 j16 j17 j18 j19 j20 j21 j22 j23 j24 j25 j31"
+           tabindex="0" role="graphics-symbol"
+           aria-label="h1.4, Hidden layer: Hidden 1, Bias: -0.4518, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1">
+            <title>h1.4, Hidden layer: Hidden 1, Bias: -0.4518, Activation: Sigmoid, alpha 2, Connections in: 26, out:
+                1
+            </title>
+            <circle class="nb" cx="367.72" cy="422" r="9.72"/>
+            <circle class="nt" cx="367.72" cy="422" r="9.72"/>
+        </g>
+        <g class="mk n30 nd s2 j0 j1 j2 j3 j4 j5 j6 j7 j8 j9 j10 j11 j12 j13 j14 j15 j16 j17 j18 j19 j20 j21 j22 j23 j24 j25 j31"
+           tabindex="0" role="graphics-symbol"
+           aria-label="h1.5, Hidden layer: Hidden 1, Bias: 0.3219, Activation: Sigmoid, alpha 2, Connections in: 26, out: 1">
+            <title>h1.5, Hidden layer: Hidden 1, Bias: 0.3219, Activation: Sigmoid, alpha 2, Connections in: 26, out:
+                1
+            </title>
+            <circle class="nb" cx="367.72" cy="449" r="9.72"/>
+            <circle class="nt" cx="367.72" cy="449" r="9.72"/>
+        </g>
+        <g class="mk n31 nd s1 j26 j27 j28 j29 j30" tabindex="0" role="graphics-symbol"
+           aria-label="y, Output layer: Output, Bias: -0.2323, Activation: Sigmoid, alpha 2, Connections in: 5, out: 0">
+            <title>y, Output layer: Output, Bias: -0.2323, Activation: Sigmoid, alpha 2, Connections in: 5, out: 0
+            </title>
+            <circle class="nb" cx="557.72" cy="395" r="9.72"/>
+            <circle class="nt" cx="557.72" cy="395" r="9.72"/>
+        </g>
+        <text class="lbl mid" x="575.44" y="395">y</text>
+    </g>
+    <text class="key" x="66.31" y="863">Weight</text>
+    <text class="kn" x="110.63" y="863">-3.319</text>
+    <rect class="cell d0" x="146.45" y="852" width="16" height="14"/>
+    <rect class="cell d1" x="162.45" y="852" width="16" height="14"/>
+    <rect class="cell d2" x="178.45" y="852" width="16" height="14"/>
+    <rect class="cell d3" x="194.45" y="852" width="16" height="14"/>
+    <rect class="cell d4" x="210.45" y="852" width="16" height="14"/>
+    <rect class="cell d5" x="226.45" y="852" width="16" height="14"/>
+    <rect class="cell d6" x="242.45" y="852" width="16" height="14"/>
+    <rect class="cell d7" x="258.45" y="852" width="16" height="14"/>
+    <rect class="cell d8" x="274.45" y="852" width="16" height="14"/>
+    <rect class="cell d9" x="290.45" y="852" width="16" height="14"/>
+    <rect class="cell d10" x="306.45" y="852" width="16" height="14"/>
+    <text class="kn" x="328.45" y="863">+3.319</text>
+    <text class="kn" x="374.27" y="863">thickness = magnitude</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="255" y="235.25" width="168.06" height="44" rx="6"/>
+                <text class="tx b" x="265" y="253.25">Abstraction.IsChip to h1.1</text>
+                <text class="tx" x="265" y="270.25">Weight: -0.1564</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="249.72" y="248.75" width="178.62" height="44" rx="6"/>
+                <text class="tx b" x="259.72" y="266.75">Abstraction.IsSwipe to h1.1</text>
+                <text class="tx" x="259.72" y="283.75">Weight: 0.3331</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="246.73" y="262.25" width="184.6" height="44" rx="6"/>
+                <text class="tx b" x="256.73" y="280.25">Abstraction.IsManual to h1.1</text>
+                <text class="tx" x="256.73" y="297.25">Weight: -1.148</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="203.61" y="275.75" width="270.84" height="44" rx="6"/>
+                <text class="tx b" x="213.61" y="293.75">Abstraction.CountTransactions1Day to h1.1</text>
+                <text class="tx" x="213.61" y="310.75">Weight: -0.2154</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="232.99" y="289.25" width="212.07" height="44" rx="6"/>
+                <text class="tx b" x="242.99" y="307.25">Abstraction.Authenticated to h1.1</text>
+                <text class="tx" x="242.99" y="324.25">Weight: 0.03467</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="302.75" width="277.2" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="320.75">Abstraction.CountTransactionsPINDecline……</text>
+                <text class="tx" x="210.43" y="337.75">Weight: 0.3825</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="199.41" y="316.25" width="279.23" height="44" rx="6"/>
+                <text class="tx b" x="209.41" y="334.25">Abstraction.CountTransactionsDeclined1D……</text>
+                <text class="tx" x="209.41" y="351.25">Weight: -0.6199</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="202.53" y="329.75" width="273" height="44" rx="6"/>
+                <text class="tx b" x="212.53" y="347.75">Abstraction.CountUnsafeTerminals1Day to…</text>
+                <text class="tx" x="212.53" y="364.75">Weight: 0.04176</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="216.08" y="343.25" width="245.91" height="44" rx="6"/>
+                <text class="tx b" x="226.08" y="361.25">Abstraction.CountInPerson1Day to h1.1</text>
+                <text class="tx" x="226.08" y="378.25">Weight: 0.0367</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="219.51" y="356.75" width="239.04" height="44" rx="6"/>
+                <text class="tx b" x="229.51" y="374.75">Abstraction.CountInternet1Day to h1.1</text>
+                <text class="tx" x="229.51" y="391.75">Weight: -0.1307</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="258.56" y="370.25" width="160.94" height="44" rx="6"/>
+                <text class="tx b" x="268.56" y="388.25">Abstraction.ATM to h1.1</text>
+                <text class="tx" x="268.56" y="405.25">Weight: -0.674</text>
+            </g>
+        </g>
+        <g class="tp tx11">
+            <g class="tt">
+                <rect class="tb" x="227.02" y="383.75" width="224.03" height="44" rx="6"/>
+                <text class="tx b" x="237.02" y="401.75">Abstraction.CountATM1Day to h1.1</text>
+                <text class="tx" x="237.02" y="418.75">Weight: -1.115</text>
+            </g>
+        </g>
+        <g class="tp tx12">
+            <g class="tt">
+                <rect class="tb" x="207.94" y="397.25" width="262.19" height="44" rx="6"/>
+                <text class="tx b" x="217.94" y="415.25">Abstraction.CountOver30SEK1Day to h1.1</text>
+                <text class="tx" x="217.94" y="432.25">Weight: -0.3993</text>
+            </g>
+        </g>
+        <g class="tp tx13">
+            <g class="tt">
+                <rect class="tb" x="247.62" y="410.75" width="182.82" height="44" rx="6"/>
+                <text class="tx b" x="257.62" y="428.75">Abstraction.InPerson to h1.1</text>
+                <text class="tx" x="257.62" y="445.75">Weight: -0.3503</text>
+            </g>
+        </g>
+        <g class="tp tx14">
+            <g class="tt">
+                <rect class="tb" x="226.82" y="424.25" width="224.41" height="44" rx="6"/>
+                <text class="tx b" x="236.82" y="442.25">Abstraction.TransactionAmt to h1.1</text>
+                <text class="tx" x="236.82" y="459.25">Weight: -0.2511</text>
+            </g>
+        </g>
+        <g class="tp tx15">
+            <g class="tt">
+                <rect class="tb" x="207.36" y="437.75" width="263.33" height="44" rx="6"/>
+                <text class="tx b" x="217.36" y="455.75">Abstraction.SumTransactions1Day to h1.1</text>
+                <text class="tx" x="217.36" y="472.75">Weight: -0.1886</text>
+            </g>
+        </g>
+        <g class="tp tx16">
+            <g class="tt">
+                <rect class="tb" x="203.17" y="451.25" width="271.73" height="44" rx="6"/>
+                <text class="tx b" x="213.17" y="469.25">Abstraction.SumATMTransactions1Day to…</text>
+                <text class="tx" x="213.17" y="486.25">Weight: -0.5494</text>
+            </g>
+        </g>
+        <g class="tp tx17">
+            <g class="tt">
+                <rect class="tb" x="251.06" y="464.75" width="175.95" height="44" rx="6"/>
+                <text class="tx b" x="261.06" y="482.75">Abstraction.Foreign to h1.1</text>
+                <text class="tx" x="261.06" y="499.75">Weight: -0.4524</text>
+            </g>
+        </g>
+        <g class="tp tx18">
+            <g class="tt">
+                <rect class="tb" x="201.83" y="478.25" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="211.83" y="496.25">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="211.83" y="513.25">Weight: 0.03221</text>
+            </g>
+        </g>
+        <g class="tp tx19">
+            <g class="tt">
+                <rect class="tb" x="200.69" y="491.75" width="276.69" height="44" rx="6"/>
+                <text class="tx b" x="210.69" y="509.75">Abstraction.DifferentMerchantTypes1Week…</text>
+                <text class="tx" x="210.69" y="526.75">Weight: -0.1178</text>
+            </g>
+        </g>
+        <g class="tp tx20">
+            <g class="tt">
+                <rect class="tb" x="200.56" y="505.25" width="276.94" height="44" rx="6"/>
+                <text class="tx b" x="210.56" y="523.25">Abstraction.DifferentDeclineReasons1Day t…</text>
+                <text class="tx" x="210.56" y="540.25">Weight: 0.2398</text>
+            </g>
+        </g>
+        <g class="tp tx21">
+            <g class="tt">
+                <rect class="tb" x="211.75" y="518.75" width="254.56" height="44" rx="6"/>
+                <text class="tx b" x="221.75" y="536.75">Abstraction.DifferentCities1Week to h1.1</text>
+                <text class="tx" x="221.75" y="553.75">Weight: 0.2996</text>
+            </g>
+        </g>
+        <g class="tp tx22">
+            <g class="tt">
+                <rect class="tb" x="202.02" y="532.25" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="212.02" y="550.25">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="212.02" y="567.25">Weight: -0.03364</text>
+            </g>
+        </g>
+        <g class="tp tx23">
+            <g class="tt">
+                <rect class="tb" x="226.89" y="545.75" width="224.28" height="44" rx="6"/>
+                <text class="tx b" x="236.89" y="563.75">Abstraction.HasBeenAbroad to h1.1</text>
+                <text class="tx" x="236.89" y="580.75">Weight: -0.627</text>
+            </g>
+        </g>
+        <g class="tp tx24">
+            <g class="tt">
+                <rect class="tb" x="223.96" y="559.25" width="230.13" height="44" rx="6"/>
+                <text class="tx b" x="233.96" y="577.25">Abstraction.CashTransaction to h1.1</text>
+                <text class="tx" x="233.96" y="594.25">Weight: -0.4065</text>
+            </g>
+        </g>
+        <g class="tp tx25">
+            <g class="tt">
+                <rect class="tb" x="224.85" y="572.75" width="228.35" height="44" rx="6"/>
+                <text class="tx b" x="234.85" y="590.75">Abstraction.HighRiskCountry to h1.1</text>
+                <text class="tx" x="234.85" y="607.75">Weight: -0.5765</text>
+            </g>
+        </g>
+        <g class="tp tx26">
+            <g class="tt">
+                <rect class="tb" x="255" y="248.75" width="168.06" height="44" rx="6"/>
+                <text class="tx b" x="265" y="266.75">Abstraction.IsChip to h1.2</text>
+                <text class="tx" x="265" y="283.75">Weight: -0.1472</text>
+            </g>
+        </g>
+        <g class="tp tx27">
+            <g class="tt">
+                <rect class="tb" x="249.72" y="262.25" width="178.62" height="44" rx="6"/>
+                <text class="tx b" x="259.72" y="280.25">Abstraction.IsSwipe to h1.2</text>
+                <text class="tx" x="259.72" y="297.25">Weight: 1.274</text>
+            </g>
+        </g>
+        <g class="tp tx28">
+            <g class="tt">
+                <rect class="tb" x="246.73" y="275.75" width="184.6" height="44" rx="6"/>
+                <text class="tx b" x="256.73" y="293.75">Abstraction.IsManual to h1.2</text>
+                <text class="tx" x="256.73" y="310.75">Weight: -1.015</text>
+            </g>
+        </g>
+        <g class="tp tx29">
+            <g class="tt">
+                <rect class="tb" x="203.61" y="289.25" width="270.84" height="44" rx="6"/>
+                <text class="tx b" x="213.61" y="307.25">Abstraction.CountTransactions1Day to h1.2</text>
+                <text class="tx" x="213.61" y="324.25">Weight: 0.8822</text>
+            </g>
+        </g>
+        <g class="tp tx30">
+            <g class="tt">
+                <rect class="tb" x="232.99" y="302.75" width="212.07" height="44" rx="6"/>
+                <text class="tx b" x="242.99" y="320.75">Abstraction.Authenticated to h1.2</text>
+                <text class="tx" x="242.99" y="337.75">Weight: 2.453</text>
+            </g>
+        </g>
+        <g class="tp tx31">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="316.25" width="277.2" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="334.25">Abstraction.CountTransactionsPINDecline……</text>
+                <text class="tx" x="210.43" y="351.25">Weight: -0.04984</text>
+            </g>
+        </g>
+        <g class="tp tx32">
+            <g class="tt">
+                <rect class="tb" x="199.41" y="329.75" width="279.23" height="44" rx="6"/>
+                <text class="tx b" x="209.41" y="347.75">Abstraction.CountTransactionsDeclined1D……</text>
+                <text class="tx" x="209.41" y="364.75">Weight: 0.9081</text>
+            </g>
+        </g>
+        <g class="tp tx33">
+            <g class="tt">
+                <rect class="tb" x="202.53" y="343.25" width="273" height="44" rx="6"/>
+                <text class="tx b" x="212.53" y="361.25">Abstraction.CountUnsafeTerminals1Day to…</text>
+                <text class="tx" x="212.53" y="378.25">Weight: -1.135</text>
+            </g>
+        </g>
+        <g class="tp tx34">
+            <g class="tt">
+                <rect class="tb" x="216.08" y="356.75" width="245.91" height="44" rx="6"/>
+                <text class="tx b" x="226.08" y="374.75">Abstraction.CountInPerson1Day to h1.2</text>
+                <text class="tx" x="226.08" y="391.75">Weight: 0.4918</text>
+            </g>
+        </g>
+        <g class="tp tx35">
+            <g class="tt">
+                <rect class="tb" x="219.51" y="370.25" width="239.04" height="44" rx="6"/>
+                <text class="tx b" x="229.51" y="388.25">Abstraction.CountInternet1Day to h1.2</text>
+                <text class="tx" x="229.51" y="405.25">Weight: 2.713</text>
+            </g>
+        </g>
+        <g class="tp tx36">
+            <g class="tt">
+                <rect class="tb" x="258.56" y="383.75" width="160.94" height="44" rx="6"/>
+                <text class="tx b" x="268.56" y="401.75">Abstraction.ATM to h1.2</text>
+                <text class="tx" x="268.56" y="418.75">Weight: -0.05287</text>
+            </g>
+        </g>
+        <g class="tp tx37">
+            <g class="tt">
+                <rect class="tb" x="227.02" y="397.25" width="224.03" height="44" rx="6"/>
+                <text class="tx b" x="237.02" y="415.25">Abstraction.CountATM1Day to h1.2</text>
+                <text class="tx" x="237.02" y="432.25">Weight: -0.4666</text>
+            </g>
+        </g>
+        <g class="tp tx38">
+            <g class="tt">
+                <rect class="tb" x="207.94" y="410.75" width="262.19" height="44" rx="6"/>
+                <text class="tx b" x="217.94" y="428.75">Abstraction.CountOver30SEK1Day to h1.2</text>
+                <text class="tx" x="217.94" y="445.75">Weight: -0.4823</text>
+            </g>
+        </g>
+        <g class="tp tx39">
+            <g class="tt">
+                <rect class="tb" x="247.62" y="424.25" width="182.82" height="44" rx="6"/>
+                <text class="tx b" x="257.62" y="442.25">Abstraction.InPerson to h1.2</text>
+                <text class="tx" x="257.62" y="459.25">Weight: 1.069</text>
+            </g>
+        </g>
+        <g class="tp tx40">
+            <g class="tt">
+                <rect class="tb" x="226.82" y="437.75" width="224.41" height="44" rx="6"/>
+                <text class="tx b" x="236.82" y="455.75">Abstraction.TransactionAmt to h1.2</text>
+                <text class="tx" x="236.82" y="472.75">Weight: -0.9401</text>
+            </g>
+        </g>
+        <g class="tp tx41">
+            <g class="tt">
+                <rect class="tb" x="207.36" y="451.25" width="263.33" height="44" rx="6"/>
+                <text class="tx b" x="217.36" y="469.25">Abstraction.SumTransactions1Day to h1.2</text>
+                <text class="tx" x="217.36" y="486.25">Weight: -0.8328</text>
+            </g>
+        </g>
+        <g class="tp tx42">
+            <g class="tt">
+                <rect class="tb" x="203.17" y="464.75" width="271.73" height="44" rx="6"/>
+                <text class="tx b" x="213.17" y="482.75">Abstraction.SumATMTransactions1Day to…</text>
+                <text class="tx" x="213.17" y="499.75">Weight: -0.2337</text>
+            </g>
+        </g>
+        <g class="tp tx43">
+            <g class="tt">
+                <rect class="tb" x="251.06" y="478.25" width="175.95" height="44" rx="6"/>
+                <text class="tx b" x="261.06" y="496.25">Abstraction.Foreign to h1.2</text>
+                <text class="tx" x="261.06" y="513.25">Weight: -1.009</text>
+            </g>
+        </g>
+        <g class="tp tx44">
+            <g class="tt">
+                <rect class="tb" x="201.83" y="491.75" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="211.83" y="509.75">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="211.83" y="526.75">Weight: 1.234</text>
+            </g>
+        </g>
+        <g class="tp tx45">
+            <g class="tt">
+                <rect class="tb" x="200.69" y="505.25" width="276.69" height="44" rx="6"/>
+                <text class="tx b" x="210.69" y="523.25">Abstraction.DifferentMerchantTypes1Week…</text>
+                <text class="tx" x="210.69" y="540.25">Weight: 0.545</text>
+            </g>
+        </g>
+        <g class="tp tx46">
+            <g class="tt">
+                <rect class="tb" x="200.56" y="518.75" width="276.94" height="44" rx="6"/>
+                <text class="tx b" x="210.56" y="536.75">Abstraction.DifferentDeclineReasons1Day t…</text>
+                <text class="tx" x="210.56" y="553.75">Weight: 0.1082</text>
+            </g>
+        </g>
+        <g class="tp tx47">
+            <g class="tt">
+                <rect class="tb" x="211.75" y="532.25" width="254.56" height="44" rx="6"/>
+                <text class="tx b" x="221.75" y="550.25">Abstraction.DifferentCities1Week to h1.2</text>
+                <text class="tx" x="221.75" y="567.25">Weight: 0.3692</text>
+            </g>
+        </g>
+        <g class="tp tx48">
+            <g class="tt">
+                <rect class="tb" x="202.02" y="545.75" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="212.02" y="563.75">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="212.02" y="580.75">Weight: 0.2023</text>
+            </g>
+        </g>
+        <g class="tp tx49">
+            <g class="tt">
+                <rect class="tb" x="226.89" y="559.25" width="224.28" height="44" rx="6"/>
+                <text class="tx b" x="236.89" y="577.25">Abstraction.HasBeenAbroad to h1.2</text>
+                <text class="tx" x="236.89" y="594.25">Weight: 0.3387</text>
+            </g>
+        </g>
+        <g class="tp tx50">
+            <g class="tt">
+                <rect class="tb" x="223.96" y="572.75" width="230.13" height="44" rx="6"/>
+                <text class="tx b" x="233.96" y="590.75">Abstraction.CashTransaction to h1.2</text>
+                <text class="tx" x="233.96" y="607.75">Weight: -0.2713</text>
+            </g>
+        </g>
+        <g class="tp tx51">
+            <g class="tt">
+                <rect class="tb" x="224.85" y="586.25" width="228.35" height="44" rx="6"/>
+                <text class="tx b" x="234.85" y="604.25">Abstraction.HighRiskCountry to h1.2</text>
+                <text class="tx" x="234.85" y="621.25">Weight: -0.8779</text>
+            </g>
+        </g>
+        <g class="tp tx52">
+            <g class="tt">
+                <rect class="tb" x="255" y="262.25" width="168.06" height="44" rx="6"/>
+                <text class="tx b" x="265" y="280.25">Abstraction.IsChip to h1.3</text>
+                <text class="tx" x="265" y="297.25">Weight: 1.215</text>
+            </g>
+        </g>
+        <g class="tp tx53">
+            <g class="tt">
+                <rect class="tb" x="249.72" y="275.75" width="178.62" height="44" rx="6"/>
+                <text class="tx b" x="259.72" y="293.75">Abstraction.IsSwipe to h1.3</text>
+                <text class="tx" x="259.72" y="310.75">Weight: -2.799</text>
+            </g>
+        </g>
+        <g class="tp tx54">
+            <g class="tt">
+                <rect class="tb" x="246.73" y="289.25" width="184.6" height="44" rx="6"/>
+                <text class="tx b" x="256.73" y="307.25">Abstraction.IsManual to h1.3</text>
+                <text class="tx" x="256.73" y="324.25">Weight: 0.3126</text>
+            </g>
+        </g>
+        <g class="tp tx55">
+            <g class="tt">
+                <rect class="tb" x="203.61" y="302.75" width="270.84" height="44" rx="6"/>
+                <text class="tx b" x="213.61" y="320.75">Abstraction.CountTransactions1Day to h1.3</text>
+                <text class="tx" x="213.61" y="337.75">Weight: -0.7374</text>
+            </g>
+        </g>
+        <g class="tp tx56">
+            <g class="tt">
+                <rect class="tb" x="232.99" y="316.25" width="212.07" height="44" rx="6"/>
+                <text class="tx b" x="242.99" y="334.25">Abstraction.Authenticated to h1.3</text>
+                <text class="tx" x="242.99" y="351.25">Weight: -0.3992</text>
+            </g>
+        </g>
+        <g class="tp tx57">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="329.75" width="277.2" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="347.75">Abstraction.CountTransactionsPINDecline……</text>
+                <text class="tx" x="210.43" y="364.75">Weight: 1.218</text>
+            </g>
+        </g>
+        <g class="tp tx58">
+            <g class="tt">
+                <rect class="tb" x="199.41" y="343.25" width="279.23" height="44" rx="6"/>
+                <text class="tx b" x="209.41" y="361.25">Abstraction.CountTransactionsDeclined1D……</text>
+                <text class="tx" x="209.41" y="378.25">Weight: 1.119</text>
+            </g>
+        </g>
+        <g class="tp tx59">
+            <g class="tt">
+                <rect class="tb" x="202.53" y="356.75" width="273" height="44" rx="6"/>
+                <text class="tx b" x="212.53" y="374.75">Abstraction.CountUnsafeTerminals1Day to…</text>
+                <text class="tx" x="212.53" y="391.75">Weight: 0.00719</text>
+            </g>
+        </g>
+        <g class="tp tx60">
+            <g class="tt">
+                <rect class="tb" x="216.08" y="370.25" width="245.91" height="44" rx="6"/>
+                <text class="tx b" x="226.08" y="388.25">Abstraction.CountInPerson1Day to h1.3</text>
+                <text class="tx" x="226.08" y="405.25">Weight: -0.2094</text>
+            </g>
+        </g>
+        <g class="tp tx61">
+            <g class="tt">
+                <rect class="tb" x="219.51" y="383.75" width="239.04" height="44" rx="6"/>
+                <text class="tx b" x="229.51" y="401.75">Abstraction.CountInternet1Day to h1.3</text>
+                <text class="tx" x="229.51" y="418.75">Weight: -1.536</text>
+            </g>
+        </g>
+        <g class="tp tx62">
+            <g class="tt">
+                <rect class="tb" x="258.56" y="397.25" width="160.94" height="44" rx="6"/>
+                <text class="tx b" x="268.56" y="415.25">Abstraction.ATM to h1.3</text>
+                <text class="tx" x="268.56" y="432.25">Weight: 0.4469</text>
+            </g>
+        </g>
+        <g class="tp tx63">
+            <g class="tt">
+                <rect class="tb" x="227.02" y="410.75" width="224.03" height="44" rx="6"/>
+                <text class="tx b" x="237.02" y="428.75">Abstraction.CountATM1Day to h1.3</text>
+                <text class="tx" x="237.02" y="445.75">Weight: 0.8957</text>
+            </g>
+        </g>
+        <g class="tp tx64">
+            <g class="tt">
+                <rect class="tb" x="207.94" y="424.25" width="262.19" height="44" rx="6"/>
+                <text class="tx b" x="217.94" y="442.25">Abstraction.CountOver30SEK1Day to h1.3</text>
+                <text class="tx" x="217.94" y="459.25">Weight: -1.247</text>
+            </g>
+        </g>
+        <g class="tp tx65">
+            <g class="tt">
+                <rect class="tb" x="247.62" y="437.75" width="182.82" height="44" rx="6"/>
+                <text class="tx b" x="257.62" y="455.75">Abstraction.InPerson to h1.3</text>
+                <text class="tx" x="257.62" y="472.75">Weight: -0.5038</text>
+            </g>
+        </g>
+        <g class="tp tx66">
+            <g class="tt">
+                <rect class="tb" x="226.82" y="451.25" width="224.41" height="44" rx="6"/>
+                <text class="tx b" x="236.82" y="469.25">Abstraction.TransactionAmt to h1.3</text>
+                <text class="tx" x="236.82" y="486.25">Weight: 0.57</text>
+            </g>
+        </g>
+        <g class="tp tx67">
+            <g class="tt">
+                <rect class="tb" x="207.36" y="464.75" width="263.33" height="44" rx="6"/>
+                <text class="tx b" x="217.36" y="482.75">Abstraction.SumTransactions1Day to h1.3</text>
+                <text class="tx" x="217.36" y="499.75">Weight: -0.4395</text>
+            </g>
+        </g>
+        <g class="tp tx68">
+            <g class="tt">
+                <rect class="tb" x="203.17" y="478.25" width="271.73" height="44" rx="6"/>
+                <text class="tx b" x="213.17" y="496.25">Abstraction.SumATMTransactions1Day to…</text>
+                <text class="tx" x="213.17" y="513.25">Weight: -0.1788</text>
+            </g>
+        </g>
+        <g class="tp tx69">
+            <g class="tt">
+                <rect class="tb" x="251.06" y="491.75" width="175.95" height="44" rx="6"/>
+                <text class="tx b" x="261.06" y="509.75">Abstraction.Foreign to h1.3</text>
+                <text class="tx" x="261.06" y="526.75">Weight: 3.319</text>
+            </g>
+        </g>
+        <g class="tp tx70">
+            <g class="tt">
+                <rect class="tb" x="201.83" y="505.25" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="211.83" y="523.25">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="211.83" y="540.25">Weight: 0.06778</text>
+            </g>
+        </g>
+        <g class="tp tx71">
+            <g class="tt">
+                <rect class="tb" x="200.69" y="518.75" width="276.69" height="44" rx="6"/>
+                <text class="tx b" x="210.69" y="536.75">Abstraction.DifferentMerchantTypes1Week…</text>
+                <text class="tx" x="210.69" y="553.75">Weight: -0.1921</text>
+            </g>
+        </g>
+        <g class="tp tx72">
+            <g class="tt">
+                <rect class="tb" x="200.56" y="532.25" width="276.94" height="44" rx="6"/>
+                <text class="tx b" x="210.56" y="550.25">Abstraction.DifferentDeclineReasons1Day t…</text>
+                <text class="tx" x="210.56" y="567.25">Weight: -1.309</text>
+            </g>
+        </g>
+        <g class="tp tx73">
+            <g class="tt">
+                <rect class="tb" x="211.75" y="545.75" width="254.56" height="44" rx="6"/>
+                <text class="tx b" x="221.75" y="563.75">Abstraction.DifferentCities1Week to h1.3</text>
+                <text class="tx" x="221.75" y="580.75">Weight: 2.597</text>
+            </g>
+        </g>
+        <g class="tp tx74">
+            <g class="tt">
+                <rect class="tb" x="202.02" y="559.25" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="212.02" y="577.25">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="212.02" y="594.25">Weight: 1.218</text>
+            </g>
+        </g>
+        <g class="tp tx75">
+            <g class="tt">
+                <rect class="tb" x="226.89" y="572.75" width="224.28" height="44" rx="6"/>
+                <text class="tx b" x="236.89" y="590.75">Abstraction.HasBeenAbroad to h1.3</text>
+                <text class="tx" x="236.89" y="607.75">Weight: -0.7516</text>
+            </g>
+        </g>
+        <g class="tp tx76">
+            <g class="tt">
+                <rect class="tb" x="223.96" y="586.25" width="230.13" height="44" rx="6"/>
+                <text class="tx b" x="233.96" y="604.25">Abstraction.CashTransaction to h1.3</text>
+                <text class="tx" x="233.96" y="621.25">Weight: 0.2098</text>
+            </g>
+        </g>
+        <g class="tp tx77">
+            <g class="tt">
+                <rect class="tb" x="224.85" y="599.75" width="228.35" height="44" rx="6"/>
+                <text class="tx b" x="234.85" y="617.75">Abstraction.HighRiskCountry to h1.3</text>
+                <text class="tx" x="234.85" y="634.75">Weight: 2.385</text>
+            </g>
+        </g>
+        <g class="tp tx78">
+            <g class="tt">
+                <rect class="tb" x="255" y="275.75" width="168.06" height="44" rx="6"/>
+                <text class="tx b" x="265" y="293.75">Abstraction.IsChip to h1.4</text>
+                <text class="tx" x="265" y="310.75">Weight: 0.1339</text>
+            </g>
+        </g>
+        <g class="tp tx79">
+            <g class="tt">
+                <rect class="tb" x="249.72" y="289.25" width="178.62" height="44" rx="6"/>
+                <text class="tx b" x="259.72" y="307.25">Abstraction.IsSwipe to h1.4</text>
+                <text class="tx" x="259.72" y="324.25">Weight: -0.5382</text>
+            </g>
+        </g>
+        <g class="tp tx80">
+            <g class="tt">
+                <rect class="tb" x="246.73" y="302.75" width="184.6" height="44" rx="6"/>
+                <text class="tx b" x="256.73" y="320.75">Abstraction.IsManual to h1.4</text>
+                <text class="tx" x="256.73" y="337.75">Weight: 0.2978</text>
+            </g>
+        </g>
+        <g class="tp tx81">
+            <g class="tt">
+                <rect class="tb" x="203.61" y="316.25" width="270.84" height="44" rx="6"/>
+                <text class="tx b" x="213.61" y="334.25">Abstraction.CountTransactions1Day to h1.4</text>
+                <text class="tx" x="213.61" y="351.25">Weight: -0.9546</text>
+            </g>
+        </g>
+        <g class="tp tx82">
+            <g class="tt">
+                <rect class="tb" x="232.99" y="329.75" width="212.07" height="44" rx="6"/>
+                <text class="tx b" x="242.99" y="347.75">Abstraction.Authenticated to h1.4</text>
+                <text class="tx" x="242.99" y="364.75">Weight: -0.982</text>
+            </g>
+        </g>
+        <g class="tp tx83">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="343.25" width="277.2" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="361.25">Abstraction.CountTransactionsPINDecline……</text>
+                <text class="tx" x="210.43" y="378.25">Weight: 0.2667</text>
+            </g>
+        </g>
+        <g class="tp tx84">
+            <g class="tt">
+                <rect class="tb" x="199.41" y="356.75" width="279.23" height="44" rx="6"/>
+                <text class="tx b" x="209.41" y="374.75">Abstraction.CountTransactionsDeclined1D……</text>
+                <text class="tx" x="209.41" y="391.75">Weight: -0.5839</text>
+            </g>
+        </g>
+        <g class="tp tx85">
+            <g class="tt">
+                <rect class="tb" x="202.53" y="370.25" width="273" height="44" rx="6"/>
+                <text class="tx b" x="212.53" y="388.25">Abstraction.CountUnsafeTerminals1Day to…</text>
+                <text class="tx" x="212.53" y="405.25">Weight: -0.1923</text>
+            </g>
+        </g>
+        <g class="tp tx86">
+            <g class="tt">
+                <rect class="tb" x="216.08" y="383.75" width="245.91" height="44" rx="6"/>
+                <text class="tx b" x="226.08" y="401.75">Abstraction.CountInPerson1Day to h1.4</text>
+                <text class="tx" x="226.08" y="418.75">Weight: -0.6215</text>
+            </g>
+        </g>
+        <g class="tp tx87">
+            <g class="tt">
+                <rect class="tb" x="219.51" y="397.25" width="239.04" height="44" rx="6"/>
+                <text class="tx b" x="229.51" y="415.25">Abstraction.CountInternet1Day to h1.4</text>
+                <text class="tx" x="229.51" y="432.25">Weight: 0.3629</text>
+            </g>
+        </g>
+        <g class="tp tx88">
+            <g class="tt">
+                <rect class="tb" x="258.56" y="410.75" width="160.94" height="44" rx="6"/>
+                <text class="tx b" x="268.56" y="428.75">Abstraction.ATM to h1.4</text>
+                <text class="tx" x="268.56" y="445.75">Weight: 0.1739</text>
+            </g>
+        </g>
+        <g class="tp tx89">
+            <g class="tt">
+                <rect class="tb" x="227.02" y="424.25" width="224.03" height="44" rx="6"/>
+                <text class="tx b" x="237.02" y="442.25">Abstraction.CountATM1Day to h1.4</text>
+                <text class="tx" x="237.02" y="459.25">Weight: 1.273</text>
+            </g>
+        </g>
+        <g class="tp tx90">
+            <g class="tt">
+                <rect class="tb" x="207.94" y="437.75" width="262.19" height="44" rx="6"/>
+                <text class="tx b" x="217.94" y="455.75">Abstraction.CountOver30SEK1Day to h1.4</text>
+                <text class="tx" x="217.94" y="472.75">Weight: 0.6774</text>
+            </g>
+        </g>
+        <g class="tp tx91">
+            <g class="tt">
+                <rect class="tb" x="247.62" y="451.25" width="182.82" height="44" rx="6"/>
+                <text class="tx b" x="257.62" y="469.25">Abstraction.InPerson to h1.4</text>
+                <text class="tx" x="257.62" y="486.25">Weight: 0.1077</text>
+            </g>
+        </g>
+        <g class="tp tx92">
+            <g class="tt">
+                <rect class="tb" x="226.82" y="464.75" width="224.41" height="44" rx="6"/>
+                <text class="tx b" x="236.82" y="482.75">Abstraction.TransactionAmt to h1.4</text>
+                <text class="tx" x="236.82" y="499.75">Weight: 0.6255</text>
+            </g>
+        </g>
+        <g class="tp tx93">
+            <g class="tt">
+                <rect class="tb" x="207.36" y="478.25" width="263.33" height="44" rx="6"/>
+                <text class="tx b" x="217.36" y="496.25">Abstraction.SumTransactions1Day to h1.4</text>
+                <text class="tx" x="217.36" y="513.25">Weight: -0.1531</text>
+            </g>
+        </g>
+        <g class="tp tx94">
+            <g class="tt">
+                <rect class="tb" x="203.17" y="491.75" width="271.73" height="44" rx="6"/>
+                <text class="tx b" x="213.17" y="509.75">Abstraction.SumATMTransactions1Day to…</text>
+                <text class="tx" x="213.17" y="526.75">Weight: -0.7508</text>
+            </g>
+        </g>
+        <g class="tp tx95">
+            <g class="tt">
+                <rect class="tb" x="251.06" y="505.25" width="175.95" height="44" rx="6"/>
+                <text class="tx b" x="261.06" y="523.25">Abstraction.Foreign to h1.4</text>
+                <text class="tx" x="261.06" y="540.25">Weight: 0.5373</text>
+            </g>
+        </g>
+        <g class="tp tx96">
+            <g class="tt">
+                <rect class="tb" x="201.83" y="518.75" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="211.83" y="536.75">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="211.83" y="553.75">Weight: 0.6297</text>
+            </g>
+        </g>
+        <g class="tp tx97">
+            <g class="tt">
+                <rect class="tb" x="200.69" y="532.25" width="276.69" height="44" rx="6"/>
+                <text class="tx b" x="210.69" y="550.25">Abstraction.DifferentMerchantTypes1Week…</text>
+                <text class="tx" x="210.69" y="567.25">Weight: 0.01151</text>
+            </g>
+        </g>
+        <g class="tp tx98">
+            <g class="tt">
+                <rect class="tb" x="200.56" y="545.75" width="276.94" height="44" rx="6"/>
+                <text class="tx b" x="210.56" y="563.75">Abstraction.DifferentDeclineReasons1Day t…</text>
+                <text class="tx" x="210.56" y="580.75">Weight: 0.7017</text>
+            </g>
+        </g>
+        <g class="tp tx99">
+            <g class="tt">
+                <rect class="tb" x="211.75" y="559.25" width="254.56" height="44" rx="6"/>
+                <text class="tx b" x="221.75" y="577.25">Abstraction.DifferentCities1Week to h1.4</text>
+                <text class="tx" x="221.75" y="594.25">Weight: 0.5721</text>
+            </g>
+        </g>
+        <g class="tp tx100">
+            <g class="tt">
+                <rect class="tb" x="202.02" y="572.75" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="212.02" y="590.75">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="212.02" y="607.75">Weight: 0.362</text>
+            </g>
+        </g>
+        <g class="tp tx101">
+            <g class="tt">
+                <rect class="tb" x="226.89" y="586.25" width="224.28" height="44" rx="6"/>
+                <text class="tx b" x="236.89" y="604.25">Abstraction.HasBeenAbroad to h1.4</text>
+                <text class="tx" x="236.89" y="621.25">Weight: -0.6872</text>
+            </g>
+        </g>
+        <g class="tp tx102">
+            <g class="tt">
+                <rect class="tb" x="223.96" y="599.75" width="230.13" height="44" rx="6"/>
+                <text class="tx b" x="233.96" y="617.75">Abstraction.CashTransaction to h1.4</text>
+                <text class="tx" x="233.96" y="634.75">Weight: 0.1591</text>
+            </g>
+        </g>
+        <g class="tp tx103">
+            <g class="tt">
+                <rect class="tb" x="224.85" y="613.25" width="228.35" height="44" rx="6"/>
+                <text class="tx b" x="234.85" y="631.25">Abstraction.HighRiskCountry to h1.4</text>
+                <text class="tx" x="234.85" y="648.25">Weight: -0.4005</text>
+            </g>
+        </g>
+        <g class="tp tx104">
+            <g class="tt">
+                <rect class="tb" x="255" y="289.25" width="168.06" height="44" rx="6"/>
+                <text class="tx b" x="265" y="307.25">Abstraction.IsChip to h1.5</text>
+                <text class="tx" x="265" y="324.25">Weight: -0.4662</text>
+            </g>
+        </g>
+        <g class="tp tx105">
+            <g class="tt">
+                <rect class="tb" x="249.72" y="302.75" width="178.62" height="44" rx="6"/>
+                <text class="tx b" x="259.72" y="320.75">Abstraction.IsSwipe to h1.5</text>
+                <text class="tx" x="259.72" y="337.75">Weight: -0.2973</text>
+            </g>
+        </g>
+        <g class="tp tx106">
+            <g class="tt">
+                <rect class="tb" x="246.73" y="316.25" width="184.6" height="44" rx="6"/>
+                <text class="tx b" x="256.73" y="334.25">Abstraction.IsManual to h1.5</text>
+                <text class="tx" x="256.73" y="351.25">Weight: 0.7877</text>
+            </g>
+        </g>
+        <g class="tp tx107">
+            <g class="tt">
+                <rect class="tb" x="203.61" y="329.75" width="270.84" height="44" rx="6"/>
+                <text class="tx b" x="213.61" y="347.75">Abstraction.CountTransactions1Day to h1.5</text>
+                <text class="tx" x="213.61" y="364.75">Weight: -0.4079</text>
+            </g>
+        </g>
+        <g class="tp tx108">
+            <g class="tt">
+                <rect class="tb" x="232.99" y="343.25" width="212.07" height="44" rx="6"/>
+                <text class="tx b" x="242.99" y="361.25">Abstraction.Authenticated to h1.5</text>
+                <text class="tx" x="242.99" y="378.25">Weight: -0.374</text>
+            </g>
+        </g>
+        <g class="tp tx109">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="356.75" width="277.2" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="374.75">Abstraction.CountTransactionsPINDecline……</text>
+                <text class="tx" x="210.43" y="391.75">Weight: -0.1508</text>
+            </g>
+        </g>
+        <g class="tp tx110">
+            <g class="tt">
+                <rect class="tb" x="199.41" y="370.25" width="279.23" height="44" rx="6"/>
+                <text class="tx b" x="209.41" y="388.25">Abstraction.CountTransactionsDeclined1D……</text>
+                <text class="tx" x="209.41" y="405.25">Weight: -1.103</text>
+            </g>
+        </g>
+        <g class="tp tx111">
+            <g class="tt">
+                <rect class="tb" x="202.53" y="383.75" width="273" height="44" rx="6"/>
+                <text class="tx b" x="212.53" y="401.75">Abstraction.CountUnsafeTerminals1Day to…</text>
+                <text class="tx" x="212.53" y="418.75">Weight: 0.3327</text>
+            </g>
+        </g>
+        <g class="tp tx112">
+            <g class="tt">
+                <rect class="tb" x="216.08" y="397.25" width="245.91" height="44" rx="6"/>
+                <text class="tx b" x="226.08" y="415.25">Abstraction.CountInPerson1Day to h1.5</text>
+                <text class="tx" x="226.08" y="432.25">Weight: -0.2268</text>
+            </g>
+        </g>
+        <g class="tp tx113">
+            <g class="tt">
+                <rect class="tb" x="219.51" y="410.75" width="239.04" height="44" rx="6"/>
+                <text class="tx b" x="229.51" y="428.75">Abstraction.CountInternet1Day to h1.5</text>
+                <text class="tx" x="229.51" y="445.75">Weight: -0.3142</text>
+            </g>
+        </g>
+        <g class="tp tx114">
+            <g class="tt">
+                <rect class="tb" x="258.56" y="424.25" width="160.94" height="44" rx="6"/>
+                <text class="tx b" x="268.56" y="442.25">Abstraction.ATM to h1.5</text>
+                <text class="tx" x="268.56" y="459.25">Weight: 0.2883</text>
+            </g>
+        </g>
+        <g class="tp tx115">
+            <g class="tt">
+                <rect class="tb" x="227.02" y="437.75" width="224.03" height="44" rx="6"/>
+                <text class="tx b" x="237.02" y="455.75">Abstraction.CountATM1Day to h1.5</text>
+                <text class="tx" x="237.02" y="472.75">Weight: 0.6017</text>
+            </g>
+        </g>
+        <g class="tp tx116">
+            <g class="tt">
+                <rect class="tb" x="207.94" y="451.25" width="262.19" height="44" rx="6"/>
+                <text class="tx b" x="217.94" y="469.25">Abstraction.CountOver30SEK1Day to h1.5</text>
+                <text class="tx" x="217.94" y="486.25">Weight: 0.1019</text>
+            </g>
+        </g>
+        <g class="tp tx117">
+            <g class="tt">
+                <rect class="tb" x="247.62" y="464.75" width="182.82" height="44" rx="6"/>
+                <text class="tx b" x="257.62" y="482.75">Abstraction.InPerson to h1.5</text>
+                <text class="tx" x="257.62" y="499.75">Weight: -0.1416</text>
+            </g>
+        </g>
+        <g class="tp tx118">
+            <g class="tt">
+                <rect class="tb" x="226.82" y="478.25" width="224.41" height="44" rx="6"/>
+                <text class="tx b" x="236.82" y="496.25">Abstraction.TransactionAmt to h1.5</text>
+                <text class="tx" x="236.82" y="513.25">Weight: -0.1417</text>
+            </g>
+        </g>
+        <g class="tp tx119">
+            <g class="tt">
+                <rect class="tb" x="207.36" y="491.75" width="263.33" height="44" rx="6"/>
+                <text class="tx b" x="217.36" y="509.75">Abstraction.SumTransactions1Day to h1.5</text>
+                <text class="tx" x="217.36" y="526.75">Weight: 0.09555</text>
+            </g>
+        </g>
+        <g class="tp tx120">
+            <g class="tt">
+                <rect class="tb" x="203.17" y="505.25" width="271.73" height="44" rx="6"/>
+                <text class="tx b" x="213.17" y="523.25">Abstraction.SumATMTransactions1Day to…</text>
+                <text class="tx" x="213.17" y="540.25">Weight: -0.1082</text>
+            </g>
+        </g>
+        <g class="tp tx121">
+            <g class="tt">
+                <rect class="tb" x="251.06" y="518.75" width="175.95" height="44" rx="6"/>
+                <text class="tx b" x="261.06" y="536.75">Abstraction.Foreign to h1.5</text>
+                <text class="tx" x="261.06" y="553.75">Weight: 1.386</text>
+            </g>
+        </g>
+        <g class="tp tx122">
+            <g class="tt">
+                <rect class="tb" x="201.83" y="532.25" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="211.83" y="550.25">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="211.83" y="567.25">Weight: 0.2532</text>
+            </g>
+        </g>
+        <g class="tp tx123">
+            <g class="tt">
+                <rect class="tb" x="200.69" y="545.75" width="276.69" height="44" rx="6"/>
+                <text class="tx b" x="210.69" y="563.75">Abstraction.DifferentMerchantTypes1Week…</text>
+                <text class="tx" x="210.69" y="580.75">Weight: -0.05818</text>
+            </g>
+        </g>
+        <g class="tp tx124">
+            <g class="tt">
+                <rect class="tb" x="200.56" y="559.25" width="276.94" height="44" rx="6"/>
+                <text class="tx b" x="210.56" y="577.25">Abstraction.DifferentDeclineReasons1Day t…</text>
+                <text class="tx" x="210.56" y="594.25">Weight: 1.284</text>
+            </g>
+        </g>
+        <g class="tp tx125">
+            <g class="tt">
+                <rect class="tb" x="211.75" y="572.75" width="254.56" height="44" rx="6"/>
+                <text class="tx b" x="221.75" y="590.75">Abstraction.DifferentCities1Week to h1.5</text>
+                <text class="tx" x="221.75" y="607.75">Weight: 0.02649</text>
+            </g>
+        </g>
+        <g class="tp tx126">
+            <g class="tt">
+                <rect class="tb" x="202.02" y="586.25" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="212.02" y="604.25">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="212.02" y="621.25">Weight: -0.1254</text>
+            </g>
+        </g>
+        <g class="tp tx127">
+            <g class="tt">
+                <rect class="tb" x="226.89" y="599.75" width="224.28" height="44" rx="6"/>
+                <text class="tx b" x="236.89" y="617.75">Abstraction.HasBeenAbroad to h1.5</text>
+                <text class="tx" x="236.89" y="634.75">Weight: 0.3403</text>
+            </g>
+        </g>
+        <g class="tp tx128">
+            <g class="tt">
+                <rect class="tb" x="223.96" y="613.25" width="230.13" height="44" rx="6"/>
+                <text class="tx b" x="233.96" y="631.25">Abstraction.CashTransaction to h1.5</text>
+                <text class="tx" x="233.96" y="648.25">Weight: 0.5065</text>
+            </g>
+        </g>
+        <g class="tp tx129">
+            <g class="tt">
+                <rect class="tb" x="224.85" y="626.75" width="228.35" height="44" rx="6"/>
+                <text class="tx b" x="234.85" y="644.75">Abstraction.HighRiskCountry to h1.5</text>
+                <text class="tx" x="234.85" y="661.75">Weight: -0.6392</text>
+            </g>
+        </g>
+        <g class="tp tx130">
+            <g class="tt">
+                <rect class="tb" x="476.67" y="404" width="104.72" height="44" rx="6"/>
+                <text class="tx b" x="486.67" y="422">h1.1 to y</text>
+                <text class="tx" x="486.67" y="439">Weight: -0.3615</text>
+            </g>
+        </g>
+        <g class="tp tx131">
+            <g class="tt">
+                <rect class="tb" x="476.67" y="417.5" width="104.72" height="44" rx="6"/>
+                <text class="tx b" x="486.67" y="435.5">h1.2 to y</text>
+                <text class="tx" x="486.67" y="452.5">Weight: -0.2811</text>
+            </g>
+        </g>
+        <g class="tp tx132">
+            <g class="tt">
+                <rect class="tb" x="478.71" y="431" width="100.64" height="44" rx="6"/>
+                <text class="tx b" x="488.71" y="449">h1.3 to y</text>
+                <text class="tx" x="488.71" y="466">Weight: 0.3102</text>
+            </g>
+        </g>
+        <g class="tp tx133">
+            <g class="tt">
+                <rect class="tb" x="478.71" y="444.5" width="100.64" height="44" rx="6"/>
+                <text class="tx b" x="488.71" y="462.5">h1.4 to y</text>
+                <text class="tx" x="488.71" y="479.5">Weight: 0.4627</text>
+            </g>
+        </g>
+        <g class="tp tx134">
+            <g class="tt">
+                <rect class="tb" x="478.71" y="458" width="100.64" height="44" rx="6"/>
+                <text class="tx b" x="488.71" y="476">h1.5 to y</text>
+                <text class="tx" x="488.71" y="493">Weight: 0.5625</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="125.5" width="125.32" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="143.5">Abstraction.IsChip</text>
+                <text class="tx" x="264.03" y="160.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="152.5" width="135.88" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="170.5">Abstraction.IsSwipe</text>
+                <text class="tx" x="264.03" y="187.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="179.5" width="141.86" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="197.5">Abstraction.IsManual</text>
+                <text class="tx" x="264.03" y="214.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="206.5" width="228.1" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="224.5">Abstraction.CountTransactions1Day</text>
+                <text class="tx" x="264.03" y="241.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="233.5" width="169.33" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="251.5">Abstraction.Authenticated</text>
+                <text class="tx" x="264.03" y="268.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="260.5" width="269.57" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="278.5">Abstraction.CountTransactionsPINDecline…</text>
+                <text class="tx" x="264.03" y="295.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="287.5" width="271.6" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="305.5">Abstraction.CountTransactionsDeclined1D…</text>
+                <text class="tx" x="264.03" y="322.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="314.5" width="250.61" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="332.5">Abstraction.CountUnsafeTerminals1Day</text>
+                <text class="tx" x="264.03" y="349.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="341.5" width="203.17" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="359.5">Abstraction.CountInPerson1Day</text>
+                <text class="tx" x="264.03" y="376.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn9">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="368.5" width="196.3" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="386.5">Abstraction.CountInternet1Day</text>
+                <text class="tx" x="264.03" y="403.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn10">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="395.5" width="118.2" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="413.5">Abstraction.ATM</text>
+                <text class="tx" x="264.03" y="430.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn11">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="422.5" width="181.29" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="440.5">Abstraction.CountATM1Day</text>
+                <text class="tx" x="264.03" y="457.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn12">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="449.5" width="219.45" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="467.5">Abstraction.CountOver30SEK1Day</text>
+                <text class="tx" x="264.03" y="484.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn13">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="476.5" width="140.08" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="494.5">Abstraction.InPerson</text>
+                <text class="tx" x="264.03" y="511.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn14">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="503.5" width="181.67" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="521.5">Abstraction.TransactionAmt</text>
+                <text class="tx" x="264.03" y="538.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn15">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="530.5" width="220.59" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="548.5">Abstraction.SumTransactions1Day</text>
+                <text class="tx" x="264.03" y="565.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn16">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="557.5" width="249.34" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="575.5">Abstraction.SumATMTransactions1Day</text>
+                <text class="tx" x="264.03" y="592.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn17">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="584.5" width="133.21" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="602.5">Abstraction.Foreign</text>
+                <text class="tx" x="264.03" y="619.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn18">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="611.5" width="274.4" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="629.5">Abstraction.DifferentCountryTransactions1…</text>
+                <text class="tx" x="264.03" y="646.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn19">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="638.5" width="269.06" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="656.5">Abstraction.DifferentMerchantTypes1Week</text>
+                <text class="tx" x="264.03" y="673.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn20">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="665.5" width="261.43" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="683.5">Abstraction.DifferentDeclineReasons1Day</text>
+                <text class="tx" x="264.03" y="700.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn21">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="692.5" width="211.82" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="710.5">Abstraction.DifferentCities1Week</text>
+                <text class="tx" x="264.03" y="727.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn22">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="719.5" width="274.02" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="737.5">Abstraction.CountSameMerchantUsedBefo…</text>
+                <text class="tx" x="264.03" y="754.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn23">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="746.5" width="181.54" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="764.5">Abstraction.HasBeenAbroad</text>
+                <text class="tx" x="264.03" y="781.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn24">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="773.5" width="187.4" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="791.5">Abstraction.CashTransaction</text>
+                <text class="tx" x="264.03" y="808.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn25">
+            <g class="tt">
+                <rect class="tb" x="254.03" y="800.5" width="185.61" height="44" rx="6"/>
+                <text class="tx b" x="264.03" y="818.5">Abstraction.HighRiskCountry</text>
+                <text class="tx" x="264.03" y="835.5">Input layer: Inputs</text>
+            </g>
+        </g>
+        <g class="tp tn26">
+            <g class="tt">
+                <rect class="tb" x="444.03" y="384" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="454.03" y="402">h1.1</text>
+                <text class="tx" x="454.03" y="419">Hidden layer: Hidden 1</text>
+                <text class="tx" x="454.03" y="436">Bias: -0.2502</text>
+                <text class="tx" x="454.03" y="453">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="454.03" y="470">Connections in: 26, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn27">
+            <g class="tt">
+                <rect class="tb" x="444.03" y="411" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="454.03" y="429">h1.2</text>
+                <text class="tx" x="454.03" y="446">Hidden layer: Hidden 1</text>
+                <text class="tx" x="454.03" y="463">Bias: 1.114</text>
+                <text class="tx" x="454.03" y="480">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="454.03" y="497">Connections in: 26, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn28">
+            <g class="tt">
+                <rect class="tb" x="444.03" y="438" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="454.03" y="456">h1.3</text>
+                <text class="tx" x="454.03" y="473">Hidden layer: Hidden 1</text>
+                <text class="tx" x="454.03" y="490">Bias: 0.2443</text>
+                <text class="tx" x="454.03" y="507">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="454.03" y="524">Connections in: 26, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn29">
+            <g class="tt">
+                <rect class="tb" x="444.03" y="465" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="454.03" y="483">h1.4</text>
+                <text class="tx" x="454.03" y="500">Hidden layer: Hidden 1</text>
+                <text class="tx" x="454.03" y="517">Bias: -0.4518</text>
+                <text class="tx" x="454.03" y="534">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="454.03" y="551">Connections in: 26, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn30">
+            <g class="tt">
+                <rect class="tb" x="444.03" y="492" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="454.03" y="510">h1.5</text>
+                <text class="tx" x="454.03" y="527">Hidden layer: Hidden 1</text>
+                <text class="tx" x="454.03" y="544">Bias: 0.3219</text>
+                <text class="tx" x="454.03" y="561">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="454.03" y="578">Connections in: 26, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn31">
+            <g class="tt">
+                <rect class="tb" x="443.19" y="438" width="170.84" height="95" rx="6"/>
+                <text class="tx b" x="453.19" y="456">y</text>
+                <text class="tx" x="453.19" y="473">Output layer: Output</text>
+                <text class="tx" x="453.19" y="490">Bias: -0.2323</text>
+                <text class="tx" x="453.19" y="507">Activation: Sigmoid, alpha 2</text>
+                <text class="tx" x="453.19" y="524">Connections in: 5, out: 0</text>
+            </g>
+        </g>
+    </g>
+</svg>

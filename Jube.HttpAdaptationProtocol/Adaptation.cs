@@ -17,7 +17,7 @@ namespace Jube.HttpAdaptationProtocol
     using Calibration;
     using Contribution;
     using Journey;
-    using Model;
+    using Models;
     using Newtonsoft.Json;
 
     public sealed record Adaptation
@@ -36,10 +36,7 @@ namespace Jube.HttpAdaptationProtocol
         [JsonIgnore]
         public bool IsSuppressed
         {
-            get
-            {
-                return Value is null || !String.IsNullOrEmpty(Error);
-            }
+            get { return Value is null || !String.IsNullOrEmpty(Error); }
         }
 
         public static implicit operator double?(Adaptation adaptation)

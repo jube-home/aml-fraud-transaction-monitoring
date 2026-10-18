@@ -23,125 +23,110 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+using System.Numerics;
+using Accord.Diagnostics;
+
 namespace Accord.Math
 {
-    using System;
-    using Accord.Compat;
-    using System.Numerics;
-
     /// <summary>
-    ///   Gabor kernel types.
+    ///     Gabor kernel types.
     /// </summary>
-    /// 
     public enum GaborKernelKind
     {
-
         /// <summary>
-        ///   Creates kernel based on the real part of the Gabor function.
+        ///     Creates kernel based on the real part of the Gabor function.
         /// </summary>
-        /// 
         Real,
 
         /// <summary>
-        ///   Creates a kernel based on the imaginary part of the Gabor function.
+        ///     Creates a kernel based on the imaginary part of the Gabor function.
         /// </summary>
-        /// 
         Imaginary,
 
         /// <summary>
-        ///   Creates a kernel based on the Magnitude of the Gabor function.
+        ///     Creates a kernel based on the Magnitude of the Gabor function.
         /// </summary>
-        /// 
         Magnitude,
 
         /// <summary>
-        ///   Creates a kernel based on the Squared Magnitude of the Gabor function.
+        ///     Creates a kernel based on the Squared Magnitude of the Gabor function.
         /// </summary>
-        /// 
         SquaredMagnitude
-    };
+    }
 
     /// <summary>
-    ///   Gabor functions.
+    ///     Gabor functions.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   This class has been contributed by Diego Catalano, author of the Catalano 
-    ///   Framework, a native port of AForge.NET and Accord.NET for Java and Android.
+    ///     This class has been contributed by Diego Catalano, author of the Catalano
+    ///     Framework, a native port of AForge.NET and Accord.NET for Java and Android.
     /// </remarks>
-    /// 
     public static class Gabor
     {
-
         /// <summary>
-        ///   1-D Gabor function.
+        ///     1-D Gabor function.
         /// </summary>
-        /// 
         public static double Function1D(double x, double mean, double amplitude,
             double position, double width, double phase, double frequency)
         {
-            double a = (x - position) * (x - position);
-            double b = (2 * width) * (2 * width);
+            var a = (x - position) * (x - position);
+            var b = 2 * width * (2 * width);
 
-            double envelope = mean + amplitude * Math.Exp(-a / b);
-            double carry = Math.Cos(2 * Math.PI * frequency * (x - position) + phase);
+            var envelope = mean + amplitude * System.Math.Exp(-a / b);
+            var carry = System.Math.Cos(2 * System.Math.PI * frequency * (x - position) + phase);
 
             return envelope * carry;
         }
 
         /// <summary>
-        ///   2-D Gabor function.
+        ///     2-D Gabor function.
         /// </summary>
-        /// 
         public static Complex Function2D(int x, int y, double lambda, double theta,
             double psi, double sigma, double gamma)
         {
-            double X = +x * Math.Cos(theta) + y * Math.Sin(theta);
-            double Y = -x * Math.Sin(theta) + y * Math.Cos(theta);
+            var X = +x * System.Math.Cos(theta) + y * System.Math.Sin(theta);
+            var Y = -x * System.Math.Sin(theta) + y * System.Math.Cos(theta);
 
-            double envelope = Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
-            double real = Math.Cos(2 * Math.PI * (X / lambda) + psi);
-            double imaginary = Math.Sin(2 * Math.PI * (X / lambda) + psi);
+            var envelope = System.Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
+            var real = System.Math.Cos(2 * System.Math.PI * (X / lambda) + psi);
+            var imaginary = System.Math.Sin(2 * System.Math.PI * (X / lambda) + psi);
 
             return new Complex(envelope * real, envelope * imaginary);
         }
 
         /// <summary>
-        ///   Real part of the 2-D Gabor function.
+        ///     Real part of the 2-D Gabor function.
         /// </summary>
-        /// 
         public static double RealFunction2D(int x, int y, double lambda, double theta,
             double psi, double sigma, double gamma)
         {
-            double X = +x * Math.Cos(theta) + y * Math.Sin(theta);
-            double Y = -x * Math.Sin(theta) + y * Math.Cos(theta);
+            var X = +x * System.Math.Cos(theta) + y * System.Math.Sin(theta);
+            var Y = -x * System.Math.Sin(theta) + y * System.Math.Cos(theta);
 
-            double envelope = Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
-            double carrier = Math.Cos(2 * Math.PI * (X / lambda) + psi);
+            var envelope = System.Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
+            var carrier = System.Math.Cos(2 * System.Math.PI * (X / lambda) + psi);
 
             return envelope * carrier;
         }
 
         /// <summary>
-        ///   Imaginary part of the 2-D Gabor function.
+        ///     Imaginary part of the 2-D Gabor function.
         /// </summary>
-        /// 
         public static double ImaginaryFunction2D(int x, int y, double lambda, double theta,
             double psi, double sigma, double gamma)
         {
-            double X = +x * Math.Cos(theta) + y * Math.Sin(theta);
-            double Y = -x * Math.Sin(theta) + y * Math.Cos(theta);
+            var X = +x * System.Math.Cos(theta) + y * System.Math.Sin(theta);
+            var Y = -x * System.Math.Sin(theta) + y * System.Math.Cos(theta);
 
-            double envelope = Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
-            double carrier = Math.Sin(2 * Math.PI * (X / lambda) + psi);
+            var envelope = System.Math.Exp(-((X * X + gamma * gamma * Y * Y) / (2 * sigma * sigma)));
+            var carrier = System.Math.Sin(2 * System.Math.PI * (X / lambda) + psi);
 
             return envelope * carrier;
         }
 
         /// <summary>
-        ///   Computes the 2-D Gabor kernel.
+        ///     Computes the 2-D Gabor kernel.
         /// </summary>
-        /// 
         public static double[,] Kernel2D(double lambda, double theta, double psi,
             double sigma, double gamma)
         {
@@ -149,9 +134,8 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Computes the 2-D Gabor kernel.
+        ///     Computes the 2-D Gabor kernel.
         /// </summary>
-        /// 
         public static double[,] Kernel2D(double lambda, double theta, double psi,
             double sigma, double gamma, bool normalized)
         {
@@ -159,9 +143,8 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Computes the 2-D Gabor kernel.
+        ///     Computes the 2-D Gabor kernel.
         /// </summary>
-        /// 
         public static double[,] Kernel2D(int size, double lambda, double theta, double psi,
             double sigma, double gamma, bool normalized)
         {
@@ -169,73 +152,91 @@ namespace Accord.Math
                 gamma, normalized, GaborKernelKind.Imaginary);
         }
 
-
         /// <summary>
-        ///   Computes the 2-D Gabor kernel.
+        ///     Computes the 2-D Gabor kernel.
         /// </summary>
-        /// 
         public static double[,] Kernel2D(int size, double lambda, double theta,
             double psi, double sigma, double gamma, bool normalized, GaborKernelKind function)
         {
-            double sigmaX = sigma;
-            double sigmaY = sigma / gamma;
+            var sigmaX = sigma;
+            var sigmaY = sigma / gamma;
 
-            double a = Math.Max(
-                Math.Abs(size * sigmaX * Math.Cos(theta)),
-                Math.Abs(size * sigmaY * Math.Sin(theta)));
-            int xMax = (int)Math.Ceiling(Math.Max(1, a));
+            var a = System.Math.Max(
+                System.Math.Abs(size * sigmaX * System.Math.Cos(theta)),
+                System.Math.Abs(size * sigmaY * System.Math.Sin(theta)));
+            var xMax = (int)System.Math.Ceiling(System.Math.Max(1, a));
 
-            double b = Math.Max(
-                Math.Abs(size * sigmaX * Math.Sin(theta)),
-                Math.Abs(size * sigmaY * Math.Cos(theta)));
-            int yMax = (int)Math.Ceiling(Math.Max(1, b));
+            var b = System.Math.Max(
+                System.Math.Abs(size * sigmaX * System.Math.Sin(theta)),
+                System.Math.Abs(size * sigmaY * System.Math.Cos(theta)));
+            var yMax = (int)System.Math.Ceiling(System.Math.Max(1, b));
 
-            int[] xValues = Vector.Interval(-xMax, xMax);
-            int[] yValues = Vector.Interval(-yMax, yMax);
+            var xValues = Vector.Interval(-xMax, xMax);
+            var yValues = Vector.Interval(-yMax, yMax);
 
-            Accord.Diagnostics.Debug.Assert(xValues.Length == (2 * xMax + 1));
-            Accord.Diagnostics.Debug.Assert(yValues.Length == (2 * yMax + 1));
+            Debug.Assert(xValues.Length == 2 * xMax + 1);
+            Debug.Assert(yValues.Length == 2 * yMax + 1);
 
-            double[,] kernel = new double[xValues.Length, yValues.Length];
+            var kernel = new double[xValues.Length, yValues.Length];
 
             double sum = 0;
 
             switch (function)
             {
                 case GaborKernelKind.Real:
-                    for (int i = 0; i < xValues.Length; i++)
-                        for (int j = 0; j < yValues.Length; j++)
-                            sum += kernel[i, j] = Gabor.RealFunction2D(
+                    for (var i = 0; i < xValues.Length; i++)
+                    {
+                        for (var j = 0; j < yValues.Length; j++)
+                        {
+                            sum += kernel[i, j] = RealFunction2D(
                                 xValues[i], yValues[j], lambda, theta, psi, sigma, gamma);
+                        }
+                    }
+
                     break;
 
                 case GaborKernelKind.Imaginary:
-                    for (int i = 0; i < xValues.Length; i++)
-                        for (int j = 0; j < yValues.Length; j++)
-                            sum += kernel[i, j] = Gabor.ImaginaryFunction2D(
-                                    xValues[i], yValues[j], lambda, theta, psi, sigma, gamma);
+                    for (var i = 0; i < xValues.Length; i++)
+                    {
+                        for (var j = 0; j < yValues.Length; j++)
+                        {
+                            sum += kernel[i, j] = ImaginaryFunction2D(
+                                xValues[i], yValues[j], lambda, theta, psi, sigma, gamma);
+                        }
+                    }
+
                     break;
 
                 case GaborKernelKind.Magnitude:
-                    for (int i = 0; i < xValues.Length; i++)
-                        for (int j = 0; j < yValues.Length; j++)
-                            sum += kernel[i, j] = Gabor.Function2D(
+                    for (var i = 0; i < xValues.Length; i++)
+                    {
+                        for (var j = 0; j < yValues.Length; j++)
+                        {
+                            sum += kernel[i, j] = Function2D(
                                 xValues[i], yValues[j], lambda, theta, psi, sigma, gamma).Magnitude;
+                        }
+                    }
+
                     break;
 
                 case GaborKernelKind.SquaredMagnitude:
-                    for (int i = 0; i < xValues.Length; i++)
-                        for (int j = 0; j < yValues.Length; j++)
+                    for (var i = 0; i < xValues.Length; i++)
+                    {
+                        for (var j = 0; j < yValues.Length; j++)
                         {
-                            double v = Gabor.Function2D(
+                            var v = Function2D(
                                 xValues[i], yValues[j], lambda, theta, psi, sigma, gamma).Magnitude;
                             sum += kernel[i, j] = v * v;
                         }
+                    }
+
                     break;
             }
 
             if (normalized)
-                kernel.Divide(sum, result: kernel);
+            {
+                kernel.Divide(sum, kernel);
+            }
 
             return kernel;
         }

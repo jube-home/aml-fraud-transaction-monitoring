@@ -13,7 +13,7 @@
 
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 
 namespace Jube.Cache.Redis
@@ -32,6 +32,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+
                     var redisHSetKey = $"{dataValue}";
 
                     var value = await resilientRedisResilientRedisDatabase
@@ -43,6 +44,7 @@ namespace Jube.Cache.Redis
                     }
 
                     await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
+
                     return 0;
                 }
                 catch (Exception ex)
@@ -63,7 +65,9 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+
                     var redisHSetKey = $"{dataValue}";
+
                     return (double)await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey)
                         .ConfigureAwait(false);
                 }
@@ -86,6 +90,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey =
                         $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+
                     var redisHSetKey = $"{dataValue}";
 
                     await resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment)

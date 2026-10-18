@@ -59,6 +59,7 @@ namespace Jube.Parser.Compiler
 
             var peStream = new MemoryStream();
             EmitResult result = null;
+
             if (language == Language.Vb)
             {
                 var compilation = VisualBasicCompilationConfig(code, log, refs, assemblyGuid);
@@ -102,6 +103,7 @@ namespace Jube.Parser.Compiler
             {
                 var failures = result.Diagnostics.Where(diagnostic =>
                     diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+
                 IEnumerable<Diagnostic> diagnostics = failures as Diagnostic[] ?? failures.ToArray();
                 Errors = diagnostics;
                 Success = false;
@@ -109,6 +111,7 @@ namespace Jube.Parser.Compiler
             else
             {
                 Success = true;
+
                 if (load)
                 {
                     HandleCompile(log, peStream);
@@ -168,6 +171,7 @@ namespace Jube.Parser.Compiler
             string assemblyGuid)
         {
             var parseOptions = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
+
             var compileOptions = new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: OptimizationLevel.Release, embedVbCoreRuntime: true, optionStrict: OptionStrict.On);
 
@@ -176,6 +180,7 @@ namespace Jube.Parser.Compiler
             var compilation = VisualBasicCompilation.Create(assemblyGuid)
                 .AddSyntaxTrees(VisualBasicSyntaxTree.ParseText(code, parseOptions))
                 .WithReferences(references).WithOptions(compileOptions);
+
             return compilation;
         }
 
@@ -185,6 +190,7 @@ namespace Jube.Parser.Compiler
         {
             var parseOptions =
                 CSharpParseOptions.Default.WithLanguageVersion(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest);
+
             var compileOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: OptimizationLevel.Release);
 
@@ -193,6 +199,7 @@ namespace Jube.Parser.Compiler
             var compilation = CSharpCompilation.Create(assemblyGuid)
                 .AddSyntaxTrees(CSharpSyntaxTree.ParseText(code, parseOptions))
                 .WithReferences(references).WithOptions(compileOptions);
+
             return compilation;
         }
 
@@ -200,6 +207,7 @@ namespace Jube.Parser.Compiler
         {
             var references = new MetadataReference[refs.Count + 3];
             int i;
+
             for (i = 0; i < refs.Count; i++)
             {
                 references[i] = CachedReference(refs[i]);

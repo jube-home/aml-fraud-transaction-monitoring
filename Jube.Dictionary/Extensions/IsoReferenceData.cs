@@ -17,7 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         internal sealed record Country(string Alpha2, string Alpha3, string Name);
 
-        internal static readonly IReadOnlyDictionary<string, int> CurrencyExponents =
+        internal static readonly IReadOnlyDictionary<string, int> currencyExponents =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
                 ["AED"] = 2,
@@ -187,7 +187,7 @@ namespace Jube.Dictionary.Extensions
                 ["ZWG"] = 2
             };
 
-        private static readonly Country[] Countries =
+        private static readonly Country[] countries =
         [
             new("AF", "AFG", "Afghanistan"),
             new("AX", "ALA", "Åland Islands"),
@@ -440,10 +440,10 @@ namespace Jube.Dictionary.Extensions
             new("ZW", "ZWE", "Zimbabwe")
         ];
 
-        internal static readonly IReadOnlyDictionary<string, Country> CountriesByAlpha2 =
-            Countries.ToDictionary(c => c.Alpha2, StringComparer.OrdinalIgnoreCase);
+        internal static readonly IReadOnlyDictionary<string, Country> countriesByAlpha2 =
+            countries.ToDictionary(c => c.Alpha2, StringComparer.OrdinalIgnoreCase);
 
-        internal static readonly IReadOnlyDictionary<string, Country> CountriesByAlpha3 =
-            Countries.ToDictionary(c => c.Alpha3, StringComparer.OrdinalIgnoreCase);
+        internal static readonly IReadOnlyDictionary<string, Country> countriesByAlpha3 =
+            countries.ToDictionary(c => c.Alpha3, StringComparer.OrdinalIgnoreCase);
     }
 }

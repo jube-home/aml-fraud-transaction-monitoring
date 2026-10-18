@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.TaskCancellation;
-using Jube.Data.Repository;
 using Jube.Test.Infrastructure;
 using LinqToDB;
 using Xunit;
@@ -66,6 +66,7 @@ namespace Jube.Test.Engine.TtlCounter
                 {
                     await dbContext.GetTable<CacheTtlCounterEntryRemovalBatchResponseTime>()
                         .Where(w => batchIds.Contains(w.CacheTtlCounterEntryRemovalBatchId)).DeleteAsync();
+
                     await dbContext.CacheTtlCounterEntryRemovalBatchEntry
                         .Where(w => batchIds.Contains(w.CacheTtlCounterEntryRemovalBatchId)).DeleteAsync();
                     await dbContext.CacheTtlCounterEntryRemovalBatch
@@ -79,6 +80,7 @@ namespace Jube.Test.Engine.TtlCounter
                     .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
                 await dbContext.GetTable<EntityAnalysisModelVersion>()
                     .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -94,6 +96,7 @@ namespace Jube.Test.Engine.TtlCounter
                 Deleted = 0
             });
             createdModelIdsForCleanup.Add(saved);
+
             return saved;
         }
 
@@ -125,6 +128,7 @@ namespace Jube.Test.Engine.TtlCounter
                 ReportTable = null,
                 TtlCounterDataValue = null
             });
+
             createdCounterGuidsForCleanup.Add(counterGuid);
 
             await EntityApprovalSeed.ApproveAsync(dbContext,
@@ -145,7 +149,8 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain>
+                        { [modelId] = model }
                 }
             };
 
@@ -154,6 +159,7 @@ namespace Jube.Test.Engine.TtlCounter
 
             model.Snapshot.ModelTtlCounters.Should().ContainSingle(
                 "sync should have loaded the one active TTL Counter definition for this model");
+
             var synced = model.Snapshot.ModelTtlCounters.Single();
 
             synced.Guid.Should().Be(counterGuid);
@@ -163,8 +169,10 @@ namespace Jube.Test.Engine.TtlCounter
             synced.TtlCounterInterval.Should().Be("d", "a null TtlCounterInterval defaults to days");
             synced.TtlCounterValue.Should().Be(0, "a null TtlCounterValue defaults to zero");
             synced.ResolutionInterval.Should().Be("d", "a null ResolutionInterval defaults to days");
+
             synced.OnlineAggregation.Should().BeTrue(
                 "sync defaults OnlineAggregation to true when the database column is null");
+
             synced.EnableSum.Should().BeFalse();
             synced.EnableLiveForever.Should().BeFalse();
             synced.ResponsePayload.Should().BeFalse();
@@ -192,6 +200,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterInterval = "d",
                 TtlCounterValue = 1
             });
+
             createdCounterGuidsForCleanup.Add(counterGuid);
 
             await EntityApprovalSeed.ApproveAsync(dbContext,
@@ -201,6 +210,7 @@ namespace Jube.Test.Engine.TtlCounter
             {
                 Instance = { Id = modelId, Guid = Guid.NewGuid() }
             };
+
             var context = new SyncContext
             {
                 Services =
@@ -211,7 +221,8 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain>
+                        { [modelId] = model }
                 }
             };
 
@@ -250,6 +261,7 @@ namespace Jube.Test.Engine.TtlCounter
                 OnlineAggregation = 0,
                 EnableSum = 0
             });
+
             createdCounterGuidsForCleanup.Add(counterGuid);
 
             await EntityApprovalSeed.ApproveAsync(dbContext,
@@ -272,7 +284,8 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain>
+                        { [modelId] = model }
                 }
             };
 
@@ -285,12 +298,15 @@ namespace Jube.Test.Engine.TtlCounter
 
             var pollMs = Math.Max(50,
                 int.Parse(TestDynamicEnvironment.Create().AppSettings("WaitTtlCounterDecrement")) / 5);
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ConnectionString"] = ConnectionString,
                 ["WaitTtlCounterDecrement"] = pollMs.ToString()
             });
+
             var cancellationTokenProvider = new CancellationTokenProvider();
+
             var backgroundContext = new BackgroundContext
             {
                 Services =
@@ -300,11 +316,14 @@ namespace Jube.Test.Engine.TtlCounter
                     TaskCoordinator = new TaskCoordinator(cancellationTokenProvider)
                 }
             };
+
             backgroundContext.EntityAnalysisModels.ActiveEntityAnalysisModels[model.Instance.Id] = model;
 
             var startedAt = DateTime.UtcNow;
+
             await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                 tenant, model.Instance.Guid, startedAt);
+
             await model.Services.CacheService.CacheTtlCounterRepository.IncrementTtlCounterCacheAsync(
                 tenant, model.Instance.Guid, dataName, dataValue, syncedCounter.Guid, incrementValue, startedAt);
             await model.Services.CacheService.CacheTtlCounterEntryRepository.UpsertAsync(
@@ -314,12 +333,14 @@ namespace Jube.Test.Engine.TtlCounter
             var loopTask = starter.StartAsync();
 
             var pumpCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenProvider.Token);
+
             var pumpTask = Task.Run(async () =>
             {
                 while (!pumpCts.IsCancellationRequested)
                 {
                     await model.Services.CacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
                         tenant, model.Instance.Guid, DateTime.UtcNow);
+
                     try
                     {
                         await Task.Delay(pollMs, pumpCts.Token);
@@ -336,12 +357,14 @@ namespace Jube.Test.Engine.TtlCounter
 
             cancellationTokenProvider.Cancel();
             await pumpCts.CancelAsync();
+
             await Task.WhenAny(Task.WhenAll(loopTask, pumpTask),
                 Task.Delay(TimeSpan.FromSeconds(5), CancellationToken.None));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, syncedCounter.Guid, dataName,
                     dataValue);
+
             remaining.Should().Be(0,
                 "a counter definition loaded through the real sync call stack must be pruned by the real " +
                 "administration loop just like a hand-built one");

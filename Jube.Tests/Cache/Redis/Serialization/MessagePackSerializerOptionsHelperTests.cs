@@ -13,7 +13,7 @@
 
 using FluentAssertions;
 using Jube.Cache.Redis.Serialization;
-using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
 using Jube.Dictionary;
 using MessagePack;
 using Xunit;
@@ -82,6 +82,7 @@ namespace Jube.Test.Cache.Redis.Serialization
             var withoutCompression =
                 MessagePackSerializerOptionsHelper
                     .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(false);
+
             var withCompression =
                 MessagePackSerializerOptionsHelper
                     .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true);
@@ -99,6 +100,7 @@ namespace Jube.Test.Cache.Redis.Serialization
         {
             var withCompression =
                 MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(true);
+
             var withoutCompression =
                 MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false);
 

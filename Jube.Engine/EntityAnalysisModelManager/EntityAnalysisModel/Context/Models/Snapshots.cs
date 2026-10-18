@@ -32,6 +32,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
             var builder = new ModelSnapshotBuilder(entityAnalysisModel.Snapshot);
             builders.Add(entityAnalysisModelId, builder);
             models.Add(entityAnalysisModelId, entityAnalysisModel);
+
             return builder;
         }
 

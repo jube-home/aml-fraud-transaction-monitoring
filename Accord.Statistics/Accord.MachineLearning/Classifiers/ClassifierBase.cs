@@ -1,108 +1,113 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
 
 namespace Accord.MachineLearning
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Accord.Math;
-    using Accord.Compat;
-    using System.Threading.Tasks;
-
     /// <summary>
-    ///   Base class for multi-class and multi-label classifiers.
+    ///     Base class for multi-class and multi-label classifiers.
     /// </summary>
-    /// 
     /// <typeparam name="TInput">The data type for the input data. Default is double[].</typeparam>
     /// <typeparam name="TClasses">The data type for the classes. Default is int.</typeparam>
-    /// 
     [Serializable]
     public abstract class ClassifierBase<TInput, TClasses> :
-        TransformBase<TInput, TClasses>, 
+        TransformBase<TInput, TClasses>,
         IClassifier<TInput, TClasses>
     {
         /// <summary>
-        /// Gets the number of classes expected and recognized by the classifier.
+        ///     Gets the number of classes expected and recognized by the classifier.
         /// </summary>
         /// <value>The number of classes.</value>
         public virtual int NumberOfClasses { get; set; }
 
         /// <summary>
-        ///   Computes a class-label decision for a given <paramref name="input"/>.
+        ///     Computes a class-label decision for a given <paramref name="input" />.
         /// </summary>
-        /// 
-        /// <param name="input">The input vector that should be classified into
-        ///   one of the <see cref="ITransform.NumberOfOutputs"/> possible classes.</param>
-        /// 
-        /// <returns>A class-label that best described <paramref name="input"/> according
-        /// to this classifier.</returns>
-        /// 
+        /// <param name="input">
+        ///     The input vector that should be classified into
+        ///     one of the <see cref="ITransform.NumberOfOutputs" /> possible classes.
+        /// </param>
+        /// <returns>
+        ///     A class-label that best described <paramref name="input" /> according
+        ///     to this classifier.
+        /// </returns>
         public abstract TClasses Decide(TInput input);
 
         /// <summary>
-        ///   Computes class-label decisions for a given set of <paramref name="input"/> vectors.
+        ///     Computes class-label decisions for a given set of <paramref name="input" /> vectors.
         /// </summary>
-        /// 
-        /// <param name="input">The input vectors that should be classified into
-        ///   one of the <see cref="ITransform.NumberOfOutputs"/> possible classes.</param>
-        /// 
-        /// <returns>The class-labels that best described each <paramref name="input"/>
-        /// vector according to this classifier.</returns>
-        /// 
+        /// <param name="input">
+        ///     The input vectors that should be classified into
+        ///     one of the <see cref="ITransform.NumberOfOutputs" /> possible classes.
+        /// </param>
+        /// <returns>
+        ///     The class-labels that best described each <paramref name="input" />
+        ///     vector according to this classifier.
+        /// </returns>
         public TClasses[] Decide(TInput[] input)
         {
             return Decide(input, new TClasses[input.Length]);
         }
 
-
         /// <summary>
-        ///  Computes a class-label decision for a given <paramref name="input" />.
-        /// 
+        ///     Computes a class-label decision for a given <paramref name="input" />.
         /// </summary>
-        /// 
-        /// <param name="input">The input vector that should be classified into
-        ///   one of the <see cref="ITransform.NumberOfOutputs" /> possible classes.</param>
-        /// <param name="result">The location where to store the class-labels.</param>   
-        /// 
+        /// <param name="input">
+        ///     The input vector that should be classified into
+        ///     one of the <see cref="ITransform.NumberOfOutputs" /> possible classes.
+        /// </param>
+        /// <param name="result">The location where to store the class-labels.</param>
         /// <returns>
-        ///   A class-label that best described <paramref name="input" /> according
-        ///   to this classifier.
+        ///     A class-label that best described <paramref name="input" /> according
+        ///     to this classifier.
         /// </returns>
-        /// 
         public virtual TClasses[] Decide(TInput[] input, TClasses[] result)
         {
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 result[i] = Decide(input[i]);
+            }
+
             return result;
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
         public override TClasses Transform(TInput input)
         {
@@ -110,20 +115,17 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        /// Applies the transformation to an input, producing an associated output.
+        ///     Applies the transformation to an input, producing an associated output.
         /// </summary>
         /// <param name="input">The input data to which the transformation should be applied.</param>
         /// <param name="result">The location where to store the class-labels.</param>
         /// <returns>
-        /// The output generated by applying this transformation to the given input.
+        ///     The output generated by applying this transformation to the given input.
         /// </returns>
         public override TClasses[] Transform(TInput[] input, TClasses[] result)
         {
             return Decide(input, result);
         }
-
-
-
 
         internal T[] create<T>(TInput input)
         {
@@ -138,23 +140,31 @@ namespace Accord.MachineLearning
         internal T[] createOrReuse<T>(TInput input, T[] decision)
         {
             if (decision == null)
+            {
                 decision = new T[NumberOfClasses];
+            }
+
             return decision;
         }
 
         internal T[][] createOrReuse<T>(TInput[] input, T[][] decision)
         {
             if (decision == null)
+            {
                 decision = Jagged.Create<T>(input.Length, NumberOfClasses);
+            }
+
             return decision;
         }
 
         internal T[] createOrReuse<T>(TInput[] input, T[] decision)
         {
             if (decision == null)
+            {
                 decision = new T[input.Length];
+            }
+
             return decision;
         }
-
     }
 }

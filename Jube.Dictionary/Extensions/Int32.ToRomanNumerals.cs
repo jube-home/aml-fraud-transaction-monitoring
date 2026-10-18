@@ -27,6 +27,7 @@ namespace Jube.Dictionary.Extensions
 
             var remaining = @this;
             var builder = new System.Text.StringBuilder();
+
             for (var i = 0; i < values.Length; i++)
             {
                 while (remaining >= values[i])

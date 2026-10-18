@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
         public ActivationWatcherRepository(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+
             tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -65,6 +66,7 @@ namespace Jube.Data.Repository
         public async Task<ActivationWatcher> InsertAsync(ActivationWatcher model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
     }

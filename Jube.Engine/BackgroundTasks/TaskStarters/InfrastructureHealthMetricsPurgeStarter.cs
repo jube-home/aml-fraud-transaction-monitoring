@@ -44,6 +44,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                         var wait = int.Parse(context.Services.DynamicEnvironment
                             .AppSettings("WaitInfrastructureHealthMetricsPurge"));
+
                         await Task.Delay(wait, context.Services.TaskCoordinator.CancellationToken)
                             .ConfigureAwait(false);
                     }
@@ -68,6 +69,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private Task PurgeAllAsync(CancellationToken token)
         {
             var cutoffUtc = ComputeCutoffUtc();
+
             var chunkSize = int.Parse(context.Services.DynamicEnvironment
                 .AppSettings("InfrastructureHealthMetricsPurgeDeleteLimit"));
 
@@ -185,10 +187,13 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             int chunkSize, CancellationToken token) where T : class
         {
             using var scope = SamplerScope.Start($"{tableName}Purge", Dns.GetHostName());
+
             var connectionString = context.Services.DynamicEnvironment.AppSettings("PurgeConnectionString")
                                    ?? context.Services.DynamicEnvironment.AppSettings("ConnectionString");
+
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 connectionString, context.Services.Log);
+
             try
             {
                 var deleted = await ChunkedPurge.DeleteOlderThanAsync(dbContext, olderThanPredicate, idSelector,
@@ -206,6 +211,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsPurgeStarter: An error purging {tableName} has been observed as {ex}.");
             }

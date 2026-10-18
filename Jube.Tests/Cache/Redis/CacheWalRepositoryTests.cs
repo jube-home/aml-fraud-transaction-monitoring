@@ -15,7 +15,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 
@@ -73,10 +73,12 @@ namespace Jube.Test.Cache.Redis
         public async Task InsertSwallowsAndLogsOnFailureAsync()
         {
             var log = new TestLog();
+
             var fake = new FakeHybridResilientRedisDatabase
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.HashSetAsync)
             };
+
             var repository = new CacheWalRepository(fake, log);
 
             var act = async () => await repository.InsertAsync(1, Guid.NewGuid(), Guid.NewGuid(), "node-a", [1]);
@@ -89,10 +91,12 @@ namespace Jube.Test.Cache.Redis
         public async Task FlushWalSwallowsAndLogsOnFailureAsync()
         {
             var log = new TestLog();
+
             var fake = new FakeHybridResilientRedisDatabase
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.HashDeleteAsync)
             };
+
             var repository = new CacheWalRepository(fake, log);
 
             var act = async () => await repository.FlushWalAsync(1, Guid.NewGuid(), "node-a", [Guid.NewGuid()]);
@@ -108,6 +112,7 @@ namespace Jube.Test.Cache.Redis
             {
                 ThrowOnMethod = nameof(IHybridResilientRedisDatabase.HashLengthAsync)
             };
+
             var repository = new CacheWalRepository(fake, TestLog.NoOp);
 
             var act = async () => await repository.GetWalSizeAsync(1, Guid.NewGuid(), "node-a");

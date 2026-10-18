@@ -84,6 +84,7 @@ $.get("../api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloat
             SetLiveForever();
             SetSum();
             ReadyNew();
+            window.AskJoobySetPageContext?.("EntityAnalysisModelTtlCounter", "new", {[parentKeyName]: parentKey});
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
@@ -125,6 +126,12 @@ $.get("../api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloat
                     SetSum();
                     SetLiveForever();
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("EntityAnalysisModelTtlCounter", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     }

@@ -27,6 +27,10 @@ namespace Jube.HttpAdaptationProtocol
             public const string BayesianNetwork = "BayesianNetwork";
             public const string NeuralNetwork = "NeuralNetwork";
             public const string ExpertRule = "ExpertRule";
+            public const string Gaussian = "Gaussian";
+            public const string KNearestNeighbours = "KNearestNeighbours";
+            public const string AdaBoost = "AdaBoost";
+            public const string IsolationForest = "IsolationForest";
         }
 
         public static class ContributionSpace
@@ -40,6 +44,14 @@ namespace Jube.HttpAdaptationProtocol
             public const string BootstrapStrength = "BootstrapStrength";
             public const string ArcStrength = "ArcStrength";
             public const string ConnectionWeight = "ConnectionWeight";
+            public const string LayerwiseRelevance = "LayerwiseRelevance";
+            public const string MahalanobisTerm = "MahalanobisTerm";
+            public const string Gradient = "Gradient";
+            public const string TreePathContribution = "TreePathContribution";
+            public const string DecisionPath = "DecisionPath";
+            public const string LogLikelihoodRatio = "LogLikelihoodRatio";
+            public const string NeighbourDistanceShare = "NeighbourDistanceShare";
+            public const string WeightedVoteContribution = "WeightedVoteContribution";
         }
 
         public static class ValueSpace
@@ -49,6 +61,8 @@ namespace Jube.HttpAdaptationProtocol
             public const string DecisionFunction = "DecisionFunction";
             public const string VoteFraction = "VoteFraction";
             public const string Score = "Score";
+            public const string Distance = "Distance";
+            public const string LogLikelihood = "LogLikelihood";
         }
 
         public static class CalibrationMethod
@@ -68,6 +82,7 @@ namespace Jube.HttpAdaptationProtocol
             public const string Expert = "Expert";
             public const string Constrained = "Constrained";
             public const string None = "None";
+            public const string ChowLiu = "ChowLiu";
         }
 
         public static class Source

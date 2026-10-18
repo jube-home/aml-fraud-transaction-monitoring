@@ -13,6 +13,7 @@
 
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 
 namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
 {
@@ -63,6 +64,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
             {
                 var field = new InvocationContextField(value.Name, value.Group, value.DataType);
                 object? typed = null;
+
                 if (value.Value != null && InvocationContextBuilder.TryConvertText(value.DataType, value.Value,
                         out var converted))
                 {

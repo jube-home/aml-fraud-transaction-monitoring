@@ -22,8 +22,8 @@ using Jube.Dto.ExhaustiveSearchInstance;
 using Jube.Dto.EntityApproval;
 using Jube.Service.Exceptions.ExhaustiveSearchInstance;
 using Jube.Service.Exceptions.EntityApproval;
-using Jube.Service.ExhaustiveSearchInstance;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Repository.ExhaustiveSearchInstance;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -70,6 +70,11 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.OK)
                 .WithName("ExhaustiveSearchInstanceStop");
 
+            group.MapPut("{id:int}/active", SetActiveAsync)
+                .Produces((int)HttpStatusCode.OK)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("ExhaustiveSearchInstanceSetActive");
+
             group.MapDelete("{id:int}", DeleteAsync)
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.NoContent)
@@ -94,6 +99,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -101,11 +107,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetAsync(token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -138,6 +147,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -149,6 +159,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}: entry user={user}");
@@ -156,11 +167,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByEntityAnalysisModelIdAsync(entityAnalysisModelId, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -195,6 +209,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -205,6 +220,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -212,11 +228,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByIdAsync(id, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -249,6 +268,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -259,6 +279,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -266,11 +287,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.InsertAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -312,6 +336,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -322,6 +347,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry user={user}");
@@ -329,11 +355,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.UpdateAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -384,6 +413,75 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> SetActiveAsync(
+            int id, [FromBody] ExhaustiveSearchInstanceSetActiveRequest model, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"PUT {Base}/{id}/active: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await ExhaustiveSearchInstanceService.CreateAsync(
+                    dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
+                var result = await service.SetActiveAsync(id, model.Active, token);
+
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/active: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/active: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/active: 204 (not found) user={user}");
+                }
+
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"PUT {Base}/{id}/active: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"PUT {Base}/{id}/active: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -394,6 +492,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}/stop/{guid}: entry user={user}");
@@ -401,11 +500,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 await service.StopAsync(guid, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -438,6 +540,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"PUT {Base}/stop/{guid}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -448,6 +551,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"DELETE {Base}/{id}: entry user={user}");
@@ -455,11 +559,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceService.CreateAsync(
                     dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 await service.DeleteAsync(id, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -510,6 +617,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -660,4 +768,6 @@ namespace Jube.App.Endpoints
             }
         }
     }
+
+    public sealed record ExhaustiveSearchInstanceSetActiveRequest(bool Active);
 }

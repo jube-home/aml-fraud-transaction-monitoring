@@ -6,111 +6,115 @@
 // contacts@aforgenet.com
 //
 
+using System;
 using System.Collections.Generic;
 
 namespace Accord.Neuro
 {
-    using System;
-    using Accord.Compat;
-
     [Serializable]
     public class ActivationNetworkAnnotation
     {
-        public string Name;
-        public double Mean;
-        public double Mode;
-        public double Max;
-        public double Min;
-        public double Sd;
-        public double NormalisationTypeId;
-        public int ExhaustiveSearchInstanceVariableId;
         public int ExhaustiveSearchInstanceTrialInstanceVariableId;
+        public int ExhaustiveSearchInstanceVariableId;
+        public double Max;
+        public double Mean;
+        public double Min;
+        public double Mode;
+        public string Name;
+        public double NormalisationTypeId;
         public int ProcessingTypeId;
-    } 
-    
+        public double Sd;
+    }
+
     /// <summary>
-    /// Activation network.
+    ///     Activation network.
     /// </summary>
-    /// 
-    /// <remarks><para>Activation network is a base for multi-layer neural network
-    /// with activation functions. It consists of <see cref="ActivationLayer">activation
-    /// layers</see>.</para>
-    ///
-    /// <para>Sample usage:</para>
-    /// <code>
-    /// // create activation network
-    ///	ActivationNetwork network = new ActivationNetwork(
-    ///		new SigmoidFunction( ), // sigmoid activation function
-    ///		3,                      // 3 inputs
-    ///		4, 1 );                 // 2 layers:
-    ///                             // 4 neurons in the firs layer
-    ///                             // 1 neuron in the second layer
-    ///	</code>
+    /// <remarks>
+    ///     <para>
+    ///         Activation network is a base for multi-layer neural network
+    ///         with activation functions. It consists of
+    ///         <see cref="ActivationLayer">
+    ///             activation
+    ///             layers
+    ///         </see>
+    ///         .
+    ///     </para>
+    ///     <para>Sample usage:</para>
+    ///     <code>
+    ///  // create activation network
+    /// 	ActivationNetwork network = new ActivationNetwork(
+    /// 		new SigmoidFunction( ), // sigmoid activation function
+    /// 		3,                      // 3 inputs
+    /// 		4, 1 );                 // 2 layers:
+    ///                              // 4 neurons in the firs layer
+    ///                              // 1 neuron in the second layer
+    /// 	</code>
     /// </remarks>
-    /// 
     [Serializable]
     public class ActivationNetwork : Network
     {
+        private List<ActivationNetworkAnnotation> annotations;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivationNetwork"/> class.
+        ///     Initializes a new instance of the <see cref="ActivationNetwork" /> class.
         /// </summary>
-        /// 
         /// <param name="function">Activation function of neurons of the network.</param>
         /// <param name="inputsCount">Network's inputs count.</param>
-        /// <param name="neuronsCount">Array, which specifies the amount of neurons in
-        /// each layer of the neural network.</param>
-        /// 
-        /// <remarks>The new network is randomized (see <see cref="ActivationNeuron.Randomize"/>
-        /// method) after it is created.</remarks>
-        /// 
+        /// <param name="neuronsCount">
+        ///     Array, which specifies the amount of neurons in
+        ///     each layer of the neural network.
+        /// </param>
+        /// <remarks>
+        ///     The new network is randomized (see <see cref="ActivationNeuron.Randomize" />
+        ///     method) after it is created.
+        /// </remarks>
         private int[] neuronsCount;
 
-        private List<ActivationNetworkAnnotation> annotations;
-        
-        public int[] NeuronsCount
-        {
-            get => neuronsCount;
-            set => neuronsCount = value;
-        }
-        
-        public List<ActivationNetworkAnnotation> Annotations
-        {
-            get => annotations;
-            set => annotations = value;
-        }
-        
         public ActivationNetwork(IActivationFunction function, int inputsCount,
-            List<ActivationNetworkAnnotation> annotations,params int[] neuronsCount)
+            List<ActivationNetworkAnnotation> annotations, params int[] neuronsCount)
             : base(inputsCount, neuronsCount.Length)
         {
             this.annotations = annotations;
             this.neuronsCount = neuronsCount;
-            
+
             // create each layer
-            for (int i = 0; i < layers.Length; i++)
+            for (var i = 0; i < layers.Length; i++)
             {
                 layers[i] = new ActivationLayer(
                     // neurons count in the layer
                     neuronsCount[i],
                     // inputs count of the layer
-                    (i == 0) ? inputsCount : neuronsCount[i - 1],
+                    i == 0 ? inputsCount : neuronsCount[i - 1],
                     // activation function of the layer
                     function);
             }
         }
 
+        public int[] NeuronsCount
+        {
+            get => neuronsCount;
+            set => neuronsCount = value;
+        }
+
+        public List<ActivationNetworkAnnotation> Annotations
+        {
+            get => annotations;
+            set => annotations = value;
+        }
+
         /// <summary>
-        /// Set new activation function for all neurons of the network.
+        ///     Set new activation function for all neurons of the network.
         /// </summary>
-        /// 
         /// <param name="function">Activation function to set.</param>
-        /// 
-        /// <remarks><para>The method sets new activation function for all neurons by calling
-        /// <see cref="ActivationLayer.SetActivationFunction"/> method for each layer of the network.</para></remarks>
-        /// 
+        /// <remarks>
+        ///     <para>
+        ///         The method sets new activation function for all neurons by calling
+        ///         <see cref="ActivationLayer.SetActivationFunction" /> method for each layer of the network.
+        ///     </para>
+        /// </remarks>
         public void SetActivationFunction(IActivationFunction function)
         {
-            for (int i = 0; i < layers.Length; i++)
+            for (var i = 0; i < layers.Length; i++)
             {
                 ((ActivationLayer)layers[i]).SetActivationFunction(function);
             }

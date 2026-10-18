@@ -81,6 +81,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
 
             context.RecordResponseTime("Parse");
+
             var firstElapsed = context.EntityAnalysisModelInstanceEntryPayload.ResponseTimePipeline!.Entries[0]
                 .ElapsedMicroseconds;
 

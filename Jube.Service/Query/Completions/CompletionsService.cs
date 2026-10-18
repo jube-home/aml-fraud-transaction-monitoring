@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -12,11 +12,15 @@
  */
 
 using System.ComponentModel;
+using System.Text.Json;
+using Jube.Analytics.Datasets.Models;
 using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.Completions;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.Completions;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,18 +34,18 @@ namespace Jube.Service.Query.Completions
     {
         private const int WorkflowParseTypeId = 5;
         private const int ModelParseTypeId = 6;
-
         private static readonly int[] byCaseWorkflowIdPermissions = [25, 17, 20];
         private static readonly int[] includingDeletedPermissions = [1];
         private static readonly int[] byEntityAnalysisModelIdPermissions = [16];
         private static readonly int[] byParseTypePermissions = [8, 10, 13, 14, 17, 20, 26];
-
+        private static readonly int[] byExhaustiveInstanceDatasetPermissions = [16];
         private readonly ILog auditLog;
         private readonly CaseWorkflowRepository caseWorkflowRepository;
+        private readonly ExhaustiveInstanceDatasetRepository datasetRepository;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
 
-        private readonly global::Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery
+        private readonly GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery
             query;
 
         private readonly IServiceChangeBus serviceChangeBus;
@@ -60,10 +64,21 @@ namespace Jube.Service.Query.Completions
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery(
+
+            query = new GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery(
                 dbContext, userName);
             caseWorkflowRepository = new CaseWorkflowRepository(dbContext, userName);
+            datasetRepository = new ExhaustiveInstanceDatasetRepository(dbContext, tenantRegistryId);
         }
+
+        public static IReadOnlyList<int> ByCaseWorkflowIdPermissions => byCaseWorkflowIdPermissions;
+        public static IReadOnlyList<int> ByEntityAnalysisModelIdPermissions => byEntityAnalysisModelIdPermissions;
+        public static IReadOnlyList<int> ByParseTypePermissions => byParseTypePermissions;
+
+        public static IReadOnlyList<int> ByExhaustiveInstanceDatasetPermissions =>
+            byExhaustiveInstanceDatasetPermissions;
+
+        public static IReadOnlyList<int> IncludingDeletedPermissions => includingDeletedPermissions;
 
         public static Task<CompletionsService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -120,6 +135,7 @@ namespace Jube.Service.Query.Completions
             return RunAsync("GetByCaseWorkflowId", byCaseWorkflowIdPermissions, async () =>
             {
                 var workflow = await caseWorkflowRepository.GetByIdAsync(caseWorkflowId, token).ConfigureAwait(false);
+
                 return await ByWorkflowAsync(workflow, token).ConfigureAwait(false);
             }, token);
         }
@@ -136,6 +152,7 @@ namespace Jube.Service.Query.Completions
             {
                 var workflow = await caseWorkflowRepository.GetByGuidIncludingDeletedAsync(caseWorkflowGuid, token)
                     .ConfigureAwait(false);
+
                 return await ByWorkflowAsync(workflow, token).ConfigureAwait(false);
             }, token);
         }
@@ -152,6 +169,7 @@ namespace Jube.Service.Query.Completions
             {
                 var workflow = await caseWorkflowRepository.GetByIdIncludingDeletedAsync(caseWorkflowId, token)
                     .ConfigureAwait(false);
+
                 return await ByWorkflowAsync(workflow, token).ConfigureAwait(false);
             }, token);
         }
@@ -182,7 +200,39 @@ namespace Jube.Service.Query.Completions
                 () => CompletionsAsync(entityAnalysisModelId, parseTypeId, false, token), token);
         }
 
-        private Task<List<CompletionDto>> ByWorkflowAsync(Data.Poco.CaseWorkflow? workflow,
+        [Description("Gets filter builder completions (group Dataset) for every column of a confirmed uploaded " +
+                     "Exhaustive dataset in the caller's tenant, by dataset kind and Id. Used to build a Class " +
+                     "Definition filter over an uploaded dataset's raw columns.")]
+        [ServiceOperation("CompletionsGetByExhaustiveInstanceDataset", OperationKind.Read, Idempotent = true)]
+        public Task<List<CompletionDto>> GetByExhaustiveInstanceDatasetAsync(
+            [Description("Kind of the dataset store, Csv or Json.")]
+            DatasetKind kind,
+            [Description("Integer Id of the dataset.")]
+            int id, CancellationToken token = default)
+        {
+            return RunAsync("GetByExhaustiveInstanceDataset", byExhaustiveInstanceDatasetPermissions, async () =>
+            {
+                var dataset = await datasetRepository.GetConfirmedAsync(new DatasetReference(kind, id), token)
+                    .ConfigureAwait(false);
+
+                if (dataset is null || string.IsNullOrWhiteSpace(dataset.ColumnsJson))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"Completions: dataset {kind}/{id} not found, not confirmed or not visible user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[CompletionsResources.NotFound]);
+                }
+
+                var columns = JsonSerializer.Deserialize<List<DatasetColumnDefinition>>(dataset.ColumnsJson) ?? [];
+
+                return CompletionsMapper.ToDatasetDtos(columns);
+            }, token);
+        }
+
+        private Task<List<CompletionDto>> ByWorkflowAsync(CaseWorkflow? workflow,
             CancellationToken token)
         {
             if (workflow is null)
@@ -213,6 +263,7 @@ namespace Jube.Service.Query.Completions
         {
             var fields = await query.ExecuteAsync(entityAnalysisModelId, parseTypeId, reporting, token)
                 .ConfigureAwait(false);
+
             return CompletionsMapper.ToDtos(fields);
         }
 
@@ -221,6 +272,7 @@ namespace Jube.Service.Query.Completions
         {
             using var op = OperationScope.Start("Completions", operation, userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Completions.{operation}: entry user={userName}");
@@ -233,6 +285,7 @@ namespace Jube.Service.Query.Completions
 
                 var result = await body().ConfigureAwait(false);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)

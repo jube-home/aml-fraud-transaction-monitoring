@@ -25,7 +25,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
     public sealed class ReprocessingArchiveBatch(int entityAnalysisModelsReprocessingRuleInstanceId)
     {
         private readonly List<(Archive Archive, IReadOnlyList<ArchiveKey> Keys)> entries = [];
-
         public int Count => entries.Count;
 
         public void Add(EntityAnalysisModelInstanceEntryPayload payload, string json)
@@ -52,15 +51,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
             try
             {
                 await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
                 try
                 {
                     var updated = (await new ArchiveRepository(dbContext)
-                            .UpdateBatchAsync(entries.Select(e => e.Archive).ToList(), token).ConfigureAwait(false))
+                            .UpdateBatchAsync([.. entries.Select(e => e.Archive)], token).ConfigureAwait(false))
                         .ToHashSet();
 
-                    await new ArchiveKeyRepository(dbContext).ReplaceBatchAsync(entries
-                            .Where(e => updated.Contains(e.Archive.EntityAnalysisModelInstanceEntryGuid))
-                            .Select(e => (e.Archive.EntityAnalysisModelInstanceEntryGuid, e.Keys)).ToList(),
+                    await new ArchiveKeyRepository(dbContext).ReplaceBatchAsync([
+                            .. entries
+                                .Where(e => updated.Contains(e.Archive.EntityAnalysisModelInstanceEntryGuid))
+                                .Select(e => (e.Archive.EntityAnalysisModelInstanceEntryGuid, e.Keys))
+                        ],
                         entityAnalysisModelsReprocessingRuleInstanceId, token).ConfigureAwait(false);
 
                     await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);

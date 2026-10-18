@@ -21,6 +21,7 @@ namespace Jube.Tokenisation
         {
             var matches = Regex.Matches(message, @"\[@(.*?)\]");
             var returnList = new List<string>();
+
             foreach (var match in matches)
             {
                 var key = match.ToString()?.Remove(0, 2);

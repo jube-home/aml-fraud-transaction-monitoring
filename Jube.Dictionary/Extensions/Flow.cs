@@ -34,13 +34,9 @@ namespace Jube.Dictionary.Extensions
     public readonly struct Flow<T>(T value, FlowOutcome outcome, double score, string? label)
     {
         public T Value { get; } = value;
-
         public FlowOutcome Outcome { get; } = outcome;
-
         public double Score { get; } = score;
-
         public string? Label { get; } = label;
-
         public bool IsDecided => Outcome != FlowOutcome.Undecided;
 
         public Flow<T> Apply(FlowKind kind, bool test)

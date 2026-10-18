@@ -101,6 +101,7 @@ namespace Jube.Test.Dictionary.Extensions
         {
             var rules = typeof(Jube.Dictionary.Extensions.Extensions).Assembly.GetTypes()
                 .Where(t => t.Namespace is "Jube.Dictionary.Extensions" or "Jube.Dictionary.Fuzzy");
+
             return rules;
         }
 

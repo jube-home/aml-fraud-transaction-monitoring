@@ -38,9 +38,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
-        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = entityAnalysisModel.Snapshot;
-        private readonly IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> availableSnapshots =
-            availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
+        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot =
+            entityAnalysisModel.Snapshot;
+
+        private readonly
+            IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot>
+            availableSnapshots =
+                availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
 
         public Context.Context CreateContext(
             MemoryStream inputStream)
@@ -49,7 +53,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             stopwatch.Start();
 
             var entityAnalysisModelInstanceEntryPayload =
-                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel, default, snapshot);
+                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel, Guid.Empty, snapshot);
+
             entityAnalysisModelInstanceEntryPayload.Payload =
                 new DictionaryNoBoxing<string>(snapshot.PayloadInitialSize);
 
@@ -92,6 +97,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             {
                 log.Info(
                     $"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} has zero content length.");
+
                 return null;
             }
 
@@ -100,6 +106,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
             log.Info(
                 $"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} JSON parsed successfully.");
+
             return json;
         }
 
@@ -115,6 +122,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             try
             {
                 jToken = json?.SelectToken(model.References.EntryXPath);
+
                 if (jToken != null)
                 {
                     modelEntryValue = jToken.ToString();
@@ -248,8 +256,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         };
 
                         payload.TryAdd(xPath.Name, value);
-                        entityAnalysisModel.ResolveDictionaryValueForField(snapshot, entityAnalysisModelInstanceEntryPayload, log,
+
+                        entityAnalysisModel.ResolveDictionaryValueForField(snapshot,
+                            entityAnalysisModelInstanceEntryPayload, log,
                             xPath.Name);
+
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value,
                             isReprocess: isReprocess);
 
@@ -263,6 +274,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         {
                             var intVal = (int)intConverted;
                             payload.TryAdd(xPath.Name, intVal);
+
                             reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
                                 valueInt: intVal, isReprocess: isReprocess);
 
@@ -281,6 +293,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                             AssumeLocalDates(), DateTime.UtcNow);
 
                         payload.TryAdd(xPath.Name, dateValue);
+
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
                             valueDate: dateValue, isReprocess: isReprocess);
 
@@ -291,8 +304,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     case 5:
                         RequestFieldExtraction.TryConvert(5, value, defaultFallback, xPath.DefaultValue,
                             AssumeLocalDates(), DateTime.UtcNow, out var boolConverted);
+
                         var boolVal = (bool)boolConverted;
                         payload.TryAdd(xPath.Name, boolVal);
+
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
                             valueBool: boolVal, isReprocess: isReprocess);
 
@@ -308,6 +323,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         {
                             var dblVal = (double)dblConverted;
                             payload.TryAdd(xPath.Name, dblVal);
+
                             reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
                                 valueFloat: dblVal, isReprocess: isReprocess);
 
@@ -324,6 +340,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
                     default:
                         payload.TryAdd(xPath.Name, value);
+
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value,
                             isReprocess: isReprocess);
 

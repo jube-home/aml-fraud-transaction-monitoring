@@ -52,6 +52,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     var listIdName = new Dictionary<int, string>();
                     var shadowEntityAnalysisModelLists = new Dictionary<string, List<string>>();
+
                     foreach (var recordList in recordsList)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();

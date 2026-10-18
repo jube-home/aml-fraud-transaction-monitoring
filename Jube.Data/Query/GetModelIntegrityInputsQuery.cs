@@ -51,6 +51,7 @@ namespace Jube.Data.Query
                 }
 
                 var searchKey = xPaths.FirstOrDefault(x => x.Name == a.SearchKey && x.Active == 1);
+
                 if (searchKey != null)
                 {
                     dto.SearchRules.Add(new ModelIntegritySearchRule(a.Id, a.Name, a.SearchInterval ?? "d",

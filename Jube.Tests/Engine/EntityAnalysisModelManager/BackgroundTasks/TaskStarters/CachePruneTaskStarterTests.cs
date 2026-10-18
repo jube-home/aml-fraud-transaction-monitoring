@@ -39,6 +39,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                     DynamicEnvironment = TestDynamicEnvironment.Create(environmentOverrides)
                 }
             };
+
             return context;
         }
 
@@ -52,6 +53,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                     Guid = Guid.NewGuid()
                 }
             };
+
             return model;
         }
 
@@ -68,6 +70,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
 
             await act.Should().NotThrowAsync();
             log.Entries.Should().Contain(e => e.Message.Contains("the reference date will be looked up"));
+
             log.Entries.Should().NotContain(e => e.Message.Contains("the threshold reference date for"),
                 "the threshold is only computed after a reference date is found");
             log.Entries.Should().NotContain(e => e.Message.Contains("deletion routine has returned"),
@@ -89,6 +92,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var act = async () => await starter.PruneModelAsync(model, 100);
 
             await act.Should().NotThrowAsync();
+
             log.Entries.Should().NotContain(e => e.Message.Contains("the threshold reference date for"),
                 "the reference date was stored under a different tenant, so this model must still see a miss");
         }
@@ -107,8 +111,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         public void GetDeletionLimitOrDefaultIfNullUsesTheConfiguredOverrideWhenSet()
         {
             var cacheService = TestCacheService.Create(out _);
+
             var context = NewContext(cacheService, TestLog.NoOp,
                 new Dictionary<string, string> { ["CacheTtlDeleteLimit"] = "250" });
+
             var starter = new CachePruneTaskStarter(context);
 
             starter.GetDeletionLimitOrDefaultIfNull().Should().Be(250);

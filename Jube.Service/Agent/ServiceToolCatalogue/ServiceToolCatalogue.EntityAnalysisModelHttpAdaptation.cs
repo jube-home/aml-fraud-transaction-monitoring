@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisModelHttpAdaptation;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -21,41 +24,57 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationList", OperationKind.Read, true, false,
-                    "Lists HTTP Adaptations for the caller's tenant, keyset-paged and capped."),
+                    "Lists HTTP Adaptations for the caller's tenant, keyset-paged and capped.",
+                    EntityAnalysisModelHttpAdaptationService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over HTTP Adaptations may use."),
+                    "Lists the fields a query builder JSON filter over HTTP Adaptations may use.",
+                    EntityAnalysisModelHttpAdaptationService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationFilter", OperationKind.Read, true, false,
-                    "Returns the HTTP Adaptations matching query builder JSON, keyset-paged and capped."),
+                    "Returns the HTTP Adaptations matching query builder JSON, keyset-paged and capped.",
+                    EntityAnalysisModelHttpAdaptationService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationCount", OperationKind.Read, true, false,
-                    "Counts the HTTP Adaptations matching query builder JSON, optionally grouped by a field."),
+                    "Counts the HTTP Adaptations matching query builder JSON, optionally grouped by a field.",
+                    EntityAnalysisModelHttpAdaptationService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationGet", OperationKind.Read, true, false,
-                    "Returns one HTTP Adaptation by id, scoped to the caller's tenant."),
+                    "Returns one HTTP Adaptation by id, scoped to the caller's tenant.",
+                    EntityAnalysisModelHttpAdaptationService.ReadPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationGetByGuid", OperationKind.Read, true, false,
+                    "Returns one HTTP Adaptation by Guid, scoped to the caller's tenant.",
+                    EntityAnalysisModelHttpAdaptationService.ReadPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationGetByEntityAnalysisModelId", OperationKind.Read, true,
                     false,
-                    "Lists HTTP Adaptations belonging to a given Model, scoped to the caller's tenant."),
+                    "Lists HTTP Adaptations belonging to a given Model, scoped to the caller's tenant.",
+                    EntityAnalysisModelHttpAdaptationService.ReadPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationCreate", OperationKind.Write, false, false,
-                    "Registers an HTTP Adaptation under a Model in the caller's tenant; calling twice creates two."),
+                    "Registers an HTTP Adaptation under a Model in the caller's tenant; calling twice creates two.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationValidate", OperationKind.Read, true, false,
-                    "Validates a HTTP Adaptation without saving it and returns every failure."),
+                    "Validates a HTTP Adaptation without saving it and returns every failure.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationUpdate", OperationKind.Write, true, false,
-                    "Updates an HTTP Adaptation in the caller's tenant by id."),
+                    "Updates an HTTP Adaptation in the caller's tenant by id.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an HTTP Adaptation in the caller's tenant by id."),
+                    "Soft-deletes an HTTP Adaptation in the caller's tenant by id.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationResubmit", OperationKind.Write, false, false,
-                    "Resubmits a rejected HTTP Adaptation for approval again, unchanged, opening a fresh approval cycle."),
+                    "Resubmits a rejected HTTP Adaptation for approval again, unchanged, opening a fresh approval cycle.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationRetract", OperationKind.Write, false, false,
-                    "Retracts a rejected HTTP Adaptation, restoring it to its last approved version without a new approval cycle.")
+                    "Retracts a rejected HTTP Adaptation, restoring it to its last approved version without a new approval cycle.",
+                    EntityAnalysisModelHttpAdaptationService.WritePermissions)
             ]);
         }
     }

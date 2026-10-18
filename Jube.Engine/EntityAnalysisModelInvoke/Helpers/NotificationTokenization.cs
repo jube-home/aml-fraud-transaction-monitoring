@@ -23,6 +23,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
             var regex = new Regex(@"\[@(.*?)\]");
             var matches = regex.Matches(message);
             var returnList = new List<string>();
+
             foreach (Match match in matches)
             {
                 var key = match.Value.Remove(0, 2);

@@ -47,7 +47,6 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
         private readonly List<Guid> createdCaseWorkflowGuids = [];
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -57,9 +56,12 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
             await dbContext.SessionCaseJournal
                 .Where(w => w.CaseWorkflowGuid != null && createdCaseWorkflowGuids.Contains(w.CaseWorkflowGuid.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -74,6 +76,7 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
         private async Task<Guid> CreateWorkflowAsync(DbContext dbContext, string userName)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, userName);
+
             var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -85,6 +88,7 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
             createdModelIds.Add(model.Id);
 
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -98,6 +102,7 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
             });
             createdCaseWorkflowIds.Add(id);
             createdCaseWorkflowGuids.Add(guid);
+
             return guid;
         }
 
@@ -131,6 +136,7 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
         public async Task CreateServiceWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -139,6 +145,7 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
         public async Task CreateServiceWithUserInNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -303,8 +310,10 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
         {
             await using var dbContext = fx.GetDbContext();
             var guid = await CreateWorkflowAsync(dbContext, fx.Seed.UserWithPermission);
+
             var otherId = await InsertJournalDirectAsync(dbContext, fx.Seed.UserWithoutPermission, guid,
                 "{\"private\":true}");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await service.CreateAsync(new SessionCaseJournalDto { CaseWorkflowGuid = guid, Json = "{\"mine\":true}" });
@@ -352,9 +361,12 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
             using var cts = new CancellationTokenSource();
             await cts.CancelAsync();
             var token = cts.Token;
+
             var act = () => service.CreateAsync(new SessionCaseJournalDto { CaseWorkflowGuid = guid, Json = "{}" },
                 token);
+
             await act.Should().ThrowAsync<OperationCanceledException>();
+
             (await dbContext.SessionCaseJournal.CountAsync(w => w.CaseWorkflowGuid == guid,
                     token: CancellationToken.None)).Should()
                 .Be(0);

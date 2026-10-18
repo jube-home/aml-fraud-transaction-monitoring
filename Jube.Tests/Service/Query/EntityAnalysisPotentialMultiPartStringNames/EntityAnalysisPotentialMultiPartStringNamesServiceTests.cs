@@ -48,7 +48,6 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
         private readonly List<int> createdInlineFunctionIds = [];
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdXpathIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -83,6 +82,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
         {
             var tenantRegistryId = await dbContext.UserInTenant.Where(w => w.User == ownerUser)
                 .Select(s => s.TenantRegistryId).FirstAsync();
+
             var model = new Data.Poco.EntityAnalysisModel
             {
                 Name = UniqueName("Model"),
@@ -94,8 +94,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             createdModelIds.Add(model.Id);
+
             return model;
         }
 
@@ -161,6 +163,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -169,6 +172,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -218,6 +222,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
         private async Task<string> CreateUserWithExactPermissionAsync(DbContext dbContext, int spec)
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var tenantRegistryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.TenantRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}MpTenant{suffix}", Active = 1, Locked = 0, Deleted = 0,
@@ -225,6 +230,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
             });
             createdTenantRegistryIds.Add(tenantRegistryId);
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid, Name = $"{DatabaseFixture.Prefix}MpRole{suffix}", Active = 1, Locked = 0,
@@ -232,22 +238,28 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
                 CreatedUser = DatabaseFixture.Prefix
             });
             createdRoleRegistryIds.Add(roleId);
+
             await dbContext.InsertAsync(new Data.Poco.RoleRegistryPermission
             {
                 Guid = Guid.NewGuid(), PermissionSpecificationId = spec, RoleRegistryId = roleId, Active = 1,
                 Locked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             var userName = $"{DatabaseFixture.Prefix}MpUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = roleGuid, Name = userName,
                 Email = $"{userName}@example.invalid", Password = "not-used", Active = 1, PasswordLocked = 0,
                 Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
+
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
                 { User = userName, TenantRegistryId = tenantRegistryId });
+
             return userName;
         }
 
@@ -384,6 +396,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
             await cts.CancelAsync();
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.GetByIdAsync(1, cts.Token));
+
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.GetByGuidAsync(Guid.NewGuid(), cts.Token));
         }
@@ -432,6 +445,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames
             activities.Should()
                 .ContainSingle(a => a.OperationName == "EntityAnalysisPotentialMultiPartStringNames.GetByGuid")
                 .Subject.GetTagItem("jube.outcome").Should().Be("ok");
+
             auditLog.Entries.Should().ContainSingle();
             auditLog.Entries[0].Message.Should().Contain("op=GetByGuid");
         }

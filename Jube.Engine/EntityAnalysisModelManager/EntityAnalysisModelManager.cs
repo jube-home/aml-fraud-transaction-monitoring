@@ -72,6 +72,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
         private void StartHashCacheAssemblyObservability()
         {
             var hashCacheAssemblyObservabilityTaskStarter = new HashCacheAssemblyObservabilityTaskStarter(Context);
+
             Context.Tasks.HashCacheAssemblyObservabilityTask = Context.Services.TaskCoordinator.RunAsync(
                 "HashCacheAssemblyObservabilityTask", _ => hashCacheAssemblyObservabilityTaskStarter.StartAsync());
         }
@@ -85,6 +86,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var cachePruneTaskStarter = new CachePruneTaskStarter(Context);
+
             Context.Tasks.CachePruneAsyncTask =
                 Context.Services.TaskCoordinator.RunAsync("CachePruneTask", _ => cachePruneTaskStarter.StartAsync());
         }
@@ -92,6 +94,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
         private void StartLruJournalPrune()
         {
             var lruPruneTaskStarter = new LruJournalPruneTaskStarter(Context);
+
             Context.Tasks.LruJournalPruneAsyncTask =
                 Context.Services.TaskCoordinator.RunAsync("LruJournalPruneTask", _ => lruPruneTaskStarter.StartAsync());
         }
@@ -112,6 +115,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
                     }
 
                     var reprocessingTaskStarter = new ReprocessingTaskStarter(Context);
+
                     Context.Tasks.ReprocessingAsyncTasks.Add(
                         Context.Services.TaskCoordinator.RunAsync("EntityReprocessingTask",
                             _ => reprocessingTaskStarter.StartAsync()));
@@ -158,6 +162,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 }
 
                 var backtestTaskStarter = new BacktestTaskStarter(Context, i);
+
                 Context.Tasks.BacktestAsyncTasks.Add(
                     Context.Services.TaskCoordinator.RunAsync("EntityBacktestTask",
                         _ => backtestTaskStarter.StartAsync()));
@@ -185,6 +190,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var ttlCounterAdministrationTaskStarter = new TtlCounterAdministrationTaskStarter(Context);
+
             Context.Tasks.TtlCounterAdministrationTask =
                 Context.Services.TaskCoordinator.RunAsync("TtlCounterAdministrationTask",
                     _ => ttlCounterAdministrationTaskStarter.StartAsync());
@@ -215,6 +221,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var abstractionRuleCachingTaskStarter = new AbstractionRuleCachingTaskStarter(Context);
+
             Context.Tasks.AbstractionRuleCachingTask =
                 Context.Services.TaskCoordinator.RunAsync("AbstractionRuleCachingTask",
                     _ => abstractionRuleCachingTaskStarter.StartAsync());
@@ -234,12 +241,15 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             int i;
+
             var threadCount =
                 int.Parse(Context.Services.DynamicEnvironment.AppSettings("ActivationWatcherPersistThreads"));
+
             for (i = 1; i <= threadCount; i++)
             {
                 var persistToActivationWatcherPollingTaskStarter =
                     new PersistToActivationWatcherPollingTaskStarter(Context);
+
                 Context.Tasks.PersistToActivationWatcherPollingTasks.Add(
                     Context.Services.TaskCoordinator.RunAsync("ActivationWatcherTask",
                         _ => persistToActivationWatcherPollingTaskStarter.StartAsync()));
@@ -265,9 +275,11 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 }
 
                 var threadCount = int.Parse(Context.Services.DynamicEnvironment.AppSettings("ArchiverPersistThreads"));
+
                 for (i = 1; i <= threadCount; i++)
                 {
                     var archiverTaskStarter = new ArchiverTaskStarter(Context, i);
+
                     Context.Tasks.ArchiverTasks.Add(Context.Services.TaskCoordinator.RunAsync("ArchiverTask",
                         _ => archiverTaskStarter.StartAsync()));
 
@@ -295,6 +307,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var modelSyncTaskStarter = new ModelSyncTaskStarter(Context);
+
             Context.Tasks.ModelSyncTask =
                 Context.Services.TaskCoordinator.RunAsync("ModelSyncTask", _ => modelSyncTaskStarter.StartAsync());
 

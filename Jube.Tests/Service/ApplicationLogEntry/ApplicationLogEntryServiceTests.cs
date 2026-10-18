@@ -261,10 +261,12 @@ namespace Jube.Test.Service.ApplicationLogEntry
 
             var ascending = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.Level).Should().Equal("ERROR", "FATAL", "WARN");
 
             var descending = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.Level).Should().Equal("WARN", "FATAL", "ERROR");
         }
 
@@ -280,6 +282,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: ascendingKeyword);
 
@@ -295,6 +298,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: "banana");
 
@@ -306,8 +310,10 @@ namespace Jube.Test.Service.ApplicationLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var loggerName = $"{DatabaseFixture.Prefix}Some.Class{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, "WARN", loggerName, "first message",
                 DateTime.UtcNow.AddMinutes(-30));
+
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "second message", DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -323,6 +329,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var loggerName = $"{DatabaseFixture.Prefix}Some.Class{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, "WARN", loggerName, "message");

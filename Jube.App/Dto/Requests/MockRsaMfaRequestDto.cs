@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.App.Dto.Requests
 {
     using System.Collections.Generic;
@@ -20,6 +25,7 @@ namespace Jube.App.Dto.Requests
     {
         public string ClientId { get; set; }
         public string SubjectName { get; set; }
+
         // ReSharper disable once CollectionNeverUpdated.Global
         public List<SubjectCredentials> SubjectCredentials { get; set; }
         public Context Context { get; set; }

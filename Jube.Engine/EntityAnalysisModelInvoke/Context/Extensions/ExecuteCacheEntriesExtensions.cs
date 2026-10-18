@@ -19,6 +19,7 @@ using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -33,6 +34,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 .HasValue)
             {
                 context.TraceLog($"is reprocessing, so the cache already holds this entry and is not written.");
+
                 return context;
             }
 

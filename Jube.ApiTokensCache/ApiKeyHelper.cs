@@ -16,6 +16,7 @@ namespace Jube.ApiTokensCache
     using System.Numerics;
     using System.Security.Cryptography;
     using System.Text;
+    using Models;
 
     public static class ApiKeyHelper
     {
@@ -61,6 +62,7 @@ namespace Jube.ApiTokensCache
             }
 
             string plaintext;
+
             try
             {
                 var bytes = Base62Decode(rawKey);
@@ -72,6 +74,7 @@ namespace Jube.ApiTokensCache
             }
 
             var parts = plaintext.Split(Separator);
+
             if (parts.Length != 4)
             {
                 return false;
@@ -109,6 +112,7 @@ namespace Jube.ApiTokensCache
         private static string ComputeSha256Hash(string key)
         {
             var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(key));
+
             return Convert.ToHexString(bytes).ToLowerInvariant();
         }
 
@@ -117,6 +121,7 @@ namespace Jube.ApiTokensCache
             var keyBytes = Encoding.UTF8.GetBytes(hmacSecret);
             var bodyBytes = Encoding.UTF8.GetBytes(body);
             var hash = HMACSHA256.HashData(keyBytes, bodyBytes);
+
             return Convert.ToHexString(hash)[..ChecksumLen].ToLowerInvariant();
         }
 
@@ -136,6 +141,7 @@ namespace Jube.ApiTokensCache
             const string chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
             var leadingZeros = 0;
+
             while (leadingZeros < bytes.Length && bytes[leadingZeros] == 0)
             {
                 leadingZeros++;
@@ -159,25 +165,30 @@ namespace Jube.ApiTokensCache
             const string chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
             var leadingZeros = 0;
+
             while (leadingZeros < encoded.Length && encoded[leadingZeros] == chars[0])
             {
                 leadingZeros++;
             }
 
             var value = BigInteger.Zero;
+
             foreach (var c in encoded.Substring(leadingZeros))
             {
                 var digit = chars.IndexOf(c);
+
                 if (digit < 0)
                 {
                     throw new FormatException($"Invalid character: {c}");
                 }
+
                 value = value * 62 + digit;
             }
 
             var data = value.ToByteArray(true, true);
             var result = new byte[leadingZeros + (value.IsZero ? 0 : data.Length)];
             Array.Copy(data, 0, result, leadingZeros, data.Length);
+
             return result;
         }
     }

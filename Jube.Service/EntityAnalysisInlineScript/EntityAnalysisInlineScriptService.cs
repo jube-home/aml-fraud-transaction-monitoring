@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,11 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Filter;
 using Jube.Dto.EntityAnalysisInlineScript;
+using Jube.Dto.Filter;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisInlineScript;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -53,6 +54,8 @@ namespace Jube.Service.EntityAnalysisInlineScript
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisInlineScriptRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> ListPermissions => listPermissions;
 
         public static Task<EntityAnalysisInlineScriptService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -105,6 +108,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisInlineScript.List: entry user={userName}");
@@ -113,9 +117,11 @@ namespace Jube.Service.EntityAnalysisInlineScript
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisInlineScript.List");
+
                 var dtos = EntityAnalysisInlineScriptMapper.ToDto(await repository.GetAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisInlineScript.List: {dtos.Count} rows user={userName}");
@@ -131,6 +137,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisInlineScript.List: cancelled user={userName}");
@@ -159,7 +166,9 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "ListPaged", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -189,6 +198,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisInlineScript.ListPaged: cancelled user={userName}");
@@ -214,6 +224,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisInlineScript.FilterFields: entry user={userName}");
@@ -225,6 +236,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<EntityAnalysisInlineScriptDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -264,6 +276,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisInlineScript.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -272,10 +285,13 @@ namespace Jube.Service.EntityAnalysisInlineScript
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisInlineScript.Filter");
+
                 var rows = EntityAnalysisInlineScriptMapper.ToDto(
                     await repository.GetAsync(token).ConfigureAwait(false));
+
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -313,6 +329,7 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisInlineScript.Count: entry groupBy={groupBy} user={userName}");
@@ -321,10 +338,13 @@ namespace Jube.Service.EntityAnalysisInlineScript
             try
             {
                 EnsurePermitted(listPermissions, "EntityAnalysisInlineScript.Count");
+
                 var rows = EntityAnalysisInlineScriptMapper.ToDto(
                     await repository.GetAsync(token).ConfigureAwait(false));
+
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)

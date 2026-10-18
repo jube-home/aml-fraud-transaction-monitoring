@@ -24,10 +24,11 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.TreeChildren;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.TreeChildren;
 using Jube.Service.Query.TreeChildren;
+using Jube.Service.Query.TreeChildren.Models;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
@@ -35,12 +36,12 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.TreeChildren.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 using Poco = Jube.Data.Poco;
 
 namespace Jube.Test.Service.Query.TreeChildren
@@ -54,12 +55,12 @@ namespace Jube.Test.Service.Query.TreeChildren
                 NullLoggerFactory.Instance);
 
         private readonly List<Func<DbContext, Task>> cleanups = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             for (var i = cleanups.Count - 1; i >= 0; i--)
             {
                 await cleanups[i](dbContext);
@@ -103,6 +104,7 @@ namespace Jube.Test.Service.Query.TreeChildren
                 var id = Convert.ToInt32(await db.InsertWithIdentityAsync(entity), CultureInfo.InvariantCulture);
                 typeof(T).GetProperty("Id").Required().SetValue(entity, id);
                 self.cleanups.Add(async d => await d.DeleteAsync(entity));
+
                 return new Seeded(id, name);
             });
         }
@@ -230,6 +232,7 @@ namespace Jube.Test.Service.Query.TreeChildren
         public static TheoryData<string> Routes()
         {
             var data = new TheoryData<string>();
+
             foreach (var c in cases)
             {
                 data.Add(c.Node.Route);
@@ -263,9 +266,11 @@ namespace Jube.Test.Service.Query.TreeChildren
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             var id = await db.InsertWithInt32IdentityAsync(entity);
             entity.Id = id;
             cleanups.Add(async d => await d.DeleteAsync(entity));
+
             return new Seeded(id, name);
         }
 
@@ -282,6 +287,7 @@ namespace Jube.Test.Service.Query.TreeChildren
             byte deleted)
         {
             var spec = seedablePermissionSpecs[nextSpec++ % seedablePermissionSpecs.Length];
+
             var entity = new Poco.RoleRegistryPermission
             {
                 Guid = Guid.NewGuid(),
@@ -294,10 +300,12 @@ namespace Jube.Test.Service.Query.TreeChildren
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             var id = await db.InsertWithInt32IdentityAsync(entity);
             entity.Id = id;
             cleanups.Add(async d => await d.DeleteAsync(entity));
             var specName = await db.PermissionSpecification.Where(w => w.Id == spec).Select(w => w.Name).FirstAsync();
+
             return new Seeded(id, specName);
         }
 
@@ -324,10 +332,12 @@ namespace Jube.Test.Service.Query.TreeChildren
                 {
                     Name = NewName("Model"), Guid = Guid.NewGuid(), Active = 1, Locked = 0, Deleted = 0
                 });
+
             cleanups.Add(async d =>
             {
                 await d.GetTable<Poco.EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == model.Id)
                     .DeleteAsync();
+
                 await d.EntityAnalysisModel.Where(w => w.Id == model.Id).DeleteAsync();
             });
 
@@ -337,6 +347,7 @@ namespace Jube.Test.Service.Query.TreeChildren
                 Locked = 0, Deleted = 0, EnableVisualisation = 0, Version = 1, CreatedUser = tenantUser,
                 CreatedDate = DateTime.UtcNow
             };
+
             workflow.Id = await db.InsertWithInt32IdentityAsync(workflow);
             cleanups.Add(async d => await d.DeleteAsync(workflow));
 
@@ -344,6 +355,7 @@ namespace Jube.Test.Service.Query.TreeChildren
             {
                 Name = NewName("Vis"), Guid = Guid.NewGuid(), Active = 1, Deleted = 0, TenantRegistryId = tenantId
             };
+
             visualisation.Id = await db.InsertWithInt32IdentityAsync(visualisation);
             cleanups.Add(async d => await d.DeleteAsync(visualisation));
 
@@ -353,6 +365,7 @@ namespace Jube.Test.Service.Query.TreeChildren
                 TenantRegistryId = tenantId, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             role.Id = await db.InsertWithInt32IdentityAsync(role);
             cleanups.Add(async d => await d.DeleteAsync(role));
 
@@ -362,12 +375,14 @@ namespace Jube.Test.Service.Query.TreeChildren
         private async Task<string> CreatePartialUserAsync(DbContext db, string tenantUser, params int[] specs)
         {
             var tenantId = await TenantOfAsync(db, tenantUser);
+
             var role = new Poco.RoleRegistry
             {
                 Guid = Guid.NewGuid(), Name = NewName("PartialRole"), Active = 1, Locked = 0, Deleted = 0,
                 TenantRegistryId = tenantId, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             };
+
             role.Id = await db.InsertWithInt32IdentityAsync(role);
             cleanups.Add(async d => await d.DeleteAsync(role));
 
@@ -379,22 +394,26 @@ namespace Jube.Test.Service.Query.TreeChildren
                     Locked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
                     CreatedUser = DatabaseFixture.Prefix
                 };
+
                 permission.Id = await db.InsertWithInt32IdentityAsync(permission);
                 cleanups.Add(async d => await d.DeleteAsync(permission));
             }
 
             var userName = NewName("PartialUser");
+
             var user = new Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = role.Guid, Name = userName,
                 Email = $"{userName}@example.invalid", Password = "not-used", Active = 1, PasswordLocked = 0,
                 Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             };
+
             user.Id = await db.InsertWithInt32IdentityAsync(user);
             cleanups.Add(async d => await d.DeleteAsync(user));
 
             await db.InsertAsync(new Poco.UserInTenant { User = userName, TenantRegistryId = tenantId });
             cleanups.Add(async d => await d.UserInTenant.Where(w => w.User == userName).DeleteAsync());
+
             return userName;
         }
 
@@ -440,6 +459,7 @@ namespace Jube.Test.Service.Query.TreeChildren
 
             TreeChildrenNodes.All.Select(n => (n.Route, n.KeyName, n.Permissions)).Should()
                 .BeEquivalentTo(legacyTable, options => options.WithStrictOrdering());
+
             TreeChildrenNodes.All.Select(n => n.Route).Should().OnlyHaveUniqueItems();
             cases.Select(c => c.Node.Route).Should().BeEquivalentTo(legacyTable.Select(l => l.Route));
         }
@@ -448,6 +468,7 @@ namespace Jube.Test.Service.Query.TreeChildren
         public void EveryOperationHasAUniqueToolNameRegisteredInTheCatalogue()
         {
             var tools = new List<ServiceToolDescriptor>();
+
             typeof(ServiceToolCatalogue).GetMethod("AddTreeChildren",
                 BindingFlags.NonPublic | BindingFlags.Static).Required().Invoke(null, [tools]);
 
@@ -460,9 +481,12 @@ namespace Jube.Test.Service.Query.TreeChildren
 
             var attributes = typeof(TreeChildrenService).GetMethods()
                 .Select(m => m.GetCustomAttribute<ServiceOperationAttribute>()).Where(a => a != null).ToList();
+
             attributes.Select(a => a.Required().Name).Should().BeEquivalentTo(expected);
+
             attributes.Should().OnlyContain(a =>
                 a.Required().Kind == OperationKind.Read && a.Required().Idempotent && !a.Required().Destructive);
+
             TreeChildrenNodes.All.Select(n => n.ToolName).Should().BeEquivalentTo(expected);
         }
 
@@ -471,9 +495,11 @@ namespace Jube.Test.Service.Query.TreeChildren
         {
             var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder();
             builder.Services.AddSingleton<ILog>(TestLog.NoOp);
+
             builder.Services.AddSingleton(
                 (global::Jube.DynamicEnvironment.DynamicEnvironment)System.Runtime.CompilerServices.RuntimeHelpers
                     .GetUninitializedObject(typeof(global::Jube.DynamicEnvironment.DynamicEnvironment)));
+
             builder.Services.AddSingleton(localizers);
             builder.Services.AddSingleton<IServiceChangeBus>(new NullServiceChangeBus());
             using var app = builder.Build();
@@ -485,15 +511,20 @@ namespace Jube.Test.Service.Query.TreeChildren
 
             endpoints.Select(e => e.RoutePattern.RawText).Should().BeEquivalentTo(
                 legacyTable.Select(l => $"/api/TreeChildren/{l.Route}"));
+
             foreach (var (route, key, _) in legacyTable)
             {
                 var endpoint = endpoints.Single(e => e.RoutePattern.RawText == $"/api/TreeChildren/{route}");
+
                 endpoint.Metadata.GetMetadata<Microsoft.AspNetCore.Routing.HttpMethodMetadata>().Required().HttpMethods
                     .Should().BeEquivalentTo(["GET"]);
+
                 endpoint.Metadata.GetOrderedMetadata<Microsoft.AspNetCore.Authorization.IAuthorizeData>()
                     .Should().NotBeEmpty($"{route} must require authorisation");
+
                 endpoint.Metadata.GetMetadata<MethodInfo>().Required().GetParameters().Select(p => p.Name).Should()
                     .Contain(key, $"{route} binds its parent from '{key}'");
+
                 endpoint.Metadata.GetMetadata<Microsoft.AspNetCore.Routing.EndpointNameMetadata>().Required()
                     .EndpointName
                     .Should().Be($"TreeChildren{route}Get");
@@ -504,8 +535,10 @@ namespace Jube.Test.Service.Query.TreeChildren
         public void DtoJsonShapesAreUnchanged()
         {
             var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
             Property(new EntityAnalysisModelTreeChildDto(), options).Should()
                 .BeEquivalentTo("entityAnalysisModelId", "entityAnalysisModelGuid", "key", "name", "color", "deleted");
+
             Property(new VisualisationRegistryTreeChildDto(), options).Should()
                 .BeEquivalentTo("visualisationRegistryId", "key", "name", "color");
             Property(new RoleRegistryTreeChildDto(), options).Should()
@@ -593,6 +626,7 @@ namespace Jube.Test.Service.Query.TreeChildren
             var c = CaseFor(route);
             await using var dbContext = fx.GetDbContext();
             var parents = await CreateParentsAsync(dbContext, fx.Seed.UserWithPermission);
+
             foreach (var spec in c.Node.Permissions)
             {
                 var single = await CreatePartialUserAsync(dbContext, fx.Seed.UserWithPermission, spec);
@@ -619,18 +653,22 @@ namespace Jube.Test.Service.Query.TreeChildren
             var result = await c.Invoke(service, parents, default);
 
             var expectedKeys = new List<int> { activeRow.Id, inactiveRow.Id };
+
             if (c.Node.ApprovalKind.HasValue)
             {
                 expectedKeys.Add(deletedRow.Id);
             }
 
             expectedKeys.AddRange(PreExistingKeys(c, parents));
+
             result.Select(r => r.Key).Should().BeEquivalentTo(expectedKeys,
                 $"{route} returns every child of the parent and nothing else; approvable nodes keep deleted rows so they can be restored");
+
             var active = result.Single(r => r.Key == activeRow.Id);
             active.Name.Should().Be(activeRow.Name);
             var inactive = result.Single(r => r.Key == inactiveRow.Id);
             inactive.Name.Should().Be(inactiveRow.Name);
+
             if (c.Node.ApprovalKind.HasValue)
             {
                 active.Color.Should().Be("orange", "a row nobody has approved is awaiting approval");
@@ -682,8 +720,10 @@ namespace Jube.Test.Service.Query.TreeChildren
         {
             await using var dbContext = fx.GetDbContext();
             var parents = await CreateParentsAsync(dbContext, fx.Seed.UserWithPermission);
+
             var seeded = await CaseFor("UserRegistry")
                 .Seed(this, dbContext, "UserRegistry", parents, NewName("U"), 1, 0);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetUserRegistryAsync(parents.RoleGuid);
@@ -723,6 +763,7 @@ namespace Jube.Test.Service.Query.TreeChildren
                 .BeEquivalentTo([rowA.Id, .. PreExistingKeys(c, parentsA)]);
             (await c.Invoke(serviceB, parentsB, default)).Select(r => r.Key).Should()
                 .BeEquivalentTo([rowB.Id, .. PreExistingKeys(c, parentsB)]);
+
             (await c.Invoke(serviceA, parentsB, default)).Should().BeEmpty("tenant A must not see tenant B's parent");
             (await c.Invoke(serviceB, parentsA, default)).Should().BeEmpty("tenant B must not see tenant A's parent");
         }
@@ -733,6 +774,7 @@ namespace Jube.Test.Service.Query.TreeChildren
             await using var dbContext = fx.GetDbContext();
             var parents = await CreateParentsAsync(dbContext, fx.Seed.UserWithPermission);
             var seeded = new List<int>();
+
             for (var i = 0; i < 3; i++)
             {
                 seeded.Add((await CaseFor("RequestXPath").Seed(this, dbContext, "RequestXPath", parents,
@@ -800,6 +842,7 @@ namespace Jube.Test.Service.Query.TreeChildren
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

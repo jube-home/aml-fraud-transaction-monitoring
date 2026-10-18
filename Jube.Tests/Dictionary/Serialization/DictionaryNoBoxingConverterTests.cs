@@ -15,7 +15,6 @@ using System;
 using System.IO;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Dictionary.Models;
 using Jube.Dictionary.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -178,6 +177,7 @@ namespace Jube.Test.Dictionary.Serialization
 
             dictionary["g"].Type.Should().Be(InternalValue.ValueType.String,
                 "the converter never reconstructs a Guid-typed value from JSON - it only recognises JSON's own Float/Integer/Boolean/Null tokens");
+
             dictionary["g"].AsString().Should().Be(guid.ToString());
         }
 

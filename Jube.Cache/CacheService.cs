@@ -13,12 +13,13 @@
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using Jube.Data.Repository.Models;
 using System.Collections.Concurrent;
+using Jube.Cache.Models;
 using Jube.Cache.Redis;
 using Jube.Cache.Redis.CacheUserRegistryApiKey;
 using Jube.Cache.Redis.Callback;
-using Jube.Data.Repository;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.TaskCancellation;
 using log4net;
 using StackExchange.Redis;
@@ -68,6 +69,7 @@ namespace Jube.Cache
             this.activationRuleIdempotency = activationRuleIdempotency;
 
             var options = ConfigurationOptions.Parse(redisConnectionString);
+
             options.ReconnectRetryPolicy = new RedisReconnectRetryPolicy(
                 new ExponentialRetry(reconnectRetryBaseDelayMilliseconds, reconnectRetryMaxDelayMilliseconds),
                 log);
@@ -86,20 +88,24 @@ namespace Jube.Cache
                 ConnectionMultiplexer = ConnectViaSentinelWithSplitTimeouts(options,
                     sentinelConnectTimeoutMilliseconds, sentinelSyncTimeoutMilliseconds, sentinelConnectRetry,
                     out var sentinelMultiplexer);
+
                 SentinelMultiplexer = sentinelMultiplexer;
                 SentinelServiceName = options.ServiceName;
                 SubscribeToSentinelEvents(sentinelMultiplexer, log);
             }
 
             SubscribeToConnectionDiagnostics(ConnectionMultiplexer, ConnectionDiagnostics, log);
+
             ResilientRedisResilientRedisDatabase =
                 new ResilientRedisConnection.ResilientRedisConnection(ConnectionMultiplexer, postgresConnectionString,
                         hsetOffload, log)
                     .GetDatabase();
 
             CacheAbstractionRepository = new CacheAbstractionRepository(ResilientRedisResilientRedisDatabase, Log);
+
             CachePayloadLatestRepository =
                 new CachePayloadLatestRepository(postgresConnectionString, ResilientRedisResilientRedisDatabase, Log);
+
             CacheReferenceDateRepository = new CacheReferenceDateRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheSanctionRepository = new CacheSanctionRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheTtlCounterEntryRepository =
@@ -107,8 +113,10 @@ namespace Jube.Cache
             CacheTtlCounterRepository = new CacheTtlCounterRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheRateLimitRepository = new CacheRateLimitRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheWalRepository = new CacheWalRepository(ResilientRedisResilientRedisDatabase, Log);
+
             CacheUserRegistryApiKeyRepository = new CacheUserRegistryApiKeyRepository(ConnectionMultiplexer,
                 ResilientRedisResilientRedisDatabase, Log);
+
             CacheTtlCounterIdempotencyRepository =
                 new CacheTtlCounterIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
             CacheActivationCaseIdempotencyRepository =
@@ -177,6 +185,7 @@ namespace Jube.Cache
             sentinelOptions.AbortOnConnectFail = false;
 
             sentinelMultiplexer = ConnectionMultiplexer.SentinelConnect(sentinelOptions);
+
             return sentinelMultiplexer.GetSentinelMasterConnection(dataOptions);
         }
 
@@ -190,6 +199,7 @@ namespace Jube.Cache
         {
             RedisSentinelEventCapture.Enqueue(
                 new RedisSentinelEventCaptureRecord(DateTime.UtcNow, channel, message));
+
             log.Warn($"Cache Redis Sentinel: event on channel {channel}: {message}.");
         }
 
@@ -210,9 +220,11 @@ namespace Jube.Cache
             ConnectionFailedEventArgs args)
         {
             diagnostics.IncrementConnectionFailed();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.ConnectionFailed, args.EndPoint?.ToString(),
                 args.ConnectionType, args.FailureType, null, null, args.Exception?.ToString()));
+
             log.Error($"Cache Redis: connection failed for endpoint {args.EndPoint} " +
                       $"({args.ConnectionType}), failure type {args.FailureType}.", args.Exception);
         }
@@ -221,9 +233,11 @@ namespace Jube.Cache
             ConnectionFailedEventArgs args)
         {
             diagnostics.IncrementConnectionRestored();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.ConnectionRestored, args.EndPoint?.ToString(),
                 args.ConnectionType, args.FailureType, null, null, args.Exception?.ToString()));
+
             log.Warn($"Cache Redis: connection restored for endpoint {args.EndPoint} " +
                      $"({args.ConnectionType}) after failure type {args.FailureType}.");
         }
@@ -232,9 +246,11 @@ namespace Jube.Cache
             RedisErrorEventArgs args)
         {
             diagnostics.IncrementErrorMessage();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.ErrorMessage, args.EndPoint.ToString(), null, null,
                 null, args.Message, null));
+
             log.Error($"Cache Redis: server {args.EndPoint} returned error message {args.Message}.");
         }
 
@@ -242,9 +258,11 @@ namespace Jube.Cache
             InternalErrorEventArgs args)
         {
             diagnostics.IncrementInternalError();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.InternalError, args.EndPoint?.ToString(),
                 args.ConnectionType, null, args.Origin, null, args.Exception.ToString()));
+
             log.Error($"Cache Redis: internal error on endpoint {args.EndPoint} " +
                       $"during {args.Origin}.", args.Exception);
         }
@@ -253,9 +271,11 @@ namespace Jube.Cache
             EndPointEventArgs args)
         {
             diagnostics.IncrementConfigurationChanged();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.ConfigurationChanged, args.EndPoint.ToString(), null,
                 null, null, null, null));
+
             log.Warn($"Cache Redis: configuration changed for endpoint {args.EndPoint}.");
         }
 
@@ -263,9 +283,11 @@ namespace Jube.Cache
             ILog log, EndPointEventArgs args)
         {
             diagnostics.IncrementConfigurationChangedBroadcast();
+
             RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
                 DateTime.UtcNow, RedisConnectionEventType.ConfigurationChangedBroadcast,
                 args.EndPoint.ToString(), null, null, null, null, null));
+
             log.Warn($"Cache Redis: configuration change broadcast received from endpoint {args.EndPoint}.");
         }
     }

@@ -25,6 +25,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var hostBits = (BigInteger.One << (bits - prefix)) - 1;
+
             return NetworkAddressSupport
                 .FromNumber(NetworkAddressSupport.ToNumber(network) | hostBits, network.AddressFamily)
                 .ToString();

@@ -23,7 +23,6 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
     public class ModelScaffoldFixture : IAsyncLifetime
     {
         private readonly List<ModelScaffold> isolated = [];
-
         private ModelEngineHost? engine;
         private ModelInvokeHost? api;
         private ModelScaffold? shared;
@@ -53,9 +52,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         }
 
         protected virtual IReadOnlyDictionary<string, string>? EngineSettings => null;
-
         protected virtual Task BeforeEngineStartAsync() => Task.CompletedTask;
-
         protected virtual Task AfterDisposeAsync() => Task.CompletedTask;
 
         public async Task InitializeAsync()
@@ -63,6 +60,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             await BeforeEngineStartAsync().ConfigureAwait(false);
 
             Shared = await ModelScaffold.CreateAsync().ConfigureAwait(false);
+
             try
             {
                 Engine = await ModelEngineHost.StartAsync(EngineSettings).ConfigureAwait(false);
@@ -80,18 +78,21 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             var scaffold = await ModelScaffold.CreateAsync(options ?? ModelScaffoldOptions.Isolated)
                 .ConfigureAwait(false);
+
             lock (isolated)
             {
                 isolated.Add(scaffold);
             }
 
             await ModelSync.SyncAsync(Engine, scaffold).ConfigureAwait(false);
+
             return scaffold;
         }
 
         public async Task DisposeAsync()
         {
             List<ModelScaffold> copies;
+
             lock (isolated)
             {
                 copies = [.. isolated];

@@ -18,16 +18,19 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidCusip(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();
+
             if (value.Length != 9 || !char.IsAsciiDigit(value[8]))
             {
                 return false;
             }
 
             var sum = 0;
+
             for (var i = 0; i < 8; i++)
             {
                 var c = value[i];
                 int v;
+
                 if (char.IsAsciiDigit(c))
                 {
                     v = c - '0';

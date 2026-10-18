@@ -59,14 +59,14 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["chkFail"] = rows.Where(w => w.ChkFail.HasValue).Select(s => (double)s.ChkFail!.Value).ToArray(),
-                ["chkDown"] = rows.Where(w => w.ChkDown.HasValue).Select(s => (double)s.ChkDown!.Value).ToArray(),
-                ["lastChg"] = rows.Where(w => w.LastChg.HasValue).Select(s => (double)s.LastChg!.Value).ToArray(),
-                ["scur"] = rows.Where(w => w.Scur.HasValue).Select(s => (double)s.Scur!.Value).ToArray(),
-                ["qcur"] = rows.Where(w => w.Qcur.HasValue).Select(s => (double)s.Qcur!.Value).ToArray(),
-                ["weight"] = rows.Where(w => w.Weight.HasValue).Select(s => (double)s.Weight!.Value).ToArray(),
-                ["hrsp2Xx"] = rows.Where(w => w.Hrsp2Xx.HasValue).Select(s => (double)s.Hrsp2Xx!.Value).ToArray(),
-                ["hrsp5Xx"] = rows.Where(w => w.Hrsp5Xx.HasValue).Select(s => (double)s.Hrsp5Xx!.Value).ToArray()
+                ["chkFail"] = [.. rows.Where(w => w.ChkFail.HasValue).Select(s => (double)s.ChkFail!.Value)],
+                ["chkDown"] = [.. rows.Where(w => w.ChkDown.HasValue).Select(s => (double)s.ChkDown!.Value)],
+                ["lastChg"] = [.. rows.Where(w => w.LastChg.HasValue).Select(s => (double)s.LastChg!.Value)],
+                ["scur"] = [.. rows.Where(w => w.Scur.HasValue).Select(s => (double)s.Scur!.Value)],
+                ["qcur"] = [.. rows.Where(w => w.Qcur.HasValue).Select(s => (double)s.Qcur!.Value)],
+                ["weight"] = [.. rows.Where(w => w.Weight.HasValue).Select(s => (double)s.Weight!.Value)],
+                ["hrsp2Xx"] = [.. rows.Where(w => w.Hrsp2Xx.HasValue).Select(s => (double)s.Hrsp2Xx!.Value)],
+                ["hrsp5Xx"] = [.. rows.Where(w => w.Hrsp5Xx.HasValue).Select(s => (double)s.Hrsp5Xx!.Value)]
             });
         }
 
@@ -88,6 +88,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.PxName != null && w.PxName.ToLower().Contains(lowerSearch)) ||
                     (w.SvName != null && w.SvName.ToLower().Contains(lowerSearch)) ||
@@ -106,6 +107,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "pxName" => query.OrderByField(o => o.PxName, descending),

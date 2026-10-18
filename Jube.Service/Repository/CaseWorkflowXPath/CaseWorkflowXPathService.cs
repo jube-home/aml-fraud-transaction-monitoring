@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowXPath;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowXPath;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -34,7 +35,6 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
     {
         private static readonly int[] permissions = [20];
         private static readonly int[] activeOnlyPermissions = [20, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -59,6 +59,9 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowXPathDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> ActiveOnlyPermissions => activeOnlyPermissions;
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowXPathService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +113,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.List: entry user={userName}");
@@ -120,6 +124,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 EnsurePermitted("CaseWorkflowXPath.List", permissions);
                 var dtos = CaseWorkflowXPathMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPath.List: {dtos.Count} rows user={userName}");
@@ -158,6 +163,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.List: entry user={userName} take={take} afterId={afterId}");
@@ -167,10 +173,12 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             {
                 EnsurePermitted("CaseWorkflowXPath.List", permissions);
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = CaseWorkflowXPathMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -204,6 +212,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.FilterFields: entry user={userName}");
@@ -215,6 +224,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<CaseWorkflowXPathDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -254,6 +264,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -265,6 +276,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 var rows = CaseWorkflowXPathMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -302,6 +314,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Count: entry groupBy={groupBy} user={userName}");
@@ -313,6 +326,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 var rows = CaseWorkflowXPathMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -340,6 +354,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "ListByWorkflow", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.ListByWorkflow: entry caseWorkflowId={caseWorkflowId} " +
@@ -349,10 +364,12 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             try
             {
                 EnsurePermitted("CaseWorkflowXPath.ListByWorkflow", permissions);
+
                 var dtos = CaseWorkflowXPathMapper.ToDto(
                     await repository.GetByCasesWorkflowIdOrderByIdDescAsync(caseWorkflowId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPath.ListByWorkflow: {dtos.Count} rows " +
@@ -374,8 +391,10 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowXPath.ListByWorkflow: unexpected failure " +
                           $"caseWorkflowId={caseWorkflowId} user={userName}", ex);
+
                 throw;
             }
         }
@@ -390,6 +409,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "ListByWorkflowIdActiveDrillOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.ListByWorkflowIdActiveDrillOnly: entry id={id} user={userName}");
@@ -398,9 +418,11 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             try
             {
                 EnsurePermitted("CaseWorkflowXPath.ListByWorkflowIdActiveDrillOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowXPathMapper.ToDto(
                     await repository.GetByCasesWorkflowIdActiveDrillOnlyAsync(id, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPath.ListByWorkflowIdActiveDrillOnly: {dtos.Count} rows id={id} " +
@@ -422,8 +444,10 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowXPath.ListByWorkflowIdActiveDrillOnly: unexpected failure id={id} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -440,6 +464,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "ListByWorkflowGuidActiveDrillOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.ListByWorkflowGuidActiveDrillOnly: entry guid={guid} " +
@@ -449,9 +474,11 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             try
             {
                 EnsurePermitted("CaseWorkflowXPath.ListByWorkflowGuidActiveDrillOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowXPathMapper.ToDto(
                     await repository.GetByCasesWorkflowGuidActiveDrillOnlyAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPath.ListByWorkflowGuidActiveDrillOnly: {dtos.Count} rows " +
@@ -473,8 +500,10 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowXPath.ListByWorkflowGuidActiveDrillOnly: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -489,6 +518,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Get", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Get: entry id={id} user={userName}");
@@ -499,6 +529,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 EnsurePermitted("CaseWorkflowXPath.Get", permissions);
                 var entity = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
                 var dto = CaseWorkflowXPathMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPath.Get: id={id} not found or not visible to tenant user={userName}");
@@ -524,6 +555,54 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             }
         }
 
+        [Description("Returns a single Case Workflow XPath extraction by Id, or null if it doesn't exist or " +
+                     "isn't visible to the caller's tenant.")]
+        [ServiceOperation("CaseWorkflowXPathGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<CaseWorkflowXPathDto?> GetByGuidAsync(
+            [Description("Server-assigned identifier of the Case Workflow XPath extraction.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowXPath", "GetByGuid", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowXPath.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowXPath.GetByGuid", permissions);
+                var entity = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+                var dto = CaseWorkflowXPathMapper.ToDto(entity);
+
+                if (entity == null && log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"CaseWorkflowXPath.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                }
+
+                return dto;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowXPath.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Case Workflow XPath extraction under a parent Case Workflow.")]
         [ServiceOperation("CaseWorkflowXPathCreate", OperationKind.Write, Idempotent = false)]
         public async Task<CaseWorkflowXPathDto> InsertAsync(CaseWorkflowXPathDto? model,
@@ -531,6 +610,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Insert: entry user={userName} name={model?.Name}");
@@ -542,6 +622,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 EnsurePermitted("CaseWorkflowXPath.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -601,6 +682,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Validate: entry id={model?.Id} user={userName}");
@@ -613,6 +695,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -641,6 +724,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Update: entry id={model?.Id} user={userName}");
@@ -652,6 +736,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 EnsurePermitted("CaseWorkflowXPath.Update", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -689,6 +774,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowXPath.Update: id={model?.Id} not found, not visible, or locked " +
@@ -720,6 +806,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
         {
             using var op = OperationScope.Start("CaseWorkflowXPath", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPath.Delete: entry id={id} user={userName}");
@@ -745,6 +832,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowXPath.Delete: id={id} not found, not visible, or locked " +

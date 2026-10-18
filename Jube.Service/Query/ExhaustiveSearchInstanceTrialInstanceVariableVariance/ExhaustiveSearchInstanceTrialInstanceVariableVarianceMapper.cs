@@ -18,7 +18,8 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableVarian
     internal static class ExhaustiveSearchInstanceTrialInstanceVariableVarianceMapper
     {
         public static ExhaustiveSearchInstanceTrialInstanceVariableVarianceDto ToDto(
-            global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableVarianceQuery.Dto source) => new()
+            global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableVarianceQuery.
+                GetExhaustiveSearchInstanceVariableVarianceQueryDto source) => new()
         {
             Name = source.Name,
             Correlation = FiniteNumber.Of(source.Correlation),
@@ -26,7 +27,8 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableVarian
         };
 
         public static List<ExhaustiveSearchInstanceTrialInstanceVariableVarianceDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableVarianceQuery.Dto> source) =>
+            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstanceVariableVarianceQuery.
+                GetExhaustiveSearchInstanceVariableVarianceQueryDto> source) =>
             source.Select(ToDto).ToList();
     }
 }

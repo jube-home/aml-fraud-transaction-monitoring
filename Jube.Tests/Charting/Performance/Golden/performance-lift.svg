@@ -1,0 +1,348 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-7c58f10b" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-7c58f10b-t jc-7c58f10b-d">
+    <title id="jc-7c58f10b-t">Lift by Decile</title>
+    <desc id="jc-7c58f10b-d">Bar chart with 2 series: Lift in decile, Cumulative lift. 10 categories, vertical bars.
+        Values range from 0 to 2.5.
+    </desc>
+    <style>
+        .jc-7c58f10b{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-7c58f10b:not([data-theme="light"]),.jc-7c58f10b:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-7c58f10b:not([data-theme="light"]),.jc-7c58f10b[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-7c58f10b
+        text{fill:var(--jc-text);font-size:12px}.jc-7c58f10b .bg{fill:var(--jc-surface)}.jc-7c58f10b
+        .ttl{font-size:16px;font-weight:600}.jc-7c58f10b .sub{fill:var(--jc-text2)}.jc-7c58f10b
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-7c58f10b .at{fill:var(--jc-text2);font-weight:500}.jc-7c58f10b
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-7c58f10b
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-7c58f10b
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-7c58f10b .ref.s0,.jc-7c58f10b
+        .ref.s1,.jc-7c58f10b .ref.s2,.jc-7c58f10b .ref.s3,.jc-7c58f10b .ref.s4,.jc-7c58f10b .ref.s5,.jc-7c58f10b
+        .ref.s6,.jc-7c58f10b .ref.s7{stroke:var(--sc)}.jc-7c58f10b
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-7c58f10b
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-7c58f10b
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-7c58f10b
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-7c58f10b .wh,.jc-7c58f10b
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-7c58f10b
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-7c58f10b
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-7c58f10b
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-7c58f10b .cd.hollow{fill:var(--jc-surface)}.jc-7c58f10b
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-7c58f10b
+        .ar.off{fill-opacity:0}.jc-7c58f10b .ring{font-size:10px}.jc-7c58f10b
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-7c58f10b .needle{fill:var(--jc-text);stroke:none}.jc-7c58f10b
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-7c58f10b
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-7c58f10b
+        .big{font-size:28px;font-weight:600}.jc-7c58f10b .rg0,.jc-7c58f10b .rg1,.jc-7c58f10b
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-7c58f10b .rg0{fill-opacity:.1}.jc-7c58f10b
+        .rg1{fill-opacity:.2}.jc-7c58f10b .rg2{fill-opacity:.32}.jc-7c58f10b
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-7c58f10b
+        .bar.part{fill-opacity:.35}.jc-7c58f10b .lgt{fill:var(--jc-text2)}.jc-7c58f10b
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-7c58f10b
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-7c58f10b
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-7c58f10b
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-7c58f10b .bar{fill:var(--sc)}.jc-7c58f10b
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-7c58f10b
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-7c58f10b
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-7c58f10b
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-7c58f10b
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-7c58f10b
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-7c58f10b .mk:hover .pt.h,.jc-7c58f10b .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-7c58f10b .pt.sm{fill-opacity:.55;stroke:none}.jc-7c58f10b
+        .na{fill:var(--jc-grid)}.jc-7c58f10b .mk:hover .sl,.jc-7c58f10b .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-7c58f10b
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-7c58f10b
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-7c58f10b
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-7c58f10b
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-7c58f10b
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-7c58f10b .ctr{text-anchor:middle}.jc-7c58f10b
+        .end{text-anchor:end}.jc-7c58f10b .mid{dominant-baseline:central}.jc-7c58f10b .mk{outline:none}.jc-7c58f10b
+        .m,.jc-7c58f10b .pt,.jc-7c58f10b .bub,.jc-7c58f10b .bar,.jc-7c58f10b .ov,.jc-7c58f10b .sl,.jc-7c58f10b
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-7c58f10b .mk:hover .m,.jc-7c58f10b .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-7c58f10b .mk:hover .pt,.jc-7c58f10b .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-7c58f10b .mk:hover .bub,.jc-7c58f10b .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-7c58f10b .mk:hover .bar,.jc-7c58f10b .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-7c58f10b .mk:hover .ov,.jc-7c58f10b .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-7c58f10b .mk:hover .sl,.jc-7c58f10b .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-7c58f10b .mk:hover .box,.jc-7c58f10b .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-7c58f10b .mk:hover .wk,.jc-7c58f10b .mk:focus-visible
+        .wk,.jc-7c58f10b .mk:hover .cd,.jc-7c58f10b .mk:focus-visible .cd{stroke-width:2.5}.jc-7c58f10b .mk:hover
+        .cell,.jc-7c58f10b .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-7c58f10b .mk:hover
+        .vl,.jc-7c58f10b .mk:focus-visible .vl,.jc-7c58f10b .mk:hover .cx,.jc-7c58f10b .mk:focus-visible
+        .cx{opacity:1}.jc-7c58f10b .mk:hover .mkr,.jc-7c58f10b .mk:focus-visible .mkr{stroke-width:3}.jc-7c58f10b
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-7c58f10b
+        .mk:hover .tt,.jc-7c58f10b .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-7c58f10b
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-7c58f10b
+        .tx{fill:var(--jc-text);font-size:12px}.jc-7c58f10b .tx.b{font-weight:600}.jc-7c58f10b
+        .tsw{fill:var(--sc)}.jc-7c58f10b .lg{cursor:default;transition:opacity .15s ease}.jc-7c58f10b .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-7c58f10b .sr{transition:opacity .15s ease}.jc-7c58f10b:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-7c58f10b:has(.mk:hover) .mk:not(:hover) .pt,.jc-7c58f10b:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-7c58f10b:has(.mk:hover) .mk:not(:hover) .bar,.jc-7c58f10b:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-7c58f10b:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-7c58f10b:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-7c58f10b .s0{--sc:var(--jc-c0)}.jc-7c58f10b .s0
+        .on{fill:var(--jc-ct0)}.jc-7c58f10b:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-7c58f10b:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-7c58f10b:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-7c58f10b:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-7c58f10b:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-7c58f10b
+        .s1{--sc:var(--jc-c1)}.jc-7c58f10b .s1 .on{fill:var(--jc-ct1)}.jc-7c58f10b:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-7c58f10b:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-7c58f10b:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-7c58f10b:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-7c58f10b:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-7c58f10b,.jc-7c58f10b *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Lift by Decile</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="444" width="85.92" height="18"/>
+        <rect class="sw" x="16" y="448" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="457">Lift in decile</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="117.92" y="444" width="96.6" height="18"/>
+        <rect class="sw" x="119.92" y="448" width="10" height="10" rx="2"/>
+        <text class="lgt" x="137.92" y="457">Cumulative lift</text>
+    </g>
+    <line class="gl" x1="57.18" y1="398" x2="624" y2="398"/>
+    <text class="tk end mid" x="49.18" y="398">0</text>
+    <line class="gl" x1="57.18" y1="328" x2="624" y2="328"/>
+    <text class="tk end mid" x="49.18" y="328">0.5</text>
+    <line class="gl" x1="57.18" y1="258" x2="624" y2="258"/>
+    <text class="tk end mid" x="49.18" y="258">1</text>
+    <line class="gl" x1="57.18" y1="188" x2="624" y2="188"/>
+    <text class="tk end mid" x="49.18" y="188">1.5</text>
+    <line class="gl" x1="57.18" y1="118" x2="624" y2="118"/>
+    <text class="tk end mid" x="49.18" y="118">2</text>
+    <line class="gl" x1="57.18" y1="48" x2="624" y2="48"/>
+    <text class="tk end mid" x="49.18" y="48">2.5</text>
+    <line class="ax" x1="57.18" y1="398" x2="624" y2="398"/>
+    <text class="tk ctr" x="85.52" y="414">1</text>
+    <text class="tk ctr" x="142.2" y="414">2</text>
+    <text class="tk ctr" x="198.89" y="414">3</text>
+    <text class="tk ctr" x="255.57" y="414">4</text>
+    <text class="tk ctr" x="312.25" y="414">5</text>
+    <text class="tk ctr" x="368.93" y="414">6</text>
+    <text class="tk ctr" x="425.61" y="414">7</text>
+    <text class="tk ctr" x="482.29" y="414">8</text>
+    <text class="tk ctr" x="538.98" y="414">9</text>
+    <text class="tk ctr" x="595.66" y="414">10</text>
+    <line class="ref" x1="57.18" y1="258" x2="624" y2="258">
+        <title>No lift (base rate): 1</title>
+    </line>
+    <text class="tk end" x="620" y="254">No lift (base rate)</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="1, Lift in decile: 2.5">
+            <title>1, Lift in decile: 2.5</title>
+            <path class="bar m" d="M64.27 398L64.27 52A4 4 0 0 1 68.27 48L80.52 48A4 4 0 0 1 84.52 52L84.52 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="56" width="124.96" height="44" rx="6"/>
+                <text class="tx b" x="67.18" y="74">1</text>
+                <rect class="tsw s0" x="67.18" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="81.18" y="91">Lift in decile: 2.5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="2, Lift in decile: 2.5">
+            <title>2, Lift in decile: 2.5</title>
+            <path class="bar m" d="M120.95 398L120.95 52A4 4 0 0 1 124.95 48L137.2 48A4 4 0 0 1 141.2 52L141.2 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="68.6" y="56" width="124.96" height="44" rx="6"/>
+                <text class="tx b" x="78.6" y="74">2</text>
+                <rect class="tsw s0" x="78.6" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.6" y="91">Lift in decile: 2.5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="3, Lift in decile: 1.667">
+            <title>3, Lift in decile: 1.667</title>
+            <path class="bar m"
+                  d="M177.63 398L177.63 168.62A4 4 0 0 1 181.63 164.62L193.89 164.62A4 4 0 0 1 197.89 168.62L197.89 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="118.56" y="112.62" width="138.4" height="44" rx="6"/>
+                <text class="tx b" x="128.56" y="130.62">3</text>
+                <rect class="tsw s0" x="128.56" y="138.62" width="9" height="9" rx="2"/>
+                <text class="tx" x="142.56" y="147.62">Lift in decile: 1.667</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="4, Lift in decile: 1.25">
+            <title>4, Lift in decile: 1.25</title>
+            <path class="bar m"
+                  d="M234.31 398L234.31 227A4 4 0 0 1 238.31 223L250.57 223A4 4 0 0 1 254.57 227L254.57 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="178.6" y="171" width="131.68" height="44" rx="6"/>
+                <text class="tx b" x="188.6" y="189">4</text>
+                <rect class="tsw s0" x="188.6" y="197" width="9" height="9" rx="2"/>
+                <text class="tx" x="202.6" y="206">Lift in decile: 1.25</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="5, Lift in decile: 0.417">
+            <title>5, Lift in decile: 0.417</title>
+            <path class="bar m"
+                  d="M290.99 398L290.99 343.62A4 4 0 0 1 294.99 339.62L307.25 339.62A4 4 0 0 1 311.25 343.62L311.25 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="231.92" y="287.62" width="138.4" height="44" rx="6"/>
+                <text class="tx b" x="241.92" y="305.62">5</text>
+                <rect class="tsw s0" x="241.92" y="313.62" width="9" height="9" rx="2"/>
+                <text class="tx" x="255.92" y="322.62">Lift in decile: 0.417</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="6, Lift in decile: 1.667">
+            <title>6, Lift in decile: 1.667</title>
+            <path class="bar m"
+                  d="M347.68 398L347.68 168.62A4 4 0 0 1 351.68 164.62L363.93 164.62A4 4 0 0 1 367.93 168.62L367.93 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="288.6" y="112.62" width="138.4" height="44" rx="6"/>
+                <text class="tx b" x="298.6" y="130.62">6</text>
+                <rect class="tsw s0" x="298.6" y="138.62" width="9" height="9" rx="2"/>
+                <text class="tx" x="312.6" y="147.62">Lift in decile: 1.667</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="7, Lift in decile: 0">
+            <title>7, Lift in decile: 0</title>
+            <path class="bar m" d="M404.36 398L424.61 398L424.61 398L404.36 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="356.93" y="346" width="115.12" height="44" rx="6"/>
+                <text class="tx b" x="366.93" y="364">7</text>
+                <rect class="tsw s0" x="366.93" y="372" width="9" height="9" rx="2"/>
+                <text class="tx" x="380.93" y="381">Lift in decile: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="8, Lift in decile: 0">
+            <title>8, Lift in decile: 0</title>
+            <path class="bar m" d="M461.04 398L481.29 398L481.29 398L461.04 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="413.61" y="346" width="115.12" height="44" rx="6"/>
+                <text class="tx b" x="423.61" y="364">8</text>
+                <rect class="tsw s0" x="423.61" y="372" width="9" height="9" rx="2"/>
+                <text class="tx" x="437.61" y="381">Lift in decile: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="9, Lift in decile: 0">
+            <title>9, Lift in decile: 0</title>
+            <path class="bar m" d="M517.72 398L537.98 398L537.98 398L517.72 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="470.29" y="346" width="115.12" height="44" rx="6"/>
+                <text class="tx b" x="480.29" y="364">9</text>
+                <rect class="tsw s0" x="480.29" y="372" width="9" height="9" rx="2"/>
+                <text class="tx" x="494.29" y="381">Lift in decile: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="10, Lift in decile: 0">
+            <title>10, Lift in decile: 0</title>
+            <path class="bar m" d="M574.4 398L594.66 398L594.66 398L574.4 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="508.88" y="346" width="115.12" height="44" rx="6"/>
+                <text class="tx b" x="518.88" y="364">10</text>
+                <rect class="tsw s0" x="518.88" y="372" width="9" height="9" rx="2"/>
+                <text class="tx" x="532.88" y="381">Lift in decile: 0</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="1, Cumulative lift: 2.5">
+            <title>1, Cumulative lift: 2.5</title>
+            <path class="bar m" d="M86.52 398L86.52 52A4 4 0 0 1 90.52 48L102.78 48A4 4 0 0 1 106.78 52L106.78 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="56" width="135.64" height="44" rx="6"/>
+                <text class="tx b" x="67.18" y="74">1</text>
+                <rect class="tsw s1" x="67.18" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="81.18" y="91">Cumulative lift: 2.5</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="2, Cumulative lift: 2.5">
+            <title>2, Cumulative lift: 2.5</title>
+            <path class="bar m" d="M143.2 398L143.2 52A4 4 0 0 1 147.2 48L159.46 48A4 4 0 0 1 163.46 52L163.46 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="85.51" y="56" width="135.64" height="44" rx="6"/>
+                <text class="tx b" x="95.51" y="74">2</text>
+                <rect class="tsw s1" x="95.51" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.51" y="91">Cumulative lift: 2.5</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="3, Cumulative lift: 2.222">
+            <title>3, Cumulative lift: 2.222</title>
+            <path class="bar m"
+                  d="M199.89 398L199.89 90.92A4 4 0 0 1 203.89 86.92L216.14 86.92A4 4 0 0 1 220.14 90.92L220.14 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="135.47" y="94.92" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="145.47" y="112.92">3</text>
+                <rect class="tsw s1" x="145.47" y="120.92" width="9" height="9" rx="2"/>
+                <text class="tx" x="159.47" y="129.92">Cumulative lift: 2.222</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="4, Cumulative lift: 1.979">
+            <title>4, Cumulative lift: 1.979</title>
+            <path class="bar m"
+                  d="M256.57 398L256.57 124.94A4 4 0 0 1 260.57 120.94L272.82 120.94A4 4 0 0 1 276.82 124.94L276.82 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="192.15" y="68.94" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="202.15" y="86.94">4</text>
+                <rect class="tsw s1" x="202.15" y="94.94" width="9" height="9" rx="2"/>
+                <text class="tx" x="216.15" y="103.94">Cumulative lift: 1.979</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="5, Cumulative lift: 1.667">
+            <title>5, Cumulative lift: 1.667</title>
+            <path class="bar m"
+                  d="M313.25 398L313.25 168.62A4 4 0 0 1 317.25 164.62L329.5 164.62A4 4 0 0 1 333.5 168.62L333.5 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="248.84" y="112.62" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="258.84" y="130.62">5</text>
+                <rect class="tsw s1" x="258.84" y="138.62" width="9" height="9" rx="2"/>
+                <text class="tx" x="272.84" y="147.62">Cumulative lift: 1.667</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="6, Cumulative lift: 1.667">
+            <title>6, Cumulative lift: 1.667</title>
+            <path class="bar m"
+                  d="M369.93 398L369.93 168.62A4 4 0 0 1 373.93 164.62L386.19 164.62A4 4 0 0 1 390.19 168.62L390.19 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="305.52" y="112.62" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="315.52" y="130.62">6</text>
+                <rect class="tsw s1" x="315.52" y="138.62" width="9" height="9" rx="2"/>
+                <text class="tx" x="329.52" y="147.62">Cumulative lift: 1.667</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="7, Cumulative lift: 1.429">
+            <title>7, Cumulative lift: 1.429</title>
+            <path class="bar m"
+                  d="M426.61 398L426.61 201.94A4 4 0 0 1 430.61 197.94L442.87 197.94A4 4 0 0 1 446.87 201.94L446.87 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="362.2" y="145.94" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="372.2" y="163.94">7</text>
+                <rect class="tsw s1" x="372.2" y="171.94" width="9" height="9" rx="2"/>
+                <text class="tx" x="386.2" y="180.94">Cumulative lift: 1.429</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="8, Cumulative lift: 1.25">
+            <title>8, Cumulative lift: 1.25</title>
+            <path class="bar m"
+                  d="M483.29 398L483.29 227A4 4 0 0 1 487.29 223L499.55 223A4 4 0 0 1 503.55 227L503.55 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="422.24" y="171" width="142.36" height="44" rx="6"/>
+                <text class="tx b" x="432.24" y="189">8</text>
+                <rect class="tsw s1" x="432.24" y="197" width="9" height="9" rx="2"/>
+                <text class="tx" x="446.24" y="206">Cumulative lift: 1.25</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="9, Cumulative lift: 1.111">
+            <title>9, Cumulative lift: 1.111</title>
+            <path class="bar m"
+                  d="M539.98 398L539.98 246.46A4 4 0 0 1 543.98 242.46L556.23 242.46A4 4 0 0 1 560.23 246.46L560.23 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="474.92" y="190.46" width="149.08" height="44" rx="6"/>
+                <text class="tx b" x="484.92" y="208.46">9</text>
+                <rect class="tsw s1" x="484.92" y="216.46" width="9" height="9" rx="2"/>
+                <text class="tx" x="498.92" y="225.46">Cumulative lift: 1.111</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="10, Cumulative lift: 1">
+            <title>10, Cumulative lift: 1</title>
+            <path class="bar m"
+                  d="M596.66 398L596.66 262A4 4 0 0 1 600.66 258L612.91 258A4 4 0 0 1 616.91 262L616.91 398Z"/>
+            <g class="tt">
+                <rect class="tb" x="498.2" y="206" width="125.8" height="44" rx="6"/>
+                <text class="tx b" x="508.2" y="224">10</text>
+                <rect class="tsw s1" x="508.2" y="232" width="9" height="9" rx="2"/>
+                <text class="tx" x="522.2" y="241">Cumulative lift: 1</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="340.59" y="432">Score decile, highest scores first</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 223) rotate(-90)">Lift over the base rate</text>
+</svg>

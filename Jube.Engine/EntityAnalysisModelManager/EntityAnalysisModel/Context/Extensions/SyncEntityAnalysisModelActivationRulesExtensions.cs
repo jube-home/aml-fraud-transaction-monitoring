@@ -25,6 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using Jube.Engine.Models;
     using Parser;
     using Parser.Compiler;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelActivationRulesExtensions
     {
@@ -56,6 +57,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         .ConfigureAwait(false);
 
                     var shadowEntityModelActivationRule = new List<EntityAnalysisModelActivationRule>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -69,6 +71,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
 
                             bool active;
+
                             if (record.Active == 1)
                             {
                                 active = true;
@@ -787,6 +790,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                             var hasRuleScript = false;
+
                             if (record.BuilderRuleScript != null && modelActivationRule.RuleScriptTypeId == 1)
                             {
                                 var parsedRule = new ParsedRule
@@ -794,6 +798,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     OriginalRuleText = record.BuilderRuleScript,
                                     ErrorSpans = []
                                 };
+
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                 parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -816,6 +821,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     OriginalRuleText = record.CoderRuleScript,
                                     ErrorSpans = []
                                 };
+
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                 parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -869,6 +875,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                 var classType = modelActivationRule.ActivationRuleCompile.GetType("ActivationRule");
                                 var methodInfo = classType.GetMethod("Match");
+
                                 modelActivationRule.ActivationRuleCompileDelegate =
                                     (EntityAnalysisModelActivationRule.Match)Delegate.CreateDelegate(
                                         typeof(EntityAnalysisModelActivationRule.Match), methodInfo);
@@ -893,6 +900,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
 
                                 var compile = new Compile();
+
                                 compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                 [
                                     Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
@@ -919,13 +927,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                     var classType =
                                         modelActivationRule.ActivationRuleCompile.GetType("ActivationRule");
+
                                     var methodInfo = classType.GetMethod("Match");
+
                                     modelActivationRule.ActivationRuleCompileDelegate =
                                         (EntityAnalysisModelActivationRule.Match)Delegate.CreateDelegate(
                                             typeof(EntityAnalysisModelActivationRule.Match), methodInfo);
+
                                     shadowEntityModelActivationRule.Add(modelActivationRule);
+
                                     context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
                                         compile.CompiledAssembly);
+
                                     context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
                                         new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
                                             compile.CompiledAssemblyBinary, activationRuleScript.ToString()));

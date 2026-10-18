@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to perform this action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The conversation was not found.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>Title must be {0} characters or fewer.</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>The file was not found.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>Files must be {0}MB or smaller.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>That file type is not allowed.</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby drew a blank there -- unlucky. Try asking again or rephrasing.</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>I'm Jooby. There's {0} Bites in the Pasture, {1} Trails trodden, {2} Saltlicks laid down, {3} specialist Joobriks on call, and {4} Yokes in the harness -- but there's no inference backend configured right now, so none of that is actually running yet. Anything you can do in Jube's own screens, I can do here too, every step validated by the platform before it reaches you: I reach into this platform's own service layer directly, and when no tool fits, I find a way inside the fence -- real SQL against the database, rewritten to what you're allowed to see, a hardened R sandbox for the odd calculation, even a web search or a company-records lookup when I need outside eyes. I lay down what I find at the Salt Lick for next time. Point AskJoobyApiEndpoint and AskJoobyModel at OpenRouter and drop your key into AskJoobyApiKey -- that's the whole setup, and providers start competing for your token budget on its spot market from the first call. Sovereignty demands your own inference server instead? Azure AI Foundry, Alibaba Cloud's Model Studio, anywhere self-hosted -- same three settings, pointed there. Either way, set EnableAskJooby to True and I'll be ready before you've finished typing.</value>
+  </data>
+</root>

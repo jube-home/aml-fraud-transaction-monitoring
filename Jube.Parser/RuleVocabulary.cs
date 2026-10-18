@@ -20,6 +20,7 @@ namespace Jube.Parser
     using System.Runtime.CompilerServices;
     using Dictionary;
     using log4net;
+    using Models;
 
     public sealed record RuleWordParameter(string Name, string Type, bool Optional, string DefaultValue);
 
@@ -34,7 +35,6 @@ namespace Jube.Parser
     public static class RuleVocabulary
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(RuleVocabulary));
-
         private static readonly Lazy<Dictionary<string, List<RuleWordOverload>>> functions = new(Functions);
 
         private static readonly Dictionary<Type, string> vbTypeNames = new()
@@ -82,6 +82,7 @@ namespace Jube.Parser
                 else if (curated.TryGetValue(name, out var resultTypeId))
                 {
                     var resultType = EvalExpressionRegistry.ResultTypes[resultTypeId].VbKeyword;
+
                     words.Add(new RuleWord(name, RuleWordKind.CuratedExpression,
                     [
                         new RuleWordOverload($"<String>.{name}() As {resultType}", "String", resultType, [])
@@ -122,13 +123,17 @@ namespace Jube.Parser
         {
             var all = method.GetParameters();
             var receiver = TypeName(all[0].ParameterType);
+
             var parameters = all.Skip(1).Select(p => new RuleWordParameter(p.Name ?? string.Empty,
                 TypeName(p.ParameterType), p.IsOptional,
                 p.IsOptional ? DefaultText(p.DefaultValue) : null)).ToList();
+
             var returns = TypeName(method.ReturnType);
+
             var generic = method.IsGenericMethodDefinition
                 ? "(Of " + string.Join(", ", method.GetGenericArguments().Select(a => a.Name)) + ")"
                 : string.Empty;
+
             var list = string.Join(", ", parameters.Select(p =>
                 (p.Optional ? "Optional " : string.Empty) + p.Name + " As " + p.Type +
                 (p.Optional ? " = " + p.DefaultValue : string.Empty)));
@@ -163,6 +168,7 @@ namespace Jube.Parser
             }
 
             var underlying = Nullable.GetUnderlyingType(type);
+
             if (underlying != null)
             {
                 return TypeName(underlying) + "?";
@@ -176,6 +182,7 @@ namespace Jube.Parser
             if (type.IsGenericType)
             {
                 var baseName = type.Name[..type.Name.IndexOf('`')];
+
                 return baseName + "(Of " + string.Join(", ", type.GetGenericArguments().Select(TypeName)) + ")";
             }
 

@@ -11,10 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache;
@@ -37,6 +39,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private readonly RedisConnectionMultiplexerMetricSampler redisConnectionMultiplexerMetricSampler = new();
         private readonly RedisSentinelStatusSampler redisSentinelStatusSampler = new();
         private EtcdMetricSampler etcdMetricSampler;
+        private DockerContainerMetricSampler dockerContainerMetricSampler;
+        private DockerEventSampler dockerEventSampler;
+        private DockerHostMetricSampler dockerHostMetricSampler;
+        private DockerProxyClient dockerProxyClient;
         private bool postgresLogEntryLoggingCollectorWarningLogged;
         private PatroniMetricSampler patroniMetricSampler;
         private PostgresLogSampler postgresLogSampler;
@@ -60,6 +66,19 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 var etcdPassword = context.Services.DynamicEnvironment.AppSettings("EtcdClientPassword");
                 etcdMetricSampler = new EtcdMetricSampler(etcdUsername, etcdPassword);
                 patroniMetricSampler = new PatroniMetricSampler(etcdUsername, etcdPassword);
+
+                var dockerMonitoringProxyUrl =
+                    context.Services.DynamicEnvironment.AppSettings("DockerMonitoringProxyUrl");
+
+                if (!string.IsNullOrWhiteSpace(dockerMonitoringProxyUrl))
+                {
+                    dockerProxyClient = new DockerProxyClient(new HttpClient
+                        { BaseAddress = new Uri(dockerMonitoringProxyUrl), Timeout = TimeSpan.FromSeconds(10) });
+
+                    dockerContainerMetricSampler = new DockerContainerMetricSampler(dockerProxyClient);
+                    dockerHostMetricSampler = new DockerHostMetricSampler(dockerProxyClient);
+                    dockerEventSampler = new DockerEventSampler(dockerProxyClient);
+                }
 
                 while (!context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                 {
@@ -144,6 +163,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 RunGroupAsync((dbContext, groupToken) =>
                     FlushRedisCallCountersAsync(dbContext, instance, createdDate, groupToken), token),
 #pragma warning disable VSTHRD003 // etcdEndpointsTask is deliberately started once above and shared by both groups
+                // ReSharper disable once VSTHRD003
                 RunGroupAsync((dbContext, groupToken) =>
                     FlushEtcdMemberStatusAsync(dbContext, instance, createdDate, etcdEndpointsTask, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
@@ -153,7 +173,13 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 RunGroupAsync((dbContext, groupToken) =>
                     FlushOpenTelemetryMetricsAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
-                    FlushPostgresLogEntryAsync(dbContext, instance, createdDate, groupToken), token)
+                    FlushPostgresLogEntryAsync(dbContext, instance, createdDate, groupToken), token),
+                RunGroupAsync((dbContext, groupToken) =>
+                    FlushDockerContainerMetricAsync(dbContext, instance, createdDate, groupToken), token),
+                RunGroupAsync((dbContext, groupToken) =>
+                    FlushDockerHostMetricAsync(dbContext, instance, createdDate, groupToken), token),
+                RunGroupAsync((dbContext, groupToken) =>
+                    FlushDockerEventAsync(dbContext, instance, createdDate, groupToken), token)
             ];
 
             await Task.WhenAll(groups).ConfigureAwait(false);
@@ -166,6 +192,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(GroupTimeoutMilliseconds);
+
             try
             {
                 await group(dbContext, deadline.Token).ConfigureAwait(false);
@@ -194,6 +221,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("HttpProcessingCounter", instance);
+
             try
             {
                 var model = new HttpProcessingCounter
@@ -229,6 +257,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing HTTP processing counters has been observed as {ex}.");
             }
@@ -238,6 +267,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("EntityAnalysisAsynchronousQueueBalance", instance);
+
             try
             {
                 var model = new EntityAnalysisAsynchronousQueueBalance
@@ -260,6 +290,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing the asynchronous queue balance has been observed as {ex}.");
             }
@@ -269,6 +300,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("DotNetRuntimeMetric", instance);
+
             try
             {
                 var metric = dotNetRuntimeMetricSampler.Sample();
@@ -282,6 +314,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling .NET runtime metrics has been observed as {ex}.");
             }
@@ -291,12 +324,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("PostgresMetric", instance);
+
             try
             {
                 var metric = await postgresMetricSampler.SampleAsync(token).ConfigureAwait(false);
+
                 if (metric == null)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -310,6 +346,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Postgres metrics has been observed as {ex}.");
             }
@@ -319,16 +356,20 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DateTime createdDate, CancellationToken token)
         {
             using var scope = SamplerScope.Start("PostgresReplicationStatus", instance);
+
             try
             {
                 var replicas = await postgresMetricSampler.SampleReplicationAsync(token).ConfigureAwait(false);
+
                 if (replicas.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var repository = new PostgresReplicationStatusRepository(dbContext);
+
                 foreach (var replica in replicas)
                 {
                     replica.OccurredDate = createdDate;
@@ -342,6 +383,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Postgres replication status has been observed as {ex}.");
             }
@@ -351,6 +393,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("PostgresLogEntry", instance);
+
             try
             {
                 var entries = await postgresLogSampler.SampleAsync(token).ConfigureAwait(false);
@@ -360,6 +403,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     if (!postgresLogEntryLoggingCollectorWarningLogged)
                     {
                         postgresLogEntryLoggingCollectorWarningLogged = true;
+
                         context.Services.Log.Warn(
                             "InfrastructureHealthMetricsStarter: PostgresLogEntry capture requires " +
                             "logging_collector = on server-side; it is currently off, so this table will stay " +
@@ -367,12 +411,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     }
 
                     scope.Skipped();
+
                     return;
                 }
 
                 if (entries == null || entries.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -390,6 +436,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Postgres log entries has been observed as {ex}.");
             }
@@ -399,12 +446,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisMetric", instance);
+
             try
             {
                 var metric = await redisMetricSampler.SampleAsync().ConfigureAwait(false);
+
                 if (metric == null)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -418,6 +468,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Redis metrics has been observed as {ex}.");
             }
@@ -427,16 +478,20 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisSlowOperation", instance);
+
             try
             {
                 var slowOperations = await redisMetricSampler.SampleSlowOperationsAsync().ConfigureAwait(false);
+
                 if (slowOperations.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var repository = new RedisSlowOperationRepository(dbContext);
+
                 foreach (var slowOperation in slowOperations)
                 {
                     slowOperation.Instance = instance;
@@ -450,6 +505,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Redis slow operations has been observed as {ex}.");
             }
@@ -459,17 +515,21 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DateTime createdDate, CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisConnectionMultiplexerMetric", instance);
+
             try
             {
                 var multiplexer = context.Services.CacheService?.ConnectionMultiplexer;
+
                 if (multiplexer == null)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var metric = redisConnectionMultiplexerMetricSampler.Sample(multiplexer,
                     context.Services.CacheService.ConnectionDiagnostics);
+
                 metric.Instance = instance;
                 metric.CreatedDate = createdDate;
 
@@ -480,6 +540,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling the Redis connection multiplexer has been observed as {ex}.");
             }
@@ -489,12 +550,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisSentinelStatus", instance);
+
             try
             {
                 var cacheService = context.Services.CacheService;
+
                 if (cacheService?.SentinelMultiplexer == null)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -505,13 +569,16 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     .SampleAsync(cacheService.SentinelMultiplexer, cacheService.SentinelServiceName,
                         replicationLagByEndpoint)
                     .ConfigureAwait(false);
+
                 if (entries.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var repository = new RedisSentinelStatusRepository(dbContext);
+
                 foreach (var entry in entries)
                 {
                     entry.OccurredDate = createdDate;
@@ -525,6 +592,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Redis Sentinel status has been observed as {ex}.");
             }
@@ -534,12 +602,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisSentinelEvent", instance);
+
             try
             {
                 var drained = RedisSentinelEventCapture.DrainAll();
+
                 if (drained.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -559,6 +630,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured Redis Sentinel events has been observed as {ex}.");
             }
@@ -568,12 +640,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("ModelInvokeWarning", instance);
+
             try
             {
                 var drained = ModelInvokeWarningCapture.DrainAll();
+
                 if (drained.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -598,6 +673,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured model invoke warnings has been observed as {ex}.");
             }
@@ -607,16 +683,20 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DateTime createdDate, CancellationToken token)
         {
             using var scope = SamplerScope.Start("CaseCreationStagePerformanceCounter", instance);
+
             try
             {
                 var stageNames = CaseCreationStagePerformanceCounters.Instance.Stages.Keys.ToList();
+
                 if (stageNames.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var models = new List<CaseCreationStagePerformanceCounter>();
+
                 foreach (var stageName in stageNames)
                 {
                     if (!CaseCreationStagePerformanceCounters.Instance.Stages.TryGetValue(stageName,
@@ -650,6 +730,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 if (models.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -660,6 +741,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing case creation stage performance counters has been observed as {ex}.");
             }
@@ -669,12 +751,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DateTime createdDate, CancellationToken token)
         {
             using var scope = SamplerScope.Start("CaseCreationWarning", instance);
+
             try
             {
                 var drained = CaseCreationWarningCapture.DrainAll();
+
                 if (drained.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -700,6 +785,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured case creation warnings has been observed as {ex}.");
             }
@@ -709,12 +795,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("ArchiverWarning", instance);
+
             try
             {
                 var drained = ArchiverWarningCapture.DrainAll();
+
                 if (drained.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -737,6 +826,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured archiver warnings has been observed as {ex}.");
             }
@@ -822,6 +912,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 OpenTelemetryMetricCapture.AddDroppedNewSeriesCount(openTelemetryMetricDropped);
 
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing capture queue health has been observed as {ex}.");
             }
@@ -831,12 +922,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             DateTime createdDate, CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisConnectionEvent", instance);
+
             try
             {
                 var drained = RedisConnectionEventCapture.DrainAll();
+
                 if (drained.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -864,6 +958,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured Redis connection events has been observed as {ex}.");
             }
@@ -873,12 +968,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("RedisCallCounter", instance);
+
             try
             {
                 var snapshot = CacheCallCounters.TakeSnapshot();
+
                 if (snapshot.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -900,6 +998,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing Redis call counters has been observed as {ex}.");
             }
@@ -909,24 +1008,29 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             Task<List<string>> etcdEndpointsTask, CancellationToken token)
         {
             using var scope = SamplerScope.Start("EtcdMemberStatus", instance);
+
             try
             {
 #pragma warning disable VSTHRD003 // shared task, started once in SampleAndFlushAsync -- see comment there
                 var endpoints = await etcdEndpointsTask.ConfigureAwait(false);
 #pragma warning restore VSTHRD003
+
                 if (endpoints.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
                 var statusRepository = new EtcdMemberStatusRepository(dbContext);
                 var eventRepository = new EtcdClusterEventRepository(dbContext);
                 var rows = 0;
+
                 foreach (var endpoint in endpoints)
                 {
                     var (status, events) = await etcdMetricSampler.SampleAsync(endpoint, token)
                         .ConfigureAwait(false);
+
                     if (status != null)
                     {
                         status.OccurredDate = createdDate;
@@ -955,6 +1059,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 if (rows == 0)
                 {
                     scope.Tag("jube.etcd.last.error", etcdMetricSampler.LastError ?? string.Empty);
+
                     context.Services.Log.Error(
                         "InfrastructureHealthMetricsStarter: No etcd member status could be sampled from any of " +
                         $"the {endpoints.Count} discovered endpoints. " +
@@ -966,6 +1071,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling etcd member status has been observed as {ex}.");
             }
@@ -975,14 +1081,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             Task<List<string>> etcdEndpointsTask, CancellationToken token)
         {
             using var scope = SamplerScope.Start("PatroniMemberStatus", instance);
+
             try
             {
                 var endpoints = await etcdPatroniDiscovery
                     .DiscoverPatroniEndpointsAsync(context.Services.DynamicEnvironment, token)
                     .ConfigureAwait(false);
+
                 if (endpoints.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -995,6 +1104,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 if (statuses.Count > 0)
                 {
                     var statusRepository = new PatroniMemberStatusRepository(dbContext);
+
                     foreach (var status in statuses)
                     {
                         status.OccurredDate = createdDate;
@@ -1019,6 +1129,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 }
 
                 var scopeName = statuses.Select(s => s.Scope).FirstOrDefault(s => s != null);
+
                 if (scopeName != null)
                 {
 #pragma warning disable VSTHRD003 // shared task, started once in SampleAndFlushAsync -- see comment there
@@ -1046,6 +1157,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     if (patroniMetricSampler.LastError != null)
                     {
                         scope.Tag("jube.etcd.last.error", patroniMetricSampler.LastError);
+
                         context.Services.Log.Error(
                             "InfrastructureHealthMetricsStarter: Patroni's DCS history could not be read from etcd. " +
                             $"{patroniMetricSampler.LastError} Where etcd requires client authentication, check " +
@@ -1065,6 +1177,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error sampling Patroni member status has been observed as {ex}.");
             }
@@ -1074,14 +1187,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token)
         {
             using var scope = SamplerScope.Start("OpenTelemetryMetric", instance);
+
             try
             {
                 scope.Tag("jube.otel_capture.sampled_out_count", OpenTelemetryMetricCapture.SampledOutCount);
 
                 var aggregations = OpenTelemetryMetricCapture.DrainAll();
+
                 if (aggregations.Count == 0)
                 {
                     scope.Skipped();
+
                     return;
                 }
 
@@ -1106,8 +1222,134 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 scope.Error(ex);
+
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: An error flushing captured OpenTelemetry metrics has been observed as {ex}.");
+            }
+        }
+
+        private async Task FlushDockerContainerMetricAsync(DbContext dbContext, string instance,
+            DateTime createdDate, CancellationToken token)
+        {
+            using var scope = SamplerScope.Start("DockerContainerMetric", instance);
+
+            if (dockerContainerMetricSampler == null)
+            {
+                scope.Skipped();
+
+                return;
+            }
+
+            try
+            {
+                var metrics = await dockerContainerMetricSampler.SampleAsync(token).ConfigureAwait(false);
+
+                if (metrics.Count == 0)
+                {
+                    scope.Skipped();
+
+                    return;
+                }
+
+                var repository = new DockerContainerMetricRepository(dbContext);
+
+                foreach (var metric in metrics)
+                {
+                    metric.OccurredDate = createdDate;
+                    metric.CreatedDate = createdDate;
+                    metric.Instance = instance;
+                    await repository.InsertAsync(metric, token).ConfigureAwait(false);
+                }
+
+                scope.Rows(metrics.Count);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                scope.Error(ex);
+
+                context.Services.Log.Error(
+                    $"InfrastructureHealthMetricsStarter: An error sampling Docker container metrics has been observed as {ex}.");
+            }
+        }
+
+        private async Task FlushDockerHostMetricAsync(DbContext dbContext, string instance, DateTime createdDate,
+            CancellationToken token)
+        {
+            using var scope = SamplerScope.Start("DockerHostMetric", instance);
+
+            if (dockerHostMetricSampler == null)
+            {
+                scope.Skipped();
+
+                return;
+            }
+
+            try
+            {
+                var metric = await dockerHostMetricSampler.SampleAsync(token).ConfigureAwait(false);
+
+                if (metric == null)
+                {
+                    scope.Skipped();
+
+                    return;
+                }
+
+                metric.CreatedDate = createdDate;
+                metric.Instance = instance;
+
+                var repository = new DockerHostMetricRepository(dbContext);
+                await repository.InsertAsync(metric, token).ConfigureAwait(false);
+                scope.Rows(1);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                scope.Error(ex);
+
+                context.Services.Log.Error(
+                    $"InfrastructureHealthMetricsStarter: An error sampling Docker host metrics has been observed as {ex}.");
+            }
+        }
+
+        private async Task FlushDockerEventAsync(DbContext dbContext, string instance, DateTime createdDate,
+            CancellationToken token)
+        {
+            using var scope = SamplerScope.Start("DockerEvent", instance);
+
+            if (dockerEventSampler == null)
+            {
+                scope.Skipped();
+
+                return;
+            }
+
+            try
+            {
+                var events = await dockerEventSampler.SampleAsync(token).ConfigureAwait(false);
+
+                if (events.Count == 0)
+                {
+                    scope.Skipped();
+
+                    return;
+                }
+
+                foreach (var dockerEvent in events)
+                {
+                    dockerEvent.CreatedDate = createdDate;
+                    dockerEvent.Instance = instance;
+                }
+
+                var repository = new DockerEventRepository(dbContext);
+                await repository.BulkCopyAsync(events, token).ConfigureAwait(false);
+                scope.Rows(events.Count);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                scope.Error(ex);
+
+                context.Services.Log.Error(
+                    $"InfrastructureHealthMetricsStarter: An error sampling Docker events has been observed as {ex}.");
             }
         }
     }

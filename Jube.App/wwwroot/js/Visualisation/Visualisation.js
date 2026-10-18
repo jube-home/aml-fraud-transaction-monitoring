@@ -494,10 +494,19 @@ function getUrlVars() {
     return vars;
 }
 
-function InitVisualisation() {
+function InitVisualisation(embedded) {
     $.get("../api/VisualisationRegistry/GetByGuidActiveOnly/" + VisualisationRegistryGuid,
         function (dataVisualisation) {
             Visualisation = dataVisualisation;
+
+            if (!embedded) {
+                window.AskJoobySetPageContext?.("Visualisation", "readonly", {
+                    id: dataVisualisation.id,
+                    guid: dataVisualisation.guid,
+                    name: dataVisualisation.name
+                });
+            }
+
             const serviceRootParams = "../api/VisualisationRegistryParameter/ByVisualisationRegistryIdActiveOnly/" +
                 dataVisualisation.id;
 
@@ -643,6 +652,6 @@ $(document).ready(function () {
     if (getUrlVars()["Guid"]) {
         ShowParams = true;
         VisualisationRegistryGuid = getUrlVars()["Guid"];
-        InitVisualisation(VisualisationRegistryGuid, true);
+        InitVisualisation();
     }
 });

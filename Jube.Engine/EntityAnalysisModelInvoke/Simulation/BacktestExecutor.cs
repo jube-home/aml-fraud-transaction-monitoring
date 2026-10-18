@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 {
     using System;
@@ -19,13 +21,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using System.Threading;
     using System.Threading.Tasks;
     using Data.Context;
-    using Data.Query;
     using Data.Query.Models;
     using Data.QueryBuilder;
     using Data.Repository;
     using log4net;
+    using Models;
     using Newtonsoft.Json.Linq;
     using Parser;
+    using Parser.Models;
+    using Jube.Data.Query.GetArchiveBacktestSampleQuery;
+    using Jube.Data.Query.GetModelListsQuery;
+    using Jube.Data.Query.GetRuleParseEnvironmentQuery;
+    using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 
     public sealed record BacktestSpecification(
         int EntityAnalysisModelId,
@@ -59,7 +66,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     public static class BacktestExecutor
     {
         private const int MaxSampleSize = 50;
-
         private static readonly ILog log = LogManager.GetLogger(typeof(BacktestExecutor));
 
         private static readonly Dictionary<string, (int ParseType, bool Reprocessing)> ruleTypes =
@@ -75,19 +81,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
         public static async Task<IReadOnlyList<BacktestField>> FilterFieldsAsync(DbContext dbContext,
             int tenantRegistryId, int entityAnalysisModelId, CancellationToken token = default)
         {
-            return (await BuilderFieldsAsync(dbContext, tenantRegistryId, entityAnalysisModelId,
+            return
+            [
+                .. (await BuilderFieldsAsync(dbContext, tenantRegistryId, entityAnalysisModelId,
                     RuleParse.GatewayRule, token).ConfigureAwait(false))
                 .Select(f => new BacktestField(f.Key, f.Value.Type)).OrderBy(f => f.Name, StringComparer.Ordinal)
-                .ToList();
+            ];
         }
 
         public static async Task<IReadOnlyList<BacktestField>> ClassFieldsAsync(DbContext dbContext,
             int tenantRegistryId, int entityAnalysisModelId, CancellationToken token = default)
         {
-            return (await ClassCatalogueAsync(dbContext, tenantRegistryId, entityAnalysisModelId, token)
+            return
+            [
+                .. (await ClassCatalogueAsync(dbContext, tenantRegistryId, entityAnalysisModelId, token)
                     .ConfigureAwait(false)).Fields.Values
                 .Select(f => new BacktestField(f.Id, f.Type)).OrderBy(f => f.Name, StringComparer.Ordinal)
-                .ToList();
+            ];
         }
 
         public static async Task<(BacktestPlan Plan, IReadOnlyList<BacktestError> Errors)> PrepareAsync(
@@ -97,6 +107,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(specification);
 
             var errors = new List<BacktestError>();
+
             if (!ruleTypes.TryGetValue(specification.RuleType ?? string.Empty, out var ruleType))
             {
                 return (null, [
@@ -116,10 +127,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             }
 
             var modelId = specification.EntityAnalysisModelId;
+
             var rule = await CompileAsync(dbContext, tenantRegistryId, modelId, specification.RuleText,
                 ruleType.ParseType, ruleType.Reprocessing, "RuleText", errors, token).ConfigureAwait(false);
 
             RuleParseResult filter = null;
+
             if (!string.IsNullOrWhiteSpace(specification.FilterRuleText))
             {
                 filter = await CompileAsync(dbContext, tenantRegistryId, modelId, specification.FilterRuleText,
@@ -180,7 +193,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 .Concat(classNames)
                 .ToHashSet(StringComparer.Ordinal);
 
-            fields = fields.Where(f => needed.Contains(f.Name)).ToList();
+            fields = [.. fields.Where(f => needed.Contains(f.Name))];
 
             var lists = await new GetModelListsQuery(dbContext, tenantRegistryId).ExecuteAsync(modelId, token)
                 .ConfigureAwait(false);
@@ -196,6 +209,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var (plan, errors) = await PrepareAsync(dbContext, tenantRegistryId, specification, token)
                 .ConfigureAwait(false);
+
             if (plan == null)
             {
                 return new BacktestExecution(null, errors);
@@ -212,6 +226,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             {
                 token.ThrowIfCancellationRequested();
                 var remaining = limit - backtest.Result.Scanned;
+
                 if (remaining <= 0)
                 {
                     backtest.Result.LimitReached = true;
@@ -219,14 +234,17 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 }
 
                 var take = (int)Math.Min(size, remaining);
+
                 var page = await query.ExecutePageAsync(plan.EntityAnalysisModelId, specification.From,
                     specification.To, take, after, token).ConfigureAwait(false);
+
                 if (page.Count == 0)
                 {
                     break;
                 }
 
                 after = page[^1];
+
                 if (!await backtest.AddAsync(page.Select(ToRow), token).ConfigureAwait(false))
                 {
                     break;

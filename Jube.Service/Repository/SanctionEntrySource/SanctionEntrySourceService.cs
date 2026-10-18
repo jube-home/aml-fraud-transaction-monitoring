@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,11 +16,13 @@ using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.Filter;
 using Jube.Dto.Repository.SanctionEntrySource;
 using Jube.Engine.Sanctions;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.SanctionEntrySource;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -59,6 +61,9 @@ namespace Jube.Service.Repository.SanctionEntrySource
             this.permissionValidation = permissionValidation;
             repository = new SanctionEntrySourceRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => [];
+        public static bool RequiresLandlord => true;
 
         public static Task<SanctionEntrySourceService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -113,6 +118,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SanctionEntrySource.List: entry user={userName}");
@@ -140,6 +146,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"SanctionEntrySource.List: cancelled user={userName}");
@@ -168,7 +175,9 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "ListPaged", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SanctionEntrySource.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
@@ -197,6 +206,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"SanctionEntrySource.ListPaged: cancelled user={userName}");
@@ -222,6 +232,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SanctionEntrySource.FilterFields: entry user={userName}");
@@ -233,6 +244,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<SanctionEntrySourceDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -272,6 +284,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SanctionEntrySource.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -283,6 +296,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
                 var rows = SanctionEntrySourceMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -320,6 +334,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SanctionEntrySource.Count: entry groupBy={groupBy} user={userName}");
@@ -331,6 +346,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
                 var rows = SanctionEntrySourceMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -356,6 +372,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         {
             using var op = OperationScope.Start("SanctionEntrySource", "Import", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -441,6 +458,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -452,9 +470,11 @@ namespace Jube.Service.Repository.SanctionEntrySource
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"SanctionEntrySource.Import: unexpected failure sanctionEntrySourceId={sanctionEntrySourceId} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -462,7 +482,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
         private async Task<SanctionEntryImport> ProcessImportAsync(TextFieldParser textFieldParser,
             SanctionEntrySourcePoco sanctionEntrySource, CancellationToken token)
         {
-            var sanctionsEntryRepository = new SanctionsEntryRepository(dbContext);
+            var sanctionsEntryRepository = new SanctionEntryRepository(dbContext);
             var sanctionEntryImportRepository = new SanctionEntryImportRepository(dbContext);
             var sanctionEntryRejectionRepository = new SanctionEntryRejectionRepository(dbContext);
 

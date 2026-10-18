@@ -33,7 +33,6 @@ namespace Jube.Migrations.Baseline
                 .OnColumn("RoleRegistryId").Ascending();
         }
 
-
         public override void Down()
         {
             Delete.Table("UserRoleRegistry");

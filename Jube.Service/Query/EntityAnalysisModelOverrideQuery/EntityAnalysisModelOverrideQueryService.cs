@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,9 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelOverrideQuery;
+using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelOverrideQuery;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelOverrideQuery;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -28,7 +30,6 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
     public sealed class EntityAnalysisModelOverrideQueryService
     {
         private static readonly int[] permissions = [2];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -51,6 +52,8 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelOverrideQueryService> CreateAsync(DbContext dbContext,
             string? userName,
@@ -78,7 +81,7 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
                     strings[EntityAnalysisModelOverrideQueryResources.NotAuthenticated]);
             }
 
-            var resolvedTenantRegistryId = await Data.Repository.UserInTenantRepository
+            var resolvedTenantRegistryId = await UserInTenantRepository
                 .GetTenantRegistryIdAsync(dbContext, userName, token).ConfigureAwait(false);
 
             if (resolvedTenantRegistryId is null)
@@ -115,6 +118,7 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             using var op = OperationScope.Start("EntityAnalysisModelOverrideQuery", "Get", userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -124,10 +128,12 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             try
             {
                 EnsurePermitted("EntityAnalysisModelOverrideQuery.Get");
-                var query = new global::Jube.Data.Query.GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+                var query = new GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+
                 var dtos = EntityAnalysisModelOverrideQueryMapper.ToDto(
                     await query.ExecuteAsync(overrideKey, overrideKeyValue, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelOverrideQuery.Get: {dtos.Count} rows user={userName}");
@@ -164,6 +170,7 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             using var op = OperationScope.Start("EntityAnalysisModelOverrideQuery", "GetKeys", userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelOverrideQuery.GetKeys: entry user={userName}");
@@ -172,10 +179,12 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             try
             {
                 EnsurePermitted("EntityAnalysisModelOverrideQuery.GetKeys");
-                var query = new global::Jube.Data.Query.GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+                var query = new GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+
                 var dtos = EntityAnalysisModelOverrideQueryMapper.ToDto(
                     await query.ExecuteKeysAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelOverrideQuery.GetKeys: {dtos.Count} rows user={userName}");
@@ -212,6 +221,7 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             using var op = OperationScope.Start("EntityAnalysisModelOverrideQuery", "GetValues", userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -221,11 +231,13 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
             try
             {
                 EnsurePermitted("EntityAnalysisModelOverrideQuery.GetValues");
-                var query = new global::Jube.Data.Query.GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+                var query = new GetEntityAnalysisModelOverrideQuery(dbContext, userName);
+
                 var dtos = EntityAnalysisModelOverrideQueryMapper.ToDto(
                     await query.ExecuteValuesAsync(overrideKey, Math.Clamp(limit, 1, 1000), token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelOverrideQuery.GetValues: {dtos.Count} rows user={userName}");

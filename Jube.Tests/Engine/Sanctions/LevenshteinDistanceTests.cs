@@ -33,6 +33,7 @@ namespace Jube.Test.Engine.Sanctions
         private static ConcurrentDictionary<int, SanctionEntry> Entries(params (int Id, string[] Values)[] entries)
         {
             var dictionary = new ConcurrentDictionary<int, SanctionEntry>();
+
             foreach (var (id, values) in entries)
             {
                 dictionary.TryAdd(id, new SanctionEntry
@@ -50,6 +51,7 @@ namespace Jube.Test.Engine.Sanctions
         private static ConcurrentDictionary<string, byte> StopTokens(params string[] tokens)
         {
             var dictionary = new ConcurrentDictionary<string, byte>();
+
             foreach (var token in tokens)
             {
                 dictionary.TryAdd(token, 1);
@@ -76,6 +78,7 @@ namespace Jube.Test.Engine.Sanctions
         public void CheckMultipartStringWithNoSanctionEntriesReturnsNoMatches()
         {
             var levenshtein = new LevenshteinDistance();
+
             var result = levenshtein.CheckMultipartString("Osama bin Laden", 2,
                 new ConcurrentDictionary<int, SanctionEntry>(), noStopTokens);
 
@@ -350,6 +353,7 @@ namespace Jube.Test.Engine.Sanctions
         public void CheckMultipartStringReturnsOnlyEntriesThatMatchFromALargerSet()
         {
             var levenshtein = new LevenshteinDistance();
+
             var entries = Entries(
                 (1, ["Osama bin Laden"]),
                 (2, ["John Smith"]),
@@ -365,9 +369,11 @@ namespace Jube.Test.Engine.Sanctions
         public void CheckMultipartStringAcrossManyEntriesIsThreadSafeAndDeterministicInResultSet()
         {
             var levenshtein = new LevenshteinDistance();
+
             var entryTuples = Enumerable.Range(10, 200)
                 .Select(i => (i, new[] { $"Person Number {i}" }))
                 .ToArray();
+
             var entries = Entries(entryTuples);
             var result = levenshtein.CheckMultipartString("Person Number 57", 0, entries, noStopTokens);
 

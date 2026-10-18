@@ -17,7 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     internal static partial class FlowPredicates
     {
-        private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(100);
+        private static readonly TimeSpan regexTimeout = TimeSpan.FromMilliseconds(100);
 
         internal static bool SafeRegexIsMatch(string? value, string? pattern)
         {
@@ -28,7 +28,7 @@ namespace Jube.Dictionary.Extensions
 
             try
             {
-                return Regex.IsMatch(value, pattern, RegexOptions.None, RegexTimeout);
+                return Regex.IsMatch(value, pattern, RegexOptions.None, regexTimeout);
             }
             catch (ArgumentException)
             {
@@ -48,6 +48,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var termWords = Words(term);
+
             if (termWords.Length == 0)
             {
                 return false;
@@ -55,15 +56,18 @@ namespace Jube.Dictionary.Extensions
 
             var valueWords = Words(value);
             var window = Math.Min(termWords.Length, valueWords.Length);
+
             if (window == 0 || valueWords.Length < termWords.Length)
             {
                 return false;
             }
 
             var target = string.Join(' ', termWords);
+
             for (var i = 0; i + window <= valueWords.Length; i++)
             {
                 var candidate = string.Join(' ', valueWords, i, window);
+
                 if (candidate.JaroWinklerSimilarity(target) >= threshold)
                 {
                     return true;
@@ -99,9 +103,11 @@ namespace Jube.Dictionary.Extensions
             try
             {
                 var zone = TimeZoneInfo.FindSystemTimeZoneById(zoneId);
+
                 var utc = value.Kind == DateTimeKind.Local
                     ? value.ToUniversalTime()
                     : DateTime.SpecifyKind(value, DateTimeKind.Utc);
+
                 return TimeZoneInfo.ConvertTimeFromUtc(utc, zone);
             }
             catch (TimeZoneNotFoundException)
@@ -117,6 +123,7 @@ namespace Jube.Dictionary.Extensions
         internal static bool? LocalWeekday(DateTime value, string? zoneId)
         {
             var local = ToLocal(value, zoneId);
+
             if (local is null)
             {
                 return null;
@@ -129,6 +136,7 @@ namespace Jube.Dictionary.Extensions
             bool weekdaysOnly)
         {
             var local = ToLocal(value, zoneId);
+
             if (local is null)
             {
                 return false;
@@ -146,6 +154,7 @@ namespace Jube.Dictionary.Extensions
             bool weekdaysOnly)
         {
             var local = ToLocal(value, zoneId);
+
             if (local is null)
             {
                 return false;

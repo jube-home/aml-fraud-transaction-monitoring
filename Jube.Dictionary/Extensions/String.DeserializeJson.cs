@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Runtime.Serialization.Json;
 using System.Text;
 
@@ -22,6 +23,7 @@ namespace Jube.Dictionary.Extensions
 
                     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
                     var result = serializer.ReadObject(stream);
+
                     return result is T typed ? typed : default;
                 }
                 catch
@@ -45,6 +47,7 @@ namespace Jube.Dictionary.Extensions
 
                     using var stream = new MemoryStream(encoding.GetBytes(json));
                     var result = serializer.ReadObject(stream);
+
                     return result is T typed ? typed : default;
                 }
                 catch

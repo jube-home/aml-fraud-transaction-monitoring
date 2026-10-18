@@ -1,0 +1,53 @@
+{
+  "numberOfInputs": 4,
+  "coefficients": [
+    -10.266055376132181,
+    6.5715142525246,
+    -0.11245430607480213,
+    -0.6627152712374446,
+    0.06966292700175798
+  ],
+  "numberOfParameters": 5,
+  "weights": [
+    6.5715142525246,
+    -0.11245430607480213,
+    -0.6627152712374446,
+    0.06966292700175798
+  ],
+  "standardErrors": [
+    3.116646822806137,
+    1.7063277559871297,
+    1.274839041322604,
+    0.34924054683937356,
+    1.136373242414358
+  ],
+  "inputs": 4,
+  "link": {
+    "$type": "Accord.Statistics.Links.LogitLinkFunction, Accord.Statistics",
+    "a": 0.0,
+    "b": 1.0
+  },
+  "linear": {
+    "coefficients": [
+      6.5715142525246,
+      -0.11245430607480213,
+      -0.6627152712374446,
+      0.06966292700175798
+    ],
+    "numberOfInputs": 4,
+    "weights": [
+      6.5715142525246,
+      -0.11245430607480213,
+      -0.6627152712374446,
+      0.06966292700175798
+    ],
+    "numberOfParameters": 5,
+    "inputs": 4,
+    "hasIntercept": false,
+    "intercept": -10.266055376132181,
+    "numberOfOutputs": 1
+  },
+  "intercept": -10.266055376132181,
+  "numberOfClasses": 2,
+  "numberOfOutputs": 1
+}

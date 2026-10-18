@@ -23,7 +23,6 @@ namespace Jube.Validations.EntityAnalysisModelTtlCounter
     {
         private const int MaxNameLength = 256;
         private const int MaxDataFieldLength = 256;
-
         private static readonly string[] allowedTtlCounterIntervals = ["s", "n", "h", "d", "m", "y"];
         private static readonly string[] allowedResolutionIntervals = ["n", "h", "d"];
 
@@ -53,6 +52,7 @@ namespace Jube.Validations.EntityAnalysisModelTtlCounter
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.NameAlreadyExists])
