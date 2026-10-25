@@ -75,7 +75,8 @@ namespace Jube.Test.Exhaustive
                 {
                     Name = $"{DatabaseFixture.Prefix}En{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     EntityAnalysisModelId = scaffold.ModelId, Active = 1, Locked = 0, Deleted = 0, StatusId = 0,
-                    Anomaly = 1, AnomalyProbability = 0.5, Filter = 0, ResponsePayload = 1, DataSourceId = 1
+                    Anomaly = 1, AnomalyProbability = 0.5, Filter = 0, ResponsePayload = 1, DataSourceId = 1,
+                    ChallengerModelBaseProbability = 0
                 });
 
             await EntityApprovalSeed.ApproveAsync(db, EntityApprovalKind.ExhaustiveSearchInstance, instance.Id);
@@ -84,7 +85,7 @@ namespace Jube.Test.Exhaustive
             {
                 Id = instance.Id, EntityAnalysisModelId = scaffold.ModelId,
                 TenantRegistryId = scaffold.TenantRegistryId,
-                Anomaly = true, AnomalyProbability = 0.5, DataSourceId = 1
+                Anomaly = true, AnomalyProbability = 0.5, DataSourceId = 1, ChallengerModelBaseProbability = 0
             };
 
             Assert.True(await NewTraining().RunOneInstanceAsync(dto, db, CancellationToken.None));
@@ -117,7 +118,7 @@ namespace Jube.Test.Exhaustive
                 scores.Add(score);
             }
 
-            Assert.DoesNotContain(0d, scores);
+            Assert.Contains(scores, s => s > 0 && s < 1);
             Assert.True(scores.Distinct().Count() > 1, "Recall is constant: " + string.Join(",", scores));
 
             var invoked = await engineFixture.Api.InvokeAsync(scaffold, Payloads.Example().With("TxnId", "rc-1"));

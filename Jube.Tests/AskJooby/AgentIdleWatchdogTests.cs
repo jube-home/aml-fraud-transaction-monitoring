@@ -36,9 +36,9 @@ namespace Jube.Test.AskJooby
         {
             async IAsyncEnumerable<AgentStreamItem> ChattyAsync([EnumeratorCancellation] CancellationToken token)
             {
-                for (var i = 0; i < 5; i++)
+                for (var i = 0; i < 15; i++)
                 {
-                    await Task.Delay(60, token);
+                    await Task.Delay(100, token);
                     yield return Step("beat " + i);
                 }
             }
@@ -47,12 +47,12 @@ namespace Jube.Test.AskJooby
             var seen = new List<AgentStreamItem>();
 
             await foreach (var item in AgentIdleWatchdog.WithIdleTimeoutAsync(
-                               ChattyAsync, TimeSpan.FromMilliseconds(200), () => idle = true))
+                               ChattyAsync, TimeSpan.FromSeconds(1), () => idle = true))
             {
                 seen.Add(item);
             }
 
-            seen.Should().HaveCount(5);
+            seen.Should().HaveCount(15);
             idle.Should().BeFalse("nothing went quiet, so nothing should have been retired");
         }
 

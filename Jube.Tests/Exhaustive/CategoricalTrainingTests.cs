@@ -199,7 +199,8 @@ namespace Jube.Test.Exhaustive
                     FilterJson = filterJson,
                     FilterSql = FilterSql,
                     FilterTokens = "[1]",
-                    CategoricalOptionsJson = Options().ToJson()
+                    CategoricalOptionsJson = Options().ToJson(),
+                    ChallengerModelBaseProbability = 0
                 });
 
             var environment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -226,6 +227,7 @@ namespace Jube.Test.Exhaustive
                 Id = instance.Id,
                 EntityAnalysisModelId = modelId,
                 TenantRegistryId = tenantId,
+                ChallengerModelBaseProbability = 0,
                 Anomaly = false,
                 Filter = true,
                 FilterJson = filterJson,
@@ -278,7 +280,7 @@ namespace Jube.Test.Exhaustive
 
             var model = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(
                 await db.ExhaustiveSearchInstance.FirstAsync(w => w.Id == instance.Id),
-                new ExhaustiveSearchInstancePromotedTrialInstance { Json = trial.Json },
+                trial,
                 rows, helper.DeserializeTopologyNetworkJsonSerializerSettings);
 
             model.NetworkVariablesInOrder.Should().HaveCount(rows.Count);
