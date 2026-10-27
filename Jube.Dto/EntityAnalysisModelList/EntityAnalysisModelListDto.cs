@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.EntityAnalysisModelListValue;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelList
 {
     [FormEndpoint("EntityAnalysisModelList")]
+    [FormApproval]
+    [FormValues(typeof(EntityAnalysisModelListValueDto), nameof(EntityAnalysisModelListValueDto.ListValue))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelGuid), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -35,7 +38,7 @@ namespace Jube.Dto.EntityAnalysisModelList
 
         [Description("Display name of this List. Unique within the Model (case-insensitive). Referenced as an " +
                      "operator in Builder and Coder rules on the Model.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Blocked merchants")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

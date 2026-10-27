@@ -39,7 +39,7 @@ namespace Jube.App.Endpoints.Repository
                 .RequireAuthorization()
                 .WithTags("SessionCaseJournal");
 
-            group.MapGet("ByCasesWorkflowGuid/{guid:guid}", GetByCaseWorkflowGuidAsync)
+            group.MapGet("ByCaseWorkflowGuid/{guid:guid}", GetByCaseWorkflowGuidAsync)
                 .Produces<SessionCaseJournalDto>()
                 .Produces((int)HttpStatusCode.NoContent)
                 .Produces((int)HttpStatusCode.Forbidden)
@@ -61,7 +61,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ByCasesWorkflowGuid: entry guid={guid} user={user}");
+                log.Debug($"GET {Base}/ByCaseWorkflowGuid: entry guid={guid} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -82,7 +82,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowGuid: 403 (not authenticated) user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowGuid: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -91,7 +91,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowGuid: 403 user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowGuid: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -100,14 +100,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/ByCasesWorkflowGuid: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByCaseWorkflowGuid: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ByCasesWorkflowGuid: 500 user={user}", e);
+                log.Error($"GET {Base}/ByCaseWorkflowGuid: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

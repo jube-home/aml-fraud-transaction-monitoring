@@ -26,5 +26,18 @@ namespace Jube.Resources
         public const string CaseIdRequired = nameof(CaseIdRequired);
         public const string PayloadRequired = nameof(PayloadRequired);
         public const string PayloadTooLarge = nameof(PayloadTooLarge);
+        public const string FieldUnknown = nameof(FieldUnknown);
+        public const string FieldType = nameof(FieldType);
+        public const string FieldOption = nameof(FieldOption);
+        public const string FieldLength = nameof(FieldLength);
+        public const string FormSqlFailed = nameof(FormSqlFailed);
+        public const string FieldRequired = nameof(FieldRequired);
+        public const string FieldRange = nameof(FieldRange);
+        public const string FieldPattern = nameof(FieldPattern);
+        public const string FieldCompare = nameof(FieldCompare);
+        public const string FieldList = nameof(FieldList);
+        public const string FieldDictionary = nameof(FieldDictionary);
+        public const string FieldSql = nameof(FieldSql);
+        public const string FieldSqlFailed = nameof(FieldSqlFailed);
     }
 }

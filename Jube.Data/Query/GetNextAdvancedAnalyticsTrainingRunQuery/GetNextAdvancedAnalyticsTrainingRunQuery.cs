@@ -103,7 +103,7 @@ namespace Jube.Data.Query.GetNextAdvancedAnalyticsTrainingRunQuery
                         Id = s.Id,
                         Guid = s.Guid,
                         TenantRegistryId = s.TenantRegistryId,
-                        AdvancedAnalyticsInstanceId = s.AdvancedAnalyticsInstanceId,
+                        AskJoobyAnalyticsInstanceId = s.AskJoobyAnalyticsInstanceId,
                         UserName = s.UserName,
                         Arguments = s.Arguments,
                         InputPointer = s.InputPointer,

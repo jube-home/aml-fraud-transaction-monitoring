@@ -63,5 +63,12 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(21)]
         public CaseWorkflowStatus CaseWorkflowStatus { get; set; }
+
+        [Column] [Nullable] [Key(22)] public Guid? EntityAnalysisModelActivationRuleGuid { get; set; }
+        [Column] [Nullable] [Key(23)] public DateTime? RiskCheckedDate { get; set; }
+        [Column] [Key(24)] public byte DiaryTypeId { get; set; } = 1;
+        [Column] [Nullable] [Key(25)] public byte? RiskRecheckTriggerId { get; set; }
+        [Column] [Key(26)] public byte QaSampleStatusId { get; set; }
+        [Column] [Nullable] [Key(27)] public DateTime? QaSampleDate { get; set; }
     }
 }

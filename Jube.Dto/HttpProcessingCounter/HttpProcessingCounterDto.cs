@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,23 +22,34 @@ using System.ComponentModel;
 
 namespace Jube.Dto.HttpProcessingCounter
 {
+    [GridEndpoint("HttpProcessingCounter", Title = "Http processing counter", DefaultSort = "createdDate")]
     public sealed record HttpProcessingCounterDto(
         [property: Description("Hostname of the node that wrote this row.")]
+        [property: ListColumn(Order = 10)]
         string Instance,
         [property: Description("UTC timestamp this row's flush interval was written.")]
+        [property: ListColumn(Order = 20)]
+        [property: GridTimeRange]
         DateTimeOffset? CreatedDate,
         [property: Description("Count of requests routed to synchronous Model invocation in this interval.")]
+        [property: ListColumn(Order = 30, Format = GridFormat.Integer)]
         int Model,
         [property: Description("Count of requests routed to asynchronous Model invocation in this interval.")]
+        [property: ListColumn(Order = 40, Format = GridFormat.Integer)]
         int AsynchronousModel,
         [property: Description("Count of requests routed to Model Tagging in this interval.")]
+        [property: ListColumn(Order = 50, Format = GridFormat.Integer)]
         int Tag,
         [property: Description("Count of requests that encountered an error in this interval.")]
+        [property: ListColumn(Order = 60, Format = GridFormat.Integer)]
         int Error,
         [property: Description("Count of requests routed to a direct Sanctions recall in this interval.")]
+        [property: ListColumn(Order = 70, Format = GridFormat.Integer)]
         int Sanction,
         [property: Description("Count of requests routed to a direct Exhaustive Adaptation recall in this interval.")]
+        [property: ListColumn(Order = 80, Format = GridFormat.Integer)]
         int Exhaustive,
         [property: Description("Count of every HTTP request received in this interval, across every route below.")]
+        [property: ListColumn(Order = 90, Format = GridFormat.Integer)]
         int All);
 }

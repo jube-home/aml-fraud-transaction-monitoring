@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -22,6 +22,9 @@ namespace Jube.Data.Context
     {
         public ITable<ActivationWatcher> ActivationWatcher => GetTable<ActivationWatcher>();
         public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag => GetTable<EntityAnalysisModelTag>();
+
+        public ITable<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRange =>
+            GetTable<EntityAnalysisModelResponseElevationRange>();
 
         public ITable<EntityAnalysisModelStagePerformanceCounter> EntityAnalysisModelStagePerformanceCounter =>
             GetTable<EntityAnalysisModelStagePerformanceCounter>();
@@ -117,6 +120,26 @@ namespace Jube.Data.Context
 
         public ITable<SessionCaseSearchCompiledSql> SessionCaseSearchCompiledSql =>
             GetTable<SessionCaseSearchCompiledSql>();
+
+        public ITable<CaseSearchFilter> CaseSearchFilter => GetTable<CaseSearchFilter>();
+
+        public ITable<CaseRiskAssessment> CaseRiskAssessment => GetTable<CaseRiskAssessment>();
+
+        public ITable<CaseView> CaseView => GetTable<CaseView>();
+
+        public ITable<CaseKeyJournalPin> CaseKeyJournalPin => GetTable<CaseKeyJournalPin>();
+
+        public ITable<CaseKeyJournalReplay> CaseKeyJournalReplay => GetTable<CaseKeyJournalReplay>();
+
+        public ITable<CaseKeyJournalPeer> CaseKeyJournalPeer => GetTable<CaseKeyJournalPeer>();
+
+        public ITable<CaseKeyJournalKeyIndex> CaseKeyJournalKeyIndex => GetTable<CaseKeyJournalKeyIndex>();
+
+        public ITable<CaseKeyJournalTagJob> CaseKeyJournalTagJob => GetTable<CaseKeyJournalTagJob>();
+
+        public ITable<CaseKeyJournalTagJobRow> CaseKeyJournalTagJobRow => GetTable<CaseKeyJournalTagJobRow>();
+
+        public ITable<CaseStatusTransition> CaseStatusTransition => GetTable<CaseStatusTransition>();
 
         public ITable<ArchiveEntityAnalysisModelAbstractionEntry> ArchiveEntityAnalysisModelAbstractionEntry =>
             GetTable<ArchiveEntityAnalysisModelAbstractionEntry>();
@@ -365,6 +388,9 @@ namespace Jube.Data.Context
         public ITable<EntityAnalysisModelTagVersion> EntityAnalysisModelTagVersion =>
             GetTable<EntityAnalysisModelTagVersion>();
 
+        public ITable<EntityAnalysisModelResponseElevationRangeVersion> EntityAnalysisModelResponseElevationRangeVersion =>
+            GetTable<EntityAnalysisModelResponseElevationRangeVersion>();
+
         public ITable<EntityAnalysisModelSanctionVersion> EntityAnalysisModelSanctionVersion =>
             GetTable<EntityAnalysisModelSanctionVersion>();
 
@@ -389,6 +415,11 @@ namespace Jube.Data.Context
 
         public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion => GetTable<CaseWorkflowXPathVersion>();
         public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion => GetTable<CaseWorkflowFormVersion>();
+        public ITable<CaseWorkflowDispatch> CaseWorkflowDispatch => GetTable<CaseWorkflowDispatch>();
+        public ITable<CaseWorkflowFormValidator> CaseWorkflowFormValidator => GetTable<CaseWorkflowFormValidator>();
+        public ITable<CaseWorkflowFormValidatorVersion> CaseWorkflowFormValidatorVersion => GetTable<CaseWorkflowFormValidatorVersion>();
+        public ITable<CaseWorkflowReleaseHook> CaseWorkflowReleaseHook => GetTable<CaseWorkflowReleaseHook>();
+        public ITable<CaseWorkflowReleaseHookVersion> CaseWorkflowReleaseHookVersion => GetTable<CaseWorkflowReleaseHookVersion>();
         public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion => GetTable<CaseWorkflowActionVersion>();
         public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion => GetTable<CaseWorkflowDisplayVersion>();
         public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion => GetTable<CaseWorkflowMacroVersion>();
@@ -431,7 +462,7 @@ namespace Jube.Data.Context
         public ITable<Import> Import => GetTable<Import>();
         public ITable<PreservationSnapshot> PreservationSnapshot => GetTable<PreservationSnapshot>();
         public ITable<Export> Export => GetTable<Export>();
-        public ITable<ExportPeek> ExportPeek => GetTable<ExportPeek>();
+        public ITable<PreservationDiff> PreservationDiff => GetTable<PreservationDiff>();
         public ITable<LocalCacheInstance> LocalCacheInstance => GetTable<LocalCacheInstance>();
         public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey => GetTable<LocalCacheInstanceKey>();
         public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru => GetTable<LocalCacheInstanceLru>();
@@ -487,17 +518,17 @@ namespace Jube.Data.Context
         public ITable<SanctionStopToken> SanctionStopToken => GetTable<SanctionStopToken>();
         public ITable<EntityApproval> EntityApproval => GetTable<EntityApproval>();
 
-        public ITable<AdvancedAnalyticsInstance> AdvancedAnalyticsInstance =>
-            GetTable<AdvancedAnalyticsInstance>();
+        public ITable<AskJoobyAnalyticsInstance> AskJoobyAnalyticsInstance =>
+            GetTable<AskJoobyAnalyticsInstance>();
 
         public ITable<AdvancedAnalyticsCache> AdvancedAnalyticsCache =>
             GetTable<AdvancedAnalyticsCache>();
 
-        public ITable<AdvancedAnalyticsTrainedModel> AdvancedAnalyticsTrainedModel =>
-            GetTable<AdvancedAnalyticsTrainedModel>();
+        public ITable<AskJoobyAnalyticsTrainedModel> AskJoobyAnalyticsTrainedModel =>
+            GetTable<AskJoobyAnalyticsTrainedModel>();
 
-        public ITable<AdvancedAnalyticsTrainedModelVersion> AdvancedAnalyticsTrainedModelVersion =>
-            GetTable<AdvancedAnalyticsTrainedModelVersion>();
+        public ITable<AskJoobyAnalyticsTrainedModelVersion> AskJoobyAnalyticsTrainedModelVersion =>
+            GetTable<AskJoobyAnalyticsTrainedModelVersion>();
 
         public ITable<AdvancedAnalyticsTrainingRun> AdvancedAnalyticsTrainingRun =>
             GetTable<AdvancedAnalyticsTrainingRun>();

@@ -14,7 +14,7 @@ isolation and validation for each entity.
 
 ### ActivationWatcherServiceTests
 
-`Jube.Test.Service.Repository.ActivationWatcher.ActivationWatcherServiceTests` — 8 tests. Category: Service. Collection:
+`Jube.Test.Service.Repository.ActivationWatcher.ActivationWatcherServiceTests` — 11 tests. Category: Service. Collection:
 Database.
 
 | Test                                                 | Kind | Verifies                                             |
@@ -22,6 +22,9 @@ Database.
 | `ReplayReturnsRowsInTenantAndProjectsFieldsAsync`    | Fact | Replay returns rows in tenant and projects fields.   |
 | `ReplayIsScopedToCallersTenantAsync`                 | Fact | Replay is scoped to callers tenant.                  |
 | `ReplayFiltersByDateRangeAsync`                      | Fact | Replay filters by date range.                        |
+| `ReplayReturnsOldestFirstAndCarriesThePreviousLocationAsync` | Fact | Replay returns oldest first and carries the previous location. |
+| `ReplayCanBeNarrowedToOneKeyAndValueAsync`           | Fact | Replay can be narrowed to one key and value.         |
+| `ReplayNarrowedToAnEntityNeverReachesAnotherTenantsRowsAsync` | Fact | Replay narrowed to an entity never reaches another tenants rows. |
 | `ReplayWithoutPermissionThrowsForbiddenAsync`        | Fact | Replay without permission throws forbidden.          |
 | `CreateWithNullUserNameThrowsNotAuthenticatedAsync`  | Fact | Create with null user name throws not authenticated. |
 | `CreateWithUnknownTenantThrowsNotAuthenticatedAsync` | Fact | Create with unknown tenant throws not authenticated. |
@@ -54,7 +57,7 @@ Database.
 
 ### CaseServiceTests
 
-`Jube.Test.Service.Repository.Case.CaseServiceTests` — 16 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.Case.CaseServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                                  | Kind | Verifies                                                                 |
 |-----------------------------------------------------------------------|------|--------------------------------------------------------------------------|
@@ -70,12 +73,18 @@ Database.
 | `CreateFromCaseKeyValueWithNoMatchingArchiveThrowsNotFoundAsync`      | Fact | Create from case key value with no matching archive throws not found.    |
 | `UpdateWithUnknownIdThrowsNotFoundAsync`                              | Fact | Update with unknown id throws not found.                                 |
 | `UpdateLockingAnUnlockedCaseSetsLockedDateAndUserAsync`               | Fact | Update locking an unlocked case sets locked date and user.               |
+| `CaseCreationDispatchesTheStatusFromItsSqlAndAuditsItAsync` | Fact | Case creation dispatches the status from its sql and audits it. |
+| `CaseCreationAuditsTheStatusCallDrawnFromThePayloadAsync` | Fact | Case creation audits the status call drawn from the payload. |
+| `AutomaticEscalationDispatchesTheTargetStatusFromItsSqlAndAuditsItAsync` | Fact | Automatic escalation dispatches the target status from its sql and audits it. |
 | `UpdateUnlockingALockedCaseClearsLockedDateAsync`                     | Fact | Update unlocking a locked case clears locked date.                       |
 | `UpdateWithUnknownWorkflowStatusThrowsInvalidCaseWorkflowStatusAsync` | Fact | Update with unknown workflow status throws invalid case workflow status. |
 | `UpdateChangingRatingWritesCaseEventAndPublishesChangeAsync`          | Fact | Update changing rating writes case event and publishes change.           |
 | `UpdateDoesNotPublishChangeOnValidationFailureAsync`                  | Fact | Update does not publish change on validation failure.                    |
+| `EveryStatusChangeCloseAndReopenIsRecordedAsAStayInTheStatusAsync`    | Fact | Every status change close and reopen is recorded as a stay in the status. |
+| `AHigherPriorityActivationEscalatesAnOpenCaseAndTheEngineRecordsTheMoveAsync`| Fact | A higher priority activation escalates an open case and the engine records the move. |
 
 ## Case file
+| `AnEditToTheDiaryAsksForAFreshRankingAndTurningItOffReturnsItsTypeToReviewAsync` | Fact | An edit to the diary asks for a fresh ranking and turning it off returns its type to review. |
 
 ### CaseFileServiceTests
 
@@ -145,11 +154,42 @@ Database.
 | `InsertWarnsNotErrorsOnForbiddenAsync`                      | Fact | Insert warns not errors on forbidden.                         |
 | `InsertLogsOneAuditRecordOnSuccessAsync`                    | Fact | Insert logs one audit record on success.                      |
 
+## Case search filter
+
+### CaseSearchFilterServiceTests
+
+`Jube.Test.Service.Repository.CaseSearchFilter.CaseSearchFilterServiceTests` — 21 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                               | Kind   | Verifies                                                                                   |
+|------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------|
+| `CreateWithBlankUserOrUserWithoutTenantThrowsNotAuthenticatedAsync`                | Fact   | Create with blank user or user without tenant throws not authenticated.                    |
+| `EveryOperationWithoutPermissionThrowsForbiddenAndWritesNothingAsync`              | Fact   | Every operation without permission throws forbidden and writes nothing.                    |
+| `InsertStoresTheSearchForTheCallerMapsEveryFieldAndPublishesACreatedEventAsync`    | Fact   | Insert stores the search for the caller maps every field and publishes a created event.    |
+| `InsertIgnoresAGuidSuppliedByTheCallerAsync`                                       | Fact   | Insert ignores a guid supplied by the caller.                                              |
+| `InsertRefusesBadInputWithAValidationFailurePerFieldAndWritesNothingAsync`         | Fact   | Insert refuses bad input with a validation failure per field and writes nothing.           |
+| `InsertRefusesAWorkflowTheCallersRoleIsNotGrantedAsync`                            | Fact   | Insert refuses a workflow the callers role is not granted.                                 |
+| `InsertRefusesAWorkflowAndARoleFromAnotherTenantAsync`                             | Fact   | Insert refuses a workflow and a role from another tenant.                                  |
+| `NamesAreUniquePerOwnerAndWorkflowIgnoringCaseButNotAcrossOwnersAsync`             | Fact   | Names are unique per owner and workflow ignoring case but not across owners.               |
+| `ValidateReportsEveryFailureWithoutStoringAnythingAsync`                           | Fact   | Validate reports every failure without storing anything.                                   |
+| `ListReturnsOwnAndSharedSearchesOrderedByNameAndNeverAnotherUsersPrivateOnesAsync` | Fact   | List returns own and shared searches ordered by name and never another users private ones. |
+| `ListHidesSearchesOfAWorkflowTheCallersRoleNoLongerHoldsAsync`                     | Fact   | List hides searches of a workflow the callers role no longer holds.                        |
+| `ListNeverCrossesTenantsAsync`                                                     | Fact   | List never crosses tenants.                                                                |
+| `GetReturnsOwnAndSharedSearchesAndNotFoundForAnotherUsersPrivateOneAsync`          | Fact   | Get returns own and shared searches and not found for another users private one.           |
+| `UpdateByTheOwnerChangesTheSearchRaisesTheVersionAndPublishesAnUpdatedEventAsync`  | Fact   | Update by the owner changes the search raises the version and publishes an updated event.  |
+| `OnlyTheOwnerCanUpdateOrDeleteEvenWhenTheSearchIsSharedWithTheirRoleAsync`         | Fact   | Only the owner can update or delete even when the search is shared with their role.        |
+| `UpdateWithAStaleVersionIsRefusedAndAZeroVersionSkipsTheCheckAsync`                | Fact   | Update with a stale version is refused and a zero version skips the check.                 |
+| `UpdateCannotMoveASearchToAnotherWorkflowOrOntoAnExistingNameAsync`                | Fact   | Update cannot move a search to another workflow or onto an existing name.                  |
+| `DeleteRemovesTheSearchPublishesADeletedEventAndAMissingOneIsNotFoundAsync`        | Fact   | Delete removes the search publishes a deleted event and a missing one is not found.        |
+| `DeletingTheWorkflowRemovesItsSavedSearchesAsync`                                  | Fact   | Deleting the workflow removes its saved searches.                                          |
+| `ASavedSearchRoundTripsThroughStorageIntoTheCompilerWithTheCallersRightsAsync`     | Fact   | A saved search round trips through storage into the compiler with the callers rights.      |
+| `EveryOperationIsRegisteredAsAnAgentToolWithTheCasesPermission`                    | Fact   | Every operation is registered as an agent tool with the cases permission.                  |
+
 ## Case workflow
 
 ### CaseWorkflowServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflow.CaseWorkflowServiceTests` — 56 tests. Category: Service. Collection:
+`Jube.Test.Service.Repository.CaseWorkflow.CaseWorkflowServiceTests` — 58 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                         | Kind   | Verifies                                                                              |
@@ -212,6 +252,8 @@ Database.
 | `ListAsyncClampsTakeAndPaginatesAsync`                                       | Fact   | List async clamps take and paginates.                                                 |
 
 ## Case workflow action
+| `RankingSettingsPersistThroughInsertAndUpdateAndTheListsAreTidiedAsync` | Fact | Ranking settings persist through insert and update and the lists are tidied. |
+| `InvalidRankingSettingsAreRefusedAndEveryProblemIsReportedAsync` | Fact | Invalid ranking settings are refused and every problem is reported. |
 
 ### CaseWorkflowActionServiceTests
 
@@ -500,7 +542,7 @@ Database.
 
 ### CaseWorkflowFormEntryServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowFormEntry.CaseWorkflowFormEntryServiceTests` — 21 tests. Category: Service.
+`Jube.Test.Service.Repository.CaseWorkflowFormEntry.CaseWorkflowFormEntryServiceTests` — 32 tests. Category: Service.
 Collection: Database.
 
 | Test                                                          | Kind | Verifies                                                         |
@@ -516,6 +558,17 @@ Collection: Database.
 | `InsertWithUnknownCaseWorkflowFormIdThrowsNotFoundAsync`      | Fact | Insert with unknown case workflow form id throws not found.      |
 | `InsertForCaseInAnotherTenantThrowsNotFoundAsync`             | Fact | Insert for case in another tenant throws not found.              |
 | `InsertPersistsEntryAndValueRowsAsync`                        | Fact | Insert persists entry and value rows.                            |
+| `InsertRejectsAKeyThatIsNotAFieldOfTheFormWithoutNamingItAsync` | Fact | Insert rejects a key that is not a field of the form without naming it. |
+| `InsertEnforcesTheChoicesOfASelectAndTheTypeOfAFieldAsync` | Fact | Insert enforces the choices of a select and the type of a field. |
+| `InsertStoresNothingForAFieldTheTemplateHidesAsync` | Fact | Insert stores nothing for a field the template hides. |
+| `InsertRefusesAFormTemplateThatDoesNotCompileAsync` | Fact | Insert refuses a form template that does not compile. |
+| `InsertRefusesAValueThatFailsAValidatorOfTheFormAsync` | Fact | Insert refuses a value that fails a validator of the form. |
+| `InsertAcceptsAValueThatPassesTheValidatorsOfTheFormAsync` | Fact | Insert accepts a value that passes the validators of the form. |
+| `InsertRunsASqlValidatorAgainstTheRealDatabaseAsync` | Fact | Insert runs a sql validator against the real database. |
+| `InsertFailsClosedWhenASqlValidatorCannotRunAsync` | Fact | Insert fails closed when a sql validator cannot run. |
+| `InsertInSqlModeStoresASnapshotOfTheSqlTheTemplateAndTheRowsAsync` | Fact | Insert in sql mode stores a snapshot of the sql the template and the rows. |
+| `InsertInSqlModeRefusesASubmissionWhenTheFormSqlFailsAsync` | Fact | Insert in sql mode refuses a submission when the form sql fails. |
+| `InsertInSqlModeAuditsARefusedNotificationWithItsRowsAsync` | Fact | Insert in sql mode audits a refused notification with its rows. |
 | `InsertSkipsNullPayloadValuesAsync`                           | Fact | Insert skips null payload values.                                |
 | `InsertPublishesCreatedChangeEventAsync`                      | Fact | Insert publishes created change event.                           |
 | `InsertDoesNotPublishChangeEventOnValidationFailureAsync`     | Fact | Insert does not publish change event on validation failure.      |
@@ -734,7 +787,7 @@ Database.
 
 ### CaseWorkflowStatusServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowStatus.CaseWorkflowStatusServiceTests` — 44 tests. Category: Service.
+`Jube.Test.Service.Repository.CaseWorkflowStatus.CaseWorkflowStatusServiceTests` — 48 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                          | Kind   | Verifies                                                                            |
@@ -785,6 +838,10 @@ Collection: Database.
 | `CatalogueRegistersUniqueCaseWorkflowStatusToolNames`                         | Fact   | Catalogue registers unique case workflow status tool names.                         |
 
 ## Case workflow status role
+| `AnEscalationRulePersistsWithAStrongerTargetAndCanBeClearedAsync` | Fact | An escalation rule persists with a stronger target and can be cleared. |
+| `AnEscalationTriggerWithABadThresholdOrNumberIsRefusedAsync` | Theory | An escalation trigger with a bad threshold or number is refused. |
+| `EscalationNeedsBothATriggerAndATargetAndNeverAnUnusedThresholdProblemAsync` | Fact | Escalation needs both a trigger and a target and never an unused threshold problem. |
+| `TheEscalationTargetMustBeAnotherActiveStatusOfTheSameWorkflowAndAStrongerPriorityAsync` | Fact | The escalation target must be another active status of the same workflow and a stronger priority. |
 
 ### CaseWorkflowStatusRoleServiceTests
 
@@ -1000,6 +1057,22 @@ Service. Collection: Database.
 | `SyncNowWithNoPickedTimeSchedulesNowAsync`                    | Fact | Sync now with no picked time schedules now.                        |
 | `AFutureTimeIsSavedAndIsTheCurrentScheduleUntilReplacedAsync` | Fact | A future time is saved and is the current schedule until replaced. |
 
+### ModelSynchronisationScheduleServiceTests
+
+`Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule.ModelSynchronisationScheduleServiceTests` — 9 tests. Category: Service. Collection: Database.
+
+| Test                                                                | Kind | Verifies                                                                      |
+|---------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
+| `AScheduleForOneModelIsStoredWithThatModelAsync`                    | Fact | A schedule for one model is stored with that model.                           |
+| `AScheduleWithNoModelStaysWholeTenantAsync`                         | Fact | A schedule with no model stays whole tenant.                                  |
+| `AModelThatDoesNotExistIsRefusedAsync`                              | Fact | A model that does not exist is refused.                                       |
+| `AModelOfAnotherTenantIsRefusedAsync`                               | Fact | A model of another tenant is refused.                                         |
+| `ValidateReportsAnUnknownModelWithoutSavingAnythingAsync`           | Fact | Validate reports an unknown model without saving anything.                    |
+| `GetCurrentForAModelIsTheNewerOfItsOwnRowAndTheWholeTenantRowAsync` | Fact | Get current for a model is the newer of its own row and the whole tenant row. |
+| `GetCurrentWithoutAModelIgnoresRowsForOneModelAsync`                | Fact | Get current without a model ignores rows for one model.                       |
+| `GetCurrentForAnotherModelIgnoresARowForThisOneAsync`               | Fact | Get current for another model ignores a row for this one.                     |
+| `AScheduleForAModelWithoutPermissionIsForbiddenAsync`               | Fact | A schedule for a model without permission is forbidden.                       |
+
 ## Exhaustive search instance promoted trial instance
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceServiceTests
@@ -1073,52 +1146,51 @@ Service. Collection: Database.
 
 ### PreservationServiceTests
 
-`Jube.Test.Service.Repository.Preservation.PreservationServiceTests` — 39 tests. Category: Service. Collection:
-Database.
+`Jube.Test.Service.Repository.Preservation.PreservationServiceTests` — 41 tests. Category: Service. Collection:
 
 | Test                                                                               | Kind   | Verifies                                                                                |
 |------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
-| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync`                         | Theory | Create with null or blank user name throws not authenticated.                           |
-| `CreateWithUnmappedOrTenantlessUserThrowsNotAuthenticatedAsync`                    | Fact   | Create with unmapped or tenantless user throws not authenticated.                       |
-| `WithoutPermissionAllOperationsForbiddenAndNothingWrittenAsync`                    | Fact   | Without permission all operations forbidden and nothing written.                        |
-| `ExportContainsOnlyCallersTenantAndPeekMatchesAsync`                               | Fact   | Export contains only callers tenant and peek matches.                                   |
-| `ExportWithDifferentPasswordCannotBeDecryptedWithOthersAsync`                      | Fact   | Export with different password cannot be decrypted with others.                         |
-| `ExportReturnsJempFileNameFromExportGuidAndPersistsAuditRowAsync`                  | Fact   | Export returns jemp file name from export guid and persists audit row.                  |
-| `RoundTripIntoSecondTenantRemapsIdsTenantAndKeepsSourceUntouchedAsync`             | Fact   | Round trip into second tenant remaps ids tenant and keeps source untouched.             |
-| `ExhaustiveClassHistogramsAreExportedAndRoundTripIntoASecondTenantAsync`           | Fact   | Exhaustive class histograms are exported and round trip into a second tenant.           |
-| `ExhaustiveUploadedDatasetsRoundTripWithRowsAndRemappedInstanceReferenceAsync`     | Fact   | Exhaustive uploaded datasets round trip with rows and remapped instance reference.      |
+| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync` | Theory | Create with null or blank user name throws not authenticated. |
+| `CreateWithUnmappedOrTenantlessUserThrowsNotAuthenticatedAsync` | Fact | Create with unmapped or tenantless user throws not authenticated. |
+| `WithoutPermissionAllOperationsForbiddenAndNothingWrittenAsync` | Fact | Without permission all operations forbidden and nothing written. |
+| `ExportContainsOnlyCallersTenantAndTheLivePayloadMatchesAsync` | Fact | Export contains only callers tenant and the live payload matches. |
+| `ExportWithDifferentPasswordCannotBeDecryptedWithOthersAsync` | Fact | Export with different password cannot be decrypted with others. |
+| `ExportReturnsJempFileNameFromExportGuidAndPersistsAuditRowAsync` | Fact | Export returns jemp file name from export guid and persists audit row. |
+| `RoundTripIntoSecondTenantRemapsIdsTenantAndKeepsSourceUntouchedAsync` | Fact | Round trip into second tenant remaps ids tenant and keeps source untouched. |
+| `ExhaustiveClassHistogramsAreExportedAndRoundTripIntoASecondTenantAsync` | Fact | Exhaustive class histograms are exported and round trip into a second tenant. |
+| `ExhaustiveUploadedDatasetsRoundTripWithRowsAndRemappedInstanceReferenceAsync` | Fact | Exhaustive uploaded datasets round trip with rows and remapped instance reference. |
 | `ExhaustiveUploadedJsonDatasetsRoundTripWithRowsAndRemappedInstanceReferenceAsync` | Fact   | Exhaustive uploaded json datasets round trip with rows and remapped instance reference. |
-| `ExhaustiveInstanceWhoseDatasetIsAbsentFromTheFileFallsBackToArchiveAsync`         | Fact   | Exhaustive instance whose dataset is absent from the file falls back to archive.        |
-| `ExhaustiveJsonDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync`                  | Fact   | Exhaustive json dataset export keeps only the rows training can read.                   |
-| `PreservationCoversEveryExhaustiveInstanceTable`                                   | Fact   | Preservation covers every exhaustive instance table.                                    |
-| `ExhaustiveDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync`                      | Fact   | Exhaustive dataset export keeps only the rows training can read.                        |
-| `RolesImportedIntoOwnTenantKeepsRoleAndPermissionAsync`                            | Fact   | Roles imported into own tenant keeps role and permission.                               |
-| `RolesImportedFromAnotherTenantIsRefusedWhileTargetHasUsersAndRollsBackAsync`      | Fact   | Roles imported from another tenant is refused while target has users and rolls back.    |
-| `ImportRestoresGuidWhenSameTenantReimportsItsOwnExportAsync`                       | Fact   | Import restores guid when same tenant reimports its own export.                         |
-| `WrongPasswordThrowsInvalidFileLeavesDataAndMarksImportInErrorAsync`               | Fact   | Wrong password throws invalid file leaves data and marks import in error.               |
-| `CorruptOrEmptyFileFailsLeavesDataUntouchedAndPublishesNothingAsync`               | Theory | Corrupt or empty file fails leaves data untouched and publishes nothing.                |
-| `TamperedFileWithLegacyFallbackDisabledIsInvalidFileAsync`                         | Fact   | Tampered file with legacy fallback disabled is invalid file.                            |
-| `NoFilesThrowsNoFileExceptionAsync`                                                | Fact   | No files throws no file exception.                                                      |
-| `FailedImportMidTransactionRollsBackEverythingAsync`                               | Fact   | Failed import mid transaction rolls back everything.                                    |
-| `CancelledTokenIsHonouredAndLeavesDataUntouchedAsync`                              | Fact   | Cancelled token is honoured and leaves data untouched.                                  |
-| `ExportAndPeekWriteExactlyOneAuditRecordEachAndPublishNothingAsync`                | Fact   | Export and peek write exactly one audit record each and publish nothing.                |
-| `ForbiddenOperationAuditsForbiddenOutcomeAsync`                                    | Fact   | Forbidden operation audits forbidden outcome.                                           |
-| `RoundTripKeepsTheCategoricalVocabularyAndTheRecallInputsAreIdenticalAsync`        | Fact   | Round trip keeps the categorical vocabulary and the recall inputs are identical.        |
-| `ToolCatalogueDoesNotExposeWholeTenantExportOrImport`                              | Fact   | Tool catalogue does not expose whole tenant export or import.                           |
-| `SnapshotStoresTheExportBodyAsQueryableJsonAndReturnsItsMetadataAsync`             | Fact   | Snapshot stores the export body as queryable json and returns its metadata.             |
-| `SnapshotBodyIsQueryableInPostgresAsync`                                           | Fact   | Snapshot body is queryable in postgres.                                                 |
-| `SnapshotListReturnsMetadataOnlyAndIsTenantScopedAsync`                            | Fact   | Snapshot list returns metadata only and is tenant scoped.                               |
-| `SnapshotImportRestoresTheConfigurationItHoldsAsync`                               | Fact   | Snapshot import restores the configuration it holds.                                    |
-| `SnapshotOperationsAreRefusedWithoutThePreservationPermissionAsync`                | Fact   | Snapshot operations are refused without the preservation permission.                    |
-| `DeletedSnapshotStopsBeingListedAsync`                                             | Fact   | Deleted snapshot stops being listed.                                                    |
-| `SnapshotImportIsRefusedWithoutItsOwnPermissionEvenWithPreservationAsync`          | Fact   | Snapshot import is refused without its own permission even with preservation.           |
-| `ProcessSnapshotBypassesPermissionButStillRecordsTheUserAndStaysInTenantAsync`     | Fact   | Process snapshot bypasses permission but still records the user and stays in tenant.    |
-| `ProcessSnapshotRefusesToActForThePreservationPageSourceAsync`                     | Fact   | Process snapshot refuses to act for the preservation page source.                       |
-| `ProcessImportBypassesThePermissionAndRestoresAsync`                               | Fact   | Process import bypasses the permission and restores.                                    |
-| `SnapshotBodyIsReturnedWholeAndIsTenantScopedAsync`                                | Fact   | Snapshot body is returned whole and is tenant scoped.                                   |
-| `SnapshotBodyIsRefusedWithoutThePreservationPermissionAsync`                       | Fact   | Snapshot body is refused without the preservation permission.                           |
-
-## Role registry
+| `ExhaustiveInstanceWhoseDatasetIsAbsentFromTheFileFallsBackToArchiveAsync` | Fact | Exhaustive instance whose dataset is absent from the file falls back to archive. |
+| `ExhaustiveJsonDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync` | Fact | Exhaustive json dataset export keeps only the rows training can read. |
+| `PreservationCoversEveryExhaustiveInstanceTable` | Fact | Preservation covers every exhaustive instance table. |
+| `ExhaustiveDatasetExportKeepsOnlyTheRowsTrainingCanReadAsync` | Fact | Exhaustive dataset export keeps only the rows training can read. |
+| `RolesImportedIntoOwnTenantKeepsRoleAndPermissionAsync` | Fact | Roles imported into own tenant keeps role and permission. |
+| `RolesImportedFromAnotherTenantIsRefusedWhileTargetHasUsersAndRollsBackAsync` | Fact | Roles imported from another tenant is refused while target has users and rolls back. |
+| `ImportRestoresGuidWhenSameTenantReimportsItsOwnExportAsync` | Fact | Import restores guid when same tenant reimports its own export. |
+| `WrongPasswordThrowsInvalidFileLeavesDataAndMarksImportInErrorAsync` | Fact | Wrong password throws invalid file leaves data and marks import in error. |
+| `CorruptOrEmptyFileFailsLeavesDataUntouchedAndPublishesNothingAsync` | Theory | Corrupt or empty file fails leaves data untouched and publishes nothing. |
+| `TamperedFileIsInvalidFileAsync` | Fact | Tampered file is invalid file. |
+| `ExportWithAPasswordShorterThanTheMinimumIsRefusedAndRecordsNothingAsync` | Theory | Export with a password shorter than the minimum is refused and records nothing. |
+| `ImportOfAFileFromAnEarlierReleaseIsAnInvalidFileAsync` | Fact | Import of a file from an earlier release is an invalid file. |
+| `NoFilesThrowsNoFileExceptionAsync` | Fact | No files throws no file exception. |
+| `FailedImportMidTransactionRollsBackEverythingAsync` | Fact | Failed import mid transaction rolls back everything. |
+| `CancelledTokenIsHonouredAndLeavesDataUntouchedAsync` | Fact | Cancelled token is honoured and leaves data untouched. |
+| `ExportAndSummaryWriteExactlyOneAuditRecordEachAndPublishNothingAsync` | Fact | Export and summary write exactly one audit record each and publish nothing. |
+| `ForbiddenOperationAuditsForbiddenOutcomeAsync` | Fact | Forbidden operation audits forbidden outcome. |
+| `RoundTripKeepsTheCategoricalVocabularyAndTheRecallInputsAreIdenticalAsync` | Fact | Round trip keeps the categorical vocabulary and the recall inputs are identical. |
+| `ToolCatalogueDoesNotExposeWholeTenantExportOrImport` | Fact | Tool catalogue does not expose whole tenant export or import. |
+| `SnapshotStoresTheExportBodyAsQueryableJsonAndReturnsItsMetadataAsync` | Fact | Snapshot stores the export body as queryable json and returns its metadata. |
+| `SnapshotBodyIsQueryableInPostgresAsync` | Fact | Snapshot body is queryable in postgres. |
+| `SnapshotListReturnsMetadataOnlyAndIsTenantScopedAsync` | Fact | Snapshot list returns metadata only and is tenant scoped. |
+| `SnapshotImportRestoresTheConfigurationItHoldsAsync` | Fact | Snapshot import restores the configuration it holds. |
+| `SnapshotOperationsAreRefusedWithoutThePreservationPermissionAsync` | Fact | Snapshot operations are refused without the preservation permission. |
+| `DeletedSnapshotStopsBeingListedAsync` | Fact | Deleted snapshot stops being listed. |
+| `SnapshotImportIsRefusedWithoutItsOwnPermissionEvenWithPreservationAsync` | Fact | Snapshot import is refused without its own permission even with preservation. |
+| `ProcessSnapshotBypassesPermissionButStillRecordsTheUserAndStaysInTenantAsync` | Fact | Process snapshot bypasses permission but still records the user and stays in tenant. |
+| `ProcessSnapshotRefusesToActForThePreservationPageSourceAsync` | Fact | Process snapshot refuses to act for the preservation page source. |
+| `ProcessImportBypassesThePermissionAndRestoresAsync` | Fact | Process import bypasses the permission and restores. |
+| `SnapshotBodyIsReturnedWholeAndIsTenantScopedAsync` | Fact | Snapshot body is returned whole and is tenant scoped. |
+| `SnapshotBodyIsRefusedWithoutThePreservationPermissionAsync` | Fact | Snapshot body is refused without the preservation permission. |
 
 ### RoleRegistryServiceTests
 
@@ -1278,7 +1350,7 @@ Category: Service. Collection: Database.
 | `EveryOperationWithoutPermissionThrowsForbiddenAndWritesNothingAsync`                    | Fact   | Every operation without permission throws forbidden and writes nothing.                          |
 | `InsertCompilesValidRulesStoresTheRowAndMapsEveryFieldAsync`                             | Fact   | Insert compiles valid rules stores the row and maps every field.                                 |
 | `InsertDoesNotHonourClientSuppliedIdentityOwnerOrTokensAsync`                            | Fact   | Insert does not honour client supplied identity owner or tokens.                                 |
-| `InsertWithEmptyFilterRulesStoresAnUnpreparedRowWithTheDatabaseErrorAsync`               | Fact   | Insert with empty filter rules stores an unprepared row with the database error.                 |
+| `InsertWithEmptyFilterRulesCompilesToASearchThatMatchesEveryCaseTheUserMaySeeAsync`      | Fact   | Insert with empty filter rules compiles to a search that matches every case the user may see.    |
 | `InsertWithMissingRequiredFieldsThrowsValidationAndStoresNothingAsync`                   | Fact   | Insert with missing required fields throws validation and stores nothing.                        |
 | `InsertWithMalformedJsonUnknownFieldOrUnknownWorkflowFailsAsLegacyAndStoresNothingAsync` | Fact   | Insert with malformed json unknown field or unknown workflow fails as legacy and stores nothing. |
 | `InsertAgainstAnotherTenantsWorkflowFailsAndStoresNothingAsync`                          | Fact   | Insert against another tenants workflow fails and stores nothing.                                |
@@ -1509,7 +1581,7 @@ Collection: Database.
 | `CreateWithUnknownUserThrowsNotAuthenticatedAsync`                              | Fact   | Create with unknown user throws not authenticated.                                   |
 | `ListWithoutPermissionThrowsForbiddenAsync`                                     | Fact   | List without permission throws forbidden.                                            |
 | `InsertWithoutPermissionThrowsForbiddenAndWritesNoRowAsync`                     | Fact   | Insert without permission throws forbidden and writes no row.                        |
-| `ListByShowInDirectoryRequiresExactSpecNotSatisfiedByAdminSpecAsync`            | Fact   | List by show in directory requires exact spec not satisfied by admin spec.           |
+| `ListByShowInDirectoryNeedsNoPermissionOnlyTheRoleGrantAsync`            | Fact   | List by show in directory needs no permission, only the role grant. |
 | `InsertRequiresAdminSpecNotSatisfiedByShowInDirectorySpecAsync`                 | Fact   | Insert requires admin spec not satisfied by show in directory spec.                  |
 | `PermissionDeniedLogsWarnNotErrorAsync`                                         | Fact   | Permission denied logs warn not error.                                               |
 | `InsertPersistsAndReturnsVersionOneWithAuditFieldsAsync`                        | Fact   | Insert persists and returns version one with audit fields.                           |
@@ -1587,7 +1659,7 @@ Category: Service. Collection: Database.
 | `VisualisationRegistryIdFromAnotherTenantIsRejectedAsNotFoundAsync`                      | Fact   | Visualisation registry id from another tenant is rejected as not found.                          |
 | `CommandRequiredRejectsEmptyAsync`                                                       | Fact   | Command required rejects empty.                                                                  |
 | `PriorityColumnSpanAndRowSpanNegativeAreRejectedAsync`                                   | Theory | Priority column span and row span negative are rejected.                                         |
-| `VisualisationTypeAndTextAreValidatedOnlyWhenIncludeDisplayEnabledAsync`                 | Fact   | Visualisation type and text are validated only when include display enabled.                     |
+| `ADatasourceMustShowAChartAGridOrBothAsync` | Fact | A datasource must show a chart a grid or both. |
 | `InsertWithInvalidSqlThrowsSqlValidationFailedExceptionAsync`                            | Fact   | Insert with invalid sql throws sql validation failed exception.                                  |
 | `InsertWithSqlTheDatabaseRefusesSurfacesTheDatabaseMessageAsync`                         | Theory | Insert with sql the database refuses surfaces the database message.                              |
 | `InsertWithAnUnregisteredTableIsRefusedByTheTableAllowListAsync`                         | Fact   | Insert with an unregistered table is refused by the table allow list.                            |
@@ -1615,6 +1687,128 @@ Category: Service. Collection: Database.
 | `InsertPublishesExactlyOneCreatedEventAsync`                                             | Fact   | Insert publishes exactly one created event.                                                      |
 | `ReadsAndFailuresPublishNothingAsync`                                                    | Fact   | Reads and failures publish nothing.                                                              |
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                                  | Fact   | List async clamps take and paginates deterministically.                                          |
+
+### VisualisationRegistryDatasourceIntrospectionServiceTests
+
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceIntrospectionServiceTests` — 28 tests. Category: Service. Collection: Database.
+
+| Test                                                                      | Kind   | Verifies                                                                       |
+|---------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------|
+| `ARejectedCommandSaysWhereTheDatabaseFoundTheProblemAsync` | Fact | A rejected command says where the database found the problem. |
+| `AnAcceptedCommandHasNoErrorPositionAsync` | Fact | An accepted command has no error position. |
+| `IntrospectReturnsEachColumnInSelectOrderWithItsClassifiedTypeAsync`      | Fact   | Introspect returns each column in select order with its classified type.       |
+| `IntrospectKeepsSelectOrderWhenItDiffersFromAlphabeticalOrderAsync`       | Fact   | Introspect keeps select order when it differs from alphabetical order.         |
+| `IntrospectReportsADuplicateColumnNameAsInvalidWithAHintAsync`            | Fact   | Introspect reports a duplicate column name as invalid with a hint.             |
+| `IntrospectAcceptsASingleUnnamedColumnUnderThePostgresDefaultNameAsync`   | Fact   | Introspect accepts a single unnamed column under the postgres default name.    |
+| `IntrospectReportsMoreThanOneUnnamedColumnAsInvalidWithAnAliasHintAsync`  | Fact   | Introspect reports more than one unnamed column as invalid with an alias hint. |
+| `IntrospectReportsADatabaseSyntaxErrorAsInvalidNotAsAnExceptionAsync`     | Fact   | Introspect reports a database syntax error as invalid not as an exception.     |
+| `IntrospectRefusesAnythingButASingleAllowedSelectAsync`                   | Theory | Introspect refuses anything but a single allowed select.                       |
+| `IntrospectBindsTheRegistryParametersAtTheirTypesAsync`                   | Fact   | Introspect binds the registry parameters at their types.                       |
+| `IntrospectSaysForEveryKindWhetherItFitsTheColumnsByPositionAsync`        | Fact   | Introspect says for every kind whether it fits the columns by position.        |
+| `IntrospectLeavesTheShapeEmptyWhenTheSqlIsRejectedAsync`                  | Fact   | Introspect leaves the shape empty when the sql is rejected.                    |
+| `IntrospectResolvesTheAskedAboutKindByPositionWhenNothingIsAssignedAsync` | Fact   | Introspect resolves the asked about kind by position when nothing is assigned. |
+| `IntrospectMarksTheRolesTheCallerAssignedAsExplicitAsync`                 | Fact   | Introspect marks the roles the caller assigned as explicit.                    |
+| `IntrospectReportsAnUnknownKindAsAMappingErrorNotACrashAsync`             | Theory | Introspect reports an unknown kind as a mapping error not a crash.             |
+| `IntrospectReportsAChartTheColumnsCannotSatisfyAsAMappingErrorAsync`      | Fact   | Introspect reports a chart the columns cannot satisfy as a mapping error.      |
+| `IntrospectReportsABadMappingEntryAsAMappingErrorNotACrashAsync`          | Fact   | Introspect reports a bad mapping entry as a mapping error not a crash.         |
+| `IntrospectExplainsWhyAKindDoesNotFitInThePageLanguageAsync`              | Fact   | Introspect explains why a kind does not fit in the page language.              |
+| `IntrospectRefusesARegistryOfAnotherTenantAsNotFoundAsync`                | Fact   | Introspect refuses a registry of another tenant as not found.                  |
+| `IntrospectRefusesAnUnknownRegistryAsNotFoundAsync`                       | Fact   | Introspect refuses an unknown registry as not found.                           |
+| `IntrospectRequiresTheDatasourcePermissionAsync`                          | Fact   | Introspect requires the datasource permission.                                 |
+| `IntrospectRefusesACallerWhoIsNotSignedInAsync`                           | Fact   | Introspect refuses a caller who is not signed in.                              |
+| `IntrospectRejectsAnIncompleteRequestAsync`                               | Theory | Introspect rejects an incomplete request.                                      |
+| `IntrospectRejectsACommandOverTheMaximumLengthAsync`                      | Fact   | Introspect rejects a command over the maximum length.                          |
+| `IntrospectStoresNothingAsync`                                            | Fact   | Introspect stores nothing.                                                     |
+| `SaveStoresTheSeriesInSelectOrderWithTheClassifiedTypesAsync`             | Fact   | Save stores the series in select order with the classified types.              |
+| `UpdateReplacesTheSeriesWithTheNewColumnsInOrderAsync`                    | Fact   | Update replaces the series with the new columns in order.                      |
+| `SaveWithADuplicateColumnNameIsRefusedAndStoresNoDatasourceAsync`         | Fact   | Save with a duplicate column name is refused and stores no datasource.         |
+
+### VisualisationRegistryDatasourcePreviewServiceTests
+
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourcePreviewServiceTests` — 26 tests. Category: Service. Collection: Database.
+
+| Test                                                                       | Kind   | Verifies                                                                            |
+|----------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------|
+| `AChartIsReturnedAsAnSvgWithTheStylesheetAndNoGridWhenTheGridIsOffAsync`   | Fact   | A chart is returned as an svg with the stylesheet and no grid when the grid is off. |
+| `WithTheGridOnTheRowsComeAlongAlignedToTheColumnsInSelectOrderAsync`       | Fact   | With the grid on the rows come along aligned to the columns in select order.        |
+| `AGridWithNoChartReturnsTheRowsAndNoDisplayAsync`                          | Fact   | A grid with no chart returns the rows and no display.                               |
+| `TheStylesheetIsNotResentWhenTheCallerAlreadyHoldsItsVersionAsync`         | Fact   | The stylesheet is not resent when the caller already holds its version.             |
+| `AStaleStylesheetVersionGetsTheCurrentStylesheetAsync`                     | Fact   | A stale stylesheet version gets the current stylesheet.                             |
+| `InlineStyleIsSelfContainedAndCarriesNoStylesheetAsync`                    | Fact   | Inline style is self contained and carries no stylesheet.                           |
+| `TheDarkThemeIsAppliedToTheSvgAsync`                                       | Fact   | The dark theme is applied to the svg.                                               |
+| `ARequestedSizeBecomesTheCanvasAndIsClampedAsync`                          | Fact   | A requested size becomes the canvas and is clamped.                                 |
+| `AQueryWithNoRowsIsEmptyWithAReasonAndKeepsTheGridColumnsAsync`            | Fact   | A query with no rows is empty with a reason and keeps the grid columns.             |
+| `AQueryThatFailsIsReportedInTheCardNotThrownAsync`                         | Theory | A query that fails is reported in the card not thrown.                              |
+| `AChartThatCannotBeDrawnIsAnErrorButTheGridStillComesAsync`                | Fact   | A chart that cannot be drawn is an error but the grid still comes.                  |
+| `RowsOverTheCardLimitAreDroppedAndFlaggedNotFailedAsync`                   | Fact   | Rows over the card limit are dropped and flagged not failed.                        |
+| `AnExplicitMappingChoosesTheSeriesAndLeavesTheOtherColumnsForTheGridAsync` | Fact   | An explicit mapping chooses the series and leaves the other columns for the grid.   |
+| `ParametersAreBoundAtTheirDeclaredTypesAndTheSuppliedValueWinsAsync`       | Fact   | Parameters are bound at their declared types and the supplied value wins.           |
+| `AParameterValueOfTheWrongTypeIsAValidationErrorAsync`                     | Fact   | A parameter value of the wrong type is a validation error.                          |
+| `AParameterOfAnotherRegistryIsRefusedAsync`                                | Fact   | A parameter of another registry is refused.                                         |
+| `SpansAndPriorityAreCarriedThroughToTheCardAsync`                          | Fact   | Spans and priority are carried through to the card.                                 |
+| `ValuesAreNormalisedForJsonDatesAsIsoTextAndNonFiniteNumbersAsNullAsync`   | Fact   | Values are normalised for json dates as iso text and non finite numbers as null.    |
+| `ALongFormResultIsSplitIntoSeriesByTheSeriesRoleAsync`                     | Fact   | A long form result is split into series by the series role.                         |
+| `AForeignRegistryIsNotFoundAsync`                                          | Fact   | A foreign registry is not found.                                                    |
+| `PreviewRequiresTheDatasourcePermissionAsync`                              | Fact   | Preview requires the datasource permission.                                         |
+| `AnIncompletePreviewRequestIsAValidationErrorAsync`                        | Theory | An incomplete preview request is a validation error.                                |
+| `AMappingNamingAnUnknownRoleIsAValidationErrorAsync`                       | Fact   | A mapping naming an unknown role is a validation error.                             |
+| `AnEmptyMappingEntryOrParameterIsAValidationErrorNotACrashAsync`           | Fact   | An empty mapping entry or parameter is a validation error not a crash.              |
+| `ChartKindsListsEveryKindWithItsRolesAsync`                                | Fact   | Chart kinds lists every kind with its roles.                                        |
+| `ChartKindsRequiresTheDatasourcePermissionAsync`                           | Fact   | Chart kinds requires the datasource permission.                                     |
+
+### VisualisationRegistryDatasourceDisplayServiceTests
+
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceDisplayServiceTests` — 17 tests. Category: Service. Collection: Database.
+
+| Test                                                                 | Kind   | Verifies                                                                     |
+|----------------------------------------------------------------------|--------|------------------------------------------------------------------------------|
+| `TheChartKindIsStoredAndComesBackOnAReadAsync`                       | Fact   | The chart kind is stored and comes back on a read.                           |
+| `NoChartKindIsStoredAsNullAndReadAsZeroAsync`                        | Fact   | No chart kind is stored as null and read as zero.                            |
+| `TheTemplateTextIsStoredAndReturnedAsync`                            | Fact   | The template text is stored and returned.                                    |
+| `SeriesAreStoredInSelectOrderWithTheirOrdinalsAsync`                 | Fact   | Series are stored in select order with their ordinals.                       |
+| `AnExplicitMappingIsStoredOnTheSeriesRowsAndReadBackAsync`           | Fact   | An explicit mapping is stored on the series rows and read back.              |
+| `TheMappingIsAlsoReadByGuidAndLeftOutOfListsAsync`                   | Fact   | The mapping is also read by guid and left out of lists.                      |
+| `UpdateReplacesTheMappingAndTheVersionKeepsThePreviousKindAsync`     | Fact   | Update replaces the mapping and the version keeps the previous kind.         |
+| `ClearingTheMappingOnUpdateReturnsTheColumnsToPositionalAsync`       | Fact   | Clearing the mapping on update returns the columns to positional.            |
+| `AnUnknownChartKindIsAValidationErrorAsync`                          | Theory | An unknown chart kind is a validation error.                                 |
+| `AnUnknownRoleAndADuplicateRoleAreValidationErrorsAsync`             | Fact   | An unknown role and a duplicate role are validation errors.                  |
+| `AColumnInTwoRolesIsAValidationErrorAsync`                           | Fact   | A column in two roles is a validation error.                                 |
+| `AMappingNamingAColumnTheSqlDoesNotReturnIsRefusedWithTheNameAsync`  | Fact   | A mapping naming a column the sql does not return is refused with the name.  |
+| `AMappingNamingAMissingColumnIsRefusedEvenWithNoChartKindAsync`      | Fact   | A mapping naming a missing column is refused even with no chart kind.        |
+| `AChartThatTheColumnsCannotSatisfyIsRefusedAtSaveWithAReasonAsync`   | Fact   | A chart that the columns cannot satisfy is refused at save with a reason.    |
+| `ARefusedMappingStoresNoDatasourceAsync`                             | Fact   | A refused mapping stores no datasource.                                      |
+| `ATemplateOverTheMaximumLengthIsAValidationErrorAsync`               | Fact   | A template over the maximum length is a validation error.                    |
+| `ANullMappingFromAClientIsTreatedAsNoMappingAsync`                   | Fact   | A null mapping from a client is treated as no mapping.                       |
+
+### VisualisationRegistryDatasourceTemplateServiceTests
+
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceTemplateServiceTests` — 11 tests. Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `APreviewRendersTheTemplateAsEscapedHtmlWithNoChartStylesheetAsync` | Fact | A preview renders the template as escaped html with no chart stylesheet. |
+| `ATemplateAndTheGridComeBackTogetherWhenTheGridIsOnAsync` | Fact | A template and the grid come back together when the grid is on. |
+| `ABrokenTemplateIsAnErrorCardWithLineAndColumnButTheGridStillComesAsync` | Fact | A broken template is an error card with line and column but the grid still comes. |
+| `ATemplateKindWithNoTextIsAnErrorCardAsync` | Fact | A template kind with no text is an error card. |
+| `HostileRowDataIsEscapedInThePreviewAsync` | Fact | Hostile row data is escaped in the preview. |
+| `IntrospectionReportsATemplateErrorOnlyWhenTheTemplateKindIsAskedAboutAsync` | Fact | Introspection reports a template error only when the template kind is asked about. |
+| `TheTemplateKindAlwaysFitsByPositionAsync` | Fact | The template kind always fits by position. |
+| `ChartKindsListsTheTemplateKindWithNoRolesAsync` | Fact | Chart kinds lists the template kind with no roles. |
+| `AValidTemplateIsSavedAndReadBackAsync` | Fact | A valid template is saved and read back. |
+| `AnInvalidTemplateIsRefusedOnSaveAsync` | Theory | An invalid template is refused on save. |
+| `ATemplateWithAMappingRoleIsRefusedAsync` | Fact | A template with a mapping role is refused. |
+
+### VisualisationRegistryDatasourceLocalisationServiceTests
+
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceLocalisationServiceTests` — 5 tests. Category: Service. Collection: Database.
+
+| Test                                                                             | Kind   | Verifies                                                                                 |
+|----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
+| `ChartKindsAreListedInThePageLanguageAsync`                                      | Theory | Chart kinds are listed in the page language.                                             |
+| `AFailedPreviewExplainsItselfInThePageLanguageAsync`                             | Fact   | A failed preview explains itself in the page language.                                   |
+| `AChartThatCannotBeDrawnExplainsItselfInThePageLanguageWithTranslatedTermsAsync` | Fact   | A chart that cannot be drawn explains itself in the page language with translated terms. |
+| `ADuplicateColumnIsReportedByIntrospectionInThePageLanguageAsync`                | Fact   | A duplicate column is reported by introspection in the page language.                    |
+| `AMappingThatNamesAMissingColumnIsRefusedInThePageLanguageAsync`                 | Fact   | A mapping that names a missing column is refused in the page language.                   |
 
 ## Visualisation registry datasource role
 
@@ -1815,3 +2009,121 @@ Service. Collection: Database.
 | `RepeatedGrantAndRevokeLeavesNoAccessBehindAsync`                           | Fact   | Repeated grant and revoke leaves no access behind.                             |
 | `TheSameRoleOnTwoParentsIsTwoIndependentGrantsAsync`                        | Fact   | The same role on two parents is two independent grants.                        |
 | `ConcurrentIdenticalGrantsProduceExactlyOneLiveRowAsync`                    | Fact   | Concurrent identical grants produce exactly one live row.                      |
+
+### FormValidatorEngineTests
+
+`Jube.Test.Service.Repository.CaseWorkflowFormValidator.FormValidatorEngineTests` — 18 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `RequiresAValueForARequiredRule` | Fact | Requires a value for a required rule |
+| `RequiresACheckboxToBeTickedWhenItIsRequired` | Fact | Requires a checkbox to be ticked when it is required |
+| `RequiresAValueOnlyWhenTheOtherFieldHasTheNamedValue` | Fact | Requires a value only when the other field has the named value |
+| `ChecksANumberAgainstTheRangeAndLeavesAnEmptyBoundOpen` | Fact | Checks a number against the range and leaves an empty bound open |
+| `ChecksADateAgainstTheRange` | Fact | Checks a date against the range |
+| `ChecksTheLengthInCharacters` | Fact | Checks the length in characters |
+| `ChecksAPatternAndTreatsABrokenOneAsAFailure` | Fact | Checks a pattern and treats a broken one as a failure |
+| `CannotBeSlowedByACatastrophicPattern` | Fact | Cannot be slowed by a catastrophic pattern |
+| `ComparesTwoFieldsByTheNamedRelation` | Fact | Compares two fields by the named relation |
+| `ComparesDatesAsDatesAndNumbersAsNumbers` | Fact | Compares dates as dates and numbers as numbers |
+| `ChecksMembershipOfAListAndADictionary` | Fact | Checks membership of a list and a dictionary |
+| `PassesASqlRuleOnlyWhenTheScalarIsTrue` | Fact | Passes a sql rule only when the scalar is true |
+| `FailsClosedWhenTheSqlRaisesOrTimesOut` | Fact | Fails closed when the sql raises or times out |
+| `BindsTheValueTheOtherFieldsAndTheCaseToTheSql` | Fact | Binds the value the other fields and the case to the sql |
+| `SkipsAFieldTheTemplateDoesNotShowOrThatIsNotInTheForm` | Fact | Skips a field the template does not show or that is not in the form |
+| `ReportsOnlyTheFirstFailureOfAField` | Fact | Reports only the first failure of a field |
+| `CarriesTheAuthoredMessage` | Fact | Carries the authored message |
+| `TestsOneRuleAndTimesIt` | Fact | Tests one rule and times it |
+
+### CaseWorkflowFormValidatorServiceTests
+
+`Jube.Test.Service.Repository.CaseWorkflowFormValidator.CaseWorkflowFormValidatorServiceTests` — 15 tests. Category:
+Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `CreateWithNullUserNameThrowsNotAuthenticatedAsync` | Fact | Create with null user name throws not authenticated. |
+| `ListWithoutPermissionThrowsForbiddenAsync` | Fact | List without permission throws forbidden. |
+| `InsertThenListAndGetRoundTripAValidatorUnderItsWorkflowAsync` | Fact | Insert then list and get round trip a validator under its workflow. |
+| `InsertRefusesAFieldTheFormTemplateDoesNotDeclareAsync` | Fact | Insert refuses a field the form template does not declare. |
+| `InsertRefusesARuleThatDoesNotApplyToTheTypeOfTheFieldAsync` | Fact | Insert refuses a rule that does not apply to the type of the field. |
+| `InsertChecksTheArgumentsOfEachKindAsync` | Fact | Insert checks the arguments of each kind. |
+| `InsertOfASqlRuleNeedsTheSqlAuthoringPermissionAsync` | Fact | Insert of a sql rule needs the sql authoring permission. |
+| `InsertOfASqlRuleRefusesUnknownParametersAndBlockedTablesAsync` | Fact | Insert of a sql rule refuses unknown parameters and blocked tables. |
+| `UpdateKeepsAVersionAuditRowAndRefusesAStaleVersionAsync` | Fact | Update keeps a version audit row and refuses a stale version. |
+| `DeleteSoftDeletesAndAnUnknownIdIsNotFoundAsync` | Fact | Delete soft deletes and an unknown id is not found. |
+| `DeletingASqlRuleNeedsTheSqlAuthoringPermissionAsync` | Fact | Deleting a sql rule needs the sql authoring permission. |
+| `ATenantCannotSeeOrChangeAnotherTenantsValidatorsAsync` | Fact | A tenant cannot see or change another tenants validators. |
+| `TestRunsASavedSqlRuleAgainstTheRealDatabaseAsync` | Fact | Test runs a saved sql rule against the real database. |
+| `TestReportsAFailureOfTheSqlItselfWithoutRaisingAsync` | Fact | Test reports a failure of the sql itself without raising. |
+| `ValidateReportsFailuresWithoutStoringAnythingAsync` | Fact | Validate reports failures without storing anything. |
+
+### CaseWorkflowReleaseHookServiceTests
+
+`Jube.Test.Service.Repository.CaseWorkflowReleaseHook.CaseWorkflowReleaseHookServiceTests` — 18 tests. Category: Service. Collection: Database.
+
+| Test                                                                             | Kind | Verifies                                                                                |
+|----------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `CreateWithNullUserNameThrowsNotAuthenticatedAsync`                              | Fact | Create with null user name throws not authenticated.                                    |
+| `ListWithoutPermissionThrowsForbiddenNamingPermission69Async`                    | Fact | List without permission throws forbidden naming permission69.                           |
+| `InsertThenListAndGetRoundTripAHookUnderItsWorkflowAsync`                        | Fact | Insert then list and get round trip a hook under its workflow.                          |
+| `UpdateKeepsTheEarlierStateAsAVersionAndChecksTheVersionAsync`                   | Fact | Update keeps the earlier state as a version and checks the version.                     |
+| `ALockedHookCannotBeUpdatedOrDeletedAsync`                                       | Fact | A locked hook cannot be updated or deleted.                                             |
+| `DeleteIsSoftAndTheHookNoLongerListsAsync`                                       | Fact | Delete is soft and the hook no longer lists.                                            |
+| `AnotherTenantCannotSeeUpdateOrDeleteTheHookAsync`                               | Fact | Another tenant cannot see update or delete the hook.                                    |
+| `TheNameMustBeUniqueWithinTheWorkflowIgnoringCaseAsync`                          | Fact | The name must be unique within the workflow ignoring case.                              |
+| `AReleaseUrlWhoseHostIsNotLiteralOrWithAnUnknownTokenIsRefusedAsync`             | Theory | A release url whose host is not literal or with an unknown token is refused.            |
+| `TheRefuseUrlFollowsTheSameRulesAndMayBeLeftOutAsync`                            | Fact | The refuse url follows the same rules and may be left out.                              |
+| `TheHeaderAndTheCredentialVariableComeTogetherAndNeverNameAnyOtherVariableAsync` | Theory | The header and the credential variable come together and never name any other variable. |
+| `AValidHeaderAndCredentialVariableAreStoredAsNamesOnlyAsync`                     | Fact | A valid header and credential variable are stored as names only.                        |
+| `TheSourceFieldAndValueComeTogetherAsync`                                        | Theory | The source field and value come together.                                               |
+| `ABodyIsOnlyForPostAndTakesOnlyKnownTokensAsync`                                 | Fact | A body is only for post and takes only known tokens.                                    |
+| `ValidateReportsTheSameFailuresWithoutSavingAnythingAsync`                       | Fact | Validate reports the same failures without saving anything.                             |
+| `TheCaseWorkflowMustExistAsync`                                                  | Fact | The case workflow must exist.                                                           |
+| `AReleaseOrRefuseUrlOnAnInternalHostIsRefusedAtSaveTimeAsync` | Theory | A release or refuse url on an internal host is refused at save time. |
+| `AnAllowListedInternalHostOrRangeIsAcceptedAtSaveTimeAndNothingElseInternalIsAsync` | Fact | An allow listed internal host or range is accepted at save time and nothing else internal is. |
+
+### TemplateTextTests
+
+`Jube.Test.Service.CaseDispatch.TemplateTextTests` — 7 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `RendersTokensAndFiltersFromTheRowsWithTheChosenEncoding` | Fact | Renders tokens and filters from the rows with the chosen encoding |
+| `RefusesANameThatIsNotARootOfTheSqlDialect` | Fact | Refuses a name that is not a root of the sql dialect |
+| `RefusesAnUnclosedTokenAndTextThatIsTooLong` | Fact | Refuses an unclosed token and text that is too long |
+| `LeavesPlainTextAndAnEmptyTemplateAlone` | Fact | Leaves plain text and an empty template alone |
+| `TreatsAMissingRowAsEmptyRatherThanAnError` | Fact | Treats a missing row as empty rather than an error |
+| `AcceptsTheFormSqlDialectAndRefusesTheLegacyRootsInIt` | Fact | Accepts the form sql dialect and refuses the legacy roots in it |
+| `DrawsAFormFromTheRowsInTheSqlDialect` | Fact | Draws a form from the rows in the sql dialect |
+
+### DispatchGuardTests
+
+`Jube.Test.Service.CaseDispatch.DispatchGuardTests` — 10 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `AcceptsOneOrMoreWellFormedAddresses` | Fact | Accepts one or more well formed addresses |
+| `RefusesAnythingThatIsNotJustAddresses` | Fact | Refuses anything that is not just addresses |
+| `StripsLineBreaksFromASubjectSoItCannotAddHeaders` | Fact | Strips line breaks from a subject so it cannot add headers |
+| `AcceptsATelephoneNumberAndRefusesOtherText` | Fact | Accepts a telephone number and refuses other text |
+| `FillsOnlyThePathAndQueryOfAFixedHost` | Fact | Fills only the path and query of a fixed host |
+| `RefusesATokenInTheHostOrSchemeOfTheEndpoint` | Fact | Refuses a token in the host or scheme of the endpoint |
+| `RefusesAValueThatTriesToLeaveTheHost` | Fact | Refuses a value that tries to leave the host |
+| `RefusesEndpointsThatAreEmptyRelativeOrNotHttp` | Fact | Refuses endpoints that are empty relative or not http |
+| `AcceptsAFixedEndpointWithNoTokens` | Fact | Accepts a fixed endpoint with no tokens |
+| `BuildsAJsonBodyFromTheRowsAndTheCase` | Fact | Builds a json body from the rows and the case |
+
+### CaseWorkflowSqlAuthoringTests
+
+`Jube.Test.Service.Repository.CaseWorkflowFormValidator.CaseWorkflowSqlAuthoringTests` — 5 tests. Category:
+Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `AFormWithoutSqlNeedsNoSqlPermissionAsync` | Fact | A form without sql needs no sql permission. |
+| `InsertingFormSqlNeedsTheSqlAuthoringPermissionAsync` | Fact | Inserting form sql needs the sql authoring permission. |
+| `FormSqlThatReadsABlockedTableOrAnUnknownParameterIsRefusedAsync` | Fact | Form sql that reads a blocked table or an unknown parameter is refused. |
+| `UpdatingAFormMayLeaveItsSqlAloneButNeedsThePermissionToChangeItAsync` | Fact | Updating a form may leave its sql alone but needs the permission to change it. |
+| `AMacroNeedsTheSqlAuthoringPermissionToHaveSqlAsync` | Fact | A macro needs the sql authoring permission to have sql. |
+

@@ -52,6 +52,7 @@ namespace Jube.Service.EntityAnalysisModelTag
         {
             return new TagPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

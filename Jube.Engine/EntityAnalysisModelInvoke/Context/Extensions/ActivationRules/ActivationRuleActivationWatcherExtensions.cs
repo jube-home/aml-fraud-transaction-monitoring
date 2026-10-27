@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache;
+using Jube.Cache.Redis;
 using Jube.Data.Poco;
 using Newtonsoft.Json;
 
@@ -39,6 +40,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
             try
             {
+                var activationWatcher = BuildActivationWatcher(context, evaluateActivationRule);
+                var previous = await ExchangeLastLocationAsync(context, activationWatcher, cacheService);
+
                 context.TraceLog(
                     $"the current activation watch count is {context.EntityAnalysisModel.Counters.ActivationWatcherCount} which will be tested against the threshold {context.EntityAnalysisModel.Counters.MaxActivationWatcherThreshold}.");
 
@@ -52,7 +56,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 context.TraceLog(
                     $"the current activation watch count is {context.EntityAnalysisModel.Counters.ActivationWatcherCount} which will be tested against the threshold {context.EntityAnalysisModel.Counters.MaxActivationWatcherThreshold} and selected via random sampling.");
 
-                var activationWatcher = BuildActivationWatcher(context, evaluateActivationRule);
+                if (previous != null)
+                {
+                    activationWatcher.PreviousLatitude = previous.Latitude;
+                    activationWatcher.PreviousLongitude = previous.Longitude;
+                    activationWatcher.PreviousCreatedDate = previous.SeenAt;
+                }
 
                 var jsonString = JsonConvert.SerializeObject(activationWatcher,
                     context.EntityAnalysisModel.JsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
@@ -100,6 +109,48 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             }
         }
 
+        private static async Task<LastLocation> ExchangeLastLocationAsync(Context context,
+            ActivationWatcher activationWatcher, CacheService cacheService)
+        {
+            if (cacheService?.CacheActivationWatcherLastLocationRepository == null ||
+                !HasLocation(activationWatcher) || !HasEntity(activationWatcher))
+            {
+                return null;
+            }
+
+            var previous = await cacheService.CacheActivationWatcherLastLocationRepository.ExchangeAsync(
+                activationWatcher.TenantRegistryId.GetValueOrDefault(), activationWatcher.Key,
+                activationWatcher.KeyValue, activationWatcher.Latitude.GetValueOrDefault(),
+                activationWatcher.Longitude.GetValueOrDefault(),
+                activationWatcher.CreatedDate.GetValueOrDefault(DateTime.UtcNow)).ConfigureAwait(false);
+
+            if (previous == null)
+            {
+                context.TraceLog(
+                    $"has recorded the first known location of {activationWatcher.Key}:{activationWatcher.KeyValue}.");
+            }
+            else
+            {
+                context.TraceLog(
+                    $"has found a previous location of {previous.Latitude},{previous.Longitude} seen at {previous.SeenAt.ToString("O")} for {activationWatcher.Key}:{activationWatcher.KeyValue}.");
+            }
+
+            return previous;
+        }
+
+        private static bool HasLocation(ActivationWatcher activationWatcher)
+        {
+            return activationWatcher.Latitude.HasValue && activationWatcher.Longitude.HasValue &&
+                   (activationWatcher.Latitude.Value != 0d || activationWatcher.Longitude.Value != 0d);
+        }
+
+        private static bool HasEntity(ActivationWatcher activationWatcher)
+        {
+            return !string.IsNullOrWhiteSpace(activationWatcher.Key) &&
+                   !string.IsNullOrWhiteSpace(activationWatcher.KeyValue) &&
+                   !activationWatcher.KeyValue.Equals("Missing", StringComparison.OrdinalIgnoreCase);
+        }
+
         private static ActivationWatcher BuildActivationWatcher(Context context,
             EntityAnalysisModelActivationRule evaluateActivationRule)
         {
@@ -109,6 +160,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 ForeColor = evaluateActivationRule.ResponseElevationForeColor,
                 ResponseElevation = evaluateActivationRule.ResponseElevation,
                 ResponseElevationContent = evaluateActivationRule.ResponseElevationContent,
+                ResponseElevationName = context.Snapshot.EntityAnalysisModelResponseElevationRanges
+                    .FirstOrDefault(f => f.Contains((int)evaluateActivationRule.ResponseElevation))?.Name,
                 ActivationRuleSummary = evaluateActivationRule.Name,
                 TenantRegistryId = context.EntityAnalysisModel.Instance.TenantRegistryId,
                 CreatedDate = DateTime.UtcNow,

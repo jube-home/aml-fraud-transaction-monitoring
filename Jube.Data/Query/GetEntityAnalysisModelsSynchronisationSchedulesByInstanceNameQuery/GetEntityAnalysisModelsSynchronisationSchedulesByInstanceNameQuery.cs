@@ -26,38 +26,42 @@ namespace Jube.Data.Query.GetEntityAnalysisModelsSynchronisationSchedulesByInsta
         public async Task<List<GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto>>
             ExecuteAsync(string instance, CancellationToken token = default)
         {
-            var tenants = await (from e
-                        in dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
-                    from t
-                        in dbContext.TenantRegistry.RightJoin
-                        (t => t.Id == e.TenantRegistryId &&
-                              e.Instance == instance)
+            var now = DateTime.UtcNow;
+
+            var scheduled = await dbContext.EntityAnalysisModelSynchronisationSchedule
+                .Where(w => w.TenantRegistryId != null)
+                .Select(s => s.TenantRegistryId.Value)
+                .Distinct()
+                .ToListAsync(token).ConfigureAwait(false);
+
+            var pending = await (from s in dbContext.EntityAnalysisModelSynchronisationSchedule
+                    from e in dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry.LeftJoin(e
+                        => e.TenantRegistryId == s.TenantRegistryId && e.Instance == instance)
+                    where s.TenantRegistryId != null
+                          && s.ScheduleDate != null
+                          && s.ScheduleDate <= now
+                          && (e.SynchronisedDate == null || s.ScheduleDate > e.SynchronisedDate)
                     select new
                     {
-                        t.Id,
-                        SynchronisedDate = e.SynchronisedDate ?? default(DateTime)
+                        TenantRegistryId = s.TenantRegistryId.Value,
+                        s.EntityAnalysisModelId
                     })
-                .ToDictionaryAsync(s => s.Id, s => s.SynchronisedDate, token).ConfigureAwait(false);
+                .ToListAsync(token).ConfigureAwait(false);
 
-            return await (from y in dbContext.EntityAnalysisModelSynchronisationSchedule
-                    join m in from t in dbContext.EntityAnalysisModelSynchronisationSchedule
-                        group t by t.TenantRegistryId
-                        into g
-                        select new
-                        {
-                            TenantRegistryId = g.Key,
-                            EntityAnalysisModelSyncronisationScheduleId =
-                                (from t2 in g select t2.Id).Max()
-                        } on y.Id equals m
-                            .EntityAnalysisModelSyncronisationScheduleId
-                    select
-                        new GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto
-                        {
-                            SynchronisationPending = y.ScheduleDate > tenants[y.TenantRegistryId.Value]
-                                                     && DateTime.UtcNow > y.ScheduleDate,
-                            TenantRegistryId = y.TenantRegistryId.Value
-                        }
-                ).ToListAsync(token).ConfigureAwait(false);
+            return scheduled.Select(tenantRegistryId =>
+            {
+                var rows = pending.Where(w => w.TenantRegistryId == tenantRegistryId).ToList();
+                var wholeTenant = rows.Any(a => a.EntityAnalysisModelId == null);
+
+                return new GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto
+                {
+                    TenantRegistryId = tenantRegistryId,
+                    SynchronisationPending = rows.Count > 0,
+                    EntityAnalysisModelIds = rows.Count == 0 || wholeTenant
+                        ? null
+                        : rows.Select(s => s.EntityAnalysisModelId.Value).Distinct().ToArray()
+                };
+            }).ToList();
         }
     }
 }

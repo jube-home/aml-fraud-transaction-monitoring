@@ -307,7 +307,7 @@ namespace Jube.Test.AskJooby
                 .Where(entry => entry.Key != "validator" && entry.Value.DisplayName is not null)
                 .ToList();
 
-            named.Should().HaveCount(223,
+            named.Should().HaveCount(231,
                 "every hierarchy agent plus the researcher and the web research specialist carries a persona");
 
             foreach (var (agentType, definition) in named)

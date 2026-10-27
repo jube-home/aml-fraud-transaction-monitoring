@@ -117,21 +117,6 @@
     <data name="ResponseElevationBackColorInvalid" xml:space="preserve">
     <value>The back colour must be a hex value, for example #FF0000.</value>
   </data>
-    <data name="NotificationTypeIdInvalid" xml:space="preserve">
-    <value>The notification type must be Email or SMS.</value>
-  </data>
-    <data name="NotificationDestinationRequired" xml:space="preserve">
-    <value>A notification destination is required when Notification is enabled.</value>
-  </data>
-    <data name="NotificationDestinationMaxLength" xml:space="preserve">
-    <value>The notification destination must be {0} characters or fewer.</value>
-  </data>
-    <data name="NotificationSubjectMaxLength" xml:space="preserve">
-    <value>The notification subject must be {0} characters or fewer.</value>
-  </data>
-    <data name="NotificationBodyMaxLength" xml:space="preserve">
-    <value>The notification body must be {0} characters or fewer.</value>
-  </data>
     <data name="EntityAnalysisModelGuidTtlCounterRequired" xml:space="preserve">
     <value>A Model is required when Increment TTL Counter is enabled.</value>
   </data>
@@ -146,5 +131,8 @@
   </data>
     <data name="JsonInvalid" xml:space="preserve">
     <value>The rule builder definition must be valid JSON of no more than 1 MB.</value>
+  </data>
+    <data name="ResponseElevationRangeNotFound" xml:space="preserve">
+    <value>The response elevation must fall inside an active Response Elevation Range of the Model.</value>
   </data>
 </root>

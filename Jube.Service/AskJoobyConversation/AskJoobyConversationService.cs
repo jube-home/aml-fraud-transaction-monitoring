@@ -3151,9 +3151,7 @@ namespace Jube.Service.AskJoobyConversation
             }
 
             return new AskJoobyAutoSnapshot(connectionString, userName, log, stringLocalizerFactory,
-                serviceChangeBus, dynamicEnvironment?.AppSettings("PreservationSalt"),
-                "True".Equals(dynamicEnvironment?.AppSettings("JempFileLegacyEncryptionFallback"),
-                    StringComparison.OrdinalIgnoreCase));
+                serviceChangeBus);
         }
 
         private RServerClient? BuildRServerClient()
@@ -3545,7 +3543,7 @@ namespace Jube.Service.AskJoobyConversation
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.ActiveUser)
             {
                 return;
             }

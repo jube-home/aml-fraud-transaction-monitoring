@@ -1,0 +1,3413 @@
+{
+  "app": {
+    "name": "Jube",
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Scaffolding",
+    "grid": "Data grid",
+    "api": "API and cache",
+    "theme": "Theme",
+    "askJooby": "Ask Jooby",
+    "cases": "Cases",
+    "override": "Override",
+    "models": "Models",
+    "sanctions": "Sanctions",
+    "watcher": "Watcher",
+    "admin": "Administration",
+    "tools": "TEMP: Tools",
+    "visualisation": "Visualisation",
+    "preservationSnapshots": "Snapshots",
+    "preservationMove": "JEMP import and export",
+    "adminSecurity": "Security",
+    "adminPerformance": "Performance",
+    "adminVisualisations": "Visualisation setup",
+    "adminTelemetry": "Telemetry settings",
+    "adminSanctionsLoader": "Sanctions loader",
+    "adminPreservation": "Preservation",
+    "adminTenants": "Tenants"
+  },
+  "prefs": {
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski",
+    "ar": "العربية"
+  },
+  "home": {
+    "title": "Jube Vue scaffolding",
+    "intro": "Each card below exercises one part of the stack under Vue Vapor. Phase 0 is complete when every card reports that it works.",
+    "vapor": "Vue Vapor",
+    "vaporBody": "This page is a Vapor component rendered inside a Vapor app, with the router view interoperating through the Vapor interop plugin.",
+    "pinia": "Pinia",
+    "piniaBody": "Theme preference held in the UI store: {theme}.",
+    "intl": "Localisation",
+    "intlBody": "Amount {amount} on {date}, with plurals: {cases}.",
+    "query": "Server state",
+    "queryBody": "The API and cache page drives vue-query through the single useApi function.",
+    "icons": "Icons",
+    "iconsBody": "Lucide icons render as Vapor-compatible components.",
+    "works": "Works",
+    "casesCount": "no cases | one case | {n} cases",
+    "fails": "Fails"
+  },
+  "grid": {
+    "title": "Data grid",
+    "intro": "One DataGrid component owns the only Tabulator import. Filter and sort live in the URL.",
+    "filterLabel": "Filter by customer",
+    "filterPlaceholder": "Type part of a name",
+    "exportCsv": "Export CSV",
+    "rows": "No rows | 1 row | {n} rows",
+    "empty": "No rows match the filter.",
+    "columns": {
+      "id": "Case",
+      "customer": "Customer",
+      "amount": "Amount",
+      "risk": "Risk",
+      "opened": "Opened"
+    },
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "pager": {
+      "navigation": "Pagination",
+      "first": "First page",
+      "previous": "Previous page",
+      "next": "Next page",
+      "last": "Last page",
+      "pageSize": "Rows per page",
+      "summary": "{from}–{to} of {total}",
+      "page": "Page {page} of {pages}"
+    }
+  },
+  "api": {
+    "title": "API and cache",
+    "intro": "A read goes through useApi and vue-query. Errors map to the standard states.",
+    "loading": "Loading",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "success": "Antiforgery token received ({length} characters).",
+    "unauthorized": "Not signed in. Normally this redirects to the sign-in page and keeps the return address.",
+    "forbidden": "Not permitted.",
+    "notFound": "Not found.",
+    "conflict": "This record changed. Reload to continue.",
+    "validation": "The request was not valid.",
+    "server": "The server could not complete the request.",
+    "network": "The server could not be reached."
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Use your Jube account to continue.",
+    "stepsLabel": "Sign-in progress",
+    "steps": {
+      "credentials": "Credentials",
+      "mfa": "Verification",
+      "password": "New password"
+    },
+    "userName": "User name",
+    "password": "Password",
+    "show": "Show password",
+    "hide": "Hide password",
+    "submit": "Sign in",
+    "submitting": "Signing in",
+    "back": "Start again",
+    "mfa": {
+      "title": "Verify it is you",
+      "intro": "Enter the code from your security token to finish signing in.",
+      "label": "Verification code",
+      "hint": "Digits only, exactly as your token shows them.",
+      "submit": "Verify and continue"
+    },
+    "change": {
+      "title": "Choose a new password",
+      "intro": "Your password must be changed before you can continue. The new password replaces the old one for every future sign-in.",
+      "newPassword": "New password",
+      "repeatPassword": "Confirm new password",
+      "submit": "Change password and sign in"
+    },
+    "rules": {
+      "title": "Your new password needs",
+      "met": "Met",
+      "unmet": "Not met",
+      "minLength": "At least {count} characters",
+      "maxLength": "No more than {count} characters",
+      "uppercase": "One uppercase letter",
+      "lowercase": "One lowercase letter",
+      "number": "One number",
+      "special": "One special character",
+      "repeat": "No character repeated more than twice in a row",
+      "common": "Not starting with a common pattern such as 123456"
+    },
+    "errors": {
+      "invalid": "The details were not accepted. Check them and try again.",
+      "mismatch": "The two new passwords do not match.",
+      "weak": "The new password does not meet every requirement.",
+      "rejected": "The server did not accept the request.",
+      "unavailable": "Jube could not be reached. Try again in a moment."
+    },
+    "checking": "Checking how you sign in…",
+    "redirecting": "Taking you to your organisation’s sign-in…",
+    "continueToProvider": "Continue to sign-in",
+    "negotiateFailed": "Your computer did not sign you in automatically, and this installation does not accept a password. Check you are signed in to your organisation’s network, then try again.",
+    "retry": "Try again"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "back": "Back to the start"
+  },
+  "theme": {
+    "title": "Theme",
+    "intro": "Every daisyUI component the port is expected to use, in the current theme and direction. Switch theme and language to check both.",
+    "colours": "Colours",
+    "contrastHint": "Each swatch shows its text colour on its background, measured at runtime. Body text needs at least 4.5:1.",
+    "sample": "Sample text",
+    "pass": "AA",
+    "fail": "Below AA",
+    "buttons": "Buttons",
+    "disabled": "Disabled",
+    "notifications": "Notifications",
+    "badges": "Badges",
+    "alerts": "Alerts",
+    "forms": "Form controls",
+    "name": "Name",
+    "placeholder": "Type here",
+    "invalid": "invalid",
+    "helperError": "This value is not valid.",
+    "notes": "Notes",
+    "navigation": "Navigation",
+    "tab1": "Details",
+    "tab2": "Notes",
+    "tab3": "History",
+    "step1": "Open",
+    "step2": "Review",
+    "step3": "Close",
+    "back": "Back",
+    "next": "Next",
+    "data": "Data display",
+    "statTitle": "Open cases",
+    "statDesc": "Since Monday",
+    "cardTitle": "Card",
+    "collapse": "More detail",
+    "feedback": "Feedback",
+    "hover": "Hover me",
+    "overlays": "Overlays",
+    "openDialog": "Open dialog",
+    "dropdown": "Dropdown",
+    "close": "Close",
+    "nested": "Nested form",
+    "accentRule": "Teal, gold and green are fills with dark ink on top, never text on white, so accent, warning and success have no outline, soft or link variants.",
+    "dataGrid": "Data display uses Tabulator everywhere; daisyUI tables are not used."
+  },
+  "rule": {
+    "name": "Name",
+    "active": "Active",
+    "priority": "Priority",
+    "enableOverride": "Enable override",
+    "enableForce": "Enable force",
+    "overrideKey": "Override key",
+    "cases": "Create cases",
+    "caseWorkflow": "Case workflow",
+    "caseStatus": "Case status",
+    "caseKey": "Case key",
+    "bypass": "Bypass",
+    "bypassInterval": "Bypass interval",
+    "minutes": "Minutes",
+    "hours": "Hours",
+    "days": "Days",
+    "months": "Months",
+    "bypassValue": "Bypass value",
+    "responseElevation": "Elevate response",
+    "elevationContent": "Response content",
+    "sendToWatcher": "Send to activation watcher",
+    "watcherKey": "Watcher key",
+    "foreColour": "Foreground colour",
+    "backColour": "Background colour",
+    "notification": "Send notification",
+    "email": "Email",
+    "sms": "SMS",
+    "destination": "Destination",
+    "save": "Save rule",
+    "nesting": "Each switch reveals its own group. Groups can nest three deep, as on the activation rule page.",
+    "choose": "Choose",
+    "on": "On",
+    "off": "Off",
+    "identity": "Identity",
+    "identityHint": "Name, priority and whether the rule runs.",
+    "overrideHint": "Let analysts suppress this rule by key.",
+    "casesHint": "Open a case in a workflow when the rule fires.",
+    "elevationHint": "Change the response returned to the caller.",
+    "notificationHint": "Tell someone when the rule fires.",
+    "discard": "Discard changes"
+  },
+  "shell": {
+    "resources": "Resources",
+    "documentation": "Documentation",
+    "copyright": "Copyright",
+    "account": "Account",
+    "signedInAs": "Signed in as",
+    "changePassword": "Change password",
+    "signOut": "Sign out",
+    "signOutFailed": "Sign-out failed. Check your connection and try again.",
+    "sessionExpired": "Your session has expired. Sign in again to continue.",
+    "dismiss": "Dismiss",
+    "tenant": "Tenant",
+    "sessionWarning": "Your session is about to expire.",
+    "extendSession": "Extend session",
+    "toggleMenu": "Toggle navigation",
+    "tenantSearch": "Search tenants...",
+    "tenantNone": "No tenants match.",
+    "tenantMore": "Showing the first {count}. Keep typing to narrow the list."
+  },
+  "askJooby": {
+    "placeholder": "Ask Jooby...",
+    "thinking": "Gallopy gallopy gallopy",
+    "options": "Choices",
+    "go": "Go",
+    "attach": "Attach files",
+    "attachInput": "Attach a file",
+    "uploading": "{name} (uploading...)",
+    "removeAttachment": "Remove {name}",
+    "stop": "Stop",
+    "started": "Started {time}",
+    "downloadTranscript": "Download chat transcript",
+    "downloadAudit": "Download chat technical audit",
+    "conversations": "Conversations",
+    "newConversation": "New conversation",
+    "searchConversations": "Search conversations...",
+    "untitled": "Untitled conversation",
+    "deleteConversation": "Delete conversation",
+    "deleteTitle": "Delete this conversation?",
+    "deleteBody": "This cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "offline": "Jooby is not switched on for this installation. You can read about what Jooby can do, but replies are off until an inference backend is configured.",
+    "widgetTitle": "Jooby",
+    "closeChat": "Close chat",
+    "openChat": "Open chat",
+    "failed": "That did not work. Try again.",
+    "elapsed": "{seconds}s",
+    "send": "Send message",
+    "empty": "Pick a conversation, or just start typing."
+  },
+  "notifications": {
+    "label": "Notifications",
+    "labelUnread": "no notifications | one unread notification | {count} unread notifications",
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "empty": "Nothing new. Notifications will appear here once the notification service is connected.",
+    "unread": "Unread",
+    "severity": {
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error"
+    }
+  },
+  "errors": {
+    "unexpected": "Something unexpected went wrong.",
+    "forbidden": "You are not permitted to do that.",
+    "conflict": "That record changed. Reload it and try again.",
+    "network": "The server could not be reached. Check your connection.",
+    "notFound": "That record could not be found.",
+    "server": "The server could not complete the request."
+  },
+  "tools": {
+    "title": "Tools workbench",
+    "intro": "Temporary workbench for porting the shared page tools from the old interface. Pick a tool to work on it; the choice is kept in the address.",
+    "list": "Tools",
+    "source": "Source",
+    "statusNext": "Next",
+    "statusPending": "Not started",
+    "workbench": "Workbench",
+    "empty": "Nothing here yet. This is where {tool} will be built and tried."
+  },
+  "ruleBuilder": {
+    "loading": "Loading the rule editor",
+    "loadFailed": "The rule editor could not be loaded. Refresh the page to try again.",
+    "builder": "Builder",
+    "coder": "Coder",
+    "coderLabel": "Rule code",
+    "diverged": "The code no longer matches the builder, so the builder is locked until you reset it",
+    "reset": "Reset to builder",
+    "addRule": "Add rule",
+    "addGroup": "Add group",
+    "deleteRule": "Delete rule",
+    "deleteGroup": "Delete group",
+    "not": "NOT",
+    "and": "AND",
+    "or": "OR",
+    "placeholderMany": "{name}, separated by commas",
+    "placeholderDate": "{text} (2026-01-31T00:00:00)",
+    "orAField": "{text}, or a field",
+    "droppedFields": "These fields are no longer available and were removed from the rule: {fields}. Review this rule.",
+    "restoreFailed": "The saved builder rules could not be restored. Review this rule.",
+    "compiled": "Compiled",
+    "errors": "Errors",
+    "disconnected": "Disconnected",
+    "checking": "Checking",
+    "returnFalse": "Return False",
+    "error": {
+      "needed": "{argument}: a value is needed.",
+      "integer": "{argument}: a whole number is needed.",
+      "number": "{argument}: a number is needed.",
+      "date": "{argument}: a date and time such as 2026-01-31T00:00:00 is needed.",
+      "list": "{argument}: choose a list.",
+      "field": "{argument}: choose a field.",
+      "controlCharacters": "{argument}: line breaks and control characters cannot be used."
+    },
+    "bench": {
+      "parseType": "Rule type",
+      "modelId": "Model id",
+      "type1": "Inline function",
+      "type2": "Gateway or reprocessing rule",
+      "type3": "Abstraction rule",
+      "type4": "Abstraction calculation",
+      "type5": "Activation rule",
+      "value": "Value produced",
+      "remount": "Load again"
+    },
+    "field": "Field",
+    "operator": "Operator",
+    "beautify": "Beautify",
+    "intellisense": {
+      "fields": "Fields",
+      "methods": "Methods",
+      "keywords": "Keywords",
+      "snippets": "Snippets",
+      "field": "Field"
+    },
+    "compileMessages": "Compiler messages",
+    "incomplete": "Incomplete",
+    "lineNumber": "Line {line}",
+    "sourceCompiler": "Compiler",
+    "sourceBuilder": "Builder",
+    "valid": "Valid",
+    "value": "Value"
+  },
+  "filterBuilder": {
+    "operator": {
+      "equal": "is equal to",
+      "notEqual": "is not equal to",
+      "less": "is less than",
+      "lessOrEqual": "is less than or equal to",
+      "greater": "is greater than",
+      "greaterOrEqual": "is greater than or equal to",
+      "like": "is like",
+      "notLike": "is not like",
+      "beginsWith": "begins with",
+      "contains": "contains",
+      "endsWith": "ends with",
+      "order": "sorted",
+      "notContains": "does not contain",
+      "isEmpty": "is empty",
+      "isNotEmpty": "is not empty",
+      "isNull": "is null",
+      "isNotNull": "is not null"
+    },
+    "operatorGroup": "Basic",
+    "error": {
+      "noFilter": "Choose a field.",
+      "emptyGroup": "The group is empty.",
+      "radioEmpty": "Choose a value.",
+      "selectEmpty": "Choose a value.",
+      "stringEmpty": "A value is needed.",
+      "numberNaN": "A number is needed.",
+      "numberNotInteger": "A whole number is needed.",
+      "numberNotDouble": "A number is needed.",
+      "datetimeEmpty": "A date is needed.",
+      "datetimeInvalid": "The date must be written as {format}."
+    },
+    "yes": "Yes",
+    "no": "No",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "closedStatus0": "Open",
+    "closedStatus1": "Suspend open",
+    "closedStatus2": "Suspend closed",
+    "closedStatus3": "Closed",
+    "closedStatus4": "Suspend bypass",
+    "priority1": "Ultra high",
+    "priority2": "High",
+    "priority3": "Normal",
+    "priority4": "Low",
+    "priority5": "Ultra low",
+    "addColumn": "Add column",
+    "select": "Columns and order",
+    "where": "Filter",
+    "noColumns": "No filterable columns are available for this data source yet.",
+    "loading": "Loading the filter builder",
+    "loadFailed": "The filter builder could not be loaded. Refresh the page to try again.",
+    "droppedFields": "These fields are no longer available and were removed from the filter: {fields}. Review this filter.",
+    "restoreFailed": "The saved filter could not be restored. Review this filter.",
+    "bench": {
+      "workflowId": "Case workflow id or guid",
+      "modelId": "Model id",
+      "source": "Data source",
+      "sourceModel": "Model payload",
+      "sourceCsv": "Dataset (CSV)",
+      "sourceJson": "Dataset (JSON)",
+      "datasetId": "Dataset id",
+      "value": "Value produced"
+    },
+    "diaryType1": "Review",
+    "diaryType2": "Customer response",
+    "diaryType3": "Regulatory deadline",
+    "diaryType4": "Payment hold"
+  },
+  "permissions": {
+    "role": "Role",
+    "pickRole": "Pick a role",
+    "search": "Find a permission",
+    "granted": "{count} granted",
+    "choose": "Pick a role to see and change its permissions.",
+    "loading": "Loading permissions",
+    "loadFailed": "The permissions could not be loaded. Refresh the page to try again.",
+    "noMatches": "No permissions match that search.",
+    "locked": "Locked",
+    "save": "Save changes",
+    "discard": "Discard changes",
+    "unsaved": "{count} unsaved",
+    "saved": "Permissions saved.",
+    "area": {
+      "cases": "Cases",
+      "rules": "Rules",
+      "models": "Models",
+      "lists": "Lists and data",
+      "visualisation": "Visualisation",
+      "security": "Security",
+      "operations": "Operations",
+      "analytics": "Analytics",
+      "other": "Other"
+    }
+  },
+  "roleAllocation": {
+    "available": "Available roles",
+    "assigned": "Assigned roles",
+    "save": "Save changes",
+    "discard": "Discard changes",
+    "unsaved": "{count} unsaved",
+    "saved": "Roles saved.",
+    "loading": "Loading roles",
+    "loadFailed": "The roles could not be loaded. Refresh the page to try again.",
+    "bench": {
+      "parent": "Allocate roles to",
+      "guid": "Record guid",
+      "load": "Load roles",
+      "choose": "Choose what to allocate roles to and enter its guid."
+    }
+  },
+  "transferList": {
+    "assignSelected": "Assign selected",
+    "assignAll": "Assign all",
+    "unassignSelected": "Unassign selected",
+    "unassignAll": "Unassign all",
+    "empty": "Nothing here."
+  },
+  "approval": {
+    "title": "Approval",
+    "currentVersion": "Current version",
+    "runningVersion": "Running version",
+    "notRunning": "Not running yet",
+    "madeBy": "Made by",
+    "unknown": "Unknown",
+    "approvals": "Approvals",
+    "approvalsOf": "{recorded} of {required}",
+    "history": "Approval history",
+    "historyEmpty": "No approvals or rejections recorded.",
+    "historyDenied": "The approval history is not available to you.",
+    "versions": "Superseded versions",
+    "versionsEmpty": "No superseded versions yet.",
+    "versionsDenied": "The version history is not available to you.",
+    "awaitingDecision": "Awaiting decision",
+    "notePlaceholder": "Note (optional)",
+    "approve": "Approve",
+    "reject": "Reject",
+    "resubmit": "Resubmit",
+    "retract": "Retract",
+    "compare": "Compare",
+    "changesTitle": "Changes in version {version}",
+    "firstVersion": "This is the first version, so there is nothing earlier to compare with.",
+    "changesEmpty": "No visible field changed.",
+    "changesFailed": "The changes could not be loaded.",
+    "refused": "The {action} was refused.",
+    "state": {
+      "approved": "Approved",
+      "awaiting": "Awaiting approval",
+      "rejected": "Rejected",
+      "deleted": "Deleted",
+      "deletionAwaiting": "Deletion awaiting approval",
+      "deletionRejected": "Deletion rejected"
+    },
+    "change": {
+      "created": "Created",
+      "update": "Update",
+      "deletion": "Deletion",
+      "restore": "Restore",
+      "retracted": "Retracted",
+      "resubmitted": "Resubmitted"
+    },
+    "col": {
+      "version": "Version",
+      "change": "Change",
+      "decision": "Decision",
+      "by": "By",
+      "when": "When",
+      "checkerNote": "Checker note",
+      "returnNote": "Return note",
+      "field": "Field",
+      "earlier": "Earlier version",
+      "thisVersion": "This version",
+      "actions": "Actions"
+    },
+    "done": {
+      "Approve": "Approved.",
+      "Reject": "Rejected.",
+      "Resubmit": "Resubmitted.",
+      "Retract": "Retracted."
+    },
+    "bench": {
+      "endpoint": "Entity",
+      "entityId": "Entity id",
+      "load": "Load approval",
+      "choose": "Choose an entity and enter its id."
+    }
+  },
+  "valueGrid": {
+    "title": "Values",
+    "search": "Find a value",
+    "add": "Add value",
+    "approveAll": "Approve all pending",
+    "loading": "Loading values",
+    "loadFailed": "The values could not be loaded. Refresh the page to try again.",
+    "empty": "No values match the current filter.",
+    "statusUnavailable": "Approval status is unavailable. Reload to check.",
+    "notePlaceholder": "Note (optional)",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "approve": "Approve",
+    "reject": "Reject",
+    "resubmit": "Resubmit",
+    "retract": "Retract",
+    "saved": "Value saved.",
+    "deleted": "Value deleted, pending approval.",
+    "approved": "Approved.",
+    "rejected": "Rejected.",
+    "resubmitted": "Resubmitted.",
+    "retracted": "Retracted.",
+    "refused": "The request was refused.",
+    "notNumber": "{field} must be a number.",
+    "confirmTitle": "Delete this value?",
+    "confirmBody": "It stays listed as a pending deletion until a checker approves it.",
+    "state": {
+      "approved": "Approved",
+      "awaiting": "Awaiting approval",
+      "deletionAwaiting": "Deletion awaiting approval",
+      "rejected": "Rejected",
+      "deletionRejected": "Deletion rejected",
+      "unavailable": "Status unavailable"
+    },
+    "col": {
+      "expiry": "Delete expiry (UTC)",
+      "state": "State",
+      "approvals": "Approvals",
+      "madeBy": "Made by",
+      "checkerNote": "Checker note",
+      "returnNote": "Return note",
+      "actions": "Actions"
+    },
+    "bench": {
+      "kind": "Values of",
+      "parentId": "Parent id",
+      "load": "Load values",
+      "choose": "Choose a list or dictionary and enter its id."
+    }
+  },
+  "statistics": {
+    "title": "Column statistics",
+    "empty": "No statistics for this selection.",
+    "noValues": "No values",
+    "chartOpen": "Show the full chart",
+    "histogramLabel": "Distribution of {bins} bins from {min} to {max}, most values near {peak} ({count})",
+    "bar": "{bin}: {count}",
+    "col": {
+      "column": "Column",
+      "distribution": "Distribution",
+      "min": "Min",
+      "max": "Max",
+      "mean": "Mean",
+      "median": "Median",
+      "standardDeviation": "Std dev"
+    },
+    "bench": {
+      "json": "Statistics JSON",
+      "invalid": "That is not valid JSON.",
+      "labels": "Display names JSON (optional)"
+    }
+  },
+  "chart": {
+    "loading": "Drawing the chart",
+    "failed": "The chart could not be drawn.",
+    "retry": "Try again",
+    "empty": "There is nothing to chart yet."
+  },
+  "override": {
+    "trail": "Override trail",
+    "refused": "You do not have permission to do that. Applying a Force override needs the Apply Force Override permission, which is separate from the ordinary override permission.",
+    "failed": "The override could not be loaded or changed.",
+    "tooEarly": "Delete expiry date must be later than the current date and time.",
+    "key": "Override key",
+    "allKeys": "All keys",
+    "keyValue": "Override key value",
+    "fetch": "Fetch",
+    "keys": "Override keys",
+    "values": "Values held",
+    "models": "Models",
+    "open": "Open",
+    "showRules": "Show activation rules",
+    "hideRules": "Hide activation rules",
+    "rulesLabel": "Activation rule overrides",
+    "noKeys": "No Request XPath on any Model has Enable Override switched on.",
+    "noValues": "There are no values held against this override key.",
+    "noModels": "No models offer this override key.",
+    "noRules": "No activation rules on this model accept this override key.",
+    "kind": {
+      "suppress": "Suppress",
+      "force": "Force"
+    },
+    "col": {
+      "override": "Override",
+      "kind": "Kind",
+      "expiry": "Delete expiry date",
+      "rule": "Activation rule",
+      "key": "Override key",
+      "values": "Values",
+      "overrides": "Overrides",
+      "forced": "Forced",
+      "rules": "Activation rules",
+      "allRules": "All rules",
+      "models": "Models",
+      "lastCreated": "Last created",
+      "nextExpiry": "Next expiry",
+      "value": "Override key value",
+      "model": "Model",
+      "createdUser": "Created by",
+      "createdDate": "Created",
+      "actions": "Actions"
+    },
+    "bench": {
+      "embedded": "Embedded (no selector, scope from the host)",
+      "hostKey": "Host key",
+      "hostValue": "Host value",
+      "apply": "Apply"
+    },
+    "page": {
+      "loading": "Loading overrides",
+      "failed": "Your permissions could not be loaded, so overrides cannot be shown.",
+      "denied": "You do not have permission to manage overrides.",
+      "noForce": "Force overrides are not offered because you do not hold the Apply Force Override permission."
+    },
+    "fact": {
+      "values": "no values | one value | {count} values",
+      "overrides": "no overrides | one override | {count} overrides",
+      "forced": "one forced | {count} forced"
+    }
+  },
+  "integrity": {
+    "check": "Check",
+    "checked": "Checked {when}",
+    "chooseModel": "Choose a model",
+    "failed": "The model could not be checked.",
+    "forbidden": "You do not have permission to view model integrity.",
+    "hideChecks": "Hide the checks",
+    "inactive": "inactive",
+    "model": "Model",
+    "no": "No",
+    "yes": "Yes",
+    "none": "None.",
+    "showChecks": "Show the checks",
+    "summary": "Errors {errors} · Warnings {warnings} · Information {infos}",
+    "severity": {
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information"
+    },
+    "findings": {
+      "detail": "Checks for this entity",
+      "label": "Findings by entity",
+      "none": "No findings.",
+      "col": {
+        "severity": "Severity",
+        "kind": "Kind",
+        "entity": "Entity",
+        "categories": "Categories",
+        "errors": "Errors",
+        "warnings": "Warnings",
+        "infos": "Information",
+        "check": "Check",
+        "category": "Category",
+        "finding": "Finding"
+      }
+    },
+    "engine": {
+      "label": "Engine instances",
+      "empty": "No engine instance has synchronised this tenant's models.",
+      "failed": "The engine state could not be loaded.",
+      "showLoaded": "Show what is loaded",
+      "hideLoaded": "Hide what is loaded",
+      "showEntities": "Show the entities",
+      "hideEntities": "Hide the entities",
+      "loadedFor": "Loaded for this model",
+      "entities": "Entities",
+      "kind": "Kind",
+      "count": "Loaded",
+      "name": "Name",
+      "id": "Id",
+      "guid": "Guid",
+      "notInDatabase": "Not in the database",
+      "col": {
+        "instance": "Instance",
+        "reported": "Last reported",
+        "synchronised": "Last synchronised",
+        "model": "Model",
+        "loaded": "Entities loaded"
+      },
+      "state": {
+        "started": "Started",
+        "loaded": "Loaded, not started",
+        "notLoaded": "Not loaded"
+      }
+    },
+    "sync": {
+      "title": "Synchronise this model",
+      "hint": "Reload this model on every engine instance. The tenant's other models are left as they are. Schedule a time, or synchronise now.",
+      "when": "Synchronisation date and time",
+      "schedule": "Schedule this model",
+      "now": "Synchronise this model now",
+      "refresh": "Refresh",
+      "empty": "No engine instance has reported.",
+      "chooseFirst": "Choose a date and time first.",
+      "tooFar": "The schedule is too far in the future. Choose a nearer date.",
+      "refused": "You do not have permission to schedule synchronisation.",
+      "failed": "The synchronisation could not be scheduled.",
+      "col": {
+        "instance": "Instance",
+        "heartbeat": "Heartbeat",
+        "synchronised": "Synchronised",
+        "state": "State"
+      },
+      "state": {
+        "synchronised": "Synchronised",
+        "pending": "Pending",
+        "unavailable": "Unavailable"
+      },
+      "tenantTitle": "Synchronise all models",
+      "tenantHint": "Reload every model in the tenant on every engine instance. Schedule a time, or synchronise now.",
+      "scheduleTenant": "Schedule all models",
+      "nowTenant": "Synchronise all models now"
+    },
+    "deps": {
+      "note": "Each entity points to the entities it uses. Dashed lines are settings, dashed boxes are inactive and red boxes are names that do not exist.",
+      "unconnected": "{count} entities have no dependencies either way and are only listed below.",
+      "truncated": "Only the {count} most connected entities are shown.",
+      "zoom": "Diagram zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit",
+      "label": "Model dependency diagram",
+      "failed": "The dependency diagram could not be drawn.",
+      "selected": "Selected on the diagram: {id}",
+      "filter": "Find an entity",
+      "entities": "Entities in the model",
+      "none": "The model has no entities.",
+      "show": "Show on diagram",
+      "showLinks": "Show what it uses and what uses it",
+      "hideLinks": "Hide the links",
+      "uses": "Uses",
+      "usedBy": "Used by",
+      "col": {
+        "kind": "Kind",
+        "entity": "Entity",
+        "active": "Active",
+        "uses": "Uses",
+        "usedBy": "Used by",
+        "missing": "Missing names",
+        "through": "Through",
+        "how": "How",
+        "actions": "Actions"
+      },
+      "how": {
+        "setting": "Setting",
+        "ruleText": "Rule text"
+      }
+    },
+    "pending": {
+      "label": "Pending approvals by kind",
+      "entities": "Entities awaiting approval",
+      "empty": "Nothing is awaiting approval.",
+      "nothing": "Nothing is awaiting approval in this model.",
+      "noView": "You do not have permission to view pending approvals.",
+      "loadFailed": "The pending approvals could not be loaded.",
+      "noPermission": "You do not have permission to do that.",
+      "refusedAction": "The {action} was refused.",
+      "valuesFailed": "The values could not be approved.",
+      "approvedValues": "Approved {count} value(s).",
+      "approve": "Approve",
+      "reject": "Reject",
+      "review": "Review",
+      "approveValues": "Approve values",
+      "closeReview": "Close review",
+      "reviewTitle": "Review: {name}",
+      "showEntities": "Show the entities",
+      "hideEntities": "Hide the entities",
+      "deletion": "Deletion",
+      "edit": "Edit",
+      "col": {
+        "kind": "Kind",
+        "waiting": "Waiting (entities and values)",
+        "deletions": "Of which deletions",
+        "name": "Name",
+        "change": "Change",
+        "version": "Version",
+        "madeBy": "Made by",
+        "values": "Values",
+        "actions": "Actions"
+      }
+    },
+    "verdict": {
+      "unsound": "Not sound",
+      "warnings": "Sound, with warnings",
+      "sound": "Sound"
+    },
+    "section": {
+      "findings": "What is wrong",
+      "engine": "Is the engine running it",
+      "dependencies": "What it depends on",
+      "pending": "What is waiting for approval"
+    },
+    "hint": {
+      "findings": "Every check that failed, by entity",
+      "engine": "Which instances have loaded it, and when it next synchronises",
+      "dependencies": "The entities it uses, and any that are missing",
+      "pending": "Changes that are not live until they are approved"
+    },
+    "index": "Sections of the integrity check",
+    "panes": {
+      "index": "the section index"
+    }
+  },
+  "ruleTools": {
+    "title": "Rule tools",
+    "backtest": "Backtest",
+    "dependencies": "Dependencies",
+    "integrityTitle": "Integrity",
+    "loading": "Loading…",
+    "yes": "Yes",
+    "no": "No",
+    "start": "start",
+    "now": "now",
+    "allArchive": "All archived transactions",
+    "asSubmitted": "As submitted",
+    "edited": "Edited since",
+    "show": "Show",
+    "stop": "Stop",
+    "instances": "Backtests of this rule",
+    "noBacktests": "No backtests of this rule yet.",
+    "backtestHint": "Run this rule, as it is in the editor, over archived transactions. Choose which transactions with the first builder and what counts as a positive, such as a tag, with the second.",
+    "whichTransactions": "Which transactions",
+    "whatIsPositive": "What counts as positive",
+    "limit": "Up to (transactions)",
+    "sampleSize": "Examples",
+    "run": "Run backtest",
+    "fieldsFailed": "The backtest fields could not be loaded.",
+    "incomplete": "A builder has an incomplete rule. Finish or remove it.",
+    "submitFailed": "The backtest could not be submitted.",
+    "noPermission": "You do not have permission to run backtests.",
+    "submitted": "Submitted. The backtest runs in the background and the list updates as it goes.",
+    "resultTitle": "Backtest {id}",
+    "notSucceeded": "This backtest is {status}",
+    "window": {
+      "label": "Window",
+      "week": "Last 7 days",
+      "month": "Last 30 days",
+      "quarter": "Last 90 days",
+      "year": "Last 12 months",
+      "all": "All archived transactions"
+    },
+    "col": {
+      "submitted": "Submitted",
+      "rule": "Rule",
+      "by": "By",
+      "status": "Status",
+      "progress": "Progress",
+      "read": "Read",
+      "evaluated": "Evaluated",
+      "fired": "Fired",
+      "tp": "TP",
+      "fp": "FP",
+      "fn": "FN",
+      "tn": "TN",
+      "precision": "Precision",
+      "recall": "Recall",
+      "window": "Window",
+      "actions": "Actions"
+    },
+    "result": {
+      "failed": "The result could not be loaded.",
+      "funnel": "From archive to firing",
+      "confusion": "Confusion matrix",
+      "rates": "Rates",
+      "tags": "Tags on the evaluated transactions",
+      "limitReached": "Limit reached, older transactions not read.",
+      "aborted": "Stopped early: {reason}",
+      "runtimeErrors": "{count} rule errors",
+      "filterErrors": "{count} filter errors",
+      "nothingEvaluated": "No transactions were evaluated, so there is nothing to chart beyond the funnel. Widen the window or relax the filter.",
+      "notAvailable": "n/a"
+    },
+    "examples": {
+      "truePositives": "True positives",
+      "falsePositives": "False positives",
+      "falseNegatives": "False negatives",
+      "errors": "Errors",
+      "count": "{count} examples",
+      "entry": "Entry",
+      "referenceDate": "Reference date",
+      "error": "Error",
+      "explain": "Explain this transaction",
+      "hide": "Hide the explanation"
+    },
+    "explain": {
+      "failed": "The transaction could not be explained.",
+      "passedFilter": "Kept by the filter",
+      "fired": "Fired",
+      "positive": "Positive",
+      "filterError": "Filter error",
+      "ruleError": "Rule error",
+      "tags": "Tags",
+      "none": "None",
+      "values": "Values read",
+      "read": "Value read",
+      "onThis": "On this transaction",
+      "noValue": "No value"
+    },
+    "deps": {
+      "saveFirst": "Save the rule to see what it uses and what uses it.",
+      "failed": "The dependencies could not be loaded.",
+      "uses": "Uses",
+      "usedBy": "Used by",
+      "nothing": "Nothing.",
+      "nothingUses": "Nothing uses this rule.",
+      "name": "Name",
+      "entity": "Entity",
+      "how": "How",
+      "line": "Line",
+      "through": "Through",
+      "depth": "Depth",
+      "doesNotExist": "Does not exist"
+    },
+    "integrity": {
+      "saveFirst": "Save the rule to check its integrity.",
+      "failed": "The integrity findings could not be loaded.",
+      "none": "No findings for this rule."
+    },
+    "bench": {
+      "ruleId": "Rule id",
+      "ruleText": "Rule text as in the editor"
+    }
+  },
+  "watcher": {
+    "live": "Live",
+    "layers": "Layers",
+    "replayLabel": "Replay window",
+    "controls": "Watcher controls",
+    "realtime": "Realtime",
+    "status": {
+      "open": "Streaming",
+      "connecting": "Connecting",
+      "closed": "Closed",
+      "paused": "Paused"
+    },
+    "mode": {
+      "label": "Map shows",
+      "latest": "Latest per entity",
+      "all": "Every activation"
+    },
+    "window": {
+      "label": "Window",
+      "all": "All",
+      "minute": "Last minute",
+      "five": "Last 5 minutes",
+      "fifteen": "Last 15 minutes",
+      "hour": "Last hour"
+    },
+    "fade": {
+      "label": "Fade over",
+      "off": "No fade",
+      "minute": "1 minute",
+      "five": "5 minutes",
+      "fifteen": "15 minutes",
+      "hour": "1 hour"
+    },
+    "trails": "Trails",
+    "heat": "Heat",
+    "fit": "Fit to activations",
+    "replayFrom": "Replay from",
+    "replayTo": "to",
+    "replay": "Replay",
+    "clear": "Clear",
+    "replayFailed": "The replay could not be loaded.",
+    "mapFailed": "The map could not start in this browser. The feed and summary below still work.",
+    "mapLabel": "Activation map",
+    "legend": {
+      "activation": "Activation",
+      "impossible": "Impossible travel (over {speed} km/h)",
+      "dim": "Not matching the filter"
+    },
+    "counts": "Plotted {plotted} · Without a location {unlocated} · Pending {pending} · Received {received}",
+    "impossibleCount": "No impossible travel | 1 impossible journey | {count} impossible journeys",
+    "following": "Following {entity}",
+    "release": "Show all",
+    "selected": "Selected activation",
+    "journey": "Replay this entity's journey",
+    "follow": "Follow this entity",
+    "feed": "Latest activations",
+    "empty": "No activations yet.",
+    "locate": "Locate",
+    "summary": "Activations by rule",
+    "summaryEmpty": "The summary appears once activations arrive.",
+    "col": {
+      "created": "Created",
+      "entity": "Entity",
+      "rule": "Activation rule",
+      "elevation": "Elevation",
+      "content": "Response",
+      "colour": "Activation colour",
+      "actions": "Actions",
+      "range": "Range"
+    },
+    "bench": {
+      "embedded": "Embedded (one entity, no controls)",
+      "key": "Key",
+      "keyValue": "Key value"
+    },
+    "page": {
+      "loading": "Loading the watcher",
+      "loadFailed": "The watcher could not be opened. Refresh the page to try again.",
+      "refused": "You do not have permission to see the activation watcher.",
+      "filter": "Watch one entity",
+      "key": "Key",
+      "keyValue": "Key value",
+      "apply": "Apply filter",
+      "clearFilter": "Clear filter"
+    }
+  },
+  "sanction": {
+    "title": "Sanctions search",
+    "multiPartString": "Multipart string",
+    "multiPartHint": "A name or phrase; each part is matched against the sanctions lists.",
+    "distance": "Distance",
+    "maxDistanceRatio": "Max distance ratio",
+    "maxCoverageRatio": "Max coverage ratio",
+    "check": "Check",
+    "checking": "Checking",
+    "prompt": "Enter a name or phrase to search for.",
+    "empty": "No sanctions entries matched.",
+    "failed": "The search could not be completed.",
+    "validation": "The search was refused:",
+    "matches": "No matches | 1 match | {count} matches",
+    "entries": "Matches",
+    "total": "Total aggregation",
+    "bySource": "Aggregation by source",
+    "bench": {
+      "embedded": "Embedded (no form, parameters from the host)",
+      "hostText": "Host text",
+      "apply": "Search"
+    },
+    "col": {
+      "id": "Id",
+      "distance": "Distance",
+      "element": "Element",
+      "sourceId": "Source id",
+      "source": "Source",
+      "reference": "Reference",
+      "sum": "Sum",
+      "average": "Average",
+      "count": "Count",
+      "max": "Max",
+      "min": "Min",
+      "first": "First",
+      "last": "Last",
+      "confidence": "Confidence"
+    },
+    "forbidden": "You do not have permission to search sanctions.",
+    "zero": "The search ran and nothing matched. Widen the distance or the ratios to match more loosely. A refused search is shown as an error instead, never as an empty result."
+  },
+  "evidence": {
+    "title": "Evidence",
+    "yes": "Yes",
+    "no": "No",
+    "none": "No value",
+    "empty": "(empty)",
+    "emptyState": "No evidence to show.",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "values": "No values | 1 value | {n} values",
+    "col": {
+      "key": "Key",
+      "value": "Value"
+    },
+    "bench": {
+      "json": "Evidence JSON",
+      "invalid": "That is not valid JSON."
+    }
+  },
+  "csvExport": {
+    "title": "CSV export",
+    "note": "No separate export widget: the grid's own download writes the file. Excel carries the styling (header, column widths, real numbers and dates, frozen header row, filter); CSV is the plain, unstyled alternative. Cells that start like a formula are neutralised in the CSV.",
+    "row": "Row action",
+    "empty": "No rows.",
+    "col": {
+      "id": "Id",
+      "source": "Source",
+      "detail": "Detail",
+      "hits": "Hits",
+      "actions": "Actions",
+      "seen": "Seen"
+    }
+  },
+  "export": {
+    "group": "Export",
+    "excel": "Excel",
+    "csv": "CSV"
+  },
+  "crud": {
+    "loading": "Loading the form",
+    "modelFailed": "No form model is available for {area}.",
+    "recordsFailed": "The records could not be loaded.",
+    "list": "{area} records",
+    "new": "New",
+    "newTitle": "New {area}",
+    "editTitle": "Edit {area}",
+    "open": "Open",
+    "actions": "Actions",
+    "empty": "No records yet.",
+    "create": "Create",
+    "save": "Save changes",
+    "delete": "Delete",
+    "close": "Close",
+    "locked": "Locked",
+    "unsaved": "Unsaved changes",
+    "required": "Required",
+    "yes": "Yes",
+    "no": "No",
+    "choose": "Choose",
+    "loadingChoices": "Loading choices",
+    "editorPending": "This field uses the {editor} editor, which is not built yet.",
+    "created": "Created.",
+    "saved": "Saved.",
+    "deleted": "Deleted.",
+    "refused": "The request was refused.",
+    "notNumber": "{field} must be a number.",
+    "leave": "You have unsaved changes. Leave without saving?",
+    "confirmTitle": "Delete this record?",
+    "confirmBody": "A deletion may need approval before it takes effect.",
+    "bench": {
+      "area": "Record type",
+      "parentId": "Parent id",
+      "load": "Load",
+      "choose": "Choose a record type, and a parent id where it has one."
+    },
+    "noList": "This record type has no list to show.",
+    "roles": "Roles",
+    "values": "Values",
+    "search": "Search records",
+    "searchPlaceholder": "Search",
+    "upToDate": "No unsaved changes",
+    "auditUpdated": "Updated by {user} on {date}",
+    "auditCreated": "Created by {user} on {date}",
+    "options": "Options",
+    "problems": "no problems | {count} problem to fix | {count} problems to fix",
+    "about": "About {field}",
+    "pick": "Pick a colour for {field}",
+    "changed": "Changed",
+    "externalUpdated": "{actor} updated this record on {when}.",
+    "externalUpdatedNoTime": "{actor} updated this record.",
+    "externalVersions": "Version {from} to {to}.",
+    "changedCount": "no fields changed | 1 field changed | {count} fields changed",
+    "externalPending": "{actor} changed this record while you have unsaved edits.",
+    "externalConflict": "This record changed since you opened it, so your save was refused.",
+    "externalDeleted": "{actor} deleted this record.",
+    "reload": "Reload and lose my edits",
+    "keepEditing": "Keep editing",
+    "dismiss": "Dismiss",
+    "someone": "Someone",
+    "fold": {
+      "title": "Configuration"
+    },
+    "incomplete": "Complete the display before saving: the SQL must be valid and a chart or grid chosen."
+  },
+  "hierarchy": {
+    "trail": "Where you are",
+    "showing": "Showing {where}",
+    "goBack": "Go back to {label}",
+    "under": "Open under {name}",
+    "open": "Open",
+    "add": "Add {label}",
+    "more": "More actions for {label}",
+    "none": "None yet",
+    "active": "{count} active",
+    "locked": "{count} locked",
+    "failed": "Could not load",
+    "expandRow": "Show what is under this row",
+    "collapseRow": "Hide what is under this row",
+    "kinds": "Kinds under this row",
+    "awaiting": "{count} awaiting"
+  },
+  "payloadGrid": {
+    "from": "From",
+    "to": "To",
+    "all": "All",
+    "apply": "Apply",
+    "clear": "Clear",
+    "rows": "{count} of {total} rows",
+    "capped": "{count} of {total} rows shown; narrow the window or filters to see the rest",
+    "empty": "No rows in this window.",
+    "failed": "The rows could not be loaded.",
+    "retry": "Try again",
+    "statistics": "Statistics",
+    "refresh": "Refresh",
+    "filters": "Filters",
+    "loading": "Loading rows"
+  },
+  "sample": {
+    "title": "Sample archived transactions",
+    "hint": "Download a random sample of archived transactions for one model as a CSV file, taken from the reference dates in the window.",
+    "from": "From",
+    "to": "To",
+    "rate": "Share of transactions",
+    "rateHint": "Each archived transaction in the window is included with this probability.",
+    "download": "Download sample",
+    "saved": "Downloaded {name}.",
+    "failed": "The sample could not be downloaded.",
+    "refused": "You do not have permission to download samples.",
+    "empty": "The server returned an empty file. Try again.",
+    "problem": {
+      "model": "Choose a model.",
+      "from": "Enter the start of the window.",
+      "to": "Enter the end of the window.",
+      "order": "The end of the window must be after its start.",
+      "sample": "The share must be between 0 and 1."
+    }
+  },
+  "download": {
+    "preparing": "Preparing…"
+  },
+  "upload": {
+    "send": "Upload",
+    "sending": "Uploading…",
+    "problem": {
+      "none": "Choose a file first.",
+      "type": "Only {types} files can be uploaded.",
+      "empty": "The chosen file is empty."
+    }
+  },
+  "sanctionsLoader": {
+    "title": "Load a sanctions file",
+    "hint": "Import a CSV file of sanction entries for one source. Entries no longer in the file are reconciled as removed.",
+    "source": "Source",
+    "file": "CSV file",
+    "loaded": "Loaded {name}.",
+    "failed": "The file could not be loaded.",
+    "refused": "Only the landlord can load sanctions files."
+  },
+  "dataset": {
+    "title": "Training dataset",
+    "hint": "Pick a confirmed dataset, or upload a CSV or JSON file, check how its columns are read and confirm the mapping.",
+    "pick": "Dataset",
+    "none": "Select a dataset",
+    "uploadNew": "Upload a dataset",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Confirm mapping",
+    "file": "CSV or JSON file",
+    "summary": "{kind}: {rows} rows, {columns} columns, {bytes} bytes.",
+    "delimiter": "Delimiter '{delimiter}'.",
+    "review": "Review how each column is read, then confirm the mapping.",
+    "noColumns": "This dataset has no columns.",
+    "yes": "Yes",
+    "no": "No",
+    "includeColumn": "Include {column}",
+    "processingFor": "Processing type for {column}",
+    "nameFor": "Variable name for {column}",
+    "col": {
+      "include": "Include",
+      "column": "Column",
+      "type": "Type",
+      "categorical": "Categorical",
+      "missing": "Missing",
+      "min": "Min",
+      "max": "Max",
+      "name": "Variable name",
+      "processing": "Processing type"
+    },
+    "processing": {
+      "payload": "Payload",
+      "dictionary": "Dictionary",
+      "ttlCounter": "TTL counter",
+      "sanction": "Sanction",
+      "abstraction": "Abstraction",
+      "abstractionCalculation": "Abstraction calculation"
+    },
+    "distinct": {
+      "show": "Show the distinct values",
+      "hide": "Hide the distinct values",
+      "value": "Value",
+      "count": "Count",
+      "none": "No distinct value breakdown for this column."
+    },
+    "problem": {
+      "none": "Include at least one column.",
+      "name": "{column}: the variable name must start with a letter and use only letters, digits and underscores.",
+      "duplicate": "{column}: another included column already has this variable name."
+    },
+    "deleteTitle": "Delete this dataset?",
+    "deleteBody": "The dataset is removed. It cannot be deleted while an Exhaustive adaptation that uses it is still training.",
+    "tooLarge": "The file is larger than the permitted size.",
+    "inUse": "The dataset is still in use by an Exhaustive adaptation that has not finished training.",
+    "refused": "You do not have permission to manage datasets.",
+    "uploadFailed": "The dataset could not be uploaded.",
+    "confirmFailed": "The mapping could not be saved.",
+    "deleteFailed": "The dataset could not be deleted.",
+    "bench": {
+      "locked": "Locked, as when the adaptation has started training",
+      "reference": "Selected reference:"
+    }
+  },
+  "exhaustive": {
+    "anomaly": "Anomaly detection:",
+    "band": {
+      "best": "Best score",
+      "completed": "Completed",
+      "models": "Models trained",
+      "sinceBest": "Since best",
+      "updated": "Updated"
+    },
+    "batch": {
+      "baseValue": "Base value",
+      "empty": "No rows were scored.",
+      "error": "Error",
+      "failed": "The file could not be processed.",
+      "file": "CSV, text or JSON file",
+      "hint": "Score every row of a file against the live promoted model at once, instead of one row at a time with the controls above. The file is not saved as training data.",
+      "row": "Row",
+      "score": "Score",
+      "summary": "{rows} rows, {scored} scored.",
+      "title": "Batch recall from a file"
+    },
+    "bench": {
+      "adaptation": "Adaptation",
+      "none": "This model has no Exhaustive adaptations."
+    },
+    "failed": "The adaptation could not be loaded.",
+    "hint": {
+      "detects": "Does it find what it should, and at what cost?",
+      "learned": "The variables and how the search improved",
+      "live": "Only one is active at a time",
+      "trials": "Every candidate that was tried",
+      "verdict": "What happened, in words",
+      "whatIf": "Move a variable and watch the score"
+    },
+    "index": "Sections of the training results",
+    "learning": {
+      "curve": "Learning curve",
+      "promotion": "Promotion history",
+      "title": "Learning curve"
+    },
+    "loading": "Loading the adaptation",
+    "performance": {
+      "basis": "Detection rate basis",
+      "basisHint": "Count shows detection rate by row. Choosing a variable shows it by that variable’s summed value instead, across score distribution, ROC, gains, lift, KS and value captured. Value captured is only drawn once a variable is chosen.",
+      "calibration": "Calibration",
+      "confusion": "Confusion matrix",
+      "count": "Count (default)",
+      "gains": "Gains",
+      "ks": "Kolmogorov–Smirnov",
+      "lift": "Lift",
+      "measures": "Performance measures",
+      "precisionRecall": "Precision and recall",
+      "roc": "ROC",
+      "scoreDistribution": "Score distribution",
+      "thresholdSweep": "Threshold sweep",
+      "valueCaptured": "Value captured"
+    },
+    "prescription": {
+      "empty": "No prescription was recorded for this model.",
+      "failed": "The prescription could not be loaded.",
+      "hide": "Hide the charts",
+      "histogram": "Prescription histogram",
+      "negativeMean": "Negative mean",
+      "negativeSd": "Negative SD",
+      "positiveMean": "Positive mean",
+      "positiveSd": "Positive SD",
+      "sensitivity": "Sensitivity",
+      "show": "Show the charts",
+      "summary": "Prescription summary",
+      "title": "Prescription by variable",
+      "variable": "Variable",
+      "variableMax": "Variable max",
+      "variableMean": "Variable mean",
+      "variableMin": "Variable min",
+      "variableSd": "Variable SD"
+    },
+    "promoted": {
+      "activate": "Make the model with score {score} active",
+      "activateFailed": "The promoted model could not be updated.",
+      "active": "Active",
+      "calibration": "Calibration",
+      "complexity": "Topology complexity",
+      "created": "Created",
+      "empty": "No model has been promoted yet.",
+      "failed": "The promoted models could not be loaded.",
+      "hide": "Hide the prescription",
+      "hint": "Only one promoted model is active at a time: activating one deactivates the rest, and deactivating the active one promotes the next best score in its place.",
+      "refused": "You do not have permission to change promoted models.",
+      "score": "Score",
+      "show": "Show the prescription",
+      "title": "Promoted models",
+      "type": "Model type"
+    },
+    "refresh": "Refresh",
+    "refused": "You do not have permission to stop this adaptation.",
+    "section": {
+      "detects": "How well it detects",
+      "learned": "What it learned",
+      "live": "Which model is live",
+      "trials": "How it got here",
+      "verdict": "Verdict",
+      "whatIf": "What if…"
+    },
+    "sensitivity": {
+      "empty": "There are no variables to vary for the live model.",
+      "failed": "The variables could not be loaded.",
+      "recallFailed": "The score could not be calculated.",
+      "score": "Score",
+      "topology": "Network with the relevance of this input"
+    },
+    "stage": "Stage {stage} of {total}",
+    "stageLabel": "Training stage",
+    "status": {
+      "awaitingServer": "Awaiting server",
+      "baseQuery": "Querying base case data",
+      "baseStatistics": "Calculating statistics for the base case",
+      "classQuery": "Querying class filter data",
+      "classStatistics": "Statistics for class filter data",
+      "correlation": "Correlation analysis",
+      "finished": "Finished",
+      "finishedNoClass": "Finished, no class available",
+      "multicollinearity": "Multicollinearity analysis",
+      "noData": "No data found for the configured data source",
+      "normalising": "Normalising data",
+      "normalisingUnsupervised": "Normalising data for unsupervised learning",
+      "oversampling": "Over sampling and symmetric sampling",
+      "shuffling": "Shuffling data",
+      "stopped": "Stopped",
+      "stopping": "Stopping",
+      "storing": "Storing final data",
+      "supervised": "Supervised learning",
+      "unexpected": "Stopped for an unexpected reason",
+      "unsupervisedRecall": "Unsupervised training recall",
+      "unsupervisedStatistics": "Unsupervised training statistics",
+      "unsupervisedTraining": "Unsupervised training"
+    },
+    "stop": "Stop",
+    "stopFailed": "The adaptation could not be stopped.",
+    "trials": {
+      "choose": "Choose Show evidence on a trial to see its model diagram and, for a challenger family, its evidence.",
+      "created": "Created",
+      "detailFailed": "The evidence for this trial could not be loaded.",
+      "diagram": "Model diagram",
+      "empty": "No trials have been recorded yet.",
+      "evidence": "Evidence",
+      "evidenceTitle": "{type} trial, score {score}",
+      "evidenceTree": "Evidence for this trial",
+      "failed": "The trials could not be loaded.",
+      "no": "No",
+      "promoted": "Promoted",
+      "score": "Score",
+      "show": "Show evidence",
+      "title": "Trials",
+      "type": "Model type",
+      "yes": "Yes"
+    },
+    "variables": {
+      "classes": "Share of each class",
+      "classesHint": "Positive means rows matching the class definition, or the rows flagged by the anomaly model. Negative is everything else in the sample.",
+      "correlatedWith": "Most correlated with",
+      "correlation": "Correlation",
+      "counts": "Counts instead of share of class",
+      "distinct": "Distinct values",
+      "empty": "No variables were recorded.",
+      "failed": "The variables could not be loaded.",
+      "hide": "Hide the charts",
+      "histogram": "Histogram",
+      "iqr": "IQR",
+      "kurtosis": "Kurtosis",
+      "max": "Maximum",
+      "mean": "Mean",
+      "min": "Minimum",
+      "monteCarlo": "Monte Carlo",
+      "monteCarloSummary": "Monte Carlo summary",
+      "noCorrelated": "No other variable is correlated with this one.",
+      "normalisation": "Normalisation",
+      "sd": "Standard deviation",
+      "search": "Search variables",
+      "show": "Show the charts",
+      "skewness": "Skewness",
+      "title": "Variable statistics",
+      "variable": "Variable"
+    },
+    "waiting": "Results appear once correlation analysis has finished (stage 14). The status above updates by itself.",
+    "fold": {
+      "archive": "Archive data",
+      "demonstration": "Demonstration dataset",
+      "uploaded": "Uploaded dataset",
+      "on": "on",
+      "off": "off",
+      "summary": "{source}, class definition {filter}, bootstrap {bootstrap}, anomaly detection {anomaly}. Open to change."
+    }
+  },
+  "analytics": {
+    "band": {
+      "backToLive": "Back to the live version",
+      "bestOn": "Live is best on {best} of {of} metrics",
+      "bestOnAll": "Live is best on every metric",
+      "live": "Live: v{version}",
+      "noLive": "No live version",
+      "viewing": "Viewing v{version}",
+      "warnings": "No warnings | {count} warning | {count} warnings"
+    },
+    "compare": {
+      "better": "Better",
+      "change": "Change",
+      "comparable": "Fairly comparable: same seed, same split sizes and same variables.",
+      "differentSeed": "The versions were trained with different seeds.",
+      "differentSplits": "The versions used different train, validation and test split sizes.",
+      "differentVariables": "The versions use different variables.",
+      "empty": "There is nothing to compare.",
+      "failed": "The comparison could not be loaded.",
+      "live": "Live v{version}",
+      "loading": "Comparing the versions",
+      "metric": "Metric",
+      "notComparable": "These versions are not fairly comparable, so read the changes with care.",
+      "onlyLive": "Warnings only on the live version: {codes}.",
+      "onlyOther": "Warnings only on the other version: {codes}.",
+      "other": "v{version}",
+      "same": "No change",
+      "title": "Live v{live} against v{other}",
+      "unknown": "Not comparable",
+      "verdict": "Verdict",
+      "worse": "Worse"
+    },
+    "diagram": {
+      "label": "Model diagram"
+    },
+    "evidence": {
+      "failed": "The stored evidence could not be loaded.",
+      "none": "This version has no stored evidence.",
+      "title": "Stored evidence for this version"
+    },
+    "failed": "The model could not be loaded.",
+    "hint": {
+      "noVersion": "No version",
+      "versions": "Compared on the test split",
+      "viewing": "Viewing v{version}"
+    },
+    "index": "Sections of the model",
+    "instances": {
+      "actions": "Actions",
+      "activate": "Make {name} active",
+      "active": "Active",
+      "allocated": "Allocated model",
+      "approval": "Approval",
+      "approve": "Approve",
+      "approveAll": "Approve all pending",
+      "approved": "Approved.",
+      "cancel": "Cancel",
+      "checkerNote": "Checker note",
+      "confirmBody": "It stays listed as a pending deletion until a checker approves it.",
+      "confirmTitle": "Delete {name}?",
+      "created": "Created",
+      "delete": "Delete",
+      "deleted": "Instance deleted, pending approval.",
+      "empty": "There are no AskJooby Analytics instances.",
+      "failed": "The instances could not be loaded.",
+      "hideModels": "Hide the models",
+      "madeBy": "Made by",
+      "name": "Name",
+      "no": "No",
+      "notAllocated": "Not allocated",
+      "notePlaceholder": "Note (optional)",
+      "progress": "Approvals",
+      "refresh": "Refresh",
+      "reject": "Reject",
+      "rejected": "Rejected.",
+      "reportTable": "Report table",
+      "responsePayload": "Response payload",
+      "resubmit": "Resubmit",
+      "resubmitted": "Resubmitted.",
+      "retract": "Retract",
+      "retracted": "Retracted.",
+      "returnNote": "Return note",
+      "showModels": "Show the models",
+      "statusUnavailable": "Approval status is unavailable. Reload to check.",
+      "title": "AskJooby Analytics instances",
+      "yes": "Yes"
+    },
+    "kind": {
+      "anomalyDetector": "Anomaly detector",
+      "classifier": "Classifier",
+      "clusterer": "Clusterer",
+      "densityEstimator": "Density estimator",
+      "dimensionReducer": "Dimension reducer",
+      "forecaster": "Forecaster",
+      "regressor": "Regressor",
+      "sequenceModel": "Sequence model"
+    },
+    "loading": "Loading the model",
+    "metric": {
+      "averagePrecision": "Average precision",
+      "brier": "Brier score",
+      "calibrationSlope": "Calibration slope",
+      "ece": "Calibration error",
+      "logLoss": "Log loss",
+      "matthews": "Matthews correlation",
+      "precision": "Precision",
+      "recall": "Recall",
+      "rocAuc": "ROC AUC"
+    },
+    "models": {
+      "actions": "Actions",
+      "created": "Created",
+      "empty": "This instance has no trained models.",
+      "failed": "The models could not be loaded.",
+      "kind": "Kind",
+      "live": "Live version",
+      "name": "Name",
+      "none": "None",
+      "open": "Open the model",
+      "source": "Source",
+      "title": "Trained models"
+    },
+    "noVersion": "This model has no version to show.",
+    "performance": {
+      "calibration": "Calibration",
+      "none": "This kind of model has no calibration or ROC chart.",
+      "roc": "ROC curve"
+    },
+    "refused": "You do not have permission to see Advanced Analytics.",
+    "section": {
+      "evidence": "The stored evidence",
+      "looks": "What the model looks like",
+      "performs": "How well it performs",
+      "says": "What it says",
+      "versions": "Which version is live"
+    },
+    "source": {
+      "agent": "Agent",
+      "upload": "Upload"
+    },
+    "state": {
+      "approved": "Approved",
+      "awaiting": "Awaiting approval",
+      "deletionAwaiting": "Deletion awaiting approval",
+      "deletionRejected": "Deletion rejected",
+      "rejected": "Rejected",
+      "unavailable": "Status unavailable"
+    },
+    "story": {
+      "allocated": "Instance allocated to the Jube model {model}",
+      "failed": "The version could not be loaded.",
+      "loading": "Loading the version",
+      "noEvidence": "This version has no stored evidence.",
+      "noNarrative": "No narrative was written for this version.",
+      "notAllocated": "Instance not allocated to a Jube model",
+      "seed": "Seed {seed}",
+      "version": "{name} version {version}"
+    },
+    "trail": "Where you are",
+    "versions": {
+      "actions": "Actions",
+      "best": "best",
+      "bestOn": "The live version is best on {best} of {of} metrics.",
+      "bestOnAll": "The live version is the best on every metric.",
+      "compare": "Compare with live",
+      "empty": "This model has no versions.",
+      "failed": "The versions could not be loaded.",
+      "hideCompare": "Hide the comparison",
+      "hint": "Metrics are measured on the test split. The best value of each is marked, and a tie marks every version that shares it.",
+      "live": "live",
+      "noLive": "No version of this model is live.",
+      "show": "Show this version",
+      "testRows": "Test rows",
+      "title": "Versions of this model",
+      "viewing": "Viewing",
+      "warnings": "Warnings",
+      "metric": "Metric",
+      "liveTitle": "v{version} · live"
+    },
+    "panes": {
+      "index": "the section index"
+    }
+  },
+  "caseSql": {
+    "label": "SQL for the case",
+    "hint": "A single SELECT run for a case, read only against your own rows. Use {'@'}Id for the case and {'@'}CaseKeyValue for its key value. The rows it returns are available to the layout and to the email and HTTP templates as rows, for example [{'@'} rows[0].Name {'@'}]. Leave it empty to draw from the case's stored payload as before.",
+    "caseId": "Case id to try it on",
+    "run": "Run SQL",
+    "summary": "{count} rows in {ms} ms",
+    "truncated": "More rows came back than are shown.",
+    "empty": "The SQL ran and returned no rows.",
+    "noCase": "Enter the id of a case to try it on.",
+    "grid": "Rows the SQL returned"
+  },
+  "datasource": {
+    "sql": {
+      "title": "SQL command",
+      "label": "SQL command for the datasource"
+    },
+    "status": {
+      "incomplete": "Write a SELECT to begin",
+      "checking": "Checking the command",
+      "valid": "Command is valid",
+      "errors": "Command has errors",
+      "disconnected": "Could not reach the server",
+      "position": "(line {line}, column {column})"
+    },
+    "columns": {
+      "title": "Result columns",
+      "empty": "The columns appear here once the command is valid.",
+      "unused": "Not drawn"
+    },
+    "show": {
+      "title": "Show as",
+      "chart": "Show a chart",
+      "grid": "Show a grid",
+      "kind": "Chart kind",
+      "fits": "Draws from these columns",
+      "needs": "Needs columns assigned",
+      "byPosition": "By position: {columns}",
+      "nothing": "nothing yet",
+      "optional": "Optional columns",
+      "needsDisplay": "Switch on a chart, a grid or both."
+    },
+    "preview": {
+      "title": "Preview",
+      "waiting": "The preview appears once the command is valid and a chart or grid is switched on."
+    },
+    "card": {
+      "ready": "Ready",
+      "empty": "No rows",
+      "error": "Error",
+      "rows": "{count} rows",
+      "milliseconds": "{count} ms",
+      "truncated": "Truncated",
+      "yes": "Yes",
+      "no": "No",
+      "noRows": "No rows to show",
+      "chartLabel": "Chart for {name}",
+      "gridLabel": "Grid for {name}",
+      "templateLabel": "Template for {name}"
+    },
+    "bench": {
+      "registry": "Visualisation",
+      "datasource": "Datasource",
+      "pickRegistry": "Choose a visualisation",
+      "new": "New datasource",
+      "pick": "Choose a visualisation to build a datasource for it.",
+      "value": "Emitted value"
+    },
+    "template": {
+      "label": "Template",
+      "hint": "Lay the rows out in your own markup. Print a value with a token such as [{'@'} rows[0].column {'@'}], repeat an element with v-for=\"row in rows\", choose with v-if and v-else, put a token inside an attribute such as class=\"badge [{'@'} row.status {'@'}]\", and format values with the number, percent, currency, date, dateTime, round, truncate, upper, lower, default and join filters, written after a pipe symbol. Names are not case sensitive. Only safe tags are allowed and every value is escaped. Use row['column name'] for names with spaces."
+    },
+    "test": {
+      "run": "Run SQL",
+      "missing": "Fill in the required parameters below first.",
+      "failed": "The SQL could not be run."
+    }
+  },
+  "visualisation": {
+    "required": "Required",
+    "requiredMessage": "Enter a value.",
+    "run": "Run",
+    "forbidden": "You are not permitted to see this visualisation.",
+    "notFound": "That visualisation could not be found, or it is not active.",
+    "loadFailed": "The visualisation could not be loaded. Try again.",
+    "empty": "This visualisation has no active datasources.",
+    "waiting": "Set the parameters and run to draw the visualisation.",
+    "tileFailed": "This tile could not be drawn.",
+    "tileMissing": "This datasource is no longer available.",
+    "bench": {
+      "directory": "Visualisation",
+      "pick": "Choose a visualisation from the directory.",
+      "hideParameters": "Hide the parameter form"
+    },
+    "directory": {
+      "title": "Visualisations",
+      "empty": "No visualisations are listed in the directory.",
+      "back": "All visualisations",
+      "col": {
+        "name": "Name",
+        "tiles": "Tiles",
+        "parameters": "Parameters",
+        "lastRun": "Last run",
+        "runBy": "Run by",
+        "runs": "Runs, {days} days",
+        "failed": "Failed, {days} days",
+        "average": "Average"
+      },
+      "open": "Open",
+      "search": "Search visualisations",
+      "searchPlaceholder": "Search by name",
+      "count": "no visualisations | {count} visualisation | {count} visualisations",
+      "list": "Visualisation directory",
+      "noMatch": "No visualisations match.",
+      "neverRun": "Never run",
+      "unavailable": "n/a",
+      "ms": "{count} ms",
+      "showDetail": "Show tiles and parameters",
+      "hideDetail": "Hide tiles and parameters",
+      "windowNote": "Runs, failures and the average cover the last {days} days and count tile executions: one dashboard run executes every tile. Last run covers all time.",
+      "detail": {
+        "tiles": "Tiles",
+        "parameters": "Parameters",
+        "noTiles": "This dashboard has no active tiles.",
+        "noParameters": "This dashboard asks for no parameters.",
+        "failed": "Could not load this.",
+        "unknownKind": "Tile",
+        "type": {
+          "text": "Text",
+          "integer": "Integer",
+          "decimal": "Decimal",
+          "dateTime": "Date and time",
+          "flag": "Flag"
+        }
+      }
+    },
+    "retry": "Retry",
+    "story": {
+      "dashboard": "Dashboard",
+      "tiles": "no tiles | {count} tile | {count} tiles",
+      "parameters": "no parameters | {count} parameter | {count} parameters"
+    },
+    "refresh": "Refresh"
+  },
+  "preservation": {
+    "password": {
+      "title": "Package password",
+      "hint": "The password is the encryption key of the package. The same password, and the same salt on the server, are needed to import it again.",
+      "label": "Password",
+      "short": "The password must be at least {count} characters. Export and import stay switched off until it is."
+    },
+    "export": {
+      "title": "Export a package",
+      "intro": "Download this environment's configuration as an encrypted .jemp package to import into another environment. Models and approval history are always included; choose what else to carry.",
+      "summaryFailed": "What the package would carry could not be worked out.",
+      "download": "Download package",
+      "total": "About {size} before compression and encryption.",
+      "failed": "The package could not be exported."
+    },
+    "flag": {
+      "visualisations": "Visualisations",
+      "visualisationsHint": "Registries, parameters and datasources.",
+      "roles": "Roles",
+      "rolesHint": "Roles and their permissions. Users are never carried.",
+      "lists": "Lists",
+      "listsHint": "Lists and their values, which may be sensitive.",
+      "dictionaries": "Dictionaries",
+      "dictionariesHint": "Dictionaries and their pairs, which may be sensitive.",
+      "exhaustive": "Exhaustive",
+      "exhaustiveHint": "Models and their training data, which may be very large.",
+      "askJoobyAnalytics": "Advanced Analytics",
+      "askJoobyAnalyticsHint": "Instances, trained models and training history.",
+      "models": "Models and their configuration",
+      "approvals": "Approval history",
+      "always": "Always included"
+    },
+    "summary": {
+      "line": "Items {count}, nested {rows}"
+    },
+    "import": {
+      "title": "Import a package",
+      "intro": "Choose a .jemp package and preview what importing it would change. Nothing is changed until you confirm.",
+      "file": "Package file",
+      "preview": "Preview import",
+      "invalid": "That file could not be read as a package. Check the file and the password.",
+      "forbidden": "You are not permitted to import packages.",
+      "noneChosen": "Choose a package file first.",
+      "failed": "The package could not be previewed or imported.",
+      "done": "Package imported.",
+      "doneDetail": "The package was imported. A snapshot of the previous configuration was taken first, so the change can be undone.",
+      "replaces": "Importing replaces the whole of this tenant's configuration with the package.",
+      "confirm": "I understand this replaces the tenant's configuration",
+      "run": "Import package"
+    },
+    "preview": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed",
+      "unchanged": "Unchanged",
+      "counts": "What the import would change",
+      "identical": "Nothing would change: the package matches the live configuration.",
+      "orphans": "Users left without a role and moved to the Orphaned Preservation Import role: {count}.",
+      "orphansYou": "You stay active; everybody else affected is deactivated.",
+      "orphansDeactivated": "They would all be deactivated.",
+      "bySection": "By section",
+      "noSections": "No sections.",
+      "entries": "Differences",
+      "noEntries": "No differences.",
+      "truncated": "There are more differences than are listed here. The counts are complete.",
+      "references": "References to other entities that differed and are not listed: {count}.",
+      "section": "Section",
+      "path": "Where",
+      "kind": "Change",
+      "detail": "Detail",
+      "title": "Preview"
+    },
+    "snapshots": {
+      "title": "Snapshots",
+      "name": "Name",
+      "source": "Source",
+      "taken": "Taken",
+      "by": "By",
+      "models": "Models",
+      "size": "Size",
+      "state": "State",
+      "actions": "Actions",
+      "compare": "Compare",
+      "restore": "Restore",
+      "download": "Download",
+      "remove": "Delete",
+      "failed": "Failed",
+      "ready": "Ready",
+      "unnamed": "Snapshot",
+      "sourcePage": "Preservation page",
+      "sourceModelSync": "Model sync",
+      "sourceAskJooby": "Ask Jooby",
+      "sourceBeforeImport": "Before import",
+      "empty": "No snapshots have been taken yet.",
+      "confirmTitle": "Delete this snapshot?",
+      "confirmBody": "The snapshot cannot be recovered once deleted:",
+      "keep": "Keep",
+      "removed": "Snapshot deleted.",
+      "downloadFailed": "The snapshot could not be downloaded.",
+      "loadFailed": "The snapshots could not be loaded."
+    },
+    "take": {
+      "title": "Take a snapshot",
+      "intro": "A snapshot keeps the current configuration inside this estate so it can be compared with later, or restored.",
+      "name": "Name (optional)",
+      "run": "Take snapshot",
+      "done": "Snapshot taken."
+    },
+    "compare": {
+      "title": "Compare",
+      "intro": "Compare two snapshots, or a snapshot with the live configuration. Every comparison is recorded.",
+      "from": "From",
+      "to": "To",
+      "live": "Live configuration",
+      "run": "Compare",
+      "same": "Choose two different sides to compare.",
+      "failed": "The comparison could not be made.",
+      "recorded": "Recorded as comparison {id}"
+    },
+    "restore": {
+      "title": "Restore",
+      "target": "Restoring",
+      "close": "Cancel",
+      "previewFailed": "The restore could not be previewed.",
+      "failed": "The restore failed.",
+      "replaces": "Restoring replaces the whole configuration of this tenant with the snapshot. A snapshot of the current configuration is taken first.",
+      "notPermitted": "Restoring a snapshot needs the import permission, which this account does not have.",
+      "confirm": "I understand this replaces the current configuration",
+      "run": "Restore snapshot",
+      "done": "Snapshot restored."
+    }
+  },
+  "downloadBench": {
+    "outcome": "What the fetcher does",
+    "file": "Returns a file with no name",
+    "named": "Returns a file named by the server",
+    "empty": "Returns an empty file",
+    "fails": "Fails",
+    "download": "Download",
+    "saved": "Saved as",
+    "failed": "The download failed, so nothing was saved."
+  },
+  "uploadBench": {
+    "extensions": "Allowed extensions",
+    "fails": "Make the upload fail",
+    "file": "File",
+    "uploaded": "Uploaded",
+    "failed": "The upload failed."
+  },
+  "story": {
+    "trail": "Where you are in the story",
+    "list": "The story so far",
+    "reopen": "Go back to {where}",
+    "showing": "Showing {where}",
+    "changed": "Changed",
+    "unsaved": "Unsaved",
+    "bench": {
+      "models": "Models",
+      "areas": "Areas",
+      "records": "Records",
+      "record": "Record",
+      "pick": "Open {name}",
+      "simulateChanged": "Mark the first beat as changed by someone else",
+      "simulateUnsaved": "Mark the record as having unsaved edits",
+      "name": "Name",
+      "hint": "A stand-in record to show the shape of a working beat."
+    },
+    "goBack": "Go back to",
+    "discard": {
+      "title": "Discard unsaved changes?",
+      "body": "{where} has changes that are not saved. Going on will discard them.",
+      "confirm": "Discard changes",
+      "cancel": "Keep editing"
+    },
+    "backTo": "Back to {label}",
+    "properties": {
+      "title": "Properties",
+      "hint": "Fields, approval and roles for this record"
+    },
+    "newName": "New",
+    "newHint": "Fill in the fields below, then save to create it."
+  },
+  "models": {
+    "title": "Models",
+    "search": "Search models",
+    "searchPlaceholder": "Search by name",
+    "count": "no models | {count} model | {count} models",
+    "new": "New model",
+    "newTitle": "New model",
+    "open": "Open",
+    "empty": "No models match.",
+    "list": "Models",
+    "failed": "The models could not be loaded.",
+    "refused": "You do not have permission to see models.",
+    "unknown": "Unavailable",
+    "noneAwaiting": "None awaiting",
+    "awaitingFact": "{count} awaiting approval",
+    "active": "Active",
+    "inactive": "Inactive",
+    "locked": "Locked",
+    "editable": "Editable",
+    "version": "v{version}",
+    "col": {
+      "name": "Name",
+      "version": "Version",
+      "status": "Status",
+      "locked": "Lock",
+      "awaiting": "Changes awaiting",
+      "updated": "Last changed",
+      "by": "Changed by",
+      "approval": "Approval"
+    },
+    "strip": {
+      "updatedBy": "Last changed by",
+      "live": "Live version {version}",
+      "current": "Current version {version}",
+      "maker": "Made by {user}",
+      "approvals": "{recorded} of {required} approvals"
+    },
+    "otherHub": "Rules, cases and reprocessing",
+    "operate": "Operate",
+    "sample": {
+      "title": "Sample",
+      "hint": "Download a random sample of archived transactions for this model."
+    },
+    "integrity": {
+      "title": "Integrity",
+      "hint": "Findings, engine state, dependencies and synchronisation."
+    },
+    "syncAll": "Synchronise all models",
+    "analytics": {
+      "title": "AskJooby Analytics",
+      "hint": "Statistical and machine learning models AskJooby trained for this model."
+    }
+  },
+  "sanctions": {
+    "loading": "Checking your access",
+    "refused": "You do not have permission to search sanctions."
+  },
+  "adminTelemetry": {
+    "logCounters": "Log counters",
+    "excludes": "Exclusions"
+  },
+  "perfHub": {
+    "title": "Performance",
+    "familyBeat": "Family",
+    "counterBeat": "Counter",
+    "open": "Open",
+    "loading": "Loading performance",
+    "denied": "Performance counters are only available to the landlord.",
+    "families": "no families | one family | {count} families",
+    "counters": "no counters | one counter | {count} counters",
+    "family": {
+      "engine": {
+        "title": "Engine",
+        "hint": "Queues, processing and stage timings, and archiver and case creation warnings."
+      },
+      "logs": {
+        "title": "Logs",
+        "hint": "Application, WAF, Postgres and container logs, and model invoke warnings."
+      },
+      "postgres": {
+        "title": "Postgres",
+        "hint": "Metrics, activity, statement, table and index statistics, and replication."
+      },
+      "redis": {
+        "title": "Redis",
+        "hint": "Metrics, slow operations, connections, sentinel and call counts."
+      },
+      "telemetry": {
+        "title": "Telemetry",
+        "hint": "OpenTelemetry metrics, OTLP dispatch and .NET runtime metrics."
+      },
+      "infrastructure": {
+        "title": "Infrastructure",
+        "hint": "Etcd and Patroni clusters, Docker, HAProxy and the overlay network."
+      }
+    },
+    "area": {
+      "HttpProcessingCounter": "HTTP processing counters",
+      "EntityAnalysisAsynchronousQueueBalance": "Asynchronous queue balances",
+      "CaptureQueueHealth": "Capture queue health",
+      "EntityAnalysisModelAsynchronousQueueBalance": "Model asynchronous queue balances",
+      "EntityAnalysisModelProcessingCounter": "Model asynchronous processing counter",
+      "EntityAnalysisModelStagePerformanceCounter": "Model stage performance counter",
+      "EntityAnalysisModelResponseTimePipelineCounter": "Model response time pipeline counter",
+      "EntityAnalysisModelTaskPerformanceCounter": "Model task performance counter",
+      "ArchiverStagePerformanceCounter": "Archiver stage performance counter",
+      "CaseCreationStagePerformanceCounter": "Case creation stage performance counter",
+      "ArchiverWarning": "Archiver warnings",
+      "CaseCreationWarning": "Case creation warnings",
+      "ApplicationLogEntry": "Application log",
+      "WafAttack": "WAF attack log",
+      "PostgresLogEntry": "Postgres log",
+      "ContainerLogEntry": "Container log",
+      "ModelInvokeWarning": "Model invoke warnings",
+      "PostgresMetric": "Postgres metrics",
+      "PostgresActivity": "Postgres activity",
+      "PostgresStatementStatistics": "Postgres statement statistics",
+      "PostgresTableStatistics": "Postgres table statistics",
+      "PostgresIndexStatistics": "Postgres index statistics",
+      "PostgresReplicationStatus": "Postgres replication status",
+      "RedisMetric": "Redis metrics",
+      "RedisSlowOperation": "Redis slow operations",
+      "RedisConnectionMultiplexerMetric": "Redis connection multiplexer metrics",
+      "RedisSentinelStatus": "Redis sentinel status",
+      "RedisSentinelEvent": "Redis sentinel events",
+      "RedisConnectionEvent": "Redis connection events",
+      "RedisCallCounter": "Redis call counter",
+      "OpenTelemetryMetric": "OpenTelemetry metrics",
+      "OtlpDispatchCounter": "OTLP dispatch counter",
+      "DotNetRuntimeMetric": ".NET runtime metrics",
+      "EtcdMemberStatus": "Etcd member status",
+      "PatroniMemberStatus": "Patroni member status",
+      "EtcdClusterEvent": "Etcd cluster events",
+      "PatroniClusterEvent": "Patroni cluster events",
+      "DockerContainerMetric": "Docker container metrics",
+      "DockerEvent": "Docker events",
+      "DockerHostMetric": "Docker host metrics",
+      "HaProxyServerStatus": "HAProxy server status",
+      "HaProxyReachabilityProbe": "HAProxy reachability probes",
+      "OverlayNetworkTaskDrift": "Overlay network task drift"
+    }
+  },
+  "security": {
+    "loading": "Loading Security",
+    "denied": "You do not have permission to use any part of Security.",
+    "users": {
+      "title": "Users",
+      "singular": "User",
+      "hint": "The people who can sign in, and the role each one holds."
+    },
+    "roles": {
+      "title": "Roles",
+      "singular": "Role",
+      "hint": "Named sets of permissions, and the users who hold each."
+    },
+    "permissions": {
+      "title": "Permissions",
+      "singular": "Permissions",
+      "hint": "Choose a role and decide which permissions it grants."
+    },
+    "logins": {
+      "title": "Sign-ins",
+      "singular": "Sign-ins",
+      "hint": "Every sign-in attempt and its outcome."
+    },
+    "logouts": {
+      "title": "Sign-outs",
+      "singular": "Sign-outs",
+      "hint": "Every sign-out and how the session ended."
+    },
+    "permissionsCard": {
+      "hint": "Permissions this role grants."
+    },
+    "roleCard": {
+      "title": "Role",
+      "none": "No role",
+      "hint": "The role this user holds, which decides what they may do."
+    },
+    "apiKeys": {
+      "title": "API keys",
+      "panelTitle": "Keys held by this user",
+      "cardHint": "Keys that let a service call the API as this user.",
+      "hint": "A key authenticates as this user with this user's permissions. The full key is shown once, when it is generated; the list keeps only its first eight characters.",
+      "unavailable": "n/a",
+      "generate": "Generate key",
+      "name": "Name",
+      "namePlaceholder": "Where the key will be used",
+      "description": "Description",
+      "descriptionPlaceholder": "What the key is for",
+      "optional": "Optional",
+      "create": "Generate",
+      "cancel": "Cancel",
+      "nameRequired": "A name is needed.",
+      "nameTooLong": "The name must be {max} characters or fewer.",
+      "descriptionTooLong": "The description must be {max} characters or fewer.",
+      "refused": "The key could not be generated.",
+      "created": "Key generated",
+      "revealTitle": "Copy the key for {name} now",
+      "revealBody": "It will not be shown again. Only its first eight characters stay visible in the list.",
+      "keyLabel": "New API key",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "The key could not be copied. Select it and copy it yourself.",
+      "done": "Done",
+      "prefix": "{prefix}…",
+      "col": {
+        "name": "Name",
+        "description": "Description",
+        "key": "Key",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "revoke": "Revoke",
+      "revokeTitle": "Revoke this key?",
+      "revokeBody": "Anything using {name} stops authenticating at once. This cannot be undone.",
+      "revoked": "Key revoked",
+      "loadFailed": "The API keys could not be loaded.",
+      "loading": "Loading API keys",
+      "empty": "No API keys yet"
+    },
+    "access": {
+      "title": "Sign-in",
+      "cardHint": "Issue a temporary password or end every active session.",
+      "locked": "Locked",
+      "password": "Temporary password",
+      "revoke": "Revoke sessions",
+      "cancel": "Cancel",
+      "passwordTitle": "Issue a temporary password for {name}?",
+      "passwordBody": "The current password stops working at once. The new one is shown here once and must be changed at the next sign-in. A locked account is unlocked.",
+      "issue": "Issue password",
+      "issued": "Temporary password issued",
+      "revealTitle": "Copy the password for {name} now",
+      "revealBody": "It will not be shown again. {name} must change it when they next sign in.",
+      "passwordLabel": "Temporary password",
+      "expires": "Expires {when}",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "The password could not be copied. Select it and copy it yourself.",
+      "done": "Done",
+      "revokeTitle": "Revoke every session of {name}?",
+      "revokeBody": "Browser and bearer sessions end at once and they must sign in again. API keys are not affected. Revoke those from the API keys list.",
+      "revoked": "Sessions revoked. API keys are not affected."
+    }
+  },
+  "adminTenants": {
+    "title": "Tenants",
+    "singular": "Tenant",
+    "hint": "Create and configure the tenants this installation serves.",
+    "loading": "Loading tenants",
+    "denied": "Only the landlord can manage tenants."
+  },
+  "adminVisualisations": {
+    "title": "Visualisations",
+    "singular": "Visualisation",
+    "hint": "Define dashboards, their datasources and their parameters.",
+    "loading": "Loading visualisations",
+    "denied": "You do not have permission to set up visualisations."
+  },
+  "cases": {
+    "action": {
+      "open": "Open case",
+      "peek": "Peek"
+    },
+    "age": "{age} old",
+    "attention": {
+      "badge": "Returned",
+      "diaryDue": "Diary date reached",
+      "escalated": "Escalated to you",
+      "movedByOther": "Moved by someone else",
+      "newActivity": "New activity",
+      "reopened": "Reopened",
+      "riskRose": "Priority rose"
+    },
+    "closedStatus": {
+      "closed": "Closed",
+      "open": "Open",
+      "suspendBypass": "Suspend bypass",
+      "suspendClosed": "Suspended, closed",
+      "suspendOpen": "Suspended, open"
+    },
+    "column": {
+      "actions": "Actions",
+      "case": "Case",
+      "due": "Due",
+      "risk": "Risk",
+      "status": "Status",
+      "value": "Value",
+      "why": "Why it is here"
+    },
+    "event": {
+      "allocateLock": "Allocated",
+      "automaticLock": "Locked automatically",
+      "automaticUnlock": "Unlocked automatically",
+      "closed": "Closed",
+      "diary": "Diary entry",
+      "diaryDateChange": "Diary date changed",
+      "fullFetch": "Opened in full",
+      "manualLock": "Locked",
+      "peek": "Peeked",
+      "processExpired": "Expired by process",
+      "ratingChange": "Rating changed",
+      "skim": "Skimmed",
+      "statusChange": "Status changed",
+      "suspendClosed": "Suspended and closed",
+      "suspendOpen": "Suspended and open",
+      "workflowChange": "Workflow changed",
+      "escalation": "Escalated automatically",
+      "lockBroken": "Lock broken",
+      "diaryCleared": "Diary cleared",
+      "qaSampled": "Picked for quality review"
+    },
+    "headline": {
+      "atRisk": "{n} at risk",
+      "label": "Queue at a glance",
+      "overdue": "Overdue",
+      "none": "None yet"
+    },
+    "impact": {
+      "high": "High",
+      "low": "Low",
+      "minimal": "Minimal",
+      "moderate": "Moderate",
+      "severe": "Severe"
+    },
+    "lane": {
+      "deadlineNear": "Deadline near",
+      "liveMoney": "Live money",
+      "mandatory": "Mandatory",
+      "standard": "Standard"
+    },
+    "likelihood": {
+      "likely": "Likely",
+      "possible": "Possible",
+      "unlikely": "Unlikely",
+      "veryLikely": "Very likely"
+    },
+    "list": {
+      "all": "{total} cases",
+      "empty": "No cases in this view",
+      "failed": "The cases could not be loaded.",
+      "firstOf": "First {n} of {total} cases",
+      "label": "Cases in triage order",
+      "editSearch": "Edit this filter"
+    },
+    "loading": "Loading cases",
+    "lock": {
+      "free": "Free to take",
+      "heldBy": "Held by {user}",
+      "you": "Held by you"
+    },
+    "noWorkflows": "No case workflow is available to your role.",
+    "peek": {
+      "baseRate": "Base rate {rate}",
+      "close": "Close the peek",
+      "contributions": "Why this ranking",
+      "failed": "The summary could not be loaded.",
+      "firstLook": "You have not looked at this case before.",
+      "history": "Risk history",
+      "keyHistory": "This customer or key",
+      "keySummary": "{closed} closed, {confirmed} confirmed, {open} other open",
+      "label": "Case summary",
+      "lastViewed": "You last looked on {date}",
+      "loading": "Loading the summary",
+      "noEvidence": "No evidence yet, ranked on defaults.",
+      "notes": "Notes",
+      "nothingNew": "Nothing has changed since.",
+      "precision": "{confirmed} of {closed} confirmed",
+      "priorityMoved": "Priority {then} to {now}",
+      "since": "Since you looked",
+      "stays": "Time in each status",
+      "timelineLabel": "Risk history timeline: {count} changes from {from} to {to}",
+      "timelinePriority": "Priority {from} to {to}",
+      "timelineSelected": "Selected risk change",
+      "waterfall": "How the evidence moved the likelihood"
+    },
+    "rail": {
+      "failed": "Failed",
+      "filters": "Filters",
+      "label": "Case queues",
+      "own": "My filters",
+      "source": "Filter",
+      "workflow": "Workflow",
+      "newFilter": "New filter"
+    },
+    "refused": "Your role is not permitted to work cases.",
+    "risk": {
+      "notAssessed": "Not yet assessed",
+      "summary": "{band} {likelihood} · impact {impact} · priority {priority}"
+    },
+    "skim": {
+      "button": "Take next",
+      "empty": "Nothing left to take in this queue.",
+      "failed": "The next case could not be taken."
+    },
+    "sla": {
+      "atRisk": "At risk",
+      "breached": "Breached",
+      "firstView": "First look",
+      "met": "Met",
+      "noTarget": "No target",
+      "noneDue": "No deadline",
+      "onTrack": "On track",
+      "ownership": "Ownership",
+      "resolution": "Resolution",
+      "statusDwell": "Time in status"
+    },
+    "sort": {
+      "age": "Oldest first",
+      "due": "Due soonest",
+      "label": "Order",
+      "likelihood": "Most likely first",
+      "newest": "Newest first",
+      "priority": "Highest priority",
+      "triage": "Triage",
+      "value": "Highest value"
+    },
+    "stay": {
+      "barLabel": "Time spent in each status, {count} stays in time order",
+      "closed": "Closed",
+      "created": "Created",
+      "current": "Current",
+      "enteredAt": "Entered {date}",
+      "enteredBy": "Entered {date} by {user}",
+      "escalated": "Escalated",
+      "limitUsed": "{used} of {limit} limit",
+      "movedOn": "Moved on",
+      "overBy": "{duration} over limit",
+      "reopened": "Reopened",
+      "segmentLabel": "{name}, {duration}",
+      "statusChanged": "Status changed",
+      "totalVisits": "{duration} in total over {count} visits",
+      "unnamed": "Unnamed status"
+    },
+    "time": {
+      "days": "{n} d",
+      "hours": "{n} h",
+      "in": "in {duration}",
+      "minutes": "{n} min",
+      "overdue": "{duration} overdue"
+    },
+    "trigger": {
+      "activation": "New activation",
+      "diary": "Diary",
+      "finding": "Analyst finding",
+      "hold": "Payment hold",
+      "initial": "Created",
+      "linkedKey": "Linked key",
+      "model": "Ranking settings changed",
+      "neighbour": "Neighbour outcome",
+      "sweep": "Scheduled sweep",
+      "typology": "Typology"
+    },
+    "value": {
+      "none": "–"
+    },
+    "view": {
+      "all": "All cases",
+      "free": "Free to take",
+      "mine": "Mine",
+      "overdue": "Overdue",
+      "returned": "Returned to me",
+      "urgent": "Urgent",
+      "qaSamples": "Quality review"
+    },
+    "why": {
+      "none": "No driver recorded"
+    },
+    "editor": {
+      "new": "New filter",
+      "edit": "Edit filter",
+      "name": "Name",
+      "share": "Share with role",
+      "private": "Private to me",
+      "save": "Save filter",
+      "cancel": "Cancel",
+      "delete": "Delete filter",
+      "deleteTitle": "Delete this filter?",
+      "deleteBody": "{name} will be removed for you and for anyone it is shared with.",
+      "saved": "Filter saved",
+      "deleted": "Filter deleted",
+      "close": "Close the editor",
+      "loading": "Loading the filter",
+      "loadFailed": "The filter could not be loaded.",
+      "invalid": "The filter has problems to fix before it can be saved."
+    },
+    "analytics": {
+      "period": "Period",
+      "days": "Last {n} days",
+      "queue": {
+        "title": "Cases queue health",
+        "index": "Queue health sections"
+      },
+      "quality": {
+        "title": "Cases quality",
+        "index": "Quality sections"
+      },
+      "section": {
+        "ageing": "Ageing",
+        "flow": "Flow",
+        "bottlenecks": "Bottlenecks",
+        "service": "Service levels",
+        "rhythm": "Rhythm",
+        "rules": "Rule effort and precision",
+        "ranking": "Does the ranking work",
+        "calibration": "Calibration",
+        "sample": "Quality review sample"
+      },
+      "hint": {
+        "ageing": "Open cases by age and lane",
+        "flow": "Opened, closed and backlog each day",
+        "bottlenecks": "Where cases wait longest",
+        "service": "Time to first look and to resolution against target",
+        "rhythm": "When cases arrive and when they are first looked at",
+        "rules": "Which rules cost analyst time and which find real cases",
+        "ranking": "Confirmed cases found as cases are worked, against oldest first and random",
+        "calibration": "Predicted likelihood against what happened",
+        "sample": "What randomly picked low-priority cases turn out to be"
+      },
+      "chart": {
+        "aging": "Open cases by age and lane",
+        "flow": "Opened, closed and backlog by day",
+        "statusDwell": "Time in each status",
+        "firstView": "Time to first look",
+        "resolution": "Time to resolution",
+        "serviceLevelWeekly": "Service level attainment by week",
+        "arrivals": "When cases arrive",
+        "firstViewByHour": "Median first look by hour of arrival",
+        "handoffs": "How often cases change hands",
+        "ruleEffort": "Analyst time lost to false positives by rule",
+        "rulePrecision": "Rule precision",
+        "gains": "Confirmed cases found as cases are worked",
+        "calibration": "Predicted likelihood against what happened"
+      },
+      "stat": {
+        "firstLook": "Median first look",
+        "resolution": "Median time to resolve",
+        "closed": "{n} closed in the period",
+        "confirmed": "Confirmed rate",
+        "decided": "{n} decided",
+        "reopen": "Reopen rate",
+        "unassessed": "Not yet assessed",
+        "closedTitle": "Closed in the period",
+        "opened": "{n} opened"
+      }
+    },
+    "supervision": {
+      "title": "Case supervision",
+      "failed": "This could not be loaded.",
+      "none": "None",
+      "idle": "Idle for at least",
+      "headline": {
+        "label": "Cases held and not held",
+        "held": "Held",
+        "unassigned": "Nobody holds",
+        "stuck": "Stuck locks"
+      },
+      "workload": {
+        "title": "Workload by analyst",
+        "hint": "Held now, and what each analyst took, peeked at and closed in the period.",
+        "empty": "No analyst can work this workflow."
+      },
+      "stuck": {
+        "title": "Stuck locks",
+        "hint": "Open cases locked to someone with no activity since, longest idle first.",
+        "empty": "No case has been locked and left idle this long."
+      },
+      "column": {
+        "user": "Analyst",
+        "holding": "Holding",
+        "oldest": "Oldest hold",
+        "taken": "Taken",
+        "peeks": "Peeks",
+        "closed": "Closed",
+        "median": "Median time to close",
+        "case": "Case",
+        "key": "Case key value",
+        "status": "Status",
+        "holder": "Held by",
+        "lastActivity": "Last activity",
+        "idle": "Idle for",
+        "priority": "Priority",
+        "actions": "Actions"
+      },
+      "action": {
+        "open": "Open",
+        "reassign": "Reassign",
+        "breakLock": "Break lock"
+      },
+      "dialog": {
+        "breakTitle": "Break the lock?",
+        "breakBody": "{case} is locked to {user}. Breaking the lock lets anyone take it and is recorded in the case journal.",
+        "reason": "Reason (optional)",
+        "breakConfirm": "Break lock",
+        "reassignTitle": "Reassign the case",
+        "reassignBody": "{case} is locked to {user}. Choose who takes it; the handover is recorded in the case journal.",
+        "analyst": "Analyst",
+        "choose": "Choose an analyst",
+        "reassignConfirm": "Reassign",
+        "cancel": "Cancel"
+      },
+      "broken": "Lock broken",
+      "reassigned": "Case reassigned"
+    },
+    "diary": {
+      "title": "Diary",
+      "none": "No diary is set.",
+      "notOpen": "Only an open case can carry a diary. A suspended case uses its diary to decide when it reopens.",
+      "typeLabel": "What it is for",
+      "dueLabel": "Falls due (UTC)",
+      "set": "Set diary",
+      "update": "Update diary",
+      "clear": "Clear diary",
+      "saved": "Diary saved",
+      "cleared": "Diary cleared",
+      "type": {
+        "review": "Review",
+        "customerResponse": "Customer response",
+        "regulatoryDeadline": "Regulatory deadline",
+        "paymentHold": "Payment hold"
+      }
+    },
+    "qa": {
+      "badge": "QA sample",
+      "hint": "Picked at random to check the ranking",
+      "none": "No case has been picked for quality review in this workflow yet.",
+      "picked": "Picked",
+      "open": "Still open",
+      "decided": "Closed with an outcome",
+      "rate": "Confirmed",
+      "compare": "Among all closed cases with an outcome, {overall} were confirmed. The sample was picked without regard to the ranking, so its share is the fair estimate for low-priority cases.",
+      "few": "Fewer than ten sampled cases have closed with an outcome, so this share is not yet reliable."
+    },
+    "tab": {
+      "label": "Cases views",
+      "queue": "Results",
+      "health": "Queue health",
+      "quality": "Quality",
+      "supervision": "Supervision"
+    },
+    "pulse": {
+      "open": "Open now",
+      "urgent": "{n} urgent",
+      "openTrend": "Open cases over the last 14 days",
+      "closed": "Closed today",
+      "opened": "{n} opened today",
+      "closedTrend": "Cases closed each of the last 14 days",
+      "firstLook": "Median first look {time}",
+      "mine": {
+        "title": "My day",
+        "ring": "Cases I closed today against my goal",
+        "closed": "{n} closed today",
+        "of": "{n} of {goal} closed",
+        "met": "Goal met. Anything more is a bonus.",
+        "toGo": "{n} to go",
+        "started": "Streak is alive. Keep going.",
+        "fresh": "Take next to start the day.",
+        "streak": "{n}-day streak",
+        "goalMet": "Goal met",
+        "above": "{n} above a typical day",
+        "below": "{n} below a typical day",
+        "level": "A typical day",
+        "best": "best {n}",
+        "trend": "Cases I closed each of the last 14 days"
+      }
+    },
+    "export": {
+      "yes": "Yes",
+      "no": "No",
+      "sheet": "Cases",
+      "capped": "Exported the first {n} cases. Narrow the filter to export the rest.",
+      "failed": "The export failed. Try again.",
+      "col": {
+        "case": "Case",
+        "key": "Case key value",
+        "workflow": "Workflow",
+        "status": "Status",
+        "holder": "Held by",
+        "created": "Created",
+        "age": "Age (minutes)",
+        "lane": "Lane",
+        "likelihood": "Likelihood",
+        "impact": "Impact",
+        "priority": "Priority",
+        "value": "Value",
+        "why": "Why it is here",
+        "due": "Service level",
+        "dueDate": "Due",
+        "diary": "Diary",
+        "diaryDate": "Diary date",
+        "qa": "QA sample",
+        "firstViewed": "First viewed",
+        "firstViewedBy": "First viewed by",
+        "firstOwned": "First owned",
+        "firstOwnedBy": "First owned by"
+      }
+    },
+    "help": {
+      "open": "How many cases are open now across the queues you can see.\nThe urgent figure is the number that are overdue or at risk of their deadline. The small line is the number of open cases over the last 14 days, so you can tell a backlog that is growing from one that is shrinking.",
+      "closed": "How many cases have been closed today, with how many were opened today.\nThe small line shows the cases closed on each of the last 14 days. Closed above opened means the backlog is falling.",
+      "overdue": "Cases that have passed their service level deadline.\nAt risk are the open cases close to it. First look is the median time from a case being created to someone first touching it, which shows how quickly work is picked up.",
+      "mine": "Your own day against your own daily goal.\nThe ring is the cases you closed today against the goal, and the streak counts consecutive days you met it. The comparison is with your own typical day, not with anyone else. The bars show your last 14 days, and best is your highest day."
+    }
+  },
+  "caseDetail": {
+    "failed": "This case could not be loaded.",
+    "back": "Back to cases",
+    "header": {
+      "next": "Next case",
+      "closed": "Closed",
+      "priority": "Priority {n}",
+      "heldBy": "Held by {user}",
+      "free": "Not held"
+    },
+    "panel": {
+      "label": "Case key",
+      "workflow": "Workflow",
+      "created": "Created"
+    },
+    "section": {
+      "label": "Case sections",
+      "summary": "Case detail views",
+      "activations": "Activations",
+      "journal": "Journal",
+      "network": "Network",
+      "notes": "Notes",
+      "events": "Events",
+      "forms": "Forms",
+      "messages": "Messages",
+      "dashboard": "Dashboard"
+    },
+    "details": {
+      "field": "Field",
+      "value": "Value",
+      "empty": "No payload fields are configured for this workflow.",
+      "title": "Payload fields"
+    },
+    "activations": {
+      "empty": "No activations are visible on this case."
+    },
+    "journal": {
+      "noKey": "This case has no key, so there is no journal to show."
+    },
+    "notes": {
+      "empty": "No notes on this key yet.",
+      "failed": "The notes could not be loaded.",
+      "action": "Action: {name}",
+      "priority": "Priority: {name}"
+    },
+    "history": {
+      "failed": "The history could not be loaded.",
+      "casesTitle": "Cases on this key",
+      "casesEmpty": "No other cases on this key.",
+      "eventsTitle": "Events on this key",
+      "eventsEmpty": "No events on this key.",
+      "case": "Case",
+      "status": "Status",
+      "heldBy": "Held by",
+      "created": "Created",
+      "closedBy": "Closed by",
+      "event": "Event",
+      "before": "Before",
+      "after": "After",
+      "user": "User",
+      "when": "When"
+    },
+    "network": {
+      "body": "Graph analysis is being designed as its own feature. It will show the entities and links around this key here."
+    },
+    "messages": {
+      "none": "Nothing has been sent for this case key.",
+      "failed": "The messages could not be loaded.",
+      "from": "{kind}: {name}",
+      "sentBy": "{user} on {when}",
+      "to": "To",
+      "subject": "Subject",
+      "answer": "Answer",
+      "drawn": "Drawn from",
+      "body": "What was sent",
+      "rows": "The SQL rows it was drawn from",
+      "kind": {
+        "form": "Form",
+        "macro": "Macro",
+        "action": "Action",
+        "status": "Status",
+        "releaseHook": "Release hook"
+      },
+      "channel": {
+        "email": "Email",
+        "sms": "Text",
+        "post": "Web call (POST)",
+        "get": "Web call (GET)"
+      },
+      "outcome": {
+        "sent": "Sent",
+        "failed": "Failed",
+        "refused": "Refused"
+      },
+      "mode": {
+        "payload": "The stored payload",
+        "sql": "The record's SQL"
+      }
+    },
+    "forms": {
+      "submit": "Submit form",
+      "submitted": "Form submitted.",
+      "noEntries": "No forms have been submitted for this case key.",
+      "entriesFailed": "The submitted forms could not be loaded.",
+      "submittedBy": "{user} on {when}",
+      "cannotDraw": "This form can no longer be drawn: {reason} The values it holds are listed below.",
+      "otherValues": "Values the form has no field for"
+    },
+    "placeholder": {
+      "badge": "Coming"
+    },
+    "hint": {
+      "summary": "What it is, why it is here and what is at stake",
+      "activations": "What fired and why",
+      "journal": "Every transaction on this key",
+      "network": "Entities and links around the key",
+      "notes": "Notes on this key",
+      "events": "Everything that happened to this case and key",
+      "forms": "Structured forms for this workflow",
+      "messages": "Every email, text and web call sent for this case key",
+      "dashboard": "What this case looks like as a whole"
+    },
+    "story": "Case story",
+    "lede": {
+      "why": "Why",
+      "stake": "At stake",
+      "similar": "Similar cases",
+      "ranked": "Ranked",
+      "rankedValue": "{lane} lane · {band} ({likelihood}) · impact {impact} · priority {priority}",
+      "similarValue": "{confirmed} of {closed} earlier cases on this key were confirmed",
+      "similarNone": "No earlier closed cases on this key",
+      "whyNone": "Nothing beyond its place in the queue has been flagged yet."
+    },
+    "decide": {
+      "title": "Decide",
+      "heldByYou": "Held by you",
+      "take": "Take case",
+      "release": "Release case",
+      "supervisor": "A supervisor can break this lock.",
+      "noteTitle": "Add a note",
+      "action": "Action",
+      "choose": "Choose",
+      "note": "Note",
+      "addNote": "Add note",
+      "close": "Close case",
+      "reopen": "Reopen case",
+      "cancel": "Cancel",
+      "closeTitle": "Close {id}?",
+      "closeBody": "The case closes for everyone and leaves the queue. You can reopen it afterwards.",
+      "saved": "Case updated",
+      "noteAdded": "Note added",
+      "macroRan": "Macro ran",
+      "statusTitle": "Status and rating",
+      "diaryTitle": "Diary",
+      "plannedTitle": "Planned",
+      "currentStatus": "Current status",
+      "escalate": "Escalate",
+      "escalateTo": "Moves to {status}",
+      "noEscalation": "No stronger status to escalate to.",
+      "moveTo": "Move to status",
+      "saveChanges": "Save changes",
+      "noteCount": "{n} of {max}"
+    },
+    "views": {
+      "label": "View",
+      "payload": "Payload fields",
+      "failed": "This view could not be drawn."
+    },
+    "checklist": {
+      "title": "Checklist",
+      "identity": "Identity verified",
+      "source": "Source of funds understood",
+      "sar": "SAR considered"
+    },
+    "soon": {
+      "badge": "Planned",
+      "heading": "Planned for this section",
+      "similar": {
+        "title": "Similar cases",
+        "body": "Earlier cases that look like this one, and how they were decided."
+      },
+      "risk": {
+        "title": "Risk working and your assessment",
+        "body": "The full likelihood and impact working, with your own Low, Medium or High recorded beside it."
+      },
+      "cards": {
+        "title": "Activation cards",
+        "body": "Calibrated probability, the exact contribution waterfall, sensitivity and model health for each activation, archived as it fired."
+      },
+      "suppress": {
+        "title": "Suppress from an activation",
+        "body": "A time-bound suppression with a reason, stamped on every match it affects."
+      },
+      "facts": {
+        "title": "Model facts",
+        "body": "The model as it was when it scored, and what has changed since."
+      },
+      "explode": {
+        "title": "Explode",
+        "body": "The network as a list, with a sparkline for each neighbour."
+      },
+      "compose": {
+        "title": "Compose",
+        "body": "Build a report narrative from facts, with a quality scorecard before anything is filed."
+      },
+      "research": {
+        "title": "Web research",
+        "body": "Research with citations, kept on the case as evidence."
+      },
+      "suggest": {
+        "title": "Suggested next step",
+        "body": "The next step AskJooby recommends, with the evidence behind it."
+      },
+      "file": {
+        "title": "File a report",
+        "body": "File with maker-checker approval and step-up."
+      },
+      "rfi": {
+        "title": "Request information",
+        "body": "Ask the customer for information and track the reply on the case."
+      }
+    },
+    "panes": {
+      "left": "the key panel and sections",
+      "right": "the decide panel"
+    },
+    "help": {
+      "summary": "The case at a glance: what it is, why it was raised and what is at stake.\nThe lede at the top is built from the case's own data: the key, the workflow, the status, how old it is, and how many activations and notes it has. The fields beneath are the ones the workflow chose to display. Nothing here changes the case, so it is a safe place to start reading.",
+      "activations": "Every rule that fired for this case key, and why.\nEach card names the rule, when it fired and how many times, so you can tell a one-off from a pattern. Counts include forced activations, which are shown as such. Use it to decide which rules to read about first before looking at the transactions themselves.",
+      "journal": "Every transaction on this case key, in one place, so you can read the story in order.\nThe lens tabs show the same transactions as payload, rules, features, models and sanctions. The strip and the charts summarise the key's own history, the Stands out list shows transactions that are unusual for this key, and the peers card shows how the key compares with other keys. Select a transaction to open its full detail, and pin it to keep it on this case.",
+      "network": "The entities and links around this key, such as shared devices and addresses.\nThis section is planned and not yet built. Until then, use Pivot and Merge in the journal to follow a shared identifier.",
+      "notes": "The notes written on this key, newest first, including notes from other cases on the same key.\nAdd a note from the Decide column. Notes are part of the audit trail and cannot be edited afterwards, so write them as you would for a reviewer who has never seen the case.",
+      "events": "Everything that happened to this case and key, in time order.\nIt joins the case's own history, such as taking, moving and closing, with earlier cases on the same key, so you can see whether it has been reviewed before and what was decided.",
+      "forms": "Structured forms for this workflow, such as a suspicious activity report.\nEvery form submitted on this case key is drawn here read only, newest first, from the form's current layout. Values the layout no longer has a field for are listed beneath it. Open a form from the Decide column to fill one in.",
+      "messages": "Everything the case workflow sent for this case key, newest first: emails, texts and web calls fired by a form, a macro, an action or a status.\nEach one shows whether it was sent, failed or was refused before it left, where it went, what it said, and how it was drawn (from the stored payload or from the record's SQL, with the rows it used). Open the message or the rows to read exactly what was sent.",
+      "decide": {
+        "title": "Everything you can do to this case.\nTaking a case locks it to you, so nobody else can change it. A supervisor can break the lock. Release the case if you stop working on it so it returns to the queue. Close and reopen sit lower down."
+      },
+      "dashboard": "A dashboard built for this kind of case by whoever configured the workflow. It can describe the whole case, not only its transactions, and it is drawn from the case key and its value alone: anything else it shows is worked out from those two."
+    },
+    "hold": {
+      "title": "Held payment",
+      "tileHint": "{n} held",
+      "dialogTitle": "Held payments",
+      "intro": "These payments were held when their response elevation fell in a hold range. Releasing one calls the payment system, and only an answer of 200 counts as released.",
+      "none": "No payment is held, declined, released or refused on this case.",
+      "failed": "The held payments could not be loaded.",
+      "elevation": "Elevation {n} (range {range})",
+      "heldSince": "Held since",
+      "deadline": "Due by",
+      "overdue": "Overdue since",
+      "hook": "Release hook",
+      "noHook": "None handles this payment",
+      "noHookNote": "No active release hook of the case workflow handles this payment, so it cannot be released. Refusing is still possible.",
+      "needPermission": "Releasing or refusing a payment needs the release permission.",
+      "release": "Release",
+      "refuse": "Refuse",
+      "releaseTitle": "Release this payment",
+      "refuseTitle": "Refuse this payment",
+      "releaseNote": "This calls the release hook and moves money. Only an answer of 200 records the payment as released.",
+      "refuseCalls": "This calls the refuse address of the release hook, and only an answer of 200 records the refusal.",
+      "refuseRecords": "The refusal is recorded here only; nothing is sent to the payment system.",
+      "reason": "Reason",
+      "reasonHint": "Recorded with the decision and sent to the payment system.",
+      "back": "Back",
+      "releaseConfirm": "Release payment",
+      "refuseConfirm": "Refuse payment",
+      "releasedToast": "Payment released.",
+      "refusedToast": "Payment refused.",
+      "decision": "{state} by {user} on {when}",
+      "decisionReason": "Reason: {reason}",
+      "messages": "Messages about held payments",
+      "state": {
+        "held": "Held",
+        "declined": "Declined",
+        "released": "Released",
+        "refused": "Refused"
+      },
+      "leg": {
+        "kind": {
+          "email": "Email",
+          "sms": "Text",
+          "webhook": "Web hook",
+          "release": "Release hook",
+          "refuse": "Refuse hook"
+        },
+        "outcome": {
+          "queued": "Queued",
+          "sent": "Sent",
+          "failed": "Failed",
+          "refused": "Not sent"
+        },
+        "answer": "Answer {status}"
+      }
+    }
+  },
+  "journal": {
+    "action": {
+      "open": "Open",
+      "map": "Map"
+    },
+    "activationsOnly": "Activations only",
+    "charts": {
+      "correlation": "How the measures move together",
+      "counterparties": "Counterparties",
+      "distribution": "Distribution of the chosen field",
+      "drift": "Drift between earlier and recent history",
+      "field": "Field",
+      "gaps": "Time between transactions",
+      "progression": "The chosen field over time",
+      "velocity": "When transactions happen",
+      "help": {
+        "field": "Chooses which numeric field the first two charts draw.\nThe list holds the fields the journal treats as measures for this key: payload fields your roles may see, plus features and model scores.\nIt does not change the other charts, which look at all of the key's transactions.",
+        "progression": "Shows how the chosen field has moved over time for this key.\nEach point is the median of the transactions in one hour, one day or one week, whichever fits the history: hours when it spans three days or less, days up to about seven months, weeks beyond that. A median is used so that one unusual transaction does not drag the line.\nLook for steps, ramps and gaps. A step means behaviour changed on a date, a ramp means something is building, and a point far from its neighbours is worth finding in the grid. The subtitle gives the latest value.\nIt is empty when no transaction in the window has this field.",
+        "distribution": "Shows how the chosen field is spread across this key's transactions.\nEach bar counts the transactions whose value falls in a range, with between 5 and 40 ranges chosen from the data. The subtitle says where the latest value sits as a percentile of the key's own history: the 99th percentile means it is larger than 99 percent of what this key has done.\nA long tail to the right means a few large transactions. Two humps mean two kinds of behaviour.\nThis compares the key with itself. Compared with peers, above the grid, compares it with other keys.\nIt is empty when no transaction has this field.",
+        "velocity": "Shows when this key's transactions happen, by day of the week and hour of the day.\nEach cell is a count and the darker the cell the more transactions. Rows are weekdays and columns are hours. The hours are UTC, not the customer's local time.\nA key that suddenly moves money at 03:00 on a Sunday, when it normally trades on weekday afternoons, shows one dark cell in a pale area.\nIt is empty when the window has no transactions.",
+        "gaps": "Shows how long the key was quiet before each transaction.\nEach bar counts transactions by the time since the previous one, from minutes to weeks. Tall bars on the left mean bursts, and bars on the far right mean long dormancy before activity.\nA burst after a long quiet period is a classic sign of an account being taken over or used to pass money through.\nThe first transaction has no gap, so it is empty when the key has fewer than two transactions in the window.",
+        "correlation": "Shows which numeric fields rise and fall together for this key.\nEach cell is a Pearson correlation coefficient, r, between two fields: 1 means they move in step, -1 means they move in opposite directions and 0 means no relationship. Only fields with at least 10 transactions that have both values are compared, and the chart appears only when at least one pair has r of 0.8 or more, in either direction.\nAn amount and the balance after it will usually correlate. A new strong link between fields that were unrelated before is more interesting than an old one. Correlation does not show cause.\nIt is empty when no pair is strong enough, which is normal, and always for a key with fewer than 10 transactions.",
+        "drift": "Shows whether a field behaves differently in the key's recent history than in its earlier history.\nThe window is split in two, earlier and recent. For each field the first bar is the distance between the two distributions (the Kolmogorov distance) and the second bar is the critical value. A field whose distance is above the critical value has drifted at the 5 percent significance level.\nDrift means the key's normal has moved, so comparisons with its older history may no longer apply. A key that has drifted is often one whose purpose or controller has changed.\nIt needs at least 40 transactions with at least 20 on each side, so it is empty below that, and also when no field has drifted.",
+        "counterparties": "Shows who this key deals with most often.\nEach bar is a counterparty, the other party to a transaction, ranked by how many transactions the key had with it. The subtitle says how many different counterparties there were and how many appeared for the first time in the last 30 days.\nA key spread over many one-off counterparties looks different from one concentrated on a few regular ones, and a sudden rush of new counterparties is a pattern worth a look.\nOnly fields the workflow marks as a counterparty are charted. It is empty when none are marked or the key has none."
+      }
+    },
+    "column": {
+      "actions": "Actions",
+      "activations": "Activations",
+      "elevation": "Elevation",
+      "new": "New",
+      "unusual": "Stands out",
+      "when": "When",
+      "hold": "Payment"
+    },
+    "drawer": {
+      "activated": "Activated",
+      "activations": "Activations",
+      "belowThreshold": "Below threshold",
+      "calibration": "Calibration",
+      "close": "Close the transaction",
+      "contribution": "What moved the score",
+      "elevation": "Elevation {n}",
+      "error": "The model reported: {text}",
+      "failed": "The transaction could not be loaded.",
+      "hiddenInput": "An input you cannot see",
+      "hiddenInputs": "Hidden inputs: {n}",
+      "journey": "Decision path",
+      "keys": "Identifiers",
+      "label": "Transaction",
+      "models": "Models",
+      "noActivations": "No activation fired.",
+      "noModels": "No model scored this transaction.",
+      "payload": "Payload",
+      "payloadFailed": "The payload could not be loaded.",
+      "payloadNote": "Reading the payload is recorded.",
+      "pivot": "Pivot to this",
+      "showPayload": "Show payload",
+      "source": {
+        "advanced": "Advanced Analytics",
+        "exhaustive": "Exhaustive",
+        "http": "HTTP"
+      },
+      "threshold": "Threshold {n}",
+      "title": "Transaction {id}",
+      "values": "What the rules saw",
+      "highlights": "Highlighted because",
+      "map": "Show on map",
+      "hold": "Payment hold"
+    },
+    "empty": "No transactions for this key in this window.",
+    "failed": "The journal could not be loaded.",
+    "group": {
+      "abstraction": "Abstraction",
+      "advanced": "Advanced Analytics",
+      "calculation": "Calculation",
+      "counter": "Counter",
+      "dictionary": "Dictionary",
+      "exhaustive": "Exhaustive",
+      "http": "HTTP",
+      "sanction": "Sanction"
+    },
+    "label": "Case key journal",
+    "lens": {
+      "features": "Features",
+      "label": "Journal lenses",
+      "models": "Models",
+      "payload": "Payload",
+      "rules": "Rules",
+      "sanctions": "Sanctions"
+    },
+    "notable": {
+      "none": "Nothing stands out against this key's own history.",
+      "row": "{field} was {value}, against a typical {median}",
+      "title": "Stands out"
+    },
+    "pivot": {
+      "back": "Back to {key}",
+      "showing": "Showing {key} {value}"
+    },
+    "rule": {
+      "fired": "Fired",
+      "forced": "Forced"
+    },
+    "sheet": "Journal",
+    "strip": {
+      "activations": "{n} activations",
+      "activeDays": "Active days",
+      "elevation": "Highest elevation",
+      "failed": "The statistics could not be worked out.",
+      "few": "Few transactions, so treat the statistics as a guide only.",
+      "stands": "Stands out",
+      "transactions": "Transactions",
+      "truncated": "Showing the newest {n}",
+      "typical": "Typical {n}",
+      "withActivations": "With activations"
+    },
+    "unusual": {
+      "above": "Above",
+      "below": "Below"
+    },
+    "window": {
+      "days": "Last {n} days",
+      "label": "Window"
+    },
+    "tags": {
+      "select": "Select",
+      "selectRow": "Select this transaction",
+      "selected": "{n} selected",
+      "selectAll": "Select all {n}",
+      "clear": "Clear selection",
+      "tag": "Tag",
+      "title": "Tag {n} transactions",
+      "add": "Add tags",
+      "remove": "Remove tags",
+      "noOptions": "This model has no tags to add.",
+      "optionsFailed": "The tags of this model could not be loaded.",
+      "noneToRemove": "None of the selected transactions carry a tag.",
+      "of": "{n} of {total}",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dismiss": "Dismiss",
+      "undo": "Undo",
+      "done": "Tagged {n} transactions.",
+      "skipped": "{n} were not changed because they are not in this workflow's model.",
+      "undone": "The tagging was undone.",
+      "locked": "{n} were left alone because their case is locked to another user.",
+      "all": "Tag all matching",
+      "allTitle": "Tag every matching transaction",
+      "allCounting": "Counting the transactions…",
+      "allFailed": "The transactions could not be counted.",
+      "allMatching": "{n} transactions match this view.",
+      "allTooMany": "More than {n} transactions match. Narrow the view first, with a shorter window or Activations only.",
+      "allNone": "No transaction matches this view.",
+      "allNote": "This runs in the background, so you can keep working. Transactions whose case is locked to another user are left alone, and you can undo it afterwards.",
+      "allApply": "Tag {n} transactions",
+      "allFiltered": "Only transactions that match your filter are counted and tagged."
+    },
+    "pin": {
+      "column": "Pin",
+      "pin": "Pin this transaction",
+      "unpin": "Unpin this transaction",
+      "only": "Pinned only ({n})"
+    },
+    "merge": {
+      "title": "Merged keys",
+      "lane": "Lane",
+      "remove": "Remove {key} {value} from the merge",
+      "add": "Merge",
+      "added": "Merged"
+    },
+    "around": {
+      "title": "Around this",
+      "note": "Other transactions on the same day that shared an account, device, address or counterparty with this one.",
+      "show": "Show the same day",
+      "failed": "The same-day activity could not be loaded.",
+      "none": "Nothing else shared a key with this transaction that day.",
+      "truncated": "Showing the newest {n}; more shared this key."
+    },
+    "peers": {
+      "title": "Compared with peers",
+      "notComputed": "Peer comparison appears once the peer distributions for this workflow have been built.",
+      "noMeasures": "None of this key's numeric fields has a peer distribution yet.",
+      "segment": "Against other keys with {name} {value}.",
+      "fallback": "No peers share {name} {value}, so every key of the workflow is used.",
+      "everyone": "Against every other key of the workflow.",
+      "built": " Built {date} from {days} days.",
+      "above": "Above peers",
+      "below": "Below peers",
+      "typical": "In line with peers",
+      "medians": "This key's median {key}; peers' median {peers}",
+      "percentile": "At the {n}th percentile of peers",
+      "of": "across {n} keys.",
+      "few": "Few transactions, read with care."
+    },
+    "job": {
+      "queued": "Waiting for the jobs server to pick up the tagging.",
+      "running": "Tagging {done} of {total}…",
+      "undoing": "Restoring {done} of {total}…",
+      "done": "Tagged {changed} of {total} transactions.",
+      "restored": "Restored {changed} of {total} transactions.",
+      "cancelled": "The tagging was stopped after {done} of {total}.",
+      "failed": "The tagging stopped: {error}",
+      "skipped": "{n} are no longer in this workflow's model and were left alone.",
+      "cancel": "Stop",
+      "progress": "Tagging progress"
+    },
+    "help": {
+      "lens": "Shows the same transactions through different sets of columns, so you can read one transaction from several angles.\nPayload is the transaction's own fields that your roles may see. Rules shows which activations fired, and which of them were forced. Features shows what the rules saw: counters, calculations and dictionaries. Models shows Exhaustive and Advanced Analytics scores. Sanctions shows sanction distances and HTTP adaptations.\nThe number on each tab is how many transactions have something to show in that lens. A lens with 0 has nothing for this key and window.",
+      "activationsOnly": "Shows only the transactions that raised at least one activation.\nUse it to get from a long history to the moments the rules reacted. It also narrows the charts, the statistics and Tag all matching to those transactions.",
+      "pinnedOnly": "Shows only the transactions pinned on this case, whatever their date or key.\nPins are for the whole case, so everyone working it sees the same ones. Pin a transaction with the star in the grid. Pinned transactions are also always at the top of the journal, in every lens, even outside the window.\nA case can hold up to 50 pins, and a case locked to another user cannot be changed.",
+      "tags": "Tags label transactions, for example mule or reviewed, so they can be found and counted later.\nTick rows in the grid, then press Tag to add or remove tags on all of them at once, up to 500. Undo appears afterwards. Transactions whose case is locked to another user are left alone and counted.\nTag all matching tags every transaction of the current view, up to 100,000, in the background. You can keep working, stop it, and undo it afterwards. Only tags set up for this workflow's model can be added.",
+      "transactions": "How many transactions this key had in the window, newest first, up to 2,000.\nThe strip, the stands-out list and the charts are all worked out from these transactions. When the key has more, the strip says so and the older ones are left out of the statistics but not of the grid.",
+      "activeDays": "The number of different days, in UTC, on which the key had at least one transaction.\nRead it with the transaction count: many transactions on few days means activity in bursts, and few transactions spread over many days means steady, slow use.",
+      "withActivations": "How many of the transactions raised at least one activation, and how many activations were raised in total.\nOne transaction can raise several activations, so the second figure can be larger than the first.",
+      "elevation": "The highest response elevation of any transaction in the window.\nElevation is the weight the rules gave a transaction when it fired: the higher it is, the more urgent the response.",
+      "field": "The latest value of this numeric field for the key, and its typical value, which is the median over the window.\nA Stands out badge appears when the latest transactions are far from this key's own normal for the field. The first three measures of the key are shown.",
+      "notable": "Transactions that stand out against this key's own history.\nEach numeric field of a transaction is scored by how far it is from the key's median, in units of the key's usual spread. The spread is the median absolute deviation, so that unusual values do not hide themselves by inflating it. A score of 3 or more is listed, with the field that stands out most named, up to 5 rows.\nA field with fewer than 5 values is not judged, and under 20 transactions the statistics are marked low confidence. Select a row to open the transaction.",
+      "peers": "How this key compares with the other keys of the same workflow and case key, field by field.\nEach figure is this key's median against the spread of every key's median, built by the jobs server from recent history and refreshed daily by default. The bar is the percentile among peers, and a field is called above or below peers when it is 3 or more spreads from the peers' median.\nIf the workflow has a segment field, such as customer tier, the comparison is with keys in the same segment, falling back to all keys when the segment has none. It reads not built until the jobs server has built the distributions.",
+      "drawer": {
+        "activations": "The activations that fired on this transaction.\nA forced activation was triggered because someone forced the rule through, rather than because the transaction met its condition. Only activations your roles may see are listed.",
+        "models": "What each scoring model made of this transaction, as it was when it scored.\nFor each model: the score, the threshold, whether it crossed it, the calibrated probability, the contribution of each input, and the decision path the model followed. The contribution is drawn as a waterfall when it adds up exactly, and otherwise as signed bars that do not add up.\nInputs your roles may not see are hidden, with only a count shown.",
+        "values": "What the rules saw when this transaction was processed.\nCounters, calculations, dictionaries, sanction distances and HTTP adaptation values, grouped by where they come from. They are frozen as they were then, so they can differ from what the same counter says now.",
+        "keys": "The identifiers on this transaction, such as account, device and address.\nPivot shows the whole journal for that value instead of the case key, with a way back. Merge adds it as a lane next to the case key so the two share one timeline. Only identifiers marked as drill fields on the workflow can be used.",
+        "around": "Shows what else happened on the same day (UTC) that shared an identifier with this transaction.\nEach group is one identifier of the transaction, with the other transactions that used it that day, newest first, up to 25. Open a row to move to that transaction.\nIt helps to see whether a device or address was busy elsewhere at the same time.",
+        "payload": "The raw fields of the transaction as it arrived, limited to the ones your roles may see.\nIt is not loaded until you ask, because reading it is recorded in the audit trail: who looked at the raw transaction and when.",
+        "highlights": "Why this transaction is coloured in the grid.\nYour administrator sets the colours for a workflow. A bold row is a transaction that has the same value as the case itself for a field chosen to be matched, such as the same device or account, so it stands out among the others on the key. A coloured cell or row is a field whose value matches the pattern configured for it.\nColour is never the only signal: every reason is written out here and in the Highlighted because column of the grid."
+      },
+      "columns": "Chooses which columns the grid shows.\nDrag a column heading to move it and drag its edge to resize it. Switch a column off to hide it, and the switch brings it back. The Select, Actions and Pin columns stay put.\nYour arrangement is saved for you and for this lens, and is there next time you open any case in this workflow. Reset layout returns the lens to its default columns.",
+      "filter": "Narrows the transactions to those that match conditions you build on the Archive.\nEach condition is a field of the model (payload, abstractions, counters and so on), an operator and a value, for example Payload.Amount greater than 1000. Combine conditions with and or or, and add groups for more complicated questions. Like and not like use the percent sign as a wildcard.\nThe filter applies in the Archive before the row limit, so it finds matching transactions even when they would not all fit in the grid, and it appears in the address so you can share it. The count shows how many of the key's transactions in the window match. The statistics, charts, peers and lens counts deliberately keep using the whole window, so filtering down to unusual transactions cannot make them look normal.\nTag all matching tags every transaction the filter leaves, up to 100,000, using the same filter, so the count in the dialog is exact.",
+      "format": "Colours and bold lines set by your administrator for this workflow.\nA bold row shares a configured value with the case itself, for example the same device. A coloured cell, or a whole coloured row, is a value that matches the pattern configured for that field. Each one says why in the Highlighted because column, and the same reasons are in the transaction panel.",
+      "scope": "The keys and the filter narrow the grid and the map below. The statistics and charts above are not affected by them, so filtering down to unusual transactions cannot make them look normal.\nThe case key is always lane A. Extra keys are added as lanes of their own, up to three, chosen from the workflow's drill fields, for example the device an account used, and each has its own trail on the map. Conditions narrow the transactions to those that match them anywhere in the Archive, and you can combine them with and or or in the filter dialog.\nSave view keeps the window, the keys, the filter and the map options so anyone on the case can open the same view again.",
+      "window": "How far back the journal looks, from today. It applies to everything on this card and above: the statistics, the charts, the grid and the map."
+    },
+    "columns": {
+      "label": "Columns",
+      "show": "Show columns",
+      "reset": "Reset layout"
+    },
+    "filter": {
+      "label": "Filter",
+      "title": "Filter the transactions",
+      "hint": "Build conditions on any field of the model, in the same way as case search. The grid, selection and exports follow the filter. The statistics and charts keep using the whole window.",
+      "addRule": "Add condition",
+      "cancel": "Cancel",
+      "clear": "Clear filter",
+      "apply": "Apply filter",
+      "loading": "Loading the fields of the model",
+      "failed": "The fields of the model could not be loaded.",
+      "noFields": "The model has no fields that can be filtered."
+    },
+    "format": {
+      "column": "Highlighted because",
+      "bold": "Same {field} as this case: {value}",
+      "cell": "{field} matches {pattern}"
+    },
+    "scope": {
+      "label": "Scope",
+      "locked": "The case key, always part of the scope",
+      "addKey": "Add key",
+      "key": "Key",
+      "value": "Value",
+      "add": "Add",
+      "removeCondition": "Remove {condition}",
+      "match": "{shown} of {total} match",
+      "clear": "Clear keys and filter",
+      "chooseKey": "Choose a key",
+      "noKeys": "No drill fields are set on this workflow.",
+      "keys": "Keys"
+    },
+    "views": {
+      "save": "Save view",
+      "label": "Saved views",
+      "none": "No views are saved on this case.",
+      "open": "Open {name}",
+      "load": "Open",
+      "delete": "Delete {name}",
+      "done": "View saved",
+      "removed": "View deleted",
+      "title": "Save this view",
+      "hint": "Saves the window, the keys, the filter, the lens and the map options, not the transactions. Anyone working this case can open it, and it is read from the archive again each time.",
+      "name": "Name",
+      "cancel": "Cancel",
+      "help": "Views saved on this case, shared by everyone working it. Opening one puts back the window, the keys, the filter, the lens and the map options."
+    },
+    "map": {
+      "failed": "The map could not be loaded.",
+      "truncated": "More transactions matched than could be read, so the oldest are left out.",
+      "selected": "Selected: {when}, key {lane}.",
+      "openTransaction": "Open transaction",
+      "limits": {
+        "title": "Travel limits",
+        "speed": "Speed limit km/h",
+        "distance": "Shortest leg km",
+        "reset": "Reset limits",
+        "badge": "{speed} km/h · {distance} km"
+      },
+      "only": {
+        "label": "Improbable legs only"
+      },
+      "all": {
+        "label": "Show everything, pick out the matches"
+      },
+      "help": {
+        "limits": "Decide what counts as movement that could not have happened.\nA leg is the journey between two consecutive transactions of a trail. It is marked impossible when it is at least the shortest leg and the speed needed to cover it in the time between the two transactions is above the speed limit. The defaults are 900 kilometres an hour, about the speed of an airliner, and 50 kilometres, so that a short hop between two nearby positions is never flagged however quickly it happened.\nLower the speed limit to look for travel that was possible only by air, and raise it to see only the extreme cases. The limits are kept in the address and saved with a replay, so the same replay counts the same legs each time.",
+        "only": "Draws only the movement worth a look.\nWith this on, the map keeps just the legs that are impossible at the speed limit and shortest leg set here, together with the transactions at either end of each, and hides every ordinary journey. Each key still has its own trail. If nothing is left, no leg breaks the limits you have set, which is itself an answer.\nThe setting is kept in the address and saved with a replay.",
+        "all": "Draws every transaction of the key, its extra keys and the window, and picks out the ones your filter matches.\nThe matching transactions are drawn in full colour and join up into trails. The others are drawn faint and grey, and never join a trail, so they give context without changing the movement. The counts, the legs, the impossible journeys and the worst journey below still cover only the matching transactions.\nThe setting is kept in the address. It only does something while a filter is set."
+      }
+    },
+    "section": {
+      "transactions": "Transactions",
+      "map": "Map"
+    }
+  },
+  "panes": {
+    "hide": "Hide {name}",
+    "show": "Show {name}"
+  }
+}

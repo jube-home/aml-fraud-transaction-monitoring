@@ -29,7 +29,8 @@ namespace Jube.App.Endpoints.Query
     internal static class IntegrityEndpoints
     {
         internal static async Task<IResult> ExecuteAsync<T>(string route, HttpContext httpContext,
-            Func<EntityAnalysisModelIntegrityService, CancellationToken, Task<T>> body, CancellationToken token)
+            Func<EntityAnalysisModelIntegrityService, CancellationToken, Task<T>> body, CancellationToken token,
+            Func<T, IResult> respond = null)
         {
             var services = httpContext.RequestServices;
             var log = services.GetRequiredService<ILog>();
@@ -51,7 +52,9 @@ namespace Jube.App.Endpoints.Query
                     services.GetRequiredService<IStringLocalizerFactory>(),
                     services.GetRequiredService<IServiceChangeBus>(), token);
 
-                return TypedResults.Ok(await body(service, token));
+                var result = await body(service, token);
+
+                return respond == null ? TypedResults.Ok(result) : respond(result);
             }
             catch (NotAuthenticatedException)
             {

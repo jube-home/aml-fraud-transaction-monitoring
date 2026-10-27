@@ -52,6 +52,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunctions { get; init; } = [];
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; init; } = [];
         public List<EntityAnalysisModelTag> EntityAnalysisModelTags { get; init; } = [];
+        public List<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRanges { get; init; } = [];
         public Dictionary<string, DistinctSearchKey> DistinctSearchKeys { get; init; } = new();
         public Dictionary<int, string> ParseIndexCache { get; init; } = new();
         public Dictionary<string, List<string>> EntityAnalysisModelLists { get; init; } = new();

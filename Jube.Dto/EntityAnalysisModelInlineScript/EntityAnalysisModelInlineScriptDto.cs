@@ -23,6 +23,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelInlineScript
 {
     [FormEndpoint("EntityAnalysisModelInlineScript")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -35,7 +36,7 @@ namespace Jube.Dto.EntityAnalysisModelInlineScript
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Inline Script registration. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Enrich with customer segment")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

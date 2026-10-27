@@ -41,5 +41,7 @@ namespace Jube.Preservation.Models
         public IEnumerable<VisualisationRegistryParameterRole>? VisualisationRegistryParameterRole { get; set; }
 
         [Key(11)] public IEnumerable<EntityAnalysisModelRole>? EntityAnalysisModelRole { get; set; }
+        [Key(12)] public IEnumerable<CaseWorkflowFormValidator>? CaseWorkflowFormValidator { get; set; }
+        [Key(13)] public IEnumerable<CaseWorkflowReleaseHook>? CaseWorkflowReleaseHook { get; set; }
     }
 }

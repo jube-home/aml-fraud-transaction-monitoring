@@ -12,6 +12,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using Jube.Data.Reporting;
 
 namespace Jube.Data.Repository.Exceptions
 {
@@ -29,6 +31,28 @@ namespace Jube.Data.Repository.Exceptions
         public SqlValidationFailedException(string message, Exception inner)
             : base(message, inner)
         {
+        }
+
+        public string Code { get; init; }
+        public int? Position { get; init; }
+        public IReadOnlyList<object> Arguments { get; init; } = [];
+
+        public static SqlValidationFailedException Coded(string code, params object[] arguments)
+        {
+            return new SqlValidationFailedException(DatasourceMessages.Format(code, arguments))
+            {
+                Code = code,
+                Arguments = arguments
+            };
+        }
+
+        public static SqlValidationFailedException Coded(string code, Exception inner, params object[] arguments)
+        {
+            return new SqlValidationFailedException(DatasourceMessages.Format(code, arguments), inner)
+            {
+                Code = code,
+                Arguments = arguments
+            };
         }
     }
 }

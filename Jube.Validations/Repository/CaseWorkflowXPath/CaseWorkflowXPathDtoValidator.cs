@@ -22,6 +22,7 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
     public sealed class CaseWorkflowXPathDtoValidator : AbstractValidator<CaseWorkflowXPathDto>
     {
         private const int MaxNameLength = 256;
+        private const int MaxRoleId = 6;
         private const int MaxXPathLength = 1024;
         private const int MaxRegularExpressionLength = 1024;
         private const int MaxColorLength = 32;
@@ -29,6 +30,11 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
 
         public CaseWorkflowXPathDtoValidator(CaseWorkflowXPathRepository repository, IStringLocalizer localiser)
         {
+            RuleFor(p => p.RoleId)
+                .InclusiveBetween(0, MaxRoleId)
+                .WithMessage(_ => localiser[CaseWorkflowXPathResources.RoleIdInvalid])
+                .WithErrorCode("RoleIdInvalid");
+
             RuleFor(p => p.CaseWorkflowId)
                 .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)

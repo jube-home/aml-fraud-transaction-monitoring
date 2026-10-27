@@ -45,37 +45,37 @@ namespace Jube.Test.AdvancedAnalytics.Repository
         {
             var ids = instanceIds.ToList();
 
-            await Db.AdvancedAnalyticsTrainingRunCurvePoint.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunCurvePoint.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRunMetric.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunMetric.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRunIteration.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunIteration.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRunTrial.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunTrial.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRunVariable.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunVariable.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRunStep.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRunStep.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
 
-            await Db.AdvancedAnalyticsTrainedModel.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AskJoobyAnalyticsTrainedModel.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .Set(s => s.ActiveVersionId, (int?)null)
                 .UpdateAsync();
 
-            await Db.AdvancedAnalyticsTrainedModelVersion
-                .Where(w => Db.AdvancedAnalyticsTrainedModel.Any(m =>
-                    m.Id == w.AdvancedAnalyticsTrainedModelId && ids.Contains(m.AdvancedAnalyticsInstanceId)))
+            await Db.AskJoobyAnalyticsTrainedModelVersion
+                .Where(w => Db.AskJoobyAnalyticsTrainedModel.Any(m =>
+                    m.Id == w.AskJoobyAnalyticsTrainedModelId && ids.Contains(m.AskJoobyAnalyticsInstanceId)))
                 .DeleteAsync();
 
-            await Db.AdvancedAnalyticsTrainedModel.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AskJoobyAnalyticsTrainedModel.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
-            await Db.AdvancedAnalyticsTrainingRun.Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId))
+            await Db.AdvancedAnalyticsTrainingRun.Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId))
                 .DeleteAsync();
 
-            await Db.GetTable<AdvancedAnalyticsInstanceVersion>()
-                .Where(w => ids.Contains(w.AdvancedAnalyticsInstanceId)).DeleteAsync();
+            await Db.GetTable<AskJoobyAnalyticsInstanceVersion>()
+                .Where(w => ids.Contains(w.AskJoobyAnalyticsInstanceId)).DeleteAsync();
 
-            await Db.AdvancedAnalyticsInstance.Where(w => ids.Contains(w.Id)).DeleteAsync();
+            await Db.AskJoobyAnalyticsInstance.Where(w => ids.Contains(w.Id)).DeleteAsync();
 
             var tenants = new List<int> { TenantA, TenantB };
             await Db.AdvancedAnalyticsCache.Where(w => tenants.Contains(w.TenantRegistryId)).DeleteAsync();
@@ -115,12 +115,12 @@ namespace Jube.Test.AdvancedAnalytics.Repository
             return id;
         }
 
-        protected async Task<AdvancedAnalyticsInstance> NewInstanceAsync(int tenantRegistryId, int? modelId = null,
+        protected async Task<AskJoobyAnalyticsInstance> NewInstanceAsync(int tenantRegistryId, int? modelId = null,
             string? name = null)
         {
-            var repository = new AdvancedAnalyticsInstanceRepository(Db, tenantRegistryId, "ZzTestUser");
+            var repository = new AskJoobyAnalyticsInstanceRepository(Db, tenantRegistryId, "ZzTestUser");
 
-            var instance = await repository.InsertAsync(new AdvancedAnalyticsInstance
+            var instance = await repository.InsertAsync(new AskJoobyAnalyticsInstance
             {
                 Name = name ?? UniqueName("Instance"),
                 EntityAnalysisModelId = modelId
@@ -138,20 +138,20 @@ namespace Jube.Test.AdvancedAnalytics.Repository
 
             return repository.InsertAsync(new AdvancedAnalyticsTrainingRun
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 KindId = kind,
                 JobMode = jobMode
             });
         }
 
-        protected Task<AdvancedAnalyticsTrainedModel> NewTrainedModelAsync(int tenantRegistryId,
+        protected Task<AskJoobyAnalyticsTrainedModel> NewTrainedModelAsync(int tenantRegistryId,
             int instanceId)
         {
-            var repository = new AdvancedAnalyticsTrainedModelRepository(Db, tenantRegistryId, "ZzTestUser");
+            var repository = new AskJoobyAnalyticsTrainedModelRepository(Db, tenantRegistryId, "ZzTestUser");
 
-            return repository.InsertAsync(new AdvancedAnalyticsTrainedModel
+            return repository.InsertAsync(new AskJoobyAnalyticsTrainedModel
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 Name = UniqueName("Trained"),
                 KindId = AdvancedAnalyticsKind.Classifier,
                 SourceId = AdvancedAnalyticsSource.Agent

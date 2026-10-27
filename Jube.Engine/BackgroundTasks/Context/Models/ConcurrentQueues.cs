@@ -29,6 +29,7 @@ namespace Jube.Engine.BackgroundTasks.Context.Models
         public readonly ConcurrentQueue<Context> PendingEntityInvoke = new ConcurrentQueue<Context>();
         public ConcurrentQueue<TagMessage> PendingTagging { get; } = new ConcurrentQueue<TagMessage>();
         public ConcurrentQueue<Notification> PendingNotifications { get; } = new ConcurrentQueue<Notification>();
+        public ConcurrentQueue<Webhook> PendingWebhooks { get; } = new ConcurrentQueue<Webhook>();
         public ConcurrentQueue<CreateCase> PendingCases { get; } = new ConcurrentQueue<CreateCase>();
     }
 }

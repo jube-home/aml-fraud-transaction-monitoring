@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -712,6 +713,12 @@ namespace Jube.Service.EntityAnalysisModelOverride
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

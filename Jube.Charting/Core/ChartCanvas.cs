@@ -337,7 +337,8 @@ namespace Jube.Charting.Core
             W.Open("g", ("class", "sr s" + series % ChartLimits.MaxSeries));
         }
 
-        public void OpenMark(int series, string label, string? extraClass = null, string? style = null)
+        public void OpenMark(int series, string label, string? extraClass = null, string? style = null,
+            (string Name, string? Value)[]? attributes = null)
         {
             var cls = "mk" + (series >= 0 ? " s" + series % ChartLimits.MaxSeries : string.Empty) +
                       (extraClass is null ? string.Empty : " " + extraClass);
@@ -349,13 +350,14 @@ namespace Jube.Charting.Core
 
             if (!Interactive)
             {
-                W.Open("g", ("class", series >= 0 ? "s" + series % ChartLimits.MaxSeries : null), ("style", style));
+                W.Open("g", [("class", series >= 0 ? "s" + series % ChartLimits.MaxSeries : null), ("style", style),
+                    .. attributes ?? []]);
 
                 return;
             }
 
-            W.Open("g", ("class", cls), ("tabindex", "0"), ("role", "graphics-symbol"),
-                ("aria-label", XmlText.Clean(label, 300)), ("style", style));
+            W.Open("g", [("class", cls), ("tabindex", "0"), ("role", "graphics-symbol"),
+                ("aria-label", XmlText.Clean(label, 300)), ("style", style), .. attributes ?? []]);
 
             W.Element("title", XmlText.Clean(label, 300));
         }

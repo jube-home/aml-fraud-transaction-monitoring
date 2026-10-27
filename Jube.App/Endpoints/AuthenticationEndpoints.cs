@@ -27,6 +27,7 @@ using Jube.Service.Authentication.Models;
 using Jube.Service.UserLogout;
 using Jube.Service.UserLogout.Models;
 using log4net;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +52,15 @@ namespace Jube.App.Endpoints
                 .AllowAnonymous()
                 .Produces<PasswordSchemeDto>()
                 .WithName("AuthenticationWirePasswordHash");
+
+            group.MapGet("Methods", Methods)
+                .AllowAnonymous()
+                .Produces<AuthenticationMethodsDto>()
+                .WithName("AuthenticationMethods");
+
+            group.MapGet("OAuth", OAuthChallenge)
+                .AllowAnonymous()
+                .WithName("AuthenticationOAuth");
 
             group.MapGet("ByNegotiate", ByNegotiateAsync)
                 .RequireAuthorization(new AuthorizeAttribute
@@ -141,6 +151,45 @@ namespace Jube.App.Endpoints
         {
             return RunAsync("WirePasswordHash", httpContext, log, dynamicEnvironment,
                 (service, context) => service.WirePasswordHashAsync(request, context.Identity, token));
+        }
+
+        private static IResult Methods(DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+        {
+            return TypedResults.Ok(new AuthenticationMethodsDto
+            {
+                Negotiate = Enabled(dynamicEnvironment, "NegotiateAuthentication"),
+                OAuth = Enabled(dynamicEnvironment, "OAuthAuthentication")
+            });
+        }
+
+        private static IResult OAuthChallenge(string redirectUrl, HttpContext httpContext,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+        {
+            if (!Enabled(dynamicEnvironment, "OAuthAuthentication"))
+            {
+                return TypedResults.NotFound();
+            }
+
+            if (Enabled(dynamicEnvironment, "NegotiateAuthentication"))
+            {
+                return TypedResults.Problem(
+                    "OAuthAuthentication and NegotiateAuthentication are mutually exclusive and cannot both be enabled.",
+                    statusCode: StatusCodes.Status409Conflict);
+            }
+
+            var target = LocalReturnUrl.Sanitise(redirectUrl);
+
+            if (httpContext.User.Identity?.IsAuthenticated == true)
+            {
+                return TypedResults.LocalRedirect(target);
+            }
+
+            return TypedResults.Challenge(new AuthenticationProperties { RedirectUri = target }, ["OAuth"]);
+        }
+
+        private static bool Enabled(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, string name)
+        {
+            return dynamicEnvironment.AppSettings(name)?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
         }
 
         private static Task<IResult> ByNegotiateAsync(HttpContext httpContext, ILog log,

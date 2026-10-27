@@ -88,7 +88,8 @@ namespace Jube.Test.AskJooby
         }
 
         private async Task<(int TenantId, string UserName)> SeedUserAsync(
-            DbContext dbContext, bool landlord, bool grantAccess, int? tenantId = null)
+            DbContext dbContext, bool landlord, bool grantAccess, int? tenantId = null, bool userActive = true,
+            bool passwordLocked = false)
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
 
@@ -127,8 +128,8 @@ namespace Jube.Test.AskJooby
             await dbContext.InsertAsync(new UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = roleGuid, Name = userName,
-                Email = $"{userName}@example.invalid", Password = "not-used-by-permission-checks", Active = 1,
-                PasswordLocked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
+                Email = $"{userName}@example.invalid", Password = "not-used-by-permission-checks", Active = userActive ? (byte)1 : (byte)0,
+                PasswordLocked = passwordLocked ? (byte)1 : (byte)0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
 
@@ -182,7 +183,7 @@ namespace Jube.Test.AskJooby
         }
 
         [Fact]
-        public async Task GenerateAsyncIsForbiddenForAUserWithNeitherLandlordNorAccessAsync()
+        public async Task GenerateAsyncSucceedsForAnActiveUserHoldingNoPermissionsAtAllAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var (tenantId, userName) = await SeedUserAsync(dbContext, landlord: false, grantAccess: false);
@@ -191,11 +192,83 @@ namespace Jube.Test.AskJooby
             var service = await AskJoobyChatTranscriptService.CreateAsync(
                 dbContext, userName, TestLog.NoOp, localizers, new NullServiceChangeBus());
 
+            var (markdown, _) = await service.GenerateAsync(conversationId);
+
+            markdown.Should().NotBeNullOrEmpty(
+                "every active user has Ask Jooby in some form, so no explicit Access grant is required");
+        }
+
+        [Fact]
+        public async Task GenerateAsyncIsForbiddenForAnInactiveUserAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (tenantId, userName) = await SeedUserAsync(dbContext, landlord: false, grantAccess: true,
+                userActive: false);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId, userName);
+
+            var service = await AskJoobyChatTranscriptService.CreateAsync(
+                dbContext, userName, TestLog.NoOp, localizers, new NullServiceChangeBus());
+
             var act = () => service.GenerateAsync(conversationId);
 
             await act.Should().ThrowAsync<ForbiddenException>(
-                "holding neither Landlord nor Access must refuse the Transcript export the same way it " +
-                "already refuses everything else in AskJooby");
+                "implicit access applies to active users only, even when an explicit grant is present");
+        }
+
+        [Fact]
+        public async Task GenerateAsyncIsForbiddenForAPasswordLockedUserAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (tenantId, userName) = await SeedUserAsync(dbContext, landlord: false, grantAccess: false,
+                passwordLocked: true);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId, userName);
+
+            var service = await AskJoobyChatTranscriptService.CreateAsync(
+                dbContext, userName, TestLog.NoOp, localizers, new NullServiceChangeBus());
+
+            var act = () => service.GenerateAsync(conversationId);
+
+            await act.Should().ThrowAsync<ForbiddenException>();
+        }
+
+        [Fact]
+        public async Task ActiveUserIsTrueForAnActiveUserWithoutAnExplicitAccessGrantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (_, userName) = await SeedUserAsync(dbContext, landlord: false, grantAccess: false);
+
+            var dto = await new Jube.Data.Security.PermissionValidation()
+                .GetPermissionsAsync(dbContext, userName, TestLog.NoOp);
+
+            dto.ActiveUser.Should().BeTrue();
+            dto.Permissions.Should().NotContain(AskJoobyPermissions.Access,
+                "implicit chat access must not leak into the explicit permission list that gates operational data");
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public async Task ActiveUserIsFalseForAnInactiveOrPasswordLockedUserAsync(bool inactive, bool locked)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (_, userName) = await SeedUserAsync(dbContext, landlord: false, grantAccess: true,
+                userActive: !inactive, passwordLocked: locked);
+
+            var dto = await new Jube.Data.Security.PermissionValidation()
+                .GetPermissionsAsync(dbContext, userName, TestLog.NoOp);
+
+            dto.ActiveUser.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ActiveUserIsFalseForAnUnknownUserAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var dto = await new Jube.Data.Security.PermissionValidation()
+                .GetPermissionsAsync(dbContext, $"{DatabaseFixture.Prefix}NoSuchUser", TestLog.NoOp);
+
+            dto.ActiveUser.Should().BeFalse();
         }
 
         [Fact]

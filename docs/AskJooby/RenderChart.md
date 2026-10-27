@@ -11,7 +11,7 @@ parent: Ask Jooby
 takes a `data_pointer` -- never rows the model typed out itself -- and produces a chart as an SVG file attached
 directly to the turn's reply. The model never sees the picture it drew: it gets back a one-line confirmation of what
 was plotted, and is told to describe it in words rather than attempt to reproduce it. This page covers the tool
-itself, the eight chart types it supports, and precisely how a chart gets from a tool call to the person's screen.
+itself, the chart types it supports, and precisely how a chart gets from a tool call to the person's screen.
 For the backend SVG library that actually draws the picture (`Jube.Charting`: axes, series, hover, no JavaScript),
 see `docs/AnalyticalMethodology/Charting.md`, which this page does not repeat.
 
@@ -20,16 +20,21 @@ see `docs/AnalyticalMethodology/Charting.md`, which this page does not repeat.
 ```csharp
 public async Task<string> RenderChart(
     string dataPointer, string chartType, string categoryColumn, string valueColumns,
-    string? title = null, int? bins = null)
+    string? title = null, int? bins = null, string? roles = null)
 ```
 
 * **`dataPointer`** -- a pointer already minted by `RunSqlQuery`, `GetDemoDataset`, `CacheAssembledTable`, or
   carried forward from an earlier turn of the same conversation. See `docs/AskJooby/DataPointerCache.md` for the
   full pointer mechanic; `RenderChart` only ever reads a cached table through `cache.GetAsync(dataPointer)` and
   never sees the query, specialist, or reasoning that produced it.
-* **`chartType`** -- one of `column`, `bar`, `line`, `area`, `pie`, `donut`, `scatter`, `histogram` (the exact list
-  `AskJoobyChartRenderer.SupportedChartTypes` exposes, `Jube.Service/AskJoobyCharting/AskJoobyChartRenderer.cs`).
-  An unrecognised value is rejected before anything is drawn, naming the real list.
+* **`chartType`** -- one of `column`, `bar`, `line`, `area`, `pie`, `donut`, `scatter`, `histogram`, or one of the
+  twenty kinds from the shared datasource chart registry (`stackedcolumn`, `stackedbar`, `percentstackedcolumn`,
+  `percentstackedbar`, `stackedarea`, `percentstackedarea`, `heatmap`, `combo`, `boxplot`, `candlestick`,
+  `waterfall`, `funnel`, `radar`, `polar`, `gauge`, `bullet`, `sparkline`, `treemap`, `gantt`, `map`) -- the exact
+  list `AskJoobyChartRenderer.SupportedChartTypes` exposes, `Jube.Service/AskJoobyCharting/AskJoobyChartRenderer.cs`,
+  which a test holds equal to the list the tool description names. Case, spaces and hyphens are ignored for the
+  registry kinds (`Box Plot` is `boxplot`). An unrecognised value is rejected before anything is drawn, naming the
+  real list.
 * **`categoryColumn`** -- the column labelling each point along the bottom (a day, a rule name, a status). For
   `scatter` this is the numeric x-axis instead of a label axis. Ignored, and left empty, for `histogram`, which has
   no category axis at all -- it bins the raw values of the value column(s) itself.
@@ -39,11 +44,16 @@ public async Task<string> RenderChart(
 * **`title`** -- optional, becomes both the chart's own title and (sanitised: letters, digits, `-`, `_` and spaces
   only, collapsed and trimmed, capped at 60 characters) the base of the exported file name, `"chart"` falling back
   when it is blank.
+* **`roles`** -- optional, and only for the twenty registry kinds. Which column fills which chart role, written as
+  `Role=Column` pairs separated by semicolons, several columns for one role separated by commas, for example
+  `Open=O;High=H;Low=L;Close=C`. With no `roles` the category column then the value columns are used in order, and
+  every other column of the table is ignored. A role the chart does not use, a column the table does not have, or a
+  pair that is not `Role=Column` is refused with a message naming the real choices. See the next section.
 * **`bins`** -- histogram only, and optional even there. Left unset, `Jube.Charting`'s own histogram builder chooses
   bin edges from the data, which the tool's description calls "almost always better" than a caller-supplied count --
   the one case worth overriding it is a reporting threshold that a default binning would straddle and hide.
 
-## The eight chart types, and what each actually needs
+## The eight original chart types, and what each actually needs
 
 `AskJoobyChartRenderer.Render` dispatches on `chartType` before ever touching an axis:
 
@@ -73,6 +83,34 @@ Every chart renders at a fixed 760×420 size, in `ThemeMode.Light`, non-interact
 styles inlined onto the SVG itself (`ChartStyleMode.Inline`) rather than referencing an external stylesheet -- this
 matters because the SVG is handed to the person as a standalone file, with no guarantee the page it is viewed in
 carries the same CSS a live Jube page would.
+
+## The twenty registry kinds, and the roles they read
+
+Anything beyond the original eight is drawn by `DatasourceChartRenderer`, the same renderer the Visualisation
+Datasource widget uses (`Jube.Service/Charts/Datasource`), so a chart the model draws and a chart a person builds on
+a datasource are the same code. Each kind is one row of `DatasourceChartKinds` naming the **roles** its columns
+fill; the roles, their cardinality and the column types each accepts are served to the widget by
+`GET /api/VisualisationRegistryDatasource/ChartKinds`, so the browser and the tool cannot drift from the renderer.
+
+* **Positional by default.** The first role takes the first suitable column, a role that takes many columns (the
+  value role of a column or line chart) takes every remaining numeric column, and optional roles are never taken
+  unless they are marked automatic or named by a hint (a map finds columns called `latitude`, `longitude` or
+  `country`). `roles` overrides any of this explicitly.
+* **Series from long-form data.** The `Series` role names a column whose distinct values split rows into one series
+  each (`Category=Day;Value=Sales;Series=Region`). Two rows for the same category and series are refused with an
+  instruction to aggregate in SQL, because adding or averaging them would be a guess.
+* **Kinds that need particular columns:** `candlestick` (`Open`, `High`, `Low`, `Close`, with a category or time),
+  `boxplot` (`Minimum`, `FirstQuartile`, `Median`, `ThirdQuartile`, `Maximum`), `heatmap` (`Row`, `Column`,
+  `Value`), `polar` (`X` as the angle in degrees, `Y` as the radius), `gantt` (`Start`, `End`, both date and time
+  columns), `gauge` (`Value`, optional `Target`, `Minimum`, `Maximum`, read from the first row), `bullet`
+  (`Category`, `Value`, optional `Target`), `combo` (`Value` drawn as columns, `Line` and `SecondaryLine` as lines)
+  and `map` (`Latitude` and `Longitude` with an optional `Value` that sizes points and `Series` that groups them, or
+  `Country` and `Value` to colour countries; an ISO three or two letter code or the English name).
+* **Static maps are labelled.** A map exported as a picture has no hover tooltips, so the twelve highest-valued
+  coloured countries are named on the map itself. The world outline is Natural Earth 110m (public domain), embedded
+  in `Jube.Charting`, drawn with the Natural Earth projection, with Antarctica left out.
+* **Limits.** A table over 20,000 rows is refused for these kinds, and `Jube.Charting`'s own limits (for example
+  2,000 categories) are reported as a plain instruction to aggregate or filter, not a stack trace.
 
 ## The model never sees the picture -- it only gets told what was drawn
 

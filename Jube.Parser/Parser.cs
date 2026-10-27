@@ -321,10 +321,19 @@ namespace Jube.Parser
                         var tokens = matches.Aggregate(line, (current, match) => current.Replace(match.Value, ""))
                             .Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
+                        var masked = MaskLiterals(line);
+                        var cursor = 0;
                         int j;
 
                         for (j = 0; j < tokens.Length; j++)
                         {
+                            var tokenAt = masked.IndexOf(tokens[j], cursor, StringComparison.Ordinal);
+
+                            if (tokenAt >= 0)
+                            {
+                                cursor = tokenAt + tokens[j].Length;
+                            }
+
                             var valid = false;
 
                             if (NumericHelper.IsNumeric(tokens[j]))
@@ -376,12 +385,19 @@ namespace Jube.Parser
 
                             softParseFailed = true;
 
-                            parsedRule.ErrorSpans.Add(new ErrorSpan
+                            var restricted = new ErrorSpan
                             {
                                 Line = i,
                                 Message =
                                     $"Line {i + 1}: Security restricted token '{tokens[j]}'  has been discovered in user code."
-                            });
+                            };
+
+                            if (tokenAt >= 0)
+                            {
+                                parsedRule.Locate(i, tokenAt, tokenAt + tokens[j].Length, restricted);
+                            }
+
+                            parsedRule.ErrorSpans.Add(restricted);
                         }
                     }
 
@@ -744,6 +760,25 @@ namespace Jube.Parser
             return parsedRule;
         }
 
+        private static int? ColumnOf(string line, string token)
+        {
+            var index = string.IsNullOrEmpty(token) ? -1 : line.IndexOf(token, StringComparison.Ordinal);
+
+            return index < 0 ? null : index;
+        }
+
+        private static int? EndColumnOf(string line, string token)
+        {
+            var index = ColumnOf(line, token);
+
+            return index == null ? null : index + token.Length;
+        }
+
+        private static string MaskLiterals(string line)
+        {
+            return Regex.Replace(line, "\"(?:[^\"]|\"\")*\"", match => new string(' ', match.Length));
+        }
+
         public ParsedRule TranslateFromDotNotation(ParsedRule parsedRule, bool showOnlyCacheForPayload = false)
         {
             var sb = new StringBuilder();
@@ -811,7 +846,9 @@ namespace Jube.Parser
                                             {
                                                 Message =
                                                     $"Line {i + 1}: Request XPath exists but it is not defined as cache for {elements[k]}.",
-                                                Line = i
+                                                Line = i,
+                                                Column = ColumnOf(originalLine, findString),
+                                                EndColumn = EndColumnOf(originalLine, findString)
                                             };
 
                                             parsedRule.ErrorSpans.Add(errorSpan);
@@ -954,7 +991,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Request XPath does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
 
@@ -989,7 +1028,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: TTL Counter does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1010,7 +1051,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Abstraction does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1032,7 +1075,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1053,7 +1098,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1074,7 +1121,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1095,7 +1144,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1116,7 +1167,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1137,7 +1190,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Dictionary does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1159,7 +1214,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: List does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1181,7 +1238,9 @@ namespace Jube.Parser
                                         {
                                             Message =
                                                 $"Line {i + 1}: Activation Rule does not exist for {elements[k]}.",
-                                            Line = i
+                                            Line = i,
+                                            Column = ColumnOf(originalLine, findString),
+                                            EndColumn = EndColumnOf(originalLine, findString)
                                         };
                                         parsedRule.ErrorSpans.Add(errorSpan);
                                     }
@@ -1215,9 +1274,15 @@ namespace Jube.Parser
                     }
                 }
 
-                var newLine = dictionaryFindReplace.Aggregate(originalLine,
-                    (current, kvp) => current.Replace(kvp.Key, kvp.Value));
-                sb.AppendLine(newLine);
+                var tracked = new TrackedLine(originalLine);
+
+                foreach (var kvp in dictionaryFindReplace)
+                {
+                    tracked.Replace(kvp.Key, kvp.Value);
+                }
+
+                parsedRule.LineMaps.Add(tracked);
+                sb.AppendLine(tracked.Text);
             }
 
             parsedRule.ParsedRuleText = sb.ToString();

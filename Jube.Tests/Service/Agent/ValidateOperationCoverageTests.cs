@@ -59,7 +59,7 @@ namespace Jube.Test.Service.Agent
         {
             var services = ServicesWithValidators().ToList();
 
-            services.Should().HaveCount(42);
+            services.Should().HaveCount(46);
 
             services.Should().OnlyContain(s => s.GetMethods().Any(m =>
                 m.Name == "ValidateAsync" && m.ReturnType == typeof(Task<ValidationResultDto>)));

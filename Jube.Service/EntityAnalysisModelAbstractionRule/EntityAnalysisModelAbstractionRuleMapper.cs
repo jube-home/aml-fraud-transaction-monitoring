@@ -68,6 +68,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             return new AbstractionRulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

@@ -18,13 +18,17 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Options;
 using Jube.Dto.Repository.Case;
 using Jube.Service.Exceptions.Repository.Case;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.Case;
+using Jube.Engine.CaseEscalation;
+using Jube.Service.CaseDispatch;
 using Jube.Test.Infrastructure;
+using Jube.Test.Service.Query.CaseWorkflowMacroExecution.Models;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
@@ -35,6 +39,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
+using EngineCaseProcessing = Jube.Engine.BackgroundTasks.TaskStarters.Case.CaseProcessing;
+using EngineCreateCase = Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement.CreateCase;
 using JubeDynamicEnvironment = Jube.DynamicEnvironment.DynamicEnvironment;
 
 namespace Jube.Test.Service.Repository.Case
@@ -62,6 +68,8 @@ namespace Jube.Test.Service.Repository.Case
             await dbContext.GetTable<Data.Poco.CaseEvent>()
                 .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
 
+            await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
 
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
@@ -464,6 +472,367 @@ namespace Jube.Test.Service.Repository.Case
 
             var events = await dbContext.CaseEvent.Where(w => w.CaseId == created.Id).ToListAsync();
             events.Should().Contain(e => e.CaseEventTypeId == 6 && e.CaseKeyValue == caseKeyValue);
+        }
+
+        private async Task<Guid> AddStatusAsync(DbContext dbContext, Guid workflowGuid, string userName,
+            byte priority = 2)
+        {
+            var workflowId = await dbContext.CaseWorkflow.Where(w => w.Guid == workflowGuid).Select(w => w.Id)
+                .FirstAsync();
+            var roleRegistryGuid = await dbContext.UserRegistry
+                .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
+            var statusGuid = Guid.NewGuid();
+
+            createdCaseWorkflowStatusIds.Add(await dbContext.InsertWithInt32IdentityAsync(
+                new Data.Poco.CaseWorkflowStatus
+                {
+                    Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
+                    Guid = statusGuid,
+                    CaseWorkflowId = workflowId,
+                    Active = 1,
+                    Locked = 0,
+                    Deleted = 0,
+                    Priority = priority,
+                    CreatedUser = userName,
+                    CreatedDate = DateTime.UtcNow
+                }));
+
+            await dbContext.InsertAsync(new Data.Poco.CaseWorkflowStatusRole
+            {
+                CaseWorkflowStatusGuid = statusGuid,
+                Guid = Guid.NewGuid(),
+                RoleRegistryGuid = roleRegistryGuid,
+                CreatedUser = userName,
+                CreatedDate = DateTime.UtcNow,
+                Deleted = 0
+            });
+
+            return statusGuid;
+        }
+
+        [Fact]
+        public async Task EveryStatusChangeCloseAndReopenIsRecordedAsAStayInTheStatusAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+
+            var (workflowGuid, statusGuid, modelId) = await CreateWorkflowWithRoleAsync(dbContext, user);
+            var nextStatusGuid = await AddStatusAsync(dbContext, workflowGuid, user);
+
+            var caseKey = "account";
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
+
+            var service = await BuildServiceAsync(dbContext, user);
+            var created = (await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
+            {
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = caseKey,
+                CaseKeyValue = caseKeyValue
+            })).Required();
+            createdCaseIds.Add(created.Id);
+
+            var transitions = new CaseStatusTransitionRepository(dbContext);
+
+            var first = await transitions.ListForCaseAsync(created.Id);
+            first.Should().ContainSingle();
+            first[0].EnterReasonId.Should().Be((byte)CaseTransitionEnterReason.Created);
+            first[0].CaseWorkflowStatusGuid.Should().Be(statusGuid);
+            first[0].ExitedDate.Should().BeNull();
+
+            CaseDto Change(Guid status, byte closed) => new()
+            {
+                Id = created.Id,
+                CaseWorkflowStatusGuid = status,
+                ClosedStatusId = closed,
+                Rating = 1,
+                Payload = "{}"
+            };
+
+            await service.UpdateAsync(Change(nextStatusGuid, 0));
+
+            var moved = await transitions.ListForCaseAsync(created.Id);
+            moved.Should().HaveCount(2);
+            moved[0].ExitReasonId.Should().Be((byte)CaseTransitionExitReason.StatusChanged);
+            moved[0].ExitedUser.Should().Be(user);
+            moved[0].DurationSeconds.Should().BeGreaterThanOrEqualTo(0);
+            moved[1].CaseWorkflowStatusGuid.Should().Be(nextStatusGuid);
+            moved[1].PreviousCaseWorkflowStatusGuid.Should().Be(statusGuid);
+            moved[1].EnterReasonId.Should().Be((byte)CaseTransitionEnterReason.StatusChanged);
+            moved[1].EnteredUser.Should().Be(user);
+
+            await service.UpdateAsync(Change(nextStatusGuid, 0));
+            (await transitions.ListForCaseAsync(created.Id)).Should().HaveCount(2);
+
+            await service.UpdateAsync(Change(nextStatusGuid, 3));
+
+            var closed = await transitions.ListForCaseAsync(created.Id);
+            closed.Should().HaveCount(2);
+            closed[1].ExitReasonId.Should().Be((byte)CaseTransitionExitReason.Closed);
+            closed[1].ExitedDate.Should().NotBeNull();
+            (await transitions.GetOpenAsync(created.Id)).Should().BeNull();
+
+            await service.UpdateAsync(Change(nextStatusGuid, 0));
+
+            var reopened = await transitions.ListForCaseAsync(created.Id);
+            reopened.Should().HaveCount(3);
+            reopened[2].EnterReasonId.Should().Be((byte)CaseTransitionEnterReason.Reopened);
+            reopened[2].ExitedDate.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task AnEditToTheDiaryAsksForAFreshRankingAndTurningItOffReturnsItsTypeToReviewAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var (workflowGuid, statusGuid, modelId) = await CreateWorkflowWithRoleAsync(dbContext, user);
+            var caseKey = "account";
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
+
+            var service = await BuildServiceAsync(dbContext, user);
+            var created = (await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
+            {
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = caseKey,
+                CaseKeyValue = caseKeyValue
+            })).Required();
+            createdCaseIds.Add(created.Id);
+
+            CaseDto Edit(bool diary, DateTimeOffset? date) => new()
+            {
+                Id = created.Id,
+                CaseWorkflowStatusGuid = statusGuid,
+                ClosedStatusId = 0,
+                Rating = 1,
+                Payload = "{}",
+                Diary = diary,
+                DiaryDate = date
+            };
+
+            async Task SettleAsync() => await dbContext.Case.Where(w => w.Id == created.Id)
+                .Set(s => s.RiskCheckedDate, DateTime.UtcNow).Set(s => s.RiskRecheckTriggerId, (byte?)null)
+                .UpdateAsync();
+
+            var due = DateTimeOffset.UtcNow.AddDays(2);
+
+            await SettleAsync();
+            await service.UpdateAsync(Edit(false, null));
+            (await dbContext.Case.FirstAsync(w => w.Id == created.Id)).RiskCheckedDate.Should().NotBeNull();
+
+            await service.UpdateAsync(Edit(true, due));
+            var set = await dbContext.Case.FirstAsync(w => w.Id == created.Id);
+            set.RiskCheckedDate.Should().BeNull();
+            set.RiskRecheckTriggerId.Should().Be((byte)CaseRiskTrigger.DiaryLaneThreshold);
+
+            await SettleAsync();
+            await service.UpdateAsync(Edit(true, due));
+            (await dbContext.Case.FirstAsync(w => w.Id == created.Id)).RiskCheckedDate.Should().NotBeNull();
+
+            await service.UpdateAsync(Edit(true, due.AddDays(1)));
+            (await dbContext.Case.FirstAsync(w => w.Id == created.Id)).RiskCheckedDate.Should().BeNull();
+
+            await SettleAsync();
+            await dbContext.Case.Where(w => w.Id == created.Id).Set(s => s.DiaryTypeId, (byte)CaseDiaryType.PaymentHold)
+                .UpdateAsync();
+            await service.UpdateAsync(Edit(false, due));
+
+            var off = await dbContext.Case.FirstAsync(w => w.Id == created.Id);
+            off.DiaryTypeId.Should().Be((byte)CaseDiaryType.Review);
+            off.RiskCheckedDate.Should().BeNull();
+            off.RiskRecheckTriggerId.Should().Be((byte)CaseRiskTrigger.DiaryLaneThreshold);
+        }
+
+        [Fact]
+        public async Task AHigherPriorityActivationEscalatesAnOpenCaseAndTheEngineRecordsTheMoveAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+
+            var (workflowGuid, statusGuid, modelId) =
+                await CreateWorkflowWithRoleAsync(dbContext, user, priority: 3);
+            var urgentStatusGuid = await AddStatusAsync(dbContext, workflowGuid, user, 1);
+
+            var caseKey = "account";
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            await CreateArchiveAsync(dbContext, modelId, caseKey, caseKeyValue);
+
+            var service = await BuildServiceAsync(dbContext, user);
+            var created = (await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
+            {
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = caseKey,
+                CaseKeyValue = caseKeyValue
+            })).Required();
+            createdCaseIds.Add(created.Id);
+
+            var tenantId = (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, user))!.Value;
+
+            await EngineCaseProcessing.CreateAsync(dynamicEnvironment, new EngineCreateCase
+            {
+                TenantRegistryId = tenantId,
+                EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = urgentStatusGuid,
+                CaseKey = caseKey,
+                CaseKeyValue = caseKeyValue,
+                SuspendBypassDate = DateTime.UtcNow,
+                Json = "{}"
+            }, TestLog.NoOp, jsonSerializationHelper);
+
+            var stays = await new CaseStatusTransitionRepository(dbContext).ListForCaseAsync(created.Id);
+
+            stays.Should().HaveCount(2);
+            stays[1].EnterReasonId.Should().Be((byte)CaseTransitionEnterReason.Escalated);
+            stays[1].CaseWorkflowStatusGuid.Should().Be(urgentStatusGuid);
+            stays[1].PreviousCaseWorkflowStatusGuid.Should().Be(statusGuid);
+            stays[1].EnteredUser.Should().BeNull();
+            stays[0].ExitReasonId.Should().Be((byte)CaseTransitionExitReason.StatusChanged);
+        }
+
+        [Fact]
+        public async Task CaseCreationDispatchesTheStatusFromItsSqlAndAuditsItAsync()
+        {
+            using var hook = new Hook();
+            CaseStatusDispatchRegistry.Current = new ServiceCaseStatusDispatcher();
+
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var (workflowGuid, statusGuid, _) = await CreateWorkflowWithRoleAsync(dbContext, user, priority: 3);
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
+            await dbContext.CaseWorkflowStatus.Where(w => w.Guid == statusGuid)
+                .Set(s => s.EnableHttpEndpoint, (byte)1)
+                .Set(s => s.HttpEndpointTypeId, (byte)1)
+                .Set(s => s.HttpEndpoint, hook.BaseUrl + "created/[@ rows[0].caseid @]")
+                .Set(s => s.Sql, "select \"Id\" as caseid from \"Case\" where \"Id\" = @Id")
+                .UpdateAsync();
+
+            var tenantId = (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, user))!.Value;
+
+            await EngineCaseProcessing.CreateAsync(dynamicEnvironment, new EngineCreateCase
+            {
+                TenantRegistryId = tenantId,
+                EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+                SuspendBypassDate = DateTime.UtcNow,
+                Json = "{}"
+            }, TestLog.NoOp, jsonSerializationHelper);
+
+            var created = await dbContext.Case.FirstAsync(c => c.CaseKeyValue == caseKeyValue);
+            createdCaseIds.Add(created.Id);
+
+            hook.Snapshot().Should().ContainSingle().Which.Path.Should().Be($"/created/{created.Id}");
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == created.Id);
+
+            audit.SourceKindId.Should().Be(4);
+            audit.ModeId.Should().Be(2);
+            audit.OutcomeId.Should().Be(1);
+            audit.CreatedUser.Should().Be("Case creation");
+            audit.Rows.Should().Contain("caseid");
+        }
+
+        [Fact]
+        public async Task CaseCreationAuditsTheStatusCallDrawnFromThePayloadAsync()
+        {
+            using var hook = new Hook();
+            CaseStatusDispatchRegistry.Current = new ServiceCaseStatusDispatcher();
+
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var (workflowGuid, statusGuid, _) = await CreateWorkflowWithRoleAsync(dbContext, user, priority: 3);
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
+            await dbContext.CaseWorkflowStatus.Where(w => w.Guid == statusGuid)
+                .Set(s => s.EnableHttpEndpoint, (byte)1)
+                .Set(s => s.HttpEndpointTypeId, (byte)1)
+                .Set(s => s.HttpEndpoint, hook.BaseUrl + "legacy")
+                .UpdateAsync();
+
+            var tenantId = (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, user))!.Value;
+
+            await EngineCaseProcessing.CreateAsync(dynamicEnvironment, new EngineCreateCase
+            {
+                TenantRegistryId = tenantId,
+                EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+                SuspendBypassDate = DateTime.UtcNow,
+                Json = "{}"
+            }, TestLog.NoOp, jsonSerializationHelper);
+
+            var created = await dbContext.Case.FirstAsync(c => c.CaseKeyValue == caseKeyValue);
+            createdCaseIds.Add(created.Id);
+
+            hook.Snapshot().Should().ContainSingle().Which.Path.Should().Be("/legacy");
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == created.Id);
+
+            audit.ModeId.Should().Be(1);
+            audit.OutcomeId.Should().Be(1);
+            audit.Rows.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task AutomaticEscalationDispatchesTheTargetStatusFromItsSqlAndAuditsItAsync()
+        {
+            using var hook = new Hook();
+            CaseStatusDispatchRegistry.Current = new ServiceCaseStatusDispatcher();
+
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var (workflowGuid, statusGuid, modelId) = await CreateWorkflowWithRoleAsync(dbContext, user, priority: 3);
+            var targetGuid = await AddStatusAsync(dbContext, workflowGuid, user, 1);
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            await CreateArchiveAsync(dbContext, modelId, "account", caseKeyValue);
+
+            var service = await BuildServiceAsync(dbContext, user);
+            var created = (await service.CreateFromCaseKeyValueAsync(new CreateCaseDto
+            {
+                CaseWorkflowGuid = workflowGuid,
+                CaseWorkflowStatusGuid = statusGuid,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue
+            })).Required();
+            createdCaseIds.Add(created.Id);
+
+            await dbContext.CaseWorkflowStatus.Where(w => w.Guid == targetGuid)
+                .Set(s => s.EnableHttpEndpoint, (byte)1)
+                .Set(s => s.HttpEndpointTypeId, (byte)2)
+                .Set(s => s.HttpEndpoint, hook.BaseUrl + "escalated/[@ rows[0].ckv @]")
+                .Set(s => s.Sql, "select \"CaseKeyValue\" as ckv from \"Case\" where \"Id\" = @Id")
+                .UpdateAsync();
+
+            var tenantId = (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, user))!.Value;
+            var caseModel = await dbContext.Case.FirstAsync(c => c.Id == created.Id);
+            var target = await dbContext.CaseWorkflowStatus.FirstAsync(w => w.Guid == targetGuid);
+
+            var dispatch = await CaseStatusNotifier.PrepareAsync(new CaseStatusDispatchRequest(dbContext, tenantId,
+                "Case escalation", dynamicEnvironment, TestLog.NoOp, caseModel, target, null,
+                jsonSerializationHelper.ArchiveJsonSerializer));
+
+            (await dispatch.NotifyAsync()).Should().BeNull();
+            (await dispatch.CallAsync()).Should().Contain("/escalated/");
+
+            hook.Snapshot().Should().ContainSingle().Which.Path.Should().Be($"/escalated/{caseKeyValue}");
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == created.Id);
+
+            audit.CreatedUser.Should().Be("Case escalation");
+            audit.ChannelId.Should().Be(4);
+            audit.OutcomeId.Should().Be(1);
         }
 
         [Fact]

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif}
+a{color:var(--color-primary)} a:hover{text-decoration:underline}
+.font-mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.tnum{font-variant-numeric:tabular-nums}
+svg.lucide{width:1em;height:1em;stroke-width:2;flex:none}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" data-density="{{ density }}" class="min-h-screen bg-base-200 text-base-content p-10 flex flex-col gap-16">
+
+<header class="flex flex-col gap-2 max-w-[1280px]">
+  <div class="font-mono text-xs uppercase tracking-widest opacity-60">Jube Case Management v2 · design pass 4 · spec 0.11 · 24 Sep 2026</div>
+  <h1 class="text-3xl font-semibold">The remaining screens</h1>
+  <p class="text-sm opacity-70 max-w-3xl" style="text-wrap:pretty">Everything section 12 listed as not designed, drawn with the decisions from review: Lucide icons, AskJooby in the Decide column (Alt+J), a neutral categorical palette for Merge lanes only, Team view desk and wall, tenant-only referral branding, a generic report format, Latin transliteration beside Arabic names, 28 px compact rows, and step-up by authenticator code then passkey.</p>
+  <div class="flex flex-wrap gap-2 text-xs">
+    <a class="badge badge-primary hover:no-underline" style="color:var(--color-primary-content)" href="#S1">S · Suppression and lists (pass 6)</a><a class="badge badge-outline" href="#M1">M · Market gaps (pass 5)</a><a class="badge badge-outline" href="#A1">A · Case page states</a><a class="badge badge-outline" href="#B1">B · Journal lenses</a><a class="badge badge-outline" href="#C1">C · Compose and AskJooby</a><a class="badge badge-outline" href="#D1">D · Global patterns</a><a class="badge badge-outline" href="#E1">E · Team view</a><a class="badge badge-outline" href="#F1">F · Outside the case</a>
+  </div>
+</header>
+
+<section class="flex flex-col gap-6" data-screen-label="S · Suppression and lists">
+  <div class="flex items-baseline gap-3"><h2 class="text-xl font-semibold">S · Suppression is the only override; lists belong to the model (pass 6)</h2><span class="text-sm opacity-60">Endpoints CG-26…CG-36 in the Vue blueprint §8–9</span></div>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="S1" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">S1</span><span class="font-semibold">Suppress from an activation</span><span class="text-sm opacity-60">lightbox · time-bound · reason required</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-xl text-sm overflow-hidden">
+      <div class="px-5 py-3 border-b border-base-300 flex items-center gap-2"><b>Suppress · Foreign velocity 24h · C-9052</b><span class="badge badge-sm badge-outline ml-auto">reversible · audited</span></div>
+      <div class="p-5 grid grid-cols-[110px_minmax(0,1fr)] gap-x-4 gap-y-3 items-center text-xs">
+        <span class="opacity-60">Suppress for</span>
+        <div class="join"><button class="btn btn-xs join-item btn-neutral">AccountId · ACC-518</button><button class="btn btn-xs join-item">IP · 41.33.8.12</button><button class="btn btn-xs join-item">DeviceId · DEV-2207</button></div>
+        <span class="opacity-60">Scope</span>
+        <div class="join"><button class="btn btn-xs join-item btn-neutral">This rule only</button><button class="btn btn-xs join-item">All rules on model “Retail cards” · needs approval</button></div>
+        <span class="opacity-60">For</span>
+        <div class="flex items-center gap-2"><div class="join"><button class="btn btn-xs join-item">7 d</button><button class="btn btn-xs join-item btn-neutral">14 d</button><button class="btn btn-xs join-item">30 d</button><button class="btn btn-xs join-item">Until…</button></div><span class="opacity-70">until 12 Oct 09:00 · max 90 d (tenant policy)</span></div>
+        <span class="opacity-60">Reason</span>
+        <div class="flex flex-col gap-1.5"><select class="select select-xs w-full"><option>Customer contact: confirmed travel</option></select><textarea class="textarea textarea-xs w-full h-10">Called 27 Sep 10:40, customer in Lisbon until 10 Oct; card use confirmed.</textarea></div>
+        <span class="opacity-60">Evidence</span>
+        <span>Note N-3312 · Called customer → Reached · A. Vance</span>
+      </div>
+      <div class="mx-5 mb-4 rounded-box bg-base-200/70 p-3 flex flex-col gap-1.5 text-xs">
+        <div class="font-semibold">What will happen</div>
+        <div class="flex gap-2"><i data-lucide="check" class="text-success mt-0.5"></i><span>ACC-518 transactions are still scored, archived, and matched by this rule. Each match is recorded as <b>suppressed by SUP-0142</b>.</span></div>
+        <div class="flex gap-2"><i data-lucide="ban" class="mt-0.5"></i><span>While active, this rule's matches do not cause: <b>response elevation (decline), notifications, case creation, activation watcher</b></span></div>
+        <div class="flex gap-2"><i data-lucide="gauge" class="mt-0.5"></i><span>TTL counters still increment, so velocity is still counted and the other rules still see it</span></div>
+        <div class="flex gap-2"><i data-lucide="history" class="mt-0.5"></i><span>Last 30 days: 6 matches would have been suppressed; none on a case later confirmed TP</span></div>
+        <div class="flex gap-2"><i data-lucide="bell" class="mt-0.5"></i><span>Expires 12 Oct 09:00. You get an Inbox reminder 3 days before, and renewing needs a new reason</span></div>
+      </div>
+      <div class="mx-5 mb-4 rounded-box border border-error/50 p-2.5 text-xs flex gap-2"><i data-lucide="shield-x" class="text-error mt-0.5"></i><span><b>Not available for:</b> SAN-01 sanctions screening, which is a floor rule and can never be suppressed. Keys with a SAR pending or a confirmed TP in the last 12 months need MLRO approval.</span></div>
+      <div class="px-5 py-3 border-t border-base-300 flex justify-end gap-2"><button class="btn btn-sm btn-ghost">Cancel</button><button class="btn btn-sm btn-primary">Suppress for 14 days</button></div>
+    </div>
+  </div>
+
+  <div id="S2" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">S2</span><span class="font-semibold">Suppressed and unavailable, as seen in the case</span><span class="text-sm opacity-60">Activations · key panel · Journal</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+      <div class="flex flex-wrap items-center gap-2 text-xs"><span class="opacity-60">Case key</span><span class="font-mono">ACC-518</span><span class="badge badge-sm gap-1"><i data-lucide="volume-x"></i>1 active suppression</span><span class="opacity-60">SUP-0142 · Foreign velocity 24h · until 12 Oct</span></div>
+      <div class="rounded-box border border-dashed border-base-300 p-3 flex flex-col gap-1.5 opacity-80">
+        <div class="flex items-center gap-2"><span class="badge badge-sm">ACT-9120</span><b>Foreign velocity 24h</b><span class="badge badge-ghost badge-sm gap-1"><i data-lucide="volume-x"></i>matched · suppressed</span><span class="ml-auto text-xs opacity-60">27 Sep 18:02</span></div>
+        <div class="text-xs">Suppressed by <b>SUP-0142</b> (this rule, AccountId ACC-518) · A. Vance · reason “confirmed travel” · until 12 Oct. No decline, no notification, no case.</div>
+        <div class="flex gap-2"><button class="btn btn-xs btn-ghost">Open SUP-0142</button><button class="btn btn-xs btn-outline">Revoke…</button></div>
+      </div>
+      <div class="rounded-box border border-warning/60 p-3 flex flex-col gap-1.5">
+        <div class="flex items-center gap-2"><i data-lucide="plug-zap" class="text-warning"></i><b>StructNet v7 unavailable</b><span class="text-xs opacity-60">the adaptation returned an error, so its Value is null</span></div>
+        <div class="text-xs">“Timeout after 800 ms”. <b>2 rules that use it did not match</b> on this transaction: High score, Score × velocity. This is not a suppression: nobody switched anything off. It is shown under model health.</div>
+      </div>
+      <div class="grid grid-cols-[24px_140px_110px_110px_minmax(0,1fr)] text-xs border border-base-300 rounded-box overflow-hidden">
+        <div class="contents"><div class="p-2"><i data-lucide="volume-x" class="opacity-70"></i></div><div class="p-2">27 Sep 18:02</div><div class="p-2">Card, foreign</div><div class="p-2 text-right">EUR 212.40</div><div class="p-2 opacity-70">Lisbon · matched Foreign velocity 24h, suppressed</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="S3" class="flex flex-col gap-2 shrink-0" style="flex:none;width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">S3</span><span class="font-semibold">Suppressions page, with or without a case</span><span class="text-sm opacity-60">top-level menu · replaces the model and rule switch tree</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-3 border-b border-base-300 flex flex-wrap items-center gap-2">
+        <b class="text-base">Suppressions</b>
+        <label class="input input-sm w-72 ml-3"><i data-lucide="search"></i><input value="IP = 41.33.8.12"></label>
+        <div class="flex flex-wrap gap-1.5 text-xs ml-2"><span class="badge badge-neutral">Active 214</span><span class="badge badge-outline">Expiring ≤ 7 d · 12</span><span class="badge badge-outline">Without case · 31</span><span class="badge badge-outline">Model scope · 9</span><span class="badge badge-warning badge-soft">Pending approval · 2</span><span class="badge badge-outline">Legacy, no reason · 18</span></div>
+        <button class="btn btn-sm btn-primary ml-auto gap-1"><i data-lucide="plus"></i>New suppression</button>
+      </div>
+      <div class="grid grid-cols-[minmax(0,1fr)_300px]">
+        <div class="p-3 min-w-0">
+          <div class="grid grid-cols-[22px_74px_150px_110px_minmax(0,1fr)_56px_70px_44px] text-xs">
+            <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200"></div><div class="p-2 bg-base-200">Id</div><div class="p-2 bg-base-200">Key = value</div><div class="p-2 bg-base-200">Scope</div><div class="p-2 bg-base-200">Reason</div><div class="p-2 bg-base-200">Case</div><div class="p-2 bg-base-200">Expires</div><div class="p-2 bg-base-200 text-right">Hits 30d</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300"><input type="checkbox" class="checkbox checkbox-xs"></div><div class="p-2 border-t border-base-300 font-mono whitespace-nowrap">SUP-0142</div><div class="p-2 border-t border-base-300 font-mono whitespace-nowrap">AccountId = ACC-518</div><div class="p-2 border-t border-base-300">Rule · Foreign velocity 24h</div><div class="p-2 border-t border-base-300">Confirmed travel</div><div class="p-2 border-t border-base-300 font-mono whitespace-nowrap">C-9052</div><div class="p-2 border-t border-base-300">12 Oct</div><div class="p-2 border-t border-base-300 text-right">6</div></div>
+            <div class="contents bg-primary/5"><div class="p-2 border-t border-base-300 bg-primary/5"><input type="checkbox" class="checkbox checkbox-xs"></div><div class="p-2 border-t border-base-300 bg-primary/5 font-mono whitespace-nowrap">SUP-0139</div><div class="p-2 border-t border-base-300 bg-primary/5 font-mono whitespace-nowrap">IP = 41.33.8.12</div><div class="p-2 border-t border-base-300 bg-primary/5">Model · Retail cards</div><div class="p-2 border-t border-base-300 bg-primary/5">Corporate NAT, 400 users</div><div class="p-2 border-t border-base-300 bg-primary/5 opacity-60">—</div><div class="p-2 border-t border-base-300 bg-primary/5 text-warning font-semibold">in 3 d</div><div class="p-2 border-t border-base-300 bg-primary/5 text-right">1,208</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300"><input type="checkbox" class="checkbox checkbox-xs"></div><div class="p-2 border-t border-base-300 font-mono whitespace-nowrap">SUP-0088</div><div class="p-2 border-t border-base-300 font-mono whitespace-nowrap">AccountId = ACC-102</div><div class="p-2 border-t border-base-300">Rule · Round amounts</div><div class="p-2 border-t border-base-300 opacity-70">Legacy, no reason</div><div class="p-2 border-t border-base-300 opacity-60">—</div><div class="p-2 border-t border-base-300 text-warning">28 Oct*</div><div class="p-2 border-t border-base-300 text-right">0</div></div>
+          </div>
+          <div class="flex items-center gap-2 mt-3 text-xs"><button class="btn btn-xs btn-outline">Revoke selected…</button><span class="opacity-60">* expiry set at migration. Bulk revoke is allowed. Bulk create is not: every suppression gets its own reason.</span></div>
+        </div>
+        <div class="border-l border-base-300 p-4 flex flex-col gap-2 text-xs">
+          <div class="flex items-center gap-2"><b class="text-sm font-mono">SUP-0139</b><span class="badge badge-success badge-soft badge-xs">Active</span><span class="badge badge-outline badge-xs">approved</span></div>
+          <div class="grid grid-cols-[80px_minmax(0,1fr)] gap-y-1"><span class="opacity-60">Key</span><span class="font-mono">IP = 41.33.8.12</span><span class="opacity-60">Scope</span><span>All rules on Retail cards</span><span class="opacity-60">Does not stop</span><span>TTL counters · scoring · archive · other models</span><span class="opacity-60">Owner</span><span>Fraud Ops · T. Farouk</span></div>
+          <div class="font-semibold pt-1">History</div>
+          <ul class="timeline timeline-vertical timeline-compact">
+            <li><div class="timeline-middle"><i data-lucide="plus-circle"></i></div><div class="timeline-end">1 Sep · created by T. Farouk · 30 d · “corporate NAT”</div><hr></li>
+            <li><hr><div class="timeline-middle"><i data-lucide="stamp"></i></div><div class="timeline-end">1 Sep · approved by S. Okoro</div><hr></li>
+            <li><hr><div class="timeline-middle"><i data-lucide="refresh-cw"></i></div><div class="timeline-end">29 Sep · renewal due · Inbox reminder sent</div></li>
+          </ul>
+          <div class="flex gap-2 pt-1"><button class="btn btn-xs">Renew…</button><button class="btn btn-xs btn-ghost">Revoke…</button><button class="btn btn-xs btn-ghost">Open matches</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="S4" class="flex flex-col gap-2 shrink-0" style="flex:none;width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">S4</span><span class="font-semibold">A list is a model artefact: versioned change set, approved, in the snapshot</span><span class="text-sm opacity-60">model configuration › Lists</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-3 border-b border-base-300 flex flex-wrap items-center gap-2"><span class="text-xs opacity-60">Retail cards › Lists ›</span><b>Blocked beneficiaries</b><span class="badge badge-sm">v14 live</span><span class="badge badge-sm badge-warning badge-soft">v15 draft</span><span class="text-xs opacity-60 ml-2">used by 3 rules · in snapshot 2026-09-27 (hash 3f9a…)</span><div class="ml-auto flex gap-2"><button class="btn btn-xs btn-outline gap-1"><i data-lucide="upload"></i>Upload CSV</button><button class="btn btn-xs btn-outline gap-1"><i data-lucide="flask-conical"></i>Backtest v15</button><button class="btn btn-xs btn-primary">Submit for approval</button></div></div>
+      <div class="px-4 py-2 bg-info/10 text-xs flex gap-2 border-b border-base-300"><i data-lucide="info" class="text-info mt-0.5"></i>Lists are part of the model: changes are versioned, approved, and recorded in the model snapshot, so any past decision can be replayed exactly. <b>To stop actions for one customer, use a suppression.</b></div>
+      <div class="grid grid-cols-[minmax(0,1fr)_380px]">
+        <div class="p-3 grid grid-cols-[28px_minmax(0,1fr)_minmax(0,1fr)_120px] text-xs">
+          <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200"></div><div class="p-2 bg-base-200">Value</div><div class="p-2 bg-base-200">Source</div><div class="p-2 bg-base-200">Proposed by</div></div>
+          <div class="contents"><div class="p-2 border-t border-base-300 text-success font-bold">+</div><div class="p-2 border-t border-base-300 font-mono">ACC-02</div><div class="p-2 border-t border-base-300">Proposal from C-9044 (Refuse payment)</div><div class="p-2 border-t border-base-300">A. Vance</div></div>
+          <div class="contents"><div class="p-2 border-t border-base-300 text-success font-bold">+</div><div class="p-2 border-t border-base-300 font-mono">ACC-77</div><div class="p-2 border-t border-base-300">CSV upload, row 1</div><div class="p-2 border-t border-base-300">T. Farouk</div></div>
+          <div class="contents"><div class="p-2 border-t border-base-300 text-error font-bold">−</div><div class="p-2 border-t border-base-300 font-mono line-through opacity-70">ACC-311</div><div class="p-2 border-t border-base-300">Account closed 2025</div><div class="p-2 border-t border-base-300">T. Farouk</div></div>
+          <div class="col-span-4 p-2 text-[11px] opacity-60 border-t border-base-300">412 unchanged values hidden · <a href="#">show all</a></div>
+        </div>
+        <div class="border-l border-base-300 p-4 flex flex-col gap-2 text-xs">
+          <div class="font-semibold">Backtest v15 against v14 · last 30 days</div>
+          <div class="grid grid-cols-[minmax(0,1fr)_50px_50px] gap-y-1"><span></span><span class="text-right opacity-60">v14</span><span class="text-right opacity-60">v15</span><span>Beneficiary hold (RE)</span><span class="text-right">19</span><span class="text-right font-semibold">27</span><span>Mule pass-through</span><span class="text-right">4</span><span class="text-right font-semibold">6</span></div>
+          <div class="font-semibold pt-2">Urgent?</div>
+          <div>An emergency change goes live now and needs approval within 24 h. It shows in Pending changes on the Team view.</div>
+          <button class="btn btn-xs btn-outline self-start">Emergency publish…</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="M · Market gaps">
+  <div class="flex items-baseline gap-3"><h2 class="text-xl font-semibold">M · Market gaps (pass 5)</h2><span class="text-sm opacity-60">What Unit21, Hummingbird and Lucinity ship that the design didn't · endpoints CG-01…CG-22 in the Vue blueprint §8–9 · M-series so they never collide with the regulatory gaps G1–G12</span></div>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="M1" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M1</span><span class="font-semibold">Agent L1 triage with work log</span><span class="text-sm opacity-60">top of Summary · agent recommends, analyst executes</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-3 border-b border-base-300 flex flex-wrap items-center gap-2"><i data-lucide="bot"></i><b>Triage agent</b><span class="badge badge-sm badge-ghost">Researcher · read-only tools</span><span class="text-xs opacity-60">ran 10:15 on case creation · 41 s · 9 steps</span><button class="btn btn-xs btn-ghost ml-auto gap-1"><i data-lucide="refresh-cw"></i>Re-run</button></div>
+      <div class="p-4 flex flex-col gap-3">
+        <div class="rounded-box border-2 border-warning/60 p-3 flex flex-col gap-2">
+          <div class="flex flex-wrap items-center gap-2"><span class="text-xs uppercase tracking-wide opacity-60">Recommends</span><b class="text-base">Escalate: investigate as structuring</b><span class="badge badge-warning badge-soft badge-sm">agreement with past analysts on similar cases: 84%</span></div>
+          <ul class="list-disc pl-5 text-xs leading-relaxed">
+            <li>11 cash deposits EGP 45,000, each below the EGP 10,000 threshold, 14–23 Sep <span class="opacity-60">· Journal, 11 rows</span></li>
+            <li>P2P out EGP 9,500 to a beneficiary first seen 20 Sep, 35 min after the last deposit <span class="opacity-60">· ARC-771203</span></li>
+            <li>Shared device DEV-8831A with confirmed TP ACC-915 Duarte (C-8812) <span class="opacity-60">· Graph, 1 hop</span></li>
+            <li>No prior cases; KYC tier Retail; declared income does not explain the cash <span class="opacity-60">· KYC live 10:15</span></li>
+          </ul>
+          <div class="flex flex-wrap gap-2"><button class="btn btn-sm btn-primary gap-1"><i data-lucide="check"></i>Accept · open Close as Escalate…</button><button class="btn btn-sm btn-outline">Override…</button><span class="text-xs opacity-60 self-center">Accept pre-fills the lightbox; you still review and submit.</span></div>
+        </div>
+        <div class="rounded-box border border-base-300">
+          <div class="px-3 py-2 text-xs font-semibold flex items-center gap-2"><i data-lucide="list-tree"></i>Work log · 9 steps, all recorded as CaseEvents<button class="btn btn-xs btn-ghost ml-auto">Hide</button></div>
+          <div class="grid grid-cols-[72px_minmax(0,1fr)_110px] text-xs font-mono border-t border-base-300">
+            <div class="contents"><div class="p-1.5 opacity-60">10:15:02</div><div class="p-1.5">Case/Anchor C-9041</div><div class="p-1.5 text-success">ok · 212 ms</div></div>
+            <div class="contents"><div class="p-1.5 opacity-60">10:15:04</div><div class="p-1.5">Journal ACC-441 · 30 d · type=Cash deposit</div><div class="p-1.5 text-success">11 rows</div></div>
+            <div class="contents"><div class="p-1.5 opacity-60">10:15:07</div><div class="p-1.5">Graph/Neighbourhood DEV-8831A · 1 hop · hubs off</div><div class="p-1.5 text-success">4 nodes</div></div>
+            <div class="contents"><div class="p-1.5 opacity-60">10:15:11</div><div class="p-1.5">Case search ACC-915 · closed</div><div class="p-1.5 text-success">C-8812 TP</div></div>
+            <div class="contents"><div class="p-1.5 opacity-60">10:15:40</div><div class="p-1.5">Policy check · AML structuring SOP v4 §2</div><div class="p-1.5 text-warning">escalate</div></div>
+          </div>
+          <div class="px-3 py-2 text-[11px] opacity-60 border-t border-base-300">4 more steps · model deepseek-v4.1-flash (tenant setting) · prompt and tool versions pinned in the run record</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="M2" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M2</span><span class="font-semibold">QA sampling and review</span><span class="text-sm opacity-60">Team view card + review lightbox</span></div>
+    <div class="grid grid-cols-[260px_minmax(0,1fr)] gap-4 text-sm">
+      <div class="rounded-box border border-base-300 bg-base-100 p-4 flex flex-col gap-2">
+        <div class="flex items-center gap-2"><i data-lucide="clipboard-check"></i><b>QA sampling</b></div>
+        <div class="text-xs grid grid-cols-[90px_minmax(0,1fr)] gap-y-1"><span class="opacity-60">Plan</span><span>5% of closed cases, weekly, Monday 07:00</span><span class="opacity-60">Weighting</span><span>×3 where analyst overrode the agent · ×2 new starters</span><span class="opacity-60">Queue</span><span><b>14</b> to review · 3 overdue</span><span class="opacity-60">Last 30 d</span><span>Pass 88% · Minor 9% · Major 3%</span></div>
+        <div class="flex gap-2"><button class="btn btn-xs btn-primary">Open queue</button><button class="btn btn-xs btn-ghost">Edit plan</button></div>
+      </div>
+      <div class="rounded-box border border-base-300 bg-base-100 shadow-xl overflow-hidden">
+        <div class="px-4 py-2.5 border-b border-base-300 flex items-center gap-2"><b>QA review · C-8990</b><span class="text-xs opacity-60">closed FP by R. Lund, 19 Sep · sampled (override ×3)</span></div>
+        <div class="p-4 flex flex-col gap-2 text-xs">
+          <div class="grid grid-cols-[minmax(0,1fr)_repeat(3,56px)] items-center gap-y-1.5">
+            <span class="opacity-60 font-semibold">Check</span><span class="opacity-60 text-center">Pass</span><span class="opacity-60 text-center">Fail</span><span class="opacity-60 text-center">N/A</span>
+            <span>All activations reviewed</span><span class="justify-self-center w-4 h-4 rounded-full border-[5px] border-primary"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span>
+            <span>Customer contact attempted where SOP requires</span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span><span class="justify-self-center w-4 h-4 rounded-full border-[5px] border-error"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span>
+            <span>Rationale supports outcome</span><span class="justify-self-center w-4 h-4 rounded-full border-[5px] border-primary"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span>
+            <span>Agent recommendation addressed (overridden: reason given)</span><span class="justify-self-center w-4 h-4 rounded-full border-[5px] border-primary"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span><span class="justify-self-center w-4 h-4 rounded-full border border-base-content/30"></span>
+          </div>
+          <textarea class="textarea textarea-sm w-full h-12">SOP 3.1 requires a call-back for P2P to a new beneficiary over EGP 5,000; none recorded.</textarea>
+          <div class="flex items-center gap-2"><span class="opacity-60">Outcome</span><div class="join"><button class="btn btn-xs join-item">Pass</button><button class="btn btn-xs join-item">Minor</button><button class="btn btn-xs join-item btn-error">Major</button></div><span class="flex items-center gap-1.5 ml-3"><span class="w-4 h-4 rounded bg-primary text-primary-content grid place-items-center"><i data-lucide="check" class="text-[10px]"></i></span>Reopen case (needs approval)</span></div>
+        </div>
+        <div class="px-4 py-2.5 border-t border-base-300 flex justify-end gap-2"><button class="btn btn-sm btn-ghost">Cancel</button><button class="btn btn-sm btn-primary">Record review</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="M3" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M3</span><span class="font-semibold">RFI to the customer</span><span class="text-sm opacity-60">lightbox · tenant portal · thread in Notes</span></div>
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div class="rounded-box border border-base-300 bg-base-100 shadow-xl overflow-hidden">
+        <div class="px-4 py-2.5 border-b border-base-300 flex items-center gap-2"><b>Send RFI · C-9044</b></div>
+        <div class="p-4 flex flex-col gap-2 text-xs">
+          <label class="flex flex-col gap-1"><span class="opacity-60">Template</span><select class="select select-sm w-full"><option>Source of funds · payment to new beneficiary</option></select></label>
+          <div class="rounded border border-base-300 p-2 flex flex-col gap-1"><span>1. What is the payment of EGP 12,300 to Alpha LLC for?</span><span>2. Upload an invoice or contract</span><span class="opacity-60">+ Add question</span></div>
+          <div class="grid grid-cols-2 gap-2"><label class="flex flex-col gap-1"><span class="opacity-60">Due</span><input class="input input-sm" value="26 Sep 17:00"></label><label class="flex flex-col gap-1"><span class="opacity-60">Send to</span><input class="input input-sm" value="o•••@mail.example (KYC)"></label></div>
+          <div class="rounded bg-success/10 border border-success/40 p-2 flex gap-2"><i data-lucide="shield-check" class="text-success"></i><span>Tipping-off check passed: no SAR filed or pending on this case key.</span></div>
+          <div class="text-[11px] opacity-60">If a SAR is pending, sending is blocked unless the MLRO approves.</div>
+        </div>
+        <div class="px-4 py-2.5 border-t border-base-300 flex justify-end gap-2"><button class="btn btn-sm btn-ghost">Cancel</button><button class="btn btn-sm btn-primary">Send RFI</button></div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="rounded-box border border-base-300 bg-white text-neutral-900 p-4 flex flex-col gap-2 text-xs">
+          <div class="flex items-center gap-2"><div class="w-7 h-7 rounded bg-neutral-200 grid place-items-center text-[9px] text-neutral-500">logo</div><b class="text-sm">Nile Commerce Bank</b></div>
+          <div class="font-semibold text-sm">We need a little more information</div>
+          <div>What is the payment of EGP 12,300 to Alpha LLC for?</div>
+          <textarea class="textarea textarea-sm bg-white w-full h-12">Machinery deposit, invoice attached.</textarea>
+          <div class="flex items-center gap-2"><i data-lucide="paperclip"></i>INV-2231.pdf · scanned ✓</div>
+          <button class="btn btn-sm btn-neutral self-start">Send answers</button>
+          <div class="text-neutral-500">Link works once and expires 26 Sep 17:00.</div>
+        </div>
+        <div class="rounded-box border border-base-300 bg-base-100 p-3 text-xs flex flex-col gap-1.5">
+          <div class="flex items-center gap-2"><i data-lucide="message-square-reply"></i><b>RFI-0142</b><span class="badge badge-success badge-soft badge-xs">Answered</span><span class="ml-auto opacity-60">diary stopped</span></div>
+          <div class="opacity-70">Sent 09:02 · viewed 09:40 · answered 10:05 · 1 upload added to the case</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="M4" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M4</span><span class="font-semibold">Web research with citations</span><span class="text-sm opacity-60">AskJooby Researcher · off by default per tenant</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+      <div class="self-end max-w-[80%] rounded-box bg-base-200 px-3 py-2 text-xs">Adverse media on Alpha LLC, Cairo</div>
+      <div class="rounded-box border-2 border-success/60 p-3 flex flex-col gap-2">
+        <div class="flex items-center gap-2"><span class="badge badge-success badge-soft badge-sm">Finding · 2 independent sources</span><span class="text-xs opacity-60">searched 10:22 · 14 pages read</span></div>
+        <div>Alpha LLC was registered on 2 Sep 2026 with a residential address, and its named director appears in a 2025 news report on a car-import fraud inquiry.</div>
+        <div class="flex flex-col gap-1.5 text-xs">
+          <div class="rounded border border-base-300 p-2 flex gap-2"><span class="badge badge-xs">1</span><div class="flex-1"><div class="font-mono">companies-registry.example/alpha-llc</div><div class="opacity-70">“…incorporated 02/09/2026 … registered office: flat 4…” · retrieved 10:22</div></div></div>
+          <div class="rounded border border-base-300 p-2 flex gap-2"><span class="badge badge-xs">2</span><div class="flex-1"><div class="font-mono">news.example/2025/11/import-fraud-inquiry</div><div class="opacity-70">“…director of several trading firms was questioned…” · retrieved 10:22</div></div></div>
+        </div>
+        <div class="flex gap-2"><button class="btn btn-xs btn-primary">Save to case (PDF of sources)</button><button class="btn btn-xs btn-ghost">Add as narrative fact</button><button class="btn btn-xs btn-ghost">Dismiss</button></div>
+        <div class="text-[11px] opacity-60">A name match is not identity: check the director's date of birth before relying on source 2.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="M5" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M5</span><span class="font-semibold">Automation recipes</span><span class="text-sm opacity-60">one mechanism for macros, hooks and schedules · maker-checker publish</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-2.5 border-b border-base-300 flex items-center gap-2"><b>Periodic review · high-risk customers</b><span class="badge badge-ghost badge-sm">draft v2</span><div class="ml-auto flex gap-2"><button class="btn btn-xs btn-outline gap-1"><i data-lucide="flask-conical"></i>Test on last 30 days</button><button class="btn btn-xs btn-primary">Publish…</button></div></div>
+      <div class="p-4 flex flex-col gap-2 text-xs">
+        <div class="rounded-box border border-base-300 p-3 flex items-center gap-3"><span class="badge badge-sm badge-neutral">When</span><i data-lucide="calendar"></i>Every day 06:00 (Cairo)</div>
+        <div class="w-px h-3 bg-base-300 ml-8"></div>
+        <div class="rounded-box border border-base-300 p-3 flex items-center gap-3"><span class="badge badge-sm badge-neutral">If</span><i data-lucide="filter"></i>Customer risk tier = High <b>and</b> last review older than 365 days <span class="opacity-60 ml-auto">query builder · compiled server-side</span></div>
+        <div class="w-px h-3 bg-base-300 ml-8"></div>
+        <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1.5"><div class="flex items-center gap-3"><span class="badge badge-sm badge-neutral">Then</span>Registered operations only</div>
+          <div class="pl-14 flex flex-col gap-1"><span>1 · Op: CreateCase → workflow “Periodic review”</span><span>2 · Op: Assign → pull queue “KYC team”</span><span>3 · Op: SetDiary → 10 business days</span></div></div>
+        <div class="rounded-box bg-base-200/70 p-2 flex items-center gap-2"><i data-lucide="flask-conical"></i><span><b>Dry run:</b> would have created 37 cases in 30 days (peak 6 on 1 Sep); 0 failures.</span></div>
+        <div class="grid grid-cols-[90px_minmax(0,1fr)_80px] border border-base-300 rounded-box overflow-hidden">
+          <div class="contents font-semibold opacity-70"><div class="p-1.5 bg-base-200">Run</div><div class="p-1.5 bg-base-200">Result (v1)</div><div class="p-1.5 bg-base-200">Events</div></div>
+          <div class="contents"><div class="p-1.5 border-t border-base-300">27 Sep 06:00</div><div class="p-1.5 border-t border-base-300 text-success">2 cases created</div><div class="p-1.5 border-t border-base-300"><a href="#">view</a></div></div>
+          <div class="contents"><div class="p-1.5 border-t border-base-300">26 Sep 06:00</div><div class="p-1.5 border-t border-base-300 text-error">1 failed: queue full, retried 06:05 ✓</div><div class="p-1.5 border-t border-base-300"><a href="#">view</a></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="M6" class="flex flex-col gap-2 shrink-0" style="flex:none;width:760px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">M6</span><span class="font-semibold">Tune a rule from outcomes: backtest and shadow</span><span class="text-sm opacity-60">from Activations “Tune this rule…”</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-2.5 border-b border-base-300 flex items-center gap-2"><i data-lucide="sliders-horizontal"></i><b>Structuring 9d</b><span class="opacity-60 text-xs">v3 · 90 days · 412 hits · 212 closed</span></div>
+      <div class="p-4 grid grid-cols-2 gap-4 text-xs">
+        <div class="flex flex-col gap-2">
+          <div class="font-semibold">Proposed change</div>
+          <div class="rounded border border-base-300 p-2 font-mono">count(cash deposit, 9d) ≥ <b>10</b> <span class="opacity-60">(was 8)</span> and each &lt; 10,000</div>
+          <div class="text-[11px] opacity-60">Suggested by outcomes: 71% of FP closures had 8–9 deposits.</div>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <div class="font-semibold">Backtest · same 90 days</div>
+          <div class="grid grid-cols-[minmax(0,1fr)_60px_60px] gap-y-1">
+            <span></span><span class="opacity-60 text-right">v3</span><span class="opacity-60 text-right">v4</span>
+            <span>Hits</span><span class="text-right">412</span><span class="text-right font-semibold">251</span>
+            <span>TPs caught</span><span class="text-right">66</span><span class="text-right font-semibold">63</span>
+            <span>TPs missed</span><span class="text-right">—</span><span class="text-right text-error font-semibold">3</span>
+            <span>Analyst hours</span><span class="text-right">206</span><span class="text-right font-semibold">126</span>
+          </div>
+          <a href="#" class="text-[11px]">Open the 3 missed TPs</a>
+        </div>
+      </div>
+      <div class="px-4 py-2.5 border-t border-base-300 flex items-center gap-2 text-xs"><span class="opacity-70">Shadow runs v4 beside v3 without creating cases, then promotion needs approval.</span><button class="btn btn-sm btn-outline ml-auto whitespace-nowrap">Start 14-day shadow</button></div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="A · Case page states">
+  <h2 class="text-xl font-semibold">A · Case page states</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="A1" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A1</span><span class="font-semibold">Case header: lanes, risk method, Priority override</span><span class="text-sm opacity-60">4.5.5 · 4.5.7 · 4.5.12</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm divide-y divide-base-300">
+      <div class="px-5 py-3 flex flex-col gap-2">
+        <div class="text-[11px] uppercase tracking-wide opacity-50">Lane 1 · Live money</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="font-mono font-semibold text-lg">C-9044</span><span class="badge badge-soft badge-info">In review</span>
+          <span class="flex items-center gap-1.5 rounded-full border-2 border-warning bg-warning/10 px-3 py-1 text-sm font-semibold"><i data-lucide="zap"></i>Live money · hold 5 h 42 m</span>
+          <span class="rounded-full border border-base-300 px-3 py-1 text-sm">Possible 48% · Moderate · 38</span>
+          <span class="text-sm opacity-70">Held ARC-771240 · EGP 12,300 · ACC-778 Osei → ACC-02 Alpha LLC</span>
+          <button class="btn btn-sm btn-warning ml-auto gap-2"><i data-lucide="hand"></i>Decide payment… <kbd class="kbd kbd-xs">H</kbd></button>
+        </div>
+      </div>
+      <div class="px-5 py-3 flex flex-col gap-2">
+        <div class="text-[11px] uppercase tracking-wide opacity-50">Lane 2 · Mandatory (floor: confirmed sanctions match)</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="font-mono font-semibold text-lg">C-9050</span><span class="badge badge-soft badge-info">In review</span>
+          <span class="flex items-center gap-1.5 rounded-full border-2 border-error bg-error/10 px-3 py-1 text-sm font-semibold"><i data-lucide="shield-alert"></i>Mandatory · freeze report due 23 h</span>
+          <span class="rounded-full border border-base-300 px-3 py-1 text-sm">Very likely 91% · Severe · 88</span>
+          <span class="text-sm opacity-70">Floor set by SAN-01 confirmed match: lane and impact can't drop, Suspend Bypass not allowed</span>
+        </div>
+      </div>
+      <div class="px-5 py-3 flex flex-col gap-2">
+        <div class="text-[11px] uppercase tracking-wide opacity-50">Risk method · cold start (today) vs calibrated (learned combiner, phase 3)</div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1.5 text-sm">
+            <div class="flex items-center gap-2"><span class="rounded-full border border-base-300 px-3 py-0.5">Likely 56% · High · 62</span><span class="badge badge-ghost badge-sm">cold start</span></div>
+            <div class="opacity-70">Weights from configuration; base rate 8% from 212 closed cases. Shown as a band first; the number is secondary.</div>
+          </div>
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1.5 text-sm">
+            <div class="flex items-center gap-2"><span class="rounded-full border border-base-300 px-3 py-0.5">Likely 61% · High · 65</span><span class="badge badge-soft badge-success badge-sm">calibrated v2</span></div>
+            <div class="opacity-70">Learned from 1,904 outcomes · backtest Brier 0.12 · of cases called "Likely", 58% were TP. Popover adds a reliability line.</div>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-3 flex flex-col gap-2">
+        <div class="text-[11px] uppercase tracking-wide opacity-50">Priority overridden (Op: ChangePriority, reason and expiry)</div>
+        <div class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="rounded-full border border-base-300 px-3 py-1">Likely 56% · High · <s class="opacity-50">62</s> <b>90</b></span>
+          <span class="flex items-center gap-1.5"><i data-lucide="pencil"></i>Set to 90 by S. Okoro · “Police request, same subject” · expires 26 Sep 17:00, then back to computed</span>
+          <button class="btn btn-xs btn-ghost">Remove override</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="A2" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A2</span><span class="font-semibold">Diaries in the Decide column</span><span class="text-sm opacity-60">2.1 · H1</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+      <div class="flex flex-col gap-1"><div class="flex items-center gap-2"><i data-lucide="calendar-clock"></i><b>STR · regulatory</b><span class="opacity-60">business days, EG</span><span class="ml-auto tnum">4d 03h</span></div><progress class="progress progress-success h-1.5" value="30" max="100"></progress></div>
+      <div class="flex flex-col gap-1"><div class="flex items-center gap-2"><i data-lucide="calendar-clock"></i><b>Follow-up · user</b><span class="opacity-60">call back</span><span class="ml-auto tnum text-warning font-semibold">due in 40 m</span></div><progress class="progress progress-warning h-1.5" value="85" max="100"></progress></div>
+      <div class="flex flex-col gap-1 rounded-box border-2 border-error p-2"><div class="flex items-center gap-2"><i data-lucide="alarm-clock-off" class="text-error"></i><b>Consent response · regulatory</b><span class="ml-auto tnum text-error font-semibold">breached 2h 10m ago</span></div><progress class="progress progress-error h-1.5" value="100" max="100"></progress><div class="text-xs">Breach stays on the case and in lane 3 until closed. S. Okoro notified 10:14 (email + Inbox). <a href="#">Record reason for breach</a></div></div>
+      <div class="flex flex-col gap-1"><div class="flex items-center gap-2"><i data-lucide="circle-pause"></i><b>STR · regulatory</b><span class="badge badge-ghost badge-sm">paused</span><span class="ml-auto tnum opacity-60">2d 06h left when resumed</span></div><progress class="progress h-1.5 opacity-40" value="55" max="100"></progress><div class="text-xs opacity-70">Paused 23 Sep 16:02 by A. Vance · “Awaiting FIU consent” · pack allows pause · resumes when consent is recorded</div></div>
+      <div class="flex flex-col gap-1 rounded-box border-2 border-warning p-2"><div class="flex items-center gap-2"><i data-lucide="zap"></i><b>Payment hold · minutes</b><span class="badge badge-warning badge-sm">Hold expiring</span><span class="ml-auto tnum font-semibold text-warning">52 m</span></div><progress class="progress progress-warning h-1.5" value="92" max="100"></progress><div class="text-xs">Escalated to S. Okoro 13:53 · re-escalates every 30 min · pack maximum 4 business days</div></div>
+    </div>
+  </div>
+
+  <div id="A3" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A3</span><span class="font-semibold">Live case state</span><span class="text-sm opacity-60">5.6</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm flex flex-col text-sm overflow-hidden">
+      <div class="px-4 py-2 flex items-center gap-2 border-b border-base-300"><span class="font-mono font-semibold">C-9041</span><span class="opacity-60">Marcus Sterling</span><span class="ml-auto flex items-center gap-1.5 text-xs"><i data-lucide="eye"></i>Also viewing <span class="avatar avatar-placeholder"><span class="bg-neutral text-neutral-content w-5 rounded-full text-[10px]">MK</span></span>M. Karim</span><span class="flex items-center gap-1 text-xs"><i data-lucide="lock"></i>you</span></div>
+      <div class="px-4 py-2.5 bg-info/10 border-b border-info/40 flex items-center gap-2"><i data-lucide="bell-ring" class="text-info"></i><span><b>1 new Activation</b> since you opened this case (Velocity 1h, 10:52).</span><button class="btn btn-xs btn-info ml-auto">Review</button></div>
+      <div class="m-3 rounded-box border-2 border-info p-3 flex flex-col gap-1"><div class="flex items-center gap-2"><span class="badge badge-sm">2</span><b>Activations</b><span class="badge badge-info badge-sm">new</span></div><div class="opacity-70">ACT-906 Velocity 1h · 10:52 · anchor ARC-771260 — highlighted until you scroll past it</div></div>
+      <div class="mx-3 mb-3 rounded-box border border-base-300 shadow-lg">
+        <div class="px-3 py-2 border-b border-base-300 font-semibold">Close C-9041</div>
+        <div class="px-3 py-2 bg-warning/10 text-xs flex items-start gap-2"><i data-lucide="triangle-alert" class="text-warning mt-0.5"></i><span>The case changed while this was open: 1 new Activation. The preview has refreshed; one consequence changed (typology suggestions now include Velocity). Review it, then acknowledge.</span></div>
+        <div class="px-3 py-2 flex justify-end gap-2"><button class="btn btn-xs btn-outline">I've seen the change</button><button class="btn btn-xs btn-primary" disabled="">Close case</button></div>
+      </div>
+      <div class="px-4 py-2.5 bg-base-300/60 flex items-center gap-2 text-xs"><i data-lucide="wifi-off"></i><b>Connection lost 10:58.</b><span class="opacity-80">Operations are disabled. Your unsaved note is kept on this device. Reconnecting in 8 s…</span><button class="btn btn-xs ml-auto">Retry now</button></div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="B · Journal lenses">
+  <h2 class="text-xl font-semibold">B · Journal lenses</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="B1" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">B1</span><span class="font-semibold">Merge lens: two keys on one timeline</span><span class="text-sm opacity-60">5.7 · neutral categorical palette, Merge lanes only</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+      <div class="flex flex-wrap items-center gap-2"><span class="badge badge-sm">3</span><b>Journal</b><span class="opacity-60">Merge lens</span>
+        <span class="flex items-center gap-1.5 rounded-full border px-2.5 py-0.5" style="border-color:oklch(0.62 0.07 250);background:oklch(0.95 0.02 250)"><span class="font-mono font-semibold" style="color:oklch(0.42 0.07 250)">A</span>ACC-441 Sterling <span class="opacity-60">(case subject)</span></span>
+        <span class="flex items-center gap-1.5 rounded-full border px-2.5 py-0.5" style="border-color:oklch(0.62 0.07 160);background:oklch(0.95 0.02 160)"><span class="font-mono font-semibold" style="color:oklch(0.42 0.07 160)">B</span>ACC-102 Kamal</span>
+        <button class="btn btn-xs btn-ghost gap-1"><i data-lucide="plus"></i>Add key (max 4)</button>
+        <span class="ml-auto text-xs opacity-60">Colour is a lane label only, never a risk signal · every row also carries its letter</span></div>
+      <div class="grid grid-cols-[28px_140px_110px_110px_minmax(0,1fr)_120px] text-xs border border-base-300 rounded-box overflow-hidden">
+        <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200"></div><div class="p-2 bg-base-200">When</div><div class="p-2 bg-base-200">Type</div><div class="p-2 bg-base-200 text-right">Amount</div><div class="p-2 bg-base-200">Beneficiary · device</div><div class="p-2 bg-base-200">Tags</div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300 font-mono font-semibold" style="box-shadow:inset 3px 0 0 oklch(0.62 0.07 250);color:oklch(0.42 0.07 250)">A</div><div class="p-2 border-t border-base-300">23 Sep 10:14:55</div><div class="p-2 border-t border-base-300">P2P out</div><div class="p-2 border-t border-base-300 text-right font-semibold">EGP 9,500</div><div class="p-2 border-t border-base-300">ACC-02 Alpha LLC · DEV-8831A</div><div class="p-2 border-t border-base-300"><span class="badge badge-xs badge-outline">Layering</span></div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300 font-mono font-semibold" style="box-shadow:inset 3px 0 0 oklch(0.62 0.07 160);color:oklch(0.42 0.07 160)">B</div><div class="p-2 border-t border-base-300">23 Sep 10:14:02</div><div class="p-2 border-t border-base-300">P2P out</div><div class="p-2 border-t border-base-300 text-right font-semibold">EGP 9,800</div><div class="p-2 border-t border-base-300">ACC-02 Alpha LLC · DEV-8831A</div><div class="p-2 border-t border-base-300"></div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300 font-mono font-semibold" style="box-shadow:inset 3px 0 0 oklch(0.62 0.07 250);color:oklch(0.42 0.07 250)">A</div><div class="p-2 border-t border-base-300">23 Sep 09:40</div><div class="p-2 border-t border-base-300">Cash deposit</div><div class="p-2 border-t border-base-300 text-right font-semibold">EGP 9,500</div><div class="p-2 border-t border-base-300">Heliopolis branch</div><div class="p-2 border-t border-base-300"><span class="badge badge-xs badge-outline">Cash placement</span></div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300 font-mono font-semibold" style="box-shadow:inset 3px 0 0 oklch(0.62 0.07 160);color:oklch(0.42 0.07 160)">B</div><div class="p-2 border-t border-base-300">23 Sep 09:12</div><div class="p-2 border-t border-base-300">Cash deposit</div><div class="p-2 border-t border-base-300 text-right font-semibold">EGP 9,700</div><div class="p-2 border-t border-base-300">Heliopolis branch</div><div class="p-2 border-t border-base-300"></div></div>
+      </div>
+      <div class="rounded-box bg-base-200/70 p-3 flex flex-wrap items-center gap-3 text-xs"><i data-lucide="pin"></i><b>Pin lens</b><span>Pinned: ARC-771203 (A) and ARC-771201 (B). They stay at the top in every lens and pivot, and travel to Compose as facts.</span><span class="ml-auto opacity-70">53 s apart · same device · same beneficiary</span></div>
+    </div>
+  </div>
+
+  <div id="B2" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">B2</span><span class="font-semibold">Explode lanes with a sparkline each</span><span class="text-sm opacity-60">S3-06 · same series endpoint as the daily chart</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="grid grid-cols-[minmax(0,1fr)_170px_70px_110px_90px_90px_minmax(0,1fr)] text-xs">
+        <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200">Lane (linked key)</div><div class="p-2 bg-base-200">30 days, daily count</div><div class="p-2 bg-base-200 text-right">Count</div><div class="p-2 bg-base-200 text-right">Total</div><div class="p-2 bg-base-200">First</div><div class="p-2 bg-base-200">Last</div><div class="p-2 bg-base-200">Flags</div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300"><b>DEV-8831A</b> shared device <span class="opacity-60">· 4 accounts</span></div><div class="p-2 border-t border-base-300"><svg viewBox="0 0 150 24" class="w-[150px] h-6"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,22 20,22 40,21 60,20 80,18 100,15 115,10 130,6 150,3"></polyline><circle cx="150" cy="3" r="2.5" fill="currentColor"></circle></svg></div><div class="p-2 border-t border-base-300 text-right">14</div><div class="p-2 border-t border-base-300 text-right">EGP 52,300</div><div class="p-2 border-t border-base-300">12 Sep</div><div class="p-2 border-t border-base-300">24 Sep</div><div class="p-2 border-t border-base-300">★ 1 confirmed TP · rising, 9 of 14 in the last 3 days</div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300"><b>ACC-02</b> Alpha LLC <span class="opacity-60">· beneficiary</span></div><div class="p-2 border-t border-base-300"><svg viewBox="0 0 150 24" class="w-[150px] h-6"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,22 30,22 60,22 90,21 110,16 130,12 150,8"></polyline></svg></div><div class="p-2 border-t border-base-300 text-right">6</div><div class="p-2 border-t border-base-300 text-right">EGP 57,100</div><div class="p-2 border-t border-base-300">20 Sep</div><div class="p-2 border-t border-base-300">23 Sep</div><div class="p-2 border-t border-base-300">first seen 20 Sep · paid by 3 accounts</div></div>
+        <div class="contents"><div class="p-2 border-t border-base-300"><b>185.220.101.4</b> <span class="opacity-60">· IP hub, collapsed</span></div><div class="p-2 border-t border-base-300 opacity-40"><svg viewBox="0 0 150 24" class="w-[150px] h-6"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="0,8 25,9 50,7 75,9 100,8 125,9 150,8"></polyline></svg></div><div class="p-2 border-t border-base-300 text-right">4,112</div><div class="p-2 border-t border-base-300 text-right opacity-60">—</div><div class="p-2 border-t border-base-300">—</div><div class="p-2 border-t border-base-300">—</div><div class="p-2 border-t border-base-300 opacity-70">public VPN exit · flat, not evidence</div></div>
+      </div>
+      <div class="px-3 py-2 text-xs opacity-60 border-t border-base-300">One shared y-scale per column would mislead across lanes of very different volume, so each sparkline has its own scale; the count column carries the magnitude.</div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="C · Compose and AskJooby">
+  <h2 class="text-xl font-semibold">C · Compose and AskJooby</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="C1" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">C1</span><span class="font-semibold">Compose mode with the quality scorecard</span><span class="text-sm opacity-60">12A.10 · 12A.14 · key c</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-2 border-b border-base-300 flex items-center gap-3"><span class="font-mono font-semibold">C-9041</span><b>Compose</b><span class="badge badge-outline badge-sm">STR · generic FIU format</span><span class="opacity-60">v3 draft · stale 0</span><button class="btn btn-xs btn-warning btn-soft ml-auto gap-1"><i data-lucide="list-checks"></i>Scorecard 8 / 10</button><button class="btn btn-xs btn-ghost">Save version <kbd class="kbd kbd-xs">⌃S</kbd></button><button class="btn btn-xs btn-ghost">Esc</button></div>
+      <div class="grid grid-cols-[260px_minmax(0,1fr)_300px] min-h-[430px]">
+        <div class="border-r border-base-300 p-3 flex flex-col gap-2 text-xs">
+          <label class="input input-xs w-full"><i data-lucide="search"></i><input placeholder="Search facts…"></label>
+          <div class="font-semibold">▾ Transactions (11)</div>
+          <div class="rounded border border-base-300 p-2 flex items-start gap-2"><span class="font-mono opacity-60">F12</span><span class="flex-1">11 cash deposits, EGP 45,000 total, 14–23 Sep</span><button class="btn btn-xs btn-ghost px-1">+</button></div>
+          <div class="rounded border border-base-300 p-2 flex items-start gap-2"><span class="font-mono opacity-60">F14</span><span class="flex-1">P2P out EGP 9,500 to ACC-02, 35 min after the last deposit</span><button class="btn btn-xs btn-ghost px-1">+</button></div>
+          <div class="font-semibold">▸ Subject (6)</div><div class="font-semibold">▸ Explanation (4)</div><div class="font-semibold">▸ Network (3)</div><div class="font-semibold">▸ Findings (2)</div><div class="font-semibold">▸ Prior reports (1)</div>
+        </div>
+        <div class="p-4 flex flex-col gap-3 leading-relaxed">
+          <div><div class="text-xs font-semibold opacity-60">1 Subject</div><div class="flex gap-2"><span class="w-1 rounded bg-success"></span><p>مرقس ستيرلينغ · <b>Marcus Sterling</b>, customer since 2019, account ACC-441, national ID ending 4417.</p></div></div>
+          <div><div class="text-xs font-semibold opacity-60">2 Activity</div><div class="flex gap-2"><span class="w-1 rounded bg-success"></span><p>Between <span class="badge badge-sm badge-outline font-mono">F12.first</span> and <span class="badge badge-sm badge-outline font-mono">F12.last</span>, <span class="badge badge-sm badge-outline font-mono">F12.count</span> cash deposits totalling <span class="badge badge-sm badge-outline font-mono">F12.sum</span> were made, each below the EGP 10,000 reporting threshold.</p></div>
+            <div class="flex gap-2 mt-1"><span class="w-1 rounded bg-warning"></span><p class="bg-warning/10 rounded px-1">This pattern is consistent with deliberate structuring. <span class="text-xs opacity-70">(inference · accept or rewrite)</span></p></div></div>
+          <div><div class="text-xs font-semibold opacity-60">3 Grounds for suspicion · human-owned</div><div class="rounded-box border border-dashed border-base-300 p-2 opacity-70">Choose a framing on the right, or write your own. Jooby never writes this paragraph.</div></div>
+          <div><div class="text-xs font-semibold opacity-60">4 Actions taken</div><div class="flex gap-2"><span class="w-1 rounded bg-error"></span><p class="opacity-60">Missing</p></div></div>
+          <div class="mt-auto text-[11px] opacity-60">Gutter: green observed · amber inference · red missing or unsupported</div>
+        </div>
+        <div class="border-l border-base-300 p-3 flex flex-col gap-3 text-xs bg-base-200/40">
+          <div class="rounded-box border border-base-300 bg-base-100 p-3 flex flex-col gap-1.5">
+            <div class="font-semibold">Quality scorecard</div>
+            <div class="flex gap-1.5"><i data-lucide="check" class="text-success"></i>Subject identified</div>
+            <div class="flex gap-1.5"><i data-lucide="check" class="text-success"></i>Amounts and dates from facts (14 slots)</div>
+            <div class="flex gap-1.5"><i data-lucide="check" class="text-success"></i>What, when, where, how covered</div>
+            <div class="flex gap-1.5"><i data-lucide="x" class="text-error"></i><b>Actions taken not mentioned</b><button class="btn btn-xs ml-auto">Insert</button></div>
+            <div class="flex gap-1.5"><i data-lucide="triangle-alert" class="text-warning"></i>1 inference not accepted<button class="btn btn-xs btn-ghost ml-auto">Review</button></div>
+            <div class="flex gap-1.5"><i data-lucide="triangle-alert" class="text-warning"></i>1 non-subject named: ACC-102 Kamal<button class="btn btn-xs btn-ghost ml-auto">Decide</button></div>
+            <div class="flex gap-1.5"><i data-lucide="check" class="text-success"></i>Within field limit 3,214 / 4,000</div>
+            <div class="text-[11px] opacity-70 pt-1">Red blocks freeze. Amber needs one audited acknowledgement.</div>
+          </div>
+          <div class="font-semibold">Candidate framings</div>
+          <div class="rounded border border-base-300 bg-base-100 p-2 flex items-center gap-2"><span class="flex-1">A · Structuring below threshold</span><button class="btn btn-xs">Use</button></div>
+          <div class="rounded border border-base-300 bg-base-100 p-2 flex items-center gap-2"><span class="flex-1">B · Pass-through to a new beneficiary</span><button class="btn btn-xs">Use</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="C2" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">C2</span><span class="font-semibold">AskJooby docked in the Decide column, with proposal cards</span><span class="text-sm opacity-60">12.1 · 12.4 · Alt+J toggles back to Decide</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden grid grid-cols-[240px_minmax(0,1fr)_380px] min-h-[420px]">
+      <div class="border-r border-base-300 p-3 text-xs opacity-60 flex flex-col gap-2"><b class="opacity-100">Case key panel</b><div>ACC-441 · Marcus Sterling</div><div>unchanged</div></div>
+      <div class="p-4 flex flex-col gap-2 opacity-60"><b>Main column (sections 1–6)</b><div class="rounded-box border border-base-300 p-3">Section 4 · Network · DEV-8831A selected</div></div>
+      <div class="border-l border-base-300 flex flex-col">
+        <div class="px-3 py-2 border-b border-base-300 flex items-center gap-2"><div role="tablist" class="tabs tabs-box tabs-xs"><a role="tab" class="tab">Decide</a><a role="tab" class="tab tab-active">AskJooby</a></div><span class="text-xs opacity-60 ml-auto">read-only · your permissions</span><kbd class="kbd kbd-xs">Alt J</kbd></div>
+        <div class="px-3 py-2 border-b border-base-300 text-xs flex items-center gap-2 bg-base-200/50"><i data-lucide="lightbulb"></i>Suggested step: <b>File STR</b><span class="opacity-60">(stays here while Jooby is open)</span></div>
+        <div class="p-3 flex flex-col gap-3 text-xs flex-1">
+          <div class="self-end max-w-[85%] rounded-box bg-base-200 px-3 py-2">Who else used DEV-8831A in the last 30 days?</div>
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-2">
+            <div>4 accounts. ACC-915 Duarte was confirmed TP on C-8812. ACC-102 Kamal paid the same beneficiary 53 s before Sterling.</div>
+            <details class="opacity-70"><summary class="cursor-pointer">Query shown · Graph/Neighbourhood · 1 hop</summary><code class="font-mono">DeviceId=DEV-8831A · 30 d · hubs suppressed</code></details>
+          </div>
+          <div class="rounded-box border-2 border-success/60 p-3 flex flex-col gap-2">
+            <div class="flex items-center gap-2"><span class="badge badge-success badge-soft badge-sm">Finding · with evidence</span><span class="opacity-60">3 transactions · 1 closed case</span></div>
+            <div>ACC-102 Kamal is a likely associate: same device, same beneficiary, 53 s apart.</div>
+            <div class="flex gap-2"><button class="btn btn-xs btn-primary">Link as associate…</button><button class="btn btn-xs btn-ghost">Show evidence</button><button class="btn btn-xs btn-ghost">Dismiss</button></div>
+            <div class="text-[11px] opacity-60">Opens the normal Link case key lightbox. Jooby can't commit anything.</div>
+          </div>
+          <div class="rounded-box border border-dashed border-base-300 p-3 flex flex-col gap-2">
+            <div class="flex items-center gap-2"><span class="badge badge-ghost badge-sm">Opinion · no evidence</span></div>
+            <div>The timing suggests one controller operating both accounts.</div>
+            <div class="flex gap-2"><button class="btn btn-xs btn-ghost">Ask for evidence</button><button class="btn btn-xs btn-ghost">Dismiss</button></div>
+          </div>
+        </div>
+        <div class="p-3 border-t border-base-300"><label class="input input-sm w-full"><input placeholder="Ask about DEV-8831A…"><kbd class="kbd kbd-xs">⏎</kbd></label></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="D · Global patterns">
+  <h2 class="text-xl font-semibold">D · Global patterns</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="D1" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">D1</span><span class="font-semibold">Command palette</span><span class="text-sm opacity-60">14.3 · Ctrl/Cmd+K</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-xl text-sm overflow-hidden">
+      <label class="flex items-center gap-2 px-4 py-3 border-b border-base-300"><i data-lucide="search" class="opacity-60"></i><input class="flex-1 outline-none bg-transparent" value="clo"><span class="text-xs opacity-60">on C-9041</span></label>
+      <div class="p-2 flex flex-col text-sm">
+        <div class="px-2 pt-1 pb-1 text-[11px] uppercase tracking-wide opacity-50">Operations on this case</div>
+        <div class="flex items-center gap-3 px-2 py-2 rounded bg-primary/10"><i data-lucide="circle-check"></i><span><b>Clo</b>se case…</span><kbd class="kbd kbd-xs ml-auto">D</kbd></div>
+        <div class="flex items-center gap-3 px-2 py-2 rounded opacity-50"><i data-lucide="circle-x"></i><span><b>Clo</b>se as false positive (macro)</span><span class="ml-auto text-xs">not available: sanctions match open</span></div>
+        <div class="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide opacity-50">Cases</div>
+        <div class="flex items-center gap-3 px-2 py-2 rounded"><i data-lucide="folder"></i><span>C-9038 · <b>Clo</b>ud Nine Trading</span><span class="ml-auto text-xs opacity-60">Standard · Unlikely</span></div>
+        <div class="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide opacity-50">Go to</div>
+        <div class="flex items-center gap-3 px-2 py-2 rounded"><i data-lucide="filter"></i><span><b>Clo</b>sed this week · filter</span><kbd class="kbd kbd-xs ml-auto">g q</kbd></div>
+      </div>
+      <div class="px-4 py-2 border-t border-base-300 text-xs opacity-60 flex gap-4"><span>↑↓ move</span><span>⏎ run</span><span>? shortcuts</span><span class="ml-auto">greyed items say why</span></div>
+    </div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 text-xs grid grid-cols-3 gap-4">
+      <div class="flex flex-col gap-1"><b class="text-sm">Global</b><div class="flex justify-between"><span>Palette</span><kbd class="kbd kbd-xs">⌃K</kbd></div><div class="flex justify-between"><span>Inbox</span><kbd class="kbd kbd-xs">g i</kbd></div><div class="flex justify-between"><span>Team view</span><kbd class="kbd kbd-xs">g t</kbd></div><div class="flex justify-between"><span>Ask Jooby</span><kbd class="kbd kbd-xs">Alt J</kbd></div></div>
+      <div class="flex flex-col gap-1"><b class="text-sm">Cases page</b><div class="flex justify-between"><span>Peek</span><kbd class="kbd kbd-xs">Space</kbd></div><div class="flex justify-between"><span>Skim</span><kbd class="kbd kbd-xs">W</kbd></div><div class="flex justify-between"><span>Select</span><kbd class="kbd kbd-xs">x</kbd></div><div class="flex justify-between"><span>Decide payment</span><kbd class="kbd kbd-xs">H</kbd></div></div>
+      <div class="flex flex-col gap-1"><b class="text-sm">Case</b><div class="flex justify-between"><span>Sections</span><kbd class="kbd kbd-xs">1–6</kbd></div><div class="flex justify-between"><span>Close</span><kbd class="kbd kbd-xs">D</kbd></div><div class="flex justify-between"><span>Compose</span><kbd class="kbd kbd-xs">c</kbd></div><div class="flex justify-between opacity-50"><span>File STR · needs approval</span><kbd class="kbd kbd-xs">F</kbd></div></div>
+      <div class="col-span-3 opacity-60">Shortcut sheet (?) shows only the current scope. Pressing an unavailable key opens a small popover with what's missing.</div>
+    </div>
+  </div>
+
+  <div id="D2" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">D2</span><span class="font-semibold">Inbox drawer</span><span class="text-sm opacity-60">5.5 · g i · email for users who are away</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-xl text-sm overflow-hidden">
+      <div class="px-4 py-3 border-b border-base-300 flex items-center gap-2"><i data-lucide="bell"></i><b>Inbox</b><span class="badge badge-sm badge-primary">5</span><div role="tablist" class="tabs tabs-box tabs-xs ml-auto"><a role="tab" class="tab tab-active">To do</a><a role="tab" class="tab">Done</a></div></div>
+      <div class="divide-y divide-base-300">
+        <div class="px-4 py-3 flex gap-3 bg-warning/5"><i data-lucide="zap" class="text-warning mt-0.5"></i><div class="flex-1"><div><b>Hold expiring</b> · C-9044 · ARC-771240 EGP 12,300</div><div class="text-xs opacity-70">Escalated to you 13:53 · no decision yet · 52 m left</div></div><button class="btn btn-xs btn-warning">Open</button></div>
+        <div class="px-4 py-3 flex gap-3"><i data-lucide="stamp" class="mt-0.5"></i><div class="flex-1"><div><b>Approval</b> · Request release · C-9046 · EGP 38,000</div><div class="text-xs opacity-70">R. Lund's limit is EGP 25,000 · yours covers it</div></div><button class="btn btn-xs">Review</button></div>
+        <div class="px-4 py-3 flex gap-3"><i data-lucide="file-x" class="text-error mt-0.5"></i><div class="flex-1"><div><b>FIU rejected</b> STR-2026-041 v1</div><div class="text-xs opacity-70">“Field 4.2 date of birth missing” · resubmission diary 2 business days</div></div><button class="btn btn-xs">Open</button></div>
+        <div class="px-4 py-3 flex gap-3"><i data-lucide="at-sign" class="mt-0.5"></i><div class="flex-1"><div><b>M. Karim</b> mentioned you on C-9041</div><div class="text-xs opacity-70">“@A.Vance can you add the call-back to the narrative?”</div></div><button class="btn btn-xs btn-ghost">Open</button></div>
+        <div class="px-4 py-3 flex gap-3"><i data-lucide="user-plus" class="mt-0.5"></i><div class="flex-1"><div><b>Referral submitted</b> · REF-0088</div><div class="text-xs opacity-70">Referrer hidden outside the referral workflow · MLRO diary 1 business day</div></div><button class="btn btn-xs btn-ghost">Open</button></div>
+        <div class="px-4 py-3 flex gap-3 opacity-60"><i data-lucide="check" class="mt-0.5"></i><div class="flex-1"><div><s>Lock broken on C-9044</s> by A. Vance</div><div class="text-xs">Done when opened · <a href="#">Undo done</a></div></div></div>
+      </div>
+      <div class="px-4 py-2 border-t border-base-300 text-xs opacity-60">Done happens when the item is acted on, not when it's read. Items about cases you can't see never arrive.</div>
+    </div>
+  </div>
+
+  <div id="D3" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">D3</span><span class="font-semibold">State catalogue</span><span class="text-sm opacity-60">20.3 item 12 · one pattern per state, used by every section</span></div>
+    <div class="grid grid-cols-5 gap-4 text-sm">
+      <div class="rounded-box border border-base-300 bg-base-100 p-4 flex flex-col gap-2"><b>Loading</b><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-4 w-full"></div><div class="skeleton h-16 w-full"></div><div class="text-xs opacity-60">Skeletons reserve the final size, so nothing jumps. After 3 s: “Still loading Journal…”</div></div>
+      <div class="rounded-box border border-base-300 bg-base-100 p-4 flex flex-col gap-2"><b>Empty</b><i data-lucide="inbox" class="opacity-40 text-2xl"></i><div>No earlier cases for this case key.</div><div class="text-xs opacity-70">Cases on linked accounts appear here once a party key is set. <a href="#">Set party key</a></div></div>
+      <div class="rounded-box border border-error/50 bg-base-100 p-4 flex flex-col gap-2"><b class="flex items-center gap-1.5"><i data-lucide="circle-alert" class="text-error"></i>Failed</b><div>The graph didn't load: the neighbourhood is over the 150-node cap.</div><div class="text-xs opacity-70">Hide hubs or use 1 hop.</div><div class="flex gap-2"><button class="btn btn-xs">Hide hubs</button><button class="btn btn-xs btn-ghost">Retry</button></div><div class="font-mono text-[11px] opacity-50">ref err-7c1a</div></div>
+      <div class="rounded-box border border-warning/60 bg-base-100 p-4 flex flex-col gap-2"><b class="flex items-center gap-1.5"><i data-lucide="history" class="text-warning"></i>Stale</b><div>Counts as at 10:41 · 17 min old</div><div class="text-xs opacity-70">Live KYC couldn't be reached; the last good values are shown.</div><button class="btn btn-xs self-start">Refresh</button></div>
+      <div class="rounded-box border border-base-300 bg-base-100 p-4 flex flex-col gap-2"><b class="flex items-center gap-1.5"><i data-lucide="lock"></i>Restricted</b><div class="flex items-center gap-2"><span class="badge badge-ghost">Restricted link</span></div><div class="text-xs opacity-70">A linked case exists that your role can't open. Its id, name and status are hidden; your MLRO can see it.</div></div>
+    </div>
+  </div>
+
+  <div id="D4" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">D4</span><span class="font-semibold">Configuration hub cards (replacing trees)</span><span class="text-sm opacity-60">20.3 item 11 · generic component</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-5 flex flex-col gap-4 text-sm">
+      <div class="flex items-center gap-2 text-xs opacity-70"><span>Configuration</span><span>›</span><b class="opacity-100">Case Workflow · AML structuring</b><label class="input input-xs ml-auto w-64"><i data-lucide="search"></i><input placeholder="Find a setting…"></label></div>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5 hover:border-primary"><div class="flex items-center gap-2"><i data-lucide="filter"></i><b>Filters</b><span class="ml-auto badge badge-sm">9</span></div><div class="text-xs opacity-70">Payments held, Sanctions hits, QA…</div><div class="text-xs">Assignment: pull (3), capacity (1)</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="list-todo"></i><b>Action codes</b><span class="ml-auto badge badge-sm">14</span></div><div class="text-xs opacity-70">with results and follow-up rules</div><div class="text-xs text-warning">2 without results</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="gauge"></i><b>Case risk</b></div><div class="text-xs opacity-70">typology severity, evidence families, lanes</div><div class="text-xs">cold start · base rate 8%</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="tags"></i><b>Tags</b><span class="ml-auto badge badge-sm">6</span></div><div class="text-xs opacity-70">AML and fraud typology</div><div class="text-xs">writes ArchiveTag</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="calendar-clock"></i><b>Diaries</b><span class="ml-auto badge badge-sm">4</span></div><div class="text-xs opacity-70">user, regulatory, payment hold, claim</div><div class="text-xs">from pack EG</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="plug"></i><b>HTTP Endpoints</b><span class="ml-auto badge badge-sm">3</span></div><div class="text-xs opacity-70">CBS payments, KYC, sanctions</div><div class="text-xs text-success">all healthy · 99.9% 7 d</div></div>
+        <div class="rounded-box border border-base-300 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="file-text"></i><b>Rationale templates</b><span class="ml-auto badge badge-sm">11</span></div><div class="text-xs opacity-70">per outcome and typology</div></div>
+        <div class="rounded-box border-2 border-warning/60 p-4 flex flex-col gap-1.5"><div class="flex items-center gap-2"><i data-lucide="git-pull-request"></i><b>Pending changes</b><span class="ml-auto badge badge-sm badge-warning">1</span></div><div class="text-xs opacity-70">1 emergency change unapproved</div><button class="btn btn-xs self-start">Review</button></div>
+      </div>
+      <div class="text-xs opacity-60">Each card: icon, name, count, one line of what's inside, one line of state. Cards replace the tree at every level; the breadcrumb is the only hierarchy shown.</div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="E · Team view">
+  <h2 class="text-xl font-semibold">E · Team view</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="E1" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">E1</span><span class="font-semibold">Team view · desk</span><span class="text-sm opacity-60">4.4 · g t · S. Okoro</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden">
+      <div class="px-4 py-3 border-b border-base-300 flex items-center gap-3"><b class="text-base">Team view</b><span class="opacity-60">AML and Fraud · 5 analysts</span><div class="ml-auto flex gap-2"><button class="btn btn-sm btn-ghost gap-1"><i data-lucide="monitor"></i>Wall screen</button><button class="btn btn-sm gap-1"><i data-lucide="users"></i>Reassign selected (2)</button></div></div>
+      <div class="grid grid-cols-[minmax(0,1fr)_380px]">
+        <div class="p-4 flex flex-col gap-3">
+          <div class="grid grid-cols-[24px_150px_90px_70px_70px_90px_110px_70px] text-xs">
+            <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200"></div><div class="p-2 bg-base-200">Analyst</div><div class="p-2 bg-base-200">Availability</div><div class="p-2 bg-base-200 text-right">Open</div><div class="p-2 bg-base-200 text-right">Locked</div><div class="p-2 bg-base-200 text-right">Oldest</div><div class="p-2 bg-base-200">Diaries today</div><div class="p-2 bg-base-200 text-right">Closed</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300"><input type="checkbox" class="checkbox checkbox-xs"></div><div class="p-2 border-t border-base-300">A. Vance</div><div class="p-2 border-t border-base-300"><span class="badge badge-success badge-soft badge-xs">in</span></div><div class="p-2 border-t border-base-300 text-right">7</div><div class="p-2 border-t border-base-300 text-right">1</div><div class="p-2 border-t border-base-300 text-right">6 d</div><div class="p-2 border-t border-base-300">3 due · 0 breached</div><div class="p-2 border-t border-base-300 text-right">4</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300"><input type="checkbox" class="checkbox checkbox-xs" checked=""></div><div class="p-2 border-t border-base-300">R. Lund</div><div class="p-2 border-t border-base-300"><span class="badge badge-ghost badge-xs">out until 30 Sep</span></div><div class="p-2 border-t border-base-300 text-right">5</div><div class="p-2 border-t border-base-300 text-right">0</div><div class="p-2 border-t border-base-300 text-right">11 d</div><div class="p-2 border-t border-base-300 text-error font-semibold">2 due · 1 breached</div><div class="p-2 border-t border-base-300 text-right">0</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300"><input type="checkbox" class="checkbox checkbox-xs" checked=""></div><div class="p-2 border-t border-base-300">N. Haddad</div><div class="p-2 border-t border-base-300"><span class="badge badge-warning badge-soft badge-xs">away</span></div><div class="p-2 border-t border-base-300 text-right">9</div><div class="p-2 border-t border-base-300 text-right">2</div><div class="p-2 border-t border-base-300 text-right">4 d</div><div class="p-2 border-t border-base-300">1 due</div><div class="p-2 border-t border-base-300 text-right">2</div></div>
+          </div>
+          <div class="rounded-box bg-warning/10 border border-warning/40 p-2 text-xs flex items-center gap-2"><i data-lucide="user-x"></i>R. Lund is out: 2 cases have a diary due before 30 Sep. <button class="btn btn-xs ml-auto">Offer for reassignment</button></div>
+          <div class="grid grid-cols-[150px_70px_110px_minmax(0,1fr)_120px] text-xs">
+            <div class="contents font-semibold opacity-70"><div class="p-2 bg-base-200">Filter</div><div class="p-2 bg-base-200 text-right">Open</div><div class="p-2 bg-base-200">Age</div><div class="p-2 bg-base-200">Next to breach</div><div class="p-2 bg-base-200">Inflow 6 h</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300">Payments held</div><div class="p-2 border-t border-base-300 text-right">2</div><div class="p-2 border-t border-base-300">all &lt; 1 d</div><div class="p-2 border-t border-base-300 text-warning font-semibold">C-9044 hold · 52 m</div><div class="p-2 border-t border-base-300">▁▂▁▃▅</div></div>
+            <div class="contents"><div class="p-2 border-t border-base-300">AML structuring</div><div class="p-2 border-t border-base-300 text-right">42</div><div class="p-2 border-t border-base-300">▇▅▃▂ (oldest 19 d)</div><div class="p-2 border-t border-base-300">C-9047 STR · 1 d 20 h</div><div class="p-2 border-t border-base-300">▂▂▃▂▂</div></div>
+          </div>
+          <div class="rounded-box border border-base-300 p-2 text-xs flex items-center gap-2"><i data-lucide="git-pull-request" class="text-warning"></i>1 emergency configuration change unapproved: StructNet threshold 0.80 → 0.78 by T. Farouk, 23 Sep 22:10<button class="btn btn-xs ml-auto">Review</button></div>
+        </div>
+        <div class="border-l border-base-300 p-4 flex flex-col gap-2">
+          <b>Risk matrix · all team cases</b>
+          <div class="grid grid-cols-[80px_repeat(4,minmax(0,1fr))] gap-1 text-xs text-center">
+            <div></div><div class="opacity-60">Low</div><div class="opacity-60">Moderate</div><div class="opacity-60">High</div><div class="opacity-60">Severe</div>
+            <div class="text-left opacity-60">Very likely</div><div class="rounded bg-base-200 p-2">0</div><div class="rounded bg-error/15 p-2">1</div><div class="rounded bg-error/25 p-2 font-semibold">2</div><div class="rounded bg-error/35 p-2 font-semibold">1</div>
+            <div class="text-left opacity-60">Likely</div><div class="rounded bg-base-200 p-2">2</div><div class="rounded bg-error/10 p-2">4</div><div class="rounded bg-error/20 p-2 font-semibold">3</div><div class="rounded bg-error/25 p-2">0</div>
+            <div class="text-left opacity-60">Possible</div><div class="rounded bg-base-200 p-2">6</div><div class="rounded bg-base-200 p-2">9</div><div class="rounded bg-base-200 p-2">5</div><div class="rounded bg-base-200 p-2">1</div>
+            <div class="text-left opacity-60">Unlikely</div><div class="rounded bg-base-200 p-2">11</div><div class="rounded bg-base-200 p-2">7</div><div class="rounded bg-base-200 p-2">2</div><div class="rounded bg-base-200 p-2">0</div>
+          </div>
+          <div class="text-xs opacity-60">Click a cell to open those cases as a filter.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="E2" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">E2</span><span class="font-semibold">Team view · wall screen</span><span class="text-sm opacity-60">large type, refresh every 60 s, no interaction, no customer names</span></div>
+    <div data-theme="dark" class="rounded-box bg-base-100 text-base-content p-8 grid grid-cols-3 gap-6" style="min-height:420px">
+      <div class="col-span-3 flex items-baseline gap-4"><span class="text-3xl font-semibold">AML and Fraud</span><span class="opacity-60 text-lg">updated 14:01 · Cairo</span></div>
+      <div class="rounded-box border-2 border-warning p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Live money</div><div class="text-6xl font-semibold tnum">2</div><div class="text-xl">next hold ends in <b class="text-warning">52 m</b></div></div>
+      <div class="rounded-box border-2 border-error p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Breached diaries</div><div class="text-6xl font-semibold tnum">1</div><div class="text-xl">C-9039 consent · 2 h 10 m over</div></div>
+      <div class="rounded-box border border-base-300 p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Due next 24 h</div><div class="text-6xl font-semibold tnum">6</div><div class="text-xl">3 regulatory · 3 follow-up</div></div>
+      <div class="rounded-box border border-base-300 p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Likely or very likely</div><div class="text-5xl font-semibold tnum">11</div><div class="text-lg opacity-80">of 64 open</div></div>
+      <div class="rounded-box border border-base-300 p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Inflow today</div><div class="text-5xl font-semibold tnum">23</div><div class="text-lg opacity-80">closed 17</div></div>
+      <div class="rounded-box border border-base-300 p-5 flex flex-col gap-2"><div class="uppercase tracking-wide text-sm opacity-70">Analysts in</div><div class="text-5xl font-semibold tnum">3 / 5</div><div class="text-lg opacity-80">1 away · 1 out</div></div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="flex flex-col gap-6" data-screen-label="F · Outside the case">
+  <h2 class="text-xl font-semibold">F · Outside the case</h2>
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="F1" class="flex flex-col gap-2 flex-none" style="width:900px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">F1</span><span class="font-semibold">Referral form and receipt</span><span class="text-sm opacity-60">2.3.1 · tenant logo and name only, nothing of Jube</span></div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="rounded-box border border-base-300 bg-white text-neutral-900 p-6 flex flex-col gap-3 text-sm">
+        <div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-neutral-200 grid place-items-center text-[10px] text-neutral-500">logo</div><b>Nile Commerce Bank</b></div>
+        <div><div class="text-lg font-semibold">Report a concern to the MLRO</div><div class="text-xs text-neutral-600">Confidential. The customer is never told. You'll get a receipt with the time.</div></div>
+        <label class="flex flex-col gap-1"><span class="text-xs font-semibold">What did you see?</span><textarea class="textarea textarea-sm bg-white w-full h-16">Customer asked twice how to keep deposits under the limit.</textarea></label>
+        <div class="grid grid-cols-2 gap-2"><label class="flex flex-col gap-1"><span class="text-xs font-semibold">When</span><input class="input input-sm bg-white" value="24 Sep 2026 11:20"></label><label class="flex flex-col gap-1"><span class="text-xs font-semibold">Account, if known</span><input class="input input-sm bg-white" placeholder="optional"></label></div>
+        <label class="flex flex-col gap-1"><span class="text-xs font-semibold">Customer name, if known</span><input class="input input-sm bg-white" value="Marcus Sterling"></label>
+        <div class="text-xs flex items-center gap-2"><i data-lucide="paperclip"></i>Attach a file (optional)</div>
+        <button class="btn btn-sm btn-neutral self-start">Send to MLRO</button>
+      </div>
+      <div class="rounded-box border border-base-300 bg-white text-neutral-900 p-6 flex flex-col gap-3 text-sm">
+        <div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-neutral-200 grid place-items-center text-[10px] text-neutral-500">logo</div><b>Nile Commerce Bank</b></div>
+        <div class="flex items-center gap-2 text-lg font-semibold"><i data-lucide="circle-check" class="text-green-700"></i>Received</div>
+        <div class="grid grid-cols-[110px_minmax(0,1fr)] gap-y-1"><span class="text-neutral-600">Reference</span><span class="font-mono">REF-0088</span><span class="text-neutral-600">Disclosed at</span><span>24 Sep 2026 11:24:07 (Cairo)</span><span class="text-neutral-600">To</span><span>The MLRO</span></div>
+        <div class="text-xs text-neutral-600">This receipt records when you made your disclosure. You won't be told the outcome; that protects you and the investigation. Don't discuss this with the customer.</div>
+        <button class="btn btn-sm btn-outline self-start">Download receipt (PDF)</button>
+        <div class="text-xs text-neutral-500 mt-auto">My receipts (3)</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="F2" class="flex flex-col gap-2 flex-none" style="width:900px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">F2</span><span class="font-semibold">Report status: rejected, then version 2</span><span class="text-sm opacity-60">9.3.1 · generic format, adapter maps fields</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-5 flex flex-col gap-4 text-sm">
+      <div class="flex items-center gap-2"><i data-lucide="file-text"></i><b>STR-2026-041</b><span class="opacity-60">C-9031 · FIU EG</span><span class="badge badge-error badge-soft ml-2">v1 Rejected</span><span class="badge badge-outline">v2 Draft</span></div>
+      <ul class="steps steps-horizontal text-xs w-full">
+        <li class="step step-neutral">Draft</li><li class="step step-neutral">Validated</li><li class="step step-neutral">Approved</li><li class="step step-neutral">Submitted</li><li class="step step-error" data-content="!">Rejected</li><li class="step">Resubmitted</li><li class="step">Acknowledged</li>
+      </ul>
+      <div class="rounded-box border-2 border-error/60 p-3 flex flex-col gap-2">
+        <div class="flex items-center gap-2"><i data-lucide="message-square-warning" class="text-error"></i><b>FIU message</b><span class="text-xs opacity-60">received 23 Sep 15:02 · imported</span></div>
+        <div>“Subject date of birth is mandatory for natural persons.”</div>
+        <div class="grid grid-cols-[180px_minmax(0,1fr)] gap-x-3 gap-y-1 text-xs"><span class="opacity-60">Field (generic)</span><span class="font-mono">subject.person.dateOfBirth</span><span class="opacity-60">Value in v1</span><span class="text-error">empty</span><span class="opacity-60">Value in v2</span><span>1984-03-12 · from KYC, live 3 min ago</span></div>
+        <div class="flex items-center gap-2 text-xs"><i data-lucide="calendar-clock"></i>Resubmission diary · 1 business day 20 h left<span class="opacity-60">· author and MLRO notified</span></div>
+      </div>
+      <div class="flex items-center gap-2 text-xs"><span class="opacity-60">Versions</span><span class="badge badge-sm">v1 · sha256 9f31…</span><i data-lucide="arrow-right"></i><span class="badge badge-sm badge-outline">v2 · draft</span><span class="opacity-60 ml-2">Never edited in place. Rejection reason now a validation rule suggestion.</span><button class="btn btn-xs btn-primary ml-auto">Open v2</button></div>
+    </div>
+  </div>
+
+  <div id="F3" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">F3</span><span class="font-semibold">“Hold expiring” escalation email</span><span class="text-sm opacity-60">H1 · no customer data beyond the case id</span></div>
+    <div class="rounded-box border border-base-300 bg-white text-neutral-900 text-sm overflow-hidden">
+      <div class="px-5 py-3 border-b border-neutral-200 text-xs text-neutral-600 grid grid-cols-[60px_minmax(0,1fr)] gap-y-0.5"><span>From</span><span>Case Management &lt;cases@nilecommerce.example&gt;</span><span>To</span><span>S. Okoro</span><span>Subject</span><span class="text-neutral-900 font-semibold">Action needed: payment hold on C-9044 ends in 1 hour</span></div>
+      <div class="p-5 flex flex-col gap-3">
+        <p>A held payment on case <b>C-9044</b> has no decision and its hold ends at <b>14:53 (Cairo)</b>. It has been escalated to you.</p>
+        <div class="rounded border border-neutral-200 p-3 grid grid-cols-[110px_minmax(0,1fr)] gap-y-1 text-xs"><span class="text-neutral-600">Assigned to</span><span>A. Vance (no action since 08:55)</span><span class="text-neutral-600">Amount</span><span>EGP 12,300</span><span class="text-neutral-600">If undecided</span><span>re-escalated every 30 min; at the pack maximum the pack default applies</span></div>
+        <a class="btn btn-sm btn-neutral self-start no-underline" href="#">Open the case</a>
+        <p class="text-xs text-neutral-500">The link opens C-9044 at the held payment after you sign in. Names and account details are not included in email.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="F4" class="flex flex-col gap-2 flex-none" style="width:620px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">F4</span><span class="font-semibold">Approver's view of Request release</span><span class="text-sm opacity-60">H3 · above the maker's limit</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-xl text-sm overflow-hidden">
+      <div class="px-5 py-3 border-b border-base-300 flex items-center gap-2"><b>Approve release · C-9046</b><span class="badge badge-info badge-soft badge-sm ml-auto">maker-checker · step-up</span></div>
+      <div class="p-5 flex flex-col gap-3">
+        <div class="grid grid-cols-[110px_minmax(0,1fr)] gap-y-1.5">
+          <span class="opacity-60">Payment</span><span>ARC-771301 · P2P out <b>EGP 38,000</b> · ACC-310 Nasser → ACC-77 Delta Imports</span>
+          <span class="opacity-60">Requested by</span><span>R. Lund · limit EGP 25,000 · 13:12</span>
+          <span class="opacity-60">Their reason</span><span>“Customer confirmed on recorded call-back; invoice INV-5521 matches.”</span>
+          <span class="opacity-60">Evidence</span><span>Called customer → Reached · 13:05 · upload INV-5521.pdf (sha256 a1c4…)</span>
+          <span class="opacity-60">Your limit</span><span>EGP 100,000 · covers this</span>
+          <span class="opacity-60">Hold left</span><span class="text-warning font-semibold">2 h 40 m</span>
+        </div>
+        <label class="flex flex-col gap-1"><span class="text-xs opacity-70">Reason (required to reject)</span><textarea class="textarea textarea-sm w-full h-14"></textarea></label>
+        <div class="rounded-box bg-base-200 p-2 text-xs">On approve: step-up (authenticator code), then Release is sent to core banking under your name as approver and R. Lund's as maker.</div>
+      </div>
+      <div class="px-5 py-3 border-t border-base-300 flex gap-2 justify-end"><button class="btn btn-sm btn-ghost">Cancel</button><button class="btn btn-sm btn-outline">Reject</button><button class="btn btn-sm btn-primary">Approve release</button></div>
+    </div>
+  </div>
+
+  <div id="F5" class="flex flex-col gap-2 flex-none" style="width:900px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">F5</span><span class="font-semibold">Step-up enrolment and recovery codes</span><span class="text-sm opacity-60">H6 · user settings · authenticator first, passkey in phase 2</span></div>
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div class="rounded-box border border-base-300 bg-base-100 p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2"><i data-lucide="smartphone"></i><b>Authenticator app</b><span class="badge badge-sm badge-ghost ml-auto">step 2 of 3</span></div>
+        <div class="flex gap-4 items-start"><div class="w-28 h-28 rounded bg-base-200 grid place-items-center text-xs opacity-60">QR code</div><div class="flex flex-col gap-2 text-xs"><div>Scan with any authenticator app (Microsoft, Google, 1Password…).</div><div class="opacity-70">Can't scan? Key: <span class="font-mono">JBUS 4Q2X 7KDP …</span></div></div></div>
+        <label class="flex flex-col gap-1"><span class="text-xs opacity-70">Enter the 6-digit code to confirm</span><div class="flex gap-2"><input class="input input-sm w-36 font-mono tracking-widest" value="482 913"><button class="btn btn-sm btn-primary">Confirm</button></div></label>
+        <div class="rounded-box border border-dashed border-base-300 p-3 flex items-center gap-2 opacity-70"><i data-lucide="key-round"></i><span>Passkey · available in phase 2</span></div>
+        <div class="text-xs opacity-60">No SMS option. If your tenant signs in through its own identity provider, step-up is a fresh sign-in there instead.</div>
+      </div>
+      <div class="rounded-box border border-base-300 bg-base-100 p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2"><i data-lucide="life-buoy"></i><b>Recovery codes</b><span class="badge badge-sm badge-ghost ml-auto">step 3 of 3</span></div>
+        <div class="text-xs opacity-70">Each code works once, if you lose your phone. Store them somewhere safe; Jube shows them only now.</div>
+        <div class="grid grid-cols-2 gap-2 font-mono text-sm rounded-box bg-base-200 p-3"><span>7F3K-92QD</span><span>M8XP-41LA</span><span>Q2ZR-6T0N</span><span>H5WB-83JC</span><span>D9EV-27MU</span><span>K4RS-50GY</span></div>
+        <div class="flex gap-2"><button class="btn btn-sm gap-1"><i data-lucide="download"></i>Download</button><button class="btn btn-sm btn-ghost gap-1"><i data-lucide="copy"></i>Copy</button></div>
+        <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="checkbox checkbox-xs">I've stored these codes</label>
+        <button class="btn btn-sm btn-primary self-start" disabled="">Finish</button>
+        <div class="text-xs opacity-60">Resetting another user's step-up is an admin operation with its own step-up and CaseEvent-style audit.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;'comfortable'|'compact'&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+class Component extends DCLogic {
+  icons(){ try{ window.lucide && window.lucide.createIcons({attrs:{'stroke-width':2}}); }catch(e){} }
+  componentDidMount(){ this.icons(); this._t=setInterval(()=>{ if(window.lucide){ this.icons(); } },800); setTimeout(()=>clearInterval(this._t),8000); }
+  componentDidUpdate(){ this.icons(); }
+  componentWillUnmount(){ clearInterval(this._t); }
+  renderVals(){ return { theme: this.props.theme ?? 'light', density: this.props.density ?? 'comfortable' }; }
+}
+</script>
+</body>
+</html>

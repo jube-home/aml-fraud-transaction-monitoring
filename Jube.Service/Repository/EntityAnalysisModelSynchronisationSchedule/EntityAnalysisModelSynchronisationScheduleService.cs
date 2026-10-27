@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
@@ -112,10 +113,15 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
 
         [Description("Returns the most recently scheduled model-synchronisation row for the caller's tenant -- " +
                      "the date and time every node in the cluster is next expected to synchronise its compiled " +
-                     "models by. Returns null when no synchronisation has ever been scheduled for the tenant.")]
+                     "models by. When a model is given, the newest row that applies to that model is returned: " +
+                     "either one scheduled for that model alone or one scheduled for the whole tenant. Without a " +
+                     "model only whole-tenant rows are considered. Returns null when nothing applicable has ever " +
+                     "been scheduled.")]
         [ServiceOperation("EntityAnalysisModelSynchronisationScheduleGetCurrent", OperationKind.Read,
             Idempotent = true)]
         public async Task<EntityAnalysisModelSynchronisationScheduleDto?> GetCurrentAsync(
+            [Description("Optional model to find the current schedule for; omit for the whole tenant.")]
+            int? entityAnalysisModelId = null,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "GetCurrent", userName,
@@ -129,7 +135,8 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             try
             {
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.GetCurrent");
-                var schedulePoco = await repository.GetCurrentAsync(token).ConfigureAwait(false);
+                var schedulePoco = await repository.GetCurrentAsync(entityAnalysisModelId, token)
+                    .ConfigureAwait(false);
 
                 if (schedulePoco == null)
                 {
@@ -398,6 +405,8 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         }
 
         [Description("Schedules model synchronisation across the cluster for the caller's tenant. When " +
+                     "EntityAnalysisModelId is given only that model is synchronised and the tenant's other " +
+                     "models are left as they are; when it is omitted every model in the tenant is. When " +
                      "ScheduleDate is omitted, the server schedules it for the current time -- an immediate " +
                      "'Synchronise Now'. Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelSynchronisationScheduleCreate", OperationKind.Write, Idempotent = false)]
@@ -432,6 +441,13 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                     }
 
                     throw new DtoValidationException(results);
+                }
+
+                var unknownModel = await UnknownModelAsync(model, token).ConfigureAwait(false);
+
+                if (unknownModel is not null)
+                {
+                    throw new DtoValidationException(new ValidationResult([unknownModel]));
                 }
 
                 var saved = await repository
@@ -503,6 +519,13 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                 EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Validate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                var unknownModel = await UnknownModelAsync(model, token).ConfigureAwait(false);
+
+                if (unknownModel is not null)
+                {
+                    results.Errors.Add(unknownModel);
+                }
+
                 op.Rows(results.Errors.Count);
 
                 return ValidationResultMapper.ToDto(results);
@@ -526,6 +549,22 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
 
                 throw;
             }
+        }
+
+        private async Task<ValidationFailure?> UnknownModelAsync(
+            EntityAnalysisModelSynchronisationScheduleDto model, CancellationToken token)
+        {
+            if (!model.EntityAnalysisModelId.HasValue || await repository
+                    .ModelExistsInTenantAsync(model.EntityAnalysisModelId.Value, token).ConfigureAwait(false))
+            {
+                return null;
+            }
+
+            return new ValidationFailure(nameof(model.EntityAnalysisModelId),
+                strings[EntityAnalysisModelSynchronisationScheduleResources.ModelNotFound])
+            {
+                ErrorCode = "ModelNotFound"
+            };
         }
 
         private void EnsurePermitted(string op)

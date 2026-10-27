@@ -35,7 +35,7 @@ namespace Jube.Dto.OpenTelemetryExclude
                      "excluded name there is never even created, so it never starts incrementing. For every " +
                      "other, pre-existing named counter this only takes effect for an instrument not yet " +
                      "actively exporting -- one already exporting keeps doing so until the process restarts.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "jube.engine.logs.warn.count")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

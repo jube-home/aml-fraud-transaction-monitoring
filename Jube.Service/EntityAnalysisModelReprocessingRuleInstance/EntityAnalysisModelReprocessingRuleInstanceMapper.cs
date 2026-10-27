@@ -59,6 +59,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         {
             return new ReprocessingRuleInstancePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelReprocessingRuleId = dto.EntityAnalysisModelReprocessingRuleId,
                 StatusId = (byte)dto.StatusId,

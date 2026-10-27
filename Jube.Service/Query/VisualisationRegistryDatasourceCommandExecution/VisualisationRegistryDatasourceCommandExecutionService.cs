@@ -17,6 +17,11 @@ using System.Globalization;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQuery;
+using Jube.Data.Reporting;
+using Jube.Dto.Options;
+using Jube.Dto.Repository.VisualisationRegistryDatasource;
+using Jube.Service.Charts.Datasource;
+using Jube.Service.Charts.Datasource.Models;
 using Jube.Data.Repository;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
@@ -28,6 +33,10 @@ using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
+using CardQuery =
+    Jube.Data.Query.ExecuteVisualisationRegistryDatasourceCardQuery.ExecuteVisualisationRegistryDatasourceCardQuery;
+using DataParameterValueInvalidException = Jube.Data.Repository.Exceptions.ParameterValueInvalidException;
+using DataSqlValidationFailedException = Jube.Data.Repository.Exceptions.SqlValidationFailedException;
 
 namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
 {
@@ -41,6 +50,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
         private readonly PermissionValidation permissionValidation;
         private readonly GetByVisualisationRegistryDatasourceCommandExecutionQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
+        private readonly DatasourceChartText chartText;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
@@ -48,8 +58,10 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
         private VisualisationRegistryDatasourceCommandExecutionService(DbContext dbContext, string userName,
             int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IStringLocalizer strings, IStringLocalizer chartStrings,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
+            chartText = new DatasourceChartText(chartStrings);
             this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
@@ -86,6 +98,8 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             var strings =
                 stringLocalizerFactory.Create(typeof(VisualisationRegistryDatasourceCommandExecutionResources));
 
+            var chartStrings = stringLocalizerFactory.Create(typeof(DatasourceChartResources));
+
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
@@ -118,7 +132,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
 
             return new VisualisationRegistryDatasourceCommandExecutionService(dbContext, userName,
                 resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, dynamicEnvironment);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, chartStrings, dynamicEnvironment);
         }
 
         [Description("Executes the SQL command of a Visualisation Registry Datasource the caller may see and " +
@@ -227,15 +241,165 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             }
         }
 
-        private async Task StoreAuditAsync(int id, List<IDictionary<string, object>> values, string? error,
+        [Description("Returns the card for a Visualisation Registry Datasource the caller may see, exactly as the " +
+                     "Visualisation page renders it: the chart already drawn as an SVG from the datasource's " +
+                     "chart kind and column mapping, the rows only when the datasource's grid is switched on, the " +
+                     "stylesheet the SVG needs when the caller does not already hold that version, and the state " +
+                     "(ready, empty or error) with a plain reason. Each parameter is {\"id\": <Visualisation " +
+                     "Registry Parameter id>, \"value\": <text>}; a missing value falls back to the parameter's " +
+                     "default. At most 5000 rows are read. Every execution, successful or failed, is recorded in " +
+                     "the datasource execution log. A datasource the caller cannot see is not found and is not " +
+                     "logged. The SQL itself is never returned.")]
+        [ServiceOperation("VisualisationRegistryDatasourceCommandExecutionCard", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<DatasourceCardDto> CardAsync(
+            [Description("Id of the Visualisation Registry Datasource to draw.")]
+            int id,
+            [Description("Parameter values, theme, style and size for the card.")]
+            DatasourceCardRequestDto? request,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryDatasourceCommandExecution", "Card", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistryDatasourceCommandExecution.Card: entry user={userName} id={id}");
+            }
+
+            try
+            {
+                EnsurePermitted("VisualisationRegistryDatasourceCommandExecution.Card");
+
+                request = DatasourceInput.Maybe(request) ?? new DatasourceCardRequestDto();
+
+                var parameters = (DatasourceInput.Maybe(request.Parameters) ?? [])
+                    .Select(p => DatasourceInput.Maybe(p) ?? throw new InvalidParametersException(
+                        chartText.Message(DatasourceMessages.ParameterEmpty)))
+                    .ToList();
+
+                if (parameters.GroupBy(p => p.Id).Any(g => g.Count() > 1))
+                {
+                    throw new InvalidParametersException(chartText.Message(DatasourceMessages.ParameterDuplicate));
+                }
+
+                var datasource = await new VisualisationRegistryDatasourceRepository(dbContext, userName)
+                    .GetByIdActiveOnlyAsync(id, token).ConfigureAwait(false);
+
+                if (datasource?.VisualisationRegistryId == null)
+                {
+                    throw new NotFoundException(
+                        strings[VisualisationRegistryDatasourceCommandExecutionResources.NotFound]);
+                }
+
+                var series = (await new VisualisationRegistryDatasourceSeriesRepository(dbContext, userName)
+                    .GetByVisualisationRegistryDatasourceIdAsync(id, token).ConfigureAwait(false)).ToList();
+
+                var overrides = series.Where(s => s.RoleId != null).GroupBy(s => (DatasourceChartRole)s.RoleId!.Value)
+                    .ToDictionary(g => g.Key,
+                        g => (IReadOnlyList<string>)g.OrderBy(s => s.RoleOrder).Select(s => s.Name ?? string.Empty)
+                            .ToList());
+
+                DatasourceDisplayKind? kind =
+                    datasource.DisplayKindId is > 0 &&
+                    DatasourceChartKinds.TryGet(datasource.DisplayKindId.Value, out var found)
+                        ? found.Kind
+                        : null;
+
+                var identity = new DatasourceCardIdentity(datasource.Id, datasource.Guid, datasource.Name ?? string.Empty,
+                    datasource.ColumnSpan.GetValueOrDefault(), datasource.RowSpan.GetValueOrDefault(),
+                    datasource.Priority.GetValueOrDefault());
+
+                var supplied = parameters.Where(p => p.Value != null).ToDictionary(p => p.Id, p => p.Value!);
+                var includeGrid = datasource.IncludeGrid == 1;
+                DatasourceCardDto card;
+
+                try
+                {
+                    var executed = await new CardQuery(dbContext, tenantRegistryId)
+                        .ExecuteAsync(datasource.VisualisationRegistryId.Value, datasource.Command ?? string.Empty,
+                            supplied,
+                            dynamicEnvironment.AppSettings("AssumeLocalDateInPayloadExtraction")
+                                .Equals("True", StringComparison.OrdinalIgnoreCase),
+                            dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                            dynamicEnvironment.AppSettings("ConnectionString"),
+                            log, AllowedTablesOrNullForDenyMode(), DatasourceCardAssembler.MaximumRows,
+                            request.ContextId, token)
+                        .ConfigureAwait(false);
+
+                    card = DatasourceCardAssembler.Build(identity, executed.Result, executed.Milliseconds, null, kind,
+                        overrides, includeGrid, request, chartText, datasource.TemplateText);
+
+                    await StoreAuditAsync(id, card.RowCount, null, executed.Milliseconds,
+                        supplied.Select(p => new KeyValuePair<int, string?>(p.Key, p.Value)), token)
+                        .ConfigureAwait(false);
+                }
+                catch (DataSqlValidationFailedException ex)
+                {
+                    card = DatasourceCardAssembler.Build(identity, null, 0, chartText.Describe(ex), kind, overrides,
+                        includeGrid, request, chartText, datasource.TemplateText);
+
+                    await StoreAuditAsync(id, 0, ex.ToString(), 0,
+                        supplied.Select(p => new KeyValuePair<int, string?>(p.Key, p.Value)), token)
+                        .ConfigureAwait(false);
+                }
+                catch (DataParameterValueInvalidException ex)
+                {
+                    throw new InvalidParametersException(chartText.Describe(ex), ex);
+                }
+
+                op.Rows(card.RowCount);
+
+                return card;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (InvalidParametersException)
+            {
+                op.Outcome("invalid");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+
+                log.Error(
+                    $"VisualisationRegistryDatasourceCommandExecution.Card: unexpected failure user={userName}", ex);
+
+                throw;
+            }
+        }
+
+        private Task StoreAuditAsync(int id, List<IDictionary<string, object>> values, string? error,
             Stopwatch sw, Dictionary<int, JToken?> parametersByParsedId, CancellationToken token)
+        {
+            return StoreAuditAsync(id, values.Count, error, (int)sw.ElapsedMilliseconds,
+                parametersByParsedId.Select(p => new KeyValuePair<int, string?>(p.Key, p.Value?.ToString())),
+                token);
+        }
+
+        private async Task StoreAuditAsync(int id, int records, string? error, int responseTime,
+            IEnumerable<KeyValuePair<int, string?>> parameters, CancellationToken token)
         {
             var executionLog = await new VisualisationRegistryDatasourceExecutionLogRepository(dbContext)
                 .InsertAsync(new VisualisationRegistryDatasourceExecutionLog
                 {
-                    Records = values.Count,
+                    Records = records,
                     Error = error?.Replace("\0", string.Empty),
-                    ResponseTime = (int)sw.ElapsedMilliseconds,
+                    ResponseTime = responseTime,
                     VisualisationRegistryDatasourceId = id,
                     CreatedDate = DateTime.UtcNow,
                     CreatedUser = userName
@@ -247,11 +411,11 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                     .GetByVisualisationRegistryDatasourceIdAsync(id, token).ConfigureAwait(false))
                 .Select(p => p.Id).ToHashSet();
 
-            foreach (var parameter in parametersByParsedId.Where(p => knownParameterIds.Contains(p.Key)))
+            foreach (var parameter in parameters.Where(p => knownParameterIds.Contains(p.Key)))
             {
                 await parameterRepository.InsertAsync(new VisualisationRegistryDatasourceExecutionLogParameter
                 {
-                    Value = parameter.Value?.ToString().Replace("\0", string.Empty),
+                    Value = parameter.Value?.Replace("\0", string.Empty),
                     VisualisationRegistryDatasourceExecutionLogId = executionLog.Id,
                     VisualisationRegistryParameterId = parameter.Key
                 }, token).ConfigureAwait(false);

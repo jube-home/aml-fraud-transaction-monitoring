@@ -44,5 +44,16 @@ namespace Jube.Dto.Repository.ActivationWatcher
         [property: Description("Foreground colour used to render this activation on the watcher UI.")]
         string? ForeColor,
         [property: Description("UTC timestamp the activation was created.")]
-        DateTime? CreatedDate);
+        DateTime? CreatedDate,
+        [property: Description("Latitude of the previous location the engine saw for the same Key and KeyValue, " +
+                               "whether or not that earlier activation was itself recorded; null when unknown.")]
+        double? PreviousLatitude = null,
+        [property: Description("Longitude of the previous location the engine saw for the same Key and KeyValue; " +
+                               "null when unknown.")]
+        double? PreviousLongitude = null,
+        [property: Description("UTC time the engine saw the entity at the previous location; null when unknown.")]
+        DateTime? PreviousCreatedDate = null,
+        [property: Description("Name of the response elevation range the ResponseElevation falls inside; null when " +
+                               "it falls inside none.")]
+        string? ResponseElevationName = null);
 }

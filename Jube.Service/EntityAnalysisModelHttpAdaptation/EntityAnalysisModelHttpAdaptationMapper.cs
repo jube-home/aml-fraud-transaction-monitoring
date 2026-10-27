@@ -57,6 +57,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
         {
             return new HttpAdaptationPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

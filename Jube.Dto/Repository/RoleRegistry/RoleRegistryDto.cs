@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Repository.UserRegistry;
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
@@ -22,6 +23,7 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.Repository.RoleRegistry
 {
+    [FormChild(typeof(UserRegistryDto), Label = "Users", Hub = "", Order = 10)]
     [FormEndpoint("RoleRegistry")]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
@@ -31,7 +33,7 @@ namespace Jube.Dto.Repository.RoleRegistry
     {
         [Description("Display name of the Role, shown to administrators when allocating Permissions or Users. " +
                      "Unique within the tenant (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Fraud analyst")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

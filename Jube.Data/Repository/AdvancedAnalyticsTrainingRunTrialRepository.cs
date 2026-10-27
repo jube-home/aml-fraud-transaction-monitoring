@@ -36,7 +36,7 @@ namespace Jube.Data.Repository
         public async Task<AdvancedAnalyticsTrainingRunTrial> InsertAsync(AdvancedAnalyticsTrainingRunTrial model,
             CancellationToken token = default)
         {
-            model.AdvancedAnalyticsInstanceId = await AdvancedAnalyticsRunGuard
+            model.AskJoobyAnalyticsInstanceId = await AdvancedAnalyticsRunGuard
                 .ResolveInstanceIdAsync(dbContext, tenantRegistryId, model.AdvancedAnalyticsTrainingRunId, token)
                 .ConfigureAwait(false);
 

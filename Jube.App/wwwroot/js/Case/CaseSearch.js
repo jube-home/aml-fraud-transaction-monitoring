@@ -234,7 +234,7 @@ function PopulateCreateCasePanel(caseWorkflowGuid, entityAnalysisModelGuid) {
 
     $createCase.show();
 
-    $.get("../api/CaseWorkflowStatus/ByCasesWorkflowGuidActiveOnly/" + caseWorkflowGuid,
+    $.get("../api/CaseWorkflowStatus/ByCaseWorkflowGuidActiveOnly/" + caseWorkflowGuid,
         function (data) {
             // Bind in a single assignment, in the exact order the controller returns
             // (Priority order), so the first entry is the highest priority status.
@@ -363,7 +363,7 @@ $(document).ready(function () {
     const filter = {
         transport: {
             read: {
-                url: '../api/CaseWorkflowFilter/ByCasesWorkflowGuidActiveOnly',
+                url: '../api/CaseWorkflowFilter/ByCaseWorkflowGuidActiveOnly',
                 dataType: "json"
             }
         },

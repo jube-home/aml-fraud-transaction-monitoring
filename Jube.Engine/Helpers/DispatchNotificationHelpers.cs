@@ -19,6 +19,8 @@ namespace Jube.Engine.Helpers
     using System.Threading.Tasks;
     using System.Web;
     using BackgroundTasks.Context;
+    using Dto.Hold;
+    using Dto.Options;
     using EntityAnalysisModelInvoke.Helpers;
     using EntityAnalysisModelInvoke.Models;
 
@@ -33,7 +35,7 @@ namespace Jube.Engine.Helpers
             {
                 if (notification.NotificationTypeId == 1)
                 {
-                    await SendMail.SendAsync(
+                    var sent = await SendMail.SendAsync(
                         notification.NotificationDestination,
                         notification.NotificationSubject,
                         notification.NotificationBody,
@@ -41,6 +43,8 @@ namespace Jube.Engine.Helpers
                         context.Services.DynamicEnvironment,
                         token
                     ).ConfigureAwait(false);
+
+                    RecordLeg(context, notification, ResponseHoldLegKind.Email, sent);
 
                     if (context.Services.Log.IsInfoEnabled)
                     {
@@ -72,6 +76,8 @@ namespace Jube.Engine.Helpers
 
                     var content = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
 
+                    RecordLeg(context, notification, ResponseHoldLegKind.Sms, true);
+
                     if (context.Services.Log.IsInfoEnabled)
                     {
                         context.Services.Log.Info($"Clickatell response: {content}");
@@ -79,6 +85,8 @@ namespace Jube.Engine.Helpers
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
+                    RecordLeg(context, notification, ResponseHoldLegKind.Sms, false);
+
                     if (context.Services.Log.IsInfoEnabled)
                     {
                         context.Services.Log.Error(
@@ -93,6 +101,23 @@ namespace Jube.Engine.Helpers
                     context.Services.Log.Error($"DispatchNotificationAsync: Unexpected error: {ex}");
                 }
             }
+        }
+
+        private static void RecordLeg(Context context, Notification notification, ResponseHoldLegKind kind,
+            bool sent)
+        {
+            if (!notification.EntityAnalysisModelInstanceEntryGuid.HasValue)
+            {
+                return;
+            }
+
+            HoldLegRecorder.Record(context, notification.EntityAnalysisModelInstanceEntryGuid.Value,
+                new ResponseHoldLeg
+                {
+                    KindId = (int)kind,
+                    OutcomeId = (int)(sent ? ResponseHoldLegOutcome.Sent : ResponseHoldLegOutcome.Failed),
+                    Date = DateTime.UtcNow
+                });
         }
     }
 }

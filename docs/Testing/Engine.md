@@ -20,7 +20,508 @@ supporting engine plumbing.
 |-------------------------------------------------|------|-------------------------------------------------------|
 | `ReadNeverThrowsAndLeavesUnavailableFieldsNull` | Fact | Read never throws and leaves unavailable fields null. |
 
-## Entity analysis model invoke
+## Case risk
+
+### CaseRiskCalculatorTests
+
+`Jube.Test.CaseRisk.CaseRiskCalculatorTests` — 19 tests.
+Category: Unit.
+
+| Test                                                                             | Kind   | Verifies                                                                                         |
+|----------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------|
+| `TheWorkedExampleOfSpecSection4511ReproducesLikelihoodImpactAndPriority`         | Fact   | The worked example of spec section 4511 reproduces likelihood impact and priority.               |
+| `ContributionsSumExactlyToTheLogOddsDistanceFromTheBaseRate`                     | Fact   | Contributions sum exactly to the log odds distance from the base rate.                           |
+| `NegativeEvidenceLowersTheLikelihoodBelowTheBaseRate`                            | Fact   | Negative evidence lowers the likelihood below the base rate.                                     |
+| `TheStrongestEvidenceInAGroupCountsInFullByMagnitudeEvenWhenItIsNegative`        | Fact   | The strongest evidence in a group counts in full by magnitude even when it is negative.          |
+| `IndependentEvidenceAddsWhileSharedEvidenceIsDiscounted`                         | Fact   | Independent evidence adds while shared evidence is discounted.                                   |
+| `EvidenceBehindFewClosedCasesIsShrunkTowardsTheBaseRate`                         | Fact   | Evidence behind few closed cases is shrunk towards the base rate.                                |
+| `EvidenceWithNoClosedCasesBehindItIsIgnored`                                     | Fact   | Evidence with no closed cases behind it is ignored.                                              |
+| `OldEvidenceDecaysByItsHalfLife`                                                 | Fact   | Old evidence decays by its half life.                                                            |
+| `TheBaseRateIsShrunkTowardsThePriorUntilEnoughCasesHaveClosed`                   | Fact   | The base rate is shrunk towards the prior until enough cases have closed.                        |
+| `TheBandsFollowTheDocumentedThresholds`                                          | Theory | The bands follow the documented thresholds.                                                      |
+| `TheProbabilityNeverReachesCertaintyEitherWay`                                   | Fact   | The probability never reaches certainty either way.                                              |
+| `ImpactIsTheLargerOfTypologyAndMoneyPlusAtMostOneUpliftEachCappedAtSevere`       | Theory | Impact is the larger of typology and money plus at most one uplift each capped at severe.        |
+| `ImpactNeverDependsOnTheLikelihood`                                              | Fact   | Impact never depends on the likelihood.                                                          |
+| `PriorityScalesExpectedHarmLogarithmicallyToZeroToOneHundred`                    | Theory | Priority scales expected harm logarithmically to zero to one hundred.                            |
+| `LaneOneBeatsEverythingAndKeepsTheHoldDeadline`                                  | Fact   | Lane one beats everything and keeps the hold deadline.                                           |
+| `AMandatoryReasonPlacesTheCaseInLaneTwo`                                         | Fact   | A mandatory reason places the case in lane two.                                                  |
+| `ADiaryMovesTheCaseIntoLaneThreeWithinTheThresholdAndAnOverdueOneNeverDropsBack` | Theory | A diary moves the case into lane three within the threshold and an overdue one never drops back. |
+| `NoDeadlineMeansTheStandardLaneWithNoDate`                                       | Fact   | No deadline means the standard lane with no date.                                                |
+| `ALaneNeverChangesTheLikelihoodOrTheImpact`                                      | Fact   | A lane never changes the likelihood or the impact.                                               |
+
+### CaseValueReaderTests
+
+`Jube.Test.CaseRisk.CaseValueReaderTests` — 2 tests.
+Category: Unit.
+
+| Test                                                         | Kind   | Verifies                                                                 |
+|--------------------------------------------------------------|--------|--------------------------------------------------------------------------|
+| `AValueIsFoundWhateverTheCaseAndWhetherANumberOrNumericText` | Theory | A value is found whatever the case and whether a number or numeric text. |
+| `NothingUsableGivesNoValueAndNeverThrows`                    | Theory | Nothing usable gives no value and never throws.                          |
+
+### CaseEscalationSweepTests
+
+`Jube.Test.CaseEscalation.CaseEscalationSweepTests` — 10 tests.
+Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `ACaseThatHasStayedInAStatusLongEnoughMovesOnAndTheRecordShowsWhyAsync` | Fact | A case that has stayed in a status long enough moves on and the record shows why. |
+| `OnlyOpenCasesInTheRuleStatusAreEverMovedAsync` | Fact | Only open cases in the rule status are ever moved. |
+| `ReleasingTheLockIsOptionalAndOtherwiseTheAnalystKeepsTheCaseAsync` | Fact | Releasing the lock is optional and otherwise the analyst keeps the case. |
+| `ACaseOlderThanTheWorkflowResolutionTargetMovesAndNoTargetMeansNoRuleAsync` | Fact | A case older than the workflow resolution target moves and no target means no rule. |
+| `TheLanePriorityAndDeadlineTriggersReadOnlyTheLatestAssessmentAsync` | Fact | The lane priority and deadline triggers read only the latest assessment. |
+| `ARuleWhoseTargetIsNotAStrongerPriorityOrNotInTheWorkflowIsSkippedAndNeverLoopsAsync` | Fact | A rule whose target is not a stronger priority or not in the workflow is skipped and never loops. |
+| `TwoRulesPointingBackAtEachOtherMoveACaseOnceAndThenLeaveItAloneAsync` | Fact | Two rules pointing back at each other move a case once and then leave it alone. |
+| `ChainedRulesCarryACaseOnStepByStepAsync` | Fact | Chained rules carry a case on step by step. |
+| `AMoveIsAtomicAgainstTheCaseHavingAlreadyLeftTheStatusAsync` | Fact | A move is atomic against the case having already left the status. |
+| `TheAfterMoveCallbackRunsOncePerMovedCaseAndItsFailureNeverUndoesTheMoveAsync` | Fact | The after move callback runs once per moved case and its failure never undoes the move. |
+
+### CaseStatusNotifierTests
+
+`Jube.Test.CaseEscalation.CaseStatusNotifierTests` — 1 tests.
+Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `ThePostBodyCarriesTheCaseItsPayloadAsContextAndTheStatusNameButNeverTheRawJson` | Fact | The post body carries the case its payload as context and the status name but never the raw json. |
+
+### CaseSupervisionServiceTests
+
+`Jube.Test.CaseSupervision.CaseSupervisionServiceTests` — 8 tests.
+Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `TheWorkloadShowsEachAnalystsHoldsTakesPeeksAndClosuresAndTheCasesNobodyHoldsAsync` | Fact | The workload shows each analysts holds takes peeks and closures and the cases nobody holds. |
+| `AnAnalystWhoseRoleLacksTheCasePermissionIsNeverListedOrAssignedAsync` | Fact | An analyst whose role lacks the case permission is never listed or assigned. |
+| `OnlyAnalystsWhoCanSeeTheWorkflowAndHoldTheCasePermissionAreListedAsync` | Fact | Only analysts who can see the workflow and hold the case permission are listed. |
+| `SupervisionNeedsThePermissionAndAWorkflowTheCallersRoleIsGrantedAsync` | Fact | Supervision needs the permission and a workflow the callers role is granted. |
+| `StuckLocksAreOpenCasesLockedAndIdleLongEnoughLongestFirstWithTheirRiskAsync` | Fact | Stuck locks are open cases locked and idle long enough longest first with their risk. |
+| `BreakingALockReleasesItAndRecordsWhoAndWhyAndOnlyForAnOpenLockedCaseAsync` | Fact | Breaking a lock releases it and records who and why and only for an open locked case. |
+| `ReassigningLocksTheCaseToAnAnalystWhoCanSeeItAndRecordsTheHandoverAsync` | Fact | Reassigning locks the case to an analyst who can see it and records the handover. |
+| `ACaseCannotBeHandedToSomeoneWhoCouldNotSeeItOrWhenItIsNotOpenAsync` | Fact | A case cannot be handed to someone who could not see it or when it is not open. |
+
+### CaseDiaryLaneTests
+
+`Jube.Test.CaseRisk.CaseDiaryLaneTests` — 4 tests.
+Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `APaymentHoldPutsTheCaseInTheLiveMoneyLaneAndBreachesAtItsDeadline` | Fact | A payment hold puts the case in the live money lane and breaches at its deadline. |
+| `ARegulatoryDeadlinePutsTheCaseInTheMandatoryLaneWhateverTheDistanceToIt` | Fact | A regulatory deadline puts the case in the mandatory lane whatever the distance to it. |
+| `ReviewAndCustomerResponseDiariesRankByHowNearTheyAreAndNameThemselvesInTheReason` | Theory | Review and customer response diaries rank by how near they are and name themselves in the reason. |
+| `ADiaryThatIsOffOrHasNoDateNeverChangesTheLane` | Theory | A diary that is off or has no date never changes the lane. |
+
+### CaseDiaryServiceTests
+
+`Jube.Test.CaseDiary.CaseDiaryServiceTests` — 7 tests.
+Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `SettingADiaryRecordsItsTypeAndDateAskForAFreshRankingAndLogsWhoDidItAsync` | Fact | Setting a diary records its type and date ask for a fresh ranking and logs who did it. |
+| `ChangingOnlyTheTypeOrOnlyTheDateLogsOnlyWhatChangedAndSettingTheSameAgainLogsNothingAsync` | Fact | Changing only the type or only the date logs only what changed and setting the same again logs nothing. |
+| `ClearingTurnsTheDiaryOffReturnsTheTypeToReviewAndLogsWhatWasClearedAsync` | Fact | Clearing turns the diary off returns the type to review and logs what was cleared. |
+| `OnlyAnOpenCaseTheCallerCanSeeAndIsNotHeldByAnotherCarriesATypedDiaryAsync` | Fact | Only an open case the caller can see and is not held by another carries a typed diary. |
+| `TheRequestIsValidatedAndTheCallerMustHoldTheCasePermissionAsync` | Fact | The request is validated and the caller must hold the case permission. |
+| `ARegulatoryDeadlineAndAPaymentHoldRankTheCaseInTheirLanesAtTheNextSweepWithTheRightTriggerAsync` | Fact | A regulatory deadline and a payment hold rank the case in their lanes at the next sweep with the right trigger. |
+| `OnlyCasesWhoseDiaryExpiryChangesTheirStatusAreHandedToTheExpiryAutomationAsync` | Fact | Only cases whose diary expiry changes their status are handed to the expiry automation. |
+
+### QaSamplerTests
+
+`Jube.Test.CaseRisk.QaSamplerTests` — 7 tests.
+Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `TheDrawIsStableForACaseAndAlwaysInsideZeroAndOne` | Fact | The draw is stable for a case and always inside zero and one. |
+| `ThePickedShareTracksTheConfiguredRate` | Theory | The picked share tracks the configured rate. |
+| `ARateOfNothingNeverPicksAndAWholeRateAlwaysDoes` | Fact | A rate of nothing never picks and a whole rate always does. |
+| `OnlyLowPriorityStandardCasesAreEligible` | Theory | Only low priority standard cases are eligible. |
+| `TheReportCountsPickedOpenClosedAndDecidedCasesAndTheirConfirmedShare` | Fact | The report counts picked open closed and decided cases and their confirmed share. |
+| `TheReportIsEnoughOnceTenSampledCasesHaveAnOutcomeAndSaysNothingBeforeThat` | Fact | The report is enough once ten sampled cases have an outcome and says nothing before that. |
+| `TheSampleRateOverrideMustBeBetweenZeroAndAHalf` | Theory | The sample rate override must be between zero and a half. |
+
+### CaseQaSamplingTests
+
+`Jube.Test.CaseQa.CaseQaSamplingTests` — 4 tests.
+Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `AnEligibleCaseIsDecidedOnceAndAPickedOneIsRecordedWithAnEventAsync` | Fact | An eligible case is decided once and a picked one is recorded with an event. |
+| `OnlyLowPriorityStandardCasesAreEverDecidedAndANilRateLeavesThemUndecidedAsync` | Fact | Only low priority standard cases are ever decided and a nil rate leaves them undecided. |
+| `APickedCaseIsOrderedAheadOfOrdinaryStandardCasesButBehindUrgentOnesAndHasItsOwnViewAsync` | Fact | A picked case is ordered ahead of ordinary standard cases but behind urgent ones and has its own view. |
+| `TheAnalyticsReportCountsPickedCasesAndTheirOutcomesSeparatelyFromEveryoneElseAsync` | Fact | The analytics report counts picked cases and their outcomes separately from everyone else. |
+
+### CaseRiskSweepTests
+
+`Jube.Test.CaseRisk.CaseRiskSweepTests` — 15 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                                    | Kind   | Verifies                                                                                          |
+|-----------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------------|
+| `OutcomeCountsOnlyUseClosedCasesInStatusesMarkedConfirmedOrNotConfirmedAsync`           | Fact   | Outcome counts only use closed cases in statuses marked confirmed or not confirmed.               |
+| `KeyHistoryCountsEarlierClosedOutcomesOnTheSameKeyAndNeverTheCaseItselfAsync`           | Fact   | Key history counts earlier closed outcomes on the same key and never the case itself.             |
+| `AnOpenCaseWithNoHistoryGetsAColdStartAssessmentFromThePriorsAsync`                     | Fact   | An open case with no history gets a cold start assessment from the priors.                        |
+| `ARuleThatHasBeenRightBeforeRaisesTheLikelihoodAndOneThatHasNotLowersItAsync`           | Fact   | A rule that has been right before raises the likelihood and one that has not lowers it.           |
+| `AKeyWhoseEarlierCasesWereAllFalsePositivesLowersTheLikelihoodAsync`                    | Fact   | A key whose earlier cases were all false positives lowers the likelihood.                         |
+| `TheMoneyInThePayloadAndTheWorkflowTypologyDecideTheImpactAsync`                        | Fact   | The money in the payload and the workflow typology decide the impact.                             |
+| `ADiaryWithinTwoDaysPutsTheCaseInTheDeadlineLaneAndAnOverdueOneIsMarkedBreachedAsync`   | Fact   | A diary within two days puts the case in the deadline lane and an overdue one is marked breached. |
+| `ClosedAndSuspendBypassCasesAreNeverAssessedAndRecentlyCheckedOnesAreSkippedAsync`      | Fact   | Closed and suspend bypass cases are never assessed and recently checked ones are skipped.         |
+| `AnUnchangedCaseIsCheckedAgainWithoutWritingAnotherAssessmentButAChangeIsRecordedAsync` | Fact   | An unchanged case is checked again without writing another assessment but a change is recorded.   |
+| `ACaseThatWasChangedAndSoHasNoCheckDateIsPickedUpFirstAsync`                            | Fact   | A case that was changed and so has no check date is picked up first.                              |
+| `ABatchLimitLeavesTheRestForTheNextSweepAsync`                                          | Fact   | A batch limit leaves the rest for the next sweep.                                                 |
+| `TheDeploymentDefaultsAreTheSpecDefaults`                                               | Fact   | The deployment defaults are the spec defaults.                                                    |
+| `AWorkflowsOwnRankingSettingsDecideItsCasesAndOnlyItsCasesAsync` | Fact | A workflows own ranking settings decide its cases and only its cases. |
+| `ChangingAWorkflowsRankingSettingsReassessesItsOpenCasesUnderTheModelChangedTriggerAsync` | Fact | Changing a workflows ranking settings reassesses its open cases under the model changed trigger. |
+| `ChangingTheTypologySeverityOrTheValueFieldReassessesTooAsync` | Fact | Changing the typology severity or the value field reassesses too. |
+
+### ServiceLevelCalculatorTests
+
+`Jube.Test.CaseRisk.ServiceLevelCalculatorTests` — 7 tests.
+Category: Unit.
+
+| Test                                                                            | Kind   | Verifies                                                                                        |
+|---------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `NoTargetsMeansNoTargetAndNoMeasures`                                           | Fact   | No targets means no target and no measures.                                                     |
+| `AnUnreachedTargetMovesFromOnTrackToAtRiskAtEightyPercentToBreachedAtTheTarget` | Theory | An unreached target moves from on track to at risk at eighty percent to breached at the target. |
+| `ATargetReachedInTimeIsMetAndOneReachedLateStaysBreachedForever`                | Fact   | A target reached in time is met and one reached late stays breached forever.                    |
+| `TheWorstDimensionDecidesTheOverallStateAndTheMostElapsedBreaksATie`            | Fact   | The worst dimension decides the overall state and the most elapsed breaks a tie.                |
+| `ACaseClosedWithoutEverBeingViewedOrOwnedIsNotJudgedOnThoseTargetsAfterClosure` | Fact   | A case closed without ever being viewed or owned is not judged on those targets after closure.  |
+| `StatusDwellRunsFromTheMomentOfEntryAndStopsOnceTheCaseIsClosed`                | Fact   | Status dwell runs from the moment of entry and stops once the case is closed.                   |
+| `ZeroOrNegativeTargetsAreTreatedAsNoTarget`                                     | Fact   | Zero or negative targets are treated as no target.                                              |
+
+### CaseSearchServiceTests
+
+`Jube.Test.CaseRisk.CaseSearchServiceTests` — 23 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                                   | Kind   | Verifies                                                                                           |
+|----------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------|
+| `ASignedOutOrTenantlessUserIsRefusedAndOneWithoutThePermissionIsForbiddenAsync`        | Fact   | A signed out or tenantless user is refused and one without the permission is forbidden.            |
+| `TheTriageOrderPutsLiveMoneyFirstThenReturnedCasesThenLaneAndPriorityAsync`            | Fact   | The triage order puts live money first then returned cases then lane and priority.                 |
+| `EverySortOrdersTheListByItsOwnKeyAsync`                                               | Theory | Every sort orders the list by its own key.                                                         |
+| `PagingKeepsTheTotalAndNeverRepeatsOrSkipsACaseAsync`                                  | Fact   | Paging keeps the total and never repeats or skips a case.                                          |
+| `ASavedSearchCanFilterOnTheTypeOfTheDiaryAsync` | Fact | A saved search can filter on the type of the diary. |
+| `ARowSaysWhatItsDiaryIsForAsync` | Fact | A row says what its diary is for. |
+| `ARowCarriesTheRiskTheTopDriverTheValueTheStatusAndTheLockAsync`                       | Fact   | A row carries the risk the top driver the value the status and the lock.                           |
+| `AnUnassessedCaseSaysSoAndIsNeverMistakenForALaneOneCaseAsync`                         | Fact   | An unassessed case says so and is never mistaken for a lane one case.                              |
+| `OnlyTheLatestAssessmentOfACaseDecidesItsLaneAndItsPlaceInTheUrgentViewAsync`          | Fact   | Only the latest assessment of a case decides its lane and its place in the urgent view.            |
+| `AttentionNeedsTheCallerToHaveLookedOrHoldTheCaseAndNamesEachReasonAsync`              | Fact   | Attention needs the caller to have looked or hold the case and names each reason.                  |
+| `TheReturnedViewHoldsExactlyTheCasesTheListFlagsAsNeedingTheCallerAsync`               | Fact   | The returned view holds exactly the cases the list flags as needing the caller.                    |
+| `TheMineFreeAndAllViewsFollowTheLockAndTheClosedStatusAsync`                           | Fact   | The mine free and all views follow the lock and the closed status.                                 |
+| `TheOverdueViewAndEachRowShowTheServiceLevelsTheWorkflowAndStatusSetAsync`             | Fact   | The overdue view and each row show the service levels the workflow and status set.                 |
+| `CountsListEveryViewTheWorkflowFiltersAndTheSavedSearchesAndFlagAFailingOneAsync`      | Fact   | Counts list every view the workflow filters and the saved searches and flag a failing one.         |
+| `ASavedSearchRunsThroughTheSameCompilerAndNeverShowsMoreThanTheCallerMaySeeAsync`      | Fact   | A saved search runs through the same compiler and never shows more than the caller may see.        |
+| `AWorkflowTheCallersRoleIsNotGrantedAndAnotherTenantsWorkflowAreNotFoundAsync`         | Fact   | A workflow the callers role is not granted and another tenants workflow are not found.             |
+| `OnlyOneWayOfChoosingTheCasesIsAllowedAndAnUnknownSavedSearchOrSessionIsNotFoundAsync` | Fact   | Only one way of choosing the cases is allowed and an unknown saved search or session is not found. |
+| `TheRiskMatrixCountsCasesByLikelihoodAndImpactAndUnassessedCasesUnderZeroAsync`        | Fact   | The risk matrix counts cases by likelihood and impact and unassessed cases under zero.             |
+| `SkimLocksTheTopCaseRecordsTheLookAndOffersTheNextOnesAsync`                           | Fact   | Skim locks the top case records the look and offers the next ones.                                 |
+| `SkimTakesAReturnedCaseBeforeAHigherPriorityStandardOneAsync`                          | Fact   | Skim takes a returned case before a higher priority standard one.                                  |
+| `TwoPeopleSkimmingAtOnceNeverTakeTheSameCaseAsync`                                     | Fact   | Two people skimming at once never take the same case.                                              |
+| `AnotherUsersLookAtACaseNeverCreatesAttentionOrDuplicatesTheRowForTheCallerAsync`      | Fact   | Another users look at a case never creates attention or duplicates the row for the caller.         |
+| `TheWorkflowChoicesAreOnlyTheActiveOnesTheCallersRoleIsGrantedInTheirTenantAsync`      | Fact   | The workflow choices are only the active ones the callers role is granted in their tenant.         |
+
+### CaseSummaryServiceTests
+
+`Jube.Test.CaseRisk.CaseSummaryServiceTests` — 6 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                            | Kind   | Verifies                                                                                 |
+|---------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
+| `APeekReturnsTheWholePictureOfACaseAndRecordsTheLookWithoutTakingTheLockAsync`  | Fact   | A peek returns the whole picture of a case and records the look without taking the lock. |
+| `ASecondPeekShowsOnlyWhatOthersChangedSinceTheFirstAndHowThePriorityMovedAsync` | Fact   | A second peek shows only what others changed since the first and how the priority moved. |
+| `ACaseTheCallerCannotSeeIsNotFoundAndNothingIsRecordedAsync`                    | Fact   | A case the caller cannot see is not found and nothing is recorded.                       |
+| `ASignedOutUserIsRefusedAndOneWithoutThePermissionIsForbiddenAsync`             | Fact   | A signed out user is refused and one without the permission is forbidden.                |
+| `OpeningACaseInFullAlsoCountsAsLookingAtItAsync`                                | Fact   | Opening a case in full also counts as looking at it.                                     |
+| `TheWaterfallChartsTheEvidenceWithoutRecordingALookAndRefusesWhatTheCallerCannotSeeAsync` | Fact   | The waterfall charts the evidence without recording a look and refuses what the caller cannot see. |
+
+### CaseRiskSettingsResolverTests
+
+`Jube.Test.CaseRisk.CaseRiskSettingsResolverTests` — 14 tests.
+Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `NoOverridesLeavesTheEnvironmentDefaultsUntouched` | Fact | No overrides leaves the environment defaults untouched. |
+| `AnOverrideReplacesOnlyTheSettingItNamesAndTheRestKeepTheDefaults` | Fact | An override replaces only the setting it names and the rest keep the defaults. |
+| `AListThatCannotBeReadFallsBackToTheDefaultAndNeverThrows` | Theory | A list that cannot be read falls back to the default and never throws. |
+| `ValidOverridesHaveNoProblems` | Fact | Valid overrides have no problems. |
+| `KappaMustBeAboveZeroAndNoMoreThanOne` | Theory | Kappa must be above zero and no more than one. |
+| `RhoMustBeBetweenZeroAndOne` | Theory | Rho must be between zero and one. |
+| `PriorStrengthMustBeAboveZeroAndNoMoreThanTenThousand` | Theory | Prior strength must be above zero and no more than ten thousand. |
+| `BaseRatePriorMustStayAwayFromCertainty` | Theory | Base rate prior must stay away from certainty. |
+| `TheDeadlineWindowMustBeBetweenZeroAndAYear` | Theory | The deadline window must be between zero and a year. |
+| `TheKeyHistoryHalfLifeMustBeAboveZeroAndNoMoreThanTenYears` | Theory | The key history half life must be above zero and no more than ten years. |
+| `ImpactWeightsMustBeFivePositiveStrictlyIncreasingNumbers` | Theory | Impact weights must be five positive strictly increasing numbers. |
+| `MoneyBandsMustBeFourPositiveStrictlyIncreasingNumbers` | Theory | Money bands must be four positive strictly increasing numbers. |
+| `EveryProblemIsReportedAtOnce` | Fact | Every problem is reported at once. |
+| `TheOverriddenSettingsChangeTheLikelihoodTheWholeCalculationProduces` | Fact | The overridden settings change the likelihood the whole calculation produces. |
+
+### CaseAnalyticsDistributionTests
+
+`Jube.Test.CaseRisk.CaseAnalyticsDistributionTests` — 10 tests.
+Category: Unit.
+
+| Test                                                                           | Kind   | Verifies                                                                                      |
+|--------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
+| `PercentilesInterpolateBetweenTheSortedValuesLikeAStatisticsPackage`           | Fact   | Percentiles interpolate between the sorted values like a statistics package.                  |
+| `AnEmptyOrSingleValueDistributionNeverThrows`                                  | Fact   | An empty or single value distribution never throws.                                           |
+| `TheHistogramAssignsEveryValueToExactlyOneBucketAndLabelsTheEdges`             | Fact   | The histogram assigns every value to exactly one bucket and labels the edges.                 |
+| `MinutesAreShownInTheUnitThatReadsBest`                                        | Theory | Minutes are shown in the unit that reads best.                                                |
+| `CycleTimesMeasureFromCreationAndCountWhatWasNeverViewedOrOwned`               | Fact   | Cycle times measure from creation and count what was never viewed or owned.                   |
+| `ACaseViewedBeforeItWasCreatedNeverProducesANegativeCycleTime`                 | Fact   | A case viewed before it was created never produces a negative cycle time.                     |
+| `FlowCountsOpenedClosedAndTheBacklogAtTheEndOfEachDay`                         | Fact   | Flow counts opened closed and the backlog at the end of each day.                             |
+| `DwellSharesTheTimeBetweenStatusesAndCountsBreachesAgainstTheTarget`           | Fact   | Dwell shares the time between statuses and counts breaches against the target.                |
+| `AgingBucketsOnlyTheOpenCasesByAgeAndLaneAndListsTheOldest`                    | Fact   | Aging buckets only the open cases by age and lane and lists the oldest.                       |
+| `ACaseClosedExactlyAtMidnightBelongsToTheNewDayAndLeavesTheBacklogThatEvening` | Fact   | A case closed exactly at midnight belongs to the new day and leaves the backlog that evening. |
+
+### CaseAnalyticsQualityTests
+
+`Jube.Test.CaseRisk.CaseAnalyticsQualityTests` — 8 tests.
+Category: Unit.
+
+| Test                                                                        | Kind   | Verifies                                                                                  |
+|-----------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------|
+| `RulesAreRankedByTheEffortTheirFalsePositivesCostAndShowTheirPrecision`     | Fact   | Rules are ranked by the effort their false positives cost and show their precision.       |
+| `ARuleWithNoDecidedCasesHasNoPrecisionRatherThanZero`                       | Fact   | A rule with no decided cases has no precision rather than zero.                           |
+| `APerfectOrderingFindsEveryConfirmedCaseFirstAndABackwardsOneFindsThemLast` | Fact   | A perfect ordering finds every confirmed case first and a backwards one finds them last.  |
+| `ThePriorityOrderingIsComparedWithWorkingTheOldestFirstAndTiesCountHalf`    | Fact   | The priority ordering is compared with working the oldest first and ties count half.      |
+| `TheRankingIsOnlyCalledSufficientWithEnoughOutcomesOfBothKinds`             | Fact   | The ranking is only called sufficient with enough outcomes of both kinds.                 |
+| `OnlyClosedCasesWithAnOutcomeAreScoredAndOpenOrUndecidedOnesAreLeftOut`     | Fact   | Only closed cases with an outcome are scored and open or undecided ones are left out.     |
+| `CalibrationComparesPredictedWithObservedAndScoresTheBrierAndExpectedError` | Fact   | Calibration compares predicted with observed and scores the brier and expected error.     |
+| `ALikelihoodOfExactlyOneFallsInTheTopBinAndNothingIsDroppedFromCalibration` | Fact   | A likelihood of exactly one falls in the top bin and nothing is dropped from calibration. |
+
+### MyDayCalculatorTests
+
+`Jube.Test.CaseRisk.MyDayCalculatorTests` — 7 tests.
+Category: Unit.
+
+| Test                                                                      | Kind   | Verifies                                                                                |
+|---------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
+| `OnlyTheCallersOwnClosuresAreCountedAndTheDaysRunOldestToNewest`          | Fact   | Only the callers own closures are counted and the days run oldest to newest.            |
+| `TheStreakCountsConsecutiveDaysThatMetTheGoalAndStopsAtTheFirstMiss`      | Fact   | The streak counts consecutive days that met the goal and stops at the first miss.       |
+| `ADayThatHasNotYetMetTheGoalDoesNotBreakTheStreakFromYesterday`           | Fact   | A day that has not yet met the goal does not break the streak from yesterday.           |
+| `WithNoGoalAStreakIsARunOfDaysWithAtLeastOneClosure`                      | Fact   | With no goal a streak is a run of days with at least one closure.                       |
+| `ATypicalDayIsTheMedianOfTheThirteenDaysBeforeTodayAndNeverIncludesToday` | Fact   | A typical day is the median of the thirteen days before today and never includes today. |
+| `AQuietUserHasNoStreakAndZeroEverywhereRatherThanNothing`                 | Fact   | A quiet user has no streak and zero everywhere rather than nothing.                     |
+| `AGoalOfZeroOrLessIsTreatedAsOneSoANilDayNeverCountsAsMet`                | Fact   | A goal of zero or less is treated as one so a nil day never counts as met.              |
+
+### RobustStatisticsTests
+
+`Jube.Test.CaseRisk.Journal.RobustStatisticsTests` — 8 tests.
+Category: Unit.
+
+| Test                                                                | Kind   | Verifies                                                                      |
+|---------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
+| `TheFitIsTheMedianAndTheScaledMedianAbsoluteDeviation`              | Fact   | The fit is the median and the scaled median absolute deviation.               |
+| `AZScoreIsTheDistanceInScalesFromTheMedianAndIsClamped`             | Fact   | AZ score is the distance in scales from the median and is clamped.            |
+| `FewerThanFiveValuesCannotBeJudgedAndNonFiniteValuesAreIgnored`     | Fact   | Fewer than five values cannot be judged and non finite values are ignored.    |
+| `AConstantHistoryJudgesAnyDeviationAsTheLargestPossible`            | Fact   | A constant history judges any deviation as the largest possible.              |
+| `WhenTheMedianDeviationIsZeroTheInterquartileRangeProvidesTheScale` | Fact   | When the median deviation is zero the interquartile range provides the scale. |
+| `AnEmptyFitHasNoCountAndNoMedian`                                   | Fact   | An empty fit has no count and no median.                                      |
+| `QuantilesInterpolateAndHandleOneValue`                             | Fact   | Quantiles interpolate and handle one value.                                   |
+| `ConfidenceStartsAtTwentyValues`                                    | Fact   | Confidence starts at twenty values.                                           |
+
+### NotableCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.NotableCalculatorTests` — 5 tests.
+Category: Unit.
+
+| Test                                                                           | Kind   | Verifies                                                                                     |
+|--------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------|
+| `OnlyTheValueFarFromItsOwnNormalIsNotableAndItNamesTheField`                   | Fact   | Only the value far from its own normal is notable and it names the field.                    |
+| `ARaisedThresholdLeavesFewerRowsAndALowerOneMore`                              | Fact   | A raised threshold leaves fewer rows and a lower one more.                                   |
+| `TheWorstRowsComeFirstAndTheLimitCapsThem`                                     | Fact   | The worst rows come first and the limit caps them.                                           |
+| `FewerThanTwentyValuesAreFlaggedAsLowConfidenceAndFewerThanFiveAreNeverJudged` | Fact   | Fewer than twenty values are flagged as low confidence and fewer than five are never judged. |
+| `EachFieldKeepsItsOwnNorm`                                                     | Fact   | Each field keeps its own norm.                                                               |
+
+### ProgressionCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.ProgressionCalculatorTests` — 6 tests.
+Category: Unit.
+
+| Test                                                          | Kind   | Verifies                                                                  |
+|---------------------------------------------------------------|--------|---------------------------------------------------------------------------|
+| `TheBucketFollowsTheSpanOfTheHistory`                         | Theory | The bucket follows the span of the history.                               |
+| `EachBucketHoldsTheMedianAndTheCountOfItsTransactions`        | Fact   | Each bucket holds the median and the count of its transactions.           |
+| `TheChangeIsTheLatestAgainstTheMedianOfTheBucketsBefore`      | Fact   | The change is the latest against the median of the buckets before.        |
+| `ANarrowDailyHistoryHasNoPreviousAndAZeroPreviousHasNoChange` | Fact   | A narrow daily history has no previous and a zero previous has no change. |
+| `TooManyBucketsWidenToWeeksAndAFieldWithNoValuesIsSkipped`    | Fact   | Too many buckets widen to weeks and a field with no values is skipped.    |
+| `WeeksStartOnMondayAndNothingGivesAnEmptyReport`              | Fact   | Weeks start on monday and nothing gives an empty report.                  |
+
+### DistributionCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.DistributionCalculatorTests` — 8 tests.
+Category: Unit.
+
+| Test                                                                  | Kind   | Verifies                                                                           |
+|-----------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `EveryValueLandsInExactlyOneBinAndTheBinsStayWithinTheirLimits`       | Fact   | Every value lands in exactly one bin and the bins stay within their limits.        |
+| `FewValuesStillGetTheMinimumNumberOfBins`                             | Fact   | Few values still get the minimum number of bins.                                   |
+| `ATightClusterWithOneExtremeNeverMakesMoreThanTheMaximumNumberOfBins` | Fact   | A tight cluster with one extreme never makes more than the maximum number of bins. |
+| `AConstantFieldIsOneBinRatherThanADivisionByZero`                     | Fact   | A constant field is one bin rather than a division by zero.                        |
+| `TheBoxUsesTukeyFencesAndCountsTheOutliers`                           | Fact   | The box uses tukey fences and counts the outliers.                                 |
+| `TheLatestValueIsRankedAgainstTheWholeHistory`                        | Fact   | The latest value is ranked against the whole history.                              |
+| `AFieldWithNoValuesProducesNoReport`                                  | Fact   | A field with no values produces no report.                                         |
+| `TheMeanAndTheEdgesComeFromTheSortedValues`                           | Fact   | The mean and the edges come from the sorted values.                                |
+
+### VelocityCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.VelocityCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                         | Kind   | Verifies                                                                   |
+|--------------------------------------------------------------|--------|----------------------------------------------------------------------------|
+| `TheGridCountsTransactionsByWeekdayFromMondayAndHour`        | Fact   | The grid counts transactions by weekday from monday and hour.              |
+| `TheBusiestHourIsFoundAgainstTheTypicalOne`                  | Fact   | The busiest hour is found against the typical one.                         |
+| `EachOfTheThreeWindowsIsReportedAndNothingGivesNoBursts`     | Fact   | Each of the three windows is reported and nothing gives no bursts.         |
+| `TheWindowIsHalfOpenSoAnEventExactlyOneWindowLaterIsNotInIt` | Fact   | The window is half open so an event exactly one window later is not in it. |
+
+### GapCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.GapCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                       | Kind   | Verifies                                                              |
+|------------------------------------------------------------|--------|-----------------------------------------------------------------------|
+| `EveryGapLandsInOneBinAndTheLabelsReadInTheUnitThatFits`   | Fact   | Every gap lands in one bin and the labels read in the unit that fits. |
+| `TheLongestDormancyIsFoundWithWhatHappenedInTheDayAfterIt` | Fact   | The longest dormancy is found with what happened in the day after it. |
+| `AGapExactlyOnAnEdgeBelongsToTheBinThatStartsThere`        | Fact   | A gap exactly on an edge belongs to the bin that starts there.        |
+| `TheMedianGapIsInHoursAndOneEventHasNoGaps`                | Fact   | The median gap is in hours and one event has no gaps.                 |
+
+### NoveltyCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.NoveltyCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                               | Kind   | Verifies                                                                          |
+|--------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------|
+| `AFirstSeenValueAfterTheWarmUpIsFlaggedOnItsRowAndNothingBeforeIt` | Fact   | A first seen value after the warm up is flagged on its row and nothing before it. |
+| `TheFirstFewTransactionsAreNeverNovelBecauseThereIsNoHistoryYet`   | Fact   | The first few transactions are never novel because there is no history yet.       |
+| `OnlyValuesFirstSeenInTheLastWeekAreListedAsRecentNewestFirst`     | Fact   | Only values first seen in the last week are listed as recent newest first.        |
+| `BlankAndMissingValuesAreIgnored`                                  | Fact   | Blank and missing values are ignored.                                             |
+
+### CounterpartyCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.CounterpartyCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                                      | Kind   | Verifies                                                                                |
+|---------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
+| `TheTopComeFirstWithTheirShareAndTheConcentrationIsTheSumOfSquaredShares` | Fact   | The top come first with their share and the concentration is the sum of squared shares. |
+| `AnAmountFieldTotalsTheMoneyPerCounterpartyAndAbsentOneLeavesItOut`       | Fact   | An amount field totals the money per counterparty and absent one leaves it out.         |
+| `ACounterpartyFirstSeenInTheLastThirtyDaysIsNew`                          | Fact   | A counterparty first seen in the last thirty days is new.                               |
+| `OnlyTenAreListedAndAFieldWithNothingInItIsOmitted`                       | Fact   | Only ten are listed and a field with nothing in it is omitted.                          |
+
+### CorrelationCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.CorrelationCalculatorTests` — 5 tests.
+Category: Unit.
+
+| Test                                               | Kind   | Verifies                                                     |
+|----------------------------------------------------|--------|--------------------------------------------------------------|
+| `APerfectLineIsOneAndIsListedAsStrong`             | Fact   | A perfect line is one and is listed as strong.               |
+| `ANegativeRelationshipKeepsItsSign`                | Fact   | A negative relationship keeps its sign.                      |
+| `AConstantFieldAndFieldsWithTooFewPairsAreLeftOut` | Fact   | A constant field and fields with too few pairs are left out. |
+| `UnrelatedNoiseIsNotStrong`                        | Fact   | Unrelated noise is not strong.                               |
+| `PearsonNeedsTenPairsAndVarianceOnBothSides`       | Fact   | Pearson needs ten pairs and variance on both sides.          |
+
+### DriftCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.DriftCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                                   | Kind   | Verifies                                                                          |
+|------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------|
+| `AShiftedRecentHalfIsFlaggedWithTheDirectionOfTheShift`                | Fact   | A shifted recent half is flagged with the direction of the shift.                 |
+| `TheSameDistributionInBothHalvesIsNotFlagged`                          | Fact   | The same distribution in both halves is not flagged.                              |
+| `FewerThanFortyTransactionsOrTwentyPerSideGivesNoJudgement`            | Fact   | Fewer than forty transactions or twenty per side gives no judgement.              |
+| `TheKolmogorovDistanceIsZeroForIdenticalSamplesAndOneForSeparatedOnes` | Fact   | The kolmogorov distance is zero for identical samples and one for separated ones. |
+
+### PeerDistributionCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.PeerDistributionCalculatorTests` — 4 tests.
+Category: Unit.
+
+| Test                                                    | Kind   | Verifies                                                           |
+|---------------------------------------------------------|--------|--------------------------------------------------------------------|
+| `BuildsTheDistributionOfKeyMediansAndCountsKeysAndRows` | Fact   | Builds the distribution of key medians and counts keys and rows.   |
+| `NeedsAtLeastTwentyKeysThatHaveValues`                  | Fact   | Needs at least twenty keys that have values.                       |
+| `IgnoresValuesThatAreNotNumbers`                        | Fact   | Ignores values that are not numbers.                               |
+| `KeepsASingleBinWhenEveryKeyIsTheSameAndAScaleOfZero`   | Fact   | Keeps a single bin when every key is the same and a scale of zero. |
+
+### PeerComparisonCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.PeerComparisonCalculatorTests` — 8 tests.
+Category: Unit.
+
+| Test                                                    | Kind   | Verifies                                                           |
+|---------------------------------------------------------|--------|--------------------------------------------------------------------|
+| `AKeyAtThePeerMedianIsTypicalAtTheMiddlePercentile`     | Fact   | A key at the peer median is typical at the middle percentile.      |
+| `AKeyFarAboveOrBelowThePeersIsMarkedAndClampedAtFive`   | Fact   | A key far above or below the peers is marked and clamped at five.  |
+| `TheThresholdDecidesWhenAKeyStandsOut`                  | Fact   | The threshold decides when a key stands out.                       |
+| `TheKeyIsComparedByItsMedianAndFewRowsAreLowConfidence` | Fact   | The key is compared by its median and few rows are low confidence. |
+| `NothingToCompareGivesNoComparison`                     | Fact   | Nothing to compare gives no comparison.                            |
+| `TooFewPeerKeysAreNotJudged`                            | Fact   | Too few peer keys are not judged.                                  |
+| `ThePercentileInterpolatesWithinABinAndStopsAtTheEnds`  | Fact   | The percentile interpolates within a bin and stops at the ends.    |
+| `ABinOfNoWidthCountsOnceTheValueIsPastIt`               | Fact   | A bin of no width counts once the value is past it.                |
+
+### JournalSummaryCalculatorTests
+
+`Jube.Test.CaseRisk.Journal.JournalSummaryCalculatorTests` — 3 tests.
+Category: Unit.
+
+| Test                                              | Kind   | Verifies                                                   |
+|---------------------------------------------------|--------|------------------------------------------------------------|
+| `TheStripCountsTheSpanTheDaysAndTheActivations`   | Fact   | The strip counts the span the days and the activations.    |
+| `EachMeasureGetsItsTotalsAndTheLatestValueByTime` | Fact   | Each measure gets its totals and the latest value by time. |
+| `NothingGivesAnEmptySummary`                      | Fact   | Nothing gives an empty summary.                            |
+
+### CaseAnalyticsOperationsTests
+
+`Jube.Test.CaseRisk.CaseAnalyticsOperationsTests` — 7 tests.
+Category: Unit.
+
+| Test                                                                    | Kind   | Verifies                                                                             |
+|-------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------|
+| `ServiceLevelAttainmentCountsMetBreachedAndInFlightByDimension`         | Fact   | Service level attainment counts met breached and in flight by dimension.             |
+| `TheWatchListHoldsOnlyOpenCasesStillMissingATargetWorstFirst`           | Fact   | The watch list holds only open cases still missing a target worst first.             |
+| `WeeklyAttainmentGroupsByTheMondayOfTheWeekTheCaseWasCreated`           | Fact   | Weekly attainment groups by the monday of the week the case was created.             |
+| `TheRhythmCountsArrivalsByWeekdayAndHourAndFindsTheBusiestSlot`         | Fact   | The rhythm counts arrivals by weekday and hour and finds the busiest slot.           |
+| `WorkloadShowsTheCallersOwnFiguresAndOnlyShowsATeamOfThreeOrMore`       | Fact   | Workload shows the callers own figures and only shows a team of three or more.       |
+| `HandoffsAndReopensAreBucketedAndPingPongCasesAreListedWorstFirst`      | Fact   | Handoffs and reopens are bucketed and ping pong cases are listed worst first.        |
+| `OpenCasesAreCountedOncePerStateBreachedBeforeAtRiskAndClosedOnesNever` | Fact   | Open cases are counted once per state breached before at risk and closed ones never. |
+
+### CaseAnalyticsChartRendererTests
+
+`Jube.Test.CaseRisk.CaseAnalyticsChartRendererTests` — 5 tests.
+Category: Unit.
+
+| Test                                                                      | Kind   | Verifies                                                                                  |
+|---------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------|
+| `EveryChartRendersAnSvgWithItsTitleInBothThemes`                          | Theory | Every chart renders an svg with its title in both themes.                                 |
+| `TheChartNamesTheRulesAndStatusesNotTheirGuids`                           | Fact   | The chart names the rules and statuses not their guids.                                   |
+| `AChartWithNothingBehindItSaysSoInsteadOfDrawingAnEmptyFrame`             | Theory | A chart with nothing behind it says so instead of drawing an empty frame.                 |
+| `TheUnsureGainsAndCalibrationChartsSayTheyRestOnTooFewCases`              | Fact   | The unsure gains and calibration charts say they rest on too few cases.                   |
+| `TheRiskMatrixPutsTheMostLikelyAtTheTopAndSaysHowManyCasesAreNotAssessed` | Fact   | The risk matrix puts the most likely at the top and says how many cases are not assessed. |
+
+### CaseAnalyticsServiceTests
+
+`Jube.Test.CaseRisk.CaseAnalyticsServiceTests` — 6 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                         | Kind   | Verifies                                                                              |
+|------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------|
+| `AStatusThatWasDeletedAndRecreatedWithTheSameGuidDoesNotBreakTheReportAsync` | Fact   | A status that was deleted and recreated with the same guid does not break the report. |
+| `TheWholeReportIsBuiltFromTheCasesTheirEventsStaysAndAssessmentsAsync`       | Fact   | The whole report is built from the cases their events stays and assessments.          |
+| `ThePeriodIsValidatedAndTheDefaultIsTheLastThirtyDaysAsync`                  | Fact   | The period is validated and the default is the last thirty days.                      |
+| `CasesOutsideThePeriodAreLeftOutExceptThoseStillOpenAsync`                   | Fact   | Cases outside the period are left out except those still open.                        |
+| `OnlyCasesTheCallerMaySeeAreCountedAndAWorkflowTheyLackIsNotFoundAsync`      | Fact   | Only cases the caller may see are counted and a workflow they lack is not found.      |
+| `ASignedOutUserIsRefusedAndOneWithoutThePermissionIsForbiddenAsync`          | Fact   | A signed out user is refused and one without the permission is forbidden.             |
 
 ### AbstractionCalculationsExtensionsTests
 
@@ -44,7 +545,7 @@ supporting engine plumbing.
 
 ### ActivationRuleActivationWatcherExtensionsTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ActivationRuleActivationWatcherExtensionsTests` — 13 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.ActivationRuleActivationWatcherExtensionsTests` — 16 tests. Category: Unit.
 
 | Test                                                                               | Kind | Verifies                                                                                  |
 |------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------|
@@ -61,6 +562,9 @@ supporting engine plumbing.
 | `PublishesToRedisAndIncrementsTheCounterWhenStreamingIsEnabledAsync`               | Fact | Publishes to redis and increments the counter when streaming is enabled.                  |
 | `DoesNotPublishToRedisOrIncrementTheCounterWhenStreamingIsDisabledAsync`           | Fact | Does not publish to redis or increment the counter when streaming is disabled.            |
 | `ARedisFailureIsSwallowedInsideTheCacheRepositorySoTheCounterStillIncrementsAsync` | Fact | A redis failure is swallowed inside the cache repository so the counter still increments. |
+| `CarriesTheEntitysPreviousLocationOntoTheNextRecordedActivationAsync` | Fact | Carries the entitys previous location onto the next recorded activation. |
+| `RemembersTheLocationEvenWhenTheSampleDeclinesToRecordTheActivationAsync` | Fact | Remembers the location even when the sample declines to record the activation. |
+| `KeepsEntitiesApartAndIgnoresAnActivationWithNoLocationOrNoKeyValueAsync` | Fact | Keeps entities apart and ignores an activation with no location or no key value. |
 
 ### ActivationRuleActivationWatcherGeolocationTests
 
@@ -95,22 +599,6 @@ supporting engine plumbing.
 | `ReturnsNullWhenIdempotencyIsEnabledAndTheClaimHasAlreadyBeenTakenAsync`       | Fact   | Returns null when idempotency is enabled and the claim has already been taken.      |
 | `CreatesTheCaseWhenIdempotencyIsEnabledAndTheClaimSucceedsAsync`               | Fact   | Creates the case when idempotency is enabled and the claim succeeds.                |
 | `DifferentActivationRulesClaimIndependentIdempotencySlotsForTheSameEntryAsync` | Fact   | Different activation rules claim independent idempotency slots for the same entry.  |
-
-### ActivationRuleNotificationExtensionsTests
-
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ActivationRuleNotificationExtensionsTests` — 9 tests. Category: Unit.
-
-| Test                                                                                 | Kind | Verifies                                                                                    |
-|--------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------|
-| `DoesNothingWhenNotificationIsGloballyDisabledAsync`                                 | Fact | Does nothing when notification is globally disabled.                                        |
-| `DoesNothingWhenSuppressedAsync`                                                     | Fact | Does nothing when suppressed.                                                               |
-| `DoesNothingWhenTheRuleHasNotificationDisabledAsync`                                 | Fact | Does nothing when the rule has notification disabled.                                       |
-| `DoesNothingWhenThisIsAReprocessingRunAsync`                                         | Fact | Does nothing when this is a reprocessing run.                                               |
-| `EnqueuesToThePendingNotificationsQueueWhenAmqpIsDisabledAsync`                      | Fact | Enqueues to the pending notifications queue when amqp is disabled.                          |
-| `ReplacesPayloadTokensInDestinationSubjectAndBodyAsync`                              | Fact | Replaces payload tokens in destination subject and body.                                    |
-| `ReturnsWithoutEnqueuingWhenIdempotencyIsEnabledAndTheClaimHasAlreadyBeenTakenAsync` | Fact | Returns without enqueuing when idempotency is enabled and the claim has already been taken. |
-| `EnqueuesWhenIdempotencyIsEnabledAndTheClaimSucceedsAsync`                           | Fact | Enqueues when idempotency is enabled and the claim succeeds.                                |
-| `NotificationIdempotencyIsClaimedIndependentlyFromCaseCreationIdempotencyAsync`      | Fact | Notification idempotency is claimed independently from case creation idempotency.           |
 
 ### ActivationRuleTtlCounterExtensionsTests
 
@@ -1256,3 +1744,14 @@ SanctionsSdnLoad.
 | `SyncPopulatesTheInMemoryCounterFromARealRowIncludingNullFieldDefaultsAsync`      | Fact | Sync populates the in memory counter from a real row including null field defaults.       |
 | `SyncSkipsAnInactiveCounterDefinitionAsync`                                       | Fact | Sync skips an inactive counter definition.                                                |
 | `ASyncedCounterIsPickedUpByTheRealAdministrationLoopAndDeprecatesOnScheduleAsync` | Fact | A synced counter is picked up by the real administration loop and deprecates on schedule. |
+
+### ModelsInScopeExtensionsTests
+
+`Jube.Test.Engine.EntityAnalysisModelManager.SynchronisationScope.ModelsInScopeExtensionsTests` — 4 tests. Category: Unit.
+
+| Test                                                       | Kind | Verifies                                                               |
+|------------------------------------------------------------|------|------------------------------------------------------------------------|
+| `WithNoScopeEveryActiveModelIsInScope`                     | Fact | With no scope every active model is in scope.                          |
+| `AScopeKeepsOnlyTheModelsItNames`                          | Fact | A scope keeps only the models it names.                                |
+| `AScopeNamingAModelThatIsNotLoadedYetStillAdmitsItsRecord` | Fact | A scope naming a model that is not loaded yet still admits its record. |
+| `AnEmptyScopeSelectsNothing`                               | Fact | An empty scope selects nothing.                                        |

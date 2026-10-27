@@ -24,13 +24,13 @@ namespace Jube.Test.Preservation
 {
     internal sealed record SeededAnalytics(
         int ModelId,
-        AdvancedAnalyticsInstance Linked,
-        AdvancedAnalyticsInstance Free,
-        AdvancedAnalyticsTrainedModel ModelA,
-        AdvancedAnalyticsTrainedModel ModelB,
-        AdvancedAnalyticsTrainedModelVersion VersionA1,
-        AdvancedAnalyticsTrainedModelVersion VersionA2,
-        AdvancedAnalyticsTrainedModelVersion VersionB1,
+        AskJoobyAnalyticsInstance Linked,
+        AskJoobyAnalyticsInstance Free,
+        AskJoobyAnalyticsTrainedModel ModelA,
+        AskJoobyAnalyticsTrainedModel ModelB,
+        AskJoobyAnalyticsTrainedModelVersion VersionA1,
+        AskJoobyAnalyticsTrainedModelVersion VersionA2,
+        AskJoobyAnalyticsTrainedModelVersion VersionB1,
         AdvancedAnalyticsTrainingRun RunSucceeded,
         AdvancedAnalyticsTrainingRun RunRunning,
         AdvancedAnalyticsTrainingRunTrial TrialFirst,
@@ -57,7 +57,7 @@ namespace Jube.Test.Preservation
             var suffix = Guid.NewGuid().ToString("N")[..10];
             var real = Trained;
 
-            var linkedId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsInstance
+            var linkedId = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsInstance
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
@@ -71,7 +71,7 @@ namespace Jube.Test.Preservation
                 Version = 4
             });
 
-            var freeId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsInstance
+            var freeId = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsInstance
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
@@ -86,7 +86,7 @@ namespace Jube.Test.Preservation
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 UserName = user,
                 KindId = AdvancedAnalyticsKind.Classifier,
                 JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -107,7 +107,7 @@ namespace Jube.Test.Preservation
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = freeId,
+                AskJoobyAnalyticsInstanceId = freeId,
                 KindId = AdvancedAnalyticsKind.AnomalyDetector,
                 JobMode = AdvancedAnalyticsJobMode.Online,
                 StatusId = AdvancedAnalyticsStatus.Running,
@@ -120,7 +120,7 @@ namespace Jube.Test.Preservation
             var trialFirstId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainingRunTrial
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 TrialNumber = 1,
                 StatusId = AdvancedAnalyticsStatus.Succeeded,
@@ -135,7 +135,7 @@ namespace Jube.Test.Preservation
             var trialSecondId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainingRunTrial
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 TrialNumber = 2,
                 StatusId = AdvancedAnalyticsStatus.Succeeded,
@@ -148,7 +148,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunStep
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 StepOrder = 1,
                 Step = AdvancedAnalyticsStep.Load,
@@ -161,7 +161,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunStep
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 StepOrder = 2,
                 Step = AdvancedAnalyticsStep.Fit,
@@ -172,7 +172,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunStep
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = freeId,
+                AskJoobyAnalyticsInstanceId = freeId,
                 AdvancedAnalyticsTrainingRunId = runRunningId,
                 StepOrder = 1,
                 Step = AdvancedAnalyticsStep.Load,
@@ -183,7 +183,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunIteration
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 AdvancedAnalyticsTrainingRunTrialId = trialFirstId,
                 IterationNumber = 1,
@@ -196,7 +196,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunIteration
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 AdvancedAnalyticsTrainingRunTrialId = trialSecondId,
                 IterationNumber = 2,
@@ -207,7 +207,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunIteration
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 AdvancedAnalyticsTrainingRunTrialId = null,
                 IterationNumber = 3,
@@ -217,7 +217,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunVariable
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 VariableSequence = 0,
                 Name = "Payload.A",
@@ -234,7 +234,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunVariable
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 VariableSequence = 1,
                 Name = "Abstraction.B"
@@ -243,7 +243,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunMetric
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 AdvancedAnalyticsTrainingRunTrialId = trialSecondId,
                 Name = "auc",
@@ -254,7 +254,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunMetric
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 Name = "auc",
                 Value = 0.9,
@@ -264,7 +264,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunCurvePoint
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 Curve = AdvancedAnalyticsCurve.Roc,
                 Split = AdvancedAnalyticsSplit.Test,
@@ -277,7 +277,7 @@ namespace Jube.Test.Preservation
             await db.InsertAsync(new AdvancedAnalyticsTrainingRunCurvePoint
             {
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 AdvancedAnalyticsTrainingRunId = runSucceededId,
                 Curve = AdvancedAnalyticsCurve.Calibration,
                 Split = AdvancedAnalyticsSplit.Validation,
@@ -286,11 +286,11 @@ namespace Jube.Test.Preservation
                 Y = 0.4
             });
 
-            var modelAId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainedModel
+            var modelAId = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsTrainedModel
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = linkedId,
+                AskJoobyAnalyticsInstanceId = linkedId,
                 Name = $"ZzTest{tag}ModelA{suffix}",
                 KindId = AdvancedAnalyticsKind.Classifier,
                 SourceId = AdvancedAnalyticsSource.Agent,
@@ -300,22 +300,22 @@ namespace Jube.Test.Preservation
                 Version = 3
             });
 
-            var modelBId = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainedModel
+            var modelBId = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsTrainedModel
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsInstanceId = freeId,
+                AskJoobyAnalyticsInstanceId = freeId,
                 Name = $"ZzTest{tag}ModelB{suffix}",
                 KindId = AdvancedAnalyticsKind.Regressor,
                 SourceId = AdvancedAnalyticsSource.Upload,
                 CreatedDate = At(19)
             });
 
-            var versionA1Id = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainedModelVersion
+            var versionA1Id = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsTrainedModelVersion
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsTrainedModelId = modelAId,
+                AskJoobyAnalyticsTrainedModelId = modelAId,
                 VersionNumber = 1,
                 ModelJson = OddModelJson,
                 VariablesJson = "{\"b\": 1,   \"a\": [1,2 ]}",
@@ -326,28 +326,28 @@ namespace Jube.Test.Preservation
                 CreatedUser = user
             });
 
-            var versionA2Id = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainedModelVersion
+            var versionA2Id = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsTrainedModelVersion
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsTrainedModelId = modelAId,
+                AskJoobyAnalyticsTrainedModelId = modelAId,
                 VersionNumber = 2,
                 ModelJson = real.SnapshotJson,
                 VariablesJson = real.VariablesJson,
                 CreatedDate = At(21)
             });
 
-            var versionB1Id = await db.InsertWithInt32IdentityAsync(new AdvancedAnalyticsTrainedModelVersion
+            var versionB1Id = await db.InsertWithInt32IdentityAsync(new AskJoobyAnalyticsTrainedModelVersion
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenantId,
-                AdvancedAnalyticsTrainedModelId = modelBId,
+                AskJoobyAnalyticsTrainedModelId = modelBId,
                 VersionNumber = 1,
                 ModelJson = "{\"kind\":\"other\"}",
                 CreatedDate = At(22)
             });
 
-            await db.AdvancedAnalyticsTrainedModel.Where(w => w.Id == modelAId)
+            await db.AskJoobyAnalyticsTrainedModel.Where(w => w.Id == modelAId)
                 .Set(s => s.ActiveVersionId, versionA2Id)
                 .Set(s => s.Active, (byte)1)
                 .UpdateAsync();
@@ -368,13 +368,13 @@ namespace Jube.Test.Preservation
             });
 
             return new SeededAnalytics(modelId,
-                await db.AdvancedAnalyticsInstance.SingleAsync(w => w.Id == linkedId),
-                await db.AdvancedAnalyticsInstance.SingleAsync(w => w.Id == freeId),
-                await db.AdvancedAnalyticsTrainedModel.SingleAsync(w => w.Id == modelAId),
-                await db.AdvancedAnalyticsTrainedModel.SingleAsync(w => w.Id == modelBId),
-                await db.AdvancedAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionA1Id),
-                await db.AdvancedAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionA2Id),
-                await db.AdvancedAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionB1Id),
+                await db.AskJoobyAnalyticsInstance.SingleAsync(w => w.Id == linkedId),
+                await db.AskJoobyAnalyticsInstance.SingleAsync(w => w.Id == freeId),
+                await db.AskJoobyAnalyticsTrainedModel.SingleAsync(w => w.Id == modelAId),
+                await db.AskJoobyAnalyticsTrainedModel.SingleAsync(w => w.Id == modelBId),
+                await db.AskJoobyAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionA1Id),
+                await db.AskJoobyAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionA2Id),
+                await db.AskJoobyAnalyticsTrainedModelVersion.SingleAsync(w => w.Id == versionB1Id),
                 await db.AdvancedAnalyticsTrainingRun.SingleAsync(w => w.Id == runSucceededId),
                 await db.AdvancedAnalyticsTrainingRun.SingleAsync(w => w.Id == runRunningId),
                 await db.AdvancedAnalyticsTrainingRunTrial.SingleAsync(w => w.Id == trialFirstId),

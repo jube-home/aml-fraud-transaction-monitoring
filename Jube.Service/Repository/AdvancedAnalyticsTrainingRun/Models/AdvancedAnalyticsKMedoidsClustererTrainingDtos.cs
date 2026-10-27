@@ -23,8 +23,8 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models
 {
     public sealed class AdvancedAnalyticsKMedoidsClustererTrainingDto
     {
-        [Description("Numeric identifier of the Advanced Analytics instance the run and its model belong to.")]
-        public int AdvancedAnalyticsInstanceId { get; set; }
+        [Description("Numeric identifier of the AskJooby Analytics instance the run and its model belong to.")]
+        public int AskJoobyAnalyticsInstanceId { get; set; }
 
         [Description("Name of the model the trained version is filed under. A model of that name in the " +
                      "instance receives the result as a new version; otherwise a new model is created.")]

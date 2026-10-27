@@ -60,6 +60,11 @@ namespace Jube.Charting
             return new PieChartBuilder().Donut(innerRadiusRatio);
         }
 
+        public static MapChartBuilder Map()
+        {
+            return new MapChartBuilder();
+        }
+
         public static HeatmapChartBuilder Heatmap()
         {
             return new HeatmapChartBuilder();

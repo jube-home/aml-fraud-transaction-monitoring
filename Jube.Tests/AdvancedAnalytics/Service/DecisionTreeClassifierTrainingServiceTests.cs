@@ -26,7 +26,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -77,7 +77,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             evidence.Kind.Should().Be(DecisionTreeClassifierRecall.ModelKind);
             evidence.Details.TestMetrics.Should().NotBeNull();
 
-            var version = await Db.AdvancedAnalyticsTrainedModelVersion
+            var version = await Db.AskJoobyAnalyticsTrainedModelVersion
                 .Where(w => w.Id == status.TrainedModelVersionId)
                 .SingleAsync();
 

@@ -64,5 +64,8 @@ namespace Jube.Data.Poco
             Relationship = Relationship.OneToMany)]
         [Key(28)]
         public CaseWorkflowXPathRole CaseWorkflowXPathRole { get; set; }
+
+        [Column] [Key(29)] public byte RoleId { get; set; }
+        [Column] [Key(30)] public byte Segment { get; set; }
     }
 }

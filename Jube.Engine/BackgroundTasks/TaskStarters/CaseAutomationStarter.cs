@@ -188,16 +188,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                             switch (expiredCase.OldClosedStatus)
                             {
-                                case 0:
-                                    expiredCase.NewClosedStatus = 0;
-
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Case Automation: Case ID {expiredCase.CaseId} has an open status and will be maintained.");
-                                    }
-
-                                    break;
                                 case 1:
                                     expiredCase.NewClosedStatus = 0;
 
@@ -268,7 +258,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         {
             try
             {
-                var repository = new CaseEventRepository(dbContext);
+                var repository = new CaseEventRepository(dbContext, "Administrator");
 
                 var model = new CaseEvent
                 {
@@ -300,6 +290,13 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         processExpiredCase.NewClosedStatus,
                         processExpiredCase.OldClosedStatus, context.Services.TaskCoordinator.CancellationToken)
                     .ConfigureAwait(false);
+
+                if (processExpiredCase.NewClosedStatus == 3)
+                {
+                    await new CaseStatusTransitionRepository(dbContext).CloseAsync(processExpiredCase.CaseId,
+                        DateTime.UtcNow, null, context.Services.TaskCoordinator.CancellationToken)
+                        .ConfigureAwait(false);
+                }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

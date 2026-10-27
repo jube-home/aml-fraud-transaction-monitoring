@@ -30,12 +30,12 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
         private const int MaxFreeTextLength = 65536;
         private const int MaxShortTextLength = 512;
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
-        private static readonly int[] allowedNotificationTypeIds = [1, 2];
         private static readonly char[] allowedBypassSuspendIntervals = ['n', 'h', 'd', 'm'];
 
         public EntityAnalysisModelActivationRuleDtoValidator(EntityAnalysisModelActivationRuleRepository repository,
             IStringLocalizer localiser,
-            RuleScriptParser? ruleScriptParser = null)
+            RuleScriptParser? ruleScriptParser = null,
+            EntityAnalysisModelResponseElevationRangeRepository? responseElevationRangeRepository = null)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelActivationRuleDto>());
 
@@ -168,6 +168,16 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithErrorCode("ResponseElevationRange")
                 .When(w => w.EnableResponseElevation);
 
+            RuleFor(p => p.ResponseElevation)
+                .MustAsync(async (dto, level, cancellation) =>
+                    await responseElevationRangeRepository!.GetActiveContainingAsync(dto.EntityAnalysisModelId, level,
+                        cancellation) != null)
+                .WithMessage(_ =>
+                    localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationRangeNotFound])
+                .WithErrorCode("ResponseElevationRangeNotFound")
+                .When(w => w.EnableResponseElevation && w.ResponseElevation >= 0 && w.EntityAnalysisModelId > 0
+                           && responseElevationRangeRepository != null);
+
             RuleFor(p => p.ResponseElevationContent)
                 .MaximumLength(MaxFreeTextLength)
                 .WithMessage(_ =>
@@ -211,39 +221,6 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                     localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationBackColorInvalid])
                 .WithErrorCode("ResponseElevationBackColorInvalid")
                 .When(w => w.EnableResponseElevation && w.SendToActivationWatcher);
-
-            RuleFor(p => p.NotificationTypeId)
-                .Must(m => allowedNotificationTypeIds.Contains(m))
-                .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.NotificationTypeIdInvalid])
-                .WithErrorCode("NotificationTypeIdInvalid")
-                .When(w => w.EnableNotification);
-
-            RuleFor(p => p.NotificationDestination)
-                .NotEmpty()
-                .WithMessage(_ =>
-                    localiser[EntityAnalysisModelActivationRuleResources.NotificationDestinationRequired])
-                .WithErrorCode("NotificationDestinationNotEmpty")
-                .MaximumLength(MaxShortTextLength)
-                .WithMessage(_ =>
-                    string.Format(
-                        localiser[EntityAnalysisModelActivationRuleResources.NotificationDestinationMaxLength],
-                        MaxShortTextLength))
-                .WithErrorCode("NotificationDestinationMaximumLength")
-                .When(w => w.EnableNotification);
-
-            RuleFor(p => p.NotificationSubject)
-                .MaximumLength(MaxShortTextLength)
-                .WithMessage(_ =>
-                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.NotificationSubjectMaxLength],
-                        MaxShortTextLength))
-                .WithErrorCode("NotificationSubjectMaximumLength");
-
-            RuleFor(p => p.NotificationBody)
-                .MaximumLength(MaxFreeTextLength)
-                .WithMessage(_ =>
-                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.NotificationBodyMaxLength],
-                        MaxFreeTextLength))
-                .WithErrorCode("NotificationBodyMaximumLength");
 
             RuleFor(p => p.EntityAnalysisModelGuidTtlCounter)
                 .NotEmpty()

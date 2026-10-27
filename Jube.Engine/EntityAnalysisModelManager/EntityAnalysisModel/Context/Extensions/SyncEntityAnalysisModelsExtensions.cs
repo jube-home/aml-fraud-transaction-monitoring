@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Repository;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Utilities;
@@ -41,7 +42,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     .GetApprovedAsync(context.ApprovalsRequired, context.Services.CancellationToken)
                     .ConfigureAwait(false);
 
-                foreach (var record in records)
+                foreach (var record in records.Where(w => context.IsInScope(w.Id)))
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 

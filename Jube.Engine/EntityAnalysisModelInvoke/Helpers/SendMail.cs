@@ -23,7 +23,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
 
     public static class SendMail
     {
-        public static async Task SendAsync(
+        public static async Task<bool> SendAsync(
             string toEmail,
             string subject,
             string body,
@@ -46,7 +46,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
                 {
                     log.Info("SMTP Client: No SMTP credentials specified.");
 
-                    return;
+                    return false;
                 }
 
                 smtpServer.UseDefaultCredentials = jubeEnvironment.AppSettings("SMTPUseDefaultCredentials")
@@ -60,7 +60,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
                 {
                     log.Info("SMTP Client: No SMTP host and port specified.");
 
-                    return;
+                    return false;
                 }
 
                 smtpServer.Port = Int32.Parse(jubeEnvironment.AppSettings("SMTPPort"));
@@ -117,10 +117,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
                 {
                     log.Info("SMTP Client: Message has been sent successfully.");
                 }
+
+                return true;
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 log.Error($"SMTP Client: Failed to send message. Exception: {ex}");
+
+                return false;
             }
         }
     }

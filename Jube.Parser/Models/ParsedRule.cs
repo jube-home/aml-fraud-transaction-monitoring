@@ -24,10 +24,24 @@ namespace Jube.Parser.Models
     {
         public readonly Dictionary<string, SelectedPayloadData> SelectedPayloadData = [];
         public readonly List<RuleReference> References = [];
+        public readonly List<TrackedLine> LineMaps = [];
         public int CharOffset;
         public List<ErrorSpan> ErrorSpans;
         public int LineOffset;
         public string OriginalRuleText;
         public string ParsedRuleText;
+
+        public void Locate(int line, int translatedStart, int translatedEnd, ErrorSpan span)
+        {
+            if (line < 0 || line >= LineMaps.Count)
+            {
+                return;
+            }
+
+            var (start, end) = LineMaps[line].ToOriginal(translatedStart, translatedEnd);
+
+            span.Column = start;
+            span.EndColumn = end;
+        }
     }
 }

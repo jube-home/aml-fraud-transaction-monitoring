@@ -32,14 +32,13 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                     Name = datasource.Name,
                     Active = datasource.Active == 1,
                     Locked = datasource.Locked == 1,
-                    VisualisationTypeId = datasource.VisualisationTypeId.GetValueOrDefault(),
                     Command = datasource.Command,
-                    VisualisationText = datasource.VisualisationText,
                     Priority = datasource.Priority.GetValueOrDefault(),
                     IncludeGrid = datasource.IncludeGrid == 1,
-                    IncludeDisplay = datasource.IncludeDisplay == 1,
                     ColumnSpan = datasource.ColumnSpan.GetValueOrDefault(),
                     RowSpan = datasource.RowSpan.GetValueOrDefault(),
+                    DisplayKindId = datasource.DisplayKindId.GetValueOrDefault(),
+                    TemplateText = datasource.TemplateText,
                     CreatedUser = datasource.CreatedUser,
                     CreatedDate = ToOffset(datasource.CreatedDate),
                     UpdatedUser = datasource.UpdatedUser,
@@ -59,19 +58,19 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         {
             return new DatasourcePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 VisualisationRegistryId = dto.VisualisationRegistryId,
                 Name = dto.Name,
                 Active = (byte)(dto.Active ? 1 : 0),
                 Locked = (byte)(dto.Locked ? 1 : 0),
-                VisualisationTypeId = dto.VisualisationTypeId,
                 Command = dto.Command,
-                VisualisationText = dto.VisualisationText,
                 Priority = dto.Priority,
                 IncludeGrid = (byte)(dto.IncludeGrid ? 1 : 0),
-                IncludeDisplay = (byte)(dto.IncludeDisplay ? 1 : 0),
                 ColumnSpan = dto.ColumnSpan,
-                RowSpan = dto.RowSpan
+                RowSpan = dto.RowSpan,
+                DisplayKindId = dto.DisplayKindId == 0 ? null : dto.DisplayKindId,
+                TemplateText = dto.TemplateText
             };
         }
 

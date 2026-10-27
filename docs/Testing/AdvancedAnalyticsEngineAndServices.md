@@ -381,9 +381,9 @@ Collection: Database.
 | `StageTimeBudgetDefaultsToOneSecondAndAcceptsZeroToDisable`            | Fact | Stage time budget defaults to one second and accepts zero to disable.           |
 | `SettingsKeysAreRegisteredInTheDynamicEnvironmentWithMatchingDefaults` | Fact | Settings keys are registered in the dynamic environment with matching defaults. |
 
-### AdvancedAnalyticsInstanceRepositoryTests
+### AskJoobyAnalyticsInstanceRepositoryTests
 
-`Jube.Test.AdvancedAnalytics.Repository.AdvancedAnalyticsInstanceRepositoryTests` — 11 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.AskJoobyAnalyticsInstanceRepositoryTests` — 11 tests. Category: Service.
 Collection: Database.
 
 | Test                                                        | Kind | Verifies                                                         |
@@ -420,9 +420,9 @@ Database.
 | `TheFourPermissionsExistWithTheAgreedIdsAndNamesAsync` | Fact | The four permissions exist with the agreed ids and names. |
 | `TheAdministratorRoleIsGrantedAllFourAsync`            | Fact | The administrator role is granted all four.               |
 
-### AdvancedAnalyticsTrainedModelRepositoryTests
+### AskJoobyAnalyticsTrainedModelRepositoryTests
 
-`Jube.Test.AdvancedAnalytics.Repository.AdvancedAnalyticsTrainedModelRepositoryTests` — 16 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.AskJoobyAnalyticsTrainedModelRepositoryTests` — 16 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                  | Kind | Verifies                                                                   |
@@ -659,9 +659,9 @@ Category: Service. Collection: Database.
 | `SubmitRunsExecutesDirectlyAndPersistsAVersionWhoseRecallMatchesADirectInProcessTrainAsync` | Fact | Submit runs executes directly and persists a version whose recall matches a direct in process train. |
 | `SubmitRejectsAnInvalidLearningRateBeforeQueuingARunAsync`                                  | Fact | Submit rejects an invalid learning rate before queuing a run.                                        |
 
-### AdvancedAnalyticsInstanceActiveSwitchTests
+### AskJoobyAnalyticsInstanceActiveSwitchTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsInstanceActiveSwitchTests` — 15 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsInstanceActiveSwitchTests` — 15 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                                 | Kind   | Verifies                                                                                     |
@@ -682,9 +682,9 @@ Collection: Database.
 | `ThePipelineStageWritesNothingForASwitchedOffInstanceAndScoresOnceItIsOnAsync`       | Fact   | The pipeline stage writes nothing for a switched off instance and scores once it is on.      |
 | `ARecallHeldAcrossASwitchOffAndSyncStillCompletesAndNewLookupsFailClearlyAsync`      | Fact   | A recall held across a switch off and sync still completes and new lookups fail clearly.     |
 
-### AdvancedAnalyticsInstanceServiceTests
+### AskJoobyAnalyticsInstanceServiceTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsInstanceServiceTests` — 23 tests. Category: Service. Collection:
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsInstanceServiceTests` — 23 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                              | Kind | Verifies                                                                              |
@@ -807,9 +807,9 @@ Service. Collection: Database.
 |------------------------------------------------|------|-------------------------------------------------|
 | `SubmitTrainsExecutesAndRecallsBitForBitAsync` | Fact | Submit trains executes and recalls bit for bit. |
 
-### AdvancedAnalyticsModelMapperTests
+### AskJoobyAnalyticsModelMapperTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsModelMapperTests` — 8 tests. Category: Unit.
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsModelMapperTests` — 8 tests. Category: Unit.
 
 | Test                                                                           | Kind   | Verifies                                                                                 |
 |--------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
@@ -822,9 +822,9 @@ Service. Collection: Database.
 | `TransformedVariableCountLabel_TreatsAnAbsentTransformationIdPropertyAsNone`   | Fact   | Transformed variable count label treats an absent transformation id property as none.    |
 | `TransformedVariableCountLabel_AllVariablesTransformedIsReportedInFull`        | Fact   | Transformed variable count label all variables transformed is reported in full.          |
 
-### AdvancedAnalyticsModelServiceTests
+### AskJoobyAnalyticsModelServiceTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsModelServiceTests` — 21 tests. Category: Service. Collection:
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsModelServiceTests` — 21 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                                | Kind | Verifies                                                                                    |

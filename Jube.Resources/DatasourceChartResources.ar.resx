@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Kind.Column.Name" xml:space="preserve">
+        <value>مخطط أعمدة</value>
+        <comment>d03c5399</comment>
+    </data>
+    <data name="Kind.Column.Description" xml:space="preserve">
+        <value>يقارن القيم بين الفئات بأعمدة رأسية، مع سلسلة واحدة لكل عمود قيمة.</value>
+        <comment>fbeeeac9</comment>
+    </data>
+    <data name="Kind.Bar.Name" xml:space="preserve">
+        <value>مخطط أشرطة</value>
+        <comment>e006cb3f</comment>
+    </data>
+    <data name="Kind.Bar.Description" xml:space="preserve">
+        <value>يقارن القيم بين الفئات بأشرطة أفقية، وهو مناسب لأسماء الفئات الطويلة.</value>
+        <comment>661f4e08</comment>
+    </data>
+    <data name="Kind.StackedColumn.Name" xml:space="preserve">
+        <value>مخطط أعمدة مكدسة</value>
+        <comment>a1c546a4</comment>
+    </data>
+    <data name="Kind.StackedColumn.Description" xml:space="preserve">
+        <value>يكدس كل سلسلة فوق الأخرى لإظهار المجموع وأجزائه.</value>
+        <comment>f875004b</comment>
+    </data>
+    <data name="Kind.StackedBar.Name" xml:space="preserve">
+        <value>مخطط أشرطة مكدسة</value>
+        <comment>fa509936</comment>
+    </data>
+    <data name="Kind.StackedBar.Description" xml:space="preserve">
+        <value>يكدس كل سلسلة أفقيًا لإظهار المجموع وأجزائه.</value>
+        <comment>236c196c</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Name" xml:space="preserve">
+        <value>مخطط أعمدة مكدسة بالنسبة المئوية</value>
+        <comment>b6da04aa</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Description" xml:space="preserve">
+        <value>يعرض كل سلسلة كحصة من إجمالي الفئة.</value>
+        <comment>1bd78239</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Name" xml:space="preserve">
+        <value>مخطط أشرطة مكدسة بالنسبة المئوية</value>
+        <comment>ce4c17ff</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Description" xml:space="preserve">
+        <value>يعرض كل سلسلة كحصة من إجمالي الفئة، أفقيًا.</value>
+        <comment>dc79cf9f</comment>
+    </data>
+    <data name="Kind.Line.Name" xml:space="preserve">
+        <value>مخطط خطي</value>
+        <comment>22089151</comment>
+    </data>
+    <data name="Kind.Line.Description" xml:space="preserve">
+        <value>يعرض كيف تتغير القيم على امتداد فئة مرتبة أو رقم أو زمن.</value>
+        <comment>71c21e56</comment>
+    </data>
+    <data name="Kind.Area.Name" xml:space="preserve">
+        <value>مخطط مساحي</value>
+        <comment>c79cf6b2</comment>
+    </data>
+    <data name="Kind.Area.Description" xml:space="preserve">
+        <value>مخطط خطي مع تعبئة المساحة تحت كل خط.</value>
+        <comment>4d7fcd4b</comment>
+    </data>
+    <data name="Kind.StackedArea.Name" xml:space="preserve">
+        <value>مخطط مساحي مكدس</value>
+        <comment>c5670419</comment>
+    </data>
+    <data name="Kind.StackedArea.Description" xml:space="preserve">
+        <value>يكدس المساحات المعبأة لإظهار المجموع وأجزائه على محور مرتب.</value>
+        <comment>0236928f</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Name" xml:space="preserve">
+        <value>مخطط مساحي مكدس بالنسبة المئوية</value>
+        <comment>6aaa1850</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Description" xml:space="preserve">
+        <value>يعرض كل سلسلة كحصة من المجموع على محور مرتب.</value>
+        <comment>ae4c02dc</comment>
+    </data>
+    <data name="Kind.Pie.Name" xml:space="preserve">
+        <value>مخطط دائري</value>
+        <comment>9899e8ba</comment>
+    </data>
+    <data name="Kind.Pie.Description" xml:space="preserve">
+        <value>يعرض أجزاء من الكل. الأفضل لعدد قليل من الفئات.</value>
+        <comment>2846aafc</comment>
+    </data>
+    <data name="Kind.Donut.Name" xml:space="preserve">
+        <value>مخطط حلقي</value>
+        <comment>5469e407</comment>
+    </data>
+    <data name="Kind.Donut.Description" xml:space="preserve">
+        <value>مخطط دائري بمركز مجوف.</value>
+        <comment>4e0bb12a</comment>
+    </data>
+    <data name="Kind.Scatter.Name" xml:space="preserve">
+        <value>مخطط نقطي أو فقاعي</value>
+        <comment>2f6655ee</comment>
+    </data>
+    <data name="Kind.Scatter.Description" xml:space="preserve">
+        <value>يرسم عمودًا رقميًا مقابل آخر؛ وعمود الحجم يحوّل النقاط إلى فقاعات.</value>
+        <comment>3563c3db</comment>
+    </data>
+    <data name="Kind.Histogram.Name" xml:space="preserve">
+        <value>مدرج تكراري</value>
+        <comment>b32dc489</comment>
+    </data>
+    <data name="Kind.Histogram.Description" xml:space="preserve">
+        <value>يجمّع القيم الخام لكل عمود رقمي في فئات لإظهار توزيعها.</value>
+        <comment>3ecccbbb</comment>
+    </data>
+    <data name="Kind.Heatmap.Name" xml:space="preserve">
+        <value>خريطة حرارية</value>
+        <comment>3aa6826d</comment>
+    </data>
+    <data name="Kind.Heatmap.Description" xml:space="preserve">
+        <value>يلوّن الخلية التي يلتقي فيها تصنيف الصف بتصنيف العمود وفق قيمة رقمية.</value>
+        <comment>c1a2697a</comment>
+    </data>
+    <data name="Kind.Combo.Name" xml:space="preserve">
+        <value>مخطط مركّب</value>
+        <comment>0a373f64</comment>
+    </data>
+    <data name="Kind.Combo.Description" xml:space="preserve">
+        <value>يرسم الأعمدة والخطوط على الفئات نفسها، مع محور ثانوي اختياري.</value>
+        <comment>bbf5881c</comment>
+    </data>
+    <data name="Kind.BoxPlot.Name" xml:space="preserve">
+        <value>مخطط صندوقي</value>
+        <comment>e4d59eb4</comment>
+    </data>
+    <data name="Kind.BoxPlot.Description" xml:space="preserve">
+        <value>يعرض انتشار كل فئة من حدها الأدنى إلى حدها الأقصى حول الوسيط.</value>
+        <comment>145fe237</comment>
+    </data>
+    <data name="Kind.Candlestick.Name" xml:space="preserve">
+        <value>مخطط الشموع</value>
+        <comment>516cc7a4</comment>
+    </data>
+    <data name="Kind.Candlestick.Description" xml:space="preserve">
+        <value>يعرض الافتتاح والأعلى والأدنى والإغلاق لكل فترة.</value>
+        <comment>d0008aeb</comment>
+    </data>
+    <data name="Kind.Waterfall.Name" xml:space="preserve">
+        <value>مخطط الشلال</value>
+        <comment>6d31c875</comment>
+    </data>
+    <data name="Kind.Waterfall.Description" xml:space="preserve">
+        <value>يعرض كيف يرتفع المجموع التراكمي وينخفض مع كل خطوة.</value>
+        <comment>aee0d7e9</comment>
+    </data>
+    <data name="Kind.Funnel.Name" xml:space="preserve">
+        <value>مخطط قمعي</value>
+        <comment>0dce84e9</comment>
+    </data>
+    <data name="Kind.Funnel.Description" xml:space="preserve">
+        <value>يعرض كيف تتناقص القيمة عبر مراحل مرتبة.</value>
+        <comment>a259c9c8</comment>
+    </data>
+    <data name="Kind.Radar.Name" xml:space="preserve">
+        <value>مخطط راداري</value>
+        <comment>4df56b16</comment>
+    </data>
+    <data name="Kind.Radar.Description" xml:space="preserve">
+        <value>يقارن السلاسل عبر عدة محاور على شبكة قطبية.</value>
+        <comment>2fbcc105</comment>
+    </data>
+    <data name="Kind.Polar.Name" xml:space="preserve">
+        <value>مخطط قطبي</value>
+        <comment>a0b4504c</comment>
+    </data>
+    <data name="Kind.Polar.Description" xml:space="preserve">
+        <value>يرسم نصف القطر مقابل الزاوية بالدرجات.</value>
+        <comment>2a1ba732</comment>
+    </data>
+    <data name="Kind.Gauge.Name" xml:space="preserve">
+        <value>مقياس</value>
+        <comment>f6d8f4c8</comment>
+    </data>
+    <data name="Kind.Gauge.Description" xml:space="preserve">
+        <value>يعرض قيمة واحدة مقابل نطاق وهدف اختياري، من الصف الأول.</value>
+        <comment>f1932ac7</comment>
+    </data>
+    <data name="Kind.Bullet.Name" xml:space="preserve">
+        <value>مخطط رصاصي</value>
+        <comment>6b523bb9</comment>
+    </data>
+    <data name="Kind.Bullet.Description" xml:space="preserve">
+        <value>يعرض قيمة كل صف مقابل هدفه على هيئة شريط مدمج.</value>
+        <comment>4dbf42f7</comment>
+    </data>
+    <data name="Kind.Sparkline.Name" xml:space="preserve">
+        <value>مخطط مصغّر</value>
+        <comment>30f095a6</comment>
+    </data>
+    <data name="Kind.Sparkline.Description" xml:space="preserve">
+        <value>خط صغير بحجم كلمة من قيم مرتبة.</value>
+        <comment>078a5cfd</comment>
+    </data>
+    <data name="Kind.Treemap.Name" xml:space="preserve">
+        <value>خريطة شجرية</value>
+        <comment>66ba877f</comment>
+    </data>
+    <data name="Kind.Treemap.Description" xml:space="preserve">
+        <value>يحدد حجم المستطيلات حسب القيمة، مع تجميع اختياري تحت عنصر أعلى.</value>
+        <comment>0ed12325</comment>
+    </data>
+    <data name="Kind.Gantt.Name" xml:space="preserve">
+        <value>مخطط جانت</value>
+        <comment>13a84a89</comment>
+    </data>
+    <data name="Kind.Gantt.Description" xml:space="preserve">
+        <value>يعرض المهام كأشرطة بين وقت البدء ووقت الانتهاء.</value>
+        <comment>aacbdedd</comment>
+    </data>
+    <data name="Kind.Map.Name" xml:space="preserve">
+        <value>خريطة</value>
+        <comment>be176b00</comment>
+    </data>
+    <data name="Kind.Map.Description" xml:space="preserve">
+        <value>يرسم النقاط حسب خط العرض وخط الطول، بحجم يتبع قيمة ومقسّمة إلى سلاسل، أو يلوّن البلدان حسب قيمة.</value>
+        <comment>7f550c6f</comment>
+    </data>
+    <data name="Kind.Template.Name" xml:space="preserve">
+        <value>قالب</value>
+        <comment>0575f29d</comment>
+    </data>
+    <data name="Kind.Template.Description" xml:space="preserve">
+        <value>يرتّب الصفوف في ترميزك الخاص، بلهجة صغيرة على غرار Vue: الاستيفاء وv-for وv-if والفئات المرتبطة على مجموعة ثابتة من الوسوم الآمنة.</value>
+        <comment>e723625c</comment>
+    </data>
+    <data name="Role.Category.Name" xml:space="preserve">
+        <value>الفئة</value>
+        <comment>292c06f0</comment>
+    </data>
+    <data name="Role.Category.Description" xml:space="preserve">
+        <value>الفئة أو التسمية على امتداد المحور</value>
+        <comment>01a15784</comment>
+    </data>
+    <data name="Role.Value.Name" xml:space="preserve">
+        <value>القيمة</value>
+        <comment>8e37953d</comment>
+    </data>
+    <data name="Role.Value.Description" xml:space="preserve">
+        <value>قيمة رقمية، سلسلة واحدة لكل عمود</value>
+        <comment>12bdb3c5</comment>
+    </data>
+    <data name="Role.Series.Name" xml:space="preserve">
+        <value>السلسلة</value>
+        <comment>a8295e08</comment>
+    </data>
+    <data name="Role.Series.Description" xml:space="preserve">
+        <value>عمود تقسّم قيمه المختلفة البيانات إلى سلاسل</value>
+        <comment>27fbf1c9</comment>
+    </data>
+    <data name="Role.X.Name" xml:space="preserve">
+        <value>X</value>
+        <comment>4b68ab38</comment>
+    </data>
+    <data name="Role.X.Description" xml:space="preserve">
+        <value>قيمة أفقية رقمية أو زمنية</value>
+        <comment>85cb9420</comment>
+    </data>
+    <data name="Role.Y.Name" xml:space="preserve">
+        <value>Y</value>
+        <comment>18f5384d</comment>
+    </data>
+    <data name="Role.Y.Description" xml:space="preserve">
+        <value>قيمة رأسية رقمية</value>
+        <comment>4c72f0e4</comment>
+    </data>
+    <data name="Role.Size.Name" xml:space="preserve">
+        <value>الحجم</value>
+        <comment>1af85190</comment>
+    </data>
+    <data name="Role.Size.Description" xml:space="preserve">
+        <value>قيمة رقمية تحدد حجم النقطة</value>
+        <comment>c018dfef</comment>
+    </data>
+    <data name="Role.Open.Name" xml:space="preserve">
+        <value>الافتتاح</value>
+        <comment>ed077f3d</comment>
+    </data>
+    <data name="Role.Open.Description" xml:space="preserve">
+        <value>قيمة الافتتاح</value>
+        <comment>f18f6b3c</comment>
+    </data>
+    <data name="Role.High.Name" xml:space="preserve">
+        <value>الأعلى</value>
+        <comment>c4ebc6d4</comment>
+    </data>
+    <data name="Role.High.Description" xml:space="preserve">
+        <value>أعلى قيمة</value>
+        <comment>1f22ea8d</comment>
+    </data>
+    <data name="Role.Low.Name" xml:space="preserve">
+        <value>الأدنى</value>
+        <comment>f793de20</comment>
+    </data>
+    <data name="Role.Low.Description" xml:space="preserve">
+        <value>أدنى قيمة</value>
+        <comment>6b5f1bfc</comment>
+    </data>
+    <data name="Role.Close.Name" xml:space="preserve">
+        <value>الإغلاق</value>
+        <comment>7d9eb7ac</comment>
+    </data>
+    <data name="Role.Close.Description" xml:space="preserve">
+        <value>قيمة الإغلاق</value>
+        <comment>b883f877</comment>
+    </data>
+    <data name="Role.Minimum.Name" xml:space="preserve">
+        <value>الحد الأدنى</value>
+        <comment>735beee2</comment>
+    </data>
+    <data name="Role.Minimum.Description" xml:space="preserve">
+        <value>القيمة الدنيا</value>
+        <comment>6b537b88</comment>
+    </data>
+    <data name="Role.FirstQuartile.Name" xml:space="preserve">
+        <value>الربيع الأول</value>
+        <comment>e3fdcf10</comment>
+    </data>
+    <data name="Role.FirstQuartile.Description" xml:space="preserve">
+        <value>الربيع الأول</value>
+        <comment>d5438fca</comment>
+    </data>
+    <data name="Role.Median.Name" xml:space="preserve">
+        <value>الوسيط</value>
+        <comment>daab7c43</comment>
+    </data>
+    <data name="Role.Median.Description" xml:space="preserve">
+        <value>قيمة الوسيط</value>
+        <comment>ab24877b</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Name" xml:space="preserve">
+        <value>الربيع الثالث</value>
+        <comment>d5a21e8a</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Description" xml:space="preserve">
+        <value>الربيع الثالث</value>
+        <comment>8e0bdf22</comment>
+    </data>
+    <data name="Role.Maximum.Name" xml:space="preserve">
+        <value>الحد الأقصى</value>
+        <comment>66c9ab17</comment>
+    </data>
+    <data name="Role.Maximum.Description" xml:space="preserve">
+        <value>القيمة القصوى</value>
+        <comment>6a30476d</comment>
+    </data>
+    <data name="Role.Latitude.Name" xml:space="preserve">
+        <value>خط العرض</value>
+        <comment>238a676d</comment>
+    </data>
+    <data name="Role.Latitude.Description" xml:space="preserve">
+        <value>خط العرض بالدرجات</value>
+        <comment>8da77868</comment>
+    </data>
+    <data name="Role.Longitude.Name" xml:space="preserve">
+        <value>خط الطول</value>
+        <comment>6d80458f</comment>
+    </data>
+    <data name="Role.Longitude.Description" xml:space="preserve">
+        <value>خط الطول بالدرجات</value>
+        <comment>e46962f6</comment>
+    </data>
+    <data name="Role.Country.Name" xml:space="preserve">
+        <value>البلد</value>
+        <comment>701d021d</comment>
+    </data>
+    <data name="Role.Country.Description" xml:space="preserve">
+        <value>رمز البلد حسب معيار ISO أو اسم البلد</value>
+        <comment>3dfd71ba</comment>
+    </data>
+    <data name="Role.Label.Name" xml:space="preserve">
+        <value>التسمية</value>
+        <comment>0e66373f</comment>
+    </data>
+    <data name="Role.Label.Description" xml:space="preserve">
+        <value>تسمية نصية</value>
+        <comment>bebffaca</comment>
+    </data>
+    <data name="Role.Parent.Name" xml:space="preserve">
+        <value>العنصر الأعلى</value>
+        <comment>5f7953f7</comment>
+    </data>
+    <data name="Role.Parent.Description" xml:space="preserve">
+        <value>المجموعة الأعلى</value>
+        <comment>ffd307ce</comment>
+    </data>
+    <data name="Role.Start.Name" xml:space="preserve">
+        <value>البداية</value>
+        <comment>e4bb9f1e</comment>
+    </data>
+    <data name="Role.Start.Description" xml:space="preserve">
+        <value>وقت البدء</value>
+        <comment>babe9dda</comment>
+    </data>
+    <data name="Role.End.Name" xml:space="preserve">
+        <value>النهاية</value>
+        <comment>f4db1e48</comment>
+    </data>
+    <data name="Role.End.Description" xml:space="preserve">
+        <value>وقت الانتهاء</value>
+        <comment>2e46006a</comment>
+    </data>
+    <data name="Role.Target.Name" xml:space="preserve">
+        <value>الهدف</value>
+        <comment>978354db</comment>
+    </data>
+    <data name="Role.Target.Description" xml:space="preserve">
+        <value>القيمة المستهدفة</value>
+        <comment>06e12bb4</comment>
+    </data>
+    <data name="Role.Row.Name" xml:space="preserve">
+        <value>الصف</value>
+        <comment>95110d74</comment>
+    </data>
+    <data name="Role.Row.Description" xml:space="preserve">
+        <value>فئة الصف</value>
+        <comment>4e6a83ba</comment>
+    </data>
+    <data name="Role.Column.Name" xml:space="preserve">
+        <value>العمود</value>
+        <comment>3fdc9a58</comment>
+    </data>
+    <data name="Role.Column.Description" xml:space="preserve">
+        <value>فئة العمود</value>
+        <comment>d4f23558</comment>
+    </data>
+    <data name="Role.Line.Name" xml:space="preserve">
+        <value>خط</value>
+        <comment>d7852cd0</comment>
+    </data>
+    <data name="Role.Line.Description" xml:space="preserve">
+        <value>قيمة رقمية تُرسم كخط</value>
+        <comment>e86f9332</comment>
+    </data>
+    <data name="Role.SecondaryLine.Name" xml:space="preserve">
+        <value>خط على المحور الثانوي</value>
+        <comment>3b8ac79e</comment>
+    </data>
+    <data name="Role.SecondaryLine.Description" xml:space="preserve">
+        <value>قيمة رقمية تُرسم كخط على المحور الثانوي</value>
+        <comment>5b821522</comment>
+    </data>
+    <data name="Message.ColumnMissing" xml:space="preserve">
+        <value>لا تحتوي النتيجة على عمود باسم «{0}».</value>
+        <comment>f4b10dc8</comment>
+    </data>
+    <data name="Message.ColumnNotATime" xml:space="preserve">
+        <value>يحتوي العمود «{0}» على قيمة ليست تاريخًا ووقتًا.</value>
+        <comment>1107afc3</comment>
+    </data>
+    <data name="Message.KindUnknown" xml:space="preserve">
+        <value>لا يوجد مخطط من النوع {0}.</value>
+        <comment>56f83cac</comment>
+    </data>
+    <data name="Message.RoleNotUsed" xml:space="preserve">
+        <value>{0} لا يستخدم الدور {1}.</value>
+        <comment>76631e05</comment>
+    </data>
+    <data name="Message.RoleTakesOne" xml:space="preserve">
+        <value>يقبل الدور {0} عمودًا واحدًا لا {1}.</value>
+        <comment>1665883b</comment>
+    </data>
+    <data name="Message.OverrideColumnMissing" xml:space="preserve">
+        <value>لا تحتوي النتيجة على عمود باسم «{0}» للدور {1}.</value>
+        <comment>163083ce</comment>
+    </data>
+    <data name="Message.OverrideColumnType" xml:space="preserve">
+        <value>لا يمكن للعمود «{0}» أن يشغل الدور {1}: فهو يحتاج إلى {2}.</value>
+        <comment>aefcc97e</comment>
+    </data>
+    <data name="Message.RoleUnsatisfied" xml:space="preserve">
+        <value>{0} يحتاج إلى عمود للدور {1}، لكن لا يوجد في النتيجة {2} غير مستخدم.</value>
+        <comment>c1728ebe</comment>
+    </data>
+    <data name="Message.PivotDuplicate" xml:space="preserve">
+        <value>تحتوي النتيجة على أكثر من صف واحد لـ «{0}» في «{1}». اجمع البيانات في SQL بحيث يظهر كل زوج مرة واحدة.</value>
+        <comment>6048c012</comment>
+    </data>
+    <data name="Message.HeatmapDuplicate" xml:space="preserve">
+        <value>تحتوي النتيجة على أكثر من صف واحد لـ «{0}» و«{1}». اجمع البيانات في SQL بحيث يظهر كل زوج مرة واحدة.</value>
+        <comment>04a7dcf9</comment>
+    </data>
+    <data name="Message.NoRows" xml:space="preserve">
+        <value>لم يُرجع الاستعلام أي صفوف، لذا لا يوجد ما يمكن رسمه.</value>
+        <comment>9b03b26f</comment>
+    </data>
+    <data name="Message.LimitExceeded" xml:space="preserve">
+        <value>لا يستطيع {0} رسم هذا الحجم من البيانات ({1} مقابل حد {2} لـ {3}). اجمع الاستعلام في SQL أو ضيّقه.</value>
+        <comment>872cd167</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneValue" xml:space="preserve">
+        <value>عند تقسيم الصفوف إلى سلاسل حسب عمود، يُرسم عمود قيمة واحد فقط.</value>
+        <comment>b97549ba</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneVertical" xml:space="preserve">
+        <value>عند تقسيم الصفوف إلى سلاسل حسب عمود، يُرسم عمود رأسي واحد فقط.</value>
+        <comment>20c83fb5</comment>
+    </data>
+    <data name="Message.MapNeedsBoth" xml:space="preserve">
+        <value>تحتاج خريطة النقاط إلى عمود لخط العرض وعمود لخط الطول معًا.</value>
+        <comment>d3678715</comment>
+    </data>
+    <data name="Message.MapNeedsPlace" xml:space="preserve">
+        <value>تحتاج الخريطة إلى عمودي خط العرض وخط الطول، أو إلى عمود البلد. سمّها في التعيين إذا لم تكن أسماؤها واضحة.</value>
+        <comment>18791a5c</comment>
+    </data>
+    <data name="Message.MapEither" xml:space="preserve">
+        <value>ترسم الخريطة إما النقاط وإما البلدان، لا كليهما.</value>
+        <comment>147de694</comment>
+    </data>
+    <data name="Message.MapNeedsValue" xml:space="preserve">
+        <value>تحتاج خريطة البلدان إلى عمود قيمة رقمية لتلوين البلدان وفقه.</value>
+        <comment>90303986</comment>
+    </data>
+    <data name="Message.GaugeNeedsRow" xml:space="preserve">
+        <value>يحتاج المقياس إلى صف يقرأ منه قيمته.</value>
+        <comment>81b14a44</comment>
+    </data>
+    <data name="Message.CardEmpty" xml:space="preserve">
+        <value>لم يُرجع الاستعلام أي صفوف.</value>
+        <comment>3737892d</comment>
+    </data>
+    <data name="Message.CardFailed" xml:space="preserve">
+        <value>تعذّر إنشاء البطاقة.</value>
+        <comment>997d5e5e</comment>
+    </data>
+    <data name="Message.MappingColumnUnknown" xml:space="preserve">
+        <value>يسمّي التعيين العمود «{0}» الذي لا يُرجعه أمر SQL.</value>
+        <comment>e6bf721b</comment>
+    </data>
+    <data name="Message.MappingEntryEmpty" xml:space="preserve">
+        <value>إدخال التعيين فارغ.</value>
+        <comment>922cee50</comment>
+    </data>
+    <data name="Message.ParameterEmpty" xml:space="preserve">
+        <value>المعامل فارغ.</value>
+        <comment>c1ef5acb</comment>
+    </data>
+    <data name="Message.ParameterDuplicate" xml:space="preserve">
+        <value>تم تقديم معامل أكثر من مرة.</value>
+        <comment>df7e1866</comment>
+    </data>
+    <data name="Message.RoleUndefined" xml:space="preserve">
+        <value>لا يوجد دور مخطط {0}.</value>
+        <comment>06aba576</comment>
+    </data>
+    <data name="Message.RoleAssignedTwice" xml:space="preserve">
+        <value>تم تعيين الدور {0} مرتين.</value>
+        <comment>060ffd39</comment>
+    </data>
+    <data name="Message.SqlEmpty" xml:space="preserve">
+        <value>أمر SQL فارغ.</value>
+        <comment>f63fdd6c</comment>
+    </data>
+    <data name="Message.ColumnDuplicate" xml:space="preserve">
+        <value>يظهر اسم العمود «{0}» أكثر من مرة. امنح كل عمود اسمًا مستعارًا خاصًا به.</value>
+        <comment>f90b807f</comment>
+    </data>
+    <data name="Message.ColumnsUnnamed" xml:space="preserve">
+        <value>أكثر من عمود واحد بلا اسم. امنح كل عمود اسمًا مستعارًا، مثل: AS "Total".</value>
+        <comment>5f39f33e</comment>
+    </data>
+    <data name="Message.ParameterForeign" xml:space="preserve">
+        <value>المعامل {0} لا ينتمي إلى سجل التصور هذا.</value>
+        <comment>3eaf1abf</comment>
+    </data>
+    <data name="Message.ParameterValue" xml:space="preserve">
+        <value>يجب أن تكون قيمة المعامل «{0}» {1}.</value>
+        <comment>a4e92df1</comment>
+    </data>
+    <data name="Message.SqlSelectOnly" xml:space="preserve">
+        <value>يجب أن يكون أمر SQL عبارة SELECT واحدة لا تستخدم أي عبارة أو دالة أو جدول محظور.</value>
+        <comment>d78a5302</comment>
+    </data>
+    <data name="Message.SqlRejected" xml:space="preserve">
+        <value>رفضت قاعدة بيانات التقارير أمر SQL: {0} ({1}).</value>
+        <comment>06721e75</comment>
+    </data>
+    <data name="Message.SqlRejectedHint" xml:space="preserve">
+        <value>رفضت قاعدة بيانات التقارير أمر SQL: {0} ({1}). {2}</value>
+        <comment>3aa2b8bf</comment>
+    </data>
+    <data name="Message.SqlRejectedGeneric" xml:space="preserve">
+        <value>رفضت قاعدة بيانات التقارير أمر SQL.</value>
+        <comment>fa5788ee</comment>
+    </data>
+    <data name="Message.TemplateEmpty" xml:space="preserve">
+        <value>القالب فارغ.</value>
+        <comment>f8ba96ec</comment>
+    </data>
+    <data name="Message.TemplateTooLong" xml:space="preserve">
+        <value>القالب أطول من الحد البالغ {0} حرفًا.</value>
+        <comment>04caf596</comment>
+    </data>
+    <data name="Message.TemplateUnclosedTag" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: الوسم &lt;{2}&gt; لا يُغلق أبدًا.</value>
+        <comment>1dfdfb51</comment>
+    </data>
+    <data name="Message.TemplateUnexpectedClose" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: وسم الإغلاق &lt;/{2}&gt; لا يطابقه وسم فتح.</value>
+        <comment>f49f0d09</comment>
+    </data>
+    <data name="Message.TemplateTagNotAllowed" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: الوسم &lt;{2}&gt; غير مسموح.</value>
+        <comment>e500c51a</comment>
+    </data>
+    <data name="Message.TemplateAttributeNotAllowed" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: السمة "{2}" غير مسموحة في &lt;{3}&gt;.</value>
+        <comment>5b0a354c</comment>
+    </data>
+    <data name="Message.TemplateDirectiveInvalid" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: التوجيه "{2}" غير صالح هنا.</value>
+        <comment>f1db507b</comment>
+    </data>
+    <data name="Message.TemplateLoopInvalid" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: يجب أن يبدو v-for "{2}" مثل "row in rows" أو "(row, index) in rows".</value>
+        <comment>fd4e2a77</comment>
+    </data>
+    <data name="Message.TemplateExpressionInvalid" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: التعبير "{2}" غير صالح بالقرب من "{3}".</value>
+        <comment>b9ea12e7</comment>
+    </data>
+    <data name="Message.TemplateNameUnknown" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: "{2}" غير معروف هنا. استخدم rows أو columns أو rowCount أو truncated أو متغير حلقة.</value>
+        <comment>78917f7e</comment>
+    </data>
+    <data name="Message.TemplateFilterUnknown" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: المرشّح "{2}" غير موجود.</value>
+        <comment>c2e86ee7</comment>
+    </data>
+    <data name="Message.TemplateFilterArguments" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: المرشّح "{2}" لا يقبل هذا العدد من الوسائط.</value>
+        <comment>8e8117a1</comment>
+    </data>
+    <data name="Message.TemplateInterpolationOpen" xml:space="preserve">
+        <value>السطر {0}، العمود {1}: علامة الفتح [@ لا تُغلق أبدًا بالعلامة @].</value>
+        <comment>1fe5aca8</comment>
+    </data>
+    <data name="Message.TemplateTooDeep" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: يتداخل القالب أعمق من {2} مستويات.</value>
+        <comment>245d0d29</comment>
+    </data>
+    <data name="Message.TemplateTooLarge" xml:space="preserve">
+        <value>أنتج القالب أكثر من {0} حرفًا من المخرجات. ضيّق الصفوف في SQL.</value>
+        <comment>12c64c4c</comment>
+    </data>
+    <data name="Message.TemplateTooManySteps" xml:space="preserve">
+        <value>احتاج القالب إلى أكثر من {0} خطوة للعرض. ضيّق الصفوف في SQL أو قلّل الحلقات.</value>
+        <comment>804b3271</comment>
+    </data>
+    <data name="Message.FormFieldNameMissing" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: العنصر &lt;{2}&gt; يحتاج إلى اسم.</value>
+        <comment>f8954ba8</comment>
+    </data>
+    <data name="Message.FormFieldNameInvalid" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: يجب أن يبدأ اسم الحقل "{2}" بحرف وألا يحتوي إلا على أحرف وأرقام وشرطات سفلية.</value>
+        <comment>097e4e98</comment>
+    </data>
+    <data name="Message.FormFieldNameDuplicate" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: اسم الحقل "{2}" مستخدم أكثر من مرة.</value>
+        <comment>f9746e4a</comment>
+    </data>
+    <data name="Message.FormFieldInLoop" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: لا يمكن أن يكون الحقل &lt;{2}&gt; داخل v-for لأن اسم الحقل يجب أن يكون ثابتًا.</value>
+        <comment>c9d8ae0e</comment>
+    </data>
+    <data name="Message.FormInputTypeInvalid" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: نوع الإدخال "{2}" غير مسموح به.</value>
+        <comment>4f4b76f6</comment>
+    </data>
+    <data name="Message.FormOptionsFixed" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: يحتاج الحقل "{2}" إلى خيارات ثابتة، لكل منها قيمة عادية ولا يوجد أي منها داخل v-for.</value>
+        <comment>2214a81e</comment>
+    </data>
+    <data name="Message.FormLabelTargetUnknown" xml:space="preserve">
+        <value>القالب، السطر {0}، العمود {1}: التسمية مخصصة لـ "{2}" وهو ليس حقلاً في هذا النموذج.</value>
+        <comment>47a842a6</comment>
+    </data>
+    <data name="Term.Needs.Numeric" xml:space="preserve">
+        <value>عمود رقمي</value>
+        <comment>5cf35ad9</comment>
+    </data>
+    <data name="Term.Needs.Time" xml:space="preserve">
+        <value>عمود تاريخ ووقت</value>
+        <comment>da7c5eeb</comment>
+    </data>
+    <data name="Term.Needs.NumericOrTime" xml:space="preserve">
+        <value>عمود رقمي أو عمود تاريخ ووقت</value>
+        <comment>5af5bdf9</comment>
+    </data>
+    <data name="Term.Needs.Any" xml:space="preserve">
+        <value>عمود</value>
+        <comment>90a51ba2</comment>
+    </data>
+    <data name="Term.Noun.Numeric" xml:space="preserve">
+        <value>عمود رقمي</value>
+        <comment>b1fe86d8</comment>
+    </data>
+    <data name="Term.Noun.Time" xml:space="preserve">
+        <value>عمود تاريخ ووقت</value>
+        <comment>967c9293</comment>
+    </data>
+    <data name="Term.Noun.NumericOrTime" xml:space="preserve">
+        <value>عمود رقمي أو عمود تاريخ ووقت</value>
+        <comment>a48df5a3</comment>
+    </data>
+    <data name="Term.Noun.Any" xml:space="preserve">
+        <value>عمود</value>
+        <comment>881d5fb6</comment>
+    </data>
+    <data name="Term.Expected.WholeNumber" xml:space="preserve">
+        <value>عددًا صحيحًا</value>
+        <comment>ef06b86b</comment>
+    </data>
+    <data name="Term.Expected.Number" xml:space="preserve">
+        <value>رقمًا</value>
+        <comment>d24f1fa1</comment>
+    </data>
+    <data name="Term.Expected.DateTime" xml:space="preserve">
+        <value>تاريخًا ووقتًا بصيغة ISO 8601</value>
+        <comment>66f8770d</comment>
+    </data>
+    <data name="Term.Expected.Flag" xml:space="preserve">
+        <value>1 أو 0</value>
+        <comment>b2206c45</comment>
+    </data>
+</root>

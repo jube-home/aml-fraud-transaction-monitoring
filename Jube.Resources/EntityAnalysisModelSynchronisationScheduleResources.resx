@@ -45,4 +45,7 @@
     <data name="ScheduleDateTooFarInFuture" xml:space="preserve">
     <value>The schedule date cannot be more than one year in the future.</value>
   </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>The model to synchronise was not found in this tenant.</value>
+  </data>
 </root>

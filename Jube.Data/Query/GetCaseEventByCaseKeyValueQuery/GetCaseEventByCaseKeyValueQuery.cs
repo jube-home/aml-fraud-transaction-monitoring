@@ -87,6 +87,11 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
                         13 => "Suspend Open",
                         14 => "Allocate Lock",
                         15 => "Process Expired Case",
+                        16 => "Peek",
+                        17 => "Automatic Escalation",
+                        18 => "Lock Broken",
+                        19 => "Diary Cleared",
+                        20 => "QA Sampled",
                         _ => "Unknown"
                     }
                 };

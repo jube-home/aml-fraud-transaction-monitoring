@@ -1,3 +1,4 @@
+using Jube.Data.Concurrency;
 /* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
@@ -84,6 +85,7 @@ namespace Jube.Data.Repository
             model.Landlord = existing.Landlord;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
 
             await dbContext.UpdateAsync(model, token: token);

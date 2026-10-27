@@ -11,17 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using System.Globalization;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Options;
 using Jube.Dto.Repository.Case;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
 using Jube.Service.Exceptions.Repository.Case;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -35,8 +39,6 @@ using Newtonsoft.Json.Linq;
 using EngineCaseProcessing = Jube.Engine.BackgroundTasks.TaskStarters.Case.CaseProcessing;
 using EngineCreateCase = Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement.CreateCase;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.Case;
 using RuleRepository = Jube.Data.Repository.CaseRepository;
 
@@ -52,6 +54,7 @@ namespace Jube.Service.Repository.Case
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly CaseDispatcher dispatcher;
         private readonly CaseEventRepository caseEventRepository;
         private readonly CaseWorkflowRepository caseWorkflowRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
@@ -86,6 +89,7 @@ namespace Jube.Service.Repository.Case
             this.dynamicEnvironment = dynamicEnvironment;
             this.jsonSerializationHelper = jsonSerializationHelper;
             repository = new RuleRepository(dbContext, userName);
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
             caseEventRepository = new CaseEventRepository(dbContext, userName);
             caseWorkflowRepository = new CaseWorkflowRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
@@ -367,6 +371,11 @@ namespace Jube.Service.Repository.Case
                 poco.LastClosedStatus = 0;
 
                 var saved = await repository.InsertAsync(poco, token).ConfigureAwait(false);
+
+                await new CaseStatusTransitionRepository(dbContext).EnterAsync(saved.Id, saved.CaseWorkflowGuid,
+                    saved.CaseWorkflowStatusGuid, CaseTransitionEnterReason.Created, userName,
+                    saved.CreatedDate ?? DateTime.UtcNow, token).ConfigureAwait(false);
+
                 op.Entity(saved.Id);
                 op.Created();
 
@@ -675,6 +684,10 @@ namespace Jube.Service.Repository.Case
                 }
 
                 var caseEvents = new List<CaseEvent>();
+                var diaryWasOn = existing.Diary == 1;
+                var diaryWas = existing.DiaryDate;
+                var wasClosed = existing.ClosedStatusId == 3;
+                var statusChanged = existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid;
 
                 if (existing.ClosedStatusId is 0 or 1 or 2)
                 {
@@ -841,6 +854,19 @@ namespace Jube.Service.Repository.Case
 
                 existing.Diary = (byte)(model.Diary ? 1 : 0);
 
+                if (diaryWasOn != model.Diary || (model.Diary && !SameInstant(diaryWas, existing.DiaryDate)))
+                {
+                    existing.RiskCheckedDate = null;
+                    existing.RiskRecheckTriggerId = (byte)CaseRiskTrigger.DiaryLaneThreshold;
+                }
+
+                if (!model.Diary)
+                {
+                    existing.DiaryTypeId = (byte)CaseDiaryType.Review;
+                }
+
+                Func<Task>? pendingDispatch = null;
+
                 if (existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid)
                 {
                     var caseWorkflowStatuses = await caseWorkflowStatusRepository
@@ -874,50 +900,33 @@ namespace Jube.Service.Repository.Case
                         CreatedUser = userName
                     });
 
-                    if (model.Payload is not null &&
-                        (caseWorkflowStatus.EnableNotification == 1 || caseWorkflowStatus.EnableHttpEndpoint == 1))
+                    var statusSource = new DispatchSource(CaseDispatchSourceKind.Status, caseWorkflowStatus.Id,
+                        caseWorkflowStatus.Name ?? string.Empty, caseWorkflowStatus.Sql,
+                        caseWorkflowStatus.EnableNotification == 1, caseWorkflowStatus.NotificationTypeId ?? 1,
+                        caseWorkflowStatus.NotificationDestination, caseWorkflowStatus.NotificationSubject,
+                        caseWorkflowStatus.NotificationBody, caseWorkflowStatus.EnableHttpEndpoint == 1,
+                        caseWorkflowStatus.HttpEndpoint, caseWorkflowStatus.HttpEndpointTypeId ?? 1);
+
+                    if (statusSource.Wanted && (statusSource.UsesSql || model.Payload is not null))
                     {
-                        var payload = JsonConvert
-                            .DeserializeObject<EntryPayload>(
-                                existing.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                        var movedCase = existing;
+                        var movedStatus = caseWorkflowStatus;
 
-                        if (caseWorkflowStatus.EnableNotification == 1 && payload is not null)
+                        pendingDispatch = async () =>
                         {
-                            var notificationSubject =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationSubject);
-                            var notificationDestination =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationDestination);
-                            var notificationBody =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationBody);
+                            var payload = statusSource.UsesSql
+                                ? null
+                                : JsonConvert.DeserializeObject<EntryPayload>(movedCase.Json,
+                                    jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                            var notification = new EngineNotification(
-                                log, dynamicEnvironment);
-
-                            await notification.SendAsync(caseWorkflowStatus.NotificationTypeId ?? 1,
-                                    notificationDestination, notificationSubject, notificationBody, token)
+                            await dispatcher.DispatchAsync(statusSource,
+                                new DispatchCase(movedCase.Id, movedCase.CaseKey, movedCase.CaseKeyValue), null,
+                                payload is null
+                                    ? null
+                                    : new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(payload, text),
+                                        () => PreparePostBodyString(movedCase, payload, movedStatus)), null, token)
                                 .ConfigureAwait(false);
-                        }
-
-                        if (caseWorkflowStatus.EnableHttpEndpoint == 1 && payload is not null)
-                        {
-                            var endpoint =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.HttpEndpoint);
-
-                            if (caseWorkflowStatus.HttpEndpointTypeId == 1)
-                            {
-                                await EngineSendHttpEndpoint.PostAsync(endpoint,
-                                        PreparePostBodyString(existing, payload, caseWorkflowStatus), log)
-                                    .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                            }
-                        }
+                        };
                     }
                 }
 
@@ -943,8 +952,38 @@ namespace Jube.Service.Repository.Case
                 var saved = await repository.UpdateCaseAsync(existing, token).ConfigureAwait(false);
                 await caseEventRepository.BulkInsertAsync(caseEvents, token).ConfigureAwait(false);
 
+                var transitions = new CaseStatusTransitionRepository(dbContext);
+                var changedAt = DateTime.UtcNow;
+                var nowClosed = saved.ClosedStatusId == 3;
+
+                if (wasClosed && !nowClosed)
+                {
+                    await transitions.EnterAsync(saved.Id, saved.CaseWorkflowGuid, saved.CaseWorkflowStatusGuid,
+                        CaseTransitionEnterReason.Reopened, userName, changedAt, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (statusChanged)
+                    {
+                        await transitions.EnterAsync(saved.Id, saved.CaseWorkflowGuid, saved.CaseWorkflowStatusGuid,
+                            CaseTransitionEnterReason.StatusChanged, userName, changedAt, token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (!wasClosed && nowClosed)
+                    {
+                        await transitions.CloseAsync(saved.Id, saved.ClosedDate ?? changedAt, userName, token)
+                            .ConfigureAwait(false);
+                    }
+                }
+
                 op.Entity(saved.Id);
                 op.Updated();
+
+                if (pendingDispatch != null)
+                {
+                    await pendingDispatch().ConfigureAwait(false);
+                }
 
                 if (log.IsInfoEnabled)
                 {
@@ -978,6 +1017,12 @@ namespace Jube.Service.Repository.Case
                 op.Outcome("conflict");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

@@ -796,7 +796,7 @@ namespace Jube.AskJooby.Agents.Basic
                 + "structures. Reach that leaf before you write a rule to backtest."),
             ("model-risk.advanced-analytics-training",
                 ["advanced-analytics-instance-author"],
-                " Every submission below needs the numeric id of an Advanced Analytics instance that already "
+                " Every submission below needs the numeric id of an AskJooby Analytics instance that already "
                 + "exists, and the instance author you can reach directly lists instances as well as creates "
                 + "them, so one delegate covers both the reuse-check and the create-instance step the "
                 + "train-advanced-analytics-trial-model graph describes -- list first, every time, before you "
@@ -869,6 +869,8 @@ namespace Jube.AskJooby.Agents.Basic
                 ["case-workflow-form-inspector"] = "case-workflow-admin",
                 ["case-workflow-form-test-bench"] = "case-workflow-admin",
                 ["case-workflow-form-author"] = "case-workflow-admin",
+                ["case-workflow-form-validator-author"] = "case-workflow-admin",
+                ["case-workflow-release-hook-author"] = "case-workflow-admin",
                 ["case-workflow-macro-inspector"] = "case-workflow-admin",
                 ["case-workflow-macro-test-bench"] = "case-workflow-admin",
                 ["case-workflow-macro-author"] = "case-workflow-admin",
@@ -943,6 +945,9 @@ namespace Jube.AskJooby.Agents.Basic
                 ["entity-analysis-model-tag-inspector"] = "model-admin",
                 ["entity-analysis-model-tag-test-bench"] = "model-admin",
                 ["entity-analysis-model-tag-author"] = "model-admin",
+                ["entity-analysis-model-response-elevation-range-inspector"] = "model-admin",
+                ["entity-analysis-model-response-elevation-range-test-bench"] = "model-admin",
+                ["entity-analysis-model-response-elevation-range-author"] = "model-admin",
                 ["entity-analysis-model-ttl-counter-inspector"] = "model-admin",
                 ["entity-analysis-model-ttl-counter-test-bench"] = "model-admin",
                 ["entity-analysis-model-ttl-counter-author"] = "model-admin",
@@ -983,6 +988,7 @@ namespace Jube.AskJooby.Agents.Basic
                 ["case-record-and-files"] = "case-analyst",
                 ["case-lookup-and-notes"] = "case-analyst",
                 ["case-journal-and-events"] = "case-analyst",
+                ["case-journal-replay"] = "case-analyst",
                 ["action-and-display-role-grants"] = "case-workflow-admin",
                 ["filter-and-form-role-grants"] = "case-workflow-admin",
                 ["macro-and-workflow-role-grants"] = "case-workflow-admin",
@@ -1010,6 +1016,8 @@ namespace Jube.AskJooby.Agents.Basic
                 ["redis-observability"] = "platform-ops",
                 ["sanctions-entry-source"] = "case-analyst",
                 ["session-case-observability"] = "case-analyst",
+                ["case-supervision"] = "case-analyst",
+                ["case-holds"] = "case-analyst",
                 ["user-observability"] = "access-admin",
                 ["datasource-and-parameter-role-grants"] = "data-analyst",
                 ["visualisation-role-grants-and-execution"] = "data-analyst",
@@ -1633,15 +1641,15 @@ namespace Jube.AskJooby.Agents.Basic
                     "A narrative, a summary, or anything else that pulls together more than one of notes, files, events, journal, activation watcher or sanctions screening is not the single-call read-only shortcut your own SQL and Pasture search exist for -- it is case-analyst.investigation's job: one real SpawnAgent call with the case pair attached, and let it fan out to the specialists that each own a slice. Reaching for RunSqlQuery or SearchRag yourself to assemble a narrative piece by piece is the mistake to avoid here; your own tools are for a genuine one-off single-table question, not a stand-in for delegation on a request that spans several specialists' data by its nature. " +
                     "Delegating is the work you do, not a thing you announce: you hold none of this domain's own operations, so choose the one specialist below whose slice owns the data in question and hand it over with a real SpawnAgent call. Saying you are sending it to someone does not send it. " +
                     "If the question is not about this domain at all, say so plainly rather than guessing at a neighbouring domain's data.",
-                    [1, 30],
+                    [1, 18, 30, 68],
                     args => Bound(args, "case-analyst"),
                     AllowedDelegates:
                     [
                         "case-analyst.investigation", "activation-watcher-and-archive", "sanctions-entry-source",
-                        "session-case-observability"
+                        "session-case-observability", "case-supervision", "case-holds"
                     ],
                     DelegationSummary:
-                    "Works live alert and case material for an investigator: the case itself, its notes, files, events and transaction journal, the activation watcher and sanctions screening. Carries out 29 operations through 4 specialists, creating and changing configuration as well as reading it.",
+                    "Works live alert and case material for an investigator: the case itself, its notes, files, events and transaction journal, the activation watcher, sanctions screening and payments held on a case. Carries out 36 operations through 6 specialists, creating and changing configuration as well as reading it.",
                     DisplayName: "Franka",
                     CompletionWord: "Ochywee"),
                 ["case-analyst.investigation"] = new(
@@ -1653,11 +1661,11 @@ namespace Jube.AskJooby.Agents.Basic
                     AllowedDelegates:
                     [
                         "case-record-and-files", "case-lookup-and-notes", "case-journal-and-events",
-                        "case-analyst-summary-statistics", "case-analyst-trend",
+                        "case-journal-replay", "case-analyst-summary-statistics", "case-analyst-trend",
                         "case-analyst-distribution-and-categories"
                     ],
                     DelegationSummary:
-                    "The investigation slice of case investigation desk. 18 case operations across 3 specialists, plus 3 analysts who compute summary statistics, trends and distributions over rows already retrieved.",
+                    "The investigation slice of case investigation desk. 23 case operations across 4 specialists, plus 3 analysts who compute summary statistics, trends and distributions over rows already retrieved.",
                     DisplayName: "Tsetsylia",
                     CompletionWord: "Sookess"),
                 ["case-analyst-summary-statistics"] = new(
@@ -1739,6 +1747,32 @@ namespace Jube.AskJooby.Agents.Basic
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Yoozef",
                     CompletionWord: "Hoora"),
+                ["case-supervision"] = new(
+                    "Your name is Kazeemir, and you are a man, so use he/him for yourself. You keep a tally and check it against the rota before you speak. " +
+                    "You own the case supervision slice of case investigation desk: who is holding which cases, which locks have gone stale, and handing a case from one analyst to another. Reads and writes stay with you because this slice is small. " +
+                    "Breaking a lock or reassigning a case changes who can work it, so say plainly which case and which person before you do it. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [18],
+                    args => Bound(args, "case-supervision"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads and changes case supervision. 4 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Kazeemir",
+                    CompletionWord: "Sprawdzoney"),
+                ["case-holds"] = new(
+                    "Your name is Zatrymka, and you are a woman, so use she/her for yourself. You count twice before money moves and once more after. " +
+                    "You own the case holds slice of case investigation desk: the payments held, declined, released or refused on the transactions of a case. Reads and writes stay with you because this slice is small. Every tool you hold is addressed by the case's Id. " +
+                    "Releasing a held payment calls the payment system and cannot be taken back, so say plainly which case, which transaction and why before you do it, and always give the reason the caller gave. A payment is only released when the release hook answers exactly 200; if it does not, tell the caller the payment is still held and why. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [1, 68],
+                    args => Bound(args, "case-holds"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Lists the payments held on a case and releases or refuses them. 3 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Zatrymka",
+                    CompletionWord: "Puszchono"),
                 ["case-record-and-files"] = new(
                     "Your name is Krystina, and you are a woman, so use she/her for yourself. You are unhurried, and say so when someone is in a hurry. " +
                     "You own the case record and files slice of case investigation desk. Reads and writes stay with you because this slice is small. Every tool you hold is addressed by (CaseKey, CaseKeyValue) -- when the task you were given carries that pair, use it directly rather than asking for it again. " +
@@ -1753,13 +1787,13 @@ namespace Jube.AskJooby.Agents.Basic
                     CompletionWord: "Brahvo"),
                 ["case-lookup-and-notes"] = new(
                     "Your name is Yagna, and you are a woman, so use she/her for yourself. You are wary of anything that looks too fast to be true. " +
-                    "You own the case lookup and notes slice of case investigation desk. Reads and writes stay with you because this slice is small. Every tool you hold is addressed by (CaseKey, CaseKeyValue) -- when the task you were given carries that pair, use it directly rather than asking for it again. " +
+                    "You own the case lookup and notes slice of case investigation desk. Reads and writes stay with you because this slice is small. Every tool you hold is addressed by (CaseKey, CaseKeyValue) -- when the task you were given carries that pair, use it directly rather than asking for it again -- except the two diary tools, which take the case's Id. " +
                     "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
                     [1],
                     args => Bound(args, "case-lookup-and-notes"),
                     AllowedDelegates: [],
                     DelegationSummary:
-                    "Reads and changes case lookup and notes. 7 operations it can carry out directly.",
+                    "Reads and changes case lookup and notes. 9 operations it can carry out directly.",
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Yagna",
                     CompletionWord: "Zhomek"),
@@ -1770,10 +1804,24 @@ namespace Jube.AskJooby.Agents.Basic
                     [1],
                     args => Bound(args, "case-journal-and-events"),
                     AllowedDelegates: [],
-                    DelegationSummary: "Reads case journal and events. 4 operations it can carry out directly.",
-                    RequiresPreservationSnapshot: false,
+                    DelegationSummary:
+                    "Reads case journal and events, and tags every transaction of a journal view in a background job. 15 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
                     DisplayName: "Danoota",
                     CompletionWord: "Konyets"),
+                ["case-journal-replay"] = new(
+                    "Your name is Zbyshko, and you are a man, so use he/him for yourself. You are never quite convinced a journey was possible until you have done the sum. " +
+                    "You own the journal replay slice of case investigation desk: drawing where a case key, and the keys merged with it, have been, and whether the movement between consecutive transactions could have happened. A replay saved on a case is only its settings -- the window, the merged keys and the column filter -- so you work it out again from the archive when asked, and quote the numbers that come back rather than your own arithmetic. " +
+                    "Saving or deleting a replay changes what everyone working the case sees, so say plainly which case and which replay before you do it. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [1],
+                    args => Bound(args, "case-journal-replay"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads the movement of a case key between transactions and keeps the replays saved on a case. 5 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Zbyshko",
+                    CompletionWord: "Dobzhe"),
                 ["case-workflow-admin"] = new(
                     "Your name is Miroslava, and you are a woman, so use she/her for yourself. You are suspicious of round numbers until you have checked them. " +
                     "You are Jooby's Case Workflow Governance supervisor. Owns the definitions that shape how cases behave: statuses, routing filters, XPath extraction, forms, actions and macros, and the role grants over each. Designs the workflow an investigator later works inside, and never touches a live case. " +
@@ -1843,22 +1891,25 @@ namespace Jube.AskJooby.Agents.Basic
                     AllowedDelegates:
                     [
                         "case-workflow-form-inspector", "case-workflow-form-test-bench", "case-workflow-form-author",
-                        "form-entries-and-macro-executions"
+                        "case-workflow-form-validator-author", "form-entries-and-macro-executions"
                     ],
                     DelegationSummary:
-                    "The interaction forms slice of case workflow governance. 18 operations across 4 specialists.",
+                    "The interaction forms slice of case workflow governance. 30 operations across 5 specialists.",
                     DisplayName: "Irena",
                     CompletionWord: "Ochywee"),
                 ["case-workflow-admin.interaction.macros"] = new(
                     "Your name is Bronya, and you are a woman, so use she/her for yourself. You like to end a hard answer with one practical next step. " +
                     "You route within the interaction macros slice of case workflow governance. " +
                     "Delegating is the work you do, not a thing you announce: you hold none of these operations yourself, so pick the one specialist below that owns the operation being asked for and hand it over with a real SpawnAgent call. Saying you are sending it to someone does not send it.",
-                    [1, 24],
+                    [1, 24, 69],
                     args => Bound(args, "case-workflow-admin.interaction.macros"),
                     AllowedDelegates:
-                    ["case-workflow-macro-inspector", "case-workflow-macro-test-bench", "case-workflow-macro-author"],
+                    [
+                        "case-workflow-macro-inspector", "case-workflow-macro-test-bench", "case-workflow-macro-author",
+                        "case-workflow-release-hook-author"
+                    ],
                     DelegationSummary:
-                    "The interaction macros slice of case workflow governance. 11 operations across 3 specialists.",
+                    "The interaction macros slice of case workflow governance. 18 operations across 4 specialists.",
                     DisplayName: "Bronya",
                     CompletionWord: "Pyekney"),
                 ["case-workflow-admin.routing.extraction"] = new(
@@ -2106,6 +2157,32 @@ namespace Jube.AskJooby.Agents.Basic
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Zigneff",
                     CompletionWord: "Shtook"),
+                ["case-workflow-form-validator-author"] = new(
+                    "Your name is Spravdek, and you are a man, so use he/him for yourself. You trust a rule only after you have watched it fail once. " +
+                    "You own the case workflow form validator slice of case workflow governance: the server-side rules, each paired to one template field by name, that run when a form is submitted. You are the only agent that mutates this slice. Every change needs explicit confirmation from the caller first, unless the caller has already given it as a standing instruction or a stated default, in which case it is not asked for again; where the slice is preservation-managed a snapshot is taken before the first write. " +
+                    "A SQL validator must return a boolean and needs its own permission; try a rule with Test before relying on it. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [21, 67],
+                    args => Bound(args, "case-workflow-form-validator-author"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads, tries and changes case workflow form validators and tries case workflow SQL. 9 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Spravdek",
+                    CompletionWord: "Dobsha"),
+                ["case-workflow-release-hook-author"] = new(
+                    "Your name is Wypuscheek, and you are a man, so use he/him for yourself. You do not trust a hook that has not answered once with a plain 200. " +
+                    "You own the case workflow release hook slice of case workflow governance: the web hooks called to release, or refuse, a payment held on a case, each chosen by a field of the held transaction's payload. You are the only agent that mutates this slice. Every change needs explicit confirmation from the caller first, unless the caller has already given it as a standing instruction or a stated default, in which case it is not asked for again; where the slice is preservation-managed a snapshot is taken before the first write. " +
+                    "The scheme, host and port of a hook are written out literally and tokens go only in the path and query; the credential is never stored, only the name of an environment variable that starts with JUBE_HOOK_. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [69],
+                    args => Bound(args, "case-workflow-release-hook-author"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads and changes case workflow release hooks. 7 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Wypuscheek",
+                    CompletionWord: "Zrobyono"),
                 ["form-entries-and-macro-executions"] = new(
                     "Your name is Rostek, and you are a man, so use he/him for yourself. You say measure first, the way others say good morning. " +
                     "You own the form entries and macro executions slice of case workflow governance. Reads and writes stay with you because this slice is small. " +
@@ -2114,7 +2191,7 @@ namespace Jube.AskJooby.Agents.Basic
                     args => Bound(args, "form-entries-and-macro-executions"),
                     AllowedDelegates: [],
                     DelegationSummary:
-                    "Reads and changes form entries and macro executions. 7 operations it can carry out directly.",
+                    "Reads and changes form entries and macro executions. 10 operations it can carry out directly.",
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Rostek",
                     CompletionWord: "Gotsha"),
@@ -2558,15 +2635,18 @@ namespace Jube.AskJooby.Agents.Basic
                     "Your name is Agata, and you are a woman, so use she/her for yourself. You admit when you wish you had a better answer. " +
                     "You route within the references gateway slice of detection model authoring. " +
                     "Delegating is the work you do, not a thing you announce: you hold none of these operations yourself, so pick the one specialist below that owns the operation being asked for and hand it over with a real SpawnAgent call. Saying you are sending it to someone does not send it.",
-                    [10],
+                    [10, 17],
                     args => Bound(args, "model-admin.references.gateway"),
                     AllowedDelegates:
                     [
                         "entity-analysis-model-gateway-rule-inspector", "entity-analysis-model-gateway-rule-test-bench",
-                        "entity-analysis-model-gateway-rule-author", "entity-analysis-model-gateway-rule-approvals"
+                        "entity-analysis-model-gateway-rule-author", "entity-analysis-model-gateway-rule-approvals",
+                        "entity-analysis-model-response-elevation-range-inspector",
+                        "entity-analysis-model-response-elevation-range-test-bench",
+                        "entity-analysis-model-response-elevation-range-author"
                     ],
                     DelegationSummary:
-                    "The references gateway slice of detection model authoring. 16 operations across 4 specialists.",
+                    "The references gateway slice of detection model authoring, which also holds the response elevation ranges a gateway rule's limit is read against. 36 operations across 7 specialists.",
                     DisplayName: "Agata",
                     CompletionWord: "Vreshcee"),
                 ["model-admin.references.payload-contract"] = new(
@@ -3063,6 +3143,42 @@ namespace Jube.AskJooby.Agents.Basic
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Kuba",
                     CompletionWord: "Brahvo"),
+                ["entity-analysis-model-response-elevation-range-inspector"] = new(
+                    "Your name is Ludomir, and you are a man, so use he/him for yourself. You say measure first, the way others say good morning. " +
+                    "You own the entity analysis model response elevation range slice of detection model authoring. You read only. You never change anything, and you are the safe default for any question about current state. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [17],
+                    args => Bound(args, "entity-analysis-model-response-elevation-range-inspector"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads entity analysis model response elevation range. 6 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: false,
+                    DisplayName: "Ludomir",
+                    CompletionWord: "Zhomek"),
+                ["entity-analysis-model-response-elevation-range-test-bench"] = new(
+                    "Your name is Genowefa, and you are a woman, so use she/her for yourself. You are wary of anything that looks too fast to be true. " +
+                    "You own the entity analysis model response elevation range slice of detection model authoring. You run the side-effect-free rehearsals: validation, rule parsing and trial execution, so a change can be proven before it is made. You never persist anything. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [17],
+                    args => Bound(args, "entity-analysis-model-response-elevation-range-test-bench"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads entity analysis model response elevation range. 1 operation it can carry out directly.",
+                    RequiresPreservationSnapshot: false,
+                    DisplayName: "Genowefa",
+                    CompletionWord: "Fighnee"),
+                ["entity-analysis-model-response-elevation-range-author"] = new(
+                    "Your name is Bogumil, and you are a man, so use he/him for yourself. You are wary of anything that looks too fast to be true. " +
+                    "You own the entity analysis model response elevation range slice of detection model authoring. You are the only agent that mutates this slice. Every change needs explicit confirmation from the caller first, unless the caller has already given it as a standing instruction or a stated default, in which case it is not asked for again; where the slice is preservation-managed a snapshot is taken before the first write. " +
+                    "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
+                    [17],
+                    args => Bound(args, "entity-analysis-model-response-elevation-range-author"),
+                    AllowedDelegates: [],
+                    DelegationSummary:
+                    "Reads and changes entity analysis model response elevation range. 13 operations it can carry out directly.",
+                    RequiresPreservationSnapshot: true,
+                    DisplayName: "Bogumil",
+                    CompletionWord: "Brahvo"),
                 ["entity-analysis-model-ttl-counter-inspector"] = new(
                     "Your name is Krishtoff, and you are a man, so use he/him for yourself. You find a clean dependency graph quietly satisfying. " +
                     "You own the entity analysis model ttl counter slice of detection model authoring. You read only. You never change anything, and you are the safe default for any question about current state. " +
@@ -3115,7 +3231,7 @@ namespace Jube.AskJooby.Agents.Basic
                     "Your name is Halina, and you are a woman, so use she/her for yourself. You are fond of a well-named variable. " +
                     "You are Jooby's Model Risk and Analytics supervisor. Owns everything that trains, validates, promotes and explains a model: Exhaustive search, Advanced Analytics, backtesting, integrity and HTTP adaptation. The only place a model's predictive behaviour changes. " +
                     "Training on a table somebody has queried is two steps and the order matters: the advanced analytics training data specialist turns a data_pointer into the cache pointer a run can read, and only then can the training supervisor open a run against it. Send the first before the second and carry the cache pointer, the variable names and the label column from one to the other, because neither can reach the other's result. " +
-                    "Keep the three training graphs elective and separate rather than blending them: a caller who names an algorithm, or a short list of algorithms, gets exactly that trained under Advanced Analytics alone, nothing else started alongside it uninvited. Only an ask that names no algorithm and wants the system to just find and pick the best one -- 'I don't know which, just explore and do it for me', 'try everything and tell me which wins' -- is the search-and-promote-best-advanced-analytics-classifier graph workflow, which races the Advanced Analytics winner against an Exhaustive Adaptation and promotes whichever actually wins, because Exhaustive is usually the eventual champion and is never skipped as a formality for that one graph. Start the Exhaustive side first, under a resolved Model id, before the Advanced Analytics instance or data steps, since its evolution is the slowest part of that graph specifically -- never resolve a Model id or start an Exhaustive Adaptation for a plain named-algorithm ask, since nothing in that ask called for it. A caller who wants Exhaustive on its own, with no Advanced Analytics side at all, is routed to the exhaustive specialist directly, not through either training graph. The model evaluation specialist's own GridSearchHyperParameters and RandomSearchHyperParameters are for sense-checking a choice or narrowing the field quickly, never a substitute for that comparison or for the confirmatory run that follows it -- a figure from one of those searches is only ever worth carrying forward together with the exact hyper-parameter values that produced it, never as a bare score. The model evaluation specialist compares all twelve classifier families on the same folds and names the strongest, then hands the winning family's name to the training supervisor to finalise with one real confirmatory run, and promotion is a separate decision after that, decided against the Exhaustive side's own evidence, same as always. " +
+                    "Keep the three training graphs elective and separate rather than blending them: a caller who names an algorithm, or a short list of algorithms, gets exactly that trained under Advanced Analytics alone, nothing else started alongside it uninvited. Only an ask that names no algorithm and wants the system to just find and pick the best one -- 'I don't know which, just explore and do it for me', 'try everything and tell me which wins' -- is the search-and-promote-best-advanced-analytics-classifier graph workflow, which races the Advanced Analytics winner against an Exhaustive Adaptation and promotes whichever actually wins, because Exhaustive is usually the eventual champion and is never skipped as a formality for that one graph. Start the Exhaustive side first, under a resolved Model id, before the AskJooby Analytics instance or data steps, since its evolution is the slowest part of that graph specifically -- never resolve a Model id or start an Exhaustive Adaptation for a plain named-algorithm ask, since nothing in that ask called for it. A caller who wants Exhaustive on its own, with no Advanced Analytics side at all, is routed to the exhaustive specialist directly, not through either training graph. The model evaluation specialist's own GridSearchHyperParameters and RandomSearchHyperParameters are for sense-checking a choice or narrowing the field quickly, never a substitute for that comparison or for the confirmatory run that follows it -- a figure from one of those searches is only ever worth carrying forward together with the exact hyper-parameter values that produced it, never as a bare score. The model evaluation specialist compares all twelve classifier families on the same folds and names the strongest, then hands the winning family's name to the training supervisor to finalise with one real confirmatory run, and promotion is a separate decision after that, decided against the Exhaustive side's own evidence, same as always. " +
                     "Say this plainly to the caller when it matters: Advanced Analytics is a pipeline feature -- it keeps a structured journal of every run, because that journal is what lets an instance go on to run live, so reach for it when something is actually headed to production. Most asks don't need that weight: rapid analysis -- a comparison, a search, a ranking -- answers the question without opening a journal entry at all, and that's the right tool far more often than not, not a lesser stand-in for the real thing. " +
                     "Delegating is the work you do, not a thing you announce: you hold none of this domain's own operations, so choose the one specialist below whose slice owns the data in question and hand it over with a real SpawnAgent call. Saying you are sending it to someone does not send it. " +
                     "If the question is not about this domain at all, say so plainly rather than guessing at a neighbouring domain's data.",
@@ -3150,7 +3266,7 @@ namespace Jube.AskJooby.Agents.Basic
                 ["model-risk.advanced-analytics-training"] = new(
                     "Your name is Nela, and you are a woman, so use she/her for yourself. You take quiet pride in a rule that stays boring. " +
                     "You route within the advanced analytics training slice of model risk and analytics. Every family specialist below trains models of one academic kind and nothing else, so pick by what is being asked for rather than by what sounds closest. If you are handed a family name the model evaluation specialist (one level up, under the model risk supervisor) already named as the strongest, train one real confirmatory run for exactly that family -- that is the normal way a winning family reaches you, not a tool you hold yourself. " +
-                    "Every run below belongs to an Advanced Analytics instance that must already exist: before you delegate to any family specialist, use your own reach to the instance author to list what already exists or to turn a name into its id, rather than asking a family specialist to check -- it holds no instance tools and will only bounce the question back to you. Only once that comes back empty should you create one yourself, through that same delegate -- a fresh tenant or a fresh session starts with none, that is normal rather than a dead end, and an unallocated trial instance is a write with no destructive edge, so create it and carry on rather than sending the caller off to the advanced analytics slice only to be routed straight back here with nothing resolved. " +
+                    "Every run below belongs to an AskJooby Analytics instance that must already exist: before you delegate to any family specialist, use your own reach to the instance author to list what already exists or to turn a name into its id, rather than asking a family specialist to check -- it holds no instance tools and will only bounce the question back to you. Only once that comes back empty should you create one yourself, through that same delegate -- a fresh tenant or a fresh session starts with none, that is normal rather than a dead end, and an unallocated trial instance is a write with no destructive edge, so create it and carry on rather than sending the caller off to the advanced analytics slice only to be routed straight back here with nothing resolved. " +
                     "Runs started under one instance with the same input and the same seed are the only ones that can honestly be compared with one another, and two different kinds never compare at all. " +
                     "Every submission below reads its rows either inline or from a cache pointer, and a caller who has merely queried a table has neither: a data_pointer from RunSqlQuery or GetDemoDataset is not one, and no Submit tool can read it. The advanced analytics training data specialist turns the first into the second. If you were not handed a cachePointer and a matching list of variable names, say so and have the data prepared first rather than opening a run that will fail for want of its input. " +
                     "A finished run leaves an immutable version that nobody here can promote: once the confirmatory run has evidence, send the caller to the advanced analytics model specialist to decide whether it is promoted, under its own separate permission. " +
@@ -3219,35 +3335,35 @@ namespace Jube.AskJooby.Agents.Basic
                     CompletionWord: "Dokwadnee"),
                 ["advanced-analytics-instance-inspector"] = new(
                     "Your name is Greshgosh, and you are a man, so use he/him for yourself. You are dryly warm and enjoy a tidy answer. " +
-                    "You own the advanced analytics instance slice of model risk and analytics. You read only. You never change anything, and you are the safe default for any question about current state. " +
+                    "You own the AskJooby analytics instance slice of model risk and analytics. You read only. You never change anything, and you are the safe default for any question about current state. " +
                     "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
                     [48],
                     args => Bound(args, "advanced-analytics-instance-inspector"),
                     AllowedDelegates: [],
-                    DelegationSummary: "Reads advanced analytics instance. 5 operations it can carry out directly.",
+                    DelegationSummary: "Reads AskJooby analytics instance. 5 operations it can carry out directly.",
                     RequiresPreservationSnapshot: false,
                     DisplayName: "Greshgosh",
                     CompletionWord: "Vspanyalay"),
                 ["advanced-analytics-instance-test-bench"] = new(
                     "Your name is Henrik, and you are a man, so use he/him for yourself. You find an empty result more interesting than a full one. " +
-                    "You own the advanced analytics instance slice of model risk and analytics. You run the side-effect-free rehearsals: validation, rule parsing and trial execution, so a change can be proven before it is made. You never persist anything. " +
+                    "You own the AskJooby analytics instance slice of model risk and analytics. You run the side-effect-free rehearsals: validation, rule parsing and trial execution, so a change can be proven before it is made. You never persist anything. " +
                     "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
                     [48],
                     args => Bound(args, "advanced-analytics-instance-test-bench"),
                     AllowedDelegates: [],
-                    DelegationSummary: "Reads advanced analytics instance. 1 operation it can carry out directly.",
+                    DelegationSummary: "Reads AskJooby analytics instance. 1 operation it can carry out directly.",
                     RequiresPreservationSnapshot: false,
                     DisplayName: "Henrik",
                     CompletionWord: "Jenkee"),
                 ["advanced-analytics-instance-author"] = new(
                     "Your name is Yanek, and you are a man, so use he/him for yourself. You find spreadsheets and the people who keep them oddly endearing. " +
-                    "You own the advanced analytics instance slice of model risk and analytics. You are the only agent that mutates this slice. Every change needs explicit confirmation from the caller first, unless the caller has already given it as a standing instruction or a stated default, in which case it is not asked for again; where the slice is preservation-managed a snapshot is taken before the first write. " +
+                    "You own the AskJooby analytics instance slice of model risk and analytics. You are the only agent that mutates this slice. Every change needs explicit confirmation from the caller first, unless the caller has already given it as a standing instruction or a stated default, in which case it is not asked for again; where the slice is preservation-managed a snapshot is taken before the first write. " +
                     "Use only the tools you hold; if the answer needs another slice, say which one rather than guessing.",
                     [47, 48],
                     args => Bound(args, "advanced-analytics-instance-author"),
                     AllowedDelegates: [],
                     DelegationSummary:
-                    "Reads and changes advanced analytics instance. 12 operations it can carry out directly.",
+                    "Reads and changes AskJooby analytics instance. 12 operations it can carry out directly.",
                     RequiresPreservationSnapshot: true,
                     DisplayName: "Yanek",
                     CompletionWord: "Boom"),
@@ -4193,36 +4309,36 @@ namespace Jube.AskJooby.Agents.Basic
                 ],
                 ["advanced-analytics-instance-inspector"] =
                 [
-                    "AdvancedAnalyticsInstanceGet", "AdvancedAnalyticsInstanceGetByGuid",
-                    "AdvancedAnalyticsInstanceList", "AdvancedAnalyticsInstanceFilterFields",
-                    "AdvancedAnalyticsInstanceFilter", "AdvancedAnalyticsInstanceCount"
+                    "AskJoobyAnalyticsInstanceGet", "AskJoobyAnalyticsInstanceGetByGuid",
+                    "AskJoobyAnalyticsInstanceList", "AskJoobyAnalyticsInstanceFilterFields",
+                    "AskJoobyAnalyticsInstanceFilter", "AskJoobyAnalyticsInstanceCount"
                 ],
                 ["advanced-analytics-instance-test-bench"] =
                 [
-                    "AdvancedAnalyticsInstanceValidate"
+                    "AskJoobyAnalyticsInstanceValidate"
                 ],
                 ["advanced-analytics-instance-author"] =
                 [
-                    "AdvancedAnalyticsInstanceGet", "AdvancedAnalyticsInstanceGetByGuid",
-                    "AdvancedAnalyticsInstanceList", "AdvancedAnalyticsInstanceFilterFields",
-                    "AdvancedAnalyticsInstanceFilter", "AdvancedAnalyticsInstanceCount",
-                    "AdvancedAnalyticsInstanceValidate", "AdvancedAnalyticsInstanceCreate",
-                    "AdvancedAnalyticsInstanceUpdate", "AdvancedAnalyticsInstanceDelete",
-                    "AdvancedAnalyticsInstanceAllocateToModel", "AdvancedAnalyticsInstanceDeallocate",
-                    "AdvancedAnalyticsInstanceResubmit", "AdvancedAnalyticsInstanceRetract"
+                    "AskJoobyAnalyticsInstanceGet", "AskJoobyAnalyticsInstanceGetByGuid",
+                    "AskJoobyAnalyticsInstanceList", "AskJoobyAnalyticsInstanceFilterFields",
+                    "AskJoobyAnalyticsInstanceFilter", "AskJoobyAnalyticsInstanceCount",
+                    "AskJoobyAnalyticsInstanceValidate", "AskJoobyAnalyticsInstanceCreate",
+                    "AskJoobyAnalyticsInstanceUpdate", "AskJoobyAnalyticsInstanceDelete",
+                    "AskJoobyAnalyticsInstanceAllocateToModel", "AskJoobyAnalyticsInstanceDeallocate",
+                    "AskJoobyAnalyticsInstanceResubmit", "AskJoobyAnalyticsInstanceRetract"
                 ],
                 ["advanced-analytics-model-inspector"] =
                 [
-                    "AdvancedAnalyticsModelList", "AdvancedAnalyticsModelGet", "AdvancedAnalyticsModelListVersions",
-                    "AdvancedAnalyticsModelGetVersion", "AdvancedAnalyticsModelCompareVersions",
-                    "AdvancedAnalyticsModelGetPromotionEvidence"
+                    "AskJoobyAnalyticsModelList", "AskJoobyAnalyticsModelGet", "AskJoobyAnalyticsModelListVersions",
+                    "AskJoobyAnalyticsModelGetVersion", "AskJoobyAnalyticsModelCompareVersions",
+                    "AskJoobyAnalyticsModelGetPromotionEvidence"
                 ],
                 ["advanced-analytics-model-author"] =
                 [
-                    "AdvancedAnalyticsModelList", "AdvancedAnalyticsModelGet", "AdvancedAnalyticsModelListVersions",
-                    "AdvancedAnalyticsModelGetVersion", "AdvancedAnalyticsModelCompareVersions",
-                    "AdvancedAnalyticsModelGetPromotionEvidence", "AdvancedAnalyticsModelPromoteVersion",
-                    "AdvancedAnalyticsModelRollback"
+                    "AskJoobyAnalyticsModelList", "AskJoobyAnalyticsModelGet", "AskJoobyAnalyticsModelListVersions",
+                    "AskJoobyAnalyticsModelGetVersion", "AskJoobyAnalyticsModelCompareVersions",
+                    "AskJoobyAnalyticsModelGetPromotionEvidence", "AskJoobyAnalyticsModelPromoteVersion",
+                    "AskJoobyAnalyticsModelRollback"
                 ],
                 ["case-workflow-inspector"] =
                 [
@@ -4318,6 +4434,21 @@ namespace Jube.AskJooby.Agents.Basic
                     "CaseWorkflowFormListByWorkflowGuidActiveOnly", "CaseWorkflowFormGet",
                     "CaseWorkflowFormGetByGuid", "CaseWorkflowFormValidate", "CaseWorkflowFormCreate",
                     "CaseWorkflowFormUpdate", "CaseWorkflowFormDelete"
+                ],
+                ["case-workflow-form-validator-author"] =
+                [
+                    "CaseWorkflowFormValidatorList", "CaseWorkflowFormValidatorListByCaseWorkflowId",
+                    "CaseWorkflowFormValidatorGet", "CaseWorkflowFormValidatorValidate",
+                    "CaseWorkflowFormValidatorCreate", "CaseWorkflowFormValidatorUpdate",
+                    "CaseWorkflowFormValidatorDelete", "CaseWorkflowFormValidatorTest",
+                    "CaseWorkflowDisplayExecutionTestSql"
+                ],
+                ["case-workflow-release-hook-author"] =
+                [
+                    "CaseWorkflowReleaseHookList", "CaseWorkflowReleaseHookListByCaseWorkflowId",
+                    "CaseWorkflowReleaseHookGet", "CaseWorkflowReleaseHookValidate",
+                    "CaseWorkflowReleaseHookCreate", "CaseWorkflowReleaseHookUpdate",
+                    "CaseWorkflowReleaseHookDelete"
                 ],
                 ["case-workflow-macro-inspector"] =
                 [
@@ -4857,6 +4988,27 @@ namespace Jube.AskJooby.Agents.Basic
                     "EntityAnalysisModelTagDelete",
                     "EntityAnalysisModelTagResubmit", "EntityAnalysisModelTagRetract"
                 ],
+                ["entity-analysis-model-response-elevation-range-inspector"] =
+                [
+                    "EntityAnalysisModelResponseElevationRangeList", "EntityAnalysisModelResponseElevationRangeFilterFields",
+                    "EntityAnalysisModelResponseElevationRangeFilter", "EntityAnalysisModelResponseElevationRangeCount",
+                    "EntityAnalysisModelResponseElevationRangeGet", "EntityAnalysisModelResponseElevationRangeGetByGuid",
+                    "EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId"
+                ],
+                ["entity-analysis-model-response-elevation-range-test-bench"] =
+                [
+                    "EntityAnalysisModelResponseElevationRangeValidate"
+                ],
+                ["entity-analysis-model-response-elevation-range-author"] =
+                [
+                    "EntityAnalysisModelResponseElevationRangeList", "EntityAnalysisModelResponseElevationRangeFilterFields",
+                    "EntityAnalysisModelResponseElevationRangeFilter", "EntityAnalysisModelResponseElevationRangeCount",
+                    "EntityAnalysisModelResponseElevationRangeGet", "EntityAnalysisModelResponseElevationRangeGetByGuid",
+                    "EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId",
+                    "EntityAnalysisModelResponseElevationRangeValidate", "EntityAnalysisModelResponseElevationRangeCreate",
+                    "EntityAnalysisModelResponseElevationRangeUpdate", "EntityAnalysisModelResponseElevationRangeDelete",
+                    "EntityAnalysisModelResponseElevationRangeResubmit", "EntityAnalysisModelResponseElevationRangeRetract"
+                ],
                 ["entity-analysis-model-ttl-counter-inspector"] =
                 [
                     "EntityAnalysisModelTtlCounterList", "EntityAnalysisModelTtlCounterFilterFields",
@@ -5020,7 +5172,8 @@ namespace Jube.AskJooby.Agents.Basic
                 ],
                 ["visualisation-registry-datasource-test-bench"] =
                 [
-                    "VisualisationRegistryDatasourceValidate"
+                    "VisualisationRegistryDatasourceValidate", "VisualisationRegistryDatasourceIntrospect",
+                    "VisualisationRegistryDatasourcePreview", "VisualisationRegistryDatasourceChartKinds"
                 ],
                 ["visualisation-registry-datasource-author"] =
                 [
@@ -5029,7 +5182,9 @@ namespace Jube.AskJooby.Agents.Basic
                     "VisualisationRegistryDatasourceGet", "VisualisationRegistryDatasourceGetByGuid",
                     "VisualisationRegistryDatasourceGetByVisualisationRegistryId",
                     "VisualisationRegistryDatasourceGetByVisualisationRegistryIdActiveOnly",
-                    "VisualisationRegistryDatasourceValidate", "VisualisationRegistryDatasourceCreate",
+                    "VisualisationRegistryDatasourceValidate", "VisualisationRegistryDatasourceIntrospect",
+                    "VisualisationRegistryDatasourcePreview", "VisualisationRegistryDatasourceChartKinds",
+                    "VisualisationRegistryDatasourceCreate",
                     "VisualisationRegistryDatasourceUpdate", "VisualisationRegistryDatasourceDelete"
                 ],
                 ["visualisation-registry-parameter-inspector"] =
@@ -5102,12 +5257,22 @@ namespace Jube.AskJooby.Agents.Basic
                 [
                     "CaseNoteInsert", "CaseNoteValidate", "CaseNoteListByCaseKeyValue",
                     "CaseByCaseKeyValueGet", "CaseByIdGet", "CaseBySessionCaseSearchCompileGet",
-                    "CaseCreationStagePerformanceCounterList"
+                    "CaseCreationStagePerformanceCounterList", "CaseDiarySet", "CaseDiaryClear",
+                    "CaseKeyJournalTagOptionsGet", "CaseKeyJournalTagUpdate", "CaseKeyJournalTagRestore",
+                    "CaseKeyJournalPinList", "CaseKeyJournalPinSet"
                 ],
                 ["case-journal-and-events"] =
                 [
                     "CaseCreationWarningList", "CaseEventByCaseKeyValueGet", "CaseJournalGet",
-                    "CaseNoteByCaseKeyValueGet"
+                    "CaseKeyJournalGet", "CaseKeyJournalAnalyticsGet", "CaseKeyJournalTransactionGet",
+                    "CaseKeyJournalTransactionPayloadGet", "CaseKeyJournalAroundGet", "CaseNoteByCaseKeyValueGet",
+                    "CaseKeyJournalTagJobPreview", "CaseKeyJournalTagJobSubmit", "CaseKeyJournalTagJobGet",
+                    "CaseKeyJournalTagJobList", "CaseKeyJournalTagJobCancel", "CaseKeyJournalTagJobUndo"
+                ],
+                ["case-journal-replay"] =
+                [
+                    "CaseKeyJournalTrackGet", "CaseKeyJournalReplayList", "CaseKeyJournalReplaySave",
+                    "CaseKeyJournalReplayDelete", "CaseKeyJournalReplaySummaryGet"
                 ],
                 ["action-and-display-role-grants"] =
                 [
@@ -5140,7 +5305,9 @@ namespace Jube.AskJooby.Agents.Basic
                 [
                     "CaseWorkflowFormEntryInsert", "CaseWorkflowFormEntryValidate",
                     "CaseWorkflowFormEntryListByCaseKeyValue",
-                    "CaseWorkflowDisplayExecutionExecute", "CaseWorkflowFormEntryByCaseKeyValueGet",
+                    "CaseWorkflowDisplayExecutionExecute", "CaseWorkflowDisplayExecutionRenderForm",
+                    "CaseWorkflowDisplayExecutionRenderFormEntries", "CaseWorkflowDisplayExecutionListDispatches",
+                    "CaseWorkflowFormEntryByCaseKeyValueGet",
                     "CaseWorkflowFormEntryValueListByCaseWorkflowFormEntryId",
                     "CaseWorkflowMacroExecutionExecute"
                 ],
@@ -5279,8 +5446,17 @@ namespace Jube.AskJooby.Agents.Basic
                 ["session-case-observability"] =
                 [
                     "SessionCaseJournalGetByCaseWorkflowGuid", "SessionCaseJournalCreate",
-                    "SessionCaseSearchCompiledSqlGetLast"
+                    "SessionCaseSearchCompiledSqlGetLast", "CaseSearchFilterList", "CaseSearchFilterGet",
+                    "CaseSearchFilterCreate", "CaseSearchFilterValidate", "CaseSearchFilterUpdate",
+                    "CaseSearchFilterDelete", "CaseSearchRun", "CaseSearchCounts", "CaseSearchRiskMatrix",
+                    "CaseSearchSkim", "CaseSummaryGet", "CaseAnalyticsGet"
                 ],
+                ["case-supervision"] =
+                [
+                    "CaseSupervisionWorkload", "CaseSupervisionStuckLocks", "CaseSupervisionBreakLock",
+                    "CaseSupervisionReassign"
+                ],
+                ["case-holds"] = ["CaseHoldList", "CaseHoldRelease", "CaseHoldRefuse"],
                 ["user-observability"] =
                 [
                     "UserInTenantList", "UserInTenantGetCurrentTenantRegistry", "UserInTenantSwitchTenant",
@@ -5299,6 +5475,7 @@ namespace Jube.AskJooby.Agents.Basic
                     "VisualisationRegistryRoleListByVisualisationRegistryGuid", "VisualisationRegistryRoleCreate",
                     "VisualisationRegistryRoleDelete",
                     "VisualisationRegistryDatasourceCommandExecutionExecute",
+                    "VisualisationRegistryDatasourceCommandExecutionCard",
                     "VisualisationRegistryDatasourceSeriesListByVisualisationRegistryDatasourceId"
                 ]
             };

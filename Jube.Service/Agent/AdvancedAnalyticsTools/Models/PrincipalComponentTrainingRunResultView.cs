@@ -12,7 +12,7 @@
  */
 
 using Jube.Engine.AdvancedAnalytics.Evidence;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global

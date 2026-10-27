@@ -84,14 +84,14 @@ namespace Jube.Data.Repository
                 w.Guid == guid && w.TenantRegistryId == tenantRegistryId && w.Deleted == 0, token);
         }
 
-        public async Task<IEnumerable<AdvancedAnalyticsTrainingRun>> ListAsync(int? advancedAnalyticsInstanceId = null,
+        public async Task<IEnumerable<AdvancedAnalyticsTrainingRun>> ListAsync(int? askJoobyAnalyticsInstanceId = null,
             AdvancedAnalyticsStatus? status = null, int take = 100, CancellationToken token = default)
         {
             return await dbContext.AdvancedAnalyticsTrainingRun
                 .Where(w => w.TenantRegistryId == tenantRegistryId
                             && w.Deleted == 0
-                            && (advancedAnalyticsInstanceId == null
-                                || w.AdvancedAnalyticsInstanceId == advancedAnalyticsInstanceId)
+                            && (askJoobyAnalyticsInstanceId == null
+                                || w.AskJoobyAnalyticsInstanceId == askJoobyAnalyticsInstanceId)
                             && (status == null || w.StatusId == status))
                 .OrderByDescending(o => o.Id)
                 .Take(Math.Clamp(take, 1, 1000))
@@ -101,8 +101,8 @@ namespace Jube.Data.Repository
         public async Task<AdvancedAnalyticsTrainingRun> InsertAsync(AdvancedAnalyticsTrainingRun model,
             CancellationToken token = default)
         {
-            var instanceVisible = await dbContext.AdvancedAnalyticsInstance.AnyAsync(w =>
-                    w.Id == model.AdvancedAnalyticsInstanceId
+            var instanceVisible = await dbContext.AskJoobyAnalyticsInstance.AnyAsync(w =>
+                    w.Id == model.AskJoobyAnalyticsInstanceId
                     && w.TenantRegistryId == tenantRegistryId
                     && w.Deleted == 0, token)
                 .ConfigureAwait(false);

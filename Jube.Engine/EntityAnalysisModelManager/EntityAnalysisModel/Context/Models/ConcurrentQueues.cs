@@ -36,6 +36,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
 
         public ConcurrentQueue<TagMessage> PendingTagging { get; } = new ConcurrentQueue<TagMessage>();
         public ConcurrentQueue<Notification> PendingNotifications { get; set; } = new ConcurrentQueue<Notification>();
+        public ConcurrentQueue<Webhook> PendingWebhooks { get; set; } = new ConcurrentQueue<Webhook>();
 
         public ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> Callbacks { get; set; } =
             new ConcurrentDictionary<Guid, TaskCompletionSource<Callback>>();

@@ -12,6 +12,7 @@
  */
 
 using System;
+using LinqToDB;
 using LinqToDB.Mapping;
 using MessagePack;
 
@@ -38,5 +39,14 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(8)]
         public Case Case { get; set; }
+
+        [Column] [Nullable] [Key(20)] public string Sql { get; set; }
+        [Column] [Nullable] [Key(21)] public string Template { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Nullable]
+        [Key(22)]
+        public string Rows { get; set; }
     }
 }

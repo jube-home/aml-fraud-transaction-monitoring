@@ -21,7 +21,7 @@ family-scoped triple of status/cancel/result tools, under names that look generi
 named: `LogisticRegressionTrainingRunTools`, `KMeansClustererTrainingRunTools`, `GaussianMixtureDensityTrainingRunTools`,
 `MahalanobisAnomalyTrainingRunTools`, `LinearRegressionTrainingRunTools` and `PrincipalComponentTrainingRunTools`. All
 eighteen of these tools call, underneath, into a service that opens its own
-`AdvancedAnalyticsTrainingRunRepository` and `AdvancedAnalyticsTrainedModelVersionRepository` against the same
+`AdvancedAnalyticsTrainingRunRepository` and `AskJoobyAnalyticsTrainedModelVersionRepository` against the same
 `AdvancedAnalyticsTrainingRun` table and the same run id sequence that the shared
 `AdvancedAnalyticsSharedTrainingRunService` behind the three generic tools also reads and writes. A run id returned
 by any family's `Submit` tool is therefore a valid argument to any of these family-scoped tools, to the three generic
@@ -67,7 +67,7 @@ difference in which View shape the caller gets back.
 is declared as `AdvancedAnalyticsLogisticEvidence?` -- split sizes, train and test metrics, calibration, fit
 diagnostics, coefficients and warnings, all named and typed. The generic `GetAdvancedAnalyticsTrainingRunResult`
 reads the identical `MetricsJson` for the same run and deserialises it through the same logistic branch of
-`AdvancedAnalyticsModelMapper.ReadEvidence`, but exposes it through `AdvancedAnalyticsSharedTrainingRunResultDto.Evidence`,
+`AskJoobyAnalyticsModelMapper.ReadEvidence`, but exposes it through `AdvancedAnalyticsSharedTrainingRunResultDto.Evidence`,
 declared only as `object`. The numbers are the same; only this family's own result tool declares, in its own
 signature, what the fields will be.
 
@@ -89,7 +89,7 @@ nothing more. There is no functional difference between stopping a k-means run w
 `GetClustererTrainingRunResult` returns a `ClustererTrainingRunResultView` whose `Evidence` is declared as
 `AdvancedAnalyticsEvidence<KMeansEvidenceDetails>?` -- cluster sizes and proportions, inertia and silhouette, named
 and typed for this one family. The generic result tool reaches the same stored evidence through the
-`KMeansClustererRecall.ModelKind` branch of `AdvancedAnalyticsModelMapper.ReadEvidence`, but, again, only as an
+`KMeansClustererRecall.ModelKind` branch of `AskJoobyAnalyticsModelMapper.ReadEvidence`, but, again, only as an
 untyped `object` on `AdvancedAnalyticsSharedTrainingRunResultDto`. Calling this family's result tool on a run id that
 was not a k-means submission returns a run status with no evidence, since the stored `MetricsJson` would not match
 the `KMeansEvidenceDetails` shape this tool expects.
@@ -115,7 +115,7 @@ the shared one.
 whose `Evidence` is declared as `AdvancedAnalyticsEvidence<GaussianMixtureDensityEvidenceDetails>?` -- each
 component's weight, mean and covariance, mean per-row log-likelihood on each split, BIC, AIC and convergence, named
 and typed. The generic result tool reaches the same `MetricsJson` through the
-`GaussianMixtureDensityRecall.ModelKind` branch of `AdvancedAnalyticsModelMapper.ReadEvidence`, again only as an
+`GaussianMixtureDensityRecall.ModelKind` branch of `AskJoobyAnalyticsModelMapper.ReadEvidence`, again only as an
 untyped `object`. Pointing this family's result tool at a run id from a different family returns the run's status
 with no evidence, since that run's stored evidence will not match the shape this tool deserialises into.
 
@@ -136,7 +136,7 @@ routed through this family's own service method.
 `GetMahalanobisAnomalyTrainingRunResult` returns an `AdvancedAnalyticsMahalanobisAnomalyTrainingRunResultDto` whose
 `Evidence` carries distance percentiles, the covariance condition number and calibration, named and typed for this
 family specifically. The generic result tool reaches the same evidence through the
-`MahalanobisAnomalyRecall.ModelKind` branch of `AdvancedAnalyticsModelMapper.ReadEvidence` -- which, notably, also
+`MahalanobisAnomalyRecall.ModelKind` branch of `AskJoobyAnalyticsModelMapper.ReadEvidence` -- which, notably, also
 validates that the deserialised evidence has split sizes and a calibration block before returning it, the same
 defensive check this family's own `GetRunResultAsync` does not repeat -- but still only as an untyped `object` on the
 shared result DTO. Pointing this tool at a run id trained as a different kind returns the status with no evidence.
@@ -164,7 +164,7 @@ the fit if running) as every other family here and as the generic cancel tool.
 `GetLinearRegressionTrainingRunResult` returns a `LinearRegressionTrainingRunResultView` whose `Evidence` is declared
 as `AdvancedAnalyticsEvidence<LinearRegressionEvidenceDetails>?` -- split sizes, train and test metrics and
 coefficient significance, named and typed for this family. The generic result tool reaches the same `MetricsJson`
-through the `MultipleLinearRegressionRecall.ModelKind` branch of `AdvancedAnalyticsModelMapper.ReadEvidence`, again
+through the `MultipleLinearRegressionRecall.ModelKind` branch of `AskJoobyAnalyticsModelMapper.ReadEvidence`, again
 only as an untyped `object`. A run id from any other family returns a status with no evidence through this tool, for
 the same reason as the families above.
 
@@ -187,6 +187,6 @@ a principal component run through this tool has the same effect as stopping it t
 declared as `AdvancedAnalyticsEvidence<PrincipalComponentEvidenceDetails>?` -- every component's eigenvalue, the
 cumulative variance explained, how many components were retained, and mean per-row reconstruction error on each
 split, named and typed for this family. The generic result tool reaches the same evidence through the
-`PrincipalComponentRecall.ModelKind` branch of `AdvancedAnalyticsModelMapper.ReadEvidence`, again only as an untyped
+`PrincipalComponentRecall.ModelKind` branch of `AskJoobyAnalyticsModelMapper.ReadEvidence`, again only as an untyped
 `object` on the shared result DTO. A run id submitted under a different family returns a status with no evidence
 through this tool, for the same reason given for every family above.

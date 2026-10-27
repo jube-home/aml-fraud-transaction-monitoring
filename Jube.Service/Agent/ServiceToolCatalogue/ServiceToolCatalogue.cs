@@ -37,6 +37,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelGatewayRule(tools);
                 AddEntityAnalysisModelSanction(tools);
                 AddEntityAnalysisModelTag(tools);
+                AddEntityAnalysisModelResponseElevationRange(tools);
                 AddEntityAnalysisModelAbstractionRule(tools);
                 AddEntityAnalysisModelAbstractionCalculation(tools);
                 AddEntityAnalysisModelHttpAdaptation(tools);
@@ -118,6 +119,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddCaseWorkflowFormEntry(tools);
                 AddCaseWorkflowFormEntryValue(tools);
                 AddCaseWorkflowFormRole(tools);
+                AddCaseWorkflowFormValidator(tools);
+                AddCaseWorkflowReleaseHook(tools);
+                AddCaseHold(tools);
                 AddCaseWorkflowMacro(tools);
                 AddCaseWorkflowMacroRole(tools);
                 AddCaseWorkflowPriority(tools);
@@ -173,6 +177,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddTreeChildren(tools);
                 AddSessionCaseJournal(tools);
                 AddSessionCaseSearchCompiledSql(tools);
+                AddCaseSearchFilter(tools);
+                AddCaseSupervision(tools);
+                AddCaseDiary(tools);
+                AddCaseSearch(tools);
+                AddCaseSummary(tools);
+                AddCaseAnalytics(tools);
+                AddCaseKeyJournal(tools);
                 AddCompletions(tools);
                 AddQueryBuilder(tools);
                 AddIcons(tools);
@@ -188,9 +199,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddCaseWorkflowMacroExecution(tools);
                 AddAskJoobyConversation(tools);
                 AddAskJoobyRagChunk(tools);
-                AddAdvancedAnalyticsInstance(tools);
+                AddAskJoobyAnalyticsInstance(tools);
                 AddAdvancedAnalyticsTrainingData(tools);
-                AddAdvancedAnalyticsModel(tools);
+                AddAskJoobyAnalyticsModel(tools);
                 AddHaProxyReachabilityProbe(tools);
                 AddHaProxyServerStatus(tools);
                 AddOverlayNetworkTaskDrift(tools);
@@ -209,15 +220,16 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelDependency(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelBacktest(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModel(List<ServiceToolDescriptor> tools);
-        static partial void AddAdvancedAnalyticsInstance(List<ServiceToolDescriptor> tools);
+        static partial void AddAskJoobyAnalyticsInstance(List<ServiceToolDescriptor> tools);
         static partial void AddAdvancedAnalyticsTrainingData(List<ServiceToolDescriptor> tools);
-        static partial void AddAdvancedAnalyticsModel(List<ServiceToolDescriptor> tools);
+        static partial void AddAskJoobyAnalyticsModel(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelRequestXPath(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelInlineFunction(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelInlineScript(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelGatewayRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelSanction(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelTag(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelResponseElevationRange(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelAbstractionRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelAbstractionCalculation(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelHttpAdaptation(List<ServiceToolDescriptor> tools);
@@ -299,6 +311,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddCaseWorkflowFormEntry(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowFormEntryValue(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowFormRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFormValidator(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowReleaseHook(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseHold(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowMacro(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowMacroRole(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowPriority(List<ServiceToolDescriptor> tools);
@@ -369,6 +384,14 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddTreeChildren(List<ServiceToolDescriptor> tools);
         static partial void AddSessionCaseJournal(List<ServiceToolDescriptor> tools);
         static partial void AddSessionCaseSearchCompiledSql(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseSearchFilter(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseSupervision(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseDiary(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseSearch(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseSummary(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseAnalytics(List<ServiceToolDescriptor> tools);
+
+        static partial void AddCaseKeyJournal(List<ServiceToolDescriptor> tools);
         static partial void AddCompletions(List<ServiceToolDescriptor> tools);
         static partial void AddQueryBuilder(List<ServiceToolDescriptor> tools);
         static partial void AddIcons(List<ServiceToolDescriptor> tools);

@@ -53,6 +53,7 @@ namespace Jube.Service.EntityAnalysisModelOverride
         {
             return new OverridePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelGuid = dto.EntityAnalysisModelGuid,
                 OverrideKey = dto.OverrideKey,

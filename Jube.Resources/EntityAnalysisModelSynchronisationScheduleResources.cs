@@ -18,5 +18,6 @@ namespace Jube.Resources
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string ScheduleDateTooFarInFuture = nameof(ScheduleDateTooFarInFuture);
+        public const string ModelNotFound = nameof(ModelNotFound);
     }
 }

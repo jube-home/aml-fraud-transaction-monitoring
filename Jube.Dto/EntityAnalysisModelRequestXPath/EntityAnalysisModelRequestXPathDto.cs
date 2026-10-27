@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelRequestXPath
 {
     [FormEndpoint("EntityAnalysisModelRequestXPath")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -38,7 +40,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this field. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. TxnAmount")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -46,15 +48,16 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
                      "Boolean, Latitude or Longitude.")]
         [FormField(Group = "Extraction", Order = 10, Widget = "select")]
         [NewDefault(1)]
+        [Options(typeof(FieldDataType))]
         public int DataTypeId { get; set; }
 
         [Description("JSONPath specifying the location of this field's value in the HTTP POST body.")]
-        [FormField(Group = "Extraction", Order = 20)]
+        [FormField(Group = "Extraction", Order = 20, Placeholder = "$.Transaction.Amount")]
         public string? XPath { get; set; }
 
         [Description("The default value used when the XPath returns a null token. For a Date field this is an " +
                      "integer number of days offset from now; for a Boolean field this is \"1\" or \"0\".")]
-        [FormField(Group = "Extraction", Order = 30)]
+        [FormField(Group = "Extraction", Order = 30, Placeholder = "e.g. 0")]
         public string? DefaultValue { get; set; }
 
         [Description("Encrypts the extracted value before it is stored and archived. Only meaningful for String " +
@@ -62,6 +65,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         [FormField(Group = "Extraction", Order = 40, Widget = "radio")]
         [VisibleWhen(nameof(DataTypeId), 1)]
         [NewDefault(0)]
+        [Options(typeof(PayloadEncryption))]
         public int EncryptionId { get; set; }
 
         [Description("When true, this field's extracted value is available in the Override page, allowing the " +
@@ -97,6 +101,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         [VisibleWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKey), true)]
         [NewDefault("h")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public string? SearchKeyTtlInterval { get; set; }
 
         [Description("Offset, in Search Key TTL Interval units, before the current reference date at which the " +
@@ -129,6 +134,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         [RequiredWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKeyCache), true)]
         [NewDefault("h")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public string? SearchKeyCacheInterval { get; set; }
 
         [Description("Length, in Search Key Cache Interval units, between recalculations of the cached search " +
@@ -165,6 +171,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         [RequiredWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKeyCache), true)]
         [NewDefault("h")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public string? SearchKeyCacheTtlInterval { get; set; }
 
         [Description("Length, in Search Key Cache TTL Interval units, that a calculated search key value lives " +

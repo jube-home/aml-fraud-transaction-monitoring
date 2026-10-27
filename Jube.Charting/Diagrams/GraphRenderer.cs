@@ -26,7 +26,11 @@ namespace Jube.Charting.Diagrams
         public static string Render(GraphDiagramSpec spec, GraphLayoutResult layout)
         {
             var roles = spec.Nodes.Select(n => n.Role).Distinct().OrderBy(r => (int)r).ToArray();
-            var legend = roles.Select(r => new LegendEntry(RoleName(r), Series(r))).ToArray();
+            var groups = GroupSeries(spec);
+
+            var legend = groups.Count > 0
+                ? groups.Select(g => new LegendEntry(g.Key, g.Value)).OrderBy(e => e.Series).ToArray()
+                : roles.Select(r => new LegendEntry(RoleName(r), Series(r))).ToArray();
             var hasProbability = spec.Edges.Any(e => e.Probability.HasValue);
             var weights = spec.Edges.Where(e => e.Weight.HasValue).Select(e => e.Weight!.Value).ToArray();
             var hasWeight = weights.Length > 0;
@@ -161,7 +165,8 @@ namespace Jube.Charting.Diagrams
                     var key = "x" + e.Index;
 
                     scene.OpenMark(key, string.Join(", ", rows.Select(r => r.Text)),
-                        "eg " + StyleCaps.Tokens(scene.External, "e", [e.From, e.To]));
+                        "eg " + StyleCaps.Tokens(scene.External, "e", [e.From, e.To]),
+                        ("data-from", a.Id), ("data-to", b.Id));
 
                     w.Empty("path", ("class", "eh"), ("d", e.Path));
                     w.Empty("path", ("class", cls), ("d", e.Path), scene.StrokeWidth(thickness));
@@ -216,12 +221,23 @@ namespace Jube.Charting.Diagrams
                     rows.Add(new TipRow("Edges in: " + incoming[p.Index] + ", out: " + outgoing[p.Index]));
                     var key = "n" + p.Index;
 
-                    scene.OpenMark(key, string.Join(", ", rows.Select(r => r.Text)),
-                        "nd s" + Series(p.Role) + " " +
-                        StyleCaps.Tokens(scene.External, "j", neighbours[p.Index].OrderBy(j => j)));
+                    var seriesIndex = src.Group is not null && groups.TryGetValue(src.Group, out var grouped)
+                        ? grouped
+                        : Series(p.Role);
 
-                    Shape(w, p, "nb");
-                    Shape(w, p, "nt");
+                    if (src.Group is not null)
+                    {
+                        rows.Insert(1, new TipRow(TextMetrics.Truncate(src.Group, 240, 12)));
+                        rows.RemoveAt(2);
+                    }
+
+                    scene.OpenMark(key, string.Join(", ", rows.Select(r => r.Text)),
+                        "nd s" + seriesIndex + " " +
+                        StyleCaps.Tokens(scene.External, "j", neighbours[p.Index].OrderBy(j => j)),
+                        ("data-node", p.Id));
+
+                    Shape(w, p, "nb", src.Dashed);
+                    Shape(w, p, "nt", src.Dashed);
 
                     w.Element("text", TextMetrics.Truncate(p.Label, p.Width - 12, 11, true), ("class", "lbl ctr mid"),
                         ("x", Num.F(p.X)), ("y", Num.F(p.Y)));
@@ -286,9 +302,28 @@ namespace Jube.Charting.Diagrams
             w.Empty("path", ("class", "ah"), ("d", path.ToString()));
         }
 
-        private static void Shape(SvgWriter w, PlacedGraphNode p, string cls)
+        private static Dictionary<string, int> GroupSeries(GraphDiagramSpec spec)
         {
-            var dash = p.Role == GraphNodeRole.Latent ? " dash" : string.Empty;
+            var present = spec.Nodes.Where(n => n.Group is not null).Select(n => n.Group!).Distinct().ToList();
+            var ordered = spec.GroupOrder.ToList();
+            var map = new Dictionary<string, int>();
+            var next = ordered.Count;
+
+            foreach (var name in present)
+            {
+                var position = ordered.IndexOf(name);
+
+                map[name] = name.Equals("Missing", StringComparison.OrdinalIgnoreCase) ? 7
+                    : position >= 0 ? position % 7
+                    : next++ % 7;
+            }
+
+            return map;
+        }
+
+        private static void Shape(SvgWriter w, PlacedGraphNode p, string cls, bool dashed = false)
+        {
+            var dash = p.Role == GraphNodeRole.Latent || dashed ? " dash" : string.Empty;
 
             if (p.Role == GraphNodeRole.State)
             {

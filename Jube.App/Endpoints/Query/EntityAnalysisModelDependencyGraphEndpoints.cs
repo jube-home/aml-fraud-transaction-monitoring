@@ -14,6 +14,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Dto.Query.EntityAnalysisModelIntegrity;
+using Jube.Service.Charts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -33,6 +34,18 @@ namespace Jube.App.Endpoints.Query
             group.MapGet("{entityAnalysisModelId:int}", GetAsync)
                 .Produces<ModelGraphDto>()
                 .WithName("EntityAnalysisModelDependencyGraphGet");
+
+            group.MapGet("{entityAnalysisModelId:int}/Svg", GetSvgAsync)
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("EntityAnalysisModelDependencyGraphSvgGet");
+        }
+
+        private static Task<IResult> GetSvgAsync(int entityAnalysisModelId, string focusKind, int? focusId,
+            int? radius, bool? dark, HttpContext httpContext, CancellationToken token)
+        {
+            return IntegrityEndpoints.ExecuteAsync(Base + "/Svg", httpContext,
+                (service, t) => service.GraphAsync(entityAnalysisModelId, focusKind, focusId, radius ?? 2, t), token,
+                graph => ChartsEndpoints.Svg(httpContext, ModelDependencyChartRenderer.Render(graph, dark ?? false)));
         }
 
         private static Task<IResult> GetAsync(int entityAnalysisModelId, string focusKind, int? focusId,

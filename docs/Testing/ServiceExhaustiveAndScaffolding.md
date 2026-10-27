@@ -48,6 +48,53 @@ Database.
 | `SensitivityKeepsOnlyTheTopBarsAndHostileNamesAreEscaped` | Fact | Sensitivity keeps only the top bars and hostile names are escaped. |
 | `OutputIsDeterministic`                                   | Fact | Output is deterministic.                                           |
 
+### StatisticsHistogramChartRendererTests
+
+`Jube.Test.Service.ExhaustiveCharts.StatisticsHistogramChartRendererTests` — 5 tests. Category: Service.
+
+| Test                                                                   | Kind | Verifies                                                                      |
+|------------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
+| `ABarPerBucketIsDrawnWithAMeanAndMedianLineAndHoverText`               | Fact | A bar per bucket is drawn with a mean and median line and hover text.         |
+| `AnEmptyOversizedOrNonFiniteHistogramIsRefusedNeverRendered`           | Fact | An empty oversized or non finite histogram is refused never rendered.         |
+| `OneBucketOrBinsThatRoundedToTheSameEdgeStillRender`                   | Fact | One bucket or bins that rounded to the same edge still render.                |
+| `TheSeriesTakesTheCallersColourAndAnInvalidColourIsRefused`            | Fact | The series takes the callers colour and an invalid colour is refused.         |
+| `TheThemeIsChosenByTheCallerAndAHostileTitleIsEscaped`                 | Fact | The theme is chosen by the caller and a hostile title is escaped.             |
+
+### WatcherSummaryChartRendererTests
+
+`Jube.Test.Service.ExhaustiveCharts.WatcherSummaryChartRendererTests` — 3 tests. Category: Service.
+
+| Test                                                                   | Kind | Verifies                                                                        |
+|------------------------------------------------------------------------|------|---------------------------------------------------------------------------------|
+| `EachRuleGetsAColumnAndTheElevationIsALineOnItsOwnAxis`                | Fact | Each rule gets a column and the elevation is a line on its own axis.            |
+| `NoRulesTooManyRulesOrNonFiniteFiguresAreRefused`                      | Fact | No rules too many rules or non finite figures are refused.                      |
+| `ColoursAreTheCallersAndAHostileNameIsEscaped`                         | Fact | Colours are the callers and a hostile name is escaped.                          |
+
+### ModelDependencyChartRendererTests
+
+`Jube.Test.Service.ExhaustiveCharts.ModelDependencyChartRendererTests` — 6 tests. Category: Service.
+
+| Test                                                                                              | Kind | Verifies                                                                                     |
+|---------------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------|
+| `EveryKindFallsInOneOfTheSevenFamiliesAndMissingIsItsOwn`                                         | Fact | Every kind falls in one of the seven families and missing is its own.                        |
+| `TheGraphKeepsStableFamilyColoursMarksInactiveNodesDashedAndNamesMissingOnesInRed`                | Fact | The graph keeps stable family colours marks inactive nodes dashed and names missing ones in red. |
+| `TheThemeFollowsTheCallerAndHostileNamesAreEscaped`                                               | Fact | The theme follows the caller and hostile names are escaped.                                  |
+| `EntitiesWithNoArcsAreDroppedFromTheDiagram` | Fact | Entities with no arcs are dropped from the diagram. |
+| `SeveralDependenciesBetweenTheSameTwoEntitiesBecomeOneArrowAndDanglingEdgesAreDropped` | Fact | Several dependencies between the same two entities become one arrow and dangling edges are dropped. |
+| `AModelWhoseEntitiesDoNotUseEachOtherStillDrawsAndSaysSo` | Fact | A model whose entities do not use each other still draws and says so. |
+
+### BacktestChartRendererTests
+
+`Jube.Test.Service.ExhaustiveCharts.BacktestChartRendererTests` — 5 tests. Category: Service.
+
+| Test                                                                                  | Kind | Verifies                                                                            |
+|---------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------|
+| `TheFunnelShowsReadKeptAndFiredAndSurvivesNothingBeingRead`                           | Fact | The funnel shows read kept and fired and survives nothing being read.               |
+| `TheConfusionMatrixNeedsAClassAndPutsTheFourCountsInTheRightCells`                    | Fact | The confusion matrix needs a class and puts the four counts in the right cells.     |
+| `TheRatesAreComputedFromTheCountsAndOnlyTheFiredRateWithoutAClass`                    | Fact | The rates are computed from the counts and only the fired rate without a class.     |
+| `TheTagsAreTheLargestFirstCappedAndEmptyIsRefused`                                    | Fact | The tags are the largest first capped and empty is refused.                         |
+| `InconsistentFiguresAreRefusedAndHostileTagNamesAreEscaped`                           | Fact | Inconsistent figures are refused and hostile tag names are escaped.                 |
+
 ### ExhaustiveChartServiceTests
 
 `Jube.Test.Service.ExhaustiveCharts.ExhaustiveChartServiceTests` — 9 tests. Category: Service. Collection: Database.
@@ -464,6 +511,36 @@ Collection: Database.
 | `IncludeTables_NamingAnUnreachableTable_FailsLoudlyAsync`                   | Fact   | Include tables naming an unreachable table fails loudly.                         |
 | `ATableWithoutAnIdentityId_FailsNamingTheTable_AndLeavesNothingBehindAsync` | Fact   | A table without an identity id fails naming the table and leaves nothing behind. |
 
+### ModelSyncResponseElevationRangeTests
+
+`Jube.Test.Service.ModelScaffolding.ModelSyncResponseElevationRangeTests` — 2 tests. Collection: Database.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `TheEngineSnapshotCarriesTheActiveRangesWithTheirNameAndOutcomeAsync`                 | Fact   | The engine snapshot carries the active ranges with their name and outcome.                  |
+| `ARuleWhoseLevelIsInNoActiveRangeIsNotSentOutByTheEngineAsync`                        | Fact   | A rule whose level is in no active range is not sent out by the engine.                     |
+
+### ResponseHoldInvokeTests
+
+`Jube.Test.Service.ModelScaffolding.ResponseHoldInvokeTests` — 4 tests. Category: Service. Collection: Database.
+
+| Test                                                                               | Kind | Verifies                                                                                     |
+|------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------|
+| `AHoldRangeStampsTheHoldNamesTheElevationAndSendsTheWebHookWithItsCredentialAsync` | Fact | A hold range stamps the hold names the elevation and sends the web hook with its credential. |
+| `ADeclineRangeIsStampedDeclinedNeverHeldAsync`                                     | Fact | A decline range is stamped declined never held.                                              |
+| `ARangeWithNeitherOutcomeNamesTheElevationButStampsNoHoldAsync`                    | Fact | A range with neither outcome names the elevation but stamps no hold.                         |
+| `AWebHookWhoseHostIsNotLiteralIsRefusedAndRecordedNotSentAsync`                    | Fact | A web hook whose host is not literal is refused and recorded not sent.                       |
+
+### ResponseHoldAmqpTests
+
+`Jube.Test.Service.ModelScaffolding.ResponseHoldAmqpTests` — 1 tests. Category: Service. Collection: Database.
+
+This class runs only when the environment variable `JubeTestRabbitMq` holds the uri of a broker, for example `amqp://guest:guest@localhost:5683`; without it the test is skipped. It starts the real engine over the broker and checks that the web hook and the notification of a response elevation range travel through the `jubeWebhooks` and `jubeNotifications` queues, each with one consumer, and that their outcomes are written into the hold.
+
+| Test                                                                                         | Kind | Verifies                                                                                                |
+|----------------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------------------|
+| `TheWebHookAndTheNotificationOfARangeTravelThroughTheBrokerAndTheirOutcomesAreRecordedAsync` | Fact       | The web hook and the notification of a range travel through the broker and their outcomes are recorded. |
+
 ### ModelSyncTests
 
 `Jube.Test.Service.ModelScaffolding.ModelSyncTests` — 4 tests. Collection: Database.
@@ -477,7 +554,7 @@ Collection: Database.
 
 ### SyncScheduleEngineTests
 
-`Jube.Test.Service.ModelScaffolding.SyncScheduleEngineTests` — 8 tests. Collection: Database.
+`Jube.Test.Service.ModelScaffolding.SyncScheduleEngineTests` — 11 tests. Collection: Database.
 
 | Test                                                             | Kind | Verifies                                                                |
 |------------------------------------------------------------------|------|-------------------------------------------------------------------------|
@@ -489,3 +566,5 @@ Collection: Database.
 | `AWarningForADeadEngineDropsOutAfterTheRetentionAsync`           | Fact | A warning for a dead engine drops out after the retention.              |
 | `AWarningForADeadEngineIsClearedByTheNextLiveSyncAsync`          | Fact | A warning for a dead engine is cleared by the next live sync.           |
 | `AnEngineThatStillReportsIsKeptThroughALiveSyncAsync`            | Fact | An engine that still reports is kept through a live sync.               |
+| `AScheduleForOneModelReloadsThatModelAndLeavesTheOthersLoadedAsIsAsync` | Fact | A schedule for one model reloads that model and leaves the others loaded as is. |
+| `AWholeTenantScheduleAfterAModelScheduleStillReloadsEveryModelAsync` | Fact | A whole tenant schedule after a model schedule still reloads every model. |

@@ -60,6 +60,7 @@ namespace Jube.Data.Repository
                 "caseCreation" => query.OrderByField(o => o.CaseCreation, descending),
                 "tagging" => query.OrderByField(o => o.Tagging, descending),
                 "notification" => query.OrderByField(o => o.Notification, descending),
+                "webhook" => query.OrderByField(o => o.Webhook, descending),
                 _ => query.OrderByField(o => o.Id, true)
             };
         }

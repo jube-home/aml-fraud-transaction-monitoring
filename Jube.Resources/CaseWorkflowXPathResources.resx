@@ -36,7 +36,10 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
-    <data name="PermissionDenied" xml:space="preserve">
+    <data name="RoleIdInvalid" xml:space="preserve">
+    <value>The field role must be between 0 and 6.</value>
+  </data>
+  <data name="PermissionDenied" xml:space="preserve">
     <value>You do not have permission to perform this action.</value>
   </data>
     <data name="NotAuthenticated" xml:space="preserve">

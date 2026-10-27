@@ -19,6 +19,9 @@ using Jube.AskJooby.Tools.Charting.Interfaces;
 using Jube.Charting;
 using Jube.Charting.Core;
 using Jube.Charting.Core.Models;
+using Jube.Dto.Options;
+using Jube.Service.Charts.Datasource;
+using Jube.Service.Charts.Datasource.Models;
 
 namespace Jube.Service.AskJoobyCharting
 {
@@ -32,7 +35,19 @@ namespace Jube.Service.AskJoobyCharting
         private static readonly string[] chartTypes =
             ["column", "bar", "line", "area", "pie", "donut", "scatter", "histogram"];
 
-        public IReadOnlyList<string> SupportedChartTypes => chartTypes;
+        private const int MaximumRegistryRows = 20000;
+
+        private static readonly IReadOnlyDictionary<string, DatasourceDisplayKind> registryKinds =
+            Enum.GetValues<DatasourceDisplayKind>().Where(k => k != DatasourceDisplayKind.Template)
+                .ToDictionary(k => k.ToString().ToLowerInvariant());
+
+        private static readonly string[] allChartTypes =
+        [
+            .. chartTypes,
+            .. registryKinds.Keys.Where(k => !chartTypes.Contains(k))
+        ];
+
+        public IReadOnlyList<string> SupportedChartTypes => allChartTypes;
 
         public byte[] Render(CachedTable table, ChartSpecification specification)
         {
@@ -48,9 +63,16 @@ namespace Jube.Service.AskJoobyCharting
 
             if (!chartTypes.Contains(type))
             {
+                var normalised = new string(type.Where(char.IsLetter).ToArray());
+
+                if (registryKinds.TryGetValue(normalised, out var kind))
+                {
+                    return Encoding.UTF8.GetBytes(RenderRegistryKind(table, specification, kind));
+                }
+
                 throw new ArgumentException(
                     $"\"{specification.ChartType}\" is not a chart type. Choose one of: "
-                    + string.Join(", ", chartTypes) + ".");
+                    + string.Join(", ", allChartTypes) + ".");
             }
 
             var histogram = type == "histogram";
@@ -200,6 +222,99 @@ namespace Jube.Service.AskJoobyCharting
                 .Interactive(false)
                 .StyleMode(ChartStyleMode.Inline)
                 .Render();
+        }
+
+        private static string RenderRegistryKind(CachedTable table, ChartSpecification specification,
+            DatasourceDisplayKind kind)
+        {
+            if (table.Rows.Count > MaximumRegistryRows)
+            {
+                throw new ArgumentException(
+                    $"That table has {table.Rows.Count} rows, over the {MaximumRegistryRows} this chart will draw. "
+                    + "Aggregate it in SQL, or filter it down, before charting it.");
+            }
+
+            IReadOnlyDictionary<DatasourceChartRole, IReadOnlyList<string>>? overrides = null;
+            var used = table.Columns.Select(c => c.Name).ToList();
+
+            if (specification.Roles is { Count: > 0 })
+            {
+                overrides = ParseRoles(table, specification.Roles);
+            }
+            else
+            {
+                var named = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(specification.CategoryColumn))
+                {
+                    named.Add(ResolveColumn(table, specification.CategoryColumn, "categoryColumn"));
+                }
+
+                named.AddRange(specification.ValueColumns.Select(c => ResolveColumn(table, c, "valueColumns")));
+
+                if (named.Count > 0)
+                {
+                    used = named.Distinct(StringComparer.Ordinal).ToList();
+                }
+            }
+
+            var frame = new DatasourceFrame(
+                used.Select((name, i) => new DatasourceColumn(name, i + 1, TypeName(table, name),
+                    TypeOf(table, name))).ToList(),
+                table.Rows.Select(row => used.Select(name => row.TryGetValue(name, out var value) ? value : null)
+                    .ToArray()).ToList());
+
+            return DatasourceChartRenderer.Render(kind, frame, overrides,
+                new DatasourceChartPresentation(ChartStyleMode.Inline, ThemeMode.Light, Width, Height,
+                    specification.Title, null, false));
+        }
+
+        private static IReadOnlyDictionary<DatasourceChartRole, IReadOnlyList<string>> ParseRoles(CachedTable table,
+            IReadOnlyDictionary<string, IReadOnlyList<string>> roles)
+        {
+            var parsed = new Dictionary<DatasourceChartRole, IReadOnlyList<string>>();
+
+            foreach (var (name, columns) in roles)
+            {
+                if (!Enum.TryParse<DatasourceChartRole>(name, true, out var role) ||
+                    !Enum.IsDefined(role))
+                {
+                    throw new ArgumentException(
+                        $"\"{name}\" is not a chart role. Choose from: "
+                        + string.Join(", ", Enum.GetNames<DatasourceChartRole>()) + ".");
+                }
+
+                parsed[role] = columns.Select(c => ResolveColumn(table, c, "roles")).ToList();
+            }
+
+            return parsed;
+        }
+
+        private static string TypeName(CachedTable table, string name)
+        {
+            return table.Columns.First(c => c.Name == name).Type;
+        }
+
+        private static SeriesDataType TypeOf(CachedTable table, string name)
+        {
+            foreach (var row in table.Rows)
+            {
+                if (!row.TryGetValue(name, out var value) || value is null)
+                {
+                    continue;
+                }
+
+                return value switch
+                {
+                    bool => SeriesDataType.Flag,
+                    sbyte or byte or short or ushort or int or uint or long or ulong => SeriesDataType.Integer,
+                    float or double or decimal => SeriesDataType.Decimal,
+                    DateTime or DateTimeOffset => SeriesDataType.DateTime,
+                    _ => SeriesDataType.Text
+                };
+            }
+
+            return SeriesDataType.Text;
         }
 
         private static string ResolveColumn(CachedTable table, string? requested, string parameterName)

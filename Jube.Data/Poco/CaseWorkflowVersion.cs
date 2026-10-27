@@ -44,5 +44,20 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(15)] public int? EntityAnalysisModelId { get; set; }
         [Column] [Nullable] [Key(16)] public byte? EnableVisualisation { get; set; }
         [Column] [Nullable] [Key(17)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(18)] public string ValueField { get; set; }
+        [Column] [Key(19)] public byte TypologySeverityId { get; set; }
+        [Column] [Nullable] [Key(20)] public int? FirstViewTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(21)] public int? OwnershipTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(22)] public int? ResolutionTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(23)] public double? RiskKappa { get; set; }
+        [Column] [Nullable] [Key(24)] public double? RiskRho { get; set; }
+        [Column] [Nullable] [Key(25)] public double? RiskPriorStrength { get; set; }
+        [Column] [Nullable] [Key(26)] public double? RiskBaseRatePrior { get; set; }
+        [Column] [Nullable] [Key(27)] public int? RiskDeadlineLaneDays { get; set; }
+        [Column] [Nullable] [Key(28)] public double? RiskKeyHistoryHalfLifeDays { get; set; }
+        [Column] [Nullable] [Key(29)] public string RiskImpactWeights { get; set; }
+        [Column] [Nullable] [Key(30)] public string RiskMoneyBands { get; set; }
+        [Column] [Nullable] [Key(31)] public double? RiskQaSampleRate { get; set; }
+        [Column] [Nullable] [Key(32)] public int? DailyGoal { get; set; }
     }
 }

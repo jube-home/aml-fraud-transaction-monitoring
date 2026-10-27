@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,21 +21,30 @@ using System.ComponentModel;
 
 namespace Jube.Dto.RedisSentinelEvent
 {
+    [GridEndpoint("RedisSentinelEvent", Title = "Redis sentinel event", DefaultSort = "occurredDate")]
+    [GridSearch(Label = "Channel or message contains")]
     public sealed record RedisSentinelEventDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property: Description("UTC timestamp the event was received from Sentinel's pub/sub.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
         [property:
             Description(
                 "The Sentinel pub/sub channel the event was published on (e.g. '+sdown', '-sdown', '+odown', '+switch-master', '+failover-state', '+slave', '+sentinel').")]
+        [property: ListColumn(Order = 20)]
         string Channel,
         [property:
             Description(
                 "Sentinel's raw event payload for this channel -- format varies by channel, typically space-separated fields describing the entity involved.")]
+        [property: ListColumn(Order = 30)]
         string Message,
         [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 50, Title = "Flushed Date")]
         DateTime CreatedDate,
         [property: Description("Hostname of the Jube node that captured this event.")]
+        [property: ListColumn(Order = 40)]
         string Instance);
 }

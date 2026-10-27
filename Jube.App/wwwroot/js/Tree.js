@@ -197,15 +197,6 @@ $(document).ready(function () {
             ChildURLUpdate = "/Administration/Frame/RoleRegistryPermission";
             QueryString = 0;
             break;
-        case 'VisualisationRegistryDatasource':
-            serviceRoot = serviceRoot + Page;
-            topLevel = "/api/VisualisationRegistry";
-            topLevelId = "id";
-            ChildDescription = 'Visualisation Registry Parameter';
-            ChildURLAdd = "/Administration/Frame/VisualisationRegistryDatasource";
-            ChildURLUpdate = "/Administration/Frame/VisualisationRegistryDatasource";
-            QueryString = 0;
-            break;
         case 'UserRegistry':
             serviceRoot = serviceRoot + Page;
             topLevel = "/api/RoleRegistry";

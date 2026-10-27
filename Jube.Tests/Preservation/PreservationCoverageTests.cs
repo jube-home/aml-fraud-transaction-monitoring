@@ -33,8 +33,8 @@ namespace Jube.Test.Preservation
     {
         private static readonly Type[] advancedAnalyticsRoundTripped =
         [
-            typeof(AdvancedAnalyticsInstance), typeof(AdvancedAnalyticsTrainedModel),
-            typeof(AdvancedAnalyticsTrainedModelVersion), typeof(AdvancedAnalyticsTrainingRun),
+            typeof(AskJoobyAnalyticsInstance), typeof(AskJoobyAnalyticsTrainedModel),
+            typeof(AskJoobyAnalyticsTrainedModelVersion), typeof(AdvancedAnalyticsTrainingRun),
             typeof(AdvancedAnalyticsTrainingRunStep), typeof(AdvancedAnalyticsTrainingRunTrial),
             typeof(AdvancedAnalyticsTrainingRunIteration), typeof(AdvancedAnalyticsTrainingRunVariable),
             typeof(AdvancedAnalyticsTrainingRunMetric), typeof(AdvancedAnalyticsTrainingRunCurvePoint)
@@ -57,7 +57,7 @@ namespace Jube.Test.Preservation
 
         private static IEnumerable<Type> CoveredPocos()
         {
-            return typeof(AdvancedAnalyticsInstance).Assembly.GetTypes()
+            return typeof(AskJoobyAnalyticsInstance).Assembly.GetTypes()
                 .Where(w => w.Namespace == "Jube.Data.Poco" && w.GetCustomAttribute<TableAttribute>() != null)
                 .Where(w => PreservationCoverage.CoveredPrefixes.Any(a =>
                     w.Name.StartsWith(a, StringComparison.Ordinal)
@@ -216,7 +216,7 @@ namespace Jube.Test.Preservation
         [Fact]
         public void EnumColumnsAreWrittenAsTheirIntegerValue()
         {
-            var row = new AdvancedAnalyticsTrainedModel
+            var row = new AskJoobyAnalyticsTrainedModel
             {
                 KindId = AdvancedAnalyticsKind.Regressor,
                 SourceId = AdvancedAnalyticsSource.Upload,
@@ -299,7 +299,7 @@ namespace Jube.Test.Preservation
 
             baseline.Should().HaveCountGreaterThan(400);
 
-            var types = typeof(AdvancedAnalyticsInstance).Assembly.GetTypes()
+            var types = typeof(AskJoobyAnalyticsInstance).Assembly.GetTypes()
                 .Concat(typeof(Payload).Assembly.GetTypes())
                 .Where(w => w.Namespace is "Jube.Data.Poco" or "Jube.Preservation.Models")
                 .ToDictionary(s => s.Name, s => s);

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,28 +21,40 @@ using System.ComponentModel;
 
 namespace Jube.Dto.DockerEvent
 {
+    [GridEndpoint("DockerEvent", Title = "Docker event", DefaultSort = "occurredDate")]
+    [GridSearch(Label = "Type, action or actor contains")]
     public sealed record DockerEventDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property: Description("UTC timestamp Docker itself recorded this event at.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
         [property:
             Description(
                 "Docker's own event category: container, network, volume, image, or (in Swarm scope) service/node/secret/config.")]
+        [property: ListColumn(Order = 20, Title = "Type")]
         string EventType,
         [property:
             Description(
                 "Docker's own action string, e.g. start/stop/die/kill/oom/health_status/exec_create/exec_start/exec_die. exec_create/exec_start carry the exact \"docker exec\" command line verbatim as part of this text -- a genuine audit signal, but also means a command line containing a secret as a bare argument would be visible here too (an existing property of the Docker Engine API itself).")]
+        [property: ListColumn(Order = 30)]
         string Action,
         [property:
             Description("Docker's own id for the actor this event happened to (container/network/volume/image id).")]
+        [property: ListColumn(Order = 50)]
         string ActorId,
         [property: Description("The actor's name, when Docker reports one (usually present for containers).")]
+        [property: ListColumn(Order = 40, Title = "Actor")]
         string? ActorName,
         [property: Description("\"local\" or \"swarm\".")]
+        [property: ListColumn(Order = 60)]
         string Scope,
         [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 80, Title = "Flushed Date")]
         DateTime CreatedDate,
         [property: Description("Hostname of the Jube.Monitoring sidecar instance that captured this row.")]
+        [property: ListColumn(Order = 70, Title = "Host Instance")]
         string Instance);
 }

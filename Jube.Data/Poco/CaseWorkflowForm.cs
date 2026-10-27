@@ -62,5 +62,7 @@ namespace Jube.Data.Poco
             Relationship = Relationship.OneToMany)]
         [Key(26)]
         public CaseWorkflowFormRole CaseWorkflowFormRole { get; set; }
+
+        [Column] [Nullable] [Key(27)] public string Sql { get; set; }
     }
 }

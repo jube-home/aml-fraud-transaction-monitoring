@@ -237,6 +237,18 @@ Service. Collection: Database.
 | `GetReferenceDatePreferReplicaOnGenuineCacheMissReturnsNullAsync` | Fact | Get reference date prefer replica on genuine cache miss returns null. |
 | `UpsertOverwritesPreviousReferenceDateForSameModelAsync`          | Fact | Upsert overwrites previous reference date for same model.             |
 
+### CacheActivationWatcherLastLocationRepositoryTests
+
+`Jube.Test.Cache.Redis.CacheActivationWatcherLastLocationRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
+
+| Test                                                                  | Kind | Verifies                                                                  |
+|-----------------------------------------------------------------------|------|---------------------------------------------------------------------------|
+| `TheFirstSightingHasNoPreviousAndTheSecondFindsTheFirstAsync`         | Fact | The first sighting has no previous and the second finds the first.        |
+| `EntitiesTenantsAndKeysDoNotShareALocationAsync`                      | Fact | Entities tenants and keys do not share a location.                        |
+| `TheLocationIsKeptUnderTheDocumentedKeyWithARetentionAsync`           | Fact | The location is kept under the documented key with a retention.           |
+| `AMalformedStoredValueIsTreatedAsNoPreviousAndIsReplacedAsync`        | Fact | A malformed stored value is treated as no previous and is replaced.       |
+| `AVeryLongKeyValueIsCappedSoTheKeyStaysBoundedAsync`                  | Fact | A very long key value is capped so the key stays bounded.                 |
+
 ### CacheSanctionRepositoryTests
 
 `Jube.Test.Cache.Redis.CacheSanctionRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.

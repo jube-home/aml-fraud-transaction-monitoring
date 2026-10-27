@@ -30,6 +30,21 @@ namespace Jube.Service.Repository.CaseWorkflow
                 Locked = rulePoco.Locked == 1,
                 EnableVisualisation = rulePoco.EnableVisualisation == 1,
                 VisualisationRegistryGuid = rulePoco.VisualisationRegistryGuid,
+                ValueField = rulePoco.ValueField,
+                TypologySeverityId = rulePoco.TypologySeverityId,
+                FirstViewTargetMinutes = rulePoco.FirstViewTargetMinutes,
+                OwnershipTargetMinutes = rulePoco.OwnershipTargetMinutes,
+                ResolutionTargetMinutes = rulePoco.ResolutionTargetMinutes,
+                RiskKappa = rulePoco.RiskKappa,
+                RiskRho = rulePoco.RiskRho,
+                RiskPriorStrength = rulePoco.RiskPriorStrength,
+                RiskBaseRatePrior = rulePoco.RiskBaseRatePrior,
+                RiskDeadlineLaneDays = rulePoco.RiskDeadlineLaneDays,
+                RiskKeyHistoryHalfLifeDays = rulePoco.RiskKeyHistoryHalfLifeDays,
+                RiskImpactWeights = rulePoco.RiskImpactWeights,
+                RiskMoneyBands = rulePoco.RiskMoneyBands,
+                RiskQaSampleRate = rulePoco.RiskQaSampleRate,
+                DailyGoal = rulePoco.DailyGoal,
                 EntityAnalysisModelId = rulePoco.EntityAnalysisModelId.GetValueOrDefault(),
                 Guid = rulePoco.Guid,
                 CreatedDate = ToOffset(rulePoco.CreatedDate),
@@ -46,14 +61,34 @@ namespace Jube.Service.Repository.CaseWorkflow
 
         public static RulePoco ToPoco(CaseWorkflowDto caseWorkflowDto) => new()
         {
+            Version = caseWorkflowDto.Version,
             Id = caseWorkflowDto.Id,
             Name = caseWorkflowDto.Name,
             Active = (byte)(caseWorkflowDto.Active ? 1 : 0),
             Locked = (byte)(caseWorkflowDto.Locked ? 1 : 0),
             EnableVisualisation = (byte)(caseWorkflowDto.EnableVisualisation ? 1 : 0),
             VisualisationRegistryGuid = caseWorkflowDto.VisualisationRegistryGuid,
+            ValueField = string.IsNullOrWhiteSpace(caseWorkflowDto.ValueField) ? null : caseWorkflowDto.ValueField.Trim(),
+            TypologySeverityId = (byte)caseWorkflowDto.TypologySeverityId,
+            FirstViewTargetMinutes = caseWorkflowDto.FirstViewTargetMinutes,
+            OwnershipTargetMinutes = caseWorkflowDto.OwnershipTargetMinutes,
+            ResolutionTargetMinutes = caseWorkflowDto.ResolutionTargetMinutes,
+            RiskKappa = caseWorkflowDto.RiskKappa,
+            RiskRho = caseWorkflowDto.RiskRho,
+            RiskPriorStrength = caseWorkflowDto.RiskPriorStrength,
+            RiskBaseRatePrior = caseWorkflowDto.RiskBaseRatePrior,
+            RiskDeadlineLaneDays = caseWorkflowDto.RiskDeadlineLaneDays,
+            RiskKeyHistoryHalfLifeDays = caseWorkflowDto.RiskKeyHistoryHalfLifeDays,
+            RiskImpactWeights = Clean(caseWorkflowDto.RiskImpactWeights),
+            RiskMoneyBands = Clean(caseWorkflowDto.RiskMoneyBands),
+            RiskQaSampleRate = caseWorkflowDto.RiskQaSampleRate,
+            DailyGoal = caseWorkflowDto.DailyGoal,
             EntityAnalysisModelId = caseWorkflowDto.EntityAnalysisModelId
         };
+
+        private static string? Clean(string? list) => string.IsNullOrWhiteSpace(list)
+            ? null
+            : string.Join(",", list.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
         private static DateTimeOffset? ToOffset(DateTime? value) =>
             value.HasValue

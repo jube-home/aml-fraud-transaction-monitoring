@@ -23,6 +23,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.CaseWorkflowFilter
 {
     [FormEndpoint("CaseWorkflowFilter")]
+    [FormRoles]
+    [CaseFilterEditor(Select = nameof(SelectJson), Filter = nameof(FilterJson))]
     [FormKeys(Id = nameof(Id), Parent = nameof(CaseWorkflowId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -36,7 +38,7 @@ namespace Jube.Dto.Repository.CaseWorkflowFilter
 
         [Description(
             "Display name of the saved filter, shown to investigators when choosing a Filter for a Case search.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Open cases for my team")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -54,11 +56,11 @@ namespace Jube.Dto.Repository.CaseWorkflowFilter
         public bool Locked { get; set; }
 
         [Description("The query-builder's selected-column configuration, as JSON. Required.")]
-        [FormField(Group = "Filter", Order = 10, Widget = "query-builder")]
+        [FormField(Group = "Filter", Order = 10)]
         public string? SelectJson { get; set; }
 
         [Description("The query-builder's filter-condition configuration, as JSON. Required.")]
-        [FormField(Group = "Filter", Order = 20, Widget = "query-builder")]
+        [FormField(Group = "Filter", Order = 20)]
         public string? FilterJson { get; set; }
 
         [Description("The query-builder's parameter/token values, as JSON.")]

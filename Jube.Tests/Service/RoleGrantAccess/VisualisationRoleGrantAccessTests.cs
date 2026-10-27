@@ -51,7 +51,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                         await using var dbContext = Fx.GetDbContext();
 
                         return (await new Data.Repository.VisualisationRegistryRepository(dbContext, userName)
-                            .GetByShowInDirectoryActiveOrderByIdDescAsync()).Any(w => w.Guid == registryGuid);
+                            .GetByDirectoryActiveOrderByIdDescAsync()).Any(w => w.Guid == registryGuid);
                     }));
             }
 

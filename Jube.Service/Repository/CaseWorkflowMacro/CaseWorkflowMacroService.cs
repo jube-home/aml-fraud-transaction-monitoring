@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -20,6 +21,7 @@ using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
 using Jube.Service.Exceptions.Repository.CaseWorkflowMacro;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -36,6 +38,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
         private static readonly int[] permissions = [24];
         private static readonly int[] activeOnlyPermissions = [24, 1];
         private readonly ILog auditLog;
+        private readonly CaseSqlGuard sqlGuard;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
@@ -47,8 +50,9 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
 
         private CaseWorkflowMacroService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer sqlStrings)
         {
+            sqlGuard = new CaseSqlGuard(sqlStrings, permissionValidation, userName);
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -76,6 +80,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
             ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseWorkflowMacroResources));
+            var sqlStrings = stringLocalizerFactory.Create(typeof(CaseWorkflowSqlResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -104,7 +109,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 .ConfigureAwait(false);
 
             return new CaseWorkflowMacroService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, sqlStrings);
         }
 
         [Description("Lists every Case Workflow Macro visible to the caller's tenant, across all parent Case " +
@@ -618,7 +623,13 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("CaseWorkflowMacro.Insert", permissions);
 
+                if (!sqlGuard.MayAuthor(model.Sql, null))
+                {
+                    throw new ForbiddenException(strings[CaseWorkflowMacroResources.PermissionDenied], [CaseSqlGuard.SqlPermission]);
+                }
+
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                sqlGuard.Append(results, model.Sql);
 
                 if (!results.IsValid)
                 {
@@ -691,6 +702,7 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 EnsurePermitted("CaseWorkflowMacro.Validate", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                sqlGuard.Append(results, model.Sql);
                 op.Rows(results.Errors.Count);
 
                 return ValidationResultMapper.ToDto(results);
@@ -732,7 +744,15 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("CaseWorkflowMacro.Update", permissions);
 
+                var existingSql = (await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false))?.Sql;
+
+                if (!sqlGuard.MayAuthor(model.Sql, existingSql))
+                {
+                    throw new ForbiddenException(strings[CaseWorkflowMacroResources.PermissionDenied], [CaseSqlGuard.SqlPermission]);
+                }
+
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                sqlGuard.Append(results, model.Sql);
 
                 if (!results.IsValid)
                 {
@@ -780,6 +800,12 @@ namespace Jube.Service.Repository.CaseWorkflowMacro
 
                 throw new NotFoundException(strings[CaseWorkflowMacroResources.NotFound]);
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

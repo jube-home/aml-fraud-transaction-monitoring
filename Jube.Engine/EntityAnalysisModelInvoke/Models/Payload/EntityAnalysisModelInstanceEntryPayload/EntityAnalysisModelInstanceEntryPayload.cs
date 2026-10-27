@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using Jube.Data.Poco;
+using Jube.Dto.Hold;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs;
@@ -76,6 +77,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         [JsonProperty(Order = 36)]
         public PooledDictionary<string, Adaptation> AdvancedAnalyticsAdaptationDetail { get; set; }
+
+        [JsonProperty(Order = 37, NullValueHandling = NullValueHandling.Ignore)]
+        public ResponseHold Hold { get; set; }
 
         [JsonIgnore] public byte[] ArchiveJson { get; set; }
         [JsonIgnore] public byte[] ResponseJson { get; set; }

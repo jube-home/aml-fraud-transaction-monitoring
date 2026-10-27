@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelDictionary
 {
     [FormEndpoint("EntityAnalysisModelDictionary")]
+    [FormApproval]
+    [FormValues(typeof(EntityAnalysisModelDictionaryKvpDto), nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey), nameof(EntityAnalysisModelDictionaryKvpDto.KvpValue))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelGuid), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -36,7 +39,7 @@ namespace Jube.Dto.EntityAnalysisModelDictionary
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("Display name of this Dictionary. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. High risk countries")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

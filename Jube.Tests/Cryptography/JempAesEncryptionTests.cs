@@ -12,8 +12,7 @@
  */
 
 using System;
-using System.IO;
-using System.Security.Cryptography;
+using System.Linq;
 using System.Text;
 using FluentAssertions;
 using Jube.Cryptography;
@@ -26,88 +25,93 @@ namespace Jube.Test.Cryptography
     public sealed class JempAesEncryptionTests
     {
         private const string Password = "unit-test-password";
-        private const string Salt = "unit-test-salt";
-
-        private static byte[] BuildLegacyEncryptedPayload(string password, string salt, byte[] plainText)
-        {
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
-            var derived = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, 100_000, HashAlgorithmName.SHA256, 48);
-            var key = derived[..32];
-            var legacyIv = derived[32..48];
-
-            using var hmac = new HMACSHA256(saltBytes);
-            var expectedHmac = hmac.ComputeHash(plainText);
-
-            using var aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = legacyIv;
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
-
-            using var ms = new MemoryStream();
-
-            using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
-            {
-                cs.Write(plainText, 0, plainText.Length);
-            }
-
-            return [.. expectedHmac, .. ms.ToArray()];
-        }
+        private const int HeaderLength = 37;
+        private const int SaltOffset = 9;
 
         [Fact]
         public void EncryptThenDecryptRoundTripsTheOriginalData()
         {
             var data = Encoding.UTF8.GetBytes("some sensitive payload");
-            var encryption = new JempAesEncryption(Password, Salt);
+            var encryption = new JempAesEncryption(Password);
 
-            var encrypted = encryption.Encrypt(data);
-            var decrypted = encryption.Decrypt(encrypted);
-
-            decrypted.Should().Equal(data);
+            encryption.Decrypt(encryption.Encrypt(data)).Should().Equal(data);
         }
 
         [Fact]
-        public void EncryptRoundTripsAnEmptyPayload()
+        public void EncryptThenDecryptRoundTripsEmptyData()
         {
-            var data = Array.Empty<byte>();
-            var encryption = new JempAesEncryption(Password, Salt);
+            var encryption = new JempAesEncryption(Password);
 
-            var encrypted = encryption.Encrypt(data);
-            var decrypted = encryption.Decrypt(encrypted);
-
-            decrypted.Should().Equal(data);
+            encryption.Decrypt(encryption.Encrypt([])).Should().BeEmpty();
         }
 
         [Fact]
-        public void EncryptProducesDifferentCipherTextOnEachCallDueToTheRandomIv()
+        public void DecryptNeedsOnlyThePasswordFromAnotherInstance()
         {
-            var data = Encoding.UTF8.GetBytes("repeatable content");
-            var encryption = new JempAesEncryption(Password, Salt);
+            var data = Encoding.UTF8.GetBytes("moves between environments");
+            var encrypted = new JempAesEncryption(Password).Encrypt(data);
 
-            var encryptedOne = encryption.Encrypt(data);
-            var encryptedTwo = encryption.Encrypt(data);
-
-            encryptedOne.Should().NotEqual(encryptedTwo);
+            new JempAesEncryption(Password).Decrypt(encrypted).Should().Equal(data);
         }
 
         [Fact]
-        public void EncryptPrependsA32ByteHmacAndA16ByteIvBeforeThePkcs7PaddedCipherText()
+        public void EncryptCarriesTheFormatMarkerAndVersionInTheClear()
         {
-            var data = Encoding.UTF8.GetBytes("some content");
-            var encryption = new JempAesEncryption(Password, Salt);
+            var encrypted = new JempAesEncryption(Password).Encrypt([1, 2, 3]);
 
-            var encrypted = encryption.Encrypt(data);
+            Encoding.ASCII.GetString(encrypted, 0, 4).Should().Be("JEMP");
+            encrypted[4].Should().Be(3);
+            encrypted.Length.Should().Be(HeaderLength + 3 + 16);
+        }
 
-            var paddedCipherTextLength = (data.Length / 16 + 1) * 16;
-            encrypted.Length.Should().Be(32 + 16 + paddedCipherTextLength);
+        [Fact]
+        public void EncryptingTwiceGivesADifferentSaltNonceAndCipherText()
+        {
+            var data = Encoding.UTF8.GetBytes("same data");
+            var encryption = new JempAesEncryption(Password);
+
+            var first = encryption.Encrypt(data);
+            var second = encryption.Encrypt(data);
+
+            first.Skip(SaltOffset).Take(16).Should().NotEqual(second.Skip(SaltOffset).Take(16));
+            first.Should().NotEqual(second);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("short")]
+        [InlineData("elevenchars")]
+        public void EncryptRefusesAPasswordShorterThanTheMinimum(string? password)
+        {
+            var act = () => new JempAesEncryption(password!).Encrypt([1]);
+
+            act.Should().Throw<InvalidPasswordException>().Which.MinimumLength.Should()
+                .Be(JempAesEncryption.MinimumPasswordLength);
+        }
+
+        [Fact]
+        public void EncryptAcceptsAPasswordOfExactlyTheMinimumLength()
+        {
+            var password = new string('p', JempAesEncryption.MinimumPasswordLength);
+            var encryption = new JempAesEncryption(password);
+
+            encryption.Decrypt(encryption.Encrypt([9])).Should().Equal(9);
+        }
+
+        [Fact]
+        public void IsAcceptablePasswordAppliesTheMinimum()
+        {
+            JempAesEncryption.IsAcceptablePassword(null).Should().BeFalse();
+            JempAesEncryption.IsAcceptablePassword("").Should().BeFalse();
+            JempAesEncryption.IsAcceptablePassword(new string('a', 11)).Should().BeFalse();
+            JempAesEncryption.IsAcceptablePassword(new string('a', 12)).Should().BeTrue();
         }
 
         [Fact]
         public void EncryptOfNullDataThrowsInvalidEncryptionException()
         {
-            var encryption = new JempAesEncryption(Password, Salt);
-
-            var act = () => encryption.Encrypt(null!);
+            var act = () => new JempAesEncryption(Password).Encrypt(null!);
 
             act.Should().Throw<InvalidEncryptionException>();
         }
@@ -115,34 +119,27 @@ namespace Jube.Test.Cryptography
         [Fact]
         public void DecryptWithAWrongPasswordThrowsInvalidDecryptionException()
         {
-            var data = Encoding.UTF8.GetBytes("some sensitive payload");
-            var encrypted = new JempAesEncryption(Password, Salt).Encrypt(data);
-            var wrongPasswordEncryption = new JempAesEncryption("a-different-password", Salt);
+            var encrypted = new JempAesEncryption(Password).Encrypt([1, 2, 3]);
 
-            var act = () => wrongPasswordEncryption.Decrypt(encrypted);
+            var act = () => new JempAesEncryption("a-different-password").Decrypt(encrypted);
 
             act.Should().Throw<InvalidDecryptionException>();
         }
 
-        [Fact]
-        public void DecryptWithAWrongSaltThrowsInvalidDecryptionException()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(8)]
+        [InlineData(SaltOffset)]
+        [InlineData(25)]
+        [InlineData(HeaderLength)]
+        [InlineData(HeaderLength + 1)]
+        public void DecryptOfAnyTamperedByteThrowsInvalidDecryptionException(int offset)
         {
-            var data = Encoding.UTF8.GetBytes("some sensitive payload");
-            var encrypted = new JempAesEncryption(Password, Salt).Encrypt(data);
-            var wrongSaltEncryption = new JempAesEncryption(Password, "a-different-salt");
-
-            var act = () => wrongSaltEncryption.Decrypt(encrypted);
-
-            act.Should().Throw<InvalidDecryptionException>();
-        }
-
-        [Fact]
-        public void DecryptOfTamperedCipherTextThrowsInvalidDecryptionException()
-        {
-            var data = Encoding.UTF8.GetBytes("some sensitive payload");
-            var encryption = new JempAesEncryption(Password, Salt);
-            var encrypted = encryption.Encrypt(data);
-            encrypted[^1] ^= 0xFF;
+            var encryption = new JempAesEncryption(Password);
+            var encrypted = encryption.Encrypt(Encoding.UTF8.GetBytes("tamper evident"));
+            encrypted[offset] ^= 0x01;
 
             var act = () => encryption.Decrypt(encrypted);
 
@@ -150,14 +147,24 @@ namespace Jube.Test.Cryptography
         }
 
         [Fact]
-        public void DecryptOfTamperedHmacThrowsInvalidDecryptionException()
+        public void DecryptOfATamperedTagThrowsInvalidDecryptionException()
         {
-            var data = Encoding.UTF8.GetBytes("some sensitive payload");
-            var encryption = new JempAesEncryption(Password, Salt);
-            var encrypted = encryption.Encrypt(data);
-            encrypted[0] ^= 0xFF;
+            var encryption = new JempAesEncryption(Password);
+            var encrypted = encryption.Encrypt([1, 2, 3, 4]);
+            encrypted[^1] ^= 0x80;
 
             var act = () => encryption.Decrypt(encrypted);
+
+            act.Should().Throw<InvalidDecryptionException>();
+        }
+
+        [Fact]
+        public void DecryptOfATruncatedPackageThrowsInvalidDecryptionException()
+        {
+            var encryption = new JempAesEncryption(Password);
+            var encrypted = encryption.Encrypt([1, 2, 3, 4]);
+
+            var act = () => encryption.Decrypt(encrypted[..^1]);
 
             act.Should().Throw<InvalidDecryptionException>();
         }
@@ -165,9 +172,7 @@ namespace Jube.Test.Cryptography
         [Fact]
         public void DecryptOfTooShortDataThrowsInvalidDecryptionException()
         {
-            var encryption = new JempAesEncryption(Password, Salt);
-
-            var act = () => encryption.Decrypt(new byte[10]);
+            var act = () => new JempAesEncryption(Password).Decrypt([1, 2, 3]);
 
             act.Should().Throw<InvalidDecryptionException>();
         }
@@ -175,55 +180,30 @@ namespace Jube.Test.Cryptography
         [Fact]
         public void DecryptOfNullDataThrowsInvalidDecryptionException()
         {
-            var encryption = new JempAesEncryption(Password, Salt);
-
-            var act = () => encryption.Decrypt(null!);
+            var act = () => new JempAesEncryption(Password).Decrypt(null!);
 
             act.Should().Throw<InvalidDecryptionException>();
         }
 
         [Fact]
-        public void DecryptWithoutLegacyFallbackDoesNotRecoverLegacyFormattedData()
+        public void DecryptOfAnEarlierReleaseFormatThrowsInvalidDecryptionException()
         {
-            var data = Encoding.UTF8.GetBytes("legacy payload");
-            var legacyPayload = BuildLegacyEncryptedPayload(Password, Salt, data);
-            var encryption = new JempAesEncryption(Password, Salt);
+            var earlierRelease = new byte[200];
+            Random.Shared.NextBytes(earlierRelease);
 
-            var act = () => encryption.Decrypt(legacyPayload);
+            var act = () => new JempAesEncryption(Password).Decrypt(earlierRelease);
 
             act.Should().Throw<InvalidDecryptionException>();
         }
 
         [Fact]
-        public void DecryptWithLegacyFallbackEnabledRecoversLegacyFormattedData()
+        public void DecryptRefusesAnIterationCountOutsideTheSupportedRange()
         {
-            var data = Encoding.UTF8.GetBytes("legacy payload");
-            var legacyPayload = BuildLegacyEncryptedPayload(Password, Salt, data);
-            var encryption = new JempAesEncryption(Password, Salt, true);
+            var encryption = new JempAesEncryption(Password);
+            var encrypted = encryption.Encrypt([1, 2, 3]);
+            encrypted[5] = 0x7F;
 
-            var decrypted = encryption.Decrypt(legacyPayload);
-
-            decrypted.Should().Equal(data);
-        }
-
-        [Fact]
-        public void DecryptWithLegacyFallbackEnabledStillRecoversCurrentFormatData()
-        {
-            var data = Encoding.UTF8.GetBytes("current format payload");
-            var encryption = new JempAesEncryption(Password, Salt, true);
-
-            var encrypted = encryption.Encrypt(data);
-            var decrypted = encryption.Decrypt(encrypted);
-
-            decrypted.Should().Equal(data);
-        }
-
-        [Fact]
-        public void DecryptWithLegacyFallbackEnabledAndInvalidDataStillThrowsInvalidDecryptionException()
-        {
-            var encryption = new JempAesEncryption(Password, Salt, true);
-
-            var act = () => encryption.Decrypt(new byte[10]);
+            var act = () => encryption.Decrypt(encrypted);
 
             act.Should().Throw<InvalidDecryptionException>();
         }

@@ -55,6 +55,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             return new ActivationRuleOverridePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelGuid = dto.EntityAnalysisModelGuid,
                 OverrideKey = dto.OverrideKey,

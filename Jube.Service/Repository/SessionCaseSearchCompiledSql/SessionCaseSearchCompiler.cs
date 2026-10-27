@@ -31,7 +31,8 @@ internal static class SessionCaseSearchCompiler
         ILog log,
         string? reportConnectionString = null,
         CancellationToken token = default,
-        bool persist = true)
+        bool persist = true,
+        bool prepare = true)
     {
         var model = new Data.Poco.SessionCaseSearchCompiledSql
         {
@@ -135,7 +136,7 @@ internal static class SessionCaseSearchCompiler
                          " and \"Case\".\"CaseWorkflowGuid\" = \"CaseWorkflow\".\"Guid\"" +
                          " and (\"Case\".\"CaseWorkflowStatusGuid\" = \"CaseWorkflowStatus\".\"Guid\"" +
                          " and (\"CaseWorkflowStatus\".\"Deleted\" = 0" +
-                         " or \"CaseWorkflowStatus\".\"Deleted\" IS null) ) and " + filterRule.Sql +
+                         " or \"CaseWorkflowStatus\".\"Deleted\" IS null) ) and " + FilterSql(filterRule.Sql) +
                          " and (\"CaseWorkflow\".\"Guid\" = uuid(@" + positionCaseWorkflowGuid + ") " +
                          " and exists (select 1 from \"CaseWorkflowRole\",\"RoleRegistry\",\"UserRegistry\"" +
                          " where \"CaseWorkflowRole\".\"CaseWorkflowGuid\" = \"CaseWorkflow\".\"Guid\"" +
@@ -156,24 +157,27 @@ internal static class SessionCaseSearchCompiler
                          " and (\"CaseWorkflow\".\"Deleted\" = 0 or \"CaseWorkflow\".\"Deleted\" is null))" +
                          " and \"UserInTenant\".\"User\" = (@" + positionUser + ")";
 
-        model.OrderSql = "order by " + string.Join(",", columnsOrder);
+        model.OrderSql = columnsOrder.Count == 0 ? string.Empty : "order by " + string.Join(",", columnsOrder);
 
         model.FilterTokens = JsonConvert.SerializeObject(filterRule.Tokens);
 
-        try
+        if (prepare)
         {
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
+            try
+            {
+                using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
 
-            await postgres.IntrospectAsync(model.SelectSqlSearch + " " + model.WhereSql + " " + model.OrderSql,
-                filterRule.Tokens, token).ConfigureAwait(false);
+                await postgres.IntrospectAsync(model.SelectSqlSearch + " " + model.WhereSql + " " + model.OrderSql,
+                    filterRule.Tokens, token).ConfigureAwait(false);
 
-            model.Prepared = 1;
-        }
-        catch (Exception e)
-        {
-            model.Prepared = 0;
-            log.Info("SessionCaseSearchCompiledSql: the compiled SQL could not be prepared: " + e.Message);
-            model.Error = "The search could not be prepared against the database.";
+                model.Prepared = 1;
+            }
+            catch (Exception e)
+            {
+                model.Prepared = 0;
+                log.Info("SessionCaseSearchCompiledSql: the compiled SQL could not be prepared: " + e.Message);
+                model.Error = "The search could not be prepared against the database.";
+            }
         }
 
         if (model.Rebuild == 1)
@@ -192,4 +196,7 @@ internal static class SessionCaseSearchCompiler
 
         return await repository.InsertAsync(model, token);
     }
+
+    private static string FilterSql(string? sql) =>
+        string.IsNullOrWhiteSpace(sql) || sql.Replace(" ", string.Empty) == "()" ? "1 = 1" : sql;
 }

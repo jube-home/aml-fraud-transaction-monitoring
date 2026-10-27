@@ -39,4 +39,7 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="ResponseElevationRangeNotFound" xml:space="preserve">
+    <value>L'élévation de réponse doit se situer dans une plage d'élévation de réponse active du modèle.</value>
+  </data>
 </root>

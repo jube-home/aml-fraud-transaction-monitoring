@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -41,11 +42,11 @@ namespace Jube.App.Endpoints.Repository
                 .RequireAuthorization()
                 .WithTags("CaseWorkflowXPath");
 
-            group.MapGet("ByCasesWorkflowIdActiveOnlyDrill/{id:int}", GetByCasesWorkflowIdActiveOnlyAsync)
+            group.MapGet("ByCaseWorkflowIdActiveOnlyDrill/{id:int}", GetByCasesWorkflowIdActiveOnlyAsync)
                 .Produces<List<CaseWorkflowXPathDto>>()
                 .WithName("CaseWorkflowXPathListByWorkflowIdActiveDrillOnly");
 
-            group.MapGet("ByCasesWorkflowGuidActiveOnlyDrill/{guid:guid}", GetByCasesWorkflowGuidActiveOnlyAsync)
+            group.MapGet("ByCaseWorkflowGuidActiveOnlyDrill/{guid:guid}", GetByCasesWorkflowGuidActiveOnlyAsync)
                 .Produces<List<CaseWorkflowXPathDto>>()
                 .WithName("CaseWorkflowXPathListByWorkflowGuidActiveDrillOnly");
 
@@ -53,7 +54,7 @@ namespace Jube.App.Endpoints.Repository
                 .Produces<List<CaseWorkflowXPathDto>>()
                 .WithName("CaseWorkflowXPathList");
 
-            group.MapGet("ByCasesWorkflowId/{casesWorkflowId:int}", GetByCaseWorkflowIdAsync)
+            group.MapGet("ByCaseWorkflowId/{casesWorkflowId:int}", GetByCaseWorkflowIdAsync)
                 .Produces<List<CaseWorkflowXPathDto>>()
                 .WithName("CaseWorkflowXPathListByWorkflow");
 
@@ -87,7 +88,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ByCasesWorkflowIdActiveOnlyDrill: entry id={id} user={user}");
+                log.Debug($"GET {Base}/ByCaseWorkflowIdActiveOnlyDrill: entry id={id} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -104,7 +105,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowIdActiveOnlyDrill: 403 (not authenticated) user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowIdActiveOnlyDrill: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -113,7 +114,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowIdActiveOnlyDrill: 403 user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowIdActiveOnlyDrill: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -122,14 +123,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/ByCasesWorkflowIdActiveOnlyDrill: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByCaseWorkflowIdActiveOnlyDrill: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ByCasesWorkflowIdActiveOnlyDrill: 500 user={user}", e);
+                log.Error($"GET {Base}/ByCaseWorkflowIdActiveOnlyDrill: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -144,7 +145,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ByCasesWorkflowGuidActiveOnlyDrill: entry guid={guid} user={user}");
+                log.Debug($"GET {Base}/ByCaseWorkflowGuidActiveOnlyDrill: entry guid={guid} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -161,7 +162,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowGuidActiveOnlyDrill: 403 (not authenticated) user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowGuidActiveOnlyDrill: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -170,7 +171,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowGuidActiveOnlyDrill: 403 user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowGuidActiveOnlyDrill: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -179,14 +180,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/ByCasesWorkflowGuidActiveOnlyDrill: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByCaseWorkflowGuidActiveOnlyDrill: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ByCasesWorkflowGuidActiveOnlyDrill: 500 user={user}", e);
+                log.Error($"GET {Base}/ByCaseWorkflowGuidActiveOnlyDrill: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -257,7 +258,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: entry user={user}");
+                log.Debug($"GET {Base}/ByCaseWorkflowId/{casesWorkflowId}: entry user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -274,7 +275,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: 403 (not authenticated) user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowId/{casesWorkflowId}: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -283,7 +284,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: 403 user={user}");
+                    log.Warn($"GET {Base}/ByCaseWorkflowId/{casesWorkflowId}: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -292,14 +293,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByCaseWorkflowId/{casesWorkflowId}: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: 500 user={user}", e);
+                log.Error($"GET {Base}/ByCaseWorkflowId/{casesWorkflowId}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -485,6 +486,22 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

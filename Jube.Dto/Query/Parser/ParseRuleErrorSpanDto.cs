@@ -34,5 +34,13 @@ namespace Jube.Dto.Query.Parser
 
         [Description("Zero based line of the error within the rule text.")]
         public int Line { get; set; }
+
+        [Description("Zero based column in the rule text's own line where the error starts, in the text as typed " +
+                     "rather than as translated for compilation; absent when the position is unknown.")]
+        public int? Column { get; set; }
+
+        [Description("Zero based column in the rule text's own line where the error ends, exclusive; absent when the " +
+                     "position is unknown.")]
+        public int? EndColumn { get; set; }
     }
 }

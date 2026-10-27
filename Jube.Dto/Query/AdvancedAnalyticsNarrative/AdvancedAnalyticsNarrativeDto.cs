@@ -20,7 +20,7 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.AdvancedAnalyticsNarrative
 {
-    [Description("A plain-language, expert-rule-generated explanation of an Advanced Analytics trained model " +
+    [Description("A plain-language, expert-rule-generated explanation of an AskJooby Analytics trained model " +
                  "version: one holistic set of paragraphs synthesising all available evidence, plus a shorter " +
                  "set of paragraphs per chart group interpreting that group's actual values for this version. " +
                  "Each entry is a list of paragraphs, rendered as separate <p> elements, never a single " +

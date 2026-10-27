@@ -109,6 +109,64 @@ namespace Jube.Validations.Repository.CaseWorkflowStatus
                 .When(w => w.EnableNotification)
                 .WithMessage(_ => localiser[CaseWorkflowStatusResources.NotificationDestinationRequired])
                 .WithErrorCode("NotificationDestinationNotEmpty");
+
+            RuleFor(p => p.EscalationTriggerId)
+                .Must(m => m is >= 1 and <= 5)
+                .When(w => w.EscalationTriggerId.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTriggerInvalid])
+                .WithErrorCode("EscalationTriggerInvalid");
+
+            RuleFor(p => p.EscalationTriggerId)
+                .NotNull()
+                .When(w => w.EscalationTargetCaseWorkflowStatusGuid.HasValue
+                           && w.EscalationTargetCaseWorkflowStatusGuid != Guid.Empty)
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTriggerRequired])
+                .WithErrorCode("EscalationTriggerRequired");
+
+            RuleFor(p => p.EscalationTargetCaseWorkflowStatusGuid)
+                .Must(m => m.HasValue && m != Guid.Empty)
+                .When(w => w.EscalationTriggerId.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTargetRequired])
+                .WithErrorCode("EscalationTargetRequired");
+
+            RuleFor(p => p.EscalationThreshold)
+                .Must((dto, threshold) => EscalationThresholdInRange(dto.EscalationTriggerId, threshold))
+                .When(w => w.EscalationTriggerId is >= 1 and <= 5)
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationThresholdInvalid])
+                .WithErrorCode("EscalationThresholdInvalid");
+
+            RuleFor(p => p.EscalationTargetCaseWorkflowStatusGuid)
+                .Cascade(CascadeMode.Stop)
+                .MustAsync(async (dto, target, cancellation) =>
+                {
+                    var found = await repository.GetByGuidAsync(target!.Value, cancellation);
+
+                    return found != null && found.CaseWorkflowId == dto.CaseWorkflowId
+                                         && found.Active == 1 && found.Guid != dto.Guid;
+                })
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTargetNotFound])
+                .WithErrorCode("EscalationTargetNotFound")
+                .MustAsync(async (dto, target, cancellation) =>
+                {
+                    var found = await repository.GetByGuidAsync(target!.Value, cancellation);
+
+                    return found is { Priority: not null } && found.Priority.Value < dto.Priority;
+                })
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTargetNotStronger])
+                .WithErrorCode("EscalationTargetNotStronger")
+                .When(w => w.EscalationTargetCaseWorkflowStatusGuid.HasValue
+                           && w.EscalationTargetCaseWorkflowStatusGuid != Guid.Empty);
+        }
+
+        private static bool EscalationThresholdInRange(int? trigger, int? threshold)
+        {
+            return trigger switch
+            {
+                1 => threshold is >= 1 and <= 525_600,
+                3 => threshold is >= 1 and <= 3,
+                4 => threshold is >= 1 and <= 100,
+                _ => true
+            };
         }
     }
 }

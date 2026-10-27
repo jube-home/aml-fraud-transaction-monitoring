@@ -46,17 +46,17 @@ namespace Jube.Test.Preservation
 
         private static async Task<Snapshot> LoadAsync(DbContext db, int tenantId, bool liveOnly = true)
         {
-            var instances = await db.AdvancedAnalyticsInstance
+            var instances = await db.AskJoobyAnalyticsInstance
                 .Where(w => w.TenantRegistryId == tenantId && (!liveOnly || w.Deleted == 0)).OrderBy(o => o.Id)
                 .ToListAsync();
-            var models = await db.AdvancedAnalyticsTrainedModel
+            var models = await db.AskJoobyAnalyticsTrainedModel
                 .Where(w => w.TenantRegistryId == tenantId && (!liveOnly || w.Deleted == 0)).OrderBy(o => o.Id)
                 .ToListAsync();
 
             var liveModelIds = models.Select(s => s.Id).ToList();
 
-            var versions = await db.AdvancedAnalyticsTrainedModelVersion
-                .Where(w => w.TenantRegistryId == tenantId && liveModelIds.Contains(w.AdvancedAnalyticsTrainedModelId))
+            var versions = await db.AskJoobyAnalyticsTrainedModelVersion
+                .Where(w => w.TenantRegistryId == tenantId && liveModelIds.Contains(w.AskJoobyAnalyticsTrainedModelId))
                 .OrderBy(o => o.Id).ToListAsync();
 
             var runs = await db.AdvancedAnalyticsTrainingRun
@@ -132,15 +132,15 @@ namespace Jube.Test.Preservation
                 case "hyperparameters-malformed": trials[0].Hyperparameters = "]["; break;
                 case "duplicate-instance-id": instances[1].Id = instances[0].Id; break;
                 case "duplicate-instance-name": instances[1].Name = instances[0].Name.ToUpperInvariant(); break;
-                case "trained-model-unknown-instance": models[0].AdvancedAnalyticsInstanceId = 987654321; break;
-                case "version-unknown-model": versionOne.AdvancedAnalyticsTrainedModelId = 987654321; break;
+                case "trained-model-unknown-instance": models[0].AskJoobyAnalyticsInstanceId = 987654321; break;
+                case "version-unknown-model": versionOne.AskJoobyAnalyticsTrainedModelId = 987654321; break;
                 case "duplicate-version-number":
                     versions.First(f => f.VersionNumber == 2).VersionNumber = 1; break;
                 case "version-number-zero": versionOne.VersionNumber = 0; break;
                 case "active-version-of-other-model":
                     models.First(f => f.ActiveVersionId != null).ActiveVersionId =
                         versions.First(f =>
-                            f.AdvancedAnalyticsTrainedModelId != models.First(m => m.ActiveVersionId != null).Id).Id;
+                            f.AskJoobyAnalyticsTrainedModelId != models.First(m => m.ActiveVersionId != null).Id).Id;
 
                     break;
                 case "run-progress-out-of-range": runs[0].Progress = 2; break;
@@ -176,9 +176,9 @@ namespace Jube.Test.Preservation
         }
 
         private sealed record Snapshot(
-            List<AdvancedAnalyticsInstance> Instances,
-            List<AdvancedAnalyticsTrainedModel> Models,
-            List<AdvancedAnalyticsTrainedModelVersion> Versions,
+            List<AskJoobyAnalyticsInstance> Instances,
+            List<AskJoobyAnalyticsTrainedModel> Models,
+            List<AskJoobyAnalyticsTrainedModelVersion> Versions,
             List<AdvancedAnalyticsTrainingRun> Runs,
             List<AdvancedAnalyticsTrainingRunStep> Steps,
             List<AdvancedAnalyticsTrainingRunTrial> Trials,
@@ -209,36 +209,36 @@ namespace Jube.Test.Preservation
                 "EntityAnalysisModelId", "CreatedUser", "CreatedDate", "UpdatedDate", "Version"), "instances");
 
             before.Models.ShouldMatch(t.Models, RowCompare.Ignoring("Guid", "TenantRegistryId",
-                "AdvancedAnalyticsInstanceId", "ActiveVersionId", "CreatedUser", "CreatedDate", "UpdatedDate",
+                "AskJoobyAnalyticsInstanceId", "ActiveVersionId", "CreatedUser", "CreatedDate", "UpdatedDate",
                 "Version"), "models");
 
             before.Versions.ShouldMatch(t.Versions, RowCompare.Ignoring("Guid", "TenantRegistryId",
-                "AdvancedAnalyticsTrainedModelId", "AdvancedAnalyticsTrainingRunId"), "versions");
+                "AskJoobyAnalyticsTrainedModelId", "AdvancedAnalyticsTrainingRunId"), "versions");
 
             before.Runs.ShouldMatch(t.Runs, RowCompare.Ignoring("Guid", "TenantRegistryId",
-                "AdvancedAnalyticsInstanceId", "InputPointer", "StatusId", "CompletedDate", "Error"), "runs");
+                "AskJoobyAnalyticsInstanceId", "InputPointer", "StatusId", "CompletedDate", "Error"), "runs");
 
-            before.Steps.ShouldMatch(t.Steps, RowCompare.Ignoring("TenantRegistryId", "AdvancedAnalyticsInstanceId",
+            before.Steps.ShouldMatch(t.Steps, RowCompare.Ignoring("TenantRegistryId", "AskJoobyAnalyticsInstanceId",
                 "AdvancedAnalyticsTrainingRunId", "StatusId"), "steps");
 
-            before.Trials.ShouldMatch(t.Trials, RowCompare.Ignoring("TenantRegistryId", "AdvancedAnalyticsInstanceId",
+            before.Trials.ShouldMatch(t.Trials, RowCompare.Ignoring("TenantRegistryId", "AskJoobyAnalyticsInstanceId",
                 "AdvancedAnalyticsTrainingRunId"), "trials");
 
             before.Iterations.ShouldMatch(t.Iterations, RowCompare.Ignoring("TenantRegistryId",
-                    "AdvancedAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId",
+                    "AskJoobyAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId",
                     "AdvancedAnalyticsTrainingRunTrialId"),
                 "iterations");
 
             before.Variables.ShouldMatch(t.Variables, RowCompare.Ignoring("TenantRegistryId",
-                "AdvancedAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId"), "variables");
+                "AskJoobyAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId"), "variables");
 
             before.Metrics.ShouldMatch(t.Metrics, RowCompare.Ignoring("TenantRegistryId",
-                    "AdvancedAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId",
+                    "AskJoobyAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId",
                     "AdvancedAnalyticsTrainingRunTrialId"),
                 "metrics");
 
             before.CurvePoints.ShouldMatch(t.CurvePoints, RowCompare.Ignoring("TenantRegistryId",
-                "AdvancedAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId"), "curve points");
+                "AskJoobyAnalyticsInstanceId", "AdvancedAnalyticsTrainingRunId"), "curve points");
 
             var importedModelId = (await db.EntityAnalysisModel
                 .SingleAsync(w => w.TenantRegistryId == target.Id && (w.Deleted == 0 || w.Deleted == null))).Id;
@@ -261,12 +261,12 @@ namespace Jube.Test.Preservation
 
             var modelA = t.Models.Single(s => s.Name == seeded.ModelA.Name);
             var modelB = t.Models.Single(s => s.Name == seeded.ModelB.Name);
-            modelA.AdvancedAnalyticsInstanceId.Should().Be(linked.Id);
-            modelB.AdvancedAnalyticsInstanceId.Should().Be(free.Id);
+            modelA.AskJoobyAnalyticsInstanceId.Should().Be(linked.Id);
+            modelB.AskJoobyAnalyticsInstanceId.Should().Be(free.Id);
             t.Models.Should().OnlyContain(o => o.TenantRegistryId == target.Id && o.Deleted == 0);
 
-            var a1 = t.Versions.Single(s => s.AdvancedAnalyticsTrainedModelId == modelA.Id && s.VersionNumber == 1);
-            var a2 = t.Versions.Single(s => s.AdvancedAnalyticsTrainedModelId == modelA.Id && s.VersionNumber == 2);
+            var a1 = t.Versions.Single(s => s.AskJoobyAnalyticsTrainedModelId == modelA.Id && s.VersionNumber == 1);
+            var a2 = t.Versions.Single(s => s.AskJoobyAnalyticsTrainedModelId == modelA.Id && s.VersionNumber == 2);
             modelA.ActiveVersionId.Should().Be(a2.Id);
             modelA.Active.Should().Be(1);
             modelB.ActiveVersionId.Should().BeNull();
@@ -281,10 +281,10 @@ namespace Jube.Test.Preservation
 
             var runSucceeded = t.Runs.Single(s => s.Seed == 4242424242L);
             var runRunning = t.Runs.Single(s => s.Seed == null);
-            runSucceeded.AdvancedAnalyticsInstanceId.Should().Be(linked.Id);
+            runSucceeded.AskJoobyAnalyticsInstanceId.Should().Be(linked.Id);
             runSucceeded.StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
             runSucceeded.InputPointer.Should().BeNull();
-            runRunning.AdvancedAnalyticsInstanceId.Should().Be(free.Id);
+            runRunning.AskJoobyAnalyticsInstanceId.Should().Be(free.Id);
             runRunning.StatusId.Should().Be(AdvancedAnalyticsStatus.Cancelled);
             runRunning.Error.Should().NotBeNullOrEmpty();
             runRunning.CompletedDate.Should().NotBeNull();
@@ -300,24 +300,24 @@ namespace Jube.Test.Preservation
 
             var runById = t.Runs.ToDictionary(s => s.Id);
 
-            foreach (var child in t.Steps.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+            foreach (var child in t.Steps.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId))
-                         .Concat(t.Trials.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+                         .Concat(t.Trials.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId)))
-                         .Concat(t.Iterations.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+                         .Concat(t.Iterations.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId)))
-                         .Concat(t.Variables.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+                         .Concat(t.Variables.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId)))
-                         .Concat(t.Metrics.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+                         .Concat(t.Metrics.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId)))
-                         .Concat(t.CurvePoints.Select(s => (s.TenantRegistryId, s.AdvancedAnalyticsInstanceId,
+                         .Concat(t.CurvePoints.Select(s => (s.TenantRegistryId, s.AskJoobyAnalyticsInstanceId,
                              s.AdvancedAnalyticsTrainingRunId))))
             {
                 child.TenantRegistryId.Should().Be(target.Id);
                 runById.Should().ContainKey(child.AdvancedAnalyticsTrainingRunId);
 
-                child.AdvancedAnalyticsInstanceId.Should()
-                    .Be(runById[child.AdvancedAnalyticsTrainingRunId].AdvancedAnalyticsInstanceId);
+                child.AskJoobyAnalyticsInstanceId.Should()
+                    .Be(runById[child.AdvancedAnalyticsTrainingRunId].AskJoobyAnalyticsInstanceId);
             }
 
             var trialOne = t.Trials.Single(s => s.TrialNumber == 1);
@@ -387,16 +387,16 @@ namespace Jube.Test.Preservation
             var importedModelId = (await db.EntityAnalysisModel
                 .SingleAsync(w => w.TenantRegistryId == target.Id && (w.Deleted == 0 || w.Deleted == null))).Id;
 
-            var importedModelA = await db.AdvancedAnalyticsTrainedModel
+            var importedModelA = await db.AskJoobyAnalyticsTrainedModel
                 .SingleAsync(w => w.TenantRegistryId == target.Id && w.Name == seeded.ModelA.Name);
 
-            var importedActive = await db.AdvancedAnalyticsTrainedModelVersion
+            var importedActive = await db.AskJoobyAnalyticsTrainedModelVersion
                 .SingleAsync(w => w.Id == importedModelA.ActiveVersionId);
 
-            var importedInstance = await db.AdvancedAnalyticsInstance
-                .SingleAsync(w => w.Id == importedModelA.AdvancedAnalyticsInstanceId);
+            var importedInstance = await db.AskJoobyAnalyticsInstance
+                .SingleAsync(w => w.Id == importedModelA.AskJoobyAnalyticsInstanceId);
 
-            await EntityApprovalSeed.ApproveAsync(db, EntityApprovalKind.AdvancedAnalyticsInstance,
+            await EntityApprovalSeed.ApproveAsync(db, EntityApprovalKind.AskJoobyAnalyticsInstance,
                 importedInstance.Id, importedInstance.Version, target.Id);
 
             var log = new TestLog(false);
@@ -417,7 +417,7 @@ namespace Jube.Test.Preservation
                 }
             };
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             var loaded = domain.Snapshot.AdvancedAnalyticsModels.Should().ContainSingle().Subject;
@@ -489,8 +489,8 @@ namespace Jube.Test.Preservation
 
             var live = await LoadAsync(db, target.Id);
             Total(live).Should().Be(0);
-            (await db.AdvancedAnalyticsInstance.SingleAsync(w => w.Id == targetSeed.Linked.Id)).Deleted.Should().Be(1);
-            (await db.AdvancedAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id)).Deleted.Should()
+            (await db.AskJoobyAnalyticsInstance.SingleAsync(w => w.Id == targetSeed.Linked.Id)).Deleted.Should().Be(1);
+            (await db.AskJoobyAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id)).Deleted.Should()
                 .Be(1);
 
             (await db.AdvancedAnalyticsCache.CountAsync(w => w.Guid == targetSeed.CacheGuid)).Should().Be(1);
@@ -526,8 +526,7 @@ namespace Jube.Test.Preservation
             var newer = MessagePackSerializer.Deserialize<Wrapper>(legacyBytes, PreservationHarness.Lz4);
             newer.Payload!.AdvancedAnalytics.Should().BeNull();
 
-            await harness.ImportAsync(target, new JempAesEncryption(PreservationHarness.Password,
-                PreservationHarness.Salt).Encrypt(legacyBytes));
+            await harness.ImportAsync(target, new JempAesEncryption(PreservationHarness.Password).Encrypt(legacyBytes));
 
             (await db.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == target.Id
                                                           && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -612,7 +611,7 @@ namespace Jube.Test.Preservation
             victimAfter.Versions.Select(s => s.ModelJson).Should()
                 .Equal(victimBefore.Versions.Select(s => s.ModelJson));
 
-            (await db.AdvancedAnalyticsInstance.CountAsync(w => w.Id == victimSeed.Linked.Id && w.Deleted == 0))
+            (await db.AskJoobyAnalyticsInstance.CountAsync(w => w.Id == victimSeed.Linked.Id && w.Deleted == 0))
                 .Should().Be(1);
         }
 
@@ -659,7 +658,7 @@ namespace Jube.Test.Preservation
             targetAfter.Instances.Select(s => s.Id).Should().Equal(targetBefore.Instances.Select(s => s.Id));
             targetAfter.Instances.Should().OnlyContain(o => o.Deleted == 0);
 
-            (await db.AdvancedAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id)).Active.Should()
+            (await db.AskJoobyAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id)).Active.Should()
                 .Be(1);
 
             (await db.EntityAnalysisModel.SingleAsync(w => w.Id == targetModel)).Deleted.Should().NotBe(1);
@@ -689,7 +688,7 @@ namespace Jube.Test.Preservation
             after.Models.Should().OnlyContain(o => o.Deleted == 0);
             after.Runs.Should().OnlyContain(o => o.Deleted == 0);
 
-            (await db.AdvancedAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id))
+            (await db.AskJoobyAnalyticsTrainedModel.SingleAsync(w => w.Id == targetSeed.ModelA.Id))
                 .ActiveVersionId.Should().Be(targetSeed.VersionA2.Id);
         }
 

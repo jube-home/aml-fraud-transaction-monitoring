@@ -53,5 +53,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(24)] public string BoldLineFormatBackColor { get; set; }
         [Column] [Nullable] [Key(25)] public byte? BoldLineMatched { get; set; }
         [Column] [Nullable] [Key(26)] public Guid Guid { get; set; }
+        [Column] [Key(27)] public byte RoleId { get; set; }
+        [Column] [Key(28)] public byte Segment { get; set; }
     }
 }

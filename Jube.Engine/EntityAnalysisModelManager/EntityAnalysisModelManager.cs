@@ -48,6 +48,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             ConcurrentQueues =
             {
                 PendingNotifications = context.ConcurrentQueues.PendingNotifications,
+                PendingWebhooks = context.ConcurrentQueues.PendingWebhooks,
                 PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke,
                 PendingCases = context.ConcurrentQueues.PendingCases
             }

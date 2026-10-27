@@ -35,7 +35,8 @@ namespace Jube.Test.Infrastructure
             };
 
             var references = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location) &&
+                            a.GetName().Name?.EndsWith(".resources", StringComparison.Ordinal) != true)
                 .Select(a => a.Location)
                 .ToArray();
 

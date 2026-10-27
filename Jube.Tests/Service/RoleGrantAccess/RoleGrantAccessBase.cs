@@ -282,7 +282,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,
-                ShowInDirectory = 1,
+                ContextKindId = 1,
                 Version = 1,
                 CreatedUser = fx.Seed.UserWithPermission,
                 CreatedDate = DateTime.UtcNow

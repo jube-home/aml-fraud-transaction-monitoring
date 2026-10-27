@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,27 +21,39 @@ using System.ComponentModel;
 
 namespace Jube.Dto.ContainerLogEntry
 {
+    [GridEndpoint("ContainerLogEntry", Title = "Container log entry", DefaultSort = "occurredDate")]
+    [GridFilter(Param = "streamTypeId", Label = "Stream", Choices = ["1=Stdout", "2=Stderr"])]
+    [GridSearch(Label = "Container or message contains")]
     public sealed record ContainerLogEntryDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property:
             Description(
                 "UTC timestamp the container itself logged this line at, parsed from Docker's own RFC3339Nano prefix on the line.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
         [property:
             Description("Which container this line came from (Docker's own container name, leading '/' stripped).")]
+        [property: ListColumn(Order = 20, Title = "Container")]
         string ContainerName,
         [property:
             Description("Which stream this line came from -- see StreamTypeName for the human-readable form.")]
+        [property: ListColumn(Hidden = true)]
         int StreamTypeId,
         [property: Description("\"Stdout\" or \"Stderr\", as reported by Docker's own multiplexed log stream.")]
+        [property: ListColumn(Order = 30, Title = "Stream")]
         string StreamTypeName,
         [property: Description("The log line content.")]
+        [property: ListColumn(Order = 40)]
         string Message,
         [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 60, Title = "Flushed Date")]
         DateTime CreatedDate,
         [property:
             Description(
                 "Hostname of the Jube.Monitoring sidecar instance that captured this row (i.e. which Docker host, not which container).")]
+        [property: ListColumn(Order = 50, Title = "Host Instance")]
         string Instance);
 }

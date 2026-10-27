@@ -34,5 +34,9 @@ namespace Jube.Data.Poco
             CanBeNull = true, Relationship = Relationship.ManyToOne)]
         [Key(4)]
         public VisualisationRegistryDatasource VisualisationRegistryDatasource { get; set; }
+
+        [Column] [Key(5)] public int Ordinal { get; set; }
+        [Column] [Nullable] [Key(6)] public int? RoleId { get; set; }
+        [Column] [Nullable] [Key(7)] public int? RoleOrder { get; set; }
     }
 }

@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,34 +22,50 @@ using System.ComponentModel;
 
 namespace Jube.Dto.ArchiverStagePerformanceCounter
 {
+    [GridEndpoint("ArchiverStagePerformanceCounter", Title = "Archiver stage performance", DefaultSort = "createdDate")]
+    [GridRatio("averageMicroseconds", nameof(TotalMicroseconds), nameof(InvokeCount), Title = "Average", Unit = "µs", Order = 75, Format = GridFormat.Integer)]
     public sealed record ArchiverStagePerformanceCounterDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property: Description("GUID of the Model this per-minute rollup belongs to.")]
+        [property: ListColumn(Hidden = true)]
         Guid EntityAnalysisModelGuid,
         [property: Description("Name of the Model this per-minute rollup belongs to.")]
+        [property: ListColumn(Order = 10, Title = "Model")]
         string EntityAnalysisModelName,
         [property:
             Description(
                 "Which background archiver stage this row aggregates -- see StageName for the human-readable form.")]
+        [property: ListColumn(Hidden = true)]
+        [property: GridFilter(Param = "stageId", Label = "Stage")]
+        [property: Options(typeof(ArchiverStage))]
         int StageId,
         [property:
             Description(
                 "Name of the background archiver stage this row aggregates -- BuildArchiveJson (serialising the invocation payload), CaseCreationDispatch (handing off to case creation), RdbmsArchiveWrite (the per-item RDBMS archive write or buffer insert), or BulkCopyArchiveBuffer (the periodic buffered bulk copy).")]
+        [property: ListColumn(Order = 20, Title = "Stage")]
         string StageName,
         [property:
             Description("Total microseconds spent in this stage across every item counted in this interval.")]
+        [property: ListColumn(Order = 40, Title = "Total", Unit = "µs", Format = GridFormat.Integer)]
         long TotalMicroseconds,
         [property: Description("The fastest single item of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 50, Title = "Fastest", Unit = "µs", Format = GridFormat.Integer)]
         long MinMicroseconds,
         [property: Description("The slowest single item of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 60, Title = "Slowest", Unit = "µs", Format = GridFormat.Integer)]
         long MaxMicroseconds,
         [property:
             Description(
                 "Number of items counted in this interval; divide TotalMicroseconds by this for the average cost.")]
+        [property: ListColumn(Order = 70, Title = "Count", Format = GridFormat.Integer)]
         int InvokeCount,
         [property: Description("UTC timestamp this row's flush interval was written.")]
+        [property: ListColumn(Order = 30, Title = "Written")]
+        [property: GridTimeRange]
         DateTime CreatedDate,
         [property: Description("Hostname of the node that wrote this row.")]
+        [property: ListColumn(Order = 90)]
         string Instance);
 }

@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,27 +22,38 @@ using System.ComponentModel;
 
 namespace Jube.Dto.PostgresIndexStatistics
 {
+    [GridEndpoint("PostgresIndexStatistics", Title = "Postgres index statistics", DefaultSort = "", Snapshot = true)]
     public sealed record PostgresIndexStatisticsDto(
         [property: Description("Postgres schema the index belongs to.")]
+        [property: ListColumn(Order = 10, Title = "Schema")]
         string SchemaName,
         [property: Description("Name of the table this index is on.")]
+        [property: ListColumn(Order = 20, Title = "Table")]
         string TableName,
+        [property: ListColumn(Order = 30, Title = "Index")]
         [property: Description("Index name.")] string IndexName,
         [property: Description("Cumulative scans against this index since Postgres statistics were last reset.")]
+        [property: ListColumn(Order = 70, Format = GridFormat.Integer)]
         long IndexScans,
         [property: Description("Cumulative index entries read since Postgres statistics were last reset.")]
+        [property: ListColumn(Order = 80, Format = GridFormat.Integer)]
         long IndexTuplesRead,
         [property:
             Description("Cumulative table rows fetched via this index since Postgres statistics were last reset.")]
+        [property: ListColumn(Order = 90, Format = GridFormat.Integer)]
         long IndexTuplesFetched,
         [property: Description("On-disk size of this index, in bytes.")]
+        [property: ListColumn(Order = 100, Title = "Index Size", Unit = "B", Format = GridFormat.Integer)]
         long IndexSizeBytes,
         [property: Description("Whether this index enforces uniqueness.")]
+        [property: ListColumn(Order = 50, Title = "Unique")]
         bool IsUnique,
         [property: Description("Whether this index backs the table's primary key.")]
+        [property: ListColumn(Order = 60, Title = "Primary Key")]
         bool IsPrimary,
         [property:
             Description(
                 "True when IndexScans is zero -- a candidate for removal, though a unique/primary-key index still enforces a constraint even at zero scans, so check IsUnique/IsPrimary before dropping one.")]
+        [property: ListColumn(Order = 40, Title = "Unused")]
         bool IsUnused);
 }

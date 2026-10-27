@@ -104,7 +104,7 @@ namespace Jube.Data.Query.GetRuleParseEnvironmentQuery
 
                 environment.AdvancedAnalyticsAdaptations =
                 [
-                    .. (await new AdvancedAnalyticsTrainedModelRepository(
+                    .. (await new AskJoobyAnalyticsTrainedModelRepository(
                             dbContext, tenantRegistryId, string.Empty)
                         .ListActiveByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token)
                         .ConfigureAwait(false))

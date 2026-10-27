@@ -15,6 +15,7 @@ namespace Jube.Resources
 {
     public sealed class CaseWorkflowXPathResources
     {
+        public const string RoleIdInvalid = nameof(RoleIdInvalid);
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NotFound = nameof(NotFound);

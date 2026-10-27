@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Extensions;
+using Jube.Data.Reporting.Models;
 using Jube.Dictionary;
 using Jube.ResilientNpgsqlConnection;
 using Jube.ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
@@ -71,10 +72,24 @@ namespace Jube.Data.Reporting
             connection.Dispose();
         }
 
-        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, Dictionary<string, object> parameters,
+        private static async Task<DbDataReader> ReadSchemaAsync(ResilientNpgsqlCommand command, string original,
+            string submitted, CancellationToken token)
+        {
+            try
+            {
+                return await command.ExecuteReaderAsync(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e) when (PostgresErrorPosition.Annotate(e, original, submitted))
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<PostgresColumn>> IntrospectAsync(string sql, Dictionary<string, object> parameters,
             CancellationToken token = default)
         {
-            var values = new Dictionary<string, string>();
+            var columns = new List<PostgresColumn>();
             var wrapSql = $"SELECT * FROM ({sql}) b LIMIT 0";
 
             PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
@@ -89,27 +104,26 @@ namespace Jube.Data.Reporting
                 command.Parameters.AddWithValue(key, value);
             }
 
-            await using var reader = await command.ExecuteReaderAsync(
-                CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token).ConfigureAwait(false);
+            await using var reader = await ReadSchemaAsync(command, sql, sql, token).ConfigureAwait(false);
 
             var schema = reader.GetColumnSchema();
 
             foreach (var col in schema)
             {
-                values.Add(col.ColumnName, col.DataTypeName ?? "unknown");
+                columns.Add(new PostgresColumn(col.ColumnName, col.DataTypeName ?? "unknown"));
             }
 
-            return values;
+            return columns;
         }
 
-        public async Task<Dictionary<string, string>> IntrospectWithTableTokenSwitchAsync(string sql,
+        public async Task<List<PostgresColumn>> IntrospectWithTableTokenSwitchAsync(string sql,
             Dictionary<string, object> parameters, IReadOnlyDictionary<string, string> allowedTables,
             CancellationToken token = default)
         {
             var rewrittenSql = PostgresSqlValidator.RewriteTableReferencesPreservingNamedParameters(sql,
                 allowedTables);
 
-            var values = new Dictionary<string, string>();
+            var columns = new List<PostgresColumn>();
             var wrapSql = $"SELECT * FROM ({rewrittenSql}) b LIMIT 0";
 
             PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations, true);
@@ -124,17 +138,17 @@ namespace Jube.Data.Reporting
                 command.Parameters.AddWithValue(key, value);
             }
 
-            await using var reader = await command.ExecuteReaderAsync(
-                CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token).ConfigureAwait(false);
+            await using var reader = await ReadSchemaAsync(command, sql, rewrittenSql, token)
+                .ConfigureAwait(false);
 
             var schema = reader.GetColumnSchema();
 
             foreach (var col in schema)
             {
-                values.Add(col.ColumnName, col.DataTypeName ?? "unknown");
+                columns.Add(new PostgresColumn(col.ColumnName, col.DataTypeName ?? "unknown"));
             }
 
-            return values;
+            return columns;
         }
 
         public async Task<Dictionary<string, string>> IntrospectAsync(string sql, List<object> parameters,
@@ -485,6 +499,63 @@ namespace Jube.Data.Reporting
             }
 
             return value;
+        }
+
+        public async Task<PostgresResult> ExecuteLimitedByNamedParametersAsync(string sql,
+            Dictionary<string, object> parameters, IReadOnlyDictionary<string, string> allowedTables,
+            int maximumRows, CancellationToken token = default)
+        {
+            var effectiveSql = allowedTables == null
+                ? sql
+                : PostgresSqlValidator.RewriteTableReferencesPreservingNamedParameters(sql, allowedTables);
+
+            var limitedSql = $"SELECT * FROM ({effectiveSql}) b LIMIT {maximumRows + 1}";
+
+            PostgresSqlValidator.AssertSelectOnly(limitedSql, blockProtectedRelations, allowedTables != null);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, limitedSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            foreach (var (key, o) in parameters)
+            {
+                command.Parameters.AddWithValue("@" + key, o);
+            }
+
+            await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
+
+            var columns = new List<PostgresColumn>(reader.FieldCount);
+
+            for (var index = 0; index < reader.FieldCount; index++)
+            {
+                columns.Add(new PostgresColumn(reader.GetName(index), reader.GetDataTypeName(index)));
+            }
+
+            var rows = new List<object[]>();
+            var truncated = false;
+
+            while (await reader.ReadAsync(token).ConfigureAwait(false))
+            {
+                if (rows.Count == maximumRows)
+                {
+                    truncated = true;
+                    break;
+                }
+
+                var values = new object[reader.FieldCount];
+
+                for (var index = 0; index < values.Length; index++)
+                {
+                    values[index] = await reader.IsDBNullAsync(index, token).ConfigureAwait(false)
+                        ? null
+                        : reader.GetValue(index);
+                }
+
+                rows.Add(values);
+            }
+
+            return new PostgresResult(columns, rows, truncated);
         }
 
         public Task<List<IDictionary<string, object>>> ExecuteWithTableTokenSwitchAsync(string sql,

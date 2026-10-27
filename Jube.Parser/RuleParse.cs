@@ -190,6 +190,12 @@ namespace Jube.Parser
 
             if (contractError != null)
             {
+                if (contractError.Column.HasValue && contractError.EndColumn.HasValue)
+                {
+                    parsedRule.Locate(contractError.Line, contractError.Column.Value, contractError.EndColumn.Value,
+                        contractError);
+                }
+
                 parsedRule.ErrorSpans.Add(contractError);
             }
 
@@ -234,13 +240,27 @@ namespace Jube.Parser
                         var message = $"Line {line + 1}: {err.GetMessage()}";
                         sb.AppendLine(message);
 
-                        errorSpans.Add(new ErrorSpan
+                        var span = new ErrorSpan
                         {
                             Message = message,
                             Start = err.Location.SourceSpan.Start - parsedRule.CharOffset,
                             Length = err.Location.SourceSpan.Length,
                             Line = line
-                        });
+                        };
+
+                        var position = err.Location.GetLineSpan();
+
+                        if (err.Location.IsInSource && line >= 0 && line < parsedRule.LineMaps.Count)
+                        {
+                            var translatedStart = position.StartLinePosition.Character;
+                            var translatedEnd = position.EndLinePosition.Line == position.StartLinePosition.Line
+                                ? position.EndLinePosition.Character
+                                : int.MaxValue;
+
+                            parsedRule.Locate(line, translatedStart, translatedEnd, span);
+                        }
+
+                        errorSpans.Add(span);
                     }
 
                     return new RuleParseResult

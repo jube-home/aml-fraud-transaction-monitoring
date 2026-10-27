@@ -25,8 +25,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisAsynchronousQueueBalanceList", OperationKind.Read, true, false,
                     "Lists platform-wide asynchronous processing queue balance rows, most recent first, " +
                     "capped at 100000, with optional date-range filters. Each row is a roughly one-minute " +
-                    "interval's queue depth for asynchronous CaseCreation, Tagging and Notification " +
-                    "dispatch. Not scoped to any tenant. Also accepts samplePercentage (0-100) to draw an " +
+                    "interval's queue depth for asynchronous CaseCreation, Tagging, Notification and " +
+                    "Web hook dispatch. Not scoped to any tenant. Also accepts samplePercentage (0-100) to draw an " +
                     "unbiased random subset of matching rows instead of the most recent ones.",
                     EntityAnalysisAsynchronousQueueBalanceService.RequiredPermissions,
                     EntityAnalysisAsynchronousQueueBalanceService.RequiresLandlord));

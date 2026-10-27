@@ -1,9 +1,9 @@
 POST http://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc
 Content-Type: application/json
-X-API-KEY: 1MBVPVfY74WOoMY6JBFHCHdJ3HgG0zX7DHSArbOQr4A2H8x60TPeuwvXK24fwz4f1AdcdKyr1vNlRteP5GuDa4R64MGV 
+X-API-KEY: 22dkO53MVBXGSYuGJmQzrYGHUepZVcqGOTp8VX9i3UL3A1rnL54RDQaA22RquelwzNZRWINVXn8al2VPuDYLIpbRF5eM 
 
 {
-  "AccountId": "Test5",
+  "AccountId": "Test5",1. yes       
   "TxnId": "09876543222",
   "TxnDateTime": "2001-08-01T00:57:39.248",
   "Currency": "AED",

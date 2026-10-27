@@ -26,7 +26,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -105,7 +105,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             evidence.Details.NeighbourCount.Should().Be(9);
             evidence.Details.StoredTrainingRows.Should().Be(evidence.SplitSizes.Train);
 
-            var version = await Db.AdvancedAnalyticsTrainedModelVersion
+            var version = await Db.AskJoobyAnalyticsTrainedModelVersion
                 .FirstAsync(v => v.Id == status.TrainedModelVersionId);
 
             var recall = KNearestNeighboursClassifierRecall.FromSnapshot(version.ModelJson);

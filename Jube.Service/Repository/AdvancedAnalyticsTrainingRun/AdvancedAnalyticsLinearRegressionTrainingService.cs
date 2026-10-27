@@ -38,15 +38,15 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
         private readonly AdvancedAnalyticsOperationRunner runner;
         private readonly AdvancedAnalyticsTrainingRunRepository runs;
         private readonly AdvancedAnalyticsLinearRegressionTrainingValidator validator;
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions;
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions;
 
         private AdvancedAnalyticsLinearRegressionTrainingService(AdvancedAnalyticsOperationRunner runner)
         {
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            var instances = new AdvancedAnalyticsInstanceRepository(runner.DbContext, tenant, user);
-            versions = new AdvancedAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
+            var instances = new AskJoobyAnalyticsInstanceRepository(runner.DbContext, tenant, user);
+            versions = new AskJoobyAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
 
             validator = new AdvancedAnalyticsLinearRegressionTrainingValidator(runner.Strings,
@@ -110,7 +110,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.Regressor,
                     ModelKindId = AdvancedAnalyticsModelKind.MultipleLinearRegressionPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -121,7 +121,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 op.Entity(run.Id);
                 op.Created();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.SubmitTraining: run {run.Id} queued " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.SubmitTraining: run {run.Id} queued " +
                             $"rows={request.Inputs!.Length} user={runner.UserName}");
 
                 return new AdvancedAnalyticsTrainingSubmissionDto
@@ -211,7 +211,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                     return dto;
                 }
 
-                dto.TrainedModelId = version.AdvancedAnalyticsTrainedModelId;
+                dto.TrainedModelId = version.AskJoobyAnalyticsTrainedModelId;
                 dto.TrainedModelVersionId = version.Id;
                 dto.VersionNumber = version.VersionNumber;
                 dto.Run.TrainedModelVersionId = version.Id;
@@ -243,7 +243,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 op.Updated();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.CancelRun: run {runId} {outcome} " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.CancelRun: run {runId} {outcome} " +
                             $"user={runner.UserName}");
             }
 
@@ -278,7 +278,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 RunId = run.Id,
                 RunGuid = run.Guid,
-                AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                 Status = run.StatusId,
                 JobMode = run.JobMode,
                 ElapsedSeconds = Math.Max(0, (end - start).TotalSeconds),

@@ -1,6 +1,5 @@
 ﻿@using System.Diagnostics
 @using Jube.App.Code
-@using Jube.AskJooby.Security
 @using Jube.DynamicEnvironment
 @using log4net
 @* Copyright (C) 2022-present Jube Holdings Limited
@@ -69,7 +68,7 @@
     {
         permissionValidation = new PermissionValidation(DynamicEnvironment.AppSettings("ConnectionString"), User.Identity?.Name, Log);
         landlord = permissionValidation.Landlord;
-        showAskJoobyWidget = permissionValidation.Validate([AskJoobyPermissions.Access]) &&
+        showAskJoobyWidget = permissionValidation.ActiveUser &&
                              ViewData["HideAskJoobyWidget"] is not true;
 
         <button type="button" id="sidebarToggle" aria-label="Collapse navigation" aria-expanded="true">
@@ -136,9 +135,7 @@
 {
     <nav id="sidebar" aria-label="Main navigation">
         <ul id="menu">
-            @if (landlord || permissionValidation.Validate([
-                         44
-                     ]))
+            @if (permissionValidation.ActiveUser)
             {
                 <li class="sidebarFeatured">
                     <a href='/AskJooby'>
@@ -381,7 +378,7 @@
                                              ]))
                                     {
                                         <li>
-                                            <a href='/Model/AdvancedAnalytics'>Advanced Analytics</a>
+                                            <a href='/Model/AskJoobyAnalytics'>AskJooby Analytics</a>
                                         </li>
                                     }
                                 </ul>
@@ -500,21 +497,6 @@
                 </li>
             }
 
-            @if (permissionValidation.Validate([
-                         28
-                     ]))
-            {
-                <li>
-                    <a href='/Visualisation/VisualisationDirectory'>
-                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
-                            <line x1="5" y1="20" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
-                            <line x1="12" y1="20" x2="12" y2="5" stroke="currentColor" stroke-width="2"/>
-                            <line x1="19" y1="20" x2="19" y2="14" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        Visualisation
-                    </a>
-                </li>
-            }
 
             @if (permissionValidation.Validate([
                          29
@@ -603,15 +585,6 @@
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate([
-                                                 33
-                                             ]))
-                                    {
-                                        <li>
-                                            <a href='/Tree?Page=VisualisationRegistryDatasource'>Visualisations
-                                                Datasource</a>
-                                        </li>
-                                    }
                                 </ul>
                             </li>
                         }
@@ -929,23 +902,6 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate([
-                                     38
-                                 ]))
-                        {
-                            <li>
-                                Preservation
-                                <ul>
-                                    <li>
-                                        <a href='/Administration/PreservationSnapshot'>Snapshots</a>
-                                    </li>
-
-                                    <li>
-                                        <a href='/Administration/Preservation'>JEMP Import &amp; Export</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
                     </ul>
                 </li>
             }

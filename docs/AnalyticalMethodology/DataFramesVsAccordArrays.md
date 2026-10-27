@@ -59,7 +59,7 @@ telling you how to re-fold it. Compared with a `data.frame`, three things are lo
 metadata table, `AdvancedAnalyticsTrainingRunVariable` (`VariableSequence`, `Name`, `Mean`,
 `StandardDeviation`, `Minimum`, `Maximum`, `ImputationValue`, `MissingCount`, `RowCount`, `Importance`), recorded once a
 training run has actually used the columns, and `VariablesJson` on
-`AdvancedAnalyticsTrainedModelVersion`, recorded once a model version is trained. Neither is attached to the cache entry
+`AskJoobyAnalyticsTrainedModelVersion`, recorded once a model version is trained. Neither is attached to the cache entry
 itself — a cache row is pure positional data, and nothing stops two different training runs disagreeing about what
 column 3 of the same cache pointer means, provided each run is honest about its own
 `VariableSequence`.

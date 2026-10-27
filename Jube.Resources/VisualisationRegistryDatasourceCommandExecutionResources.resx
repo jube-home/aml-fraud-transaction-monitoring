@@ -42,4 +42,7 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>You must be signed in to a tenant to perform this action.</value>
   </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The datasource was not found.</value>
+  </data>
 </root>

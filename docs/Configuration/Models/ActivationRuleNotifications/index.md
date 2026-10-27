@@ -7,6 +7,8 @@ grand_parent: Configuration
 ---
 
 # Activation Rule Notifications
+> **Breaking change.** Email and SMS notifications are no longer configured on an Activation Rule. The five fields (Enable Notification, Notification Type, Destination, Subject and Body) have been removed from the Activation Rule, and the Engine no longer reads them or sends notifications for a rule match. The stored values are left in the database so they can be copied by hand, and they are not changed when a rule is updated. Configure the equivalent on a [Response Elevation Range](../ResponseElevationRanges/) instead, which carries a web hook and notification of its own, although the Engine does not send those yet. The remainder of this page describes the behaviour before the change, and the SMTP and Clickatell settings still apply.
+
 It is possible to send Email and SMS notifications as a consequence of an Activation Rule having matched,  with Notification configuration strings being available for tokenization (i.e. swapping values with that available in the processing for the purposes of providing context to the recipient).
 
 It is important to note that the Engine must be configured to use SMTP gateway in the case of email by updating Environment Variables:

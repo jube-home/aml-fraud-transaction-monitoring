@@ -33,6 +33,8 @@ namespace Jube.Test.Preservation
 
         private static readonly Dictionary<string, string> excluded = new()
         {
+            ["CaseWorkflowDispatch"] =
+                "Case data. The audit of calls fired against live cases, not part of the tenant's definition.",
             ["CaseWorkflowFormEntry"] =
                 "Case data. Entered by investigators against live cases, not part of the tenant's definition.",
             ["CaseWorkflowFormEntryValue"] =

@@ -21,7 +21,7 @@ using Jube.Dto.Forms;
 
 namespace Jube.Dto.Repository.PermissionSpecification
 {
-    [FormEndpoint("PermissionSpecification")]
+    [FormEndpoint("PermissionSpecification", Operations = FormOperations.List)]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [FormGroup("Identity", Order = 10)]
     public class PermissionSpecificationDto

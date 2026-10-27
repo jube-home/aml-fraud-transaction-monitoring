@@ -13,50 +13,61 @@
 
 namespace Jube.Cryptography
 {
+    using System.Buffers.Binary;
     using System.Security.Cryptography;
     using System.Text;
     using Exceptions;
 
-    public class JempAesEncryption
+    public class JempAesEncryption(string password)
     {
-        private readonly byte[] key;
-        private readonly bool legacyFallbackEnabled;
-        private readonly byte[] passwordDerivedLegacyIv;
-        private readonly byte[] salt;
+        public const int MinimumPasswordLength = 12;
 
-        public JempAesEncryption(string password, string salt, bool legacyFallbackEnabled = false)
+        private const byte FormatVersion = 3;
+        private const int Iterations = 600_000;
+        private const int MinimumIterations = 100_000;
+        private const int MaximumIterations = 5_000_000;
+        private const int SaltLength = 16;
+        private const int NonceLength = 12;
+        private const int TagLength = 16;
+        private const int KeyLength = 32;
+        private const int MagicLength = 4;
+        private const int IterationsOffset = MagicLength + 1;
+        private const int SaltOffset = IterationsOffset + 4;
+        private const int NonceOffset = SaltOffset + SaltLength;
+        private const int HeaderLength = NonceOffset + NonceLength;
+
+        private static readonly byte[] Magic = "JEMP"u8.ToArray();
+
+        public static bool IsAcceptablePassword(string? candidate)
         {
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
-            var derived = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, 100_000, HashAlgorithmName.SHA256, 48);
-
-            key = derived[..32];
-            passwordDerivedLegacyIv = derived[32..48];
-            this.salt = saltBytes;
-            this.legacyFallbackEnabled = legacyFallbackEnabled;
+            return candidate is { Length: >= MinimumPasswordLength };
         }
 
         public byte[] Encrypt(byte[] data)
         {
+            if (!IsAcceptablePassword(password))
+            {
+                throw new InvalidPasswordException(MinimumPasswordLength);
+            }
+
             try
             {
-                var hmac = ComputeHmac(data);
-                var iv = RandomNumberGenerator.GetBytes(16);
+                var header = new byte[HeaderLength];
 
-                using var aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
+                Magic.CopyTo(header, 0);
+                header[MagicLength] = FormatVersion;
+                BinaryPrimitives.WriteInt32BigEndian(header.AsSpan(IterationsOffset, 4), Iterations);
+                RandomNumberGenerator.Fill(header.AsSpan(SaltOffset, SaltLength));
+                RandomNumberGenerator.Fill(header.AsSpan(NonceOffset, NonceLength));
 
-                using var ms = new MemoryStream();
-                ms.Write(hmac);
-                ms.Write(iv);
+                var key = DeriveKey(header);
+                var cipherText = new byte[data.Length];
+                var tag = new byte[TagLength];
 
-                using var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                cs.Write(data, 0, data.Length);
-                cs.FlushFinalBlock();
+                using var gcm = new AesGcm(key, TagLength);
+                gcm.Encrypt(header.AsSpan(NonceOffset, NonceLength), data, cipherText, tag, header);
 
-                return ms.ToArray();
+                return [.. header, .. cipherText, .. tag];
             }
             catch (Exception ex)
             {
@@ -68,15 +79,33 @@ namespace Jube.Cryptography
         {
             try
             {
-                return DecryptWithRandomIv(encryptedData);
+                if (encryptedData.Length < HeaderLength + TagLength
+                    || !encryptedData.AsSpan(0, MagicLength).SequenceEqual(Magic)
+                    || encryptedData[MagicLength] != FormatVersion)
+                {
+                    throw new InvalidDecryptionException("Not a supported Jube export package.");
+                }
+
+                var iterations = BinaryPrimitives.ReadInt32BigEndian(encryptedData.AsSpan(IterationsOffset, 4));
+
+                if (iterations is < MinimumIterations or > MaximumIterations)
+                {
+                    throw new InvalidDecryptionException("Not a supported Jube export package.");
+                }
+
+                var header = encryptedData[..HeaderLength];
+                var cipherText = encryptedData.AsSpan(HeaderLength, encryptedData.Length - HeaderLength - TagLength);
+                var tag = encryptedData.AsSpan(encryptedData.Length - TagLength, TagLength);
+                var plainText = new byte[cipherText.Length];
+
+                using var gcm = new AesGcm(DeriveKey(header), TagLength);
+                gcm.Decrypt(header.AsSpan(NonceOffset, NonceLength), cipherText, tag, plainText, header);
+
+                return plainText;
             }
-            catch (InvalidHmacException) when (legacyFallbackEnabled)
+            catch (InvalidDecryptionException)
             {
-                return DecryptLegacyWithoutRandomIv(encryptedData);
-            }
-            catch (Exception) when (legacyFallbackEnabled)
-            {
-                return DecryptLegacyWithoutRandomIv(encryptedData);
+                throw;
             }
             catch (Exception ex)
             {
@@ -84,79 +113,11 @@ namespace Jube.Cryptography
             }
         }
 
-        private byte[] DecryptLegacyWithoutRandomIv(byte[] encryptedData)
+        private byte[] DeriveKey(byte[] header)
         {
-            try
-            {
-                var hmac = encryptedData[..32];
-                var clippedEncryptedData = encryptedData[32..];
-
-                using var aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = passwordDerivedLegacyIv;
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
-                using var ms = new MemoryStream();
-                using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
-                cs.Write(clippedEncryptedData, 0, clippedEncryptedData.Length);
-                cs.FlushFinalBlock();
-
-                var decryptedData = ms.ToArray();
-
-                return !CryptographicOperations.FixedTimeEquals(ComputeHmacLegacy(decryptedData), hmac)
-                    ? throw new InvalidHmacException()
-                    : decryptedData;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidDecryptionException(ex.Message);
-            }
-        }
-
-        private byte[] DecryptWithRandomIv(byte[] encryptedData)
-        {
-            try
-            {
-                var hmac = encryptedData[..32];
-                var iv = encryptedData[32..48];
-                var clippedEncryptedData = encryptedData[48..];
-
-                using var aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
-                using var ms = new MemoryStream();
-                using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
-                cs.Write(clippedEncryptedData, 0, clippedEncryptedData.Length);
-                cs.FlushFinalBlock();
-
-                var decryptedData = ms.ToArray();
-
-                return !CryptographicOperations.FixedTimeEquals(ComputeHmac(decryptedData), hmac)
-                    ? throw new InvalidHmacException()
-                    : decryptedData;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidDecryptionException(ex.Message);
-            }
-        }
-
-        private byte[] ComputeHmac(byte[] data)
-        {
-            using var hmac = new HMACSHA256(key);
-
-            return hmac.ComputeHash(data);
-        }
-
-        private byte[] ComputeHmacLegacy(byte[] data)
-        {
-            using var hmac = new HMACSHA256(salt);
-
-            return hmac.ComputeHash(data);
+            return Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), header.AsSpan(SaltOffset, SaltLength),
+                BinaryPrimitives.ReadInt32BigEndian(header.AsSpan(IterationsOffset, 4)), HashAlgorithmName.SHA256,
+                KeyLength);
         }
     }
 }

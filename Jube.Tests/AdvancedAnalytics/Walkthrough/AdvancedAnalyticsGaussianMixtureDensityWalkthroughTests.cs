@@ -30,7 +30,7 @@ using Jube.Test.Infrastructure.ModelScaffolding;
 using LinqToDB;
 using log4net;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsInstance.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsInstance.Models;
 using Jube.Engine.AdvancedAnalytics.Recall.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Walkthrough
@@ -76,7 +76,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
 
             var tools = new GaussianMixtureDensityTrainingRunTools(service);
 
-            var instance = await instances.InsertAsync(new AdvancedAnalyticsInstanceDto
+            var instance = await instances.InsertAsync(new AskJoobyAnalyticsInstanceDto
                 { Name = UniqueName("DensityWalk") });
             TrackInstance(instance.Id);
 
@@ -129,7 +129,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             var allocated = await instances.AllocateToModelAsync(instance.Id, scaffold.ModelId);
             allocated.EntityAnalysisModelId.Should().Be(scaffold.ModelId);
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
             await trainedModelRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await trainedModelRepository.SetActiveAsync(trainedModelId, true);
 
@@ -142,7 +142,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             live.ResponsePayload = true;
             var activated = await instances.UpdateAsync(live);
 
-            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AdvancedAnalyticsInstance, instance.Id,
+            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AskJoobyAnalyticsInstance, instance.Id,
                 activated.Version, TenantA);
 
             await ModelSync.SyncAsync(engineFixture.Engine, scaffold);
@@ -168,7 +168,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             var tools = new GaussianMixtureDensityTrainingRunTools(service);
             var instances = await InstanceServiceAsync(Permitted);
 
-            var instance = await instances.InsertAsync(new AdvancedAnalyticsInstanceDto
+            var instance = await instances.InsertAsync(new AskJoobyAnalyticsInstanceDto
                 { Name = UniqueName("DensityCancel") });
             TrackInstance(instance.Id);
 

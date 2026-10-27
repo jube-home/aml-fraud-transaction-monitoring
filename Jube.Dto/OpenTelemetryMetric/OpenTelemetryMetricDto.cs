@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +22,47 @@ using System.ComponentModel;
 
 namespace Jube.Dto.OpenTelemetryMetric
 {
+    [GridEndpoint("OpenTelemetryMetric", Title = "Open telemetry metric", DefaultSort = "occurredDate")]
+    [GridSearch(Label = "Metric name or tags contains")]
     public sealed record OpenTelemetryMetricDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property: Description("UTC timestamp of the one-minute aggregation window this row summarises.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
         [property:
             Description(
                 "The OpenTelemetry instrument name, e.g. jube.engine.stage.duration or jube.service.operation.count.")]
+        [property: ListColumn(Order = 20)]
         string MetricName,
         [property: Description("The OpenTelemetry instrument kind, e.g. Counter or Histogram.")]
+        [property: ListColumn(Order = 30)]
         string InstrumentType,
         [property:
             Description(
                 "The tag combination this row aggregates, as a sorted \"key=value,key=value\" string -- e.g. stage=Gateway,model=HighRiskTransaction.")]
+        [property: ListColumn(Order = 40)]
         string Tags,
         [property:
             Description("Number of measurements recorded for this instrument/tag combination within the window.")]
+        [property: ListColumn(Order = 50, Format = GridFormat.Integer)]
         long Count,
         [property:
             Description("Sum of every measurement recorded for this instrument/tag combination within the window.")]
+        [property: ListColumn(Order = 60, Format = GridFormat.Decimal)]
         double Sum,
         [property: Description("Smallest measurement recorded for this instrument/tag combination within the window.")]
+        [property: ListColumn(Order = 70, Format = GridFormat.Decimal)]
         double Min,
         [property: Description("Largest measurement recorded for this instrument/tag combination within the window.")]
+        [property: ListColumn(Order = 80, Format = GridFormat.Decimal)]
         double Max,
         [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 100, Title = "Flushed Date")]
         DateTime CreatedDate,
         [property: Description("Hostname of the node that flushed this row.")]
+        [property: ListColumn(Order = 90)]
         string Instance);
 }

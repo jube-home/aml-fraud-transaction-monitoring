@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 
@@ -129,6 +130,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = existing.CreatedDate;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
             model.Deleted = 0;
             model.DeletedDate = null;

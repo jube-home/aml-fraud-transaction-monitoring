@@ -32,6 +32,7 @@ namespace Jube.Data.Repository.Models
         ExhaustiveSearchInstance = 15,
         EntityAnalysisModelActivationRule = 16,
         EntityAnalysisModelTag = 17,
-        AdvancedAnalyticsInstance = 18
+        AskJoobyAnalyticsInstance = 18,
+        EntityAnalysisModelResponseElevationRange = 19
     }
 }

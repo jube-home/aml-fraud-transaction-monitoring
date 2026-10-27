@@ -208,6 +208,177 @@ Tests of the SVG charting library and the model diagram renderers built on it.
 | `ValueFormattingIsInvariantAndBounded`  | Theory | Value formatting is invariant and bounded.  |
 | `ValueFormattingIgnoresCurrentCulture`  | Fact   | Value formatting ignores current culture.   |
 
+### MapChartTests
+
+`Jube.Test.Charting.MapChartTests` — 24 tests. Category: Unit.
+
+| Test                                                             | Kind   | Verifies                                                                    |
+|------------------------------------------------------------------|--------|-----------------------------------------------------------------------------|
+| `ACountryMapIsWellFormedAndSafe`                                 | Fact   | A country map is well formed and safe.                                      |
+| `EveryCountryWithAValueIsColouredByItsBinAndTheRestAreNeutral`   | Fact   | Every country with a value is coloured by its bin and the rest are neutral. |
+| `AStaticMapLabelsItsColouredCountriesBecauseItHasNoTooltips`     | Fact   | A static map labels its coloured countries because it has no tooltips.      |
+| `AStaticMapLabelsNoMoreThanTwelveCountries`                      | Fact   | A static map labels no more than twelve countries.                          |
+| `ACountryMapNamesTheCountryAndTheValueInItsTooltip`              | Fact   | A country map names the country and the value in its tooltip.               |
+| `ACountryIsMatchedByIsoCodeTwoLetterCodeOrNameWhateverTheCase`   | Theory | A country is matched by iso code two letter code or name whatever the case. |
+| `CommonAliasesFindTheirCountry`                                  | Theory | Common aliases find their country.                                          |
+| `ACodeThatMatchesNoCountryIsLeftOutAndSaidSoInTheDescription`    | Fact   | A code that matches no country is left out and said so in the description.  |
+| `TheSameCountryTwiceIsRefused`                                   | Fact   | The same country twice is refused.                                          |
+| `NonFiniteCountryValuesAreSkippedNotDrawn`                       | Fact   | Non finite country values are skipped not drawn.                            |
+| `PointsAreDrawnAsDotsAndSizedPointsAsBubbles`                    | Fact   | Points are drawn as dots and sized points as bubbles.                       |
+| `TheLargerPointGetsTheLargerBubble`                              | Fact   | The larger point gets the larger bubble.                                    |
+| `SeveralGroupsGetALegendAndOneGroupDoesNot`                      | Fact   | Several groups get a legend and one group does not.                         |
+| `APointNearAPoleOutsideTheDrawnLatitudesIsSkippedNotMisplaced`   | Fact   | A point near a pole outside the drawn latitudes is skipped not misplaced.   |
+| `AnImpossibleCoordinateIsRefused`                                | Theory | An impossible coordinate is refused.                                        |
+| `MismatchedPointColumnsAreRefused`                               | Fact   | Mismatched point columns are refused.                                       |
+| `CountriesAndPointsCanShareOneMap`                               | Fact   | Countries and points can share one map.                                     |
+| `TheColourBarLegendIsOnlyDrawnWhenCountriesCarryValues`          | Fact   | The colour bar legend is only drawn when countries carry values.            |
+| `BothStyleModesAreWellFormedAndOnlyInlineCarriesItsOwnStyle`     | Fact   | Both style modes are well formed and only inline carries its own style.     |
+| `TheDarkThemeIsMarkedOnTheRoot`                                  | Fact   | The dark theme is marked on the root.                                       |
+| `TheOutputIsDeterministic`                                       | Fact   | The output is deterministic.                                                |
+| `AMapStaysWellInsideTheOutputLimit`                              | Fact   | A map stays well inside the output limit.                                   |
+| `HostileLabelsAndTitlesCannotInjectMarkup`                       | Fact   | Hostile labels and titles cannot inject markup.                             |
+| `TheWorldOutlineHoldsEveryExpectedCountryOnceAndDropsAntarctica` | Fact   | The world outline holds every expected country once and drops antarctica.   |
+
+### DatasourceChartRendererTests
+
+`Jube.Test.Charting.Datasource.DatasourceChartRendererTests` — 32 tests. Category: Unit.
+
+| Test                                                                                    | Kind   | Verifies                                                                                               |
+|-----------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------|
+| `EveryDrawableKindIsRegisteredOnceWithAUniqueNameAndANonEmptyRoleList`                  | Fact   | Every drawable kind is registered once with a unique name and a non empty role list.                   |
+| `EveryDrawableKindHasASampleFrame`                                                      | Fact   | Every drawable kind has a sample frame.                                                                |
+| `EveryKindDrawsItsSampleByPositionAlone`                                                | Theory | Every kind draws its sample by position alone.                                                         |
+| `EveryKindDrawsASelfContainedDarkSvgInInlineMode`                                       | Theory | Every kind draws a self contained dark svg in inline mode.                                             |
+| `ColumnsAfterTheCategoryBecomeOneSeriesEach`                                            | Fact   | Columns after the category become one series each.                                                     |
+| `AnExplicitMappingSelectsTheSeriesAndLeavesTheOtherColumnsForTheGrid`                   | Fact   | An explicit mapping selects the series and leaves the other columns for the grid.                      |
+| `ThePositionalDefaultPutsTheFirstNumericColumnOnColumnsAndTheRestOnLinesInACombo`       | Fact   | The positional default puts the first numeric column on columns and the rest on lines in a combo.      |
+| `OptionalRolesAreNotTakenByPositionUnlessTheyAreMarkedAutomatic`                        | Fact   | Optional roles are not taken by position unless they are marked automatic.                             |
+| `ABulletTakesItsTargetFromTheNextNumericColumnWhenThereIsOne`                           | Fact   | A bullet takes its target from the next numeric column when there is one.                              |
+| `ALongFormResultIsPivotedIntoOneSeriesPerDistinctSeriesValue`                           | Fact   | A long form result is pivoted into one series per distinct series value.                               |
+| `APivotRefusesTwoRowsForTheSameCategoryAndSeries`                                       | Fact   | A pivot refuses two rows for the same category and series.                                             |
+| `ALineOverATimeColumnDrawsATimeAxis`                                                    | Fact   | A line over a time column draws a time axis.                                                           |
+| `ANumericCategoryColumnDrawsALineAgainstTheNumbers`                                     | Fact   | A numeric category column draws a line against the numbers.                                            |
+| `AnOverrideNamingAMissingOrNonNumericColumnIsRefusedWithAReason`                        | Theory | An override naming a missing or non numeric column is refused with a reason.                           |
+| `AnOverrideForARoleTheChartDoesNotUseIsRefused`                                         | Fact   | An override for a role the chart does not use is refused.                                              |
+| `AResultWithNoSuitableColumnForARoleSaysWhichRoleIsUnsatisfied`                         | Fact   | A result with no suitable column for a role says which role is unsatisfied.                            |
+| `SplittingBySeriesWithSeveralValueColumnsIsRefused`                                     | Fact   | Splitting by series with several value columns is refused.                                             |
+| `NoRowsIsExplainedNotThrownAsAnArgumentFault`                                           | Fact   | No rows is explained not thrown as an argument fault.                                                  |
+| `TooManyCategoriesIsExplainedWithAHintToAggregate`                                      | Fact   | Too many categories is explained with a hint to aggregate.                                             |
+| `NullAndNonFiniteValuesBecomeGapsAndNeverReachTheSvg`                                   | Fact   | Null and non finite values become gaps and never reach the svg.                                        |
+| `TextInTheDataCannotInjectMarkup`                                                       | Fact   | Text in the data cannot inject markup.                                                                 |
+| `APointMapFindsItsLatitudeAndLongitudeByColumnNameAndSizesByTheNextNumber`              | Fact   | A point map finds its latitude and longitude by column name and sizes by the next number.              |
+| `ACountryMapFindsItsCountryByNameAndColoursByTheNumber`                                 | Fact   | A country map finds its country by name and colours by the number.                                     |
+| `ALoneNumericColumnIsNeverMistakenForALatitude`                                         | Fact   | A lone numeric column is never mistaken for a latitude.                                                |
+| `AnExplicitMappingMakesAMapOutOfColumnsWithNoObviousNames`                              | Fact   | An explicit mapping makes a map out of columns with no obvious names.                                  |
+| `ExplicitLatitudeAndLongitudeStopACountryNamedColumnTurningAPointMapIntoACountryMap`    | Fact   | Explicit latitude and longitude stop a country named column turning a point map into a country map.    |
+| `AnExplicitCountryStopsLatitudeAndLongitudeNamedColumnsTurningACountryMapIntoAPointMap` | Fact   | An explicit country stops latitude and longitude named columns turning a country map into a point map. |
+| `AnUnsatisfiedRoleIsExplainedInPlainGrammar`                                            | Fact   | An unsatisfied role is explained in plain grammar.                                                     |
+| `ALatitudeWithoutALongitudeIsRefused`                                                   | Fact   | A latitude without a longitude is refused.                                                             |
+| `AMapIsNoTallerThanTheWorldIsWideSoItLeavesNoEmptyBands`                                | Fact   | A map is no taller than the world is wide so it leaves no empty bands.                                 |
+| `AMapKeepsAShorterRequestedHeight`                                                      | Fact   | A map keeps a shorter requested height.                                                                |
+| `ThePresentationTitleAndSizeReachTheSvg`                                                | Fact   | The presentation title and size reach the svg.                                                         |
+
+### DatasourceTemplateTests
+
+`Jube.Test.Charting.Datasource.DatasourceTemplateTests` — 41 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `InterpolatesAnEscapedValue` | Fact | Interpolates an escaped value |
+| `LoopsOverRowsWithAnIndex` | Fact | Loops over rows with an index |
+| `ReadsAColumnWithASpaceInItsNameByBracket` | Fact | Reads a column with a space in its name by bracket |
+| `ChoosesTheFirstTrueBranch` | Fact | Chooses the first true branch |
+| `FollowsAnElseIfChain` | Fact | Follows an else if chain |
+| `BindsAClassFromAConditional` | Fact | Binds a class from a conditional |
+| `FormatsANumberHeldAsTextButNeverComparesTextAsANumber` | Fact | Formats a number held as text but never compares text as a number |
+| `KeepsAStaticClass` | Fact | Keeps a static class |
+| `IgnoresCaseInNamesMembersAndFilters` | Fact | Ignores case in names members and filters |
+| `MixesTextAndTokensInOneAttribute` | Fact | Mixes text and tokens in one attribute |
+| `RefusesAnUnclosedAttributeToken` | Fact | Refuses an unclosed attribute token |
+| `RefusesTheOldColonBindingBecauseTokensReplaceIt` | Fact | Refuses the old colon binding because tokens replace it |
+| `OmitsABoundAttributeThatIsFalseOrNull` | Fact | Omits a bound attribute that is false or null |
+| `RendersATemplateWrapperWithoutATag` | Fact | Renders a template wrapper without a tag |
+| `RendersVoidTagsWithoutAClosingTag` | Fact | Renders void tags without a closing tag |
+| `ExposesTheRowCountAndTruncation` | Fact | Exposes the row count and truncation |
+| `ExposesColumnNames` | Fact | Exposes column names |
+| `EvaluatesExpressions` | Theory | Evaluates expressions |
+| `FormatsWithFiltersUsingTheCurrentCulture` | Fact | Formats with filters using the current culture |
+| `FormatsNumbersInPolish` | Fact | Formats numbers in polish |
+| `IgnoresComments` | Fact | Ignores comments |
+| `DecodesEntitiesBeforeEscapingSoTheyAreNotDoubled` | Fact | Decodes entities before escaping so they are not doubled |
+| `DropsWhitespaceOnlyLinesBetweenElements` | Fact | Drops whitespace only lines between elements |
+| `RefusesTagsOutsideTheWhitelist` | Theory | Refuses tags outside the whitelist |
+| `RefusesAttributesOutsideTheWhitelist` | Theory | Refuses attributes outside the whitelist |
+| `RefusesDirectivesThatAreNotValidHere` | Theory | Refuses directives that are not valid here |
+| `RefusesAnElseAfterAnUnrelatedElement` | Fact | Refuses an else after an unrelated element |
+| `RefusesAMalformedLoop` | Theory | Refuses a malformed loop |
+| `RefusesAMalformedExpression` | Theory | Refuses a malformed expression |
+| `RefusesAnUnknownName` | Theory | Refuses an unknown name |
+| `KeepsALoopVariableOutOfItsSiblings` | Fact | Keeps a loop variable out of its siblings |
+| `RefusesAnUnknownFilterOrWrongArguments` | Theory | Refuses an unknown filter or wrong arguments |
+| `ReportsTheLineAndColumnOfTheProblem` | Fact | Reports the line and column of the problem |
+| `RefusesBrokenStructure` | Theory | Refuses broken structure |
+| `RefusesAnEmptyTemplate` | Theory | Refuses an empty template |
+| `RefusesATemplateOverTheLengthLimit` | Fact | Refuses a template over the length limit |
+| `RefusesTemplatesNestedTooDeep` | Fact | Refuses templates nested too deep |
+| `RefusesExpressionsNestedTooDeep` | Fact | Refuses expressions nested too deep |
+| `StopsALoopOverLoopThatWouldRunForever` | Fact | Stops a loop over loop that would run forever |
+| `StopsOutputOverTheLimit` | Fact | Stops output over the limit |
+| `NeverEmitsAnythingExecutableFromHostileData` | Fact | Never emits anything executable from hostile data |
+| `TreatsATooBigNumberAsEmpty` | Fact | Treats a too big number as empty |
+| `RendersEveryCellOfATableWithTheColumnsAsHeaders` | Fact | Renders every cell of a table with the columns as headers |
+| `AllowsAriaAndDataAttributes` | Fact | Allows aria and data attributes |
+| `IsRegisteredAsAnHtmlKindWithNoRoles` | Fact | Is registered as an html kind with no roles |
+
+### FormTemplateCompilerTests
+
+`Jube.Test.Charting.Datasource.FormTemplateCompilerTests` — 22 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `CompilesTheFieldsOfAForm` | Fact | Compiles the fields of a form |
+| `ReadsTheOptionsOfASelect` | Fact | Reads the options of a select |
+| `GathersRadioButtonsIntoOneFieldWithItsOptions` | Fact | Gathers radio buttons into one field with its options |
+| `TreatsFieldNamesAsCaseInsensitive` | Fact | Treats field names as case insensitive |
+| `RefusesAFieldWithoutAFixedName` | Fact | Refuses a field without a fixed name |
+| `RefusesAFieldInsideALoop` | Fact | Refuses a field inside a loop |
+| `RefusesATypeOutsideTheList` | Fact | Refuses a type outside the list |
+| `RefusesASelectWithoutFixedOptions` | Fact | Refuses a select without fixed options |
+| `RefusesALabelForAnUnknownField` | Fact | Refuses a label for an unknown field |
+| `RefusesTheFormTagsInADatasourceTemplate` | Fact | Refuses the form tags in a datasource template |
+| `RefusesIdStyleAndEventAttributesOnAField` | Fact | Refuses id style and event attributes on a field |
+| `KnowsTheCaseAndPayloadNamesButNotTheDatasourceOnes` | Fact | Knows the case and payload names but not the datasource ones |
+| `FillsTheValuesBackIntoTheFields` | Fact | Fills the values back into the fields |
+| `MarksEveryFieldDisabledWhenReadOnly` | Fact | Marks every field disabled when read only |
+| `ReportsOnlyTheFieldsThatAreShown` | Fact | Reports only the fields that are shown |
+| `ReadsTheCaseAndPayloadRootsIgnoringCase` | Fact | Reads the case and payload roots ignoring case |
+| `RejectsAKeyThatIsNotAFieldOfTheForm` | Fact | Rejects a key that is not a field of the form |
+| `DropsTheValueOfAHiddenField` | Fact | Drops the value of a hidden field |
+| `ChecksTheTypeOfEachValue` | Fact | Checks the type of each value |
+| `EnforcesTheOptionsOfASelectAndARadioGroup` | Fact | Enforces the options of a select and a radio group |
+| `LimitsTheLengthOfText` | Fact | Limits the length of text |
+| `TreatsAnEmptyValueAsNotSupplied` | Fact | Treats an empty value as not supplied |
+
+### DatasourceChartLocalisationTests
+
+`Jube.Test.Charting.Datasource.DatasourceChartLocalisationTests` — 13 tests. Category: Unit.
+
+| Test                                                                 | Kind   | Verifies                                                                         |
+|----------------------------------------------------------------------|--------|----------------------------------------------------------------------------------|
+| `EveryKindRoleMessageAndTermKeyIsProducedByTheCode`                  | Fact   | Every kind role message and term key is produced by the code.                    |
+| `EveryTextTheCodeProducesHasATranslation`                            | Theory | Every text the code produces has a translation.                                  |
+| `NoTranslationIsLeftOverForTextThatNoLongerExists`                   | Theory | No translation is left over for text that no longer exists.                      |
+| `EveryTranslationWasMadeFromTheEnglishItNowHas`                      | Theory | Every translation was made from the english it now has.                          |
+| `TranslationsKeepEveryPlaceholderOfTheirEnglish`                     | Theory | Translations keep every placeholder of their english.                            |
+| `AKindNameIsReturnedInThePageLanguage`                               | Theory | A kind name is returned in the page language.                                    |
+| `EnglishIsTheFallbackWhenThereIsNoTranslationForTheCulture`          | Fact   | English is the fallback when there is no translation for the culture.            |
+| `ARoleNameAndDescriptionAreTranslated`                               | Fact   | A role name and description are translated.                                      |
+| `AChartProblemIsDescribedInThePageLanguageWithItsTermsTranslatedToo` | Fact   | A chart problem is described in the page language with its terms translated too. |
+| `ADataLayerMessageIsDescribedInThePageLanguageToo`                   | Fact   | A data layer message is described in the page language too.                      |
+| `AParameterMessageTranslatesTheExpectedValueTermInsideIt`            | Fact   | A parameter message translates the expected value term inside it.                |
+| `AnUncodedExceptionKeepsItsOwnMessage`                               | Fact   | An uncoded exception keeps its own message.                                      |
+| `EveryEnglishMessageTemplateFormatsWithItsArgumentCount`             | Fact   | Every english message template formats with its argument count.                  |
+
 ## Charting diagrams
 
 ### CoefficientDiagramTests
@@ -307,6 +478,30 @@ Tests of the SVG charting library and the model diagram renderers built on it.
 | `ImportancesBeyondTheCapAreTruncatedToTheLargest` | Fact | Importances beyond the cap are truncated to the largest. |
 | `ForestRenderingIsDeterministic`                  | Fact | Forest rendering is deterministic.                       |
 | `InvalidForestsAreRejected`                       | Fact | Invalid forests are rejected.                            |
+
+### GraphDiagramUnconnectedTests
+
+`Jube.Test.Charting.Diagrams.GraphDiagramUnconnectedTests` — 5 tests.
+
+| Test                                                                                     | Kind | Verifies                                                                           |
+|------------------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
+| `ManyUnconnectedNodesGoInAGridBelowTheConnectedGraphInsteadOfOneWideLevel`               | Fact | Many unconnected nodes go in a grid below the connected graph instead of one wide level. |
+| `TheGridNeverOverlapsAndStaysInsideTheDrawing`                                           | Fact | The grid never overlaps and stays inside the drawing.                              |
+| `FewUnconnectedNodesKeepTheirPlaceOnTheFirstLevelAsBefore`                               | Fact | Few unconnected nodes keep their place on the first level as before.               |
+| `AGraphOfNothingButUnconnectedNodesStillDraws`                                           | Fact | A graph of nothing but unconnected nodes still draws.                              |
+| `TheLargestDrawableExtentCanBeRaisedButNotWithoutLimit`                                  | Fact | The largest drawable extent can be raised but not without limit.                   |
+
+### GraphDiagramGroupTests
+
+`Jube.Test.Charting.Diagrams.GraphDiagramGroupTests` — 5 tests.
+
+| Test                                                                               | Kind | Verifies                                                                         |
+|------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------|
+| `NodesAreColouredAndKeyedByTheirGroupWithMissingAlwaysOnTheLastColour`             | Fact | Nodes are coloured and keyed by their group with missing always on the last colour. |
+| `EveryNodeAndEdgeCarriesItsIdentityForTheBrowserToSelectBy`                        | Fact | Every node and edge carries its identity for the browser to select by.           |
+| `ADashedNodeIsDrawnWithADashedOutline`                                             | Fact | A dashed node is drawn with a dashed outline.                                    |
+| `WithoutGroupsTheKeyStillNamesTheRolesAsBefore`                                    | Fact | Without groups the key still names the roles as before.                          |
+| `HostileIdsAndGroupsAreEscapedAndTheSvgStaysWellFormed`                            | Fact | Hostile ids and groups are escaped and the svg stays well formed.                |
 
 ### GraphDiagramTests
 

@@ -89,6 +89,7 @@ namespace Jube.Service.EntityAnalysisModel
         {
             return new ModelPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 Name = dto.Name,
                 Active = (byte)(dto.Active ? 1 : 0),

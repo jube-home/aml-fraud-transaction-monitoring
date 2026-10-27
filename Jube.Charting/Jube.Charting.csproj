@@ -18,4 +18,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Maps\world-110m.txt" LogicalName="Jube.Charting.Maps.world-110m.txt"/>
+    </ItemGroup>
+
 </Project>

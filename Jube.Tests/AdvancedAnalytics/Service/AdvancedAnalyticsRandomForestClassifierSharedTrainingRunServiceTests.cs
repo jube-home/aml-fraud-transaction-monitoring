@@ -26,7 +26,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -79,7 +79,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             evidence.Details.TreeCount.Should().Be(20);
 
             var version =
-                await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == status.TrainedModelVersionId);
+                await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == status.TrainedModelVersionId);
 
             var recall = RandomForestClassifierRecall.FromSnapshot(version.ModelJson);
 

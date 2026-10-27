@@ -34,3 +34,6 @@ Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to 
 ![Image](ResponseElevationInResponsePayload.png)
 
 It can be seen from the HTTP response payload that the Response Elevation has been returned as 9, alongside the URL and example messages configured. It is worth noting that if more than one Activation Rule seeks to allocate a Response Elevation,  it can only be to a value greater than the one already existing (hence the name Response Elevation).
+
+## Ranges
+The Response Elevation is an integer and is picked by Name from the [Response Elevation Ranges](../ResponseElevationRanges/) of the Model. An Activation Rule cannot be saved with a level outside every active range, and the Engine does not send out the elevation of a rule whose level is outside every active range.

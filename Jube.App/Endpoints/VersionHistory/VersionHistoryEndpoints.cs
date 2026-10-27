@@ -29,6 +29,7 @@ using Jube.Dto.EntityAnalysisModelListValue;
 using Jube.Dto.EntityAnalysisModelOverride;
 using Jube.Dto.EntityAnalysisModelRequestXPath;
 using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Dto.EntityAnalysisModelResponseElevationRange;
 using Jube.Dto.EntityAnalysisModelTag;
 using Jube.Dto.EntityAnalysisModelTtlCounter;
 using Jube.Dto.ExhaustiveSearchInstance;
@@ -38,6 +39,7 @@ using Jube.Dto.Repository.CaseWorkflowDisplay;
 using Jube.Dto.Repository.CaseWorkflowFilter;
 using Jube.Dto.Repository.CaseWorkflowForm;
 using Jube.Dto.Repository.CaseWorkflowMacro;
+using Jube.Dto.Repository.CaseWorkflowReleaseHook;
 using Jube.Dto.Repository.CaseWorkflowStatus;
 using Jube.Dto.Repository.CaseWorkflowXPath;
 using Jube.Dto.Repository.RoleRegistry;
@@ -52,6 +54,7 @@ using Jube.Service.Query.CaseWorkflowDisplayVersionHistory;
 using Jube.Service.Query.CaseWorkflowFilterVersionHistory;
 using Jube.Service.Query.CaseWorkflowFormVersionHistory;
 using Jube.Service.Query.CaseWorkflowMacroVersionHistory;
+using Jube.Service.Query.CaseWorkflowReleaseHookVersionHistory;
 using Jube.Service.Query.CaseWorkflowStatusVersionHistory;
 using Jube.Service.Query.CaseWorkflowVersionHistory;
 using Jube.Service.Query.CaseWorkflowXPathVersionHistory;
@@ -70,6 +73,7 @@ using Jube.Service.Query.EntityAnalysisModelListVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelOverrideVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelRequestXpathVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelSanctionVersionHistory;
+using Jube.Service.Query.EntityAnalysisModelResponseElevationRangeVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelTagVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelTtlCounterVersionHistory;
 using Jube.Service.Query.EntityAnalysisModelVersionHistory;
@@ -104,6 +108,9 @@ namespace Jube.App.Endpoints.VersionHistory
             endpoints
                 .MapVersionHistoryGroup<CaseWorkflowMacroVersionHistoryService, CaseWorkflowMacroVersion,
                     CaseWorkflowMacroDto>("CaseWorkflowMacroVersionHistory");
+            endpoints
+                .MapVersionHistoryGroup<CaseWorkflowReleaseHookVersionHistoryService, CaseWorkflowReleaseHookVersion,
+                    CaseWorkflowReleaseHookDto>("CaseWorkflowReleaseHookVersionHistory");
             endpoints
                 .MapVersionHistoryGroup<CaseWorkflowStatusVersionHistoryService, CaseWorkflowStatusVersion,
                     CaseWorkflowStatusDto>("CaseWorkflowStatusVersionHistory");
@@ -171,6 +178,10 @@ namespace Jube.App.Endpoints.VersionHistory
                 .MapVersionHistoryGroup<EntityAnalysisModelSanctionVersionHistoryService,
                     EntityAnalysisModelSanctionVersion, EntityAnalysisModelSanctionDto>(
                     "EntityAnalysisModelSanctionVersionHistory");
+            endpoints
+                .MapVersionHistoryGroup<EntityAnalysisModelResponseElevationRangeVersionHistoryService,
+                    EntityAnalysisModelResponseElevationRangeVersion,
+                    EntityAnalysisModelResponseElevationRangeDto>("EntityAnalysisModelResponseElevationRangeVersionHistory");
             endpoints
                 .MapVersionHistoryGroup<EntityAnalysisModelTagVersionHistoryService, EntityAnalysisModelTagVersion,
                     EntityAnalysisModelTagDto>("EntityAnalysisModelTagVersionHistory");

@@ -24,6 +24,7 @@ namespace Jube.Data.Security.Models
     {
         public List<int> Permissions { get; set; } = [];
         public bool Landlord { get; set; }
+        public bool ActiveUser { get; set; }
         public int TenantRegistryId { get; set; }
     }
 }

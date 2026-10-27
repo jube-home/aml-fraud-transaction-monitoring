@@ -27,7 +27,7 @@ namespace Jube.Test.Preservation
     {
         public static IEnumerable<object[]> MessagePackPocos()
         {
-            return typeof(AdvancedAnalyticsInstance).Assembly.GetTypes()
+            return typeof(AskJoobyAnalyticsInstance).Assembly.GetTypes()
                 .Where(w => w.Namespace == "Jube.Data.Poco" &&
                             w.GetCustomAttribute<MessagePackObjectAttribute>() != null)
                 .OrderBy(o => o.Name, StringComparer.Ordinal)

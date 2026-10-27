@@ -7,150 +7,92 @@ grand_parent: Configuration
 ---
 
 # Generate Chart in Visualisation Datasource
-In all instances of Visualisation Datasource recall, SQL will be executed and returned as a dataset that can be switched to present as a grid.
 
-In the creation of dashboard type visualisations it is likely some form of chart will be embedded.
+In all instances of Visualisation Datasource recall, SQL is executed and returned as a dataset that can be switched to
+present as a grid. In the creation of dashboard type visualisations it is likely some form of chart will be shown too.
 
-Visualisations are achieved via embedding configuration JSON like initialisation Javascript for the Kendo Charting JQuery toolset.  The Kendo Chart JQuery toolset provides a rich set of charts that can be used to alternatively present data that would otherwise be in grid form. A demonstration of the Kendo charting tools can be seen as follows:
+There is no chart configuration to write. In the Datasource builder, switch on **Show a chart**, choose the **chart
+kind** from the list, and the columns the SQL returns are drawn by position. The chart is drawn on the server as an SVG
+document, using the same charting library as the rest of Jube, and follows the light and dark theme of the page.
 
-[https://demos.telerik.com/kendo-ui/bar-charts/index](https://demos.telerik.com/kendo-ui/bar-charts/index)
+## Columns are taken by position
 
-A datasource can accept the initialisation parameters for a Kendo Chart:
-
-![Image](LocationOfChartInit.png)
-
-Extracted as follows:
-
-``` javascript
-({
-    title: {
-        text: "Site Visitors Stats \n /thousands/"
-    },
-    legend: {
-        visible: false
-    },
-    seriesDefaults: {
-        type: "bar"
-    },
-    series: [{
-        name: "Total Visits",
-        data: [56000, 63000, 74000, 91000, 117000, 138000]
-    }, {
-        name: "Unique visitors",
-        data: [52000, 34000, 23000, 48000, 67000, 83000]
-    }],
-    valueAxis: {
-        max: 140000,
-        line: {
-            visible: false
-        },
-        minorGridLines: {
-            visible: true
-        },
-        labels: {
-            rotation: "auto"
-        }
-    },
-    categoryAxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        majorGridLines: {
-            visible: false
-        }
-    },
-    tooltip: {
-        visible: true,
-        template: "#= series.name #: #= value #"
-    }
-})
-```
-
-For the purpose of chart initialisation, series are the columns returned by the SQL statement:
-
-![Image](LocationOfSeries.png)
-
-Taking the following example of Kendo Chart initialisation:
-
-``` javascript
-({
-    legend: {
-        visible: false
-    },
-    seriesDefaults: {
-        type: "bar"
-    },
-    series: [
-        {
-        field: "Frequency",
-        categoryField: "ActivationRuleName",
-        name: "Frequency"
-    }],
-    valueAxis: {
-        max: 140000,
-        line: {
-            visible: false
-        },
-        minorGridLines: {
-            visible: true
-        },
-        labels: {
-            rotation: "auto"
-        }
-    },
-    tooltip: {
-        visible: true,
-        template: "#= series.name #: #= value #"
-    }
-})
-```
-
-Note the series collection has been updated to match the column names returned by the SQL such to achieve the desired visualisation type:
-
-``` javascript
-    series: [
-            {
-            field: "Frequency",
-            categoryField: "ActivationRuleName",
-            name: "Frequency"
-        }]
-```
-
-Any datasource object will be added during the recall process and should be removed from the initialisation.
-
-Navigate Administration >> Visualsiation >> Visualisation Datasources,  then click on the Visualisation Registry entry to create a new datasource:
-
-![Image](EmptyDatasourceForNewChart.png)
-
-The SQL will be the same as used for basic grid generation:
+Each kind of chart has roles, and the columns returned by the SQL fill them in order. For a bar chart the first column
+is the category and the following numeric columns are the values, one series per column. Take the following SQL:
 
 ```sql
-select * from "ExampleCaseVolumeEntry"
+select "ActivationRuleName", "Frequency"
+from "ExampleCaseVolumeEntry"
 where "ActivationRuleName" LIKE @Name
 ```
 
-Using the example SQL and chart initialisation as above, create a new entry:
+Choose **Bar chart** and the first column labels the bars and the second sets their length, with nothing more to
+specify. The list of chart kinds is split into the kinds that can be drawn from the columns as they stand, and the kinds
+that need columns assigned. For a kind that cannot yet be drawn the builder says why, for example that it needs a second
+numeric column.
 
-![Image](ExampleChartTop.png)
+The **Result columns** step shows which role each column is filling, so what will be drawn is always visible.
 
-![Image](ExampleChartBottom.png)
+## Choosing columns for roles
 
-Click Add to create a version of the Visualisation Registry Datasource, which will parse the SQL and create the series definitions in the background:
+When the SQL returns extra columns, for the grid for instance, or the roles need to be filled in a different order,
+choose the column for each role. A role that takes one column offers a list headed by the by-position choice. A role
+that takes many, such as the values of a column chart, offers the columns to tick. Roles that are optional are gathered
+under Optional columns. A column fills at most one role, so assigning it to a role takes it from another.
 
-![Image](CreatedVersionOfVisualisationRegistryDatasourceWithChart.png)
+Columns that are not assigned to a role are not drawn, and are still available in the grid.
 
-Navigate to the Visualisation Registry through the Visualisation Directory to recall. Noting the default parameter value for Name, as Email, click on Run to execute the datasource, whereby SQL will be parameterized as provided:
+## Splitting rows into series
 
-![Image](ChartCreatedInRecall.png)
+When the SQL returns long form data, with one row for each category and series pair, give one column the **Series**
+role. Its distinct values become the series, drawn from one value column:
 
-The chart will take up 100% height and width of the tile. To include the base data alongside the chart is to ensure that Include Grid is enabled in the Visualisation Registry Datasource.  Navigate to the entry just created, ChartRecall, and locate the Include Grid switch:
+```sql
+select "Month", "Channel", sum("Amount") as "Total"
+from "ExampleTransactions"
+group by "Month", "Channel"
+```
 
-![Image](LocationOfIncludeGrid.png)
+Each pair must appear once. When the result has more than one row for the same pair the chart is refused with a message
+asking for the query to be aggregated in SQL, because the chart will not silently add or drop rows.
 
-Toggle the Include Grid switch and scroll down to create a version by clicking Update:
+## Chart kinds
 
-![Image](IncludeGridVersion.png)
+Every kind that can draw from columns is available:
 
-Recall the Visualisation with the default parameter value:
+| Kind                                                                              | Roles filled by the columns, in order                                                       |
+|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| Column, Bar, Line, Area, Radar                                                     | Category, then one or more numeric Values (one series each), or a Series column             |
+| Stacked and percent stacked Column, Bar and Area                                   | As above, stacked, or as shares of the total                                                |
+| Pie, Donut, Funnel, Waterfall                                                      | Category, then one numeric Value                                                            |
+| Scatter or bubble                                                                  | X, then one or more Y, an optional Size that makes bubbles, an optional Series              |
+| Histogram                                                                          | One or more numeric columns, binned to show the distribution                                |
+| Heatmap                                                                            | Row category, Column category, then a numeric Value                                         |
+| Combination                                                                        | Category, Values drawn as columns, Lines, and optional Lines on a secondary axis            |
+| Box plot                                                                           | Category, Minimum, First quartile, Median, Third quartile, Maximum                          |
+| Candlestick                                                                        | Category (often a date), Open, High, Low, Close                                             |
+| Polar                                                                              | X as the angle in degrees, then Y as the radius, optional Series                            |
+| Gauge                                                                              | A Value from the first row, with optional Target, Minimum and Maximum                       |
+| Bullet                                                                             | Optional Category, Value, optional Target                                                   |
+| Sparkline                                                                          | Value, with an optional Category for order                                                  |
+| Treemap                                                                            | Category, Value, optional Parent group                                                      |
+| Gantt                                                                              | Task, Start time, End time, optional Series                                                 |
+| Map                                                                                | See the next page                                                                           |
+| Template                                                                           | Your own markup, see the page after                                                         |
 
-![Image](SharingTile.png)
+Roles that take numbers accept integers, decimals and flags, and roles that take times accept dates and times; the
+builder only offers columns that fit.
 
-It can be observed that a grid now shares the tile, on a basis of 50/50 in height.
+## Limits
+
+Charts have sensible limits on how much they will draw, for example the number of categories or points. When a result
+is too large the tile says so and by how much, and the remedy is to aggregate or filter in SQL.
+
+## Recall
+
+Navigate to the Visualisation through the Visualisation Directory and run it. Each tile is requested separately, so a
+tile that fails shows its own reason while the others are drawn. The chart takes the tile, and when Show a grid is also
+on, the grid appears beneath it.
+
+The text of the chart kinds, their roles and any message about a chart is shown in the language of the page, so far in
+English, Polish and Arabic.

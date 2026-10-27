@@ -1,3 +1,4 @@
+using Jube.Data.Concurrency;
 /* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
@@ -181,6 +182,8 @@ namespace Jube.Data.Repository
             {
                 throw new KeyNotFoundException();
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;

@@ -1,0 +1,149 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+@reference './main.css';
+
+.rule-builder-island .query-builder {
+  @apply text-sm text-base-content;
+}
+
+.rule-builder-island .rules-group-container {
+  @apply m-0 rounded-box border border-base-300 bg-base-100 p-3;
+}
+
+.rule-builder-island .rules-list .rules-group-container {
+  @apply rounded-field border-s-4 border-s-accent bg-base-200;
+}
+
+.rule-builder-island .rules-group-header {
+  @apply mb-2 flex flex-wrap items-center gap-2;
+}
+
+.rule-builder-island .rules-group-header .group-conditions {
+  @apply order-first flex gap-1;
+}
+
+.rule-builder-island .rules-group-header .group-actions {
+  @apply order-last ms-auto flex flex-wrap gap-1;
+}
+
+.rule-builder-island .rules-group-header .group-conditions .btn:not(.active) {
+  @apply btn-soft;
+}
+
+.rule-builder-island .rules-group-header .group-conditions [data-not].active {
+  @apply btn-neutral;
+}
+
+.rule-builder-island .rules-group-header .group-conditions [data-not].active::before {
+  content: '\2713';
+}
+
+.rule-builder-island .rules-group-header .group-conditions label.disabled {
+  @apply opacity-50;
+}
+
+.rule-builder-island .rules-group-header .group-conditions input {
+  @apply sr-only;
+}
+
+.rule-builder-island .btn-danger {
+  @apply btn-error;
+}
+
+.rule-builder-island .btn i:empty {
+  @apply hidden;
+}
+
+.rule-builder-island .rules-list {
+  @apply m-0 flex list-none flex-col gap-2 p-0;
+}
+
+.rule-builder-island .rule-container {
+  @apply relative flex flex-wrap items-start gap-2 rounded-field border border-base-300 bg-base-100 p-2;
+}
+
+.rule-builder-island .rule-container .rule-header {
+  @apply order-last ms-auto;
+}
+
+.rule-builder-island .rule-container .rule-actions {
+  @apply flex gap-1;
+}
+
+.rule-builder-island .rule-filter-container,
+.rule-builder-island .rule-operator-container,
+.rule-builder-island .rule-value-container {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.rule-builder-island .rule-filter-container select,
+.rule-builder-island .rule-operator-container select {
+  @apply select select-sm w-auto max-w-72;
+}
+
+.rule-builder-island .rule-value-container .radio-inline,
+.rule-builder-island .rule-value-container label {
+  @apply flex items-center gap-1;
+}
+
+.rule-builder-island .rule-value-container input[type='radio'] {
+  @apply radio radio-sm;
+}
+
+.rule-builder-island .rule-container.has-error {
+  @apply border-error;
+}
+
+.rule-builder-island .error-container {
+  @apply hidden;
+}
+
+.rule-builder-island .has-error .error-container {
+  @apply inline-flex! items-center rounded-selector bg-error px-2 text-xs text-error-content;
+}
+
+.rule-builder-island .has-error .error-container::after {
+  content: attr(title);
+}
+
+.rule-builder-island .drag-handle {
+  @apply hidden;
+}
+
+.rule-builder-island .filter-description {
+  @apply w-full text-xs text-secondary;
+}
+
+.rule-builder-island .hide {
+  @apply hidden;
+}
+
+.rule-builder-island .rule-operator-container > span {
+  @apply text-sm;
+}
+
+.rule-builder-island
+  .rule-value-container
+  input.form-control:not([type='radio']):not([type='checkbox']) {
+  @apply input input-sm;
+}
+
+.rule-builder-island .rule-value-container select.form-control {
+  @apply select select-sm w-auto max-w-72;
+}
+
+.rule-builder-island[data-columns] [data-add='group'],
+.rule-builder-island[data-columns] .group-conditions {
+  @apply hidden;
+}

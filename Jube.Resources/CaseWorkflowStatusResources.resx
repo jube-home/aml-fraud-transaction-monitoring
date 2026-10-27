@@ -81,4 +81,22 @@
     <data name="NotificationTypeIdInvalid" xml:space="preserve">
     <value>A valid notification type is required when notification is enabled.</value>
   </data>
+  <data name="EscalationTriggerInvalid" xml:space="preserve">
+    <value>The escalation trigger must be one of the listed triggers.</value>
+  </data>
+  <data name="EscalationTriggerRequired" xml:space="preserve">
+    <value>An escalation trigger is required when an escalation target is chosen.</value>
+  </data>
+  <data name="EscalationTargetRequired" xml:space="preserve">
+    <value>An escalation target status is required when an escalation trigger is chosen.</value>
+  </data>
+  <data name="EscalationThresholdInvalid" xml:space="preserve">
+    <value>The escalation threshold must be 1 to 525600 minutes for time in status, 1 to 3 for a lane, or 1 to 100 for a Priority.</value>
+  </data>
+  <data name="EscalationTargetNotFound" xml:space="preserve">
+    <value>The escalation target must be another active status of the same case workflow.</value>
+  </data>
+  <data name="EscalationTargetNotStronger" xml:space="preserve">
+    <value>The escalation target must be a stronger priority than this status, meaning a lower Priority number.</value>
+  </data>
 </root>

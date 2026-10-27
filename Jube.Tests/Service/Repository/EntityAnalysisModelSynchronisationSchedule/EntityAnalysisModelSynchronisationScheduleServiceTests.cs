@@ -357,7 +357,7 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
             await cts.CancelAsync();
 
             // ReSharper disable once AccessToDisposedClosure
-            var act = () => service.GetCurrentAsync(cts.Token);
+            var act = () => service.GetCurrentAsync(token: cts.Token);
 
             await act.Should().ThrowAsync<OperationCanceledException>();
         }

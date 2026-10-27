@@ -17,6 +17,7 @@
 namespace Jube.Dto.Forms
 {
     using System;
+    using Jube.Dto.Options;
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class ListColumnAttribute : Attribute
@@ -27,5 +28,7 @@ namespace Jube.Dto.Forms
         public bool Sortable { get; init; } = true;
         public bool Filterable { get; init; } = true;
         public bool Hidden { get; init; }
+        public GridFormat Format { get; init; } = GridFormat.Default;
+        public string? Unit { get; init; }
     }
 }

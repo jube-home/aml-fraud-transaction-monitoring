@@ -38,7 +38,7 @@ namespace Jube.AskJooby.Workflows
                 "Train a Trial Advanced Analytics Model",
                 "Fitting a single model on a cached table to see what it finds, rather than inspecting, "
                 + "comparing or promoting a model version that already exists.",
-                "An Advanced Analytics instance, a cache pointer with a resolved label and predictor set, "
+                "An AskJooby Analytics instance, a cache pointer with a resolved label and predictor set, "
                 + "and one submitted training run under that instance, read back by id.",
                 "Use when the ask is to actually train something and see evidence back, and the caller "
                 + "has named a single family (or named none, which defaults to logistic regression as "
@@ -60,12 +60,12 @@ namespace Jube.AskJooby.Workflows
                 [
                     new GraphWorkflowNode(
                         "reuse-check",
-                        "Check for an existing Advanced Analytics instance",
+                        "Check for an existing AskJooby Analytics instance",
                         "List the instances already in this tenant before creating one. Every submission is "
                         + "filed under a numeric instance id with no default, so this is the step that resolves "
                         + "it rather than leaving it to be discovered by a refused submission three steps later.",
                         InstanceInspector,
-                        ["AdvancedAnalyticsInstanceList"],
+                        ["AskJoobyAnalyticsInstanceList"],
                         ["InstanceId"],
                         [],
                         "Skipping straight to submission fails outright on the missing field. Skipping to "
@@ -79,7 +79,7 @@ namespace Jube.AskJooby.Workflows
                         + "trial: allocating it to a live Model is a separate, later decision under a separate "
                         + "permission.",
                         InstanceAuthor,
-                        ["AdvancedAnalyticsInstanceCreate"],
+                        ["AskJoobyAnalyticsInstanceCreate"],
                         ["InstanceId"],
                         [],
                         "Nothing downstream can be submitted without a resolved instance id, and inventing one "
@@ -129,7 +129,7 @@ namespace Jube.AskJooby.Workflows
                         "Reporting success from the submit call alone, before the run has actually finished, "
                         + "reports an opinion as a result.")
                 ],
-                "An Advanced Analytics instance must exist before any submission: it is a required, "
+                "An AskJooby Analytics instance must exist before any submission: it is a required, "
                 + "caller-supplied field with no default, so the order above is the only one that does not end "
                 + "in a dead refusal."),
             new(
@@ -139,7 +139,7 @@ namespace Jube.AskJooby.Workflows
                 "Fitting several classifier families on the same cached table against the same label and "
                 + "predictor set, then reading each one's held-out evidence back to name the strongest, rather "
                 + "than committing to one algorithm before any of them have actually been tried.",
-                "One Advanced Analytics instance and one resolved label/predictor set, carried unchanged into "
+                "One AskJooby Analytics instance and one resolved label/predictor set, carried unchanged into "
                 + "three independent classifier submissions -- one per classifier sub-kind (probabilistic, "
                 + "margin, tree-ensemble) -- each submitted and polled on its own, then weighed against the "
                 + "other two on held-out metrics by a read-only comparison step.",
@@ -163,11 +163,11 @@ namespace Jube.AskJooby.Workflows
                 [
                     new GraphWorkflowNode(
                         "reuse-check",
-                        "Check for an existing Advanced Analytics instance",
+                        "Check for an existing AskJooby Analytics instance",
                         "List the instances already in this tenant before creating one, exactly as the "
                         + "one-model graph does -- every family below files under the same single instance.",
                         InstanceInspector,
-                        ["AdvancedAnalyticsInstanceList"],
+                        ["AskJoobyAnalyticsInstanceList"],
                         ["InstanceId"],
                         [],
                         "Skipping straight to submission fails outright on the missing field, for every family "
@@ -178,7 +178,7 @@ namespace Jube.AskJooby.Workflows
                         "Only when the previous step found zero instances. A write, so it needs the caller's "
                         + "explicit confirmation before it runs, and it starts unallocated.",
                         InstanceAuthor,
-                        ["AdvancedAnalyticsInstanceCreate"],
+                        ["AskJoobyAnalyticsInstanceCreate"],
                         ["InstanceId"],
                         [],
                         "Nothing downstream can be submitted without a resolved instance id, and inventing one "
@@ -286,7 +286,7 @@ namespace Jube.AskJooby.Workflows
                         + "a winner here promotes nothing. Making that version live is the separate decision "
                         + "behind the Promote Model permission, same as the one-model graph.",
                         ModelInspector,
-                        ["AdvancedAnalyticsModelList", "AdvancedAnalyticsModelGetPromotionEvidence"],
+                        ["AskJoobyAnalyticsModelList", "AskJoobyAnalyticsModelGetPromotionEvidence"],
                         ["BestTrainedModel"],
                         [
                             "LogisticRegressionEvidence", "NeuralNetworkClassifierEvidence",
@@ -317,7 +317,7 @@ namespace Jube.AskJooby.Workflows
                 "One Exhaustive Adaptation created cold against the same underlying data and left to evolve "
                 + "its own topology in the background, started first and before anything else once the Model "
                 + "id is resolved, because it is usually the eventual champion and its evolution is the "
-                + "slowest part of this graph. Alongside it: one Advanced Analytics instance and one resolved "
+                + "slowest part of this graph. Alongside it: one AskJooby Analytics instance and one resolved "
                 + "label/predictor set, one stateless cross-validated comparison across up to twelve "
                 + "classifier families on identical folds naming a winner, one confirmatory training run "
                 + "submitted under whichever family it named, and one promotion decided by comparing the two "
@@ -345,7 +345,7 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "resolve-comparison-model",
                         "Resolve the Model the Exhaustive side of the bout registers under, first",
-                        "Do this before the Advanced Analytics instance or data steps below: an Exhaustive "
+                        "Do this before the AskJooby Analytics instance or data steps below: an Exhaustive "
                         + "Adaptation is always registered under a Model, Advanced Analytics needs no Model id "
                         + "at all, and Exhaustive is usually the eventual champion of the two, so the side that "
                         + "takes longest to evolve is the side that starts first. Find the Model the caller is "
@@ -397,13 +397,13 @@ namespace Jube.AskJooby.Workflows
                         + "against a different status column with different terminal values."),
                     new GraphWorkflowNode(
                         "reuse-check",
-                        "Check for an existing Advanced Analytics instance",
+                        "Check for an existing AskJooby Analytics instance",
                         "List the instances already in this tenant before creating one, exactly as the "
                         + "other two training graphs do -- the comparison and the eventual confirmatory run "
                         + "both file under the same single instance. Runs alongside the Exhaustive side above, "
                         + "which does not depend on it and should already be under way by now.",
                         InstanceInspector,
-                        ["AdvancedAnalyticsInstanceList"],
+                        ["AskJoobyAnalyticsInstanceList"],
                         ["InstanceId"],
                         [],
                         "Skipping straight to the confirmatory submission fails outright on the missing "
@@ -414,7 +414,7 @@ namespace Jube.AskJooby.Workflows
                         "Only when the previous step found zero instances. A write, so it needs the caller's "
                         + "explicit confirmation before it runs, and it starts unallocated.",
                         InstanceAuthor,
-                        ["AdvancedAnalyticsInstanceCreate"],
+                        ["AskJoobyAnalyticsInstanceCreate"],
                         ["InstanceId"],
                         [],
                         "Nothing downstream can be submitted without a resolved instance id, and inventing "
@@ -563,7 +563,7 @@ namespace Jube.AskJooby.Workflows
                         + "already given as a standing instruction. Report which side won the bout and why, "
                         + "with both sides' figures, rather than only naming the winner.",
                         ModelAuthor,
-                        ["AdvancedAnalyticsModelGetPromotionEvidence", "AdvancedAnalyticsModelPromoteVersion"],
+                        ["AskJoobyAnalyticsModelGetPromotionEvidence", "AskJoobyAnalyticsModelPromoteVersion"],
                         ["PromotedModelVersion"],
                         ["FinalisedModelVersion", "ExhaustiveComparisonEvidence"],
                         "Promoting the Advanced Analytics version without having genuinely weighed Exhaustive's "
@@ -579,7 +579,7 @@ namespace Jube.AskJooby.Workflows
                         + "Exhaustive instance so it participates in live scoring, and leave the Advanced "
                         + "Analytics confirmatory version unpromoted. A write, so it needs the caller's "
                         + "explicit confirmation first unless already given. The activation call is itself the "
-                        + "durable record of the bout's outcome, exactly as AdvancedAnalyticsModelPromoteVersion's "
+                        + "durable record of the bout's outcome, exactly as AskJoobyAnalyticsModelPromoteVersion's "
                         + "own audit entry is for the other branch -- a later question of why this model is "
                         + "live, and why the Advanced Analytics candidate is not, resolves to this write and "
                         + "the evidence read immediately before it. Report which side won the bout and why, "
@@ -595,7 +595,7 @@ namespace Jube.AskJooby.Workflows
                 ],
                 "The Exhaustive side of the bout needs only a resolved Model id, not the instance or the "
                 + "cache pointer, so it has no reason to wait for either: resolve the Model and create the "
-                + "Exhaustive contender first, before the Advanced Analytics instance or data steps, and "
+                + "Exhaustive contender first, before the AskJooby Analytics instance or data steps, and "
                 + "leave it evolving in the background for the rest of this graph. Treat this as the default "
                 + "order, not an optimisation to apply only when convenient -- Exhaustive is usually the "
                 + "eventual champion of the two, its evolution is the slowest part of the whole graph, and a "

@@ -31,6 +31,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
         public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; } =
             new ConcurrentDictionary<int, EntityAnalysisModel>();
 
+        public HashSet<int> SynchronisationScope { get; set; }
+
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public Guid EntityAnalysisInstanceGuid { get; set; }
 

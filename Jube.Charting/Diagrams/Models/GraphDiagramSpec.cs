@@ -24,7 +24,11 @@ namespace Jube.Charting.Diagrams.Models
         string Id,
         string Label,
         GraphNodeRole Role = GraphNodeRole.Feature,
-        string? Detail = null);
+        string? Detail = null)
+    {
+        public string? Group { get; init; }
+        public bool Dashed { get; init; }
+    }
 
     public sealed record GraphEdge(string From, string To)
     {
@@ -43,5 +47,7 @@ namespace Jube.Charting.Diagrams.Models
         public bool Directed { get; init; } = true;
         public string WeightName { get; init; } = "Weight";
         public int EdgeLabelLimit { get; init; } = 40;
+        public IReadOnlyList<string> GroupOrder { get; init; } = [];
+        public double MaxExtent { get; init; } = 3000;
     }
 }

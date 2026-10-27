@@ -36,7 +36,7 @@ namespace Jube.Test.AdvancedAnalytics.Conventions
 
         private static readonly string[] guardedTypeNames =
         [
-            "Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions.SyncAdvancedAnalyticsInstancesExtensions"
+            "Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions.SyncAskJoobyAnalyticsInstancesExtensions"
         ];
 
         // ReSharper disable once CollectionNeverUpdated.Local

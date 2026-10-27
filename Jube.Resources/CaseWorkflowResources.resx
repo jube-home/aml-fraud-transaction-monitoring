@@ -69,4 +69,34 @@
     <data name="VisualisationRegistryNotFound" xml:space="preserve">
     <value>The visualisation could not be found.</value>
   </data>
+  <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>The ranking damping must be above 0 and no more than 1.</value>
+  </data>
+  <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>The ranking weight for overlapping evidence must be between 0 and 1.</value>
+  </data>
+  <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>The ranking prior strength must be above 0 and no more than 10000.</value>
+  </data>
+  <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>The ranking prior rate must be between 0.001 and 0.999.</value>
+  </data>
+  <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>The daily goal must be between 1 and 1000 cases.</value>
+  </data>
+  <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>The ranking deadline window must be between 0 and 365 days.</value>
+  </data>
+  <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>The ranking key history half life must be above 0 and no more than 3650 days.</value>
+  </data>
+  <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>The ranking impact weights must be five positive numbers, increasing, separated by commas.</value>
+  </data>
+  <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>The ranking money bands must be four positive numbers, increasing, separated by commas.</value>
+  </data>
+  <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>The quality review sample rate must be between 0 and 0.5.</value>
+  </data>
 </root>

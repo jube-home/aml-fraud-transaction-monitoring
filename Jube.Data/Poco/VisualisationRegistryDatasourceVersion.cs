@@ -41,14 +41,13 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(13)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(14)] public int? Version { get; set; }
-        [Column] [Nullable] [Key(15)] public int? VisualisationTypeId { get; set; }
         [Column] [Nullable] [Key(16)] public string Command { get; set; }
-        [Column] [Nullable] [Key(17)] public string VisualisationText { get; set; }
         [Column] [Nullable] [Key(18)] public double? Priority { get; set; }
         [Column] [Nullable] [Key(19)] public byte? IncludeGrid { get; set; }
-        [Column] [Nullable] [Key(20)] public byte? IncludeDisplay { get; set; }
         [Column] [Nullable] [Key(21)] public int? ColumnSpan { get; set; }
         [Column] [Nullable] [Key(22)] public int? RowSpan { get; set; }
         [Column] [Nullable] [Key(23)] public Guid Guid { get; set; }
+        [Column] [Nullable] [Key(24)] public int? DisplayKindId { get; set; }
+        [Column] [Nullable] [Key(25)] public string TemplateText { get; set; }
     }
 }

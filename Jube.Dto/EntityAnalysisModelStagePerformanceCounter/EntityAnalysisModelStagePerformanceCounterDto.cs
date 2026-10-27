@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +22,48 @@ using System.ComponentModel;
 
 namespace Jube.Dto.EntityAnalysisModelStagePerformanceCounter
 {
+    [GridEndpoint("EntityAnalysisModelStagePerformanceCounter", Title = "Model stage performance counter", DefaultSort = "createdDate")]
+    [GridFilter(Param = "stageId", Label = "Stage", Choices = ["1=Parse", "2=CheckIntegrityAndUpsert", "3=InlineFunctions", "4=InlineScripts", "5=Gateway", "6=CacheDbStorage", "7=Sanctions", "8=TtlCounters", "9=AbstractionRulesWithSearchKeys", "10=JoinReadTasks", "11=AbstractionRulesWithoutSearchKeys", "12=AbstractionCalculations", "13=ExhaustiveAdaptation", "14=HttpAdaptation", "15=Activation", "16=JoinWriteTasks", "17=WriteResponse", "18=BuildArchivePayload"])]
+    [GridRatio("averageMicroseconds", nameof(TotalMicroseconds), nameof(InvokeCount), Title = "Average", Order = 70, Unit = "µs", Format = GridFormat.Integer)]
     public sealed record EntityAnalysisModelStagePerformanceCounterDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property: Description("GUID of the Model this per-minute rollup belongs to.")]
+        [property: ListColumn(Hidden = true)]
         Guid EntityAnalysisModelGuid,
         [property: Description("Name of the Model this per-minute rollup belongs to.")]
+        [property: ListColumn(Order = 10, Title = "Entity Analysis Model")]
         string EntityAnalysisModelName,
         [property:
             Description(
                 "Which invocation pipeline stage this row aggregates -- see StageName for the human-readable form.")]
+        [property: ListColumn(Hidden = true)]
         int StageId,
         [property:
             Description("Name of the invocation pipeline stage this row aggregates (e.g. Parse, Gateway, Activation).")]
+        [property: ListColumn(Order = 20, Title = "Stage")]
         string StageName,
         [property:
             Description("Total microseconds spent in this stage across every invocation counted in this interval.")]
+        [property: ListColumn(Order = 40, Title = "Total", Unit = "µs", Format = GridFormat.Integer)]
         long TotalMicroseconds,
         [property: Description("The fastest single invocation of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 50, Title = "Min", Unit = "µs", Format = GridFormat.Integer)]
         long MinMicroseconds,
         [property: Description("The slowest single invocation of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 60, Title = "Max", Unit = "µs", Format = GridFormat.Integer)]
         long MaxMicroseconds,
         [property:
             Description(
                 "Number of invocations counted in this interval; divide TotalMicroseconds by this for the average cost.")]
+        [property: ListColumn(Hidden = true)]
         int InvokeCount,
         [property: Description("UTC timestamp this row's flush interval was written.")]
+        [property: ListColumn(Order = 30)]
+        [property: GridTimeRange]
         DateTime CreatedDate,
         [property: Description("Hostname of the node that wrote this row.")]
+        [property: ListColumn(Order = 80)]
         string Instance);
 }

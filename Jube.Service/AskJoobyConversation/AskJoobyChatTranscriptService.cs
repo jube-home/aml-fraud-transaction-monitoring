@@ -98,7 +98,7 @@ namespace Jube.Service.AskJoobyConversation
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Landlord || permissionValidation.Validate(permissions))
+            if (permissionValidation.ActiveUser)
             {
                 return;
             }

@@ -12,6 +12,7 @@
  */
 
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
 using Jube.Service.Query.CaseWorkflowDisplayExecution;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
@@ -24,8 +25,27 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "CaseWorkflowDisplayExecutionExecute", OperationKind.Read, true, false,
-                    "Renders a case workflow display HTML template with the case's stored payload tokens replaced.",
-                    CaseWorkflowDisplayExecutionService.RequiredPermissions)
+                    "Renders a case workflow display template as an escaped HTML fragment from the case's stored payload.",
+                    CaseWorkflowDisplayExecutionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowDisplayExecutionRenderForm", OperationKind.Read, true, false,
+                    "Renders a case workflow form template with the values entered so far, naming the fields shown.",
+                    CaseWorkflowDisplayExecutionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowDisplayExecutionRenderFormEntries", OperationKind.Read, true, false,
+                    "Draws the submitted form entries for a case's key read only, with their values filled in.",
+                    CaseWorkflowDisplayExecutionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowDisplayExecutionListDispatches", OperationKind.Read, true, false,
+                    "Lists the audit of the emails, SMS and HTTP calls fired for a case's key: what was rendered, " +
+                    "where it went, whether it was sent, failed or refused, and the SQL rows it was drawn from.",
+                    CaseWorkflowDisplayExecutionService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowDisplayExecutionTestSql", OperationKind.Read, true, false,
+                    "Tries the SQL of a Form, Display, Macro, Action or Status against a case without saving it, " +
+                    "returning the columns and first rows or why it was refused. Needs the case workflow SQL " +
+                    "authoring permission.",
+                    CaseSqlGuard.RequiredPermissions)
             ]);
         }
     }

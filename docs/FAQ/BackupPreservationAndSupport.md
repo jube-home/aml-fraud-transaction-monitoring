@@ -12,9 +12,8 @@ parent: FAQ
 **Q: How do I back up configuration?**
 
 A: Use [Preservation](../Configuration/Preservation/index.html) to export a JEMP file (Jube Encrypted Message Pack:
-LZ4-compressed MessagePack under AES256 with an HMAC, optionally password-protected with `PreservationSalt`). Import is
-transactional and all-or-nothing: it rolls back completely on failure. Peek renders an export as JSON for inspection but
-cannot be imported. Snapshots of configuration are also kept under Preservation and are restorable with a dedicated
+LZ4-compressed MessagePack under AES-256-GCM, with the key derived from a password of at least 12 characters). A file exported by an earlier release of Jube cannot be imported. Import is
+transactional and all-or-nothing: it rolls back completely on failure. Before an import is committed, a preview shows what it would add, remove and change. Snapshots of configuration are also kept under Preservation, can be compared with one another or with the live configuration, and are restorable with a dedicated
 permission.
 
 **Q: Why can I be locked out after importing a JEMP between tenants?**

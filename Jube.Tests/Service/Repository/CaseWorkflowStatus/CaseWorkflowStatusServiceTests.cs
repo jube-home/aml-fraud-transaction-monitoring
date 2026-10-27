@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.Dto.Options;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowStatus;
@@ -857,6 +858,152 @@ namespace Jube.Test.Service.Repository.CaseWorkflowStatus
             createdStatusIds.Add(created.Id);
 
             auditLog.Entries.Should().ContainSingle(e => e.Level == "INFO");
+        }
+
+        [Fact]
+        public async Task AnEscalationRulePersistsWithAStrongerTargetAndCanBeClearedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var target = ValidDto(workflowId);
+            target.Priority = 1;
+            var strong = await service.InsertAsync(target);
+            createdStatusIds.Add(strong.Id);
+
+            var dto = ValidDto(workflowId);
+            dto.EscalationTriggerId = (int)CaseEscalationTrigger.TimeInStatus;
+            dto.EscalationThreshold = 240;
+            dto.EscalationTargetCaseWorkflowStatusGuid = strong.Guid;
+            dto.EscalationReleaseLock = true;
+
+            var saved = await service.InsertAsync(dto);
+            createdStatusIds.Add(saved.Id);
+
+            var read = await service.GetByIdAsync(saved.Id);
+            read.EscalationTriggerId.Should().Be((int)CaseEscalationTrigger.TimeInStatus);
+            read.EscalationThreshold.Should().Be(240);
+            read.EscalationTargetCaseWorkflowStatusGuid.Should().Be(strong.Guid);
+            read.EscalationReleaseLock.Should().BeTrue();
+
+            read.EscalationTriggerId = null;
+            read.EscalationThreshold = null;
+            read.EscalationTargetCaseWorkflowStatusGuid = null;
+            read.EscalationReleaseLock = false;
+            var cleared = await service.UpdateAsync(read);
+
+            cleared.EscalationTriggerId.Should().BeNull();
+            cleared.EscalationTargetCaseWorkflowStatusGuid.Should().BeNull();
+            cleared.EscalationReleaseLock.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(1, 0, "EscalationThresholdInvalid")]
+        [InlineData(1, null, "EscalationThresholdInvalid")]
+        [InlineData(1, 525601, "EscalationThresholdInvalid")]
+        [InlineData(3, 4, "EscalationThresholdInvalid")]
+        [InlineData(3, 0, "EscalationThresholdInvalid")]
+        [InlineData(4, 101, "EscalationThresholdInvalid")]
+        [InlineData(4, 0, "EscalationThresholdInvalid")]
+        [InlineData(9, 5, "EscalationTriggerInvalid")]
+        public async Task AnEscalationTriggerWithABadThresholdOrNumberIsRefusedAsync(int trigger, int? threshold,
+            string expected)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var strong = await service.InsertAsync(ValidDto(workflowId));
+            createdStatusIds.Add(strong.Id);
+            var dto = ValidDto(workflowId);
+            dto.Priority = 5;
+            dto.EscalationTriggerId = trigger;
+            dto.EscalationThreshold = threshold;
+            dto.EscalationTargetCaseWorkflowStatusGuid = strong.Guid;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == expected);
+        }
+
+        [Fact]
+        public async Task EscalationNeedsBothATriggerAndATargetAndNeverAnUnusedThresholdProblemAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var other = await service.InsertAsync(ValidDto(workflowId));
+            createdStatusIds.Add(other.Id);
+
+            var noTarget = ValidDto(workflowId);
+            noTarget.EscalationTriggerId = (int)CaseEscalationTrigger.DeadlineOverdue;
+            (await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(noTarget)))
+                .Result.Errors.Should().Contain(e => e.ErrorCode == "EscalationTargetRequired");
+
+            var noTrigger = ValidDto(workflowId);
+            noTrigger.EscalationTargetCaseWorkflowStatusGuid = other.Guid;
+            (await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(noTrigger)))
+                .Result.Errors.Should().Contain(e => e.ErrorCode == "EscalationTriggerRequired");
+
+            var unused = ValidDto(workflowId);
+            unused.Priority = 5;
+            unused.EscalationTriggerId = (int)CaseEscalationTrigger.DeadlineOverdue;
+            unused.EscalationThreshold = 99999;
+            unused.EscalationTargetCaseWorkflowStatusGuid = other.Guid;
+            var saved = await service.InsertAsync(unused);
+            createdStatusIds.Add(saved.Id);
+            saved.EscalationThreshold.Should().Be(99999);
+        }
+
+        [Fact]
+        public async Task TheEscalationTargetMustBeAnotherActiveStatusOfTheSameWorkflowAndAStrongerPriorityAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var otherWorkflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var sameRank = await service.InsertAsync(ValidDto(workflowId));
+            var weaker = ValidDto(workflowId);
+            weaker.Priority = 5;
+            var weak = await service.InsertAsync(weaker);
+            var inactive = ValidDto(workflowId);
+            inactive.Priority = 1;
+            inactive.Active = false;
+            var off = await service.InsertAsync(inactive);
+            var foreign = ValidDto(otherWorkflowId);
+            foreign.Priority = 1;
+            var elsewhere = await service.InsertAsync(foreign);
+            createdStatusIds.AddRange([sameRank.Id, weak.Id, off.Id, elsewhere.Id]);
+
+            async Task<string> CodeFor(Guid? target, int priority = 3)
+            {
+                var dto = ValidDto(workflowId);
+                dto.Priority = priority;
+                dto.EscalationTriggerId = (int)CaseEscalationTrigger.TimeInStatus;
+                dto.EscalationThreshold = 60;
+                dto.EscalationTargetCaseWorkflowStatusGuid = target;
+                var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+                return string.Join(",", ex.Result.Errors.Select(e => e.ErrorCode).Distinct());
+            }
+
+            (await CodeFor(sameRank.Guid)).Should().Contain("EscalationTargetNotStronger");
+            (await CodeFor(weak.Guid)).Should().Contain("EscalationTargetNotStronger");
+            (await CodeFor(off.Guid)).Should().Contain("EscalationTargetNotFound");
+            (await CodeFor(elsewhere.Guid)).Should().Contain("EscalationTargetNotFound");
+            (await CodeFor(Guid.NewGuid())).Should().Contain("EscalationTargetNotFound");
+
+            var self = await service.GetByIdAsync(sameRank.Id);
+            self.EscalationTriggerId = (int)CaseEscalationTrigger.TimeInStatus;
+            self.EscalationThreshold = 60;
+            self.EscalationTargetCaseWorkflowStatusGuid = self.Guid;
+            self.Priority = 4;
+            (await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(self)))
+                .Result.Errors.Should().Contain(e => e.ErrorCode == "EscalationTargetNotFound");
         }
 
         [Fact]

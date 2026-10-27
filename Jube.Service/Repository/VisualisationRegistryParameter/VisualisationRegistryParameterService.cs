@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -855,6 +856,12 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

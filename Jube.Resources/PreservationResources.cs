@@ -19,5 +19,13 @@ namespace Jube.Resources
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NoFileSupplied = nameof(NoFileSupplied);
         public const string InvalidPreservationFile = nameof(InvalidPreservationFile);
+        public const string PasswordTooShort = nameof(PasswordTooShort);
+        public const string WarningNoApprovalHistory = nameof(WarningNoApprovalHistory);
+        public const string WarningNoRoles = nameof(WarningNoRoles);
+        public const string WarningProductionData = nameof(WarningProductionData);
+        public const string WarningOlderFormat = nameof(WarningOlderFormat);
+        public const string BlockerRoleRekey = nameof(BlockerRoleRekey);
+        public const string DiffNeedsSnapshot = nameof(DiffNeedsSnapshot);
+        public const string DiffSameSnapshot = nameof(DiffSameSnapshot);
     }
 }

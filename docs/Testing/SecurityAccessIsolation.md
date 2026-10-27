@@ -25,9 +25,9 @@ mutate another tenant's data.
 | `VerbTamperingAndRouteAbuse_NeverReachTheRendererOrServerErrorAsync`                      | Fact | Verb tampering and route abuse never reach the renderer or server error.                           |
 | `ConcurrentRenders_AreDeterministicAndBoundedAsync`                                       | Fact | Concurrent renders are deterministic and bounded.                                                  |
 
-### PenTestAdvancedAnalyticsInstance
+### PenTestAskJoobyAnalyticsInstance
 
-`Jube.Test.Security.AdvancedAnalytics.PenTestAdvancedAnalyticsInstance` — 8 tests. Category: PenTest. Collection:
+`Jube.Test.Security.AdvancedAnalytics.PenTestAskJoobyAnalyticsInstance` — 8 tests. Category: PenTest. Collection:
 Database.
 
 | Test                                                                                        | Kind | Verifies                                                                                        |
@@ -41,9 +41,9 @@ Database.
 | `HostileStoredNames_AreReturnedAsJsonDataNeverAsMarkupAsync`                                | Fact | Hostile stored names are returned as json data never as markup.                                 |
 | `Responses_AreWellFormedJsonWithoutTheStackOrServerHeadersAsync`                            | Fact | Responses are well formed json without the stack or server headers.                             |
 
-### PenTestAdvancedAnalyticsInstanceActive
+### PenTestAskJoobyAnalyticsInstanceActive
 
-`Jube.Test.Security.AdvancedAnalytics.PenTestAdvancedAnalyticsInstanceActive` — 8 tests. Category: PenTest. Collection:
+`Jube.Test.Security.AdvancedAnalytics.PenTestAskJoobyAnalyticsInstanceActive` — 8 tests. Category: PenTest. Collection:
 Database.
 
 | Test                                                                            | Kind | Verifies                                                                            |
@@ -57,9 +57,9 @@ Database.
 | `Put_RouteAbuseIsRefusedWithoutServerErrorsAsync`                               | Fact | Put route abuse is refused without server errors.                                   |
 | `Put_ConcurrentSwitchesLeaveAConsistentRowAndNoServerErrorsAsync`               | Fact | Put concurrent switches leave a consistent row and no server errors.                |
 
-### PenTestAdvancedAnalyticsModel
+### PenTestAskJoobyAnalyticsModel
 
-`Jube.Test.Security.AdvancedAnalytics.PenTestAdvancedAnalyticsModel` — 7 tests. Category: PenTest. Collection: Database.
+`Jube.Test.Security.AdvancedAnalytics.PenTestAskJoobyAnalyticsModel` — 7 tests. Category: PenTest. Collection: Database.
 
 | Test                                                                     | Kind | Verifies                                                                     |
 |--------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
@@ -355,6 +355,43 @@ Database.
 | `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`            | Fact | Delete is permissioned and object level authorised.              |
 | `Post_ImageLocation_RejectsPathsAndMarkupAsync`                 | Fact | Post image location rejects paths and markup.                    |
 
+### PenTestCaseHold
+
+`Jube.Test.Security.Case.PenTestCaseHold` — 8 tests. Category: PenTest. Collection: Database.
+
+| Test                                                                         | Kind | Verifies                                                                          |
+|------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
+| `List_IsPermissionedTenantIsolatedAndHostileRangeNamesAreOnlyDataAsync`      | Fact | List_is permissioned tenant isolated and hostile range names are only data.       |
+| `Decision_IsPermissionedAndAForeignTenantChangesNothingAsync`                | Theory | Decision_is permissioned and a foreign tenant changes nothing.                    |
+| `Decision_Validation_RefusesBadBodiesWithoutCallingAnythingAsync`            | Fact | Decision_validation_refuses bad bodies without calling anything.                  |
+| `Decision_CrossSiteOrOriginlessCookiePostsAreRefusedAndNothingIsCalledAsync` | Fact | Decision_cross site or originless cookie posts are refused and nothing is called. |
+| `TheCredentialValueNeverAppearsInAnyResponseTheArchiveOrTheAuditAsync`       | Theory | The credential value never appears in any response the archive or the audit.      |
+| `ASecondReleaseOfThePaymentIsRefusedAndTheHookIsCalledOnceAsync`             | Fact | A second release of the payment is refused and the hook is called once.           |
+| `ARelease_ToAnInternalHostIsRefusedAtSendTimeAuditedAndTheHoldStaysHeldAsync` | Theory | A release_to an internal host is refused at send time audited and the hold stays held. |
+| `ARelease_ToAnAllowListedLoopbackHostIsSentAsync` | Fact | A release_to an allow listed loopback host is sent. |
+
+### PenTestCaseWorkflowReleaseHook
+
+`Jube.Test.Security.Case.PenTestCaseWorkflowReleaseHook` — 15 tests. Category: PenTest. Collection: Database.
+
+| Test                                                              | Kind | Verifies                                                             |
+|-------------------------------------------------------------------|------|----------------------------------------------------------------------|
+| `Post_CredentialVariable_NeverNamesAnythingButAHookVariableAsync` | Fact | Post_credential variable_never names anything but a hook variable.   |
+| `Post_ReleaseUrl_RefusesAnyHostThatIsNotWrittenOutLiterallyAsync` | Fact | Post_release url_refuses any host that is not written out literally. |
+| `Get_List_IsPermissionedAndTenantIsolatedAsync`                   | Fact | Get_list_is permissioned and tenant isolated.                        |
+| `Get_ById_IsPermissionedAndObjectLevelAuthorisedAsync`            | Fact | Get_by id_is permissioned and object level authorised.               |
+| `Get_ByWorkflowRoutes_ArePermissionedAndTenantIsolatedAsync`      | Fact | Get_by workflow routes_are permissioned and tenant isolated.         |
+| `Post_IsPermissionedAndRefusesForeignParentsAsync`                | Fact | Post_is permissioned and refuses foreign parents.                    |
+| `Post_MassAssignment_ForbiddenFieldsAreNotHonouredAsync`          | Fact | Post_mass assignment_forbidden fields are not honoured.              |
+| `Post_StoredHostilePayloads_AreDataAndRoundTripFaithfullyAsync`   | Fact | Post_stored hostile payloads_are data and round trip faithfully.     |
+| `Post_TypeConfusionAndBoundaries_FailSafelyAsync`                 | Fact | Post_type confusion and boundaries_fail safely.                      |
+| `Post_LengthLimitsAndDuplicateNames_AreEnforcedAsync`             | Fact | Post_length limits and duplicate names_are enforced.                 |
+| `Put_IsPermissionedAndObjectLevelAuthorisedAsync`                 | Fact | Put_is permissioned and object level authorised.                     |
+| `Put_MassAssignment_LockingAndSoftDelete_BehaveSafelyAsync`       | Fact | Put_mass assignment_locking and soft delete_behave safely.           |
+| `Put_TypeConfusionAndInjection_FailSafelyAsync`                   | Fact | Put_type confusion and injection_fail safely.                        |
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`              | Fact | Delete_is permissioned and object level authorised.                  |
+| `Post_ReleaseAndRefuseUrl_RefuseAnInternalHostAtSaveTimeAndAcceptAnAllowListedOneAsync` | Fact | Post_release and refuse url_refuse an internal host at save time and accept an allow listed one. |
+
 ### PenTestCaseWorkflowMacroRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowMacroRole` — 6 tests. Category: PenTest. Collection: Database.
@@ -555,7 +592,7 @@ Database.
 
 ### PenTestVisualisationRegistryDatasource
 
-`Jube.Test.Security.DynamicSql.PenTestVisualisationRegistryDatasource` — 9 tests. Category: PenTest.
+`Jube.Test.Security.DynamicSql.PenTestVisualisationRegistryDatasource` — 15 tests. Category: PenTest.
 
 | Test                                                                         | Kind   | Verifies                                                                           |
 |------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
@@ -568,21 +605,29 @@ Database.
 | `InjectionInEveryStringFieldAndRouteParameter_IsStoredAsDataOrRejectedAsync` | Fact   | Injection in every string field and route parameter is stored as data or rejected. |
 | `TypeConfusionAndMalformedBodies_NeverProduceA500Async`                      | Fact   | Type confusion and malformed bodies never produce a 500.                           |
 | `BusinessFlow_DeleteThenUpdate_DoesNotResurrect_AndDoubleSubmitIsSafeAsync`  | Fact   | Business flow delete then update does not resurrect and double submit is safe.     |
+| `Introspect_RefusesEveryAttackAndChangesNothingAsync`                        | Fact   | Introspect refuses every attack and changes nothing.                               |
+| `Introspect_AcceptsALegitimateSelectAndForeignRegistriesLookLikeNotFoundAsync` | Fact   | Introspect accepts a legitimate select and foreign registries look like not found. |
+| `Introspect_MalformedBodiesNeverProduceA500Async`                            | Fact   | Introspect malformed bodies never produce a 500.                                   |
+| `Preview_ReportsEveryAttackAsAnErrorAndChangesNothingAsync`                  | Fact   | Preview reports every attack as an error and changes nothing.                      |
+| `Preview_DrawsALegitimateSelectAndForeignRegistriesLookLikeNotFoundAsync`    | Fact   | Preview draws a legitimate select and foreign registries look like not found.      |
+| `Preview_MalformedBodiesAndHostileValuesNeverProduceA500Async`               | Fact   | Preview malformed bodies and hostile values never produce a 500.                   |
 
 ### PenTestVisualisationRegistryDatasourceCommandExecution
 
-`Jube.Test.Security.DynamicSql.PenTestVisualisationRegistryDatasourceCommandExecution` — 8 tests. Category: PenTest.
+`Jube.Test.Security.DynamicSql.PenTestVisualisationRegistryDatasourceCommandExecution` — 10 tests. Category: PenTest.
 
-| Test                                                                                    | Kind | Verifies                                                                                      |
-|-----------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------|
-| `AuthenticationAndAuthorisationMatrixAsync`                                             | Fact | Authentication and authorisation matrix.                                                      |
-| `ExecutePath_NeverRunsAWriteAsync`                                                      | Fact | Execute path never runs a write.                                                              |
-| `LegitimateDatasourcesStillReturnTheirRowsAsync`                                        | Fact | Legitimate datasources still return their rows.                                               |
-| `Parameters_AreBoundAsTypedValues_AnInjectedValueNeverChangesTheStatementAsync`         | Fact | Parameters are bound as typed values an injected value never changes the statement.           |
-| `BadParameterBodies_AreAClientErrorNeverA500Async`                                      | Fact | Bad parameter bodies are a client error never a 500.                                          |
-| `StatementTimeout_And_RowLimit_BoundTheCostAsync`                                       | Fact | Statement timeout and row limit bound the cost.                                               |
-| `FailingLegitimateSql_DoesNotLeakSchemaOrConnectionDetailsAsync`                        | Fact | Failing legitimate sql does not leak schema or connection details.                            |
-| `ExecutionsAreLoggedWithTheirParameters_AndOnlyForTheCallersOwnVisibleDatasourcesAsync` | Fact | Executions are logged with their parameters and only for the callers own visible datasources. |
+| Test                                                                                    | Kind   | Verifies                                                                                      |
+|-----------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
+| `Card_AuthenticationAndTenantIsolationMatrixAsync`                                      | Fact   | Card authentication and tenant isolation matrix.                                              |
+| `Card_MalformedBodiesAndHostileValuesNeverProduceA500Async`                             | Fact   | Card malformed bodies and hostile values never produce a500.                                  |
+| `AuthenticationAndAuthorisationMatrixAsync`                                             | Fact   | Authentication and authorisation matrix.                                                      |
+| `ExecutePath_NeverRunsAWriteAsync`                                                      | Fact   | Execute path never runs a write.                                                              |
+| `LegitimateDatasourcesStillReturnTheirRowsAsync`                                        | Fact   | Legitimate datasources still return their rows.                                               |
+| `Parameters_AreBoundAsTypedValues_AnInjectedValueNeverChangesTheStatementAsync`         | Fact   | Parameters are bound as typed values an injected value never changes the statement.           |
+| `BadParameterBodies_AreAClientErrorNeverA500Async`                                      | Fact   | Bad parameter bodies are a client error never a 500.                                          |
+| `StatementTimeout_And_RowLimit_BoundTheCostAsync`                                       | Fact   | Statement timeout and row limit bound the cost.                                               |
+| `FailingLegitimateSql_DoesNotLeakSchemaOrConnectionDetailsAsync`                        | Fact   | Failing legitimate sql does not leak schema or connection details.                            |
+| `ExecutionsAreLoggedWithTheirParameters_AndOnlyForTheCallersOwnVisibleDatasourcesAsync` | Fact   | Executions are logged with their parameters and only for the callers own visible datasources. |
 
 ## Entity approval
 
@@ -1097,6 +1142,24 @@ Database.
 | `Window_SearchKeyWindowsAndLimitsAreBoundedAsync`            | Fact | Window search key windows and limits are bounded.             |
 | `ExtraRoutes_ForeignParentsAndHostileArgumentsAreInertAsync` | Fact | Extra routes foreign parents and hostile arguments are inert. |
 | `XPathExpressions_AreStoredAsInertDataAsync`                 | Fact | X path expressions are stored as inert data.                  |
+
+### PenTestModelResponseElevationRange
+
+`Jube.Test.Security.Model.PenTestModelResponseElevationRange` — 11 tests. Category: PenTest. Collection: Database.
+
+| Test                                                       | Kind | Verifies                                                    |
+|------------------------------------------------------------|------|-------------------------------------------------------------|
+| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role.                              |
+| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids.             |
+| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused.                 |
+| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not honoured.       |
+| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round trip.           |
+| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters.                       |
+| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value.                 |
+| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content types.       |
+| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are consistent. |
+| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile expressions.         |
+| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded.               |
 
 ### PenTestModelSanction
 

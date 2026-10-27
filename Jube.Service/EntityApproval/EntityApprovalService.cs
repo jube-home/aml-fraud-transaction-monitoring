@@ -503,7 +503,7 @@ namespace Jube.Service.EntityApproval
             {
                 EntityApprovalKind.EntityAnalysisModelList => EntityApprovalKind.EntityAnalysisModelListValue,
                 EntityApprovalKind.EntityAnalysisModelDictionary => EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
-                EntityApprovalKind.EntityAnalysisModel => EntityApprovalKind.AdvancedAnalyticsInstance,
+                EntityApprovalKind.EntityAnalysisModel => EntityApprovalKind.AskJoobyAnalyticsInstance,
                 _ => throw new ApprovalRefusedException(
                     "Only lists, dictionaries and models have values to approve.", [])
             };

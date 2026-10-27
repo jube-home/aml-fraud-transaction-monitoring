@@ -22,5 +22,6 @@ namespace Jube.Data.Query.GetEntityAnalysisModelsSynchronisationSchedulesByInsta
     {
         public bool SynchronisationPending { get; set; }
         public int TenantRegistryId { get; set; }
+        public int[] EntityAnalysisModelIds { get; set; }
     }
 }

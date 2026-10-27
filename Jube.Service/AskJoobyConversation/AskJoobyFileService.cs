@@ -83,7 +83,7 @@ namespace Jube.Service.AskJoobyConversation
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.ActiveUser)
             {
                 return;
             }

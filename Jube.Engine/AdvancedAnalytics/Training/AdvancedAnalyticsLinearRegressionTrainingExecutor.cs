@@ -47,7 +47,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
         private readonly AdvancedAnalyticsExecutionMessages messages =
             messages ?? new AdvancedAnalyticsExecutionMessages();
 
-        private readonly AdvancedAnalyticsTrainedModelRepository models = new(dbContext, tenantRegistryId, userName);
+        private readonly AskJoobyAnalyticsTrainedModelRepository models = new(dbContext, tenantRegistryId, userName);
         private readonly AdvancedAnalyticsTrainingRunRepository runs = new(dbContext, tenantRegistryId, userName);
 
         private readonly IAdvancedAnalyticsTrainingTrace trace =
@@ -56,7 +56,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
         private readonly AdvancedAnalyticsTrainingRunVariableRepository variables = new(dbContext, tenantRegistryId,
             userName);
 
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions = new(dbContext, tenantRegistryId,
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions = new(dbContext, tenantRegistryId,
             userName);
 
         public Func<double[][], double[], string[], LinearRegressionOptions, CancellationToken,
@@ -252,12 +252,12 @@ namespace Jube.Engine.AdvancedAnalytics.Training
             var evidenceJson = AdvancedAnalyticsEvidenceJson.Serialise(EvidenceOf(result));
             var variablesJson = VariablesJsonOf(arguments, result.SnapshotJson);
 
-            AdvancedAnalyticsTrainedModel model;
-            AdvancedAnalyticsTrainedModelVersion version;
+            AskJoobyAnalyticsTrainedModel model;
+            AskJoobyAnalyticsTrainedModelVersion version;
             var createdModel = false;
 
             var gate = modelNameGates[(StringComparer.OrdinalIgnoreCase.GetHashCode(
-                                           $"{tenantRegistryId}:{run.AdvancedAnalyticsInstanceId}:{arguments.ModelName}") &
+                                           $"{tenantRegistryId}:{run.AskJoobyAnalyticsInstanceId}:{arguments.ModelName}") &
                                        int.MaxValue)
                                       % modelNameGates.Length];
 
@@ -267,7 +267,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
             {
                 await BoundaryAsync(run, token).ConfigureAwait(false);
 
-                var existing = (await models.ListAsync(run.AdvancedAnalyticsInstanceId, token)
+                var existing = (await models.ListAsync(run.AskJoobyAnalyticsInstanceId, token)
                         .ConfigureAwait(false))
                     .FirstOrDefault(m => m.KindId == AdvancedAnalyticsKind.Regressor
                                          && string.Equals(m.Name, arguments.ModelName,
@@ -275,9 +275,9 @@ namespace Jube.Engine.AdvancedAnalytics.Training
 
                 if (existing == null)
                 {
-                    model = await models.InsertAsync(new AdvancedAnalyticsTrainedModel
+                    model = await models.InsertAsync(new AskJoobyAnalyticsTrainedModel
                     {
-                        AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                        AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                         Name = arguments.ModelName!,
                         KindId = AdvancedAnalyticsKind.Regressor,
                         SourceId = AdvancedAnalyticsSource.Agent,
@@ -293,9 +293,9 @@ namespace Jube.Engine.AdvancedAnalytics.Training
 
                 try
                 {
-                    version = await versions.InsertAsync(new AdvancedAnalyticsTrainedModelVersion
+                    version = await versions.InsertAsync(new AskJoobyAnalyticsTrainedModelVersion
                     {
-                        AdvancedAnalyticsTrainedModelId = model.Id,
+                        AskJoobyAnalyticsTrainedModelId = model.Id,
                         ModelJson = result.SnapshotJson,
                         VariablesJson = variablesJson,
                         MetricsJson = evidenceJson,

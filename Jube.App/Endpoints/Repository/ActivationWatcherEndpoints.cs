@@ -42,7 +42,7 @@ namespace Jube.App.Endpoints.Repository
         }
 
         private static async Task<IResult> ReplayAsync(
-            DateTimeOffset? dateFrom, DateTimeOffset? dateTo, HttpContext httpContext,
+            DateTimeOffset? dateFrom, DateTimeOffset? dateTo, string? key, string? keyValue, HttpContext httpContext,
             ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
@@ -62,7 +62,7 @@ namespace Jube.App.Endpoints.Repository
                 var service = await ActivationWatcherService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
 
-                var rows = await service.ReplayAsync(dateFrom, dateTo, token);
+                var rows = await service.ReplayAsync(dateFrom, dateTo, key, keyValue, token);
 
                 return TypedResults.Ok(rows);
             }

@@ -69,4 +69,43 @@
     <data name="PayloadTooLarge" xml:space="preserve">
     <value>The form payload exceeds the permitted size: at most {0} fields, field names up to {1} characters and values up to {2} characters.</value>
   </data>
+    <data name="FieldUnknown" xml:space="preserve">
+    <value>That field is not part of the form.</value>
+  </data>
+    <data name="FieldType" xml:space="preserve">
+    <value>That value is not valid for the type of the field.</value>
+  </data>
+    <data name="FieldOption" xml:space="preserve">
+    <value>That value is not one of the choices offered.</value>
+  </data>
+    <data name="FieldLength" xml:space="preserve">
+    <value>That value is longer than the field allows.</value>
+  </data>
+    <data name="FieldRequired" xml:space="preserve">
+    <value>A value is required.</value>
+  </data>
+    <data name="FieldRange" xml:space="preserve">
+    <value>The value is outside the allowed range.</value>
+  </data>
+    <data name="FieldPattern" xml:space="preserve">
+    <value>The value does not match the required pattern.</value>
+  </data>
+    <data name="FieldCompare" xml:space="preserve">
+    <value>The value does not agree with the field it is compared with.</value>
+  </data>
+    <data name="FieldList" xml:space="preserve">
+    <value>The value is not on the list.</value>
+  </data>
+    <data name="FieldDictionary" xml:space="preserve">
+    <value>The value is not a known key.</value>
+  </data>
+    <data name="FieldSql" xml:space="preserve">
+    <value>The value did not pass the check.</value>
+  </data>
+    <data name="FieldSqlFailed" xml:space="preserve">
+    <value>The check could not be run.</value>
+  </data>
+    <data name="FormSqlFailed" xml:space="preserve">
+    <value>The data this form is drawn from could not be loaded, so it cannot be submitted.</value>
+  </data>
 </root>

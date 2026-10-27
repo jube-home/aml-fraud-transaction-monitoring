@@ -26,14 +26,25 @@ namespace Jube.Dto.Repository.VisualisationRegistryDatasourceSeries
         public int Id { get; set; }
 
         [Description("Name of the series, taken verbatim from the column name returned by the Visualisation " +
-                     "Registry Datasource's SQL command. Used as the field name when building a Kendo Chart or " +
-                     "Grid data source in the browser. Server-derived; not user-editable.")]
+                     "Registry Datasource's SQL command. Server-derived; not user-editable.")]
         public string? Name { get; set; }
 
         [Description("Data type of the series column, inferred from the underlying SQL result column type when " +
-                     "the Visualisation Registry Datasource is created or updated: 1=string/text, 2=integer, " +
-                     "3=double precision/numeric, 4=date, 5=boolean, 6=other/string. Server-derived; not " +
-                     "user-editable.")]
+                     "the Visualisation Registry Datasource is created or updated: 1=text, 2=integer, " +
+                     "3=decimal (double precision, real, numeric), 4=date and time, 5=flag (smallint or boolean), " +
+                     "6=array of decimals, 7=other array. Series are listed in the order of the SELECT columns. " +
+                     "Server-derived; not user-editable.")]
         public int DataTypeId { get; set; }
+
+        [Description("Position of the column in the SELECT list, counting from 1. Charts take their series from the " +
+                     "columns in this order. Server-derived; not user-editable.")]
+        public int Ordinal { get; set; }
+
+        [Description("The chart role this column has been explicitly assigned to, from DatasourceChartRole. Null " +
+                     "when the column has no explicit role and is given one by position when the chart is drawn.")]
+        public int? RoleId { get; set; }
+
+        [Description("Order among the columns assigned to the same role, counting from 1. Null when RoleId is null.")]
+        public int? RoleOrder { get; set; }
     }
 }

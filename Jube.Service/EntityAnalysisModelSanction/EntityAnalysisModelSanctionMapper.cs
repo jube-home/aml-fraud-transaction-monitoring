@@ -61,6 +61,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             return new SanctionPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

@@ -40,7 +40,7 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(5)] public string Name { get; set; }
         [Column] [Nullable] [Key(6)] public DateTime? CreatedDate { get; set; }
-        [Column] [Nullable] [Key(7)] public double? ResponseElevation { get; set; }
+        [Column] [Nullable] [Key(7)] public int? ResponseElevation { get; set; }
         [Column] [Nullable] [Key(8)] public Guid CaseWorkflowGuid { get; set; }
         [Column] [Nullable] [Key(9)] public int? EnableCaseWorkflow { get; set; }
         [Column] [Nullable] [Key(10)] public byte? Active { get; set; }

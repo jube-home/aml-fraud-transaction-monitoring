@@ -52,7 +52,7 @@ namespace Jube.App.Endpoints.Repository
                 .WithName("EntityAnalysisModelSynchronisationScheduleCreate");
         }
 
-        private static async Task<IResult> GetCurrentAsync(HttpContext httpContext, ILog log,
+        private static async Task<IResult> GetCurrentAsync(HttpContext httpContext, int? entityAnalysisModelId, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
@@ -71,7 +71,7 @@ namespace Jube.App.Endpoints.Repository
                 var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext, user,
                     log, stringLocalizerFactory, serviceChangeBus, token);
 
-                return TypedResults.Ok(await service.GetCurrentAsync(token));
+                return TypedResults.Ok(await service.GetCurrentAsync(entityAnalysisModelId, token));
             }
             catch (NotAuthenticatedException)
             {

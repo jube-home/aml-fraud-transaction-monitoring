@@ -51,7 +51,10 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             private set;
         }
 
+        private RabbitMQ.Client.IConnection? rabbitMqConnection;
+
         protected virtual IReadOnlyDictionary<string, string>? EngineSettings => null;
+        protected virtual RabbitMQ.Client.IConnection? CreateRabbitMqConnection() => null;
         protected virtual Task BeforeEngineStartAsync() => Task.CompletedTask;
         protected virtual Task AfterDisposeAsync() => Task.CompletedTask;
 
@@ -63,7 +66,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
 
             try
             {
-                Engine = await ModelEngineHost.StartAsync(EngineSettings).ConfigureAwait(false);
+                rabbitMqConnection = CreateRabbitMqConnection();
+                Engine = await ModelEngineHost.StartAsync(EngineSettings, null, rabbitMqConnection).ConfigureAwait(false);
                 SharedSync = await ModelSync.SyncAsync(Engine, Shared).ConfigureAwait(false);
                 Api = await ModelInvokeHost.StartAsync(Engine).ConfigureAwait(false);
             }
@@ -118,6 +122,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             {
                 await shared.DisposeAsync().ConfigureAwait(false);
             }
+
+            rabbitMqConnection?.Dispose();
 
             await AfterDisposeAsync().ConfigureAwait(false);
         }

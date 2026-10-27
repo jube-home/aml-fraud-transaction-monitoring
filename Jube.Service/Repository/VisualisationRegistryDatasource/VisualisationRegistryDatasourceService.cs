@@ -11,8 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
+using FluentValidation.Results;
 using Jube.Data.Context;
+using Jube.Data.Reporting;
 using Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
@@ -21,6 +24,8 @@ using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
 using Jube.Service.Agent.Models;
+using Jube.Service.Charts.Datasource;
+using Jube.Service.Charts.Datasource.Models;
 using Jube.Service.Concurrency;
 using Jube.Service.DynamicSql;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryDatasource;
@@ -32,6 +37,11 @@ using log4net;
 using Microsoft.Extensions.Localization;
 using DatasourcePoco = Jube.Data.Poco.VisualisationRegistryDatasource;
 using DataSqlValidationFailedException = Jube.Data.Repository.Exceptions.SqlValidationFailedException;
+using CardQuery =
+    Jube.Data.Query.ExecuteVisualisationRegistryDatasourceCardQuery.ExecuteVisualisationRegistryDatasourceCardQuery;
+using ParameterValueInvalidException = Jube.Data.Repository.Exceptions.ParameterValueInvalidException;
+using IntrospectQuery =
+    Jube.Data.Query.IntrospectVisualisationRegistryDatasourceQuery.IntrospectVisualisationRegistryDatasourceQuery;
 
 namespace Jube.Service.Repository.VisualisationRegistryDatasource
 {
@@ -47,8 +57,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly VisualisationRegistryDatasourceDisplayRules displayRules;
         private readonly VisualisationRegistryDatasourceRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
+        private readonly DatasourceChartText chartText;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
@@ -56,9 +68,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
         private VisualisationRegistryDatasourceService(DbContext dbContext, string userName,
             int tenantRegistryId, PermissionValidation permissionValidation, ILog log, ILog auditLog,
-            IServiceChangeBus serviceChangeBus, IStringLocalizer strings,
+            IServiceChangeBus serviceChangeBus, IStringLocalizer strings, IStringLocalizer chartStrings,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
+            chartText = new DatasourceChartText(chartStrings);
             this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
@@ -68,6 +81,8 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             this.dynamicEnvironment = dynamicEnvironment;
+            displayRules = new VisualisationRegistryDatasourceDisplayRules(dbContext, tenantRegistryId, userName,
+                chartText, strings, dynamicEnvironment, log, AllowedTablesOrNullForDenyMode);
             repository = new VisualisationRegistryDatasourceRepository(dbContext, userName);
             var visualisationRegistryRepository = new VisualisationRegistryRepository(dbContext, tenantRegistryId);
 
@@ -95,6 +110,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(VisualisationRegistryDatasourceResources));
+            var chartStrings = stringLocalizerFactory.Create(typeof(DatasourceChartResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -124,7 +140,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 .ConfigureAwait(false);
 
             return new VisualisationRegistryDatasourceService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, dynamicEnvironment);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, chartStrings, dynamicEnvironment);
         }
 
         [Description("Lists every Datasource visible to the calling user's tenant. Unbounded -- intended for " +
@@ -344,7 +360,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 op.Entity(datasource.Id);
 
-                return VisualisationRegistryDatasourceMapper.ToDto(datasource);
+                var dto = VisualisationRegistryDatasourceMapper.ToDto(datasource);
+                await displayRules.AttachMappingAsync(dto, token).ConfigureAwait(false);
+
+                return dto;
             }
             catch (ForbiddenException)
             {
@@ -404,7 +423,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 op.Entity(datasource.Id);
 
-                return VisualisationRegistryDatasourceMapper.ToDto(datasource);
+                var dto = VisualisationRegistryDatasourceMapper.ToDto(datasource);
+                await displayRules.AttachMappingAsync(dto, token).ConfigureAwait(false);
+
+                return dto;
             }
             catch (ForbiddenException)
             {
@@ -688,13 +710,15 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 try
                 {
+                    var roleColumns = await displayRules.ResolveRoleColumnsAsync(model, token).ConfigureAwait(false);
+
                     saved = await UniqueViolation.GuardAsync(() =>
                                 new CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery(dbContext,
                                         tenantRegistryId, userName)
                                     .ExecuteAsync(VisualisationRegistryDatasourceMapper.ToPoco(model), false, log,
                                         dynamicEnvironment.AppSettings("ReportConnectionString") ??
                                         dbContext.Connection.ConnectionString,
-                                        AllowedTablesOrNullForDenyMode(),
+                                        AllowedTablesOrNullForDenyMode(), roleColumns,
                                         token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
@@ -708,7 +732,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                             ex);
                     }
 
-                    throw new SqlValidationFailedException(ex.Message, ex);
+                    throw new SqlValidationFailedException(chartText.Describe(ex), ex);
                 }
 
                 op.Entity(saved.Id);
@@ -806,6 +830,268 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
             }
         }
 
+        [Description("Reads the columns a Datasource's SQL Command would return, in SELECT order, with a " +
+                     "classification of each column's type, without saving anything. The SQL goes through the " +
+                     "same checks as a save: a single SELECT statement only, the table allow-list, and the " +
+                     "reporting database's own planning, and it is never run beyond reading its column " +
+                     "definitions. A rejected command is reported in the result with the reason, not thrown, so " +
+                     "this suits checking SQL while it is being written. Nothing is stored or changed.")]
+        [ServiceOperation("VisualisationRegistryDatasourceIntrospect", OperationKind.Read, Idempotent = true)]
+        public async Task<VisualisationRegistryDatasourceIntrospectionDto> IntrospectAsync(
+            [Description("The Visualisation Registry the Datasource belongs to and the SQL Command to inspect.")]
+            VisualisationRegistryDatasourceIntrospectionRequestDto? request,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryDatasource", "Introspect", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistryDatasource.Introspect: entry registry={request?.VisualisationRegistryId} " +
+                          $"user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(request);
+                EnsurePermitted(writePermissions, "VisualisationRegistryDatasource.Introspect");
+                displayRules.ValidateIntrospectionRequest(request);
+
+                try
+                {
+                    var columns = await new IntrospectQuery(dbContext, tenantRegistryId)
+                        .ExecuteAsync(request.VisualisationRegistryId, request.Command!,
+                            dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                            dbContext.Connection.ConnectionString,
+                            log, AllowedTablesOrNullForDenyMode(), token)
+                        .ConfigureAwait(false);
+
+                    op.Rows(columns.Count);
+
+                    var result = new VisualisationRegistryDatasourceIntrospectionDto
+                    {
+                        Valid = true,
+                        Columns = columns.Select(c => new VisualisationRegistryDatasourceIntrospectionColumnDto
+                        {
+                            Name = c.Name,
+                            Ordinal = c.Ordinal,
+                            DataTypeName = c.DataTypeName,
+                            DataTypeId = (int)c.DataType
+                        }).ToList()
+                    };
+
+                    displayRules.DescribeChartShape(result, columns, request);
+
+                    return result;
+                }
+                catch (DataSqlValidationFailedException ex)
+                {
+                    if (log.IsInfoEnabled)
+                    {
+                        log.Info($"VisualisationRegistryDatasource.Introspect: SQL rejected user={userName}", ex);
+                    }
+
+                    op.Outcome("invalid");
+
+                    var location = ex.Position is { } at && request.Command != null
+                        ? PostgresErrorPosition.LineAndColumn(request.Command, at)
+                        : (Line: 0, Column: 0);
+
+                    return new VisualisationRegistryDatasourceIntrospectionDto
+                    {
+                        Valid = false,
+                        Error = chartText.Describe(ex),
+                        ErrorLine = location.Line > 0 ? location.Line : null,
+                        ErrorColumn = location.Line > 0 ? location.Column : null
+                    };
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException(
+                        strings[VisualisationRegistryDatasourceResources.VisualisationRegistryIdNotFound], ex);
+                }
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"VisualisationRegistryDatasource.Introspect: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Lists the chart kinds a Datasource can be drawn as and, for each, the roles its columns fill " +
+                     "(category, value, series, x, y and so on): which roles are optional, which take several " +
+                     "columns and which column types they accept. Columns are assigned to roles by position unless " +
+                     "a mapping says otherwise. Nothing is stored or changed.")]
+        [ServiceOperation("VisualisationRegistryDatasourceChartKinds", OperationKind.Read, Idempotent = true)]
+        public Task<List<DatasourceChartKindDto>> ChartKindsAsync(CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryDatasource", "ChartKinds", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted(listPermissions, "VisualisationRegistryDatasource.ChartKinds");
+
+                var kinds = DatasourceChartKinds.All.Select(k => new DatasourceChartKindDto
+                {
+                    KindId = (int)k.Kind,
+                    Name = chartText.KindName(k),
+                    Description = chartText.KindDescription(k),
+                    Roles = k.Roles.Select(r => new DatasourceChartRoleDto
+                    {
+                        RoleId = (int)r.Role,
+                        Name = chartText.RoleName(r.Role),
+                        Description = chartText.RoleDescription(r.Role),
+                        Many = r.Many,
+                        Optional = r.Optional,
+                        AcceptsId = (int)r.Accepts
+                    }).ToList()
+                }).ToList();
+
+                op.Rows(kinds.Count);
+
+                return Task.FromResult(kinds);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"VisualisationRegistryDatasource.ChartKinds: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Runs a Datasource's SQL Command without saving it and returns the card exactly as the " +
+                     "Visualisation page will receive it: the chart already drawn as an SVG, the rows only when " +
+                     "the grid is switched on, the stylesheet the SVG needs, and the state (ready, empty or " +
+                     "error) with a plain reason. The SQL is limited and checked as on save, at most 5000 rows " +
+                     "are read, and nothing is stored, logged or changed. A query that fails is reported in the " +
+                     "card, not thrown.")]
+        [ServiceOperation("VisualisationRegistryDatasourcePreview", OperationKind.Read, Idempotent = true)]
+        public async Task<DatasourceCardDto> PreviewAsync(
+            [Description("The registry, SQL Command, chart, column mapping, grid switch and card settings.")]
+            DatasourcePreviewRequestDto? request,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistryDatasource", "Preview", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistryDatasource.Preview: entry registry={request?.VisualisationRegistryId} " +
+                          $"user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(request);
+                EnsurePermitted(writePermissions, "VisualisationRegistryDatasource.Preview");
+
+                var (kind, mapping) = displayRules.ValidatePreviewRequest(request);
+                var card = request.Card;
+
+                var identity = new DatasourceCardIdentity(0, Guid.Empty, string.Empty, request.ColumnSpan,
+                    request.RowSpan, request.Priority);
+
+                try
+                {
+                    var supplied = card.Parameters.Where(p => p.Value != null)
+                        .ToDictionary(p => p.Id, p => p.Value!);
+
+                    var executed = await new CardQuery(dbContext, tenantRegistryId)
+                        .ExecuteAsync(request.VisualisationRegistryId, request.Command!, supplied,
+                            dynamicEnvironment.AppSettings("AssumeLocalDateInPayloadExtraction")
+                                .Equals("True", StringComparison.OrdinalIgnoreCase),
+                            dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                            dbContext.Connection.ConnectionString,
+                            log, AllowedTablesOrNullForDenyMode(), DatasourceCardAssembler.MaximumRows,
+                            card.ContextId, token)
+                        .ConfigureAwait(false);
+
+                    var built = DatasourceCardAssembler.Build(identity, executed.Result, executed.Milliseconds, null,
+                        kind, mapping, request.IncludeGrid, card, chartText, request.TemplateText);
+
+                    op.Rows(built.RowCount);
+
+                    return built;
+                }
+                catch (DataSqlValidationFailedException ex)
+                {
+                    if (log.IsInfoEnabled)
+                    {
+                        log.Info($"VisualisationRegistryDatasource.Preview: query failed user={userName}", ex);
+                    }
+
+                    op.Outcome("invalid");
+
+                    return DatasourceCardAssembler.Build(identity, null, 0, chartText.Describe(ex), kind, mapping,
+                        request.IncludeGrid, card, chartText, request.TemplateText);
+                }
+                catch (ParameterValueInvalidException ex)
+                {
+                    throw new DtoValidationException(new ValidationResult([
+                        new ValidationFailure("Card.Parameters", chartText.Describe(ex)) { ErrorCode = "ParameterValueInvalid" }
+                    ]));
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException(
+                        strings[VisualisationRegistryDatasourceResources.VisualisationRegistryIdNotFound], ex);
+                }
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"VisualisationRegistryDatasource.Preview: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Updates an existing Datasource in the caller's tenant, identified by its Id. The SQL " +
                      "Command is re-validated against the reporting connection before the row is persisted. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
@@ -847,13 +1133,15 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
 
                 try
                 {
+                    var roleColumns = await displayRules.ResolveRoleColumnsAsync(model, token).ConfigureAwait(false);
+
                     saved = await UniqueViolation.GuardAsync(() =>
                                 new CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery(dbContext,
                                         tenantRegistryId, userName)
                                     .ExecuteAsync(poco, true, log,
                                         dynamicEnvironment.AppSettings("ReportConnectionString") ??
                                         dbContext.Connection.ConnectionString,
-                                        AllowedTablesOrNullForDenyMode(),
+                                        AllowedTablesOrNullForDenyMode(), roleColumns,
                                         token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
@@ -867,7 +1155,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                                  $"user={userName}", ex);
                     }
 
-                    throw new SqlValidationFailedException(ex.Message, ex);
+                    throw new SqlValidationFailedException(chartText.Describe(ex), ex);
                 }
                 catch (KeyNotFoundException ex)
                 {
@@ -912,6 +1200,12 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

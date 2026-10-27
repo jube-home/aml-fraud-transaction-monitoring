@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelAbstractionRule
 {
     [FormEndpoint("EntityAnalysisModelAbstractionRule")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.AbstractionRule, ScriptType = nameof(RuleScriptTypeId), Builder = nameof(BuilderRuleScript), BuilderJson = nameof(Json), Coder = nameof(CoderRuleScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -39,7 +42,7 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Abstraction Rule. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Declines in 24 hours")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -47,13 +50,12 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]
         [FormField(Group = "Rule", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
         public int RuleScriptTypeId { get; set; }
 
         [Description("The hand-written Coder-surface source for this rule. Required when RuleScriptTypeId is 2 " +
                      "(Coder); not required when RuleScriptTypeId is 1 (Builder).")]
         [FormField(Group = "Rule", Order = 40)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 2)]
         public string? CoderRuleScript { get; set; }
 
         [Description("When true, this Abstraction Rule is tested against every record returned from the cache " +
@@ -86,6 +88,7 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
         [FormField(Group = "Search and Aggregation", Order = 40, Widget = "radio")]
         [VisibleWhen(nameof(Search), true)]
         [NewDefault("h")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public string? SearchInterval { get; set; }
 
         [Description("The aggregation function applied to the matched, offset-reduced cache records: 1 Count, " +
@@ -94,6 +97,7 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
         [FormField(Group = "Search and Aggregation", Order = 50, Widget = "select")]
         [VisibleWhen(nameof(Search), true)]
         [NewDefault(1)]
+        [Options(typeof(SearchFunctionType))]
         public int SearchFunctionTypeId { get; set; }
 
         [Description("The data element that the Function Type aggregates over (e.g. the field to Sum or Average). " +
@@ -104,6 +108,8 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
         [VisibleWhen(nameof(SearchFunctionTypeId), 1, Op = ConditionOp.NotEquals)]
         [Lookup("/api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery",
             TextField = "name", ValueField = "name", ParentField = nameof(EntityAnalysisModelId))]
+        [RequiredWhen(nameof(Search), true)]
+        [RequiredWhen(nameof(SearchFunctionTypeId), 1, Op = ConditionOp.NotEquals)]
         public string? SearchFunctionKey { get; set; }
 
         [Description("When true, the matched cache records are reduced to a sub-range (First/Last/Skip " +
@@ -121,6 +127,7 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
         [VisibleWhen(nameof(Offset), true)]
         [RequiredWhen(nameof(Offset), true)]
         [NewDefault(1)]
+        [Options(typeof(OffsetType))]
         public int OffsetTypeId { get; set; }
 
         [Description("The number of records the Offset Type reduction applies to (e.g. skip the first N, or take " +
@@ -165,13 +172,13 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionRule
                      "match, False otherwise. Required when RuleScriptTypeId is 1 (Builder); not required when " +
                      "RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 20)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string BuilderRuleScript { get; set; } = string.Empty;
 
         [Description("The Query Builder JSON definition backing BuilderRuleScript. Required when RuleScriptTypeId " +
                      "is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 30)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string Json { get; set; } = string.Empty;
 
         [Description("Server-assigned row identifier. Read-only.")]

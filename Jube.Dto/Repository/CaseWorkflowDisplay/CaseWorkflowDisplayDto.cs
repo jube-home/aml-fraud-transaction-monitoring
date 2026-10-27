@@ -23,10 +23,13 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.CaseWorkflowDisplay
 {
     [FormEndpoint("CaseWorkflowDisplay")]
+    [CaseSqlEditor(Sql = nameof(Sql))]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(CaseWorkflowId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Template", Order = 20)]
+    [FormGroup("Sql", Order = 5, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     public class CaseWorkflowDisplayDto : IUpdated, IActivatable, ILockable
     {
@@ -35,7 +38,7 @@ namespace Jube.Dto.Repository.CaseWorkflowDisplay
         public int CaseWorkflowId { get; set; }
 
         [Description("Display name of the template, shown to investigators when choosing a Display for a Case.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Transaction summary")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -54,7 +57,7 @@ namespace Jube.Dto.Repository.CaseWorkflowDisplay
 
         [Description("HTML template rendered on the Case page, with token substitution against the Case's " +
                      "archived transaction data. Required.")]
-        [FormField(Group = "Template", Order = 10, Widget = "code-editor")]
+        [FormField(Group = "Template", Order = 10, Widget = "code")]
         public string? Html { get; set; }
 
         [Description("Present on the API contract for backward compatibility, but not backed by any column on " +
@@ -82,6 +85,14 @@ namespace Jube.Dto.Repository.CaseWorkflowDisplay
 
         [Description("Inert -- see EnableHttpEndpoint. Never persisted.")]
         public string? NotificationBody { get; set; }
+
+        [Description("Optional. A single SELECT run for a case, read only against the tenant's own rows, whose rows " +
+                     "the layout and the notification and HTTP templates are drawn from, as rows, with tokens such " +
+                     "as [@ rows[0].Name @]. It may use the bound parameters @Id, the id of the case, and " +
+                     "@CaseKeyValue. When empty, the earlier behaviour of drawing from the case's stored payload " +
+                     "applies. Authoring SQL needs its own permission.")]
+        [FormField(Group = "Sql", Order = 10, Widget = "code")]
+        public string? Sql { get; set; }
 
         [Description("Server-assigned globally-unique identifier of this Display, referenced by Case Workflow " +
                      "Display Roles. Read-only.")]

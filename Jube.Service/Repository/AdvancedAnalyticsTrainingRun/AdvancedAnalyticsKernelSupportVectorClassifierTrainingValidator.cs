@@ -31,16 +31,16 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
         public AdvancedAnalyticsKernelSupportVectorClassifierTrainingValidator(IStringLocalizer localiser,
             Func<int, CancellationToken, Task<bool>> instanceVisible)
         {
-            RuleFor(p => p.AdvancedAnalyticsInstanceId)
+            RuleFor(p => p.AskJoobyAnalyticsInstanceId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[AdvancedAnalyticsTrainingResources.InstanceIdInvalid])
                 .WithErrorCode("InstanceIdInvalid");
 
-            RuleFor(p => p.AdvancedAnalyticsInstanceId)
+            RuleFor(p => p.AskJoobyAnalyticsInstanceId)
                 .MustAsync((id, cancellation) => instanceVisible(id, cancellation))
                 .WithMessage(_ => localiser[AdvancedAnalyticsTrainingResources.InstanceNotFound])
                 .WithErrorCode("InstanceNotFound")
-                .When(p => p.AdvancedAnalyticsInstanceId > 0);
+                .When(p => p.AskJoobyAnalyticsInstanceId > 0);
 
             RuleFor(p => p.ModelName)
                 .NotEmpty()

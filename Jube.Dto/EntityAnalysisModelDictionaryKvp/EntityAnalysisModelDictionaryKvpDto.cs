@@ -34,13 +34,13 @@ namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
 
         [Description("The key matched against the value extracted from the payload's Lookup field during model " +
                      "invocation.")]
-        [FormField(Group = "Value", Order = 10)]
+        [FormField(Group = "Value", Order = 10, Placeholder = "e.g. GB")]
         [ListColumn(Order = 10, Title = "Key")]
         public string? KvpKey { get; set; }
 
         [Description("The value returned when KvpKey matches the payload's Lookup field value during model " +
                      "invocation.")]
-        [FormField(Group = "Value", Order = 20, Widget = "number")]
+        [FormField(Group = "Value", Order = 20, Widget = "number", Placeholder = "e.g. 12.5")]
         [ListColumn(Order = 20, Title = "Value")]
         public double? KvpValue { get; set; }
 

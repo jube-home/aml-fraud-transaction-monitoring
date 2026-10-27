@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelSanction
 {
     [FormEndpoint("EntityAnalysisModelSanction")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -38,7 +40,7 @@ namespace Jube.Dto.EntityAnalysisModelSanction
 
         [Description("Display name of this Sanction check registration. Unique within the Model " +
                      "(case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. OFAC SDN screening")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -54,34 +56,42 @@ namespace Jube.Dto.EntityAnalysisModelSanction
                      "exceeds this is not considered a match.")]
         [FormField(Group = "Matching", Order = 20, Widget = "slider")]
         [ListColumn(Order = 30, Title = "Distance")]
+        [NewDefault(2)]
         public int Distance { get; set; }
 
         [Description("How the distances of every matched sanction entry are combined into the single value made " +
                      "available for rule evaluation: 1 = Sum, 2 = Average (default), 3 = Count, 4 = Max, 5 = Min, " +
                      "6 = First, 7 = Last, 8 = Confidence. Leave unset to use the server default (Average).")]
         [FormField(Group = "Matching", Order = 30, Widget = "select")]
+        [Options(typeof(SanctionAggregationType))]
+        [NewDefault((byte)1)]
         public byte? AggregationTypeId { get; set; }
 
         [Description("Overrides the server-wide maximum distance ratio for this Sanction check only, scaling " +
                      "down the allowed Levenshtein distance in proportion to the shorter token length being " +
                      "compared. Leave unset to use the server-wide default.")]
         [FormField(Group = "Matching", Order = 40, Widget = "slider")]
+        [NewDefault(0.3)]
         public double? MaxDistanceRatio { get; set; }
 
         [Description("Overrides the server-wide maximum coverage ratio for this Sanction check only, rejecting a " +
                      "candidate match whose token count differs too greatly from the input's token count. Leave " +
                      "unset to use the server-wide default.")]
-        [FormField(Group = "Matching", Order = 50, Widget = "slider")]
+        [FormField(Group = "Matching", Order = 50, Widget = "number")]
+        [NewDefault(2.0)]
         public double? MaxCoverageRatio { get; set; }
 
         [Description("Interval unit for how long a matched multipart string's distance is cached: 's' (seconds), " +
                      "'n' (minutes), 'h' (hours) or 'd' (days).")]
         [FormField(Group = "Caching", Order = 10, Widget = "radio")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [NewDefault('h')]
         public char CacheInterval { get; set; }
 
         [Description("Length of time, in CacheInterval units, that a cached distance for a multipart string " +
                      "remains valid.")]
         [FormField(Group = "Caching", Order = 20)]
+        [NewDefault(1)]
         public int CacheValue { get; set; }
 
         [Description("When true, a matching row is written to the sanctions report table for this transaction.")]

@@ -51,6 +51,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         {
             return new LogCounterPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 Name = dto.Name,
                 Regex = dto.Regex,

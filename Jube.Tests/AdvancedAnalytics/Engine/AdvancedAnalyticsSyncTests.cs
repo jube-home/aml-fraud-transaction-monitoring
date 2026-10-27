@@ -39,29 +39,29 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         private static readonly TrainedFixture first = EngineModelFactory.Trained(51, names, [1, 5]);
         private static readonly TrainedFixture second = EngineModelFactory.Trained(52, names, [2, 6]);
 
-        private async Task<AdvancedAnalyticsInstance> ActiveInstanceAsync(int modelId, string? name = null,
+        private async Task<AskJoobyAnalyticsInstance> ActiveInstanceAsync(int modelId, string? name = null,
             byte active = 1, byte responsePayload = 0)
         {
             var instance = await NewInstanceAsync(TenantA, modelId, name);
-            var repository = new AdvancedAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser");
+            var repository = new AskJoobyAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser");
             instance.Active = active;
             instance.ResponsePayload = responsePayload;
             var updated = await repository.UpdateAsync(instance);
 
-            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AdvancedAnalyticsInstance, updated.Id,
+            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AskJoobyAnalyticsInstance, updated.Id,
                 updated.Version, TenantA);
 
             return updated;
         }
 
-        private async Task<(AdvancedAnalyticsTrainedModel Model, AdvancedAnalyticsTrainedModelVersion Version)>
+        private async Task<(AskJoobyAnalyticsTrainedModel Model, AskJoobyAnalyticsTrainedModelVersion Version)>
             TrainedAsync(int instanceId, TrainedFixture fixture, bool activate = true, string? name = null)
         {
-            var models = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
+            var models = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
 
-            var model = await models.InsertAsync(new AdvancedAnalyticsTrainedModel
+            var model = await models.InsertAsync(new AskJoobyAnalyticsTrainedModel
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 Name = name ?? UniqueName("Trained"),
                 KindId = AdvancedAnalyticsKind.Classifier,
                 SourceId = AdvancedAnalyticsSource.Agent
@@ -78,13 +78,13 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             return (model, version);
         }
 
-        private Task<AdvancedAnalyticsTrainedModelVersion> AddVersionAsync(int modelId, TrainedFixture fixture,
+        private Task<AskJoobyAnalyticsTrainedModelVersion> AddVersionAsync(int modelId, TrainedFixture fixture,
             string? modelJson = null)
         {
-            return new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, "ZzTestUser").InsertAsync(
-                new AdvancedAnalyticsTrainedModelVersion
+            return new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, "ZzTestUser").InsertAsync(
+                new AskJoobyAnalyticsTrainedModelVersion
                 {
-                    AdvancedAnalyticsTrainedModelId = modelId,
+                    AskJoobyAnalyticsTrainedModelId = modelId,
                     ModelJson = modelJson ?? fixture.SnapshotJson,
                     VariablesJson = fixture.VariablesJson
                 });
@@ -126,14 +126,14 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var (trained, version) = await TrainedAsync(instance.Id, first, name: "Sync Logistic");
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             var loaded = model.Snapshot.AdvancedAnalyticsModels.Should().ContainSingle().Subject;
             loaded.Id.Should().Be(trained.Id);
             loaded.Guid.Should().Be(trained.Guid);
             loaded.VersionId.Should().Be(version.Id);
-            loaded.AdvancedAnalyticsInstanceId.Should().Be(instance.Id);
+            loaded.AskJoobyAnalyticsInstanceId.Should().Be(instance.Id);
             loaded.Name.Should().Be("Sync_Logistic");
             loaded.ResponsePayload.Should().BeTrue();
             loaded.VariablesInOrder.Select(s => s.Name).Should().Equal(names);
@@ -150,7 +150,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var newerInactive = await AddVersionAsync(trained.Id, second);
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             var loaded = model.Snapshot.AdvancedAnalyticsModels.Single();
@@ -166,14 +166,14 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             await TrainedAsync(instance.Id, first, false);
             var (deactivated, _) = await TrainedAsync(instance.Id, second, name: "Live");
             var (context, model, _) = NewSync(modelId);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             model.Snapshot.AdvancedAnalyticsModels.Should().ContainSingle().Which.Name.Should().Be("Live");
 
-            await new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser")
+            await new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser")
                 .SetActiveAsync(deactivated.Id, false);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Should().BeEmpty();
@@ -190,8 +190,8 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var otherModel = await ActiveInstanceAsync(otherModelId);
             var unallocated = await NewInstanceAsync(TenantA);
 
-            await new AdvancedAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").UpdateAsync(
-                new AdvancedAnalyticsInstance { Id = unallocated.Id, Name = unallocated.Name, Active = 1 });
+            await new AskJoobyAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").UpdateAsync(
+                new AskJoobyAnalyticsInstance { Id = unallocated.Id, Name = unallocated.Name, Active = 1 });
 
             foreach (var (instance, name) in new[]
                      {
@@ -202,15 +202,15 @@ namespace Jube.Test.AdvancedAnalytics.Engine
                 await TrainedAsync(instance.Id, first, name: name);
             }
 
-            await new AdvancedAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(deleted.Id);
-            var deletedRow = await Db.AdvancedAnalyticsInstance.SingleAsync(w => w.Id == deleted.Id);
+            await new AskJoobyAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(deleted.Id);
+            var deletedRow = await Db.AskJoobyAnalyticsInstance.SingleAsync(w => w.Id == deleted.Id);
 
-            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AdvancedAnalyticsInstance, deleted.Id,
+            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AskJoobyAnalyticsInstance, deleted.Id,
                 deletedRow.Version, TenantA);
 
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Select(s => s.Name).Should().Equal("Live");
@@ -223,10 +223,10 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var instance = await ActiveInstanceAsync(modelId);
             var (gone, _) = await TrainedAsync(instance.Id, first, name: "Gone");
             await TrainedAsync(instance.Id, second, name: "Kept");
-            await new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser").DeleteAsync(gone.Id);
+            await new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser").DeleteAsync(gone.Id);
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Select(s => s.Name).Should().Equal("Kept");
@@ -238,11 +238,11 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var modelId = await NewEntityAnalysisModelAsync(TenantA);
             var instance = await ActiveInstanceAsync(modelId);
             var otherInstance = await ActiveInstanceAsync(modelId);
-            var models = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
+            var models = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
 
-            var corrupt = await models.InsertAsync(new AdvancedAnalyticsTrainedModel
+            var corrupt = await models.InsertAsync(new AskJoobyAnalyticsTrainedModel
             {
-                AdvancedAnalyticsInstanceId = instance.Id, Name = "Corrupt",
+                AskJoobyAnalyticsInstanceId = instance.Id, Name = "Corrupt",
                 KindId = AdvancedAnalyticsKind.Classifier, SourceId = AdvancedAnalyticsSource.Agent
             });
 
@@ -250,9 +250,9 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             await models.SetActiveVersionAsync(corrupt.Id, corruptVersion.Id);
             await models.SetActiveAsync(corrupt.Id, true);
 
-            var unknown = await models.InsertAsync(new AdvancedAnalyticsTrainedModel
+            var unknown = await models.InsertAsync(new AskJoobyAnalyticsTrainedModel
             {
-                AdvancedAnalyticsInstanceId = instance.Id, Name = "Unknown",
+                AskJoobyAnalyticsInstanceId = instance.Id, Name = "Unknown",
                 KindId = AdvancedAnalyticsKind.Classifier, SourceId = AdvancedAnalyticsSource.Agent
             });
 
@@ -263,7 +263,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             await TrainedAsync(otherInstance.Id, second, name: "Good2");
             var (context, model, log) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Select(s => s.Name).Should().Equal("Good1", "Good2");
@@ -279,7 +279,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             await TrainedAsync(instance.Id, second, name: "Same");
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Should().ContainSingle().Which.Id.Should().Be(kept.Id);
@@ -292,13 +292,13 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var instance = await ActiveInstanceAsync(modelId);
             var (trained, _) = await TrainedAsync(instance.Id, first, name: "One");
             var (context, model, _) = NewSync(modelId);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var before = model.Snapshot.AdvancedAnalyticsModels;
             before.Should().ContainSingle();
 
             await TrainedAsync(instance.Id, second, name: "Two");
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var after = model.Snapshot.AdvancedAnalyticsModels;
 
@@ -306,10 +306,10 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             before.Should().ContainSingle();
             after.Select(s => s.Name).Should().Equal("One", "Two");
 
-            await new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser").SetActiveAsync(trained.Id,
+            await new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser").SetActiveAsync(trained.Id,
                 false);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             model.Snapshot.AdvancedAnalyticsModels.Select(s => s.Name).Should().Equal("Two");
         }
@@ -321,19 +321,19 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var instance = await ActiveInstanceAsync(modelId);
             var (trained, version1) = await TrainedAsync(instance.Id, first, name: "Promoted");
             var (context, model, _) = NewSync(modelId);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var row = new[] { 0.2, 0.3 };
-            var models = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
+            var models = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser");
             model.Snapshot.AdvancedAnalyticsModels.Single().Recall(row).Should().Equal(first.Recall.Predict(row));
 
             var version2 = await AddVersionAsync(trained.Id, second);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             model.Snapshot.AdvancedAnalyticsModels.Single().VersionId.Should().Be(version1.Id);
 
             await models.SetActiveVersionAsync(trained.Id, version2.Id);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var promoted = model.Snapshot.AdvancedAnalyticsModels.Single();
             promoted.VersionId.Should().Be(version2.Id);
@@ -342,7 +342,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             promoted.Recall(row).Should().NotEqual(first.Recall.Predict(row));
 
             await models.SetActiveVersionAsync(trained.Id, version1.Id);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var rolledBack = model.Snapshot.AdvancedAnalyticsModels.Single();
             rolledBack.VersionId.Should().Be(version1.Id);
@@ -357,14 +357,14 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var instance = await ActiveInstanceAsync(modelId);
             var (trained, _) = await TrainedAsync(instance.Id, first, name: "Promoted");
             var (context, model, _) = NewSync(modelId);
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
             var bad = await AddVersionAsync(trained.Id, first, "{\"kind\":\"NoSuchFamily\"}");
 
-            await new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser")
+            await new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, "ZzTestUser")
                 .SetActiveVersionAsync(trained.Id, bad.Id);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Should().BeEmpty();
@@ -379,7 +379,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var (context, model, _) = NewSync(modelId);
             model.Instance.TenantRegistryId = TenantB;
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Should().BeEmpty();
@@ -391,7 +391,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var modelId = await NewEntityAnalysisModelAsync(TenantA);
             var (context, model, _) = NewSync(modelId);
 
-            await context.SyncAdvancedAnalyticsInstancesAsync();
+            await context.SyncAskJoobyAnalyticsInstancesAsync();
             context.Snapshots.Publish();
 
             model.Snapshot.AdvancedAnalyticsModels.Should().BeEmpty();

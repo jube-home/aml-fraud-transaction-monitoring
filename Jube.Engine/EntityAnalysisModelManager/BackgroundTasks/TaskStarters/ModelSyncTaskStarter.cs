@@ -38,6 +38,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             {
                 rabbitMqChannel = context.Services.RabbitMqConnection.CreateModel();
                 rabbitMqChannel.QueueDeclare("jubeNotifications", false, false, false, null);
+                rabbitMqChannel.QueueDeclare("jubeWebhooks", false, false, false, null);
                 rabbitMqChannel.ExchangeDeclare("jubeActivations", ExchangeType.Fanout);
                 rabbitMqChannel.ExchangeDeclare("jubeOutbound", ExchangeType.Fanout);
             }
@@ -116,6 +117,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     PersistToActivationWatcherAsync =
                                         context.ConcurrentQueues.PersistToActivationWatcher,
                                     PendingNotifications = context.ConcurrentQueues.PendingNotifications,
+                                    PendingWebhooks = context.ConcurrentQueues.PendingWebhooks,
                                     Callbacks = context.ConcurrentQueues.Callbacks,
                                     PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke
                                 }
@@ -128,12 +130,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             lastSynchronisedWatermarks.TryGetValue(scheduledModel.TenantRegistryId,
                                 out var lastSynchronisedWatermark);
 
-                            if (scheduledModel.SynchronisationPending || startupTenantRegistrySchedule
-                                                                      || SyncWatermarkDecision
-                                                                          .RequiresSynchronisation(
-                                                                              lastSynchronisedWatermark, watermark,
-                                                                              DateTime.UtcNow))
+                            var wholeTenantRequired = startupTenantRegistrySchedule
+                                                      || SyncWatermarkDecision
+                                                          .RequiresSynchronisation(
+                                                              lastSynchronisedWatermark, watermark,
+                                                              DateTime.UtcNow);
+
+                            if (scheduledModel.SynchronisationPending || wholeTenantRequired)
                             {
+                                entityAnalysisModelContext.EntityAnalysisModels.SynchronisationScope =
+                                    wholeTenantRequired || scheduledModel.EntityAnalysisModelIds == null
+                                        ? null
+                                        : [..scheduledModel.EntityAnalysisModelIds];
+
                                 context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
                                 await entityAnalysisModelContext.SyncEntityAnalysisInlineScriptAsync()
@@ -171,7 +180,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
                                     .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncAdvancedAnalyticsInstancesAsync()
+                                await entityAnalysisModelContext.SyncAskJoobyAnalyticsInstancesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelResponseElevationRangesAsync()
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelActivationRulesAsync()
                                     .ConfigureAwait(false);
@@ -189,7 +200,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 await entityAnalysisModelContext
                                     .PersistEngineSnapshotAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
 
-                                lastSynchronisedWatermarks[scheduledModel.TenantRegistryId] = watermark;
+                                if (entityAnalysisModelContext.EntityAnalysisModels.SynchronisationScope == null)
+                                {
+                                    lastSynchronisedWatermarks[scheduledModel.TenantRegistryId] = watermark;
+                                }
+
                                 context.EntityAnalysisModels.EntityModelsHasLoadedForStartup = true;
                             }
                             else
@@ -199,7 +214,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                                 await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
                                     .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncAdvancedAnalyticsInstancesAsync()
+                                await entityAnalysisModelContext.SyncAskJoobyAnalyticsInstancesAsync()
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
                                     .ConfigureAwait(false);

@@ -129,7 +129,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
         {
             var (trained, _) = await TrainedAsync(TenantA, Permitted);
 
-            await Db.AdvancedAnalyticsTrainedModelVersion.Where(w => w.Id == trained.TrainedModelVersionId)
+            await Db.AskJoobyAnalyticsTrainedModelVersion.Where(w => w.Id == trained.TrainedModelVersionId)
                 .Set(s => s.ModelJson, "{\"unknown\":true}").UpdateAsync();
 
             var charts = await ChartsAsync(Permitted);
@@ -145,7 +145,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
         {
             var (trained, _) = await TrainedAsync(TenantA, Permitted);
 
-            await Db.AdvancedAnalyticsTrainedModelVersion.Where(w => w.Id == trained.TrainedModelVersionId)
+            await Db.AskJoobyAnalyticsTrainedModelVersion.Where(w => w.Id == trained.TrainedModelVersionId)
                 .Set(s => s.MetricsJson, (string?)null).UpdateAsync();
 
             var charts = await ChartsAsync(Permitted);

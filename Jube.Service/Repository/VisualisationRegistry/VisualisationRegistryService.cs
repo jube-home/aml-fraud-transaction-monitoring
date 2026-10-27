@@ -11,10 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetVisualisationRegistrySummaryQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
+using Jube.Dto.Query.VisualisationRegistrySummary;
 using Jube.Dto.Repository.VisualisationRegistry;
 using Jube.Dto.Validation;
 using Jube.Resources;
@@ -36,12 +39,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
     {
         private static readonly int[] listPermissions = [18, 31, 32, 33];
         private static readonly int[] readPermissions = [31, 28, 1];
-        private static readonly int[] showInDirectoryPermissions = [28];
+        private const int SummaryWindowDays = 30;
         private static readonly int[] writePermissions = [31];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly RegistryRepository repository;
+        private readonly GetVisualisationRegistrySummaryQuery summaryQuery;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -60,12 +64,13 @@ namespace Jube.Service.Repository.VisualisationRegistry
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RegistryRepository(dbContext, userName);
+            summaryQuery = new GetVisualisationRegistrySummaryQuery(dbContext);
             validator = new VisualisationRegistryDtoValidator(repository, strings);
         }
 
+        public static IReadOnlyList<int> DirectoryPermissions => [];
         public static IReadOnlyList<int> ListPermissions => listPermissions;
         public static IReadOnlyList<int> ReadPermissions => readPermissions;
-        public static IReadOnlyList<int> ShowInDirectoryPermissions => showInDirectoryPermissions;
         public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<VisualisationRegistryService> CreateAsync(DbContext dbContext, string? userName,
@@ -508,7 +513,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
             }
         }
 
-        [Description("Lists active Visualisation Registries flagged Show In Directory that the caller holds a " +
+        [Description("Lists active Visualisation Registries shown in the Directory that the caller holds a " +
                      "role grant on, newest first, for the Visualisation Directory page.")]
         [ServiceOperation("VisualisationRegistryListByShowInDirectory", OperationKind.Read, Idempotent = true)]
         public async Task<List<VisualisationRegistryDto>> GetByShowInDirectoryAsync(CancellationToken token = default)
@@ -523,10 +528,8 @@ namespace Jube.Service.Repository.VisualisationRegistry
 
             try
             {
-                EnsurePermitted("VisualisationRegistry.ListByShowInDirectory", showInDirectoryPermissions);
-
                 var dtos = VisualisationRegistryMapper.ToDto(
-                    await repository.GetByShowInDirectoryActiveOrderByIdDescAsync(token).ConfigureAwait(false));
+                    await repository.GetByDirectoryActiveOrderByIdDescAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
 
                 if (log.IsDebugEnabled)
@@ -550,6 +553,66 @@ namespace Jube.Service.Repository.VisualisationRegistry
             {
                 op.Error(ex);
                 log.Error($"VisualisationRegistry.ListByShowInDirectory: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        public async Task<List<VisualisationRegistrySummaryDto>> GetDirectorySummaryAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("VisualisationRegistry", "DirectorySummary", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"VisualisationRegistry.DirectorySummary: entry user={userName}");
+            }
+
+            try
+            {
+                var registryIds = (await repository.GetByDirectoryActiveOrderByIdDescAsync(token)
+                        .ConfigureAwait(false))
+                    .Select(s => s.Id)
+                    .ToList();
+
+                var rows = await summaryQuery
+                    .ExecuteAsync(registryIds, DateTime.UtcNow.AddDays(-SummaryWindowDays), token)
+                    .ConfigureAwait(false);
+
+                var dtos = rows.Select(row => new VisualisationRegistrySummaryDto
+                {
+                    RegistryId = row.RegistryId,
+                    DatasourceCount = row.DatasourceCount,
+                    ParameterCount = row.ParameterCount,
+                    DisplayKindIds = row.DisplayKindIds,
+                    ExecutionsInWindow = row.Executions,
+                    FailuresInWindow = row.Failures,
+                    AverageResponseMilliseconds = row.AverageResponseMilliseconds,
+                    LastExecutionDate = row.LastExecutionDate.HasValue
+                        ? new DateTimeOffset(DateTime.SpecifyKind(row.LastExecutionDate.Value, DateTimeKind.Utc))
+                        : null,
+                    LastExecutionUser = row.LastExecutionUser,
+                    WindowDays = SummaryWindowDays
+                }).ToList();
+
+                op.Rows(dtos.Count);
+
+                return dtos;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"VisualisationRegistry.DirectorySummary: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -752,6 +815,12 @@ namespace Jube.Service.Repository.VisualisationRegistry
 
                 throw new NotFoundException(strings[VisualisationRegistryResources.NotFound]);
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

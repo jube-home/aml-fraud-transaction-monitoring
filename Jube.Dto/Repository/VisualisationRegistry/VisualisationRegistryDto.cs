@@ -11,8 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Repository.VisualisationRegistryDatasource;
+using Jube.Dto.Repository.VisualisationRegistryParameter;
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -22,7 +25,10 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.Repository.VisualisationRegistry
 {
+    [FormChild(typeof(VisualisationRegistryParameterDto), Label = "Parameters", Hub = "", Order = 10)]
+    [FormChild(typeof(VisualisationRegistryDatasourceDto), Label = "Datasources", Hub = "", Order = 20)]
     [FormEndpoint("VisualisationRegistry")]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -31,14 +37,14 @@ namespace Jube.Dto.Repository.VisualisationRegistry
     public class VisualisationRegistryDto : IUpdated, IActivatable, ILockable, IGuidIdentified
     {
         [Description("Display name of the Visualisation Registry, shown as the link text in the Visualisation " +
-                     "Administration list and, when Show In Directory is enabled, in the Visualisation Directory. " +
+                     "Administration list and, when it is shown in the Directory, in the Visualisation Directory. " +
                      "Unique per tenant (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Daily alerts overview")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
         [Description("When true, the Visualisation Registry participates in recall: it can be embedded in a " +
-                     "Case and, if Show In Directory is also true, listed in the Visualisation Directory.")]
+                     "Case or listed in the Visualisation Directory, according to where it is shown.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [ListColumn(Order = 20, Title = "Active")]
         [NewDefault(false)]
@@ -50,11 +56,16 @@ namespace Jube.Dto.Repository.VisualisationRegistry
         [NewDefault(false)]
         public bool Locked { get; set; }
 
-        [Description("When true, the Visualisation Registry is listed on the Visualisation Directory page for " +
-                     "direct recall. When false, it is reachable only embedded in a Case.")]
-        [FormField(Group = "Layout", Order = 10, Widget = "switch")]
-        [NewDefault(false)]
-        public bool ShowInDirectory { get; set; }
+        [Description("Where the Visualisation Registry is shown: 1 = Directory, listed and recalled on its own, " +
+                     "2 = Case, embedded as the dashboard of a Case. A Directory registry is seen by the roles it is " +
+                     "granted to and recalled by those who subscribe to it; a Case registry is seen by whoever can see the " +
+                     "Case. When it is shown in a Case, every " +
+                     "datasource receives the built-in SQL parameter @Id, the id of the Case; the Directory has no " +
+                     "@Id. Anything else the visualisation needs is traced from that id in its SQL.")]
+        [FormField(Group = "Layout", Order = 15, Label = "Shown in", Widget = "select")]
+        [Options(typeof(VisualisationContextKind))]
+        [NewDefault(1)]
+        public int ContextKindId { get; set; }
 
         [Description("The number of columns the recall canvas is divided into, for arranging the registry's " +
                      "Datasources.")]

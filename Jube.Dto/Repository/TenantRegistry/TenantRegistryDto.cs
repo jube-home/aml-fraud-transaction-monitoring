@@ -37,7 +37,7 @@ namespace Jube.Dto.Repository.TenantRegistry
         [Description("Display name of the Tenant, shown in the tenant switcher and Administration > Security > " +
                      "Tenants. Unique across every Tenant on the installation (this table has no parent scope " +
                      "of its own to be unique within).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Acme Bank")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

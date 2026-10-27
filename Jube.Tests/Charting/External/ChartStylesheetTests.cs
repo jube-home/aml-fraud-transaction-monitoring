@@ -148,7 +148,7 @@ namespace Jube.Test.Charting.External
                 File.ReadAllText(Path.Combine(RepositoryRoot(), "Jube.App", "Pages", "Shared", "_Layout.cshtml"));
 
             Regex.Matches(layout, "jube-charting\\.css").Count.Should().Be(1);
-            layout.Should().Contain("/css/jube-charting.css?v=@Jube.Charting.ChartStylesheet.Version");
+            layout.Should().Contain("/css/jube-charting.css?v=@Charting.ChartStylesheet.Version");
         }
 
         [Fact]

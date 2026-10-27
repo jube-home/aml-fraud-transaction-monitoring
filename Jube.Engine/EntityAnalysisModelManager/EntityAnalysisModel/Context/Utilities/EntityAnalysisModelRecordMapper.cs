@@ -51,6 +51,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                         context.ConcurrentQueues.PersistToActivationWatcherAsync,
                     PendingTagging = context.ConcurrentQueues.PendingTagging,
                     PendingNotifications = context.ConcurrentQueues.PendingNotifications,
+                    PendingWebhooks = context.ConcurrentQueues.PendingWebhooks,
                     Callbacks = context.ConcurrentQueues.Callbacks,
                     PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke
                 },

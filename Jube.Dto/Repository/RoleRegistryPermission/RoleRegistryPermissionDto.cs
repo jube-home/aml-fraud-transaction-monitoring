@@ -36,8 +36,8 @@ namespace Jube.Dto.Repository.RoleRegistryPermission
         [Description("Identifier of the Permission Specification being granted to the Role -- the same " +
                      "integer literal every service's own permission check is hardcoded against. Must reference " +
                      "an existing row in the Permission Specification catalogue.")]
-        [FormField(Group = "Identity", Order = 10, Widget = "dropdown")]
-        [Lookup("PermissionSpecification", TextField = "name", ValueField = "id")]
+        [FormField(Group = "Identity", Order = 10, Widget = "select")]
+        [Lookup("/api/PermissionSpecification", TextField = "name", ValueField = "id")]
         [ListColumn(Order = 10, Title = "Permission")]
         public int PermissionSpecificationId { get; set; }
 

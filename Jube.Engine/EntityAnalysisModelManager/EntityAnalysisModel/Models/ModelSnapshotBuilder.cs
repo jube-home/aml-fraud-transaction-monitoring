@@ -48,6 +48,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             EntityAnalysisModelInlineFunctions = this.previous.EntityAnalysisModelInlineFunctions;
             EntityAnalysisModelInlineScripts = this.previous.EntityAnalysisModelInlineScripts;
             EntityAnalysisModelTags = this.previous.EntityAnalysisModelTags;
+            EntityAnalysisModelResponseElevationRanges = this.previous.EntityAnalysisModelResponseElevationRanges;
             DistinctSearchKeys = new Dictionary<string, DistinctSearchKey>(this.previous.DistinctSearchKeys);
             ParseIndexCache = this.previous.ParseIndexCache;
             EntityAnalysisModelLists = this.previous.EntityAnalysisModelLists;
@@ -71,6 +72,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunctions { get; set; }
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public List<EntityAnalysisModelTag> EntityAnalysisModelTags { get; set; }
+        public List<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRanges { get; set; }
         public Dictionary<string, DistinctSearchKey> DistinctSearchKeys { get; set; }
         public Dictionary<int, string> ParseIndexCache { get; set; }
         public Dictionary<string, List<string>> EntityAnalysisModelLists { get; set; }
@@ -148,6 +150,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
                 EntityAnalysisModelInlineFunctions = EntityAnalysisModelInlineFunctions,
                 EntityAnalysisModelInlineScripts = EntityAnalysisModelInlineScripts,
                 EntityAnalysisModelTags = EntityAnalysisModelTags,
+                EntityAnalysisModelResponseElevationRanges = EntityAnalysisModelResponseElevationRanges,
                 DistinctSearchKeys = DistinctSearchKeys,
                 ParseIndexCache = ParseIndexCache,
                 EntityAnalysisModelLists = EntityAnalysisModelLists,

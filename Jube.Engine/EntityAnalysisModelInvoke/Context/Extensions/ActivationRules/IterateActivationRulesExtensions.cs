@@ -25,7 +25,6 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
-using RabbitMQ.Client;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
@@ -38,8 +37,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
         public static async
             Task<(int activationRuleCount, CreateCase createCase, int? prevailingActivationRuleId,
                 Dictionary<string, ActivationRuleTiming> items)> IterateAndProcessAsync(this Context context,
-                CacheService cacheService, IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
-                IModel rabbitMqChannel)
+                CacheService cacheService, IReadOnlyDictionary<int, EntityAnalysisModel> availableModels)
         {
             var prevailingActivationRuleName = string.Empty;
             var responseElevationHighWaterMark = 0d;
@@ -224,10 +222,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     timing.ResponseElevation = Time(() =>
                         context.ProcessResponseElevation(evaluateActivationRule, ref responseElevationHighWaterMark,
                             suppressed));
-
-                    timing.Notification = await TimeAsync(() =>
-                        context.ActivationRuleNotificationAsync(evaluateActivationRule, suppressed, rabbitMqChannel,
-                            cacheService)).ConfigureAwait(false);
 
                     context.ActivationRuleCountsAndArchiveHighWatermark(evaluateActivationRule, suppressed,
                         ref activationRuleCount,

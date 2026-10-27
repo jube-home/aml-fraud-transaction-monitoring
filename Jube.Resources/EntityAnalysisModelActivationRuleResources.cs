@@ -35,6 +35,7 @@ namespace Jube.Resources
         public const string BypassSuspendIntervalInvalid = nameof(BypassSuspendIntervalInvalid);
         public const string BypassSuspendValueRange = nameof(BypassSuspendValueRange);
         public const string ResponseElevationRange = nameof(ResponseElevationRange);
+        public const string ResponseElevationRangeNotFound = nameof(ResponseElevationRangeNotFound);
         public const string ResponseElevationContentMaxLength = nameof(ResponseElevationContentMaxLength);
         public const string ResponseElevationRedirectMaxLength = nameof(ResponseElevationRedirectMaxLength);
         public const string ResponseElevationKeyRequired = nameof(ResponseElevationKeyRequired);
@@ -42,11 +43,6 @@ namespace Jube.Resources
         public const string ResponseElevationForeColorInvalid = nameof(ResponseElevationForeColorInvalid);
         public const string ResponseElevationBackColorRequired = nameof(ResponseElevationBackColorRequired);
         public const string ResponseElevationBackColorInvalid = nameof(ResponseElevationBackColorInvalid);
-        public const string NotificationTypeIdInvalid = nameof(NotificationTypeIdInvalid);
-        public const string NotificationDestinationRequired = nameof(NotificationDestinationRequired);
-        public const string NotificationDestinationMaxLength = nameof(NotificationDestinationMaxLength);
-        public const string NotificationSubjectMaxLength = nameof(NotificationSubjectMaxLength);
-        public const string NotificationBodyMaxLength = nameof(NotificationBodyMaxLength);
 
         public const string EntityAnalysisModelGuidTtlCounterRequired =
             nameof(EntityAnalysisModelGuidTtlCounterRequired);

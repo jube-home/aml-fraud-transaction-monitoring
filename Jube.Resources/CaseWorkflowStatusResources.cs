@@ -30,5 +30,11 @@ namespace Jube.Resources
         public const string HttpEndpointTypeIdInvalid = nameof(HttpEndpointTypeIdInvalid);
         public const string NotificationDestinationRequired = nameof(NotificationDestinationRequired);
         public const string NotificationTypeIdInvalid = nameof(NotificationTypeIdInvalid);
+        public const string EscalationTriggerInvalid = nameof(EscalationTriggerInvalid);
+        public const string EscalationTriggerRequired = nameof(EscalationTriggerRequired);
+        public const string EscalationTargetRequired = nameof(EscalationTargetRequired);
+        public const string EscalationThresholdInvalid = nameof(EscalationThresholdInvalid);
+        public const string EscalationTargetNotFound = nameof(EscalationTargetNotFound);
+        public const string EscalationTargetNotStronger = nameof(EscalationTargetNotStronger);
     }
 }

@@ -26,7 +26,7 @@ namespace Jube.Test.AskJooby
         public void TheRequestExposesEverySwitchTheExportItselfSupports()
         {
             var exported = typeof(ExportOptions).GetProperties()
-                .Where(property => property.PropertyType == typeof(bool))
+                .Where(property => property.PropertyType == typeof(bool) && property.Name != nameof(ExportOptions.Exhaustive))
                 .Select(property => property.Name);
 
             var requestable = typeof(PreservationSnapshotRequestDto).GetProperties()
@@ -38,6 +38,9 @@ namespace Jube.Test.AskJooby
                 "a snapshot body that cannot be asked to include something is a rollback that deletes it: "
                 + "recovery removes whatever the body does not hold, so an export switch with no way to "
                 + "request it is silent data loss rather than a smaller snapshot");
+
+            requestable.Should().NotContain(nameof(ExportOptions.Exhaustive),
+                "a snapshot always carries Exhaustive, as one without it could not restore what it recorded");
         }
 
         [Fact]

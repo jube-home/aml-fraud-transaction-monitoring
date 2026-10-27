@@ -14,6 +14,7 @@
 namespace Jube.App.Pages.Account
 {
     using System;
+    using Code;
     using DynamicEnvironment;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -25,15 +26,7 @@ namespace Jube.App.Pages.Account
     {
         public IActionResult OnGet(string redirectUrl = "/")
         {
-            if (String.IsNullOrWhiteSpace(redirectUrl))
-            {
-                redirectUrl = "/";
-            }
-
-            if (!Url.IsLocalUrl(redirectUrl) || redirectUrl.StartsWith("//") || redirectUrl.StartsWith("\\\\"))
-            {
-                redirectUrl = "/";
-            }
+            redirectUrl = Url.IsLocalUrl(redirectUrl) ? LocalReturnUrl.Sanitise(redirectUrl) : "/";
 
             if (User.Identity?.IsAuthenticated == true)
             {

@@ -46,6 +46,9 @@
     <value>Aucun fichier de préservation n'a été fourni.</value>
   </data>
     <data name="InvalidPreservationFile" xml:space="preserve">
-    <value>Le fichier de préservation n'a pas pu être déchiffré. Vérifiez le mot de passe et que le fichier est un export Jube.</value>
+    <value>Le fichier de préservation n'a pas pu être déchiffré. Vérifiez le mot de passe et que le fichier est un export Jube. Un fichier exporté par une version antérieure de Jube ne peut pas être importé.</value>
+  </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Le mot de passe doit comporter au moins 12 caractères.</value>
   </data>
 </root>

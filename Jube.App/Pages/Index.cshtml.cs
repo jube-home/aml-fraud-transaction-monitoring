@@ -12,7 +12,6 @@
  */
 
 using Jube.App.Code;
-using Jube.AskJooby.Security;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -33,7 +32,7 @@ namespace Jube.App.Pages
             var permissionValidation = new PermissionValidation(
                 dynamicEnvironment.AppSettings("ConnectionString"), User.Identity?.Name, log);
 
-            if (permissionValidation.Landlord || permissionValidation.Validate([AskJoobyPermissions.Access]))
+            if (permissionValidation.ActiveUser)
             {
                 return LocalRedirect("/AskJooby");
             }

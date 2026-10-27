@@ -23,11 +23,13 @@ namespace Jube.Charting.Diagrams
         private bool directed = true;
         private GraphLayoutKind layout = GraphLayoutKind.Auto;
         private string weightName = "Weight";
+        private string[] groupOrder = [];
+        private double maxExtent = 3000;
 
         public GraphDiagramBuilder Node(string id, string? label = null, GraphNodeRole role = GraphNodeRole.Feature,
-            string? detail = null)
+            string? detail = null, string? group = null, bool dashed = false)
         {
-            nodes.Add(new GraphNode(id, label ?? id, role, detail));
+            nodes.Add(new GraphNode(id, label ?? id, role, detail) { Group = group, Dashed = dashed });
 
             return this;
         }
@@ -37,6 +39,20 @@ namespace Jube.Charting.Diagrams
         {
             edges.Add(new GraphEdge(from, to)
                 { Weight = weight, Probability = probability, Label = label, Dashed = dashed });
+
+            return this;
+        }
+
+        public GraphDiagramBuilder MaxExtent(double pixels)
+        {
+            maxExtent = Math.Clamp(pixels, 600, 12000);
+
+            return this;
+        }
+
+        public GraphDiagramBuilder GroupOrder(params string[] order)
+        {
+            groupOrder = order;
 
             return this;
         }
@@ -67,7 +83,7 @@ namespace Jube.Charting.Diagrams
             return new GraphDiagram(new GraphDiagramSpec
             {
                 Options = Options, Nodes = [.. nodes], Edges = [.. edges], Layout = layout,
-                Directed = directed, WeightName = weightName
+                Directed = directed, WeightName = weightName, GroupOrder = groupOrder, MaxExtent = maxExtent
             });
         }
 

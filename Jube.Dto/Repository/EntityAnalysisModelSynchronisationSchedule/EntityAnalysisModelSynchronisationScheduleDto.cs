@@ -21,7 +21,7 @@ using Jube.Dto.Forms;
 
 namespace Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule
 {
-    [FormEndpoint("EntityAnalysisModelSynchronisationSchedule")]
+    [FormEndpoint("EntityAnalysisModelSynchronisationSchedule", Operations = FormOperations.Create)]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(ScheduleDate))]
     [FormGroup("Schedule", Order = 10)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
@@ -36,6 +36,11 @@ namespace Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule
         [FormField(Group = "Schedule", Order = 10, Widget = "date")]
         [ListColumn(Order = 10, Title = "Scheduled For")]
         public DateTimeOffset? ScheduleDate { get; set; }
+
+        [Description("Identifier of the single model this schedule row asks the engine to synchronise. When " +
+                     "omitted, the row asks every model in the tenant to synchronise. A model-level row leaves " +
+                     "the tenant's other models exactly as they are.")]
+        public int? EntityAnalysisModelId { get; set; }
 
         [Description("Identifier of the tenant this schedule row belongs to. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]

@@ -57,11 +57,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                     ResponseElevationKey = activationRule.ResponseElevationKey,
                     ResponseElevationForeColor = activationRule.ResponseElevationForeColor,
                     ResponseElevationBackColor = activationRule.ResponseElevationBackColor,
-                    EnableNotification = activationRule.EnableNotification == 1,
-                    NotificationTypeId = activationRule.NotificationTypeId.GetValueOrDefault(),
-                    NotificationDestination = activationRule.NotificationDestination,
-                    NotificationSubject = activationRule.NotificationSubject,
-                    NotificationBody = activationRule.NotificationBody,
                     EnableTtlCounter = activationRule.EnableTtlCounter == 1,
                     EntityAnalysisModelGuidTtlCounter = activationRule.EntityAnalysisModelGuidTtlCounter,
                     EntityAnalysisModelTtlCounterGuid = activationRule.EntityAnalysisModelTtlCounterGuid,
@@ -92,6 +87,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
         {
             return new ActivationRulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,
@@ -121,11 +117,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 ResponseElevationKey = dto.ResponseElevationKey,
                 ResponseElevationForeColor = dto.ResponseElevationForeColor,
                 ResponseElevationBackColor = dto.ResponseElevationBackColor,
-                EnableNotification = (byte)(dto.EnableNotification ? 1 : 0),
-                NotificationTypeId = (byte)dto.NotificationTypeId,
-                NotificationDestination = dto.NotificationDestination,
-                NotificationSubject = dto.NotificationSubject,
-                NotificationBody = dto.NotificationBody,
                 EnableTtlCounter = (byte)(dto.EnableTtlCounter ? 1 : 0),
                 EntityAnalysisModelGuidTtlCounter = dto.EntityAnalysisModelGuidTtlCounter,
                 EntityAnalysisModelTtlCounterGuid = dto.EntityAnalysisModelTtlCounterGuid,

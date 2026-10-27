@@ -29,7 +29,11 @@ namespace Jube.Engine.BackgroundTasks.Context.Models
         public Task AmqpTask { get; set; }
         public Task NotificationsViaAmqp { get; set; }
         public Task NotificationsViaConcurrentQueueTask { get; set; }
+        public Task WebhooksViaAmqp { get; set; }
+        public Task WebhooksViaConcurrentQueueTask { get; set; }
         public Task CaseAutomationTask { get; set; }
+        public Task CaseRiskTask { get; set; }
+        public Task CaseEscalationTask { get; set; }
 
         // ReSharper disable once CollectionNeverQueried.Global
         public List<Task> AsyncHttpContextCorrelationTasks { get; } = [];

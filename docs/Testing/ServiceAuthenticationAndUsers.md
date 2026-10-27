@@ -77,60 +77,64 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 
 ### AuthenticationEndpointTests
 
-`Jube.Test.Service.Authentication.AuthenticationEndpointTests` — 50 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Authentication.AuthenticationEndpointTests` — 54 tests. Category: Service. Collection: Database.
 
 | Test                                                                                     | Kind   | Verifies                                                                                       |
 |------------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
-| `ExactlyTheFiveLegacyRoutesAndLogout_AreMapped_WithTheirVerbsAsync`                      | Fact   | Exactly the five legacy routes and logout are mapped with their verbs.                         |
-| `AnonymousEndpointsStayAnonymous_AndTheOthersStayProtectedAsync`                         | Theory | Anonymous endpoints stay anonymous and the others stay protected.                              |
-| `TheNegotiateRoutes_AreBoundToTheNegotiateSchemeOnlyAsync`                               | Theory | The negotiate routes are bound to the negotiate scheme only.                                   |
-| `ChangePassword_UsesTheDefaultSchemeAuthorisationAsync`                                  | Fact   | Change password uses the default scheme authorisation.                                         |
-| `NothingInTheAuthenticationAreaIsExposedToTheAgentToolCatalogue`                         | Fact   | Nothing in the authentication area is exposed to the agent tool catalogue.                     |
-| `WrongVerbs_Are405_AndReachNoLogicAsync`                                                 | Theory | Wrong verbs are405 and reach no logic.                                                         |
-| `UnknownRoutes_Are404Async`                                                              | Theory | Unknown routes are404.                                                                         |
-| `RoutingIsCaseInsensitive_AsTheLegacyControllerRoutesWereAsync`                          | Fact   | Routing is case insensitive as the legacy controller routes were.                              |
-| `ACorrectLogin_Is200_WithATokenBodyAndExactlyOneHttpOnlyCookieAsync`                     | Fact   | A correct login is200 with a token body and exactly one http only cookie.                      |
-| `TheIssuedToken_AuthenticatesLaterRequests_ViaBearerAndViaCookieAsync`                   | Fact   | The issued token authenticates later requests via bearer and via cookie.                       |
-| `ARejectedToken_CannotReachChangePasswordAsync`                                          | Theory | A rejected token cannot reach change password.                                                 |
+| `ExactlyTheLegacyRoutesLogoutAndTheTwoSingleSignOnRoutes_AreMapped_WithTheirVerbsAsync` | Fact | Exactly the legacy routes logout and the two single sign on routes are mapped with their verbs. |
+| `AnonymousEndpointsStayAnonymous_AndTheOthersStayProtectedAsync` | Theory | Anonymous endpoints stay anonymous and the others stay protected. |
+| `TheNegotiateRoutes_AreBoundToTheNegotiateSchemeOnlyAsync` | Theory | The negotiate routes are bound to the negotiate scheme only. |
+| `ChangePassword_UsesTheDefaultSchemeAuthorisationAsync` | Fact | Change password uses the default scheme authorisation. |
+| `NothingInTheAuthenticationAreaIsExposedToTheAgentToolCatalogue` | Fact | Nothing in the authentication area is exposed to the agent tool catalogue. |
+| `WrongVerbs_Are405_AndReachNoLogicAsync` | Theory | Wrong verbs are405 and reach no logic. |
+| `UnknownRoutes_Are404Async` | Theory | Unknown routes are404. |
+| `RoutingIsCaseInsensitive_AsTheLegacyControllerRoutesWereAsync` | Fact | Routing is case insensitive as the legacy controller routes were. |
+| `ACorrectLogin_Is200_WithATokenBodyAndExactlyOneHttpOnlyCookieAsync` | Fact | A correct login is200 with a token body and exactly one http only cookie. |
+| `TheIssuedToken_AuthenticatesLaterRequests_ViaBearerAndViaCookieAsync` | Fact | The issued token authenticates later requests via bearer and via cookie. |
+| `ARejectedToken_CannotReachChangePasswordAsync` | Theory | A rejected token cannot reach change password. |
 | `AMalformedBearerToken_Is401OnProtectedRoutes_AndAnonymousRoutesProceedAsAnonymousAsync` | Theory | A malformed bearer token is401 on protected routes and anonymous routes proceed as anonymous.  |
-| `AMalformedCookieToken_IsTreatedTheSameAsync`                                            | Theory | A malformed cookie token is treated the same.                                                  |
-| `AnUnacceptableToken_NeverBreaksAnAnonymousRoute_AndLeaksNoExceptionDetailAsync`         | Theory | An unacceptable token never breaks an anonymous route and leaks no exception detail.           |
-| `NoCredentialsAtAll_On_ChangePassword_Is401WithAnEmptyBodyAsync`                         | Fact   | No credentials at all on change password is401 with an empty body.                             |
-| `EveryFailedLoginReason_LooksIdenticalOnTheWireAsync`                                    | Theory | Every failed login reason looks identical on the wire.                                         |
-| `Weakness_TheWireDiffersForAUserWithoutAPasswordExpiry_403VersusTheUsual401Async`        | Fact   | Weakness the wire differs for a user without a password expiry 403 versus the usual401.        |
-| `AnExpiredPassword_IsA403_WithoutCookiesAsync`                                           | Fact   | An expired password is a 403 without cookies.                                                  |
-| `ANewStrongPassword_WithTheOldOne_Is200_AndTheNewOneWorksAsync`                          | Fact   | A new strong password with the old one is200 and the new one works.                            |
-| `AWeakNewPassword_Is400_WithTheErrorsArrayTheUiReadsAsync`                               | Fact   | A weak new password is400 with the errors array the ui reads.                                  |
-| `ValidationFailures_Are400_WithABodyMatchingTheLegacyNewtonsoftShapeAsync`               | Theory | Validation failures are400 with a body matching the legacy newtonsoft shape.                   |
-| `TheSuccessBody_MatchesTheLegacyNewtonsoftShapeAsync`                                    | Fact   | The success body matches the legacy newtonsoft shape.                                          |
-| `WhenAnotherSchemeIsActive_LoginAndTheWireProbe_Are404Async`                             | Theory | When another scheme is active login and the wire probe are404.                                 |
+| `AMalformedCookieToken_IsTreatedTheSameAsync` | Theory | A malformed cookie token is treated the same. |
+| `AnUnacceptableToken_NeverBreaksAnAnonymousRoute_AndLeaksNoExceptionDetailAsync` | Theory | An unacceptable token never breaks an anonymous route and leaks no exception detail. |
+| `NoCredentialsAtAll_On_ChangePassword_Is401WithAnEmptyBodyAsync` | Fact | No credentials at all on change password is401 with an empty body. |
+| `EveryFailedLoginReason_LooksIdenticalOnTheWireAsync` | Theory | Every failed login reason looks identical on the wire. |
+| `Weakness_TheWireDiffersForAUserWithoutAPasswordExpiry_403VersusTheUsual401Async` | Fact | Weakness the wire differs for a user without a password expiry versus the usual401. |
+| `AnExpiredPassword_IsA403_WithoutCookiesAsync` | Fact | An expired password is a403 without cookies. |
+| `ANewStrongPassword_WithTheOldOne_Is200_AndTheNewOneWorksAsync` | Fact | A new strong password with the old one is200 and the new one works. |
+| `AWeakNewPassword_Is400_WithTheErrorsArrayTheUiReadsAsync` | Fact | A weak new password is400 with the errors array the ui reads. |
+| `ValidationFailures_Are400_WithABodyMatchingTheLegacyNewtonsoftShapeAsync` | Theory | Validation failures are400 with a body matching the legacy newtonsoft shape. |
+| `TheSuccessBody_MatchesTheLegacyNewtonsoftShapeAsync` | Fact | The success body matches the legacy newtonsoft shape. |
+| `Methods_ReportsNoSingleSignOnByDefaultAsync` | Fact | Methods reports no single sign on by default. |
+| `Methods_ReportsTheSchemeThatIsOn_AndNeedsNoSessionAsync` | Theory | Methods reports the scheme that is on and needs no session. |
+| `OAuthChallenge_IsNotFoundWhenOAuthIsOffAsync` | Fact | O auth challenge is not found when o auth is off. |
+| `OAuthChallenge_RefusesWhenOAuthAndNegotiateAreBothOnAsync` | Fact | O auth challenge refuses when o auth and negotiate are both on. |
+| `WhenAnotherSchemeIsActive_LoginAndTheWireProbe_Are404Async` | Theory | When another scheme is active login and the wire probe are404. |
 | `AnAlreadyAuthenticatedCaller_GetsATokenForTheCredentialsSubmitted_NotForTheCallerAsync` | Fact   | An already authenticated caller gets a token for the credentials submitted not for the caller. |
-| `ParallelLoginsOverHttp_AllGetTheirAnswers_AndWrongOnesNeverSucceedAsync`                | Fact   | Parallel logins over http all get their answers and wrong ones never succeed.                  |
-| `WirePasswordHash_Is200_WithTheFlagInAJsonBodyAsync`                                     | Theory | Wire password hash is200 with the flag in a json body.                                         |
-| `WirePasswordHash_UnknownAndMissingNamesAsync`                                           | Theory | Wire password hash unknown and missing names.                                                  |
-| `ChangePassword_WithAValidToken_Is200WithAnEmptyBody_AndChangesTheHashAsync`             | Fact   | Change password with a valid token is200 with an empty body and changes the hash.              |
-| `ChangePassword_WithTheWrongCurrentPassword_Is401Async`                                  | Fact   | Change password with the wrong current password is401.                                         |
-| `ChangePassword_WeakNew_Is400_WithTheErrorsArrayAsync`                                   | Fact   | Change password weak new is400 with the errors array.                                          |
-| `ChangePassword_IsForbidden_WhenNegotiateOwnsIdentityAsync`                              | Fact   | Change password is forbidden when negotiate owns identity.                                     |
-| `ChangePassword_ForAValidTokenWhoseUserNoLongerExists_Is401WithNoDetailAsync`            | Fact   | Change password for a valid token whose user no longer exists is401 with no detail.            |
-| `TheLoginHistoryRemoteIp_IsTheConnectionAddress_NeverTheBodyOrAForwardedHeaderAsync`     | Fact   | The login history remote ip is the connection address never the body or a forwarded header.    |
-| `MalformedJsonOrWrongShapes_Are400_AndTouchNothingAsync`                                 | Theory | Malformed json or wrong shapes are400 and touch nothing.                                       |
-| `AnEmptyOrNullBody_Is400_WithNoDetail_AndTouchesNothingAsync`                            | Theory | An empty or null body is400 with no detail and touches nothing.                                |
-| `ChangePassword_WithNoRecognisedProperties_Is400_NotA500Async`                           | Fact   | Change password with no recognised properties is400 not a 500.                                 |
-| `WirePasswordHash_IgnoresUnrecognisedProperties_AndAnswersFalseForNoUserNameAsync`       | Fact   | Wire password hash ignores unrecognised properties and answers false for no user name.         |
-| `ANonJsonContentType_Is415_AndTouchesNothingAsync`                                       | Theory | A non json content type is415 and touches nothing.                                             |
-| `APostWithNoBodyAtAll_Is400_WithoutTouchingTheDatabaseAsync`                             | Fact   | A post with no body at all is400 without touching the database.                                |
-| `UnknownAndExtraJsonProperties_AreIgnored_AndCaseInsensitiveNamesBindAsync`              | Fact   | Unknown and extra json properties are ignored and case insensitive names bind.                 |
-| `AHugeBody_OfTwoMegabytes_IsRejectedOrFailsClosed_NeverAuthenticatingAsync`              | Fact   | A huge body of two megabytes is rejected or fails closed never authenticating.                 |
-| `ByNegotiate_WithAnEstablishedIdentity_Is200_WithTheSessionCookieAsync`                  | Fact   | By negotiate with an established identity is200 with the session cookie.                       |
-| `ByNegotiate_WithoutAnIdentity_ChallengesWith401AndWwwAuthenticateNegotiateAsync`        | Theory | By negotiate without an identity challenges with401 and www authenticate negotiate.            |
-| `ByNegotiate_AnUnknownIdentity_Is403Async`                                               | Fact   | By negotiate an unknown identity is403.                                                        |
-| `ByNegotiate_WhenNegotiateIsNotEnabled_Is404_EvenWithAnIdentityHeaderAsync`              | Fact   | By negotiate when negotiate is not enabled is404 even with an identity header.                 |
-| `ByNegotiate_TheHybridJwtIsNotAcceptedInPlaceOfANegotiateIdentityAsync`                  | Fact   | By negotiate the hybrid jwt is not accepted in place of a negotiate identity.                  |
-| `ByNegotiate_WithMfaEnabled_Is202WithAnEmptyBody_AndThePostFlowCompletesAsync`           | Fact   | By negotiate with mfa enabled is202 with an empty body and the post flow completes.            |
-| `WhenTheNegotiateSchemeIsNotRegistered_TheRoutesFailWith500NotAnAccidentalOpenAsync`     | Fact   | When the negotiate scheme is not registered the routes fail with500 not an accidental open.    |
-| `UserNamePassword_WithMfa_RightCode200_WrongCode401_MissingCode400Async`                 | Fact   | User name password with mfa right code200 wrong code401 missing code400.                       |
-| `AProviderOutage_DuringMfa_Is500_AndNeverAnAuthenticationAsync`                          | Fact   | A provider outage during mfa is500 and never an authentication.                                |
+| `ParallelLoginsOverHttp_AllGetTheirAnswers_AndWrongOnesNeverSucceedAsync` | Fact | Parallel logins over http all get their answers and wrong ones never succeed. |
+| `WirePasswordHash_Is200_WithTheFlagInAJsonBodyAsync` | Theory | Wire password hash is200 with the flag in a json body. |
+| `WirePasswordHash_UnknownAndMissingNamesAsync` | Theory | Wire password hash unknown and missing names. |
+| `ChangePassword_WithAValidToken_Is200WithAnEmptyBody_AndChangesTheHashAsync` | Fact | Change password with a valid token is200 with an empty body and changes the hash. |
+| `ChangePassword_WithTheWrongCurrentPassword_Is401Async` | Fact | Change password with the wrong current password is401. |
+| `ChangePassword_WeakNew_Is400_WithTheErrorsArrayAsync` | Fact | Change password weak new is400 with the errors array. |
+| `ChangePassword_IsForbidden_WhenNegotiateOwnsIdentityAsync` | Fact | Change password is forbidden when negotiate owns identity. |
+| `ChangePassword_ForAValidTokenWhoseUserNoLongerExists_Is401WithNoDetailAsync` | Fact | Change password for a valid token whose user no longer exists is401 with no detail. |
+| `TheLoginHistoryRemoteIp_IsTheConnectionAddress_NeverTheBodyOrAForwardedHeaderAsync` | Fact | The login history remote ip is the connection address never the body or a forwarded header. |
+| `MalformedJsonOrWrongShapes_Are400_AndTouchNothingAsync` | Theory | Malformed json or wrong shapes are400 and touch nothing. |
+| `AnEmptyOrNullBody_Is400_WithNoDetail_AndTouchesNothingAsync` | Theory | An empty or null body is400 with no detail and touches nothing. |
+| `ChangePassword_WithNoRecognisedProperties_Is400_NotA500Async` | Fact | Change password with no recognised properties is400 not a500. |
+| `WirePasswordHash_IgnoresUnrecognisedProperties_AndAnswersFalseForNoUserNameAsync` | Fact | Wire password hash ignores unrecognised properties and answers false for no user name. |
+| `ANonJsonContentType_Is415_AndTouchesNothingAsync` | Theory | A non json content type is415 and touches nothing. |
+| `APostWithNoBodyAtAll_Is400_WithoutTouchingTheDatabaseAsync` | Fact | A post with no body at all is400 without touching the database. |
+| `UnknownAndExtraJsonProperties_AreIgnored_AndCaseInsensitiveNamesBindAsync` | Fact | Unknown and extra json properties are ignored and case insensitive names bind. |
+| `AHugeBody_OfTwoMegabytes_IsRejectedOrFailsClosed_NeverAuthenticatingAsync` | Fact | A huge body of two megabytes is rejected or fails closed never authenticating. |
+| `ByNegotiate_WithAnEstablishedIdentity_Is200_WithTheSessionCookieAsync` | Fact | By negotiate with an established identity is200 with the session cookie. |
+| `ByNegotiate_WithoutAnIdentity_ChallengesWith401AndWwwAuthenticateNegotiateAsync` | Theory | By negotiate without an identity challenges with401 and www authenticate negotiate. |
+| `ByNegotiate_AnUnknownIdentity_Is403Async` | Fact | By negotiate an unknown identity is403. |
+| `ByNegotiate_WhenNegotiateIsNotEnabled_Is404_EvenWithAnIdentityHeaderAsync` | Fact | By negotiate when negotiate is not enabled is404 even with an identity header. |
+| `ByNegotiate_TheHybridJwtIsNotAcceptedInPlaceOfANegotiateIdentityAsync` | Fact | By negotiate the hybrid jwt is not accepted in place of a negotiate identity. |
+| `ByNegotiate_WithMfaEnabled_Is202WithAnEmptyBody_AndThePostFlowCompletesAsync` | Fact | By negotiate with mfa enabled is202 with an empty body and the post flow completes. |
+| `WhenTheNegotiateSchemeIsNotRegistered_TheRoutesFailWith500NotAnAccidentalOpenAsync` | Fact | When the negotiate scheme is not registered the routes fail with500 not an accidental open. |
+| `UserNamePassword_WithMfa_RightCode200_WrongCode401_MissingCode400Async` | Fact | User name password with mfa right code200 wrong code401 missing code400. |
+| `AProviderOutage_DuringMfa_Is500_AndNeverAnAuthenticationAsync` | Fact | A provider outage during mfa is500 and never an authentication. |
 
 ### AuthenticationLockoutTests
 

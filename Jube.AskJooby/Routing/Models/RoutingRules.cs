@@ -88,6 +88,9 @@ namespace Jube.AskJooby.Routing.Models
                     "Which alerts fired overnight",
                     "Did this name hit the sanctions list",
                     "Attach this document to the case",
+                    "Who is holding the most cases",
+                    "Break the stale lock on this case",
+                    "Reassign this case to another analyst",
                     "Give me a narrative for this case",
                     "Summarise this case for me",
                     "Write up what happened on this case"

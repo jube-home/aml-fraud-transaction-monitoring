@@ -83,13 +83,13 @@ namespace Jube.Test.Preservation
             await ApproveAsync(db, source.Id, EntityApprovalKind.EntityAnalysisModel, sourceModel, 1, CheckerOne,
                 "model is sound");
 
-            await ApproveAsync(db, source.Id, EntityApprovalKind.AdvancedAnalyticsInstance, seeded.Linked.Id, 2,
+            await ApproveAsync(db, source.Id, EntityApprovalKind.AskJoobyAnalyticsInstance, seeded.Linked.Id, 2,
                 CheckerOne, "first live version");
 
-            await RejectAsync(db, source.Id, EntityApprovalKind.AdvancedAnalyticsInstance, seeded.Linked.Id, 3,
+            await RejectAsync(db, source.Id, EntityApprovalKind.AskJoobyAnalyticsInstance, seeded.Linked.Id, 3,
                 CheckerTwo, "not this one");
 
-            await ApproveAsync(db, source.Id, EntityApprovalKind.AdvancedAnalyticsInstance, seeded.Linked.Id,
+            await ApproveAsync(db, source.Id, EntityApprovalKind.AskJoobyAnalyticsInstance, seeded.Linked.Id,
                 seeded.Linked.Version, CheckerTwo, "current state approved");
 
             var bytes = await harness.ExportAsync(source, PreservationHarness.ExportOptionsFor());
@@ -98,10 +98,10 @@ namespace Jube.Test.Preservation
             var importedModel = await db.EntityAnalysisModel.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && (w.Deleted == 0 || w.Deleted == null));
 
-            var importedLinked = await db.AdvancedAnalyticsInstance.SingleAsync(w =>
+            var importedLinked = await db.AskJoobyAnalyticsInstance.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && w.Name == seeded.Linked.Name && w.Deleted == 0);
 
-            var importedFree = await db.AdvancedAnalyticsInstance.SingleAsync(w =>
+            var importedFree = await db.AskJoobyAnalyticsInstance.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && w.Name == seeded.Free.Name && w.Deleted == 0);
 
             importedLinked.Version.Should().Be(seeded.Linked.Version,
@@ -118,7 +118,7 @@ namespace Jube.Test.Preservation
             modelHistory[0].TenantRegistryId.Should().Be(target.Id);
 
             var linkedHistory = (await new EntityApprovalRepository(db, target.Id)
-                    .GetHistoryAsync(EntityApprovalKind.AdvancedAnalyticsInstance, importedLinked.Id))
+                    .GetHistoryAsync(EntityApprovalKind.AskJoobyAnalyticsInstance, importedLinked.Id))
                 .OrderBy(o => o.Id).ToList();
 
             linkedHistory.Select(s => (s.EntityVersion, s.StateId, s.Note, s.CreatedUser)).Should().Equal(
@@ -127,7 +127,7 @@ namespace Jube.Test.Preservation
                 (seeded.Linked.Version, (int)EntityApprovalState.Approved, "current state approved", CheckerTwo));
 
             var freeHistory = await new EntityApprovalRepository(db, target.Id)
-                .GetHistoryAsync(EntityApprovalKind.AdvancedAnalyticsInstance, importedFree.Id);
+                .GetHistoryAsync(EntityApprovalKind.AskJoobyAnalyticsInstance, importedFree.Id);
 
             freeHistory.Should().BeEmpty("the source never approved the free instance, so neither has the import");
 
@@ -143,7 +143,7 @@ namespace Jube.Test.Preservation
 
             targetGuids.Should().NotIntersectWith(sourceGuids);
 
-            var effective = await new AdvancedAnalyticsInstanceRepository(db, target.Id, target.UserName)
+            var effective = await new AskJoobyAnalyticsInstanceRepository(db, target.Id, target.UserName)
                 .GetApprovedByEntityAnalysisModelIdOrderByIdAsync(importedModel.Id);
 
             effective.Select(s => s.Id).Should().Equal([importedLinked.Id],
@@ -189,7 +189,7 @@ namespace Jube.Test.Preservation
             var importedModel = await db.EntityAnalysisModel.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && (w.Deleted == 0 || w.Deleted == null));
 
-            var importedLinked = await db.AdvancedAnalyticsInstance.SingleAsync(w =>
+            var importedLinked = await db.AskJoobyAnalyticsInstance.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && w.Name == seeded.Linked.Name && w.Deleted == 0);
 
             var modelStamp = await db.EntityApproval.SingleAsync(w =>
@@ -203,19 +203,19 @@ namespace Jube.Test.Preservation
 
             var linkedStamp = await db.EntityApproval.SingleAsync(w =>
                 w.TenantRegistryId == target.Id
-                && w.EntityApprovalKindId == (int)EntityApprovalKind.AdvancedAnalyticsInstance
+                && w.EntityApprovalKindId == (int)EntityApprovalKind.AskJoobyAnalyticsInstance
                 && w.EntityId == importedLinked.Id);
 
             linkedStamp.StateId.Should().Be((int)EntityApprovalState.Approved);
             linkedStamp.CreatedUser.Should().Be(target.UserName);
             linkedStamp.EntityVersion.Should().Be(importedLinked.Version);
 
-            var importedFree = await db.AdvancedAnalyticsInstance.SingleAsync(w =>
+            var importedFree = await db.AskJoobyAnalyticsInstance.SingleAsync(w =>
                 w.TenantRegistryId == target.Id && w.Name == seeded.Free.Name && w.Deleted == 0);
 
             var freeStamp = await db.EntityApproval.SingleAsync(w =>
                 w.TenantRegistryId == target.Id
-                && w.EntityApprovalKindId == (int)EntityApprovalKind.AdvancedAnalyticsInstance
+                && w.EntityApprovalKindId == (int)EntityApprovalKind.AskJoobyAnalyticsInstance
                 && w.EntityId == importedFree.Id);
 
             freeStamp.StateId.Should().Be((int)EntityApprovalState.Approved,
@@ -236,7 +236,7 @@ namespace Jube.Test.Preservation
 
             await ApproveAsync(db, source.Id, EntityApprovalKind.EntityAnalysisModel, sourceModel, 1, CheckerOne);
 
-            await ApproveAsync(db, source.Id, EntityApprovalKind.AdvancedAnalyticsInstance, seeded.Linked.Id,
+            await ApproveAsync(db, source.Id, EntityApprovalKind.AskJoobyAnalyticsInstance, seeded.Linked.Id,
                 seeded.Linked.Version, CheckerTwo);
 
             var bytes = await harness.ExportAsync(source, PreservationHarness.ExportOptionsFor());
@@ -266,8 +266,7 @@ namespace Jube.Test.Preservation
 
             var body = await harness.SnapshotBodyAsync(source, new PreservationSnapshotRequestDto
             {
-                Name = "ZzTestLosslessSnapshot",
-                Exhaustive = true
+                Name = "ZzTestLosslessSnapshot"
             });
 
             var wrapper = JsonConvert.DeserializeObject<Wrapper>(body);

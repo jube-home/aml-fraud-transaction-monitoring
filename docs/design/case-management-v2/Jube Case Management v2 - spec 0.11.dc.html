@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<style>
+body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif}
+a{color:var(--color-primary)} a:hover{text-decoration:underline}
+.font-mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.tnum{font-variant-numeric:tabular-nums}
+[data-density=comfortable] .card{--card-p:1.25rem}
+[data-density=compact]{font-size:13px}
+[data-density=compact] .card{--card-p:.75rem}
+.tabulator{background:transparent;border:0;font-size:inherit;color:var(--color-base-content)}
+.tabulator .tabulator-header{background:var(--color-base-200);border-bottom:1px solid var(--color-base-300);color:var(--color-base-content)}
+.tabulator .tabulator-header .tabulator-col{background:transparent;border-right:0}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:8px 12px}
+.tabulator .tabulator-col-title{font-weight:600;font-size:12px;opacity:.75}
+.tabulator .tabulator-tableholder{background:transparent}
+.tabulator .tabulator-tableholder .tabulator-table{background:transparent;color:inherit}
+.tabulator-row,.tabulator-row.tabulator-row-even{background:var(--color-base-100);border-bottom:1px solid var(--color-base-300);color:var(--color-base-content)}
+.tabulator-row.tabulator-selectable:hover{background:color-mix(in oklab,var(--color-base-200) 70%,var(--color-base-100));cursor:pointer}
+.tabulator-row.tabulator-selected,.tabulator-row.tabulator-selected:hover{background:color-mix(in oklab,var(--color-primary) 10%,var(--color-base-100))}
+.tabulator .tabulator-cell{border-right:0;padding:10px 12px;white-space:normal;font-variant-numeric:tabular-nums}
+[data-density=compact] .tabulator .tabulator-cell{padding:4px 10px}
+.tabulator .tabulator-row .tabulator-cell.tabulator-row-handle,.tabulator-row .tabulator-cell input[type=checkbox]{accent-color:var(--color-primary)}
+.tabulator-row.tabulator-group{background:var(--color-base-200);border-bottom:1px solid var(--color-base-300);color:var(--color-base-content);font-weight:600;padding:6px 12px}
+.tabulator-row.tabulator-group span{color:inherit;opacity:.6;margin-left:6px}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-sorter .tabulator-arrow{border-bottom-color:currentColor;opacity:.4}
+.tabulator-row .tabulator-data-tree-control{border-color:var(--color-base-content);background:transparent}
+.tabulator-row .tabulator-data-tree-control .tabulator-data-tree-control-collapse,.tabulator-row .tabulator-data-tree-control .tabulator-data-tree-control-expand,.tabulator-row .tabulator-data-tree-control .tabulator-data-tree-control-collapse:after,.tabulator-row .tabulator-data-tree-control .tabulator-data-tree-control-expand:after{background:var(--color-base-content)}
+.tabulator-row .tabulator-data-tree-branch{border-color:var(--color-base-300)}
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-frozen-rows-holder,.tabulator .tabulator-header .tabulator-frozen-rows-holder{background:var(--color-base-100)}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" data-density="{{ density }}" class="min-h-screen bg-base-200 text-base-content">
+
+  <div class="navbar bg-base-100 border-b border-base-300 px-4 gap-3 min-h-14">
+    <button class="flex items-center gap-2 font-semibold tracking-tight" onClick="{{ goCases }}">
+      <span class="w-7 h-7 rounded-md bg-primary text-primary-content grid place-items-center text-sm font-bold">J</span>
+      <span>Jube</span>
+    </button>
+    <label class="input input-sm flex-1 min-w-0 max-w-md ml-4">
+      <span class="opacity-50 font-mono">/</span>
+      <input type="search" placeholder="Search cases, case key values, rules…">
+      <kbd class="kbd kbd-xs">Ctrl K</kbd>
+    </label>
+    <div class="ml-auto flex items-center gap-2 shrink-0">
+      <div class="dropdown dropdown-end">
+        <div tabIndex="0" role="button" class="btn btn-sm btn-outline whitespace-nowrap">Lightbox examples ▾</div>
+        <ul tabIndex="0" class="dropdown-content menu bg-base-100 border border-base-300 rounded-box shadow-lg w-72 z-50 mt-1">
+          <li class="menu-title">Opened from the Case page</li>
+          <li><button onClick="{{ demoClose }}">Close case <span class="opacity-60 text-xs">Decide · D</span></button></li>
+          <li><button onClick="{{ demoFile }}">File STR · typed reason <span class="opacity-60 text-xs">Decide · F</span></button></li>
+          <li><button onClick="{{ demoApprove }}">Approver's view <span class="opacity-60 text-xs">M. Karim's Inbox</span></button></li>
+          <li class="menu-title">Opened from the Cases page</li>
+          <li><button onClick="{{ demoBreak }}">Break lock <span class="opacity-60 text-xs">Lock column / peek</span></button></li>
+          <li><button onClick="{{ demoBulk }}">Bulk close <span class="opacity-60 text-xs">bulk bar</span></button></li>
+          <li><button onClick="{{ demoPayment }}">Held payment + step-up <span class="opacity-60 text-xs">C-9044 peek · H</span></button></li>
+        </ul>
+      </div>
+      <button class="btn btn-sm btn-ghost gap-2 whitespace-nowrap">Inbox <span class="badge badge-sm badge-primary">4</span></button>
+      <button class="btn btn-sm btn-ghost whitespace-nowrap" onClick="{{ toggleTheme }}">{{ themeLabel }}</button>
+      <div class="flex items-center gap-2 pl-2 border-l border-base-300">
+        <div class="avatar avatar-placeholder"><div class="bg-neutral text-neutral-content w-8 rounded-full"><span class="text-xs">AV</span></div></div>
+        <div class="leading-tight whitespace-nowrap"><div class="text-sm font-medium">A. Vance</div><div class="text-xs opacity-60 hidden xl:block">L1 fraud analyst · Tenant: Nile Bank</div></div>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ isCases }}" hint-placeholder-val="{{ true }}">
+    <div class="grid gap-4 p-4 grid-cols-1 lg:grid-cols-[272px_minmax(0,1fr)] items-start">
+      <aside class="flex flex-col gap-4 lg:sticky lg:top-4">
+        <sc-for list="{{ filterGroups }}" as="g" hint-placeholder-count="3">
+          <div class="flex flex-col gap-2">
+            <div class="text-xs font-semibold uppercase tracking-wide opacity-60 px-1">{{ g.name }}</div>
+            <sc-for list="{{ g.items }}" as="f" hint-placeholder-count="3">
+              <button class="card card-border text-left transition {{ f.cls }}" onClick="{{ f.pick }}">
+                <div class="px-3 py-2.5 flex items-start gap-3">
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-sm">{{ f.name }}</div>
+                    <div class="text-xs opacity-60 mt-0.5">{{ f.meta }}</div>
+                  </div>
+                  <span class="font-semibold tnum text-sm">{{ f.count }}</span>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </aside>
+
+      <div class="card bg-base-100 border border-base-300 overflow-hidden">
+        <div class="flex flex-wrap items-center gap-3 px-4 py-3 border-b border-base-300">
+          <h1 class="text-lg font-semibold">{{ filter }}</h1>
+          <span class="badge badge-ghost tnum">{{ filterCount }}</span>
+          <span class="text-xs opacity-60">Pull · sorted by lane, then Priority</span>
+          <button class="btn btn-xs btn-ghost" onClick="{{ toggleMatrix }}">Risk matrix {{ matrixArrow }}</button>
+          <div class="ml-auto flex items-center gap-2">
+            <label class="flex items-center gap-2 text-sm">Sort
+              <select class="select select-sm w-40"><option>Lane, then Priority</option><option>Priority</option><option>Due</option><option>Value</option><option>Age</option></select>
+            </label>
+            <button class="btn btn-sm btn-primary gap-2" onClick="{{ skim }}">Skim <kbd class="kbd kbd-xs">W</kbd></button>
+          </div>
+        </div>
+        <sc-if value="{{ matrixOpen }}">
+          <div class="px-4 py-3 border-b border-base-300 flex flex-wrap gap-6 items-start" data-screen-label="Risk matrix">
+            <div class="flex flex-col gap-1 text-xs tnum">
+              <div class="flex gap-1"><div class="w-20"></div><sc-for list="{{ matrixCols }}" as="mc" hint-placeholder-count="5"><div class="w-16 text-center font-medium opacity-70">{{ mc }}</div></sc-for></div>
+              <sc-for list="{{ matrix }}" as="mr" hint-placeholder-count="4">
+                <div class="flex gap-1 items-center"><div class="w-20 font-medium opacity-70">{{ mr.label }}</div><sc-for list="{{ mr.cells }}" as="mcell" hint-placeholder-count="5"><div class="w-16 h-8 grid place-items-center rounded {{ mcell.cls }}">{{ mcell.n }}</div></sc-for></div>
+              </sc-for>
+              <div class="flex gap-1"><div class="w-20"></div><div class="opacity-50">impact →</div></div>
+            </div>
+            <p class="text-xs opacity-70 max-w-xs" style="text-wrap:pretty">Loaded cases by likelihood × impact. Many “Possible · Low” cases suggest a noisy rule; any “Very likely · Severe” case not yet in progress is a problem.</p>
+          </div>
+        </sc-if>
+        <div ref="{{ casesRef }}"></div>
+        <sc-if value="{{ hasSelection }}">
+          <div class="sticky bottom-0 flex flex-wrap items-center gap-2 px-4 py-2.5 bg-base-200 border-t border-base-300 text-sm">
+            <span class="font-semibold tnum">{{ selected }} selected</span>
+            <div class="divider divider-horizontal mx-0"></div>
+            <button class="btn btn-xs btn-ghost gap-1" onClick="{{ bulkAssign }}">Assign <kbd class="kbd kbd-xs">A</kbd></button>
+            <button class="btn btn-xs btn-ghost">Priority</button>
+            <button class="btn btn-xs btn-ghost gap-1">Merge <kbd class="kbd kbd-xs">⇧M</kbd></button>
+            <button class="btn btn-xs btn-outline" onClick="{{ openBulkClose }}">Close with reason…</button>
+          </div>
+        </sc-if>
+        <div class="flex flex-wrap gap-4 px-4 py-2 text-xs opacity-60 border-t border-base-300">
+          <span><kbd class="kbd kbd-xs">Space</kbd> peek</span>
+          <span><kbd class="kbd kbd-xs">Enter</kbd> open</span>
+          <span><kbd class="kbd kbd-xs">W</kbd> skim (takes lock)</span>
+          <span>Double-click a row to open</span>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ hasRiskPop }}">
+      <div class="fixed z-50 w-80 card bg-base-100 border border-base-300 shadow-xl pointer-events-none" style="{{ riskPopSt }}">
+        <div class="card-body p-3 gap-1.5 text-sm">
+          <div class="flex items-center gap-2"><span class="font-mono font-semibold">{{ rp.id }}</span><span class="badge badge-sm">{{ rp.lane }}</span><span class="ml-auto text-xs opacity-60">{{ rp.method }}</span></div>
+          <div class="grid grid-cols-[76px_minmax(0,1fr)] gap-x-2 gap-y-1">
+            <span class="opacity-60">Likelihood</span><span class="font-semibold">{{ rp.lik }}</span>
+            <span class="opacity-60">Impact</span><span>{{ rp.imp }}</span>
+            <span class="opacity-60">Urgency</span><span>{{ rp.urg }}</span>
+            <span class="opacity-60">Priority</span><span class="tnum">{{ rp.prio }}</span>
+          </div>
+          <p class="text-xs opacity-70">{{ rp.note }}</p>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ peekOpen }}">
+      <div class="fixed right-0 top-14 bottom-0 w-[400px] max-w-full bg-base-100 border-l border-base-300 shadow-xl z-40 flex flex-col">
+        <div class="flex items-center gap-2 px-4 py-3 border-b border-base-300">
+          <span class="text-xs uppercase tracking-wide opacity-60">Peek</span>
+          <span class="font-mono font-medium">{{ peek.id }}</span>
+          <span class="badge badge-sm badge-ghost">{{ peek.lane }}</span><span class="badge badge-sm {{ peek.riskCls }} tnum">{{ peek.riskText }}</span>
+          <button class="btn btn-xs btn-ghost ml-auto" onClick="{{ closePeek }}">Esc</button>
+        </div>
+        <div class="p-4 flex flex-col gap-4 overflow-auto">
+          <div>
+            <div class="font-mono text-xs opacity-60">{{ peek.key }}</div>
+            <div class="text-lg font-semibold">{{ peek.keyLabel }}</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">Why</div>
+            <p class="text-sm" style="text-wrap:pretty">{{ peek.why }}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-box bg-base-200 p-3"><div class="text-xs opacity-60">At stake</div><div class="font-semibold tnum">{{ peek.valueFmt }}</div></div>
+            <div class="rounded-box bg-base-200 p-3"><div class="text-xs opacity-60">Next diary</div><div class="font-semibold tnum">{{ peek.due }}</div><div class="text-xs opacity-60">{{ peek.dueKind }}</div></div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">Activations · {{ peek.acts }}</div>
+            <p class="text-sm">{{ peek.actNames }}</p>
+          </div>
+          <sc-if value="{{ peek.hasHold }}">
+            <div class="rounded-box border p-3 flex flex-col gap-1.5 text-sm {{ peek.holdBoxCls }}" data-screen-label="Held payment card">
+              <div class="flex items-center gap-2"><span class="badge badge-sm {{ peek.holdBadgeCls }}">{{ peek.holdBadge }}</span><span class="font-mono">ARC-771240</span><span class="ml-auto font-semibold tnum {{ peek.holdLeftCls }}">{{ peek.holdLeft }}</span></div>
+              <div>P2P out <b class="tnum">EGP 12,300</b> · ACC-778 Osei → ACC-02 Alpha LLC</div>
+              <div class="text-xs opacity-70">{{ peek.holdState }}</div>
+              <sc-if value="{{ peek.holdOpen }}"><button class="btn btn-sm btn-warning mt-1 gap-2" onClick="{{ openPayment }}">Decide payment… <kbd class="kbd kbd-xs">H</kbd></button></sc-if>
+              <sc-if value="{{ peek.holdClosed }}"><div class="text-xs opacity-70">Decided by A. Vance · 08:53 · see the system note and CaseEvent</div></sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ peek.hasHealth }}"><div class="alert alert-warning alert-soft text-sm py-2">⚠ {{ peek.health }}</div></sc-if>
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">Last note</div>
+            <p class="text-sm">{{ peek.lastNote }}</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs"><span class="opacity-60">Lock: {{ peek.lock }}</span>
+            <sc-if value="{{ peekLockedByOther }}"><button class="btn btn-xs btn-outline ml-auto" onClick="{{ openBreakPeek }}">Break lock…</button></sc-if>
+          </div>
+        </div>
+        <div class="mt-auto p-4 border-t border-base-300 flex gap-2">
+          <button class="btn btn-sm btn-primary flex-1" onClick="{{ openPeekCase }}">Open case <kbd class="kbd kbd-xs">Enter</kbd></button>
+          <button class="btn btn-sm">Fetch (no lock)</button>
+        </div>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isCase }}">
+    <div class="sticky top-0 z-30 bg-base-100 border-b border-base-300 px-4 py-2.5 flex flex-col gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="btn btn-xs btn-ghost" onClick="{{ goCases }}">◂ Cases</button>
+        <h1 class="text-lg font-semibold font-mono">C-9041</h1>
+        <span class="badge badge-info badge-soft">In review</span>
+        <span class="badge badge-ghost">Closed Status: Open</span>
+        <div class="dropdown dropdown-hover {{ riskOpenCls }}">
+          <div tabIndex="0" class="badge badge-outline gap-1 tnum cursor-help h-auto py-1">Standard · <b class="text-error">Likely 56%</b> · High · 62 <kbd class="kbd kbd-xs">R</kbd></div>
+          <div tabIndex="0" class="dropdown-content card bg-base-100 border border-base-300 shadow-xl w-[480px] max-w-[92vw] z-40 mt-1" data-screen-label="Case risk popover">
+            <div class="card-body gap-2 text-sm p-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">Case risk · C-9041</span><span class="ml-auto text-xs opacity-60">cold start · recomputed 4 min ago</span></div>
+              <div class="flex items-baseline gap-2"><span class="font-semibold">Likelihood 56% · Likely</span><span class="text-xs opacity-60 ml-auto">base rate 8% (AML structuring)</span></div>
+              <div class="grid grid-cols-[minmax(0,1fr)_110px_44px] gap-x-3 gap-y-1.5 items-center tnum">
+                <span>StructNet v7 · Very high</span><div class="h-2.5 rounded bg-base-200"><div class="h-full rounded bg-base-content/70" style="width:100%"></div></div><span class="text-right">+1.15</span>
+                <span>Network · 2 hops from ★ C-8812</span><div class="h-2.5 rounded bg-base-200"><div class="h-full rounded bg-base-content/70" style="width:72%"></div></div><span class="text-right">+0.83</span>
+                <span>Customer risk tier · High</span><div class="h-2.5 rounded bg-base-200"><div class="h-full rounded bg-base-content/70" style="width:38%"></div></div><span class="text-right">+0.44</span>
+                <span>Structuring 9d · <span class="opacity-60">shares inputs, counted at 30%</span></span><div class="h-2.5 rounded bg-base-200"><div class="h-full rounded bg-base-content/40" style="width:17%"></div></div><span class="text-right">+0.20</span>
+                <span>Sanctions 0.82 · <span class="opacity-60">unconfirmed</span></span><div class="h-2.5 rounded bg-base-200"><div class="h-full rounded bg-base-content/40" style="width:8%"></div></div><span class="text-right">+0.09</span>
+              </div>
+              <div class="text-xs opacity-70">Log-odds contributions after κ 0.7; they sum exactly to +2.70. Evidence behind it: calibration not yet verified (cold start).</div>
+              <div class="border-t border-base-300 pt-2 grid grid-cols-[72px_minmax(0,1fr)] gap-x-3 gap-y-1">
+                <span class="opacity-60">Impact</span><span><b>High (4)</b> · structuring 3 · ring of 4 accounts +1 · EGP 45,000 (money band 2)</span>
+                <span class="opacity-60">Urgency</span><span><b>Standard lane</b> · STR due 4d 03h (business days, EG) · moves to Deadline near at 2 d</span>
+                <span class="opacity-60">Priority</span><span class="tnum"><b>62</b> = ln(1 + 0.56 × 30), scaled to 0–100</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 border-t border-base-300 pt-2">
+                <span class="text-xs opacity-70">Your assessment: {{ assessText }}</span>
+                <div class="join ml-auto"><sc-for list="{{ assessOpts }}" as="ao" hint-placeholder-count="3"><button class="btn btn-xs join-item {{ ao.cls }}" onClick="{{ ao.pick }}">{{ ao.label }}</button></sc-for></div>
+              </div>
+              <div class="text-[11px] opacity-50">Kept beside the computed likelihood; never used as a label. Never shown in FIU-facing text.</div>
+            </div>
+          </div>
+        </div>
+        <span class="badge badge-warning badge-soft tnum">STR due 4d 03h · business days, EG</span>
+        <span class="badge badge-ghost">Lock: you · A. Vance</span>
+        <div class="ml-auto flex items-center gap-2 text-sm">
+          <span class="opacity-60">Also viewing</span>
+          <div class="avatar avatar-placeholder avatar-online"><div class="bg-base-300 w-7 rounded-full"><span class="text-xs">MK</span></div></div>
+          <span>M. Karim</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button class="btn btn-sm btn-ghost gap-2" onClick="{{ nextCase }}">Next <kbd class="kbd kbd-xs">⇧J</kbd></button>
+        <button class="btn btn-sm btn-ghost">Assign</button>
+        <button class="btn btn-sm btn-ghost gap-2">Escalate <kbd class="kbd kbd-xs">E</kbd></button>
+        <button class="btn btn-sm btn-ghost">Change status ▾</button>
+        <div class="divider divider-horizontal mx-1"></div>
+        <sc-for list="{{ secNav }}" as="s" hint-placeholder-count="6">
+          <button class="btn btn-xs {{ s.cls }}" onClick="{{ s.go }}"><kbd class="kbd kbd-xs">{{ s.n }}</kbd>{{ s.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="grid gap-4 p-4 grid-cols-1 xl:grid-cols-[264px_minmax(0,1fr)_308px] items-start">
+
+      <aside class="card bg-base-100 border border-base-300 xl:sticky xl:top-28">
+        <div class="card-body gap-4">
+          <div>
+            <div class="text-xl font-semibold">Marcus Sterling</div>
+            <div class="text-sm opacity-70"><span class="font-mono">ACC-441</span> · Retail</div>
+          </div>
+          <div class="flex flex-col gap-2 text-sm">
+            <div class="flex items-baseline justify-between gap-2"><span class="opacity-60">Risk</span><span class="font-semibold text-error">● High</span></div>
+            <div class="text-xs opacity-50 text-right -mt-1.5">Dictionary · loaded 2 d ago</div>
+            <div class="flex items-baseline justify-between gap-2"><span class="opacity-60">KYC</span><span class="font-medium">Standard</span></div>
+            <div class="text-xs opacity-50 text-right -mt-1.5">live · 3 min ago</div>
+            <div class="flex items-baseline justify-between gap-2"><span class="opacity-60">Date of birth</span><span class="font-medium tnum">1986-03-12</span></div>
+            <div class="text-xs opacity-50 text-right -mt-1.5">at activation · 10:14</div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <button class="btn btn-sm btn-soft btn-error justify-between">⚑ Sanctions match <span class="tnum">82% ▸</span></button>
+            <div class="badge badge-warning badge-soft w-full justify-start h-auto py-1.5">⚑ New device in last 24 h</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">Identifiers</div>
+            <button class="flex justify-between items-center text-sm py-1 hover:bg-base-200 rounded px-1 -mx-1" onClick="{{ pivotDev }}" title="Pivot the Journal to this key"><span><span class="font-mono">DEV-8831A</span> <span class="opacity-60">shared device</span></span><span class="badge badge-sm tnum">4 ▸</span></button>
+            <button class="flex justify-between items-center text-sm py-1 hover:bg-base-200 rounded px-1 -mx-1" onClick="{{ pivotIp }}"><span><span class="font-mono">185.220.101.4</span> <span class="opacity-60">public IP · hub</span></span><span class="badge badge-sm tnum">4,112</span></button>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">Related cases</div>
+            <button class="flex justify-between items-center text-sm py-1 hover:bg-base-200 rounded px-1 -mx-1"><span><span class="font-mono">C-8812</span> <span class="opacity-60">ACC-915 Duarte</span></span><span class="badge badge-sm badge-error badge-soft">closed TP</span></button>
+            <button class="flex justify-between items-center text-sm py-1 hover:bg-base-200 rounded px-1 -mx-1"><span><span class="font-mono">C-9044</span> <span class="opacity-60">DEV-8831A</span></span><span class="badge badge-sm badge-info badge-soft">open</span></button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="flex flex-col gap-4 min-w-0">
+
+        <section id="sec-1" class="card bg-base-100 border border-base-300" data-screen-label="Case detail views">
+          <div class="card-body gap-3">
+            <div class="flex flex-wrap items-center gap-2"><kbd class="kbd kbd-sm">1</kbd><h2 class="font-semibold">Case detail views</h2><span class="text-xs opacity-60 ml-auto">Display: AML structuring summary · tokens resolve against the first anchor (ARC-771190)</span></div>
+            <div class="grid grid-cols-[88px_minmax(0,1fr)] gap-x-4 gap-y-2 text-[15px] leading-relaxed">
+              <div class="text-sm opacity-60 pt-0.5">Why</div>
+              <p style="text-wrap:pretty"><a class="link link-hover" onClick="{{ goSec3 }}">11 cash deposits in 9 days</a> just under threshold; <a class="link link-hover" onClick="{{ goSec2 }}">StructNet v7 rates it Very high</a>; <a class="link link-hover" onClick="{{ goSec4 }}">2 hops from a confirmed mule</a> (ACC-915 Duarte, C-8812).</p>
+              <div class="text-sm opacity-60 pt-0.5">At stake</div>
+              <p><span class="font-semibold tnum">EGP 45,000</span> deposited · a P2P transfer of <span class="tnum">EGP 9,500</span>, 3.2× typical, to a beneficiary first seen that day</p>
+              <div class="text-sm opacity-60 pt-0.5">Similar cases</div>
+              <p><span class="font-semibold">7 of 9</span> filed an STR · 2 closed as false positive</p>
+              <div class="text-sm opacity-60 pt-0.5">Ranked</div>
+              <p style="text-wrap:pretty"><button class="link link-hover" onClick="{{ openRisk }}">Standard lane · Likely (56%)</button>, mainly from StructNet Very high and 2 hops from confirmed TP C-8812 · impact High · Priority 62</p>
+            </div>
+            <div class="rounded-box border border-primary/30 bg-primary/5 px-4 py-3 flex flex-wrap items-center gap-3 text-sm">
+              <span class="badge badge-primary badge-soft">◆ AskJooby</span>
+              <span>Suggests <b>File STR</b> · confidence 0.82 · <span class="opacity-70">opinion based on 3 facts, snapshot 7f3a…</span></span>
+              <button class="btn btn-xs btn-ghost ml-auto">Why ▸</button>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-wrap items-center gap-2 pb-1"><span class="text-xs font-semibold opacity-60">Case-level drivers</span><span class="text-xs opacity-50">merged across 3 activations · inputs in more sources first</span></div>
+              <sc-for list="{{ drivers }}" as="dv" hint-placeholder-count="4">
+                <div class="flex flex-wrap items-start gap-x-3 gap-y-1 py-2 border-b border-base-300 last:border-0">
+                  <div class="flex flex-col gap-1 min-w-0 flex-1">
+                    <div class="text-sm"><span class="font-medium">{{ dv.label }}</span> <span class="tnum font-semibold">{{ dv.value }}</span> <span class="text-xs opacity-60">{{ dv.normal }}</span></div>
+                    <div class="flex flex-wrap gap-1.5">
+                      <sc-for list="{{ dv.sources }}" as="src" hint-placeholder-count="2"><button class="badge badge-sm badge-outline h-auto py-0.5" onClick="{{ src.go }}">{{ src.label }}</button></sc-for>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button class="btn btn-xs btn-ghost" onClick="{{ dv.journal }}">Journal ▸</button>
+                    <button class="btn btn-xs btn-ghost opacity-50" title="Doesn't make sense" onClick="{{ dv.feedback }}">⚑</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-2" class="card bg-base-100 border border-base-300" data-screen-label="Activations">
+          <div class="card-body gap-4">
+            <div class="flex items-center gap-2"><kbd class="kbd kbd-sm">2</kbd><h2 class="font-semibold">Activations</h2><span class="badge badge-sm badge-ghost">3</span><span class="text-xs opacity-60 ml-auto">Each with its own anchor transaction · archived, never recomputed</span></div>
+
+            <div class="rounded-box border border-base-300 p-4 flex flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="font-mono text-xs opacity-60">ACT-904</span>
+                <button class="font-semibold link link-hover" onClick="{{ openFacts }}">HTTP Adaptation “StructNet” v7</button>
+                <span class="badge badge-sm badge-ghost">gradient-boosted trees</span>
+                <button class="badge badge-sm badge-primary badge-soft cursor-pointer" onClick="{{ openAnchor1 }}">⚓ Anchor ARC-771203 ▸</button>
+                <span class="ml-auto text-xs opacity-60">22 h ago · 10:14 UTC+2 · snapshot 7f3a…</span>
+              </div>
+
+              <div class="rounded-box bg-base-200 px-3 py-2.5 flex flex-col gap-1.5">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                  <span class="font-semibold">Calibrated probability</span>
+                  <span class="opacity-60">0–1 · higher is riskier</span>
+                  <span class="badge badge-sm badge-error">Very high</span>
+                  <span class="tnum">top 0.4% of scores (30 d)</span>
+                  <span class="tnum opacity-70">0.11 above threshold</span>
+                  <span class="tnum opacity-50 ml-auto" title="Raw value">raw 0.91</span>
+                </div>
+                <div class="relative h-5 mx-1">
+                  <div class="absolute inset-x-0 top-2 h-1 rounded bg-base-300"></div>
+                  <div class="absolute top-0 h-5 border-l-2 border-dashed border-base-content/60" style="left:80%"></div>
+                  <div class="absolute top-0.5 w-4 h-4 rounded-full bg-error border-2 border-base-100 -translate-x-1/2" style="left:91%"></div>
+                </div>
+                <div class="relative h-3.5 mx-1 text-[10px] tnum opacity-60">
+                  <span class="absolute left-0">0</span>
+                  <span class="absolute -translate-x-1/2" style="left:80%">▲ threshold 0.80</span>
+                  <span class="absolute right-0">1.0</span>
+                </div>
+                <div class="text-xs">At Very high, <b class="tnum">31%</b> of <span class="tnum">212</span> closed cases were true positive (90 d) · <span class="opacity-60">internal only, never in FIU text</span></div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="badge badge-sm {{ tier.cls }}">{{ tier.label }}</span>
+                <span class="text-xs opacity-70 flex-1 min-w-0" style="text-wrap:pretty">{{ tier.note }}</span>
+                <sc-if value="{{ tierHasBars }}">
+                  <div class="join"><button class="btn btn-xs join-item {{ wfChartCls }}" onClick="{{ wfChart }}">Waterfall</button><button class="btn btn-xs join-item {{ wfTableCls }}" onClick="{{ wfTableOn }}">Table</button></div>
+                </sc-if>
+              </div>
+
+              <sc-if value="{{ showWfChart }}">
+                <div class="flex flex-col gap-1.5">
+                  <div class="text-xs opacity-70 tnum">Contributions in log-odds · base 0.04 (−3.18) → score 0.91 (+2.31) · dashed line: threshold 0.80 (+1.39)</div>
+                  <sc-for list="{{ wfRows }}" as="w" hint-placeholder-count="6">
+                    <div class="grid grid-cols-[minmax(0,210px)_minmax(0,1fr)_56px_20px] items-center gap-3 text-sm {{ w.rowCls }}">
+                      <button class="text-left truncate {{ w.labelCls }}" onClick="{{ w.pick }}">{{ w.label }}</button>
+                      <div class="relative h-3.5 rounded bg-base-200"><div class="absolute top-0 bottom-0 rounded {{ w.cls }}" style="{{ w.st }}"></div><div class="absolute -top-0.5 -bottom-0.5 border-l border-dashed border-base-content/60" style="{{ w.thrSt }}"></div></div>
+                      <span class="text-right tnum">{{ w.value }}</span>
+                      <button class="text-xs opacity-30 hover:opacity-100" title="Doesn't make sense" onClick="{{ w.feedback }}">{{ w.fb }}</button>
+                    </div>
+                  </sc-for>
+                  <div class="text-[11px] opacity-60">Negative contributions made it less risky and are always shown · rendered by Jube.Charting in production</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ showWfTable }}">
+                <table class="table table-sm tnum">
+                  <thead><tr><th class="pl-0">Input</th><th class="text-right">Contribution</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ wfRows }}" as="wt" hint-placeholder-count="6"><tr><td class="pl-0">{{ wt.label }}</td><td class="text-right">{{ wt.value }}</td></tr></sc-for>
+                  </tbody>
+                </table>
+              </sc-if>
+              <sc-if value="{{ tierDecomp }}">
+                <div class="flex flex-col gap-2">
+                  <div class="text-xs font-semibold opacity-60">Causal path · node probabilities (Bayesian variant)</div>
+                  <div class="flex flex-wrap items-center gap-2 text-sm">
+                    <span class="badge badge-outline h-auto py-1 gap-2">Amount elevated <b class="tnum">0.78</b></span><span class="opacity-40">→</span>
+                    <span class="badge badge-outline h-auto py-1 gap-2">Beneficiary first seen <b class="tnum">0.93</b></span><span class="opacity-40">→</span>
+                    <span class="badge badge-outline h-auto py-1 gap-2">Unusual velocity <b class="tnum">0.87</b></span><span class="opacity-40">→</span>
+                    <span class="badge badge-neutral h-auto py-1 gap-2">Layering indicator <b class="tnum">0.91</b></span>
+                  </div>
+                  <p class="text-sm italic opacity-80">“High velocity given new beneficiary and elevated amount”</p>
+                </div>
+              </sc-if>
+              <sc-if value="{{ tierNone }}">
+                <div class="rounded-box border border-dashed border-base-300 p-3 flex flex-col gap-2 text-sm">
+                  <div class="font-medium">Contributions not available for this model</div>
+                  <div class="text-xs opacity-70">Score and band above are exact. The inputs it scored are shown; no split between them is drawn.</div>
+                  <div class="grid grid-cols-2 gap-x-6 gap-y-1 tnum">
+                    <span class="opacity-70">Cash deposits in 9 days</span><span>11</span>
+                    <span class="opacity-70">Beneficiary first seen</span><span>0 days</span>
+                    <span class="opacity-70">Amount vs 90-day average</span><span>3.2×</span>
+                    <span class="opacity-70">Account age</span><span>6 years</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ tierExact }}">
+                <div class="flex flex-wrap items-center gap-2 text-sm rounded-box border border-base-300 px-3 py-2">
+                  <span class="badge badge-sm badge-ghost">Sensitivity</span>
+                  <span>If beneficiary first seen were 30 days or more, the score would be <b class="tnum">0.74</b>, below the 0.80 threshold</span>
+                  <span class="text-xs opacity-60 ml-auto">replayed, not what the engine saw · never used in narratives</span>
+                </div>
+              </sc-if>
+
+              <div class="grid gap-6 md:grid-cols-2">
+                <div class="flex flex-col gap-2">
+                  <div class="text-xs font-semibold opacity-60">Compared to normal · 90 d, case key history · median = typical, mean rate = normal</div>
+                  <table class="table table-sm tnum">
+                    <tbody>
+                      <tr><td class="pl-0">Amount</td><td class="text-right">9,500</td><td class="text-right opacity-60">typical 2,950</td><td class="text-right font-semibold">3.2×</td></tr>
+                      <tr><td class="pl-0">Deposits</td><td class="text-right">11 / 9 d</td><td class="text-right opacity-60">normal rate 1.2 / 9 d</td><td class="text-right font-semibold">9.2×</td></tr>
+                      <tr><td class="pl-0">Beneficiary age</td><td class="text-right">0 d</td><td class="text-right opacity-60">typical 412 d</td><td class="text-right font-semibold">new</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <div class="text-xs font-semibold opacity-60">Model health · at scoring time</div>
+                  <div class="flex flex-col gap-1 text-sm">
+                    <div class="flex gap-2"><span class="text-success font-semibold">✓</span><span>All inputs present, none filled with defaults</span></div>
+                    <div class="flex gap-2"><span class="text-success font-semibold">✓</span><span>No input drift since training</span></div>
+                    <div class="flex gap-2"><span class="text-success font-semibold">✓</span><span>Trained 2026-06 · within tenant limit</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button class="btn btn-xs" onClick="{{ openFacts }}">Model facts ▸</button>
+                <button class="btn btn-xs">Add to narrative <kbd class="kbd kbd-xs">⏎</kbd></button>
+                <button class="btn btn-xs btn-ghost">Export explanation</button>
+              </div>
+            </div>
+
+            <div class="rounded-box border border-base-300 p-4 flex flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="font-mono text-xs opacity-60">ACT-901</span>
+                <span class="font-semibold">Activation rule “Structuring 9d”</span>
+                <span class="badge badge-sm badge-ghost">v12 · from snapshot 7f3a…</span>
+                <button class="badge badge-sm badge-primary badge-soft cursor-pointer" onClick="{{ openAnchor2 }}">⚓ Anchor ARC-771190 ▸</button>
+                <span class="ml-auto text-xs opacity-60">23 h ago · 09:40 UTC+2</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-xs rounded-box bg-base-200 px-3 py-2">
+                <span class="font-semibold">Binary rule match</span><span class="opacity-60">matched · creates cases · no band</span>
+              </div>
+              <div class="text-xs font-semibold opacity-60">Dependency path · archived values</div>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="badge badge-neutral h-auto py-1">Structuring 9d</span><span class="opacity-40">←</span>
+                <span class="badge badge-outline h-auto py-1 gap-1">TTL counter <span class="font-mono">Deposits9d</span> = <b class="tnum">11</b></span><span class="opacity-40">←</span>
+                <span class="badge badge-outline h-auto py-1 gap-1">XPath <span class="font-mono">Amount</span> = <b class="tnum">9,500</b></span>
+              </div>
+              <p class="text-xs opacity-60">Sub-clause truth values replayed deterministically against snapshot 7f3a….</p>
+            </div>
+
+            <div class="rounded-box border border-base-300 p-4 flex flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="font-mono text-xs opacity-60">ACT-902</span>
+                <span class="font-semibold">Sanctions name match</span>
+                <button class="badge badge-sm badge-primary badge-soft cursor-pointer" onClick="{{ openAnchor2 }}">⚓ Anchor ARC-771190 ▸</button>
+                <span class="ml-auto text-xs opacity-60">23 h ago · 09:40 UTC+2</span>
+              </div>
+              <div class="flex flex-col gap-1 rounded-box bg-base-200 px-3 py-2 text-xs">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1"><span class="font-semibold">Similarity</span><span class="opacity-60">0–1 · not a probability</span><span class="tnum">0.82</span></div>
+                <div class="opacity-70">Historical precision: not enough closed cases yet (minimum 30)</div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="opacity-60">Matched tokens</span><span class="badge badge-outline">MARCUS</span><span class="badge badge-outline">STERLING</span>
+                <span class="opacity-60 ml-3">Ignored stop tokens</span><span class="badge badge-ghost line-through">MR</span>
+              </div>
+              <div class="rounded-box border border-dashed border-base-300 px-3 py-2 text-xs font-mono opacity-70">List source, entry and confidence components · coming with sanctions match detail</div>
+              <div><button class="btn btn-xs">Open sanctions drawer ▸</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-3" class="card bg-base-100 {{ jSecCls }}" data-screen-label="Journal">
+          <div class="card-body gap-3">
+            <div class="flex flex-wrap items-center gap-2 {{ jHeadCls }}">
+              <kbd class="kbd kbd-sm">3</kbd><h2 class="font-semibold">Journal</h2>
+              <div class="breadcrumbs text-sm py-0">
+                <ul>
+                  <sc-for list="{{ crumbs }}" as="cr" hint-placeholder-count="1"><li><button class="{{ cr.cls }}" onClick="{{ cr.go }}">{{ cr.label }}</button></li></sc-for>
+                </ul>
+              </div>
+              <sc-if value="{{ canBack }}"><button class="btn btn-xs" onClick="{{ goBack }}">◂ Back <kbd class="kbd kbd-xs">Alt ←</kbd></button></sc-if>
+              <sc-if value="{{ notSubject }}">
+                <span class="badge badge-warning gap-1">⚠ Not the case subject</span>
+                <button class="btn btn-xs btn-outline" onClick="{{ backToSubject }}">Back to ACC-441 Sterling</button>
+              </sc-if>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <label class="flex items-center gap-1.5 text-xs">Window
+                <select class="select select-xs w-20" value="{{ win }}" onChange="{{ onWin }}"><option>9 d</option><option>30 d</option><option>90 d</option></select>
+                <span class="opacity-60">shared with Network</span>
+              </label>
+              <div class="divider divider-horizontal mx-0"></div>
+              <span class="text-xs">View by <kbd class="kbd kbd-xs">Y</kbd></span>
+              <div class="join">
+                <sc-for list="{{ viewOpts }}" as="vo" hint-placeholder-count="3"><button class="btn btn-xs join-item {{ vo.cls }}" onClick="{{ vo.pick }}">{{ vo.label }}</button></sc-for>
+              </div>
+              <sc-if value="{{ isRowsView }}">
+                <div class="join">
+                  <sc-for list="{{ ljFilters }}" as="lf" hint-placeholder-count="3"><button class="btn btn-xs join-item {{ lf.cls }}" onClick="{{ lf.pick }}">{{ lf.label }}</button></sc-for>
+                </div>
+              </sc-if>
+              <div class="ml-auto flex gap-1">
+                <button class="btn btn-xs btn-ghost" onClick="{{ aroundThis }}">Around this <kbd class="kbd kbd-xs">W</kbd></button>
+                <button class="btn btn-xs btn-ghost" onClick="{{ mergeLanes }}">Merge… <kbd class="kbd kbd-xs">M</kbd></button>
+                <button class="btn btn-xs btn-ghost" onClick="{{ pinLens }}">Pin lens <kbd class="kbd kbd-xs">⇧P</kbd></button>
+              </div>
+            </div>
+            <sc-if value="{{ hasJf }}">
+              <div><span class="badge badge-primary badge-soft gap-2 h-auto py-1">{{ jfLabel }} <button class="font-bold" onClick="{{ clearJf }}">✕</button></span></div>
+            </sc-if>
+
+            <sc-if value="{{ isSubject }}">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div class="rounded-box bg-base-200 px-3 py-2"><div class="text-xs opacity-60">Cash deposits · 9 d</div><div class="font-semibold tnum">11 <span class="text-xs font-normal opacity-60">vs normal rate 1.2</span></div></div>
+                <div class="rounded-box bg-base-200 px-3 py-2"><div class="text-xs opacity-60">Total deposited</div><div class="font-semibold tnum">EGP 45,000</div></div>
+                <div class="rounded-box bg-base-200 px-3 py-2"><div class="text-xs opacity-60">Largest amount</div><div class="font-semibold tnum">EGP 9,500 <span class="text-xs font-normal opacity-60">3.2× typical</span></div></div>
+                <div class="rounded-box bg-base-200 px-3 py-2"><div class="text-xs opacity-60">Beneficiary age</div><div class="font-semibold tnum">0 d <span class="text-xs font-normal opacity-60">vs typical 412 d</span></div></div>
+              </div>
+              <div class="grid gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+                <div class="rounded-box border border-base-300 px-3 py-2 flex flex-col gap-1">
+                  <div class="text-xs font-semibold opacity-60">Score history · StructNet v7, per transaction</div>
+                  <svg viewBox="0 0 132 28" class="w-full h-10" preserveAspectRatio="none">
+                    <line x1="0" x2="132" y1="7.2" y2="7.2" style="stroke:var(--color-base-content)" stroke-opacity="0.35" stroke-dasharray="3 3" stroke-width="1"></line>
+                    <polyline points="0,24.6 13,23.8 26,22.4 39,23 52,19.6 65,18.2 78,16.5 91,13.4 104,11.2 117,6.2 130,2.5" fill="none" style="stroke:var(--color-base-content)" stroke-width="1.5"></polyline>
+                    <circle cx="130" cy="2.5" r="2.5" style="fill:var(--color-error)"></circle>
+                  </svg>
+                  <div class="text-[11px] opacity-70">A trend, not a spike · ● anchor score · dashed line = threshold 0.80</div>
+                </div>
+                <div class="rounded-box border border-base-300 p-3 flex flex-col gap-2">
+                  <div class="flex items-center gap-2 text-xs"><span class="font-semibold opacity-60">Cash deposited per day</span><span class="ml-auto flex items-center gap-1.5 opacity-70"><span class="inline-block w-4 border-t-2 border-dashed border-base-content/50"></span>normal = mean daily total, 90 d, excl. this window ≈ EGP 390 · days in tenant time (Cairo)</span></div>
+                  <div class="relative h-28 flex items-end gap-2 pt-4">
+                    <div class="absolute left-0 right-0 border-t-2 border-dashed border-base-content/40" style="bottom:calc(3% + 20px)"></div>
+                    <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="9">
+                      <div class="flex-1 flex flex-col items-center justify-end gap-1 h-full" title="{{ b.tip }}">
+                        <span class="text-[10px] tnum opacity-70">{{ b.amt }}</span>
+                        <div class="w-full rounded-t {{ b.cls }}" style="height:{{ b.h }}"></div>
+                        <span class="text-[10px] tnum opacity-60 h-4">{{ b.day }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ notSubject }}">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <sc-for list="{{ jAgg }}" as="ag" hint-placeholder-count="4">
+                  <div class="rounded-box bg-base-200 px-3 py-2"><div class="text-xs opacity-60">{{ ag.k }}</div><div class="font-semibold tnum">{{ ag.v }}</div></div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div class="rounded-box border border-base-300 overflow-hidden"><div ref="{{ journalRef }}"></div></div>
+            <div class="flex flex-wrap gap-4 text-xs opacity-60">
+              <span>Click a row to select it (its edges light up in the Network)</span>
+              <span><kbd class="kbd kbd-xs">Enter</kbd> or Card: transaction card</span>
+              <span>⚓ anchors are pinned</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-4" class="card bg-base-100 border border-base-300" data-screen-label="Network">
+          <div class="card-body gap-3">
+            <div class="flex flex-wrap items-center gap-2"><kbd class="kbd kbd-sm">4</kbd><h2 class="font-semibold">Network</h2><span class="text-xs opacity-60">8 nodes · render cap 150 · window {{ win }} (shared with Journal)</span>
+              <div class="ml-auto flex items-center gap-2">
+                <div class="join"><sc-for list="{{ netViews }}" as="nv" hint-placeholder-count="2"><button class="btn btn-xs join-item {{ nv.cls }}" onClick="{{ nv.pick }}">{{ nv.label }}</button></sc-for></div>
+                <div class="join"><button class="btn btn-xs join-item">1 hop</button><button class="btn btn-xs join-item btn-active">2 hops</button></div>
+                <button class="btn btn-xs btn-ghost">Save graph capture</button>
+              </div>
+            </div>
+            <sc-if value="{{ netGraph }}">
+              <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
+                <div class="rounded-box border border-base-300 bg-base-100 relative">
+                  <svg viewBox="0 0 620 270" class="w-full h-auto block">
+                    <sc-for list="{{ netEdges }}" as="e" hint-placeholder-count="10">
+                      <g onClick="{{ e.pick }}" style="cursor:pointer">
+                        <line x1="{{ e.x1 }}" y1="{{ e.y1 }}" x2="{{ e.x2 }}" y2="{{ e.y2 }}" style="{{ e.st }}" stroke-width="{{ e.w }}"></line>
+                        <line x1="{{ e.x1 }}" y1="{{ e.y1 }}" x2="{{ e.x2 }}" y2="{{ e.y2 }}" style="{{ e.hit }}" stroke-width="14"></line>
+                      </g>
+                    </sc-for>
+                    <sc-for list="{{ netNodes }}" as="nd" hint-placeholder-count="8">
+                      <g onClick="{{ nd.pick }}" style="cursor:pointer">
+                        <circle cx="{{ nd.x }}" cy="{{ nd.y }}" r="{{ nd.r }}" style="{{ nd.st }}" stroke-width="{{ nd.sw }}" stroke-dasharray="{{ nd.dash }}"></circle>
+                      </g>
+                    </sc-for>
+                  </svg>
+                  <sc-for list="{{ netNodes }}" as="nl" hint-placeholder-count="8">
+                    <button class="absolute -translate-x-1/2 flex flex-col items-center leading-tight whitespace-nowrap" style="{{ nl.labelSt }}" onClick="{{ nl.pick }}">
+                      <span class="font-mono text-[11px] px-1 rounded bg-base-100/85">{{ nl.label }}</span>
+                      <span class="text-[10px] opacity-60">{{ nl.sub }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div class="rounded-box bg-base-200 p-3 flex flex-col gap-2 text-sm">
+                  <div class="text-xs opacity-60">Selected node</div>
+                  <div><span class="font-mono font-medium">{{ sel.label }}</span> <span class="opacity-60">{{ sel.sub }}</span></div>
+                  <sc-for list="{{ sel.rows }}" as="sr" hint-placeholder-count="3">
+                    <div class="flex justify-between gap-2"><span class="opacity-70">{{ sr.k }}</span><span class="text-right">{{ sr.v }}</span></div>
+                  </sc-for>
+                  <div class="mt-auto flex flex-col gap-1.5">
+                    <sc-if value="{{ sel.pivotable }}"><button class="btn btn-xs" onClick="{{ pivotSel }}"><kbd class="kbd kbd-xs">P</kbd>Pivot Journal here</button></sc-if>
+                    <sc-if value="{{ sel.linkable }}"><button class="btn btn-xs btn-ghost" onClick="{{ linkSel }}"><kbd class="kbd kbd-xs">L</kbd>Link to case</button></sc-if>
+                    <sc-if value="{{ sel.blockable }}"><button class="btn btn-xs btn-outline" onClick="{{ blockNode }}">Block identifier…</button></sc-if>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-4 text-[11px] opacity-70">
+                <span>● account</span><span>◉ this case key</span><span class="text-error">● confirmed TP</span><span>◌ case (dashed)</span>
+                <span>Click an edge: the Journal shows the transactions behind it</span>
+                <span>1 hub hidden: 185.220.101.4 public IP, 4,112 accounts</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ netExplode }}">
+              <div class="text-xs opacity-70">Explode · the 1-hop graph from ACC-441 Sterling as a table, with time and amounts. This is the Network's keyboard and screen-reader view. Selecting a lane selects its node.</div>
+              <div class="rounded-box border border-base-300 overflow-hidden"><div ref="{{ netExplodeRef }}"></div></div>
+            </sc-if>
+          </div>
+        </section>
+
+        <section id="sec-5" class="card bg-base-100 border border-base-300" data-screen-label="Notes, uploads and forms">
+          <div class="card-body gap-4">
+            <div class="flex items-center gap-2"><kbd class="kbd kbd-sm">5</kbd><h2 class="font-semibold">Notes, uploads &amp; forms</h2><span class="text-xs opacity-60 ml-auto"><kbd class="kbd kbd-xs">N</kbd> new note</span></div>
+
+            <div id="composer" class="rounded-box border border-base-300 bg-base-200/60 p-3 flex flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-semibold opacity-60 w-16">Activity</span>
+                <select id="composer-activity" class="select select-sm w-60" value="{{ noteActivity }}" onChange="{{ onActivity }}">
+                  <option value="">Choose action code…</option>
+                  <sc-for list="{{ activities }}" as="a" hint-placeholder-count="4"><option value="{{ a }}">{{ a }}</option></sc-for>
+                </select>
+                <span class="text-xs opacity-50">last used first</span>
+              </div>
+              <sc-if value="{{ hasActivity }}">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-semibold opacity-60 w-16">Result</span>
+                  <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+                    <button class="btn btn-xs {{ r.cls }}" onClick="{{ r.pick }}"><kbd class="kbd kbd-xs">{{ r.n }}</kbd>{{ r.label }}</button>
+                  </sc-for>
+                  <sc-if value="{{ hasFollowHint }}"><span class="text-xs badge badge-ghost">{{ followHint }}</span></sc-if>
+                </div>
+              </sc-if>
+              <div class="flex gap-2">
+                <input class="input input-sm flex-1" placeholder="Optional text" value="{{ noteText }}" onChange="{{ onNoteText }}">
+                <button class="btn btn-sm btn-primary gap-2" disabled="{{ noteDisabled }}" onClick="{{ addNote }}">Add note <kbd class="kbd kbd-xs">⌃⏎</kbd></button>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+                <div class="flex gap-3 py-3 border-b border-base-300 last:border-0 {{ n.rowCls }}">
+                  <div class="avatar avatar-placeholder shrink-0"><div class="w-7 h-7 rounded-full {{ n.avCls }}"><span class="text-[10px]">{{ n.initials }}</span></div></div>
+                  <div class="flex-1 min-w-0 flex flex-col gap-1">
+                    <div class="flex flex-wrap items-center gap-2 text-sm">
+                      <span class="font-medium">{{ n.who }}</span>
+                      <span class="badge badge-xs {{ n.srcCls }}">{{ n.src }}</span>
+                      <span class="font-medium">{{ n.activity }}</span>
+                      <sc-if value="{{ n.hasResult }}"><span class="opacity-40">→</span><span class="badge badge-sm badge-outline">{{ n.result }}</span></sc-if>
+                      <span class="ml-auto text-xs opacity-60 tnum">{{ n.time }}</span>
+                    </div>
+                    <sc-if value="{{ n.hasText }}"><p class="text-sm opacity-80">{{ n.text }}</p></sc-if>
+                    <sc-if value="{{ n.hasFollow }}"><div class="text-xs opacity-70">↻ Follow-up {{ n.follow }}</div></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div class="grid gap-2 md:grid-cols-2">
+              <div class="rounded-box border border-base-300 px-3 py-2 text-sm flex items-center gap-3">
+                <span class="badge badge-sm badge-ghost">Upload</span>
+                <span class="flex-1 truncate">deposit-slips-sep.pdf</span>
+                <span class="font-mono text-xs opacity-60">sha256 9c2e…</span>
+              </div>
+              <div class="rounded-box border border-dashed border-base-300 px-3 py-2 text-sm flex items-center gap-3 opacity-70">
+                <span class="badge badge-sm badge-ghost">Form</span>
+                <span class="flex-1">No form entries yet · STR form opens from Report <kbd class="kbd kbd-xs">F</kbd></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-6" class="card bg-base-100 border border-base-300" data-screen-label="Case journal and events">
+          <div class="card-body gap-3">
+            <div class="flex items-center gap-2"><kbd class="kbd kbd-sm">6</kbd><h2 class="font-semibold">Case journal &amp; events</h2></div>
+            <div class="text-xs font-semibold opacity-60">Prior cases for ACC-441 Sterling</div>
+            <div class="rounded-box border border-dashed border-base-300 px-4 py-3 text-sm">No earlier cases for this case key. Cases on linked accounts appear here once a party key is configured.</div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="text-xs font-semibold opacity-60">Case Events Journal</div>
+              <span class="badge badge-xs badge-success badge-soft ml-auto">hash chain verified · 8 events</span>
+            </div>
+            <div class="rounded-box border border-base-300 overflow-hidden"><div ref="{{ eventsRef }}"></div></div>
+            <div class="flex flex-wrap items-center gap-2 mt-2"><div class="text-xs font-semibold opacity-60">Case risk history</div><span class="text-xs opacity-50">every recompute is kept · Close, approvals and reports cite the one in force</span></div>
+            <div class="overflow-x-auto rounded-box border border-base-300">
+              <table class="table table-sm tnum" data-screen-label="Case risk history">
+                <thead><tr><th>#</th><th>When</th><th>Trigger</th><th>Method</th><th>Likelihood</th><th>Impact</th><th>Lane</th><th class="text-right">Priority</th></tr></thead>
+                <tbody>
+                  <tr><td>4</td><td>24 Sep 08:49</td><td>Scheduled sweep (decay, lanes)</td><td>cold start v1</td><td>Likely 56%</td><td>High</td><td>Standard</td><td class="text-right font-semibold">62</td></tr>
+                  <tr><td>3</td><td>23 Sep 10:16</td><td>Network evidence computed</td><td>cold start v1</td><td>Likely 56%</td><td>High</td><td>Standard</td><td class="text-right">62</td></tr>
+                  <tr><td>2</td><td>23 Sep 10:15</td><td>Activation attached · StructNet v7</td><td>cold start v1</td><td>Possible 41%</td><td>Moderate</td><td>Standard</td><td class="text-right">35</td></tr>
+                  <tr><td>1</td><td>23 Sep 09:40</td><td>Case created · Structuring 9d v12</td><td>cold start v1</td><td>Possible 27%</td><td>Moderate</td><td>Standard</td><td class="text-right">28</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="flex flex-col gap-4 xl:sticky xl:top-28">
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body gap-3">
+            <h2 class="font-semibold">Decide</h2>
+            <div class="rounded-box border border-primary/40 bg-primary/5 p-3 flex flex-col gap-2">
+              <div class="text-xs opacity-70">Suggested next step · AskJooby 0.82</div>
+              <button class="btn btn-primary btn-block justify-between" onClick="{{ openFile }}">File STR <kbd class="kbd kbd-xs">F</kbd></button>
+              <button class="text-xs link link-hover self-start">Why this suggestion ▸</button>
+            </div>
+            <div class="flex flex-col gap-1">
+              <button class="btn btn-sm btn-ghost justify-between" onClick="{{ focusComposer }}">Action code <kbd class="kbd kbd-xs">A</kbd></button>
+              <button class="btn btn-sm btn-ghost justify-between" onClick="{{ openClose }}">Close <kbd class="kbd kbd-xs">D</kbd></button>
+              <button class="btn btn-sm btn-ghost justify-between">Escalate <kbd class="kbd kbd-xs">E</kbd></button>
+              <button class="btn btn-sm btn-ghost justify-between opacity-70">More operations <kbd class="kbd kbd-xs">Ctrl K</kbd></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body gap-2">
+            <div class="flex items-center"><h3 class="font-semibold text-sm">Checklist</h3><span class="ml-auto text-sm tnum">{{ checkDone }}/4</span></div>
+            <progress class="progress progress-primary w-full" value="{{ checkDone }}" max="4"></progress>
+            <sc-for list="{{ checklist }}" as="c" hint-placeholder-count="4">
+              <label class="flex items-center gap-2 text-sm py-0.5 cursor-pointer">
+                <input type="checkbox" class="checkbox checkbox-sm" checked="{{ c.done }}" onChange="{{ c.toggle }}">
+                <span class="{{ c.cls }}">{{ c.label }}</span>
+              </label>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body gap-3">
+            <h3 class="font-semibold text-sm">Diaries</h3>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-baseline justify-between text-sm"><span class="font-medium">STR · regulatory</span><span class="font-semibold tnum">4d 03h</span></div>
+              <progress class="progress progress-warning w-full" value="60" max="100"></progress>
+              <div class="text-xs opacity-60">Business days · EG profile · pausable</div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-baseline justify-between text-sm"><span class="font-medium">Follow-up · user</span><span class="font-semibold tnum">3h 16m</span></div>
+              <progress class="progress w-full" value="18" max="100"></progress>
+              <div class="text-xs opacity-60">From “No answer” +4 h · due 12:09 UTC+2</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ cardOpen }}">
+    <div class="fixed right-0 top-0 bottom-0 w-[520px] max-w-full bg-base-100 border-l border-base-300 shadow-2xl z-40 flex flex-col" data-screen-label="Transaction card">
+      <div class="px-5 py-4 border-b border-base-300 flex flex-col gap-1">
+        <div class="flex items-center gap-2"><span class="text-xs uppercase tracking-wide opacity-60">Transaction</span><span class="font-mono font-semibold">{{ card.id }}</span><button class="btn btn-xs btn-ghost ml-auto" onClick="{{ closeCard }}">Esc</button></div>
+        <div class="text-sm tnum">{{ card.when }} · {{ card.what }}</div>
+        <sc-if value="{{ card.isAnchor }}"><div class="text-xs flex items-center gap-2"><span class="badge badge-sm badge-primary badge-soft">⚓ Anchor</span><span>of {{ card.anchor }} on this case · scored under snapshot 7f3a…</span></div></sc-if>
+      </div>
+      <div class="flex-1 overflow-auto px-5 py-4 flex flex-col gap-5">
+        <div class="flex flex-col">
+          <div class="text-xs font-semibold opacity-60 pb-1">Keys in this transaction</div>
+          <sc-for list="{{ card.keys }}" as="k" hint-placeholder-count="3">
+            <div class="flex items-center gap-2 py-2 border-b border-base-300 last:border-0 text-sm">
+              <span class="w-24 shrink-0 opacity-60">{{ k.role }}</span>
+              <span class="flex-1 min-w-0"><span class="font-mono">{{ k.key }}</span> {{ k.label }} <span class="text-xs opacity-60">{{ k.note }}</span></span>
+              <sc-if value="{{ k.canPivot }}"><button class="btn btn-xs" onClick="{{ k.pivot }}"><kbd class="kbd kbd-xs">P</kbd>Pivot</button></sc-if>
+              <sc-if value="{{ k.canLink }}"><button class="btn btn-xs btn-ghost" onClick="{{ k.link }}"><kbd class="kbd kbd-xs">L</kbd>Link</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <div class="text-xs font-semibold opacity-60">Rules that fired on this transaction</div>
+          <sc-for list="{{ card.rules }}" as="ru" hint-placeholder-count="2">
+            <div class="flex items-center gap-2 text-sm"><span class="badge badge-sm {{ ru.cls }}">{{ ru.kind }}</span><span>{{ ru.label }}</span></div>
+          </sc-for>
+          <sc-if value="{{ card.noRules }}"><div class="text-sm opacity-60">No rules fired on this transaction.</div></sc-if>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <div class="text-xs font-semibold opacity-60">Tags</div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <sc-for list="{{ cardTags }}" as="ct" hint-placeholder-count="2"><span class="badge badge-sm badge-outline">{{ ct }}</span></sc-for>
+            <button class="btn btn-xs btn-ghost opacity-70" onClick="{{ openCardTagMenu }}">+ Tag</button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <div class="text-xs font-semibold opacity-60">What Jube knew then · archived, never recomputed</div>
+          <sc-if value="{{ card.hasKnew }}">
+            <div class="grid grid-cols-2 gap-2">
+              <sc-for list="{{ card.knew }}" as="kn" hint-placeholder-count="4"><div class="rounded-box bg-base-200 px-3 py-2"><div class="font-mono text-xs opacity-60">{{ kn.k }}</div><div class="font-semibold tnum">{{ kn.v }}</div></div></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ card.noKnew }}"><div class="text-sm opacity-60">No abstraction or TTL counter values archived for this row.</div></sc-if>
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-base-300 flex gap-2">
+        <button class="btn btn-sm gap-1" onClick="{{ cardAround }}"><kbd class="kbd kbd-xs">W</kbd>Around this</button>
+        <button class="btn btn-sm" onClick="{{ openPayload }}">Payload ▸</button>
+        <button class="btn btn-sm btn-ghost ml-auto" onClick="{{ addFacts }}">Add to narrative facts</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ payloadOpen }}">
+    <div class="fixed top-0 bottom-0 right-[520px] w-[380px] bg-base-100 border-l border-base-300 shadow-2xl z-40 flex flex-col" data-screen-label="Raw payload">
+      <div class="px-4 py-3 border-b border-base-300 flex items-center gap-2"><span class="text-xs uppercase tracking-wide opacity-60">Archived payload</span><span class="font-mono text-sm">{{ card.id }}</span><button class="btn btn-xs btn-ghost ml-auto" onClick="{{ closePayload }}">Esc</button></div>
+      <pre class="flex-1 overflow-auto p-4 text-xs font-mono bg-base-200 m-0 whitespace-pre-wrap">{{ payloadJson }}</pre>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ factsOpen }}">
+    <div class="fixed right-0 top-0 bottom-0 w-[460px] max-w-full bg-base-100 border-l border-base-300 shadow-2xl z-40 flex flex-col" data-screen-label="Model facts">
+      <div class="px-5 py-4 border-b border-base-300 flex items-center gap-2"><span class="text-xs uppercase tracking-wide opacity-60">Model facts</span><span class="font-semibold">StructNet v7</span><button class="btn btn-xs btn-ghost ml-auto" onClick="{{ closeFacts }}">Esc</button></div>
+      <div class="flex-1 overflow-auto px-5 py-4 flex flex-col gap-4">
+        <div class="alert alert-info alert-soft text-sm py-2">This case was scored by v7; v8 is now live. <button class="btn btn-xs">Snapshot diff ▸</button></div>
+        <div class="text-xs opacity-60">As it was when it scored · from engine snapshot 7f3a… and promotion metadata</div>
+        <sc-for list="{{ factGroups }}" as="fg" hint-placeholder-count="5">
+          <div class="flex flex-col gap-1">
+            <div class="text-xs font-semibold opacity-60">{{ fg.name }}</div>
+            <sc-for list="{{ fg.rows }}" as="fr" hint-placeholder-count="3">
+              <div class="flex justify-between gap-4 text-sm py-1 border-b border-base-300 last:border-0"><span class="opacity-70">{{ fr.k }}</span><span class="text-right {{ fr.cls }}">{{ fr.v }}</span></div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ closeOpen }}">
+    <div class="modal modal-open" style="opacity:1;visibility:visible;pointer-events:auto">
+      <div class="modal-box max-w-2xl p-0 flex flex-col max-h-[92vh]">
+        <div class="flex items-center gap-3 px-6 py-4 border-b border-base-300">
+          <h3 class="text-lg font-semibold">{{ closeTitle }}</h3>
+          <button class="btn btn-xs btn-ghost ml-auto" onClick="{{ cancelClose }}">Esc</button>
+        </div>
+        <div class="px-6 py-4 flex flex-col gap-4 overflow-auto">
+          <sc-if value="{{ isBulk }}">
+            <div class="alert alert-warning alert-soft py-2 text-sm">Applies to {{ bulkN }} cases · preview ran per case · {{ bulkInvalid }} locked by another analyst and will be skipped</div>
+          </sc-if>
+          <div class="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-x-4 gap-y-3">
+            <span class="text-sm opacity-70">Outcome</span>
+            <div class="join">
+              <sc-for list="{{ outcomes }}" as="o" hint-placeholder-count="3">
+                <button class="btn btn-sm join-item gap-2 {{ o.cls }}" onClick="{{ o.pick }}"><kbd class="kbd kbd-xs">{{ o.n }}</kbd>{{ o.label }}</button>
+              </sc-for>
+            </div>
+            <span class="text-sm opacity-70">Typology</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <select class="select select-sm w-44" value="{{ typology }}" onChange="{{ onTypology }}">
+                <sc-for list="{{ typologies }}" as="t" hint-placeholder-count="4"><option value="{{ t }}">{{ t }}</option></sc-for>
+              </select>
+              <span class="text-xs opacity-60">suggested</span>
+              <sc-for list="{{ typoSuggest }}" as="ts" hint-placeholder-count="2">
+                <button class="badge badge-outline cursor-pointer" onClick="{{ ts.pick }}">{{ ts.label }}</button>
+              </sc-for>
+            </div>
+            <span class="text-sm opacity-70 self-start pt-1.5">Rationale</span>
+            <div class="flex flex-col gap-2">
+              <select class="select select-sm w-full" onChange="{{ onTemplate }}">
+                <option>Template: structuring confirmed</option>
+                <option>Template: FP – normal business</option>
+                <option>Template: inconclusive – insufficient information</option>
+              </select>
+              <textarea class="textarea textarea-sm w-full h-20" value="{{ rationale }}" onChange="{{ onRationale }}"></textarea>
+            </div>
+          </div>
+          <div class="rounded-box bg-base-200 p-4 flex flex-col gap-1.5 text-sm">
+            <div class="text-xs font-semibold opacity-60 mb-1">What will happen</div>
+            <sc-for list="{{ consequences }}" as="cq" hint-placeholder-count="4">
+              <div class="flex gap-2"><span class="opacity-40">•</span><span>{{ cq }}</span></div>
+            </sc-for>
+          </div>
+          <div class="flex flex-col gap-2 text-sm">
+            <div class="text-xs font-semibold opacity-60">Needs attention</div>
+            <sc-if value="{{ needsRegistry }}">
+              <div class="flex items-center gap-3 rounded-box border border-warning/50 px-3 py-2">
+                <span class="font-semibold text-warning">✗</span>
+                <span class="flex-1">Checklist: “Verify registry” not done</span>
+                <button class="btn btn-xs btn-warning" onClick="{{ doRegistry }}">Do it now</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ registryOk }}">
+              <div class="flex items-center gap-3 rounded-box border border-success/40 px-3 py-2">
+                <span class="font-semibold text-success">✓</span><span>All preconditions met · preview refreshed</span>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 px-6 py-3 border-t border-base-300">
+          <span class="font-mono text-[11px] opacity-50">preview 3c1e… · case v14 · config snapshot 2b90…</span>
+          <button class="btn btn-sm btn-ghost ml-auto" onClick="{{ cancelClose }}">Cancel</button>
+          <button class="btn btn-sm btn-primary gap-2" disabled="{{ needsRegistry }}" onClick="{{ submitClose }}">{{ submitLabel }} <kbd class="kbd kbd-xs">⌃⏎</kbd></button>
+        </div>
+      </div>
+      <div class="modal-backdrop bg-black/40" onClick="{{ cancelClose }}"></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ lbOpen }}">
+    <div class="modal modal-open" style="opacity:1;visibility:visible;pointer-events:auto">
+      <div class="modal-box max-w-2xl p-0 flex flex-col max-h-[92vh]">
+        <sc-if value="{{ isApprover }}">
+          <div class="bg-info/15 text-sm px-6 py-2 border-b border-base-300 flex items-center gap-2"><span class="badge badge-sm badge-info">MLRO</span>Viewing as M. Karim · read-only, the same lightbox the maker saw</div>
+        </sc-if>
+        <div class="flex items-center gap-3 px-6 py-4 border-b border-base-300">
+          <h3 class="text-lg font-semibold">{{ lbTitle }}</h3>
+          <span class="badge badge-sm {{ lbBadgeCls }}">{{ lbBadge }}</span>
+          <button class="btn btn-xs btn-ghost ml-auto" onClick="{{ closeLb }}">Esc</button>
+        </div>
+        <div class="px-6 py-4 flex flex-col gap-4 overflow-auto {{ lbBodyCls }}">
+
+          <sc-if value="{{ isPayment }}">
+            <div class="rounded-box border border-warning/60 bg-warning/5 p-3 flex flex-col gap-2 text-sm">
+              <div class="flex flex-wrap items-center gap-2"><span class="badge badge-warning gap-1">⚡ Held</span><span class="font-mono font-semibold">ARC-771240</span><span>P2P out <b class="tnum">EGP 12,300</b></span><span class="ml-auto tnum font-semibold text-warning">6 h 00 m left</span></div>
+              <div class="grid grid-cols-[88px_minmax(0,1fr)] gap-x-3 gap-y-1">
+                <span class="opacity-60">From</span><span><span class="font-mono">ACC-778</span> Osei · on DEV-8831A shared device</span>
+                <span class="opacity-60">To</span><span><span class="font-mono">ACC-02</span> Alpha LLC · also paid by confirmed TP ACC-915 Duarte</span>
+                <span class="opacity-60">Held by</span><span>Rule “Shared device 24h hold” v3 · Response Elevation · 24 Sep 08:53 UTC+2</span>
+                <span class="opacity-60">Hold status</span><span>Confirmed by core banking · 08:53:04 · ref CBS-H-20931</span>
+                <span class="opacity-60">If undecided</span><span>13:53 → status “Hold expiring”, escalated to S. Okoro (email + Inbox); re-escalated every 30 min · pack maximum 14:53, then the pack’s default action</span>
+                <span class="opacity-60">Your limit</span><span>You can release up to EGP 25,000 (set on your user). Above that, Release becomes “Request release” for a second person.</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-x-4 gap-y-3">
+              <span class="text-sm opacity-70">Decision</span>
+              <div class="join">
+                <sc-for list="{{ payOpts }}" as="po" hint-placeholder-count="3"><button class="btn btn-sm join-item gap-2 {{ po.cls }}" onClick="{{ po.pick }}"><kbd class="kbd kbd-xs">{{ po.n }}</kbd>{{ po.label }}</button></sc-for>
+              </div>
+              <sc-if value="{{ payIsExtend }}">
+                <span class="text-sm opacity-70">Extend by</span>
+                <div class="flex items-center gap-2"><select class="select select-sm w-28" value="{{ payExtend }}" onChange="{{ onPayExtend }}"><option>+2 h</option><option>+4 h</option><option>+12 h</option></select><span class="text-xs opacity-60">Each extension needs a reason and a next step · never beyond the jurisdiction pack’s maximum hold</span></div>
+              </sc-if>
+              <span class="text-sm opacity-70">Evidence</span>
+              <select class="select select-sm w-full" value="{{ payEvidence }}" onChange="{{ onPayEvidence }}"><option>Called customer → Reached · 08:40 · A. Vance</option><option>No customer contact</option></select>
+              <span class="text-sm opacity-70 self-start pt-1.5">Reason</span>
+              <textarea class="textarea textarea-sm w-full h-16" placeholder="Required, at least 10 characters. Recorded on the CaseEvent and the payment system call." value="{{ payReason }}" onChange="{{ onPayReason }}"></textarea>
+              <sc-if value="{{ payIsRefuse }}">
+                <span></span>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="checkbox checkbox-sm" checked="{{ payBlock }}" onChange="{{ togglePayBlock }}">Also propose adding ACC-02 Alpha LLC to List “Blocked beneficiaries” (a model change; takes effect when the model owner approves it)</label>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isBreak }}">
+            <div class="grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
+              <span class="opacity-70">Case</span><span><span class="font-mono">{{ breakCase.id }}</span> · {{ breakCase.keyLabel }}</span>
+              <span class="opacity-70">Held by</span><span>{{ breakCase.lock }} · for 18 min · last heartbeat 20 s ago</span>
+              <span class="opacity-70">Assigned</span><span>{{ breakCase.lock }} (unchanged by Break lock)</span>
+            </div>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-sm">Reason <span class="opacity-60">(required, at least 10 characters)</span></span>
+              <textarea class="textarea textarea-sm w-full h-16" placeholder="e.g. Payment hold diary breaches in 40 min; R. Lund on a call" value="{{ lockReason }}" onChange="{{ onLockReason }}"></textarea>
+            </label>
+          </sc-if>
+
+          <sc-if value="{{ isFileOrApprove }}">
+            <div class="grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
+              <span class="opacity-70">Report</span><span><span class="font-mono">STR-2026-044</span> · draft v3 · goAML · EG FIU</span>
+              <span class="opacity-70">Subject</span><span>ACC-441 Marcus Sterling</span>
+              <span class="opacity-70">Scorecard</span><span class="flex items-center gap-2"><progress class="progress progress-success w-28" value="92" max="100"></progress><span class="tnum">92 / 100</span><span class="opacity-60">all required fields present</span></span>
+              <span class="opacity-70">Requested by</span><span>A. Vance · <span class="tnum">2 min ago · 08:51 UTC+2</span></span>
+            </div>
+            <div class="rounded-box border border-base-300 p-3 text-sm flex flex-col gap-1">
+              <div class="text-xs font-semibold opacity-60">Narrative (frozen v3)</div>
+              <p class="opacity-90" style="text-wrap:pretty">Between 15 and 23 September 2026 the customer made eleven cash deposits totalling EGP 45,000, each below the reporting threshold, at four branches and ATMs. On 23 September a deposit of EGP 9,500 was followed by a transfer to a beneficiary first used that day.</p>
+              <button class="btn btn-xs btn-ghost self-start">Open in Compose ▸</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isFile }}">
+            <label class="flex flex-col gap-1.5">
+              <span class="text-sm">Reason for filing <span class="opacity-60">(required · recorded on the report and the audit trail)</span></span>
+              <textarea class="textarea textarea-sm w-full h-16" value="{{ fileReason }}" onChange="{{ onFileReason }}"></textarea>
+            </label>
+          </sc-if>
+
+          <sc-if value="{{ isApprover }}">
+            <label class="flex flex-col gap-1.5">
+              <span class="text-sm">Reason <span class="opacity-60">(required to reject, optional to approve)</span></span>
+              <textarea class="textarea textarea-sm w-full h-14" placeholder="e.g. Add occupation before filing" value="{{ approveReason }}" onChange="{{ onApproveReason }}"></textarea>
+            </label>
+          </sc-if>
+
+          <div class="rounded-box bg-base-200 p-4 flex flex-col gap-1.5 text-sm">
+            <div class="text-xs font-semibold opacity-60 mb-1">What will happen</div>
+            <sc-for list="{{ lbConsequences }}" as="cq" hint-placeholder-count="4">
+              <div class="flex gap-2"><span class="opacity-40">•</span><span>{{ cq }}</span></div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ isFile }}">
+            <div class="flex flex-col gap-2 text-sm">
+              <div class="text-xs font-semibold opacity-60">Needs attention</div>
+              <div class="flex items-center gap-3 rounded-box border border-success/40 px-3 py-2"><span class="font-semibold text-success">✓</span><span>Narrative frozen (v3)</span></div>
+              <sc-if value="{{ needsApproval }}">
+                <div class="flex items-center gap-3 rounded-box border border-warning/50 px-3 py-2">
+                  <span class="font-semibold text-warning">✗</span>
+                  <span class="flex-1">{{ approvalText }}</span>
+                  <sc-if value="{{ canRequest }}"><button class="btn btn-xs btn-warning" onClick="{{ requestApproval }}">Request approval</button></sc-if>
+                  <sc-if value="{{ approvalRequested }}"><button class="btn btn-xs btn-outline" onClick="{{ demoApprove }}">Switch to M. Karim ▸</button></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ approved }}">
+                <div class="flex items-center gap-3 rounded-box border border-success/40 px-3 py-2"><span class="font-semibold text-success">✓</span><span>Approved by M. Karim · just now</span></div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ stepUpActive }}">
+          <div class="mx-6 mb-3 rounded-box border-2 border-primary/60 bg-base-100 p-4 flex flex-col gap-3 shadow-lg" data-screen-label="Step-up">
+            <div class="flex flex-wrap items-baseline gap-2"><span class="font-semibold">Confirm it’s you</span><span class="text-xs opacity-70">{{ stepUpWhy }}</span></div>
+            <div class="text-xs opacity-70">Everything you entered above is kept. Once you verify, it stays valid for {{ stepWindow }} and is recorded on this operation’s CaseEvent.</div>
+            <div class="join">
+              <sc-for list="{{ stepMethods }}" as="sm" hint-placeholder-count="4"><button class="btn btn-xs join-item {{ sm.cls }}" onClick="{{ sm.pick }}">{{ sm.label }}</button></sc-for>
+            </div>
+            <sc-if value="{{ smPasskey }}">
+              <div class="flex flex-wrap items-center gap-3"><button class="btn btn-sm btn-primary" onClick="{{ verifyStep }}">Use passkey</button><span class="text-xs opacity-70">Touch your security key, or use your device’s screen lock</span></div>
+            </sc-if>
+            <sc-if value="{{ smCode }}">
+              <div class="flex flex-wrap items-center gap-2">
+                <input class="input input-sm w-44 font-mono tracking-widest" placeholder="{{ stepPlaceholder }}" value="{{ stepCode }}" onChange="{{ onStepCode }}">
+                <button class="btn btn-sm btn-primary" disabled="{{ stepCodeShort }}" onClick="{{ verifyStep }}">Verify</button>
+                <span class="text-xs opacity-70">{{ stepHint }}</span>
+              </div>
+            </sc-if>
+            <div><button class="btn btn-xs btn-ghost" onClick="{{ cancelStep }}">◂ Back to the form</button></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ payResultActive }}">
+          <div class="mx-6 mb-3 rounded-box border border-base-300 p-4 flex flex-col gap-2" data-screen-label="Payment result">
+            <div class="font-semibold">{{ payResultTitle }}</div>
+            <sc-for list="{{ paySteps }}" as="ps" hint-placeholder-count="4">
+              <div class="flex gap-2 text-sm items-start"><span class="w-4 text-center {{ ps.cls }}">{{ ps.icon }}</span><span class="flex-1">{{ ps.label }}</span><span class="text-xs opacity-60 tnum">{{ ps.time }}</span></div>
+            </sc-for>
+            <div class="text-xs opacity-70">Execution log · idempotency key op-7f21… · any retry reuses the key, so the payment system never acts twice.</div>
+            <div class="flex flex-wrap gap-2">
+              <sc-if value="{{ payIsTimeout }}"><button class="btn btn-xs btn-outline" onClick="{{ checkPayStatus }}">Retry safely (same key)</button></sc-if>
+              <sc-if value="{{ payIsConfirmed }}"><button class="btn btn-xs btn-ghost opacity-70" onClick="{{ replayTimeout }}">Prototype: replay as a timeout</button></sc-if>
+            </div>
+          </div>
+        </sc-if>
+        <div class="flex items-center gap-2 px-6 py-3 border-t border-base-300">
+          <span class="font-mono text-[11px] opacity-50">{{ lbFoot }}</span>
+          <button class="btn btn-sm btn-ghost ml-auto" onClick="{{ closeLb }}">{{ cancelLabel }}</button>
+          <sc-if value="{{ isApprover }}">
+            <button class="btn btn-sm btn-outline" disabled="{{ rejectDisabled }}" onClick="{{ rejectApproval }}">Reject</button>
+          </sc-if>
+          <sc-if value="{{ showPrimary }}">
+            <button class="btn btn-sm btn-primary gap-2" disabled="{{ lbDisabled }}" onClick="{{ lbSubmit }}">{{ lbVerb }} <kbd class="kbd kbd-xs">⌃⏎</kbd></button>
+          </sc-if>
+        </div>
+      </div>
+      <div class="modal-backdrop bg-black/40" onClick="{{ closeLb }}"></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasTagMenu }}">
+    <div class="fixed inset-0 z-[55]" onClick="{{ closeTagMenu }}"></div>
+    <div class="fixed z-[60] w-64 max-h-[70vh] overflow-auto card bg-base-100 border border-base-300 shadow-xl" style="{{ tagMenuSt }}" data-screen-label="Tag menu">
+      <div class="card-body p-2 gap-0.5 text-sm">
+        <div class="px-2 pt-1 text-xs font-semibold opacity-60">Tag <span class="font-mono">{{ tagMenuId }}</span></div>
+        <sc-for list="{{ tagGroups }}" as="tgp" hint-placeholder-count="3">
+          <div class="px-2 pt-1.5 text-[11px] uppercase tracking-wide opacity-50">{{ tgp.name }}</div>
+          <sc-for list="{{ tgp.tags }}" as="tg" hint-placeholder-count="3"><button class="flex items-center gap-2 px-2 py-1 rounded hover:bg-base-200 text-left" onClick="{{ tg.toggle }}"><span class="w-4 font-semibold text-primary">{{ tg.mark }}</span><span>{{ tg.label }}</span></button></sc-for>
+        </sc-for>
+        <div class="px-2 py-1.5 text-[11px] opacity-60 border-t border-base-300 mt-1">Set up in Configuration → Tags. Writes an ArchiveTag on this row; no tag means genuine. Undo within 10 s.</div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ hasToast }}">
+    <div class="toast toast-end z-[60]">
+      <div class="alert bg-neutral text-neutral-content border-0 shadow-lg text-sm">
+        <span>{{ toast.msg }}</span>
+        <sc-if value="{{ toast.undo }}"><button class="btn btn-xs btn-ghost text-neutral-content underline" onClick="{{ undoToast }}">Undo</button></sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;'comfortable'|'compact'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cases&quot;,&quot;case&quot;],&quot;default&quot;:&quot;case&quot;,&quot;tsType&quot;:&quot;'cases'|'case'&quot;,&quot;section&quot;:&quot;Screen&quot;},&quot;explanationTier&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;exact&quot;,&quot;decomposition&quot;,&quot;none&quot;],&quot;default&quot;:&quot;exact&quot;,&quot;tsType&quot;:&quot;'exact'|'decomposition'|'none'&quot;,&quot;section&quot;:&quot;Explanation variant (P4)&quot;}}">
+const LANE_ORDER={'Live money':1,'Mandatory':2,'Deadline near':3,'Standard':4};
+const LANE_ICON={'Live money':'⚡','Mandatory':'■','Deadline near':'◷','Standard':'·'};
+const IMPW={1:1,2:3,3:10,4:30,5:100}, IMPB={1:'Minimal',2:'Low',3:'Moderate',4:'High',5:'Severe'};
+const likBand=p=>p>=75?'Very likely':p>=50?'Likely':p>=25?'Possible':'Unlikely';
+const prioOf=(l,i)=>Math.round(100*Math.log(1+l/100*IMPW[i])/Math.log(101));
+const riskCls=b=>b==='Very likely'?'badge-error':b==='Likely'?'badge-error badge-soft':'badge-ghost';
+const CR=o=>({...o, likBand:likBand(o.lik), impBand:IMPB[o.imp], prio:prioOf(o.lik,o.imp), laneRank:LANE_ORDER[o.lane]});
+const CASES = [
+  CR({id:'C-9041',lane:'Standard',lik:56,imp:4,key:'ACC-441',keyLabel:'Marcus Sterling',why:'11 cash deposits under threshold in 9 d',ai:'File STR · 0.82',value:45000,due:'4d 03h',dueH:99,dueKind:'STR · regulatory',lock:'A. Vance',acts:3,actNames:'Structuring 9d · StructNet v7 (Very high) · Sanctions name match (0.82)',lastNote:'Called customer → No answer · follow-up +4 h'}),
+  CR({id:'C-9044',lane:'Live money',lik:48,imp:3,key:'DEV-8831A',keyLabel:'Shared device · 4 accounts',why:'Device shared by 4 accounts, 1 confirmed TP',value:12300,due:'6h',dueH:6,dueKind:'Payment hold · minutes',lock:'R. Lund',acts:2,actNames:'Shared device 24h · Mule proximity',lastNote:'None yet',health:'2 inputs were missing and filled with defaults: Beneficiary age, Device age'}),
+  CR({id:'C-9002',lane:'Standard',lik:22,imp:2,key:'ACC-102',keyLabel:'Kamal',why:'Beneficiary first seen 0 d ago',value:9800,due:'12d',dueH:288,dueKind:'STR · regulatory',lock:'',acts:1,actNames:'New beneficiary high value',lastNote:'None yet'}),
+  CR({id:'C-9047',lane:'Deadline near',lik:31,imp:3,key:'ACC-388',keyLabel:'Nour',why:'6 round-amount deposits in 5 d',value:18000,due:'2d',dueH:48,dueKind:'STR · regulatory',lock:'',acts:1,actNames:'Round amounts 5d',lastNote:'Emailed customer → Sent'}),
+  CR({id:'C-9019',lane:'Standard',lik:40,imp:3,key:'ACC-207',keyLabel:'Adeyemi',why:'Cash in, wire out the same day',value:22450,due:'3d',dueH:72,dueKind:'STR · regulatory',lock:'',acts:2,actNames:'Pass-through 24h · Wire to new beneficiary',lastNote:'None yet'}),
+  CR({id:'C-8996',lane:'Standard',lik:18,imp:2,key:'ACC-150',keyLabel:'Farouk',why:'Velocity above 90-day baseline',value:7200,due:'9d',dueH:216,dueKind:'STR · regulatory',lock:'',acts:1,actNames:'Velocity 7d',lastNote:'Checked registry → Match'}),
+  CR({id:'C-9031',lane:'Standard',lik:27,imp:3,key:'ACC-612',keyLabel:'Lindqvist',why:'Deposits split across 3 branches',value:14900,due:'6d',dueH:144,dueKind:'STR · regulatory',lock:'',acts:1,actNames:'Multi-branch cash',lastNote:'None yet'}),
+  CR({id:'C-9008',lane:'Standard',lik:12,imp:1,key:'ACC-093',keyLabel:'Mensah',why:'Dormant account reactivated',value:5600,due:'11d',dueH:264,dueKind:'STR · regulatory',lock:'',acts:1,actNames:'Dormancy reactivation',lastNote:'None yet'})
+].sort((a,b)=>a.laneRank-b.laneRank||b.prio-a.prio);
+const RP={'C-9041':{method:'cold start · 4 min ago',note:'Top evidence: StructNet Very high +1.15; 2 hops from confirmed TP C-8812 +0.83.'},'C-9044':{method:'cold start',note:'Sorts first because of its lane: the payment hold decides in 6 h. 2 inputs were filled with defaults.'},'C-9002':{method:'cold start',note:'One activation: beneficiary first seen.'}};
+const EVENTS = [
+  ['24 Sep 08:49','CaseRiskRecomputed','System','Scheduled sweep · Likely 56% · High · Standard · 62'],
+  ['24 Sep 08:09','DiaryStarted','System','Follow-up · +4 h from No answer'],
+  ['24 Sep 08:09','NoteAdded','A. Vance','Called customer → No answer'],
+  ['24 Sep 08:02','Take','A. Vance','Lock taken via Skim'],
+  ['23 Sep 10:14','ActivationAttached','System','StructNet v7 · Very high (0.91) · anchor ARC-771203'],
+  ['23 Sep 09:41','DiaryStarted','System','STR · regulatory · business days, EG'],
+  ['23 Sep 09:40','ActivationAttached','System','Sanctions name match · 0.82 · anchor ARC-771190'],
+    ['23 Sep 09:40','CaseCreated','System','Structuring 9d v12 · anchor ARC-771190 · snapshot 7f3a…']
+].map(r=>({when:r[0],type:r[1],by:r[2],detail:r[3]}));
+const FILTERS = [
+  {name:'Mine',items:[{name:'My cases',count:7,meta:'3 due today'},{name:'Returned to me',count:1,meta:'from M. Karim'},{name:'Awaiting my approval',count:3,meta:'maker-checker'}]},
+  {name:'Fraud',items:[{name:'Payments held',count:2,meta:'real-time diary · minutes'},{name:'Fraud high loss',count:9,meta:'next breach 2 h'}]},
+  {name:'AML',items:[{name:'AML structuring',count:42,meta:'next STR breach 6 h'},{name:'Sanctions hits',count:4,meta:'2 unreviewed'}]},
+  {name:'Regulatory',items:[{name:'Authority orders',count:1,meta:'response due 1 d'},{name:'QA',count:12,meta:'sampled this week'}]}
+];
+const RESULTS = {
+  'Called customer':[['Reached',''],['No answer','+4 h follow-up · capped by STR diary'],['Wrong number',''],['Refused','proposes Escalate']],
+  'Emailed customer':[['Sent','+2 d follow-up'],['Bounced','']],
+  'Checked registry':[['Match',''],['No match','proposes Escalate'],['Unavailable','+1 d follow-up']],
+  'Requested source of funds':[['Requested','+5 d follow-up'],['Received',''],['Refused','proposes Escalate']]
+};
+const fmt = n => 'EGP ' + n.toLocaleString('en-US');
+const DAYS = [['15',3800],['16',4200],['17',2900],['18',7700],['19',3300],['20',4400],['21',2800],['22',3200],['23',12700,1]];
+const LBL = {'ACC-441':'Sterling','ACC-02':'Alpha LLC','ACC-915':'Duarte','ACC-778':'Osei','ACC-102':'Kamal','DEV-8831A':'shared device','185.220.101.4':'public IP'};
+const lbl = k => k ? (k + (LBL[k] ? ' ' + LBL[k] : '')) : '';
+const R = (id,when,account,type,amount,o={}) => ({id,when,day:when.split(' ').slice(0,2).join(' '),account,type,amount,benef:o.benef||'',device:o.device||'',channel:o.channel||'',branch:o.branch||'',rules:o.rules||[],anchor:o.anchor||''});
+const POOL = [
+  R('ARC-771203','23 Sep 10:14:55','ACC-441','P2P out',9500,{benef:'ACC-02',device:'DEV-8831A',channel:'Mobile',rules:['◆ StructNet v7 ≥ 0.80','Velocity 1h v3'],anchor:'ACT-904'}),
+  R('ARC-771190','23 Sep 09:40','ACC-441','Cash deposit',9500,{channel:'Branch',branch:'Heliopolis',rules:['◆ Structuring 9d v12','◆ Sanctions name match 0.82'],anchor:'ACT-901 · ACT-902'}),
+  R('ARC-771204','23 Sep 10:14:02','ACC-102','P2P out',9800,{benef:'ACC-02',device:'DEV-8831A',channel:'Mobile',rules:['New beneficiary high value v5']}),
+  R('ARC-771206','23 Sep 10:16','ACC-102','Login',0,{device:'DEV-8831A',channel:'Mobile'}),
+  R('ARC-771201','23 Sep 10:12','ACC-441','Login',0,{device:'DEV-8831A',channel:'Mobile',rules:['New device 24h v2']}),
+  R('ARC-771174','23 Sep 09:02','ACC-441','Cash deposit',3200,{channel:'ATM',branch:'Heliopolis'}),
+  R('ARC-770877','22 Sep 18:05','ACC-778','P2P out',3100,{benef:'ACC-02',device:'DEV-8831A',channel:'Mobile',rules:['Shared device 24h v1']}),
+  R('ARC-770990','22 Sep 16:40','ACC-441','Cash deposit',3200,{channel:'Branch',branch:'Nasr City'}),
+  R('ARC-770801','21 Sep 11:25','ACC-441','Cash deposit',2800,{channel:'ATM',branch:'Zamalek'}),
+  R('ARC-770655','20 Sep 14:05','ACC-441','Cash deposit',4400,{channel:'Branch',branch:'Heliopolis'}),
+  R('ARC-770412','19 Sep 14:22','ACC-915','P2P out',4800,{benef:'ACC-02',device:'DEV-8831A',channel:'Mobile'}),
+  R('ARC-770498','19 Sep 10:31','ACC-441','Cash deposit',3300,{channel:'ATM',branch:'Maadi'}),
+  R('ARC-770344','18 Sep 15:12','ACC-441','Cash deposit',3600,{channel:'Branch',branch:'Nasr City'}),
+  R('ARC-770301','18 Sep 09:47','ACC-441','Cash deposit',4100,{channel:'ATM',branch:'Heliopolis'}),
+  R('ARC-770187','17 Sep 13:58','ACC-441','Cash deposit',2900,{channel:'Branch',branch:'Zamalek'}),
+  R('ARC-770043','16 Sep 12:20','ACC-441','Cash deposit',4200,{channel:'ATM',branch:'Maadi'}),
+  R('ARC-769912','15 Sep 10:08','ACC-441','Cash deposit',3800,{channel:'Branch',branch:'Heliopolis'})
+];
+const byId = id => POOL.find(r=>r.id===id);
+const child = id => { const r=byId(id); return {lane:r.when, sub:`${lbl(r.account)} · ${r.type}${r.benef?' → '+lbl(r.benef):''}`, total:r.amount||null, flags:r.rules.join(' · '), txn:r.id}; };
+const LANES = {
+  'ACC-441': {
+    Beneficiary:[
+      {lane:'ACC-02 Alpha LLC', sub:'beneficiary · first seen 23 Sep', count:1, total:9500, first:'23 Sep', last:'23 Sep', flags:'◆ 1 act. · ⚓ anchor', key:'ACC-02', expanded:true, _children:[child('ARC-771203')]},
+      {lane:'No beneficiary', sub:'cash deposits', count:11, total:45000, first:'15 Sep', last:'23 Sep', flags:'◆ 2 act. · ⚓ anchor'}
+    ],
+    Device:[
+      {lane:'DEV-8831A shared device', sub:'shared by 4 accounts · new in 24 h', count:14, total:52300, first:'12 Sep', last:'24 Sep', flags:'◆ 3 act. · shared', key:'DEV-8831A', expanded:true, _children:[child('ARC-771203'),child('ARC-771201')]},
+      {lane:'Branch / ATM', sub:'no device', count:11, total:45000, first:'15 Sep', last:'23 Sep', flags:''}
+    ],
+    IP:[
+      {lane:'185.220.101.4 public IP', sub:'hub · 4,112 accounts · never expanded by default', count:14, total:52300, first:'12 Sep', last:'24 Sep', flags:'hub'},
+      {lane:'No IP', sub:'branch / ATM', count:11, total:45000, first:'15 Sep', last:'23 Sep', flags:''}
+    ]
+  },
+  'DEV-8831A': {
+    Account:[
+      {lane:'ACC-441 Sterling', sub:'case subject', count:14, total:52300, first:'12 Sep', last:'24 Sep', flags:'◆ 3 act.', key:'ACC-441'},
+      {lane:'ACC-915 Duarte', sub:'account', count:9, total:31050, first:'12 Sep', last:'19 Sep', flags:'★ confirmed TP · C-8812', key:'ACC-915'},
+      {lane:'ACC-778 Osei', sub:'account', count:6, total:18900, first:'20 Sep', last:'24 Sep', flags:'open C-9044', key:'ACC-778'},
+      {lane:'ACC-102 Kamal', sub:'account', count:2, total:9800, first:'23 Sep', last:'23 Sep', flags:'open C-9002', key:'ACC-102', expanded:true, _children:[child('ARC-771204'),child('ARC-771206')]}
+    ],
+    Beneficiary:[
+      {lane:'ACC-02 Alpha LLC', sub:'paid by 4 accounts on this device', count:4, total:27200, first:'19 Sep', last:'23 Sep', flags:'★ 1 payer is a confirmed TP', key:'ACC-02'}
+    ]
+  },
+  'ACC-02': {
+    Account:[
+      {lane:'ACC-441 Sterling', sub:'case subject', count:1, total:9500, first:'23 Sep', last:'23 Sep', flags:'◆ 1 act. · ⚓ anchor', key:'ACC-441'},
+      {lane:'ACC-915 Duarte', sub:'payer', count:1, total:4800, first:'19 Sep', last:'19 Sep', flags:'★ confirmed TP · C-8812', key:'ACC-915'},
+      {lane:'ACC-102 Kamal', sub:'payer', count:1, total:9800, first:'23 Sep', last:'23 Sep', flags:'open C-9002', key:'ACC-102'},
+      {lane:'ACC-778 Osei', sub:'payer', count:1, total:3100, first:'22 Sep', last:'22 Sep', flags:'open C-9044', key:'ACC-778'}
+    ]
+  }
+};
+const AGG = {
+  'DEV-8831A':[['Transactions · 30 d','31'],['Total','EGP 112,050'],['Accounts','4 · 1 confirmed TP'],['First seen','12 Sep']],
+  'ACC-02':[['Inbound · 30 d','4'],['Total received','EGP 27,200'],['Payers','4 · 1 confirmed TP'],['First seen','19 Sep']]
+};
+const NET_EXPLODE = [
+  {lane:'DEV-8831A shared device', sub:'device · 3 other accounts', count:14, total:52300, first:'12 Sep', last:'24 Sep', flags:'★ 1 confirmed TP · open C-9044', key:'DEV-8831A', expanded:true, _children:LANES['DEV-8831A'].Account.slice(1).map(l=>({...l, _children:undefined, expanded:false}))},
+  {lane:'ACC-02 Alpha LLC', sub:'beneficiary · first seen 23 Sep', count:1, total:9500, first:'23 Sep', last:'23 Sep', flags:'⚓ anchor · 4 payers', key:'ACC-02'},
+  {lane:'185.220.101.4 public IP', sub:'hub · 4,112 accounts · collapsed', count:14, total:52300, first:'12 Sep', last:'24 Sep', flags:'hub · hidden in graph'}
+];
+const CARD_EXTRA = {
+  'ARC-771203': {
+    keys:[
+      {role:'Account',key:'ACC-441',note:'case subject',pivot:false,link:false},
+      {role:'Beneficiary',key:'ACC-02',note:'first seen today'},
+      {role:'Device',key:'DEV-8831A',note:'shared by 4 accounts'},
+      {role:'IP',key:'185.220.101.4',note:'hub · hidden in graph',pivot:false,link:false}
+    ],
+    rules:[
+      {kind:'◆ creates cases',label:'HTTP Adaptation StructNet v7 · Very high (0.91) ≥ threshold 0.80',cls:'badge-outline font-semibold'},
+      {kind:'no case',label:'Velocity 1h v3',cls:'badge-ghost'}
+    ],
+    knew:[['BenefAge','0 d'],['Amount','EGP 9,500'],['TypicalAmount90d','EGP 2,950'],['Deposits9d','11']]
+  },
+  'ARC-771190': { knew:[['Deposits9d','11'],['Sum9d','EGP 45,000'],['SanctionsSimilarity','0.82']] }
+};
+const FACTS = [
+  {name:'Identity', rows:[['Name','StructNet'],['Version','v7 (scored this case)'],['Type','Gradient-boosted trees'],['Runs','HTTP Adaptation endpoint'],['Owner','not declared by the endpoint','opacity-60 italic']]},
+  {name:'Score', rows:[['Score type','Calibrated probability'],['Range and direction','0–1 · higher is riskier'],['Base value','0.04 (log-odds −3.18)'],['Calibration','Isotonic · 2026-06-30'],['Operating point','0.80 (activation rule threshold)']]},
+  {name:'Training', rows:[['Trained','2026-06'],['Training window','not declared by the endpoint','opacity-60 italic'],['Examples and positives','not declared by the endpoint','opacity-60 italic']]},
+  {name:'Performance since', rows:[['Very high band','31% of 212 closed cases true positive (90 d)']]},
+  {name:'Inputs', rows:[['Cash deposits in 9 days','count · higher is riskier'],['Beneficiary first seen','days · lower is riskier'],['Amount vs 90-day average','ratio · higher is riskier'],['Account age','years · lower is riskier'],['DeviceAgeDays','⚠ unlabelled input','text-warning']]},
+  {name:'Health', rows:[['Input drift','none'],['Data quality','all inputs present'],['Since training','3 months']]},
+  {name:'Changes', rows:[['Previous','v6'],['Now live','v8 · snapshot diff available']]}
+];
+const NODES = {
+  'ACC-441':{x:110,y:120,r:18,kind:'self',sub:'Sterling',rows:[['Case','C-9041 (this case)'],['Risk','High'],['Activations','3']],pivot:true,link:false,block:false},
+  'DEV-8831A':{x:310,y:120,r:24,kind:'hub',sub:'shared device',rows:[['Accounts','4'],['Confirmed TP','ACC-915 Duarte · C-8812'],['Open cases','C-9044']],pivot:true,link:true,block:true},
+  'ACC-02':{x:310,y:212,r:16,kind:'acc',sub:'Alpha LLC',rows:[['Role','beneficiary'],['Payers here','4 · 1 confirmed TP'],['First seen by ACC-441','23 Sep']],pivot:true,link:true,block:true},
+  'ACC-915':{x:500,y:45,r:15,kind:'tp',sub:'Duarte · TP',rows:[['Case','C-8812 · closed TP'],['Tags','Mule, True positive'],['Hops from ACC-441','2']],pivot:true,link:true,block:false},
+  'ACC-778':{x:525,y:140,r:15,kind:'acc',sub:'Osei',rows:[['Open case','C-9044 (via device)'],['Hops from ACC-441','2']],pivot:true,link:true,block:false},
+  'ACC-102':{x:470,y:212,r:15,kind:'acc',sub:'Kamal',rows:[['Open case','C-9002'],['Hops from ACC-441','2']],pivot:true,link:true,block:false},
+  'C-8812':{x:585,y:45,r:12,kind:'case',sub:'closed TP',rows:[['Case key','ACC-915 Duarte'],['Outcome','True positive · STR filed']],pivot:false,link:false,block:false},
+  'C-9044':{x:310,y:28,r:12,kind:'case',sub:'open',rows:[['Case key','DEV-8831A shared device'],['Priority','88'],['Lock','R. Lund']],pivot:false,link:false,block:false}
+};
+const EDGES = [
+  {id:'e1',a:'ACC-441',b:'DEV-8831A',txns:['ARC-771203','ARC-771201']},
+  {id:'e2',a:'ACC-441',b:'ACC-02',txns:['ARC-771203']},
+  {id:'e3',a:'DEV-8831A',b:'ACC-915',txns:['ARC-770412']},
+  {id:'e4',a:'DEV-8831A',b:'ACC-778',txns:['ARC-770877']},
+  {id:'e5',a:'DEV-8831A',b:'ACC-102',txns:['ARC-771204','ARC-771206']},
+  {id:'e6',a:'ACC-102',b:'ACC-02',txns:['ARC-771204']},
+  {id:'e7',a:'ACC-778',b:'ACC-02',txns:['ARC-770877']},
+  {id:'e8',a:'ACC-915',b:'ACC-02',txns:['ARC-770412']},
+  {id:'e9',a:'ACC-915',b:'C-8812',txns:[],caseLink:true},
+  {id:'e10',a:'DEV-8831A',b:'C-9044',txns:[],caseLink:true}
+];
+const mix = (c,p) => `color-mix(in oklab,var(--color-${c}) ${p}%,var(--color-base-100))`;
+const NODE_ST = {
+  self:{fill:mix('primary',15),stroke:'var(--color-primary)'},
+  hub:{fill:'var(--color-base-200)',stroke:'var(--color-base-content)'},
+  acc:{fill:'var(--color-base-100)',stroke:mix('base-content',60)},
+  tp:{fill:mix('error',18),stroke:'var(--color-error)'},
+  case:{fill:'var(--color-base-100)',stroke:mix('base-content',50)},
+  sel:{fill:mix('primary',30),stroke:'var(--color-primary)'}
+};
+const priCls = p => p>=85 ? 'badge-error badge-soft' : p>=70 ? 'badge-warning badge-soft' : 'badge-ghost';
+
+class Component extends DCLogic {
+  state = { screen:null, filter:'AML structuring', peekOpen:false, peekId:'C-9041', selected:0, closeOpen:false, bulkN:0, bulkInvalid:0,
+    outcome:1, typology:'Structuring', rationale:'Eleven cash deposits in nine days, each below the reporting threshold, totalling EGP 45,000; beneficiary first seen on the day of the largest deposit.',
+    txTags:{'ARC-771190':['Cash placement'],'ARC-771203':['Structuring','Layering']}, tagMenu:null, payDecision:0, payReason:'', payBlock:true, payExtend:'+2 h', payEvidence:'Called customer → Reached · 08:40 · A. Vance', payResult:null, payOutcome:'ok', holdDecided:null, stepUp:false, stepMethod:'totp', stepCode:'', stepVia:null, stepUntil:{maker:0,approver:0}, riskOpen:false, riskPop:null, matrixOpen:false, assess:null, fstack:[{type:'key',id:'ACC-441'}], view:'Rows', jf:null, selTxn:'ARC-771203', cardId:null, payloadOpen:false, factsOpen:false, netView:'graph', win:'30 d', wfExpanded:false, wfTable:false,
+    lb:null, lbCase:'C-9044', lockReason:'', fileReason:'Structuring pattern confirmed; customer unreachable; network link to confirmed mule C-8812.', approveReason:'', approved:false, approvalRequested:false, selNode:'DEV-8831A',
+    registryDone:false, checks:{expl:true,called:true,sof:false}, toast:null, activeSec:1, ljFilter:'all', ljGrouped:false,
+    noteActivity:'', noteResult:null, noteText:'',
+    notes:[
+      {src:'User',who:'A. Vance',activity:'Called customer',result:'No answer',text:'Voicemail. Will retry after 12:00.',follow:'+4 h · due 12:09 UTC+2',time:'44 min ago · 08:09 UTC+2'},
+      {src:'System',who:'Jube',activity:'Diary started',result:'',text:'STR regulatory diary · EG profile, business days',follow:'',time:'22 h ago · 10:15 UTC+2'},
+      {src:'System',who:'Jube',activity:'Activations attached',result:'',text:'3 activations attached to C-9041',follow:'',time:'22 h ago · 10:14 UTC+2'}
+    ] };
+  grids = {};
+  refs = {};
+
+  componentDidMount(){ this._k = e => this.onKey(e); window.addEventListener('keydown', this._k); }
+  componentWillUnmount(){ window.removeEventListener('keydown', this._k); Object.values(this.grids).forEach(g=>{try{g.destroy()}catch(e){}}); clearTimeout(this._tt); }
+  componentDidUpdate(pp){
+    if (pp.screen !== this.props.screen) this.setState({screen:this.props.screen});
+    if (pp.theme !== this.props.theme) this.setState({themeOverride:null});
+    if (pp.density !== this.props.density) setTimeout(()=>Object.values(this.grids).forEach(g=>{try{g.redraw(true)}catch(e){}}),60);
+  }
+  get screen(){ return this.state.screen ?? this.props.screen ?? 'cases'; }
+
+  waitTab(cb){ if (window.Tabulator) cb(); else setTimeout(()=>this.waitTab(cb),80); }
+  gridRef(key, build){
+    if (!this.refs[key]) this.refs[key] = el => {
+      if (!el) { if (this.grids[key]) { try{this.grids[key].destroy()}catch(e){} delete this.grids[key]; } return; }
+      this.waitTab(()=>{ if (el.isConnected && !this.grids[key]) this.grids[key] = build(el); });
+    };
+    return this.refs[key];
+  }
+
+  buildCases(el){
+    const t = new Tabulator(el, { data:CASES, index:'id', layout:'fitColumns', selectableRows:true, columns:[
+      {formatter:'rowSelection', titleFormatter:'rowSelection', hozAlign:'center', headerHozAlign:'center', headerSort:false, width:44},
+      {title:'Lane', field:'laneRank', width:124, sorter:'number', formatter:c=>{const d=c.getData();return `<span class="text-xs whitespace-nowrap ${d.lane==='Live money'?'font-semibold text-warning':d.lane==='Deadline near'?'text-warning':'opacity-70'}">${LANE_ICON[d.lane]} ${d.lane}</span>`}},
+      {title:'Risk', field:'prio', width:196, sorter:'number', formatter:c=>{const d=c.getData();return `<span class="badge badge-sm ${riskCls(d.likBand)} tnum whitespace-nowrap cursor-help">${d.likBand} ${d.lik}% · ${d.impBand} · ${d.prio}</span>`},
+        cellMouseEnter:(e,c)=>{const r=c.getElement().getBoundingClientRect(); this.setState({riskPop:{id:c.getData().id,x:r.left+8,y:r.bottom+4}});}, cellMouseLeave:()=>this.setState({riskPop:null})},
+      {title:'Case', field:'id', width:88, formatter:c=>`<span class="font-mono">${c.getValue()}</span>`},
+      {title:'Case key value', field:'key', widthGrow:1.2, minWidth:140, formatter:c=>{const d=c.getData();return `<div class="font-mono text-xs opacity-60">${d.key}</div><div class="font-medium">${d.keyLabel}</div>`}},
+      {title:'Why (top driver)', field:'why', widthGrow:2.2, minWidth:200, formatter:c=>{const d=c.getData();return `<div>${d.why}</div>`+(d.ai?`<div class="badge badge-sm badge-primary badge-soft mt-1">◆ AskJooby prepared · suggests ${d.ai}</div>`:'')}},
+      {title:'Value', field:'value', width:116, hozAlign:'right', headerHozAlign:'right', sorter:'number', formatter:c=>`<span class="tnum">${fmt(c.getValue())}</span>`},
+      {title:'Due', field:'dueH', width:104, hozAlign:'right', headerHozAlign:'right', sorter:'number', formatter:c=>{const d=c.getData();const soon=d.dueH<=48;return `<div class="tnum font-medium ${soon?'text-warning':''}">${soon?'◷ ':''}${d.due}</div><div class="text-xs opacity-60">${d.dueKind.split(' · ')[0]}</div>`}},
+      {title:'Lock', field:'lock', width:104, formatter:c=>{const v=c.getValue();if(!v)return '<span class="text-xs opacity-40">—</span>';if(v==='A. Vance')return '<span class="text-xs">you</span>';return `<div class="text-xs">${v}</div><button class="btn btn-xs btn-ghost px-1 -ml-1 underline">Break…</button>`}, cellClick:(e,c)=>{const d=c.getData(); if(d.lock&&d.lock!=='A. Vance'&&e.target.closest('button')){e.stopPropagation(); this.openLb('break',d.id);}}}
+    ]});
+    t.on('rowSelectionChanged', d => this.setState({selected:d.length}));
+    t.on('rowClick', (e,row) => this.setState({peekId:row.getData().id}));
+    t.on('rowDblClick', (e,row) => this.openCase(row.getData().id));
+    return t;
+  }
+  laneCols(){
+    return [
+      {title:'Lane', field:'lane', widthGrow:2.4, minWidth:220, headerSort:false, formatter:c=>{const d=c.getData();return `<div class="font-medium ${d.txn?'font-mono text-xs':''}">${d.lane}</div><div class="text-xs opacity-60">${d.sub||''}</div>`}},
+      {title:'Count', field:'count', width:76, hozAlign:'right', headerHozAlign:'right', formatter:c=>c.getValue()!=null?`<span class="tnum">${c.getValue()}</span>`:''},
+      {title:'Total', field:'total', width:120, hozAlign:'right', headerHozAlign:'right', formatter:c=>c.getValue()?`<span class="tnum">${fmt(c.getValue())}</span>`:''},
+      {title:'First', field:'first', width:74},
+      {title:'Last', field:'last', width:74},
+      {title:'Flags', field:'flags', minWidth:150, widthGrow:1.2, formatter:c=>{const v=c.getValue()||'';const risk=/◆|★/.test(v);return v?`<span class="text-xs ${risk?'font-medium':''}">${v}</span>`:''}},
+      {title:'', width:82, headerSort:false, formatter:c=>{const d=c.getData(); if(d.txn) return '<button class="btn btn-xs">Card</button>'; if(d.key && d.key!==this.fKey()) return '<button class="btn btn-xs">Pivot</button>'; return '';}, cellClick:(e,c)=>{const d=c.getData(); if(!e.target.closest('button')) return; e.stopPropagation(); if(d.txn) this.openCard(d.txn); else if(d.key) this.pivot(d.key);}}
+    ];
+  }
+  buildJournal(el){
+    const s=this.state, f=this.fKey();
+    if (s.view!=='Rows') {
+      const t = new Tabulator(el,{data:JSON.parse(JSON.stringify((LANES[f]||{})[s.view]||[])), layout:'fitColumns', dataTree:true, dataTreeStartExpanded:row=>!!row.getData().expanded, dataTreeChildIndent:18, columns:this.laneCols(), placeholder:'No lanes for this key'});
+      t.on('rowClick',(e,row)=>{const d=row.getData(); if(d.txn) this.setState({selTxn:d.txn});});
+      return t;
+    }
+    const rows = this.journalRows();
+    const t = new Tabulator(el, { data:rows, index:'id', layout:'fitColumns', selectableRows:1, rowFormatter:row=>{ if(row.getData().anchor && !this.state.jf) row.getElement().style.background='color-mix(in oklab,var(--color-primary) 6%,var(--color-base-100))'; }, placeholder:'No transactions for this key in the window', columns:[
+      {title:'', field:'anchor', width:84, headerSort:false, formatter:c=>c.getValue()?'<span class="badge badge-xs badge-primary badge-soft whitespace-nowrap">⚓ anchor</span>':''},
+      {title:'When', field:'when', width:128, formatter:c=>`<span class="tnum">${c.getValue()}</span>`},
+      {title:'Account', field:'account', width:130, formatter:c=>`<span class="font-mono text-xs">${c.getValue()}</span> <span class="text-xs opacity-70">${LBL[c.getValue()]||''}</span>`},
+      {title:'Type', field:'type', width:104},
+      {title:'Tags', field:'id', minWidth:150, headerSort:false, formatter:c=>{const id=c.getValue(); const tg=this.state.txTags[id]||[]; return tg.map(t=>`<span class="badge badge-xs badge-outline mr-1 mb-0.5 whitespace-nowrap">${t}</span>`).join('')+'<button class="btn btn-xs btn-ghost px-1 opacity-60">+ Tag</button>'}, cellClick:(e,c)=>{ if(!e.target.closest('button')) return; e.stopPropagation(); const r=e.target.getBoundingClientRect(); this.setState({tagMenu:{id:c.getValue(), x:r.left, y:r.bottom+4}}); }},
+      {title:'Amount', field:'amount', width:112, hozAlign:'right', headerHozAlign:'right', sorter:'number', formatter:c=>c.getValue()?`<span class="tnum ${c.getValue()>=9000?'font-semibold':''}">${fmt(c.getValue())}</span>`:'<span class="opacity-40">—</span>'},
+      {title:'Beneficiary', field:'benef', width:130, formatter:c=>c.getValue()?`<span class="font-mono text-xs">${c.getValue()}</span> <span class="text-xs opacity-70">${LBL[c.getValue()]||''}</span>`:''},
+      {title:'Device', field:'device', width:100, formatter:c=>c.getValue()?`<span class="font-mono text-xs">${c.getValue()}</span>`:`<span class="text-xs opacity-60">${c.getData().branch||''}</span>`},
+      {title:'Rules fired', field:'rules', minWidth:170, headerSort:false, formatter:c=>(c.getValue()||[]).map(r=>`<span class="badge badge-xs ${r.startsWith('◆')?'badge-outline font-semibold':'badge-ghost'} mr-1 mb-0.5 whitespace-nowrap">${r}</span>`).join('')},
+      {title:'', width:70, headerSort:false, formatter:()=>'<button class="btn btn-xs">Card</button>', cellClick:(e,c)=>{e.stopPropagation(); this.openCard(c.getData().id);}}
+    ]});
+    t.on('tableBuilt',()=>{ this._jgrid=t; try{ if(this.state.selTxn && rows.some(r=>r.id===this.state.selTxn)) t.selectRow(this.state.selTxn); }catch(e){} });
+    t.on('rowClick',(e,row)=>{ if(e.target.closest('button')) return; this.setState({selTxn:row.getData().id}); });
+    t.on('rowDblClick',(e,row)=>this.openCard(row.getData().id));
+    return t;
+  }
+  buildNetExplode(el){
+    const t = new Tabulator(el,{data:JSON.parse(JSON.stringify(NET_EXPLODE)), layout:'fitColumns', dataTree:true, dataTreeStartExpanded:row=>!!row.getData().expanded, dataTreeChildIndent:18, selectableRows:1, columns:this.laneCols()});
+    t.on('rowClick',(e,row)=>{const d=row.getData(); if(d.key && NODES[d.key]) this.setState({selNode:d.key});});
+    return t;
+  }
+  buildEvents(el){
+    return new Tabulator(el, { data:EVENTS, layout:'fitColumns', columns:[
+      {title:'When', field:'when', width:120, formatter:c=>`<span class="tnum">${c.getValue()}</span>`},
+      {title:'Event', field:'type', width:170, formatter:c=>`<span class="font-mono text-xs">${c.getValue()}</span>`},
+      {title:'By', field:'by', width:100},
+      {title:'Detail', field:'detail', minWidth:200},
+      {title:'Chain', width:70, hozAlign:'center', headerHozAlign:'center', headerSort:false, formatter:()=>'<span class="text-success" title="Hash verified">✓</span>'}
+    ]});
+  }
+  fKey(){ const st=this.state.fstack; for (let i=st.length-1;i>=0;i--) if (st[i].type==='key') return st[i].id; return 'ACC-441'; }
+  journalRows(){
+    const s=this.state, f=this.fKey();
+    let rows;
+    if (s.jf && s.jf.ids) rows = POOL.filter(r=>s.jf.ids.includes(r.id));
+    else {
+      rows = POOL.filter(r=>r.account===f||r.device===f||r.benef===f);
+      if (s.jf && s.jf.pred) rows = rows.filter(s.jf.pred);
+    }
+    if (s.ljFilter==='act') rows = rows.filter(r=>r.rules.length);
+    if (s.ljFilter==='top') rows = [...rows].sort((a,b)=>b.amount-a.amount).slice(0,5);
+    if (f==='ACC-441') rows = [...rows.filter(r=>r.anchor), ...rows.filter(r=>!r.anchor)];
+    else rows = rows.map(r=>({...r, anchor: r.anchor}));
+    return rows;
+  }
+  refreshJournal(){}
+  openCard(id){ this.setState({cardId:id, payloadOpen:false, factsOpen:false, selTxn:id}); }
+  pivot(key, viaTxn){
+    if (key==='185.220.101.4') { this.toastMsg('Hub: 4,112 accounts · shown as one collapsed lane, never expanded by default'); return; }
+    if (!NODES[key] && !LANES[key]) { this.toastMsg(`Pivot to ${lbl(key)}`); }
+    this.setState(st=>{ const stack=[...st.fstack]; if (viaTxn) stack.push({type:'txn',id:viaTxn}); stack.push({type:'key',id:key}); return {fstack:stack, view:'Rows', jf:null, ljFilter:'all', cardId:null, payloadOpen:false, selNode: NODES[key]?key:st.selNode}; });
+    setTimeout(()=>this.goSec(3),60);
+  }
+  goBack(){
+    this.setState(st=>{ const stack=[...st.fstack]; if (stack.length<=1) return null; stack.pop(); while (stack.length>1 && stack[stack.length-1].type==='txn') stack.pop(); return {fstack:stack, view:'Rows', jf:null}; });
+  }
+  aroundThis(id){
+    const t = byId(id || this.state.selTxn); if (!t) { this.toastMsg('Select a transaction first'); return; }
+    const keys=[t.account,t.device,t.benef].filter(Boolean);
+    const ids = POOL.filter(r=>r.day===t.day && keys.some(k=>r.account===k||r.device===k||r.benef===k)).map(r=>r.id);
+    this.setState({jf:{label:`Around ${t.id} · same day on ${keys.map(lbl).join(', ')}`, ids}, view:'Rows', cardId:null, payloadOpen:false});
+    setTimeout(()=>this.goSec(3),60);
+  }
+  toastMsg(msg, undo){ clearTimeout(this._tt); this.setState({toast:{msg,undo:!!undo}}); this._tt=setTimeout(()=>this.setState({toast:null}), undo?10000:5000); }
+  openCase(id){ this.setState({screen:'case', peekOpen:false, closeOpen:false}); window.scrollTo(0,0); if (id && id!=='C-9041') this.toastMsg(`Mock-up shows C-9041 · ${id} would open here`); }
+  openPayment(){ clearTimeout(this._pt); this.setState({txTags:{'ARC-771190':['Cash placement'],'ARC-771203':['Structuring','Layering']}, tagMenu:null, payDecision:0, payReason:'', payResult:null, payOutcome:'ok', payBlock:true}); this.openLb('payment','C-9044'); }
+  goSec(n){ const el=document.getElementById('sec-'+n); if(!el) return; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-104, behavior:'smooth'}); this.setState({activeSec:n}); }
+  openLb(kind, caseId){ this.setState({stepUp:false, lb:kind, closeOpen:false, peekOpen:false, ...(caseId?{lbCase:caseId}:{}), ...(kind==='break'?{lockReason:''}:{}), ...(kind==='approve'?{approveReason:''}:{})}); }
+  needsStep(){ const s=this.state; return (s.lb==='payment' && s.payDecision!==3) || ['file','approve','break'].includes(s.lb); }
+  verifyStep(){ const s=this.state, who=s.lb==='approve'?'approver':'maker'; this.setState({stepUp:false, stepVia:s.stepMethod, stepUntil:{...s.stepUntil,[who]:Date.now()+(s.lb==='payment'?900000:300000)}}, ()=>this.lbSubmit()); }
+  runPayment(outcome){ clearTimeout(this._pt); this.setState({payResult:{phase:'sent'}, payOutcome:outcome}); this._pt=setTimeout(()=>{ const st=this.state; if(outcome==='timeout') this.setState({payResult:{phase:'timeout'}}); else { this.setState({payResult:{phase:'confirmed'}, holdDecided:st.payDecision}); if (st.payDecision!==3) { const c=CASES.find(x=>x.id==='C-9044'); if(c){ c.lane='Standard'; c.laneRank=LANE_ORDER['Standard']; c.due='12d'; c.dueH=288; c.dueKind='STR · regulatory'; CASES.sort((a,b)=>a.laneRank-b.laneRank||b.prio-a.prio); const g=this.grids.cases; if(g) g.replaceData(CASES); } } const v={1:'Release',2:'Refuse',3:'Extend hold'}[st.payDecision]; this.toastMsg(`${v} confirmed by core banking · ARC-771240`); } },1600); }
+  lbSubmit(){
+    const s=this.state, who=s.lb==='approve'?'approver':'maker';
+    if (s.lb==='payment' && (!s.payDecision || s.payReason.trim().length<10 || s.payResult)) return;
+    if (s.lb==='break' && s.lockReason.trim().length<10) return;
+    if (s.lb==='file' && (!s.approved || !s.fileReason.trim())) return;
+    if (this.needsStep() && !(s.stepUntil[who] > Date.now())) { this.setState({stepUp:true, stepCode:''}); return; }
+    if (s.lb==='payment'){ this.runPayment('ok'); return; }
+    if (s.lb==='break'){ if (s.lockReason.trim().length<10) return; this.setState({lb:null}); this.toastMsg(`Lock broken on ${s.lbCase} · R. Lund notified in Inbox`); }
+    else if (s.lb==='file'){ if (!s.approved || !s.fileReason.trim()) return; this.setState({lb:null}); this.toastMsg('Filed STR-2026-044 to EG FIU via goAML · awaiting acknowledgement'); }
+    else if (s.lb==='approve'){ this.setState({approved:true, approvalRequested:false, lb:'file'}); this.toastMsg('M. Karim approved · back to A. Vance\u2019s File lightbox'); }
+  }
+  openClose(bulk){
+    if (bulk) { const sel=this.grids.cases?this.grids.cases.getSelectedData():[]; this.setState({closeOpen:true,bulkN:sel.length,bulkInvalid:sel.filter(r=>r.lock&&r.lock!=='A. Vance').length}); }
+    else this.setState({closeOpen:true,bulkN:0,bulkInvalid:0});
+  }
+  submitClose(){
+    if (!this.state.registryDone) return;
+    const {bulkN,bulkInvalid}=this.state;
+    this.setState({closeOpen:false});
+    this.toastMsg(bulkN ? `Submitted for approval: close ${bulkN-bulkInvalid} cases` : 'Submitted for approval: close C-9041 · sent to M. Karim');
+  }
+  addNote(){
+    const {noteActivity,noteResult,noteText}=this.state;
+    if (!noteActivity) return;
+    const hint = noteResult!=null ? RESULTS[noteActivity][noteResult][1] : '';
+    const n = {src:'User',who:'A. Vance',activity:noteActivity,result:noteResult!=null?RESULTS[noteActivity][noteResult][0]:'',text:noteText,follow:hint.startsWith('+')?hint.split(' · ')[0]:'',time:'just now · 08:53 UTC+2'};
+    this.setState(s=>({notes:[n,...s.notes],noteActivity:'',noteResult:null,noteText:''}));
+    this.toastMsg('Note added: '+noteActivity+(n.result?' → '+n.result:''), true);
+  }
+
+  onKey(e){
+    const tag=(e.target.tagName||'').toLowerCase(); const typing = tag==='input'||tag==='textarea'||tag==='select';
+    const s=this.state, scr=this.screen;
+    if (scr==='case' && !s.lb && !s.closeOpen){
+      if (e.key==='Escape' && s.tagMenu){ this.setState({tagMenu:null}); return; }
+      if (e.key==='Escape' && s.riskOpen){ this.setState({riskOpen:false}); return; }
+      if (e.key==='Escape' && (s.payloadOpen||s.cardId||s.factsOpen)){ if(s.payloadOpen) this.setState({payloadOpen:false}); else if(s.cardId) this.setState({cardId:null}); else this.setState({factsOpen:false}); return; }
+      if (e.altKey && e.key==='ArrowLeft'){ e.preventDefault(); this.goBack(); return; }
+      if (!typing && tag!=='button' && !e.ctrlKey && !e.metaKey && !e.altKey){
+        if (e.key==='Enter' && s.selTxn && !s.cardId){ e.preventDefault(); this.openCard(s.selTxn); return; }
+        if (e.key==='r'){ this.setState({riskOpen:!s.riskOpen}); return; }
+        if (e.key==='y'){ const fk=this.fKey(); const v=['Rows',...Object.keys(LANES[fk]||{})]; this.setState({view:v[(v.indexOf(s.view)+1)%v.length]}); return; }
+        if (e.key==='w'){ this.aroundThis(s.cardId||undefined); return; }
+        if (e.key==='p' && NODES[s.selNode] && NODES[s.selNode].pivot){ this.pivot(s.selNode); return; }
+      }
+    }
+    if (s.lb){
+      if (e.key==='Escape'){ this.setState({lb:null}); return; }
+      if ((e.ctrlKey||e.metaKey) && e.key==='Enter'){ e.preventDefault(); this.lbSubmit(); }
+      if (s.lb==='payment' && !typing && !s.stepUp && !s.payResult && /^[1-3]$/.test(e.key)) this.setState({payDecision:+e.key});
+      return;
+    }
+    if (e.key==='Escape'){ if(s.closeOpen) this.setState({closeOpen:false}); else if(s.peekOpen) this.setState({peekOpen:false}); return; }
+    if (s.closeOpen){
+      if ((e.ctrlKey||e.metaKey) && e.key==='Enter'){ e.preventDefault(); this.submitClose(); return; }
+      if (!typing && ['1','2','3'].includes(e.key)) this.setState({outcome:+e.key});
+      return;
+    }
+    if (scr==='case' && (e.ctrlKey||e.metaKey) && e.key==='Enter' && document.activeElement && document.activeElement.closest && document.activeElement.closest('#composer')){ e.preventDefault(); this.addNote(); return; }
+    if (typing && !(tag==='select' && /^[1-9]$/.test(e.key) && s.noteActivity)) return;
+    if (e.ctrlKey||e.metaKey||e.altKey) return;
+    if (scr==='cases'){
+      if (e.key===' '){ e.preventDefault(); this.setState({peekOpen:!s.peekOpen}); }
+      else if ((e.key==='h'||e.key==='H') && s.peekOpen && s.peekId==='C-9044') this.openPayment();
+      else if (e.key==='Enter') this.openCase(s.peekId);
+      else if (e.key==='w'||e.key==='W'){ this.openCase('C-9041'); this.toastMsg('Skim: lock taken on C-9041 · next case prefetched'); }
+    } else {
+      const inComposer = document.activeElement && document.activeElement.closest && document.activeElement.closest('#composer');
+      if (inComposer && s.noteActivity && /^[1-9]$/.test(e.key)){ e.preventDefault(); const i=+e.key-1; if (RESULTS[s.noteActivity][i]) this.setState({noteResult:i}); return; }
+      if (/^[1-6]$/.test(e.key)) this.goSec(+e.key);
+      else if (e.key==='d'||e.key==='D') this.openClose(false);
+      else if (e.key==='f'||e.key==='F') this.openLb('file');
+      else if (e.key==='J' && e.shiftKey) this.toastMsg('Next: C-9044 (prefetched) · lock released on C-9041');
+      else if (e.key==='n'||e.key==='a'){ e.preventDefault(); this.focusComposer(); }
+    }
+  }
+  focusComposer(){ this.goSec(5); setTimeout(()=>{const el=document.getElementById('composer-activity'); el&&el.focus();},350); }
+
+  renderVals(){
+    const s=this.state, scr=this.screen, theme=s.themeOverride ?? this.props.theme ?? 'light';
+    const peekRow = CASES.find(c=>c.id===s.peekId) || CASES[0];
+    const outLabels=['True positive','False positive','Inconclusive'];
+    const outcomeLabel=outLabels[s.outcome-1];
+    const checklist=[
+      {k:'expl',label:'Explanation viewed',done:s.checks.expl},
+      {k:'called',label:'Called customer',done:s.checks.called},
+      {k:'reg',label:'Verify registry',done:s.registryDone},
+      {k:'sof',label:'Source of funds requested',done:s.checks.sof}
+    ].map(c=>({...c, cls:c.done?'line-through opacity-60':'', toggle:()=>{
+      if (c.k==='reg') this.setState({registryDone:!s.registryDone}); else this.setState(st=>({checks:{...st.checks,[c.k]:!st.checks[c.k]}}));
+      this.toastMsg((c.done?'Unticked: ':'Ticked: ')+c.label, true);
+    }}));
+    const res = s.noteActivity ? RESULTS[s.noteActivity] : [];
+    const followHint = s.noteResult!=null && res[s.noteResult] ? res[s.noteResult][1] : '';
+    const bulk = s.bulkN>0;
+    return {
+      theme, density:this.props.density ?? 'comfortable',
+      themeLabel: theme==='dark' ? '☀ Light' : '☾ Dark',
+      toggleTheme: ()=>this.setState({themeOverride: theme==='dark'?'light':'dark'}),
+      isCases: scr==='cases', isCase: scr==='case',
+      goCases: ()=>{ this.setState({screen:'cases', closeOpen:false}); window.scrollTo(0,0); },
+      filterGroups: FILTERS.map(g=>({name:g.name, items:g.items.map(f=>({...f, cls:f.name===s.filter?'border-primary bg-primary/10':'bg-base-100 border-base-300 hover:border-base-content/30', pick:()=>this.setState({filter:f.name})}))})),
+      filter:s.filter, filterCount: FILTERS.flatMap(g=>g.items).find(f=>f.name===s.filter)?.count,
+      casesRef: this.gridRef('cases', el=>this.buildCases(el)),
+      journalRef: this.gridRef('journal', el=>this.buildJournal(el)),
+      eventsRef: this.gridRef('events', el=>this.buildEvents(el)),
+      skim: ()=>{ this.openCase('C-9041'); this.toastMsg('Skim: lock taken on C-9041 · next case prefetched'); },
+      selected:s.selected, hasSelection:s.selected>0,
+      bulkAssign: ()=>this.toastMsg(`Assigned ${s.selected} cases to A. Vance`, true),
+      openBulkClose: ()=>this.openClose(true),
+      peekOpen:s.peekOpen && scr==='cases', closePeek:()=>this.setState({peekOpen:false}),
+      peek:{...peekRow, priCls:priCls(peekRow.pri), valueFmt:fmt(peekRow.value), lock:peekRow.lock||'unlocked', riskCls:riskCls(peekRow.likBand), riskText:`${peekRow.likBand} ${peekRow.lik}% · ${peekRow.impBand} · ${peekRow.prio}`, hasHold: peekRow.id==='C-9044', holdLeft: s.holdDecided===3 ? 'held until 16:53' : s.holdDecided ? 'decided' : '6 h 00 m left',
+      holdBadge: s.holdDecided===1 ? 'Released' : s.holdDecided===2 ? 'Refused' : '⚡ Held',
+      holdBadgeCls: (s.holdDecided===1||s.holdDecided===2) ? 'badge-ghost' : 'badge-warning',
+      holdBoxCls: (s.holdDecided===1||s.holdDecided===2) ? 'border-base-300 bg-base-200/60' : 'border-warning/60 bg-warning/5',
+      holdLeftCls: (s.holdDecided===1||s.holdDecided===2) ? 'opacity-60' : 'text-warning',
+      holdOpen: !(s.holdDecided===1||s.holdDecided===2), holdClosed: s.holdDecided===1||s.holdDecided===2, holdState: s.holdDecided ? ({1:'Released',2:'Refused and returned to sender',3:'Hold extended to 16:53'})[s.holdDecided]+' · confirmed by core banking · ref CBS-R-55107' : 'Hold confirmed by core banking 08:53 · undecided at 13:53 → escalated to S. Okoro (email + Inbox)', hasHealth:!!peekRow.health, health:peekRow.health||''},
+      openPeekCase: ()=>this.openCase(s.peekId),
+      nextCase: ()=>this.toastMsg('Next: C-9044 (prefetched) · lock released on C-9041'),
+      secNav: ['Summary','Activations','Journal','Network','Notes','Events'].map((l,i)=>({n:i+1,label:l,cls:s.activeSec===i+1?'btn-active':'btn-ghost',go:()=>this.goSec(i+1)})),
+      goSec2:()=>this.goSec(2), goSec3:()=>this.goSec(3), goSec4:()=>this.goSec(4),
+      ljFilters: [['all','All'],['top','Top'],['act','Activations only']].map(([k,l])=>({label:l,cls:s.ljFilter===k?'btn-active':'',pick:()=>{this.setState({ljFilter:k}); this.refreshJournal();}})),
+      ljGrouped:s.ljGrouped, toggleGroup:()=>{ this.setState({ljGrouped:!s.ljGrouped}); this.refreshJournal(); },
+      activities:Object.keys(RESULTS), noteActivity:s.noteActivity, hasActivity:!!s.noteActivity,
+      onActivity:e=>this.setState({noteActivity:e.target.value,noteResult:null}),
+      results: res.map((r,i)=>({n:i+1,label:r[0],cls:s.noteResult===i?'btn-neutral':'btn-outline',pick:()=>this.setState({noteResult:i})})),
+      followHint, hasFollowHint:!!followHint,
+      noteText:s.noteText, onNoteText:e=>this.setState({noteText:e.target.value}),
+      noteDisabled:!s.noteActivity, addNote:()=>this.addNote(), focusComposer:()=>this.focusComposer(),
+      notes: s.notes.map(n=>({...n, initials:n.src==='System'?'SYS':n.who.split(' ').map(w=>w[0]).join(''), srcCls:n.src==='System'?'badge-ghost':'badge-neutral badge-soft', avCls:n.src==='System'?'bg-base-200 text-base-content/60':'bg-neutral text-neutral-content', rowCls:n.src==='System'?'opacity-75':'', hasResult:!!n.result, hasText:!!n.text, hasFollow:!!n.follow})),
+      checklist, checkDone: checklist.filter(c=>c.done).length,
+      openClose:()=>this.openClose(false),
+      closeOpen:s.closeOpen, cancelClose:()=>this.setState({closeOpen:false}),
+      closeTitle: bulk ? `Close ${s.bulkN} cases` : 'Close case C-9041',
+      isBulk:bulk, bulkN:s.bulkN, bulkInvalid:s.bulkInvalid,
+      outcomes: outLabels.map((l,i)=>({n:i+1,label:l,cls:s.outcome===i+1?'btn-neutral':'',pick:()=>this.setState({outcome:i+1})})),
+      typologies:['Structuring','Mule','Layering','Account takeover','Other'], typology:s.typology,
+      onTypology:e=>this.setState({typology:e.target.value}),
+      typoSuggest:['Structuring','Mule'].map(t=>({label:t,pick:()=>this.setState({typology:t})})),
+      rationale:s.rationale, onRationale:e=>this.setState({rationale:e.target.value}),
+      onTemplate:e=>{ const v=e.target.value; const map={'Template: FP – normal business':'Deposits consistent with declared business activity; no indicators beyond velocity.','Template: inconclusive – insufficient information':'Customer unreachable after two attempts; insufficient information to conclude.'}; this.setState({rationale:map[v]||'Eleven cash deposits in nine days, each below the reporting threshold, totalling EGP 45,000; beneficiary first seen on the day of the largest deposit.', outcome: v.includes('FP')?2: v.includes('inconclusive')?3:1}); },
+      consequences: [
+        'Status → Closed · STR diary stops',
+        `Tags written to ${bulk?'each case\u2019s':'3'} activations: ${outcomeLabel}, ${s.typology} (model training)`,
+        'Email to fraud-ops@nilebank.example (status hook)',
+        'Goes to M. Karim for approval (maker-checker)'
+      ].concat(s.outcome===1?['Report required: continues to Compose after approval']:[]),
+      needsRegistry:!s.registryDone, registryOk:s.registryDone,
+      doRegistry:()=>{ this.setState({registryDone:true}); this.toastMsg('Verify registry: done · preview refreshed'); },
+      submitLabel: bulk ? `Submit ${s.bulkN-s.bulkInvalid} valid for approval` : 'Submit for approval',
+      submitClose:()=>this.submitClose(),
+      peekLockedByOther: !!peekRow.lock && peekRow.lock!=='A. Vance',
+      openBreakPeek: ()=>this.openLb('break', peekRow.id),
+      demoClose: ()=>{ this.setState({screen:'case'}); this.openClose(false); },
+      demoBulk: ()=>{ this.setState({screen:'cases', closeOpen:true, bulkN:3, bulkInvalid:1, lb:null}); },
+      demoBreak: ()=>{ this.setState({screen:'cases'}); this.openLb('break','C-9044'); },
+      demoFile: ()=>{ this.setState({screen:'case'}); this.openLb('file'); },
+      demoApprove: ()=>{ this.setState({screen:'case', approvalRequested:true}); this.openLb('approve'); },
+      openFile: ()=>this.openLb('file'),
+      chartBars: DAYS.map(([d,v,a])=>({day:d+' Sep', amt:(v/1000).toFixed(1)+'k', h:(v/12700*80).toFixed(1)+'%', cls:a?'bg-base-content/80':'bg-base-content/30', tip:fmt(v)})),
+      ...(()=>{
+        const f=this.fKey(), subject=f==='ACC-441';
+        const tierKey=this.props.explanationTier ?? 'exact';
+        const TIERS={exact:{label:'Exact contributions',cls:'badge-success badge-soft',note:'Additive in log-odds: base −3.18 plus the contributions sums exactly to +2.31, converted once to the probability 0.91.'},
+          decomposition:{label:'Decomposition',cls:'badge-info badge-soft',note:'Prototype variant for Bayesian models: causal-path probabilities. Conserves the score, but the split depends on the method; name these drivers in memos, don’t quote the figures.'},
+          none:{label:'None',cls:'badge-ghost',note:'No trustworthy per-input explanation is available for this model.'}};
+        const LO=-3.5, HI=2.7, SP=HI-LO, pos=(a,w)=>({left:((a-LO)/SP*100)+'%', width:Math.max(w/SP*100,0.8)+'%'}), thrSt={left:((1.386-LO)/SP*100)+'%'};
+        const others=[['Transfers in the last hour: 1',0.30],['Device first seen: 0 days',0.25],['Channel: mobile',0.15],['Hour of day: 10:00',0.10]];
+        let items=[['Cash deposits in 9 days: 11',2.20],['Beneficiary first seen: 0 days',1.55],['Amount vs typical: 3.2×',1.10]];
+        items = items.concat(s.wfExpanded ? others : [['4 other inputs ▸',0.80,true]]).concat([['Account age: 6 years',-0.16]]);
+        let c=-3.18; const fb=l=>()=>this.toastMsg(`Feedback on “${l}” sent to the model owner’s Inbox`);
+        const wfRows=[{label:'Base value (population) · 0.04',value:'−3.18',st:pos(LO,-3.18-LO),thrSt,cls:'bg-base-content/30',rowCls:'opacity-80',labelCls:'',pick:()=>{},feedback:()=>{},fb:''}]
+          .concat(items.map(([l,v,g])=>{const a=v>=0?c:c+v; c+=v; return {label:l, value:(v>=0?'+':'−')+Math.abs(v).toFixed(2), st:pos(a,Math.abs(v)), thrSt, cls:v>=0?'bg-base-content/70':'bg-base-100 border-2 border-base-content/60', rowCls:'', labelCls:g?'link link-hover':'', pick:g?()=>this.setState({wfExpanded:true}):()=>{}, feedback:fb(l), fb:'⚑'};}))
+          .concat(s.wfExpanded?[{label:'Collapse other inputs ▴',value:'',st:{display:'none'},thrSt:{display:'none'},cls:'',rowCls:'opacity-70',labelCls:'link link-hover text-xs',pick:()=>this.setState({wfExpanded:false}),feedback:()=>{},fb:''}]:[])
+          .concat([{label:'= Score 0.91 · Very high',value:'+2.31',st:pos(-3.18,2.31+3.18),thrSt,cls:'bg-error/70',rowCls:'font-semibold border-t border-base-300 pt-2',labelCls:'',pick:()=>{},feedback:()=>{},fb:''}]);
+        const modelSrc = tierKey==='exact' ? 'StructNet v7 · +0.31 exact' : tierKey==='decomposition' ? 'StructNet v7 · relevance' : 'StructNet v7 · input';
+        const g2=()=>this.goSec(2);
+        const drv=(label,value,normal,sources,pred,jl)=>({label,value,normal,sources:sources.map(x=>({label:x,go:g2})),journal:()=>{this.setState({txTags:{'ARC-771190':['Cash placement'],'ARC-771203':['Structuring','Layering']}, tagMenu:null, payDecision:0, payReason:'', payBlock:true, payExtend:'+2 h', payEvidence:'Called customer → Reached · 08:40 · A. Vance', payResult:null, payOutcome:'ok', holdDecided:null, stepUp:false, stepMethod:'totp', stepCode:'', stepVia:null, stepUntil:{maker:0,approver:0}, riskOpen:false, riskPop:null, matrixOpen:false, assess:null, fstack:[{type:'key',id:'ACC-441'}],view:'Rows',ljFilter:'all',jf:{label:'Driver: '+jl,pred}}); setTimeout(()=>this.goSec(3),60);},feedback:()=>this.toastMsg(`Feedback on “${label}” sent to the model owner’s Inbox`)});
+        const dSrc=(a,b)=>tierKey==='exact'?a:(tierKey==='decomposition'?'StructNet v7 · relevance':'StructNet v7 · input');
+        const selT = byId(s.selTxn);
+        const hlEdge = e => (s.jf && s.jf.edge===e.id) || (selT && e.txns.includes(selT.id));
+        const nodeSt = {self:{fill:mix('primary',15),stroke:'var(--color-primary)'},hub:{fill:'var(--color-base-200)',stroke:'var(--color-base-content)'},acc:{fill:'var(--color-base-100)',stroke:mix('base-content',60)},tp:{fill:mix('error',18),stroke:'var(--color-error)'},case:{fill:'var(--color-base-100)',stroke:mix('base-content',50)},sel:{fill:mix('primary',30),stroke:'var(--color-primary)'}};
+        const cardRow = s.cardId ? byId(s.cardId) : null;
+        let card = {id:'',when:'',what:'',isAnchor:false,anchor:'',keys:[],rules:[],noRules:true,knew:[],hasKnew:false,noKnew:true};
+        if (cardRow){
+          const ex = CARD_EXTRA[cardRow.id] || {};
+          const keys = ex.keys || [
+            {role:'Account',key:cardRow.account,note:cardRow.account==='ACC-441'?'case subject':''},
+            cardRow.benef ? {role:'Beneficiary',key:cardRow.benef,note:''} : null,
+            cardRow.device ? {role:'Device',key:cardRow.device,note:'shared by 4 accounts'} : null
+          ].filter(Boolean);
+          const rules = ex.rules || cardRow.rules.map(r=>({kind:r.startsWith('◆')?'◆ creates cases':'no case', label:r.replace('◆ ',''), cls:r.startsWith('◆')?'badge-outline font-semibold':'badge-ghost'}));
+          const knew = (ex.knew||[]).map(([k,v])=>({k,v}));
+          card = {id:cardRow.id, when:cardRow.when.replace(/^(\d+ \w+)/,'$1 2026')+' UTC+2', what:cardRow.type+(cardRow.amount?' '+fmt(cardRow.amount):''), isAnchor:!!cardRow.anchor, anchor:cardRow.anchor,
+            keys: keys.map(k=>({...k, label:LBL[k.key]||'', canPivot: k.pivot ?? (k.key!==f), canLink: k.link ?? (k.key!=='ACC-441'), pivot:()=>this.pivot(k.key, cardRow.id), link:()=>this.toastMsg(`Link case key ${lbl(k.key)} opens a lightbox (case operation)`)})),
+            rules, noRules:!rules.length, knew, hasKnew:knew.length>0, noKnew:!knew.length};
+        }
+        const selNodeD = NODES[s.selNode] || NODES['DEV-8831A'];
+        const viewList = ['Rows', ...Object.keys(LANES[f]||{})];
+        return {
+          drivers:[
+            drv('Cash deposits in 9 days','11','vs normal rate 1.2',['Rule · Structuring 9d (Deposits9d)',dSrc('StructNet v7 · +2.20 exact')],r=>r.type==='Cash deposit','cash deposits in 9 days'),
+            drv('Amount vs typical','3.2×','EGP 9,500 vs typical 2,950',['Rule · Structuring 9d (Amount)',dSrc('StructNet v7 · +1.10 exact')],r=>r.amount>=9000,'amount ≥ 3× average'),
+            drv('Beneficiary first seen','0 days','vs typical 412 d',[tierKey==='exact'?'StructNet v7 · +1.55 exact':modelSrc],r=>r.benef==='ACC-02','beneficiary ACC-02 Alpha LLC'),
+            drv('Name similarity to a list entry','0.82','similarity, not a probability',['Sanctions name match'],r=>r.id==='ARC-771190','sanctions anchor')
+          ],
+          openFacts:()=>this.setState({factsOpen:true, cardId:null, payloadOpen:false}),
+          closeFacts:()=>this.setState({factsOpen:false}),
+          factsOpen: s.factsOpen,
+          factGroups: FACTS.map(g=>({name:g.name, rows:g.rows.map(([k,v,cls])=>({k,v,cls:cls||''}))})),
+          openAnchor1:()=>this.openCard('ARC-771203'), openAnchor2:()=>this.openCard('ARC-771190'),
+          tier:TIERS[tierKey]||TIERS.exact, tierHasBars:tierKey==='exact', tierNone:tierKey==='none', tierExact:tierKey==='exact', tierDecomp:tierKey==='decomposition',
+          showWfChart:tierKey==='exact' && !s.wfTable, showWfTable:tierKey==='exact' && s.wfTable,
+          wfChartCls:s.wfTable?'':'btn-active', wfTableCls:s.wfTable?'btn-active':'',
+          wfChart:()=>this.setState({wfTable:false}), wfTableOn:()=>this.setState({wfTable:true}),
+          wfRows,
+          isSubject:subject, notSubject:!subject,
+          jSecCls: subject ? 'border border-base-300' : 'border-2 border-warning',
+          jHeadCls: subject ? '' : 'bg-warning/10 rounded-box px-2 py-1.5 -mx-2',
+          crumbs: s.fstack.map((it,i)=>{ const last=i===s.fstack.length-1; return {label: it.type==='txn' ? 'txn '+it.id.replace('ARC-','') : lbl(it.id)+(it.id==='ACC-441'?' (case subject)':''), cls: last?'font-semibold':'link link-hover opacity-80', go: it.type==='txn' ? ()=>this.openCard(it.id) : ()=>this.setState({fstack:s.fstack.slice(0,i+1), view:'Rows', jf:null})}; }),
+          canBack: s.fstack.length>1, goBack:()=>this.goBack(),
+          backToSubject:()=>this.setState({txTags:{'ARC-771190':['Cash placement'],'ARC-771203':['Structuring','Layering']}, tagMenu:null, payDecision:0, payReason:'', payBlock:true, payExtend:'+2 h', payEvidence:'Called customer → Reached · 08:40 · A. Vance', payResult:null, payOutcome:'ok', holdDecided:null, stepUp:false, stepMethod:'totp', stepCode:'', stepVia:null, stepUntil:{maker:0,approver:0}, riskOpen:false, riskPop:null, matrixOpen:false, assess:null, fstack:[{type:'key',id:'ACC-441'}], view:'Rows', jf:null}),
+          win:s.win, onWin:e=>this.setState({win:e.target.value}),
+          viewOpts: viewList.map(v=>({label:v, cls:s.view===v?'btn-active':'', pick:()=>this.setState({view:v})})),
+          isRowsView: s.view==='Rows',
+          ljFilters: [['all','All'],['top','Top'],['act','Activations only']].map(([k,l])=>({label:l,cls:s.ljFilter===k?'btn-active':'',pick:()=>this.setState({ljFilter:k})})),
+          hasJf: !!s.jf, jfLabel: s.jf ? s.jf.label : '', clearJf:()=>this.setState({jf:null}),
+          aroundThis:()=>this.aroundThis(), cardAround:()=>this.aroundThis(s.cardId),
+          mergeLanes:()=>this.toastMsg('Merge: select 2+ lanes or keys → one timeline, a labelled lane per key (not mocked yet)'),
+          pinLens:()=>this.toastMsg('Pin lens: splits the Journal to compare two keys side by side (not mocked yet)'),
+          jAgg: (AGG[f]||[['Key',lbl(f)],['Transactions in window',String(this.journalRows().length)]]).map(([k,v])=>({k,v})),
+          journalRef: this.gridRef(`j|${f}|${s.view}|${s.ljFilter}|${s.jf?s.jf.label:''}`, el=>this.buildJournal(el)),
+          netViews:[['graph','Graph'],['explode','Explode (list view)']].map(([k,l])=>({label:l,cls:s.netView===k?'btn-active':'',pick:()=>this.setState({netView:k})})),
+          netGraph:s.netView==='graph', netExplode:s.netView==='explode',
+          netExplodeRef: this.gridRef('netx', el=>this.buildNetExplode(el)),
+          netEdges: EDGES.map(e=>{const A=NODES[e.a],B=NODES[e.b],hl=hlEdge(e),adj=e.a===s.selNode||e.b===s.selNode;
+            return {x1:A.x,y1:A.y,x2:B.x,y2:B.y, w: hl?3.5:(adj?2:1.5),
+              st: hl?{stroke:'var(--color-primary)'}:{stroke:'var(--color-base-content)',strokeOpacity:adj?0.6:0.25, strokeDasharray:e.caseLink?'4 3':undefined},
+              hit:{stroke:'transparent',pointerEvents:'stroke'},
+              pick:()=>{ if(!e.txns.length){ this.toastMsg('Case link: no transactions behind this edge'); return; } this.setState({jf:{label:`${e.txns.length} transaction${e.txns.length>1?'s':''} behind edge ${lbl(e.a)} — ${lbl(e.b)}`, ids:e.txns, edge:e.id}, view:'Rows'}); this.toastMsg('Journal (section 3) now shows the transactions behind this edge'); }};}),
+          netNodes: Object.entries(NODES).map(([id,n])=>({id,label:id,sub:n.sub,x:n.x,y:n.y,r:n.r, st:id===s.selNode?nodeSt.sel:nodeSt[n.kind], sw:id===s.selNode||n.kind==='self'?3:1.5, dash:n.kind==='case'?'3 3':'', labelSt:{left:(n.x/620*100)+'%', top:((n.y+n.r+2)/270*100)+'%'}, pick:()=>this.setState({selNode:id})})),
+          sel:{label:s.selNode, sub:selNodeD.sub, rows:selNodeD.rows.map(([k,v])=>({k,v})), blockable:selNodeD.block, pivotable:selNodeD.pivot && s.selNode!==f, linkable:selNodeD.link},
+          pivotSel:()=>this.pivot(s.selNode), linkSel:()=>this.toastMsg(`Link case key ${lbl(s.selNode)} opens a lightbox (case operation)`),
+          cardOpen:!!cardRow, card, closeCard:()=>this.setState({cardId:null,payloadOpen:false}),
+          openPayload:()=>this.setState({payloadOpen:true}), closePayload:()=>this.setState({payloadOpen:false}),
+          payloadOpen: s.payloadOpen && !!cardRow,
+          payloadJson: cardRow ? JSON.stringify({ArchiveId:cardRow.id, EntityAnalysisModel:'AML retail', CreatedDate:'2026-09-'+cardRow.when.split(' ')[0]+'T'+(cardRow.when.split(' ')[2]||'00:00')+'+02:00', SnapshotId:'7f3a…', Payload:{AccountId:cardRow.account, TxnType:cardRow.type, Amount:cardRow.amount, Currency:'EGP', BeneficiaryId:cardRow.benef||null, DeviceId:cardRow.device||null, Channel:cardRow.channel, Branch:cardRow.branch||null}}, null, 2) : '',
+          addFacts:()=>this.toastMsg('Added to Narrative Facts (behaviour only; no model names or scores)'),
+          pivotDev:()=>this.pivot('DEV-8831A'), pivotIp:()=>this.pivot('185.220.101.4'),
+          riskOpenCls: s.riskOpen?'dropdown-open':'',
+          ...(()=>{ const TG=[{name:'AML typology',tags:['Structuring','Cash placement','Layering']},{name:'Fraud typology',tags:['Mule','Account takeover','APP scam']}];
+            const tm=s.tagMenu; const cur=tm?(s.txTags[tm.id]||[]):[];
+            const toggle=(id,t)=>{ const had=(this.state.txTags[id]||[]).includes(t); this.setState(st=>({txTags:{...st.txTags,[id]:had?(st.txTags[id]||[]).filter(x=>x!==t):[...(st.txTags[id]||[]),t]}}), ()=>{ try{ const r=this._jgrid&&this._jgrid.getRow(id); r&&r.reformat(); }catch(e){} }); this.toastMsg(`${had?'Untagged':'Tagged'} ${id} · “${t}” · Op: ${had?'UntagTransaction':'TagTransaction'}`, true); };
+            return {
+              hasTagMenu: !!tm, tagMenuId: tm?tm.id:'', tagMenuSt: tm?{left:Math.min(tm.x, window.innerWidth-270)+'px', top:Math.max(8,Math.min(tm.y, window.innerHeight-340))+'px'}:{},
+              closeTagMenu:()=>this.setState({tagMenu:null}),
+              tagGroups: TG.map(g=>({name:g.name, tags:g.tags.map(t=>({label:t, mark:cur.includes(t)?'✓':'', toggle:()=>tm&&toggle(tm.id,t)}))})),
+              cardTags: s.cardId ? (s.txTags[s.cardId]||[]) : [],
+              openCardTagMenu:e=>{ const r=e.currentTarget.getBoundingClientRect(); this.setState({tagMenu:{id:s.cardId, x:r.left-120, y:r.bottom+4}}); }
+            }; })(),
+          ...(()=>{ const ph=s.payResult&&s.payResult.phase; const verb=({1:'Release',2:'Refuse',3:'Extend hold'})[s.payDecision]||''; const ML={passkey:'Passkey (phase 2)',totp:'Authenticator code',password:'Password',sms:'SMS code'};
+            const whyMap={payment:'Releasing or refusing a payment is external and cannot be undone',file:'Filing a report needs re-authentication (8.2)',approve:'Approvals need re-authentication (8.2)',break:'Breaking a lock needs re-authentication (8.2)'};
+            return {
+              isPayment: s.lb==='payment', demoPayment:()=>{ this.setState({screen:'cases', peekId:'C-9044', peekOpen:false}); this.openPayment(); }, openPayment:()=>this.openPayment(),
+              payOpts:[[1,'Release'],[2,'Refuse (return to sender)'],[3,'Extend hold']].map(([n,l])=>({n,label:l,cls:s.payDecision===n?'btn-neutral':'',pick:()=>this.setState({payDecision:n})})),
+              payIsExtend:s.payDecision===3, payIsRefuse:s.payDecision===2, payExtend:s.payExtend, onPayExtend:e=>this.setState({payExtend:e.target.value}),
+              payEvidence:s.payEvidence, onPayEvidence:e=>this.setState({payEvidence:e.target.value}),
+              payReason:s.payReason, onPayReason:e=>this.setState({payReason:e.target.value}),
+              payBlock:s.payBlock, togglePayBlock:()=>this.setState({payBlock:!s.payBlock}),
+              stepUpActive: !!s.lb && s.stepUp, stepUpWhy: whyMap[s.lb]||'',
+              stepMethods:['totp','passkey'].map(k=>({label:ML[k],cls:s.stepMethod===k?'btn-active':'',pick:()=>this.setState({stepMethod:k,stepCode:''})})),
+              smPasskey:s.stepMethod==='passkey', smCode:s.stepMethod!=='passkey',
+              stepPlaceholder: s.stepMethod==='password'?'Password':'6-digit code',
+              stepHint: s.stepMethod==='sms'?'Code sent to •••• 4417 · Resend in 30 s':s.stepMethod==='totp'?'From your authenticator app':'Your Jube password',
+              stepCode:s.stepCode, onStepCode:e=>this.setState({stepCode:e.target.value}), stepCodeShort: s.stepMethod==='password' ? s.stepCode.length<1 : s.stepCode.replace(/\D/g,'').length<6,
+              stepWindow: s.lb==='payment' ? '15 minutes for payment decisions' : '5 minutes',
+              verifyStep:()=>this.verifyStep(), cancelStep:()=>this.setState({stepUp:false}),
+              lbBodyCls: (s.stepUp || ph) ? 'opacity-40 pointer-events-none select-none' : '',
+              showPrimary: !s.stepUp && !ph, cancelLabel: ph ? 'Done' : 'Cancel',
+              payResultActive: s.lb==='payment' && !!ph, payIsTimeout: ph==='timeout', payIsConfirmed: ph==='confirmed',
+              payResultTitle: ph==='sent'?'Sending to core banking…':ph==='confirmed'?`${verb} confirmed`:'Outcome unknown',
+              paySteps: !ph ? [] : [
+                {icon:'✓',cls:'text-success',label:'Preview checked · case v6 unchanged since it opened',time:'08:53:38'},
+                ...(s.payDecision!==3 ? [{icon:'✓',cls:'text-success',label:`Re-authenticated · ${ML[s.stepVia||s.stepMethod]}`,time:'08:53:40'}] : []),
+                {icon:'✓',cls:'text-success',label:`${verb} sent to core banking (HTTP Endpoint “CBS payments”)`,time:'08:53:41'},
+                ph==='sent' ? {icon:'◷',cls:'text-warning',label:'Waiting for the payment system to confirm…',time:''}
+                : ph==='confirmed' ? {icon:'✓',cls:'text-success',label:'Confirmed by core banking · ref CBS-R-55107',time:'08:53:43'}
+                : {icon:'!',cls:'text-warning font-bold',label:'No answer within 30 s, so the outcome is unknown. A retry sends the same request with the same idempotency key, so the listener acts at most once. The hold diary keeps running and the case stays in Live money.',time:'08:54:11'},
+                ...(ph==='confirmed' ? [{icon:'✓',cls:'text-success',label: s.payDecision===3?'Hold diary moved · stays in Live money':'Hold diary stopped · lane Live money → Standard',time:'08:53:43'},{icon:'✓',cls:'text-success',label:'System note and CaseEvent written',time:'08:53:43'}] : [])
+              ],
+              checkPayStatus:()=>this.runPayment('ok'), replayTimeout:()=>this.runPayment('timeout')
+            }; })(),
+          openRisk:()=>{ this.setState({riskOpen:true}); window.scrollTo({top:0,behavior:'smooth'}); },
+          assessOpts:['Low','Medium','High'].map(a=>({label:a, cls:s.assess===a?'btn-active':'', pick:()=>{ this.setState({assess:a}); this.toastMsg(`Op: AssessRisk · your assessment “${a}” recorded beside the computed likelihood`, true); }})),
+          assessText: s.assess || 'none',
+          ...(()=>{ const rr = s.riskPop ? CASES.find(x=>x.id===s.riskPop.id) : null; return {
+            hasRiskPop: !!rr && scr==='cases',
+            riskPopSt: rr ? {left:Math.min(s.riskPop.x, window.innerWidth-340)+'px', top:s.riskPop.y+'px'} : {},
+            rp: rr ? {id:rr.id, lane:rr.lane, method:(RP[rr.id]||{}).method||'cold start', lik:`${rr.likBand} ${rr.lik}%`, imp:`${rr.impBand} (${rr.imp})`, urg: rr.lane==='Live money' ? `hold decides in ${rr.due}` : `${rr.dueKind.split(' · ')[0]} due ${rr.due}`, prio:`${rr.prio} = ln(1 + ${(rr.lik/100).toFixed(2)} × ${IMPW[rr.imp]}), scaled`, note:(RP[rr.id]||{}).note||'Open the case for the full breakdown.'} : {id:'',lane:'',method:'',lik:'',imp:'',urg:'',prio:'',note:''}
+          }; })(),
+          matrixOpen: s.matrixOpen, matrixArrow: s.matrixOpen?'▴':'▾', toggleMatrix:()=>this.setState({matrixOpen:!s.matrixOpen}),
+          matrixCols:[1,2,3,4,5].map(i=>IMPB[i]),
+          matrix:['Very likely','Likely','Possible','Unlikely'].map(b=>({label:b, cells:[1,2,3,4,5].map(i=>{const n=CASES.filter(x=>x.likBand===b&&x.imp===i).length; return {n:n||'·', cls:n?((b==='Very likely'||b==='Likely')&&i>=4?'bg-error/20 font-semibold':'bg-base-200 font-semibold'):'opacity-30'};})}))
+        };
+      })(),
+      blockNode: ()=>this.toastMsg('Block identifier opens a lightbox (outbound · typed reason) · not mocked yet'),
+      lbOpen: !!s.lb, isBreak:s.lb==='break', isFile:s.lb==='file', isApprover:s.lb==='approve', isFileOrApprove:s.lb==='file'||s.lb==='approve',
+      closeLb: ()=>this.setState({lb:null}),
+      breakCase: CASES.find(c=>c.id===s.lbCase) || CASES[1],
+      lockReason:s.lockReason, onLockReason:e=>this.setState({lockReason:e.target.value}),
+      fileReason:s.fileReason, onFileReason:e=>this.setState({fileReason:e.target.value}),
+      approveReason:s.approveReason, onApproveReason:e=>this.setState({approveReason:e.target.value}),
+      approved:s.approved, approvalRequested:s.approvalRequested, needsApproval:!s.approved, canRequest:!s.approved && !s.approvalRequested,
+      approvalText: s.approvalRequested ? 'Approval requested from M. Karim · waiting' : 'MLRO approval required before filing (maker-checker)',
+      requestApproval: ()=>{ this.setState({approvalRequested:true}); this.toastMsg('Approval requested · in M. Karim\u2019s Inbox'); },
+      rejectDisabled: !s.approveReason.trim(),
+      rejectApproval: ()=>{ this.setState({lb:null, approvalRequested:false}); this.toastMsg('M. Karim rejected: \u201c'+s.approveReason.trim()+'\u201d · returned to A. Vance'); },
+      lbTitle: s.lb==='payment' ? 'Decide held payment ARC-771240 · C-9044' : s.lb==='break' ? `Break lock on ${(CASES.find(c=>c.id===s.lbCase)||CASES[1]).id}` : s.lb==='file' ? 'File STR for C-9041' : 'Approve: file STR for C-9041',
+      lbBadge: s.lb==='payment' ? 'outbound · irreversible · typed reason' : s.lb==='approve' ? 'maker-checker' : 'irreversible · typed reason',
+      lbBadgeCls: s.lb==='approve' ? 'badge-info badge-soft' : 'badge-warning badge-soft',
+      lbConsequences: s.lb==='payment' ? (!s.payDecision ? ['Choose Release, Refuse or Extend hold to see exactly what will happen'] : s.payDecision===1 ? [
+          'Core banking: release ARC-771240 (HTTP Endpoint “CBS payments”, idempotency key op-7f21…)',
+          'EGP 12,300 leaves for ACC-02 Alpha LLC · Jube cannot recall it',
+          'Hold diary stops · C-9044 leaves the Live money lane for Standard',
+          'System note and CaseEvent written · the decision cites case risk assessment #6',
+          'No customer notification (none configured for release)'
+        ] : s.payDecision===2 ? [
+          'Core banking: refuse ARC-771240 and return EGP 12,300 to ACC-778 Osei (HTTP Endpoint “CBS payments”, idempotency key op-7f21…)',
+          ...(s.payBlock ? ['Proposal: add ACC-02 to List “Blocked beneficiaries” · goes to the Retail cards model owner as a change-set line · no effect until approved and published'] : []),
+          'Hold diary stops · C-9044 leaves the Live money lane for Standard',
+          'Customer notification “Payment returned” is tipping-off restricted: held until the MLRO clears it',
+          'System note and CaseEvent written · the decision cites case risk assessment #6'
+        ] : [
+          `Core banking: extend the hold on ARC-771240 by ${s.payExtend.replace('+','')} · new expiry ${({'+2 h':'16:53','+4 h':'18:53','+12 h':'02:53 (25 Sep)'})[s.payExtend]} UTC+2`,
+          'Hold diary moves to the new expiry · the case stays in the Live money lane',
+          'Within the pack’s maximum hold · execute as soon as the doubt is resolved, not at the end of the window',
+          'CaseEvent written · no step-up needed, because the money has not moved'
+        ]) : s.lb==='break' ? [
+          'Lock → A. Vance (you); R. Lund\u2019s lock ends now',
+          'R. Lund gets an Inbox notice with your reason',
+          'Anything R. Lund has open in a lightbox is refused on submit (case changed)',
+          'Assignment stays with R. Lund',
+          'CaseEvent BreakLock written with your reason'
+        ] : [
+          'STR-2026-044 submitted to EG FIU via goAML · external, cannot be recalled',
+          'STR diary stops · report status → Submitted, then Acknowledged or Rejected',
+          'Tipping-off restriction on ACC-441: customer notifications blocked',
+          'Tag \u201cReported\u201d written to 3 activations',
+          'FIU reference recorded when the acknowledgement arrives'
+        ],
+      lbVerb: s.lb==='payment' ? ({0:'Choose a decision',1:'Release payment',2:'Refuse payment',3:'Extend hold'})[s.payDecision] : s.lb==='break' ? 'Break lock' : s.lb==='file' ? 'File STR' : 'Approve',
+      lbDisabled: s.lb==='payment' ? (!s.payDecision || s.payReason.trim().length<10) : s.lb==='break' ? s.lockReason.trim().length<10 : s.lb==='file' ? (!s.approved || !s.fileReason.trim()) : false,
+      lbSubmit: ()=>this.lbSubmit(),
+      lbFoot: s.lb==='payment' ? 'preview c4e8… · case v6 · HTTP Endpoint CBS payments' : s.lb==='break' ? 'preview 8d04… · case v9 · permission: Break lock' : 'preview 51af… · case v14 · config snapshot 2b90…',
+      hasToast:!!s.toast, toast:s.toast||{msg:'',undo:false}, undoToast:()=>this.setState({toast:null})
+    };
+  }
+}
+</script>
+</body>
+</html>

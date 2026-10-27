@@ -105,8 +105,8 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             var trainedModelId = result.TrainedModelId!.Value;
             var versionId = result.TrainedModelVersionId!.Value;
 
-            var modelsRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
-            var versionsRepository = new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
+            var modelsRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var versionsRepository = new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
 
             await modelsRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await modelsRepository.SetActiveAsync(trainedModelId, true);
@@ -125,9 +125,9 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
                     recall.AsFunction());
             });
 
-            var variableRows = SyncAdvancedAnalyticsInstancesExtensions.ParseVariableRows(version!.VariablesJson);
+            var variableRows = SyncAskJoobyAnalyticsInstancesExtensions.ParseVariableRows(version!.VariablesJson);
 
-            var advancedModel = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
+            var advancedModel = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
                 model, version, variableRows);
 
             advancedModel.Should().NotBeNull("the same sync path the engine uses must build the model cleanly");

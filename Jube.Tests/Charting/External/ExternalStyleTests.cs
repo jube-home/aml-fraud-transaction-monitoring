@@ -36,7 +36,8 @@ namespace Jube.Test.Charting.External
 
         private static readonly HashSet<string> allowedAttributes =
         [
-            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "role",
+            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "data-node", "data-from",
+            "data-to", "role",
             "aria-labelledby", "aria-label", "id", "x", "y", "x1", "y1", "x2", "y2", "d", "transform", "rx", "r", "cx",
             "cy", "style", "tabindex", "stroke-width"
         ];

@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,12 +24,15 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.CaseWorkflowMacro
 {
     [FormEndpoint("CaseWorkflowMacro")]
+    [CaseSqlEditor(Sql = nameof(Sql))]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(CaseWorkflowId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Script", Order = 20)]
     [FormGroup("HttpEndpoint", Order = 30, Collapsed = true)]
     [FormGroup("Notification", Order = 40, Collapsed = true)]
+    [FormGroup("Sql", Order = 5, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     public class CaseWorkflowMacroDto : IUpdated, IActivatable, ILockable
     {
@@ -37,7 +41,7 @@ namespace Jube.Dto.Repository.CaseWorkflowMacro
         public int CaseWorkflowId { get; set; }
 
         [Description("Display name of the Macro, shown as the tool-tip of its button on the Case page.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Close as false positive")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -55,7 +59,7 @@ namespace Jube.Dto.Repository.CaseWorkflowMacro
         public bool Locked { get; set; }
 
         [Description("JavaScript evaluated on the Case page when the Macro's button is clicked. Required.")]
-        [FormField(Group = "Script", Order = 10, Widget = "code-editor")]
+        [FormField(Group = "Script", Order = 10, Widget = "code")]
         public string? Javascript { get; set; }
 
         [Description("Image shown on the Macro's button; the image's name is also its tool-tip.")]
@@ -67,7 +71,7 @@ namespace Jube.Dto.Repository.CaseWorkflowMacro
         public bool EnableHttpEndpoint { get; set; }
 
         [Description("Webhook URL to call. Required when EnableHttpEndpoint is true.")]
-        [FormField(Group = "HttpEndpoint", Order = 20)]
+        [FormField(Group = "HttpEndpoint", Order = 20, Placeholder = "https://example.com/hooks/case")]
         [VisibleWhen(nameof(EnableHttpEndpoint), true)]
         [RequiredWhen(nameof(EnableHttpEndpoint), true)]
         public string? HttpEndpoint { get; set; }
@@ -76,6 +80,8 @@ namespace Jube.Dto.Repository.CaseWorkflowMacro
                      "EnableHttpEndpoint is true.")]
         [FormField(Group = "HttpEndpoint", Order = 30, Widget = "radio")]
         [VisibleWhen(nameof(EnableHttpEndpoint), true)]
+        [Options(typeof(HttpEndpointType))]
+        [NewDefault(1)]
         public int HttpEndpointTypeId { get; set; }
 
         [Description("When true, a notification is dispatched when the Macro is invoked.")]
@@ -85,24 +91,34 @@ namespace Jube.Dto.Repository.CaseWorkflowMacro
         [Description("Notification channel type. Required when EnableNotification is true.")]
         [FormField(Group = "Notification", Order = 20, Widget = "radio")]
         [VisibleWhen(nameof(EnableNotification), true)]
+        [Options(typeof(NotificationType))]
+        [NewDefault(1)]
         public int NotificationTypeId { get; set; }
 
         [Description("Notification destination (e.g. an email address). Required when EnableNotification is " +
                      "true.")]
-        [FormField(Group = "Notification", Order = 30)]
+        [FormField(Group = "Notification", Order = 30, Placeholder = "name@example.com")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [RequiredWhen(nameof(EnableNotification), true)]
         public string? NotificationDestination { get; set; }
 
         [Description("Notification subject line.")]
-        [FormField(Group = "Notification", Order = 40)]
+        [FormField(Group = "Notification", Order = 40, Placeholder = "Case [@CaseKey] needs review")]
         [VisibleWhen(nameof(EnableNotification), true)]
         public string? NotificationSubject { get; set; }
 
         [Description("Notification body. Supports token substitution from the Macro's Case.")]
-        [FormField(Group = "Notification", Order = 50, Widget = "textarea")]
+        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@AccountId].")]
         [VisibleWhen(nameof(EnableNotification), true)]
         public string? NotificationBody { get; set; }
+
+        [Description("Optional. A single SELECT run for a case, read only against the tenant's own rows, whose rows " +
+                     "the layout and the notification and HTTP templates are drawn from, as rows, with tokens such " +
+                     "as [@ rows[0].Name @]. It may use the bound parameters @Id, the id of the case, and " +
+                     "@CaseKeyValue. When empty, the earlier behaviour of drawing from the case's stored payload " +
+                     "applies. Authoring SQL needs its own permission.")]
+        [FormField(Group = "Sql", Order = 10, Widget = "code")]
+        public string? Sql { get; set; }
 
         [Description("Server-assigned globally-unique identifier of this Macro, referenced by Case Workflow " +
                      "Macro Roles. Read-only.")]

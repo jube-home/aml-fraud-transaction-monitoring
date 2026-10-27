@@ -781,7 +781,7 @@ function SetOutCase(data) {
 
         Status = data.caseWorkflowStatusGuid;
 
-        $.get("../api/CaseWorkflowStatus/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+        $.get("../api/CaseWorkflowStatus/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
             function (data) {
                 $.each(data,
                     function (i, value) {
@@ -801,7 +801,7 @@ function SetOutCase(data) {
         ResponsePayload = data.formattedPayload;
 
         if (Actions === undefined) {
-            $.get("../api/CaseWorkflowPriority/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+            $.get("../api/CaseWorkflowPriority/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                 function (data) {
                     Priorities = data;
 
@@ -813,7 +813,7 @@ function SetOutCase(data) {
                             })
                         });
 
-                    $.get("../api/CaseWorkflowAction/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+                    $.get("../api/CaseWorkflowAction/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Actions = data;
 
@@ -833,7 +833,7 @@ function SetOutCase(data) {
         }
 
         if (Macros === undefined) {
-            $.get("../api/CaseWorkflowMacro/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+            $.get("../api/CaseWorkflowMacro/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                 function (data) {
                     Macros = data;
                     for (let i = 0; i < data.length; i++) {
@@ -853,7 +853,7 @@ function SetOutCase(data) {
                 });
         }
 
-        $.get("../api/CaseWorkflowXPath/ByCasesWorkflowGuidActiveOnlyDrill/" + CaseWorkflowGuid,
+        $.get("../api/CaseWorkflowXPath/ByCaseWorkflowGuidActiveOnlyDrill/" + CaseWorkflowGuid,
             function (data) {
                 Drills = data;
             });
@@ -1089,7 +1089,7 @@ function SetOutCase(data) {
 
                 const menuForms = $("#CaseFormsMenu").data("kendoMenu");
                 if (Forms === undefined) {
-                    $.get("../api/CaseWorkflowForm/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+                    $.get("../api/CaseWorkflowForm/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Forms = data;
 
@@ -1129,7 +1129,7 @@ function SetOutCase(data) {
 
                 const menuDisplays = $("#CaseDisplaysMenu").data("kendoMenu");
                 if (Displays === undefined) {
-                    $.get("../api/CaseWorkflowDisplay/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
+                    $.get("../api/CaseWorkflowDisplay/ByCaseWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Displays = data;
                             $("#CaseDisplaysMenu>li").each(function () {
@@ -1185,12 +1185,6 @@ function SetOutCase(data) {
                 }
                 DisplayMenu('Default');
             });
-
-        if (data.enableVisualisation) {
-            ShowParams = false;
-            VisualisationRegistryGuid = data.visualisationRegistryGuid;
-            InitVisualisation(true);
-        }
     }
 }
 
@@ -1737,7 +1731,7 @@ function generateColumns(gridData) {
     let savedTagWidth = null;
 
     $.ajax({
-        url: "../api/SessionCaseJournal/ByCasesWorkflowGuid/" + CaseWorkflowGuid,
+        url: "../api/SessionCaseJournal/ByCaseWorkflowGuid/" + CaseWorkflowGuid,
         type: 'GET',
         async: false,
         cache: false,

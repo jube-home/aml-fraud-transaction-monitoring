@@ -7,44 +7,50 @@ grand_parent: Configuration
 ---
 
 # Visualisation Recall
-Jube provides a rudimentary reporting tool that exists to execute SQL against the database and presenting as either a grid or visualisation.  The philosophy is to make the creation of reports quick given a rudimentary understanding of SQL and the Kendo JQuery charting library (passed as JSON like Javascript fragments).
 
-Visualisations are available for recall via the Visualisation Directory or the Case page.  There are two default reports available respectively.
+Jube provides a rudimentary reporting tool that exists to execute SQL against the database and present the result as a
+grid, chart, map or template. The philosophy is to make the creation of reports quick given a rudimentary understanding
+of SQL, with the presentation drawn by Jube rather than assembled by hand.
 
-To view a report in the Visualisation Directory, navigate to the Visualisation page in the parent menu:
+A Visualisation is a canvas of tiles, each of which is a Datasource. The Visualisation Registry sets the number of
+columns, the width of each column and the height of each row, and every Datasource says how many columns and rows its
+tile spans and in which order the tiles come. On a narrow screen the tiles stack one above the other.
 
-![Image](LocationOfVisualisationDirectory.png)
+## Opening a Visualisation
 
-On click, a list of all Visualisations Registry entries toggled to display in the Visualisation Directory will be shown:
+Visualisation Registry entries toggled to show in the Visualisation Directory are listed there, under Visualisation in the menu for users allowed to recall Visualisations. Choosing one opens it at its own address, which can be bookmarked or shared.
+Only active Visualisations and active Datasources are shown, and only those the signed in user's role has been allocated.
 
-![Image](ListInVisualisationDirectory.png)
+## Parameters
 
-Clicking on the link, in this case ExampleVisualisation, will expose the Visualisation parameters:
+When the Visualisation Registry has active Parameters, they are shown as a form above the tiles, filled with their default
+values:
 
-![Image](ParametersExposed.png)
+| Data type | Input                    | Note                                                                                       |
+|-----------|--------------------------|--------------------------------------------------------------------------------------------|
+| Text      | A text box               |                                                                                            |
+| Integer   | A number box             | Whole numbers only                                                                         |
+| Decimal   | A number box             |                                                                                            |
+| Date time | A date and time picker   | The default is a number of days, which becomes that many days before now                   |
+| Flag      | A switch                 | The default is 1 or true for on                                                            |
 
-Complete the parameters and click Run,  in this case using the defaults:
+A Parameter can be given in the address to start with a value other than its default, by adding its name and the value to the address as in `?Name=West`.
 
-![Image](ExampleVisualisationCharts.png)
+A Parameter marked as required must not be left blank. Choose **Run** to draw the tiles. A Visualisation with no
+Parameters runs as soon as it opens.
 
-There are two tiles, which are referred to as datasource's, which exist inside a canvas of a set width and height.  The use of datasource's in this manner allow for the creation of dashboards.
+Each tile is requested separately with the values entered, so the tiles are drawn as each completes, and a tile that
+fails, for example because a value is not a whole number or the SQL is refused, says why in its own place while the
+others are drawn. Every execution is logged, with its parameter values and how long it took.
 
-In the event that the Visualisation is recalled instead from the case management page, parameters are not exposed, instead the report will recall matching parameters to the case payload.  A Visualisation is allocated to a Case Workflow in the Case Workflow configuration:
+## Dashboards
 
-![Image](LocationOfPairingOfCaseVisualisation.png)
+There are as many tiles as there are active Datasources, which allows for the creation of dashboards. Charts and maps
+fill their tile, and where a Datasource also shows a grid, the grid appears beneath its chart.
 
-A Visualisation does not have to be available to the Visualisation Directory to be available to the Cases page, except the availability of parameters on a like for like basis (matching those between Cases Workflow XPath and the Visualisation Parameters) is required.
+## Case Visualisation
 
-To expose an example report embedded in the Case page, navigate to a Case:
-
-![Image](NavigateToCase.png)
-
-Note the Case Visualisation tab,  which will reference the report that is configured alongside the Case Workflow:
-
-![Image](LocationOfCaseVisualisation.png)
-
-The loading of the case has the same effect as clicking on the report via the Visualisation directory,  except,  it will not require manual input of the parameters,  as these will be matched from the case payload.  Clicking on the tab will expose the visualisation:
-
-![Image](ExposedCaseVisualisation.png)
-
-The practical use of a Case Visualisation is to produce a visual consolidation of the case, oftentimes referred to a dashboard. 
+A Visualisation may be allocated to a Case Workflow, to produce a visual consolidation of a case, which is oftentimes
+referred to as a dashboard. The Parameters of such a Visualisation are matched from the case payload instead of being
+entered. The Case page does not currently show the Visualisation panel; it returns with the next version of case
+management.

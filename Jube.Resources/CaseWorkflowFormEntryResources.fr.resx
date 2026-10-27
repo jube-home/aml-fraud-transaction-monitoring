@@ -69,4 +69,43 @@
     <data name="PayloadTooLarge" xml:space="preserve">
     <value>La charge utile du formulaire dépasse la taille autorisée : au plus {0} champs, noms de champ jusqu'à {1} caractères et valeurs jusqu'à {2} caractères.</value>
   </data>
+    <data name="FieldUnknown" xml:space="preserve">
+    <value>Ce champ ne fait pas partie du formulaire.</value>
+  </data>
+    <data name="FieldType" xml:space="preserve">
+    <value>Cette valeur n'est pas valide pour le type du champ.</value>
+  </data>
+    <data name="FieldOption" xml:space="preserve">
+    <value>Cette valeur ne fait pas partie des choix proposés.</value>
+  </data>
+    <data name="FieldLength" xml:space="preserve">
+    <value>Cette valeur dépasse la longueur autorisée par le champ.</value>
+  </data>
+    <data name="FieldRequired" xml:space="preserve">
+    <value>Une valeur est requise.</value>
+  </data>
+    <data name="FieldRange" xml:space="preserve">
+    <value>La valeur est hors de la plage autorisée.</value>
+  </data>
+    <data name="FieldPattern" xml:space="preserve">
+    <value>La valeur ne correspond pas au motif requis.</value>
+  </data>
+    <data name="FieldCompare" xml:space="preserve">
+    <value>La valeur ne concorde pas avec le champ auquel elle est comparée.</value>
+  </data>
+    <data name="FieldList" xml:space="preserve">
+    <value>La valeur ne figure pas dans la liste.</value>
+  </data>
+    <data name="FieldDictionary" xml:space="preserve">
+    <value>La valeur n'est pas une clé connue.</value>
+  </data>
+    <data name="FieldSql" xml:space="preserve">
+    <value>La valeur n'a pas passé la vérification.</value>
+  </data>
+    <data name="FieldSqlFailed" xml:space="preserve">
+    <value>La vérification n'a pas pu être exécutée.</value>
+  </data>
+    <data name="FormSqlFailed" xml:space="preserve">
+    <value>Les données dont ce formulaire est tiré n'ont pas pu être chargées ; il ne peut donc pas être soumis.</value>
+  </data>
 </root>

@@ -143,8 +143,7 @@ namespace Jube.Data.Repository
             return await dbContext.Case.Where(w
                 => (w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
                     !tenantRegistryId.HasValue)
-                   && (w.ClosedStatusId == 0 ||
-                       w.ClosedStatusId == 1 ||
+                   && (w.ClosedStatusId == 1 ||
                        w.ClosedStatusId == 2 ||
                        w.ClosedStatusId == 4)
                    && DateTime.UtcNow >= w.DiaryDate

@@ -36,5 +36,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(7)] public int? Notification { get; set; }
         [Column] [Nullable] [Key(8)] public string Instance { get; set; }
         [Column] [Nullable] [Key(9)] public int? AsynchronousImplicitAsyncOverdue { get; set; }
+        [Column] [Nullable] [Key(10)] public int? Webhook { get; set; }
     }
 }

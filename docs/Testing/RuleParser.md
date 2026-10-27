@@ -254,6 +254,20 @@ rule text.
 | `AHostileRuleNeverCompilesRegardlessOfSpelling` | Theory | A hostile rule never compiles regardless of spelling. |
 | `AHostileRuleIsAlsoRefusedAsAnActivationRule`   | Theory | A hostile rule is also refused as an activation rule. |
 
+### RuleParseErrorColumnTests
+
+`Jube.Test.RuleParser.RuleParseErrorColumnTests` — 7 tests. Category: Unit.
+
+| Test                                                                              | Kind   | Verifies                                                                                        |
+|-----------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `AnUnknownListIsLocatedOnTheNameAsTyped`                                          | Fact   | An unknown list is located on the name as typed.                                                |
+| `ARestrictedTokenAfterARewrittenFieldIsStillLocatedOnTheTypedText`                | Fact   | A restricted token after a rewritten field is still located on the typed text.                  |
+| `ARestrictedTokenOnALaterLineIsLocatedOnItsOwnLine`                               | Fact   | A restricted token on a later line is located on its own line.                                  |
+| `ACompilerErrorAfterARewrittenFieldCoversTheTypedMemberAccessNotTheTranslatedOne` | Fact   | A compiler error after a rewritten field covers the typed member access not the translated one. |
+| `AnUnknownWordOnPlainTextIsLocatedOnTheExactToken`                                | Fact   | An unknown word on plain text is located on the exact token.                                    |
+| `ACompilerErrorOnPlainTextIsLocatedOnTheOffendingToken`                           | Fact   | A compiler error on plain text is located on the offending token.                               |
+| `ADiscardedExpressionIsLocatedOnTheTypedStatement`                                | Fact   | A discarded expression is located on the typed statement.                                       |
+
 ### RuleParseTests
 
 `Jube.Test.RuleParser.RuleParseTests` — 13 tests. Category: Unit.

@@ -45,7 +45,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            var instances = new AdvancedAnalyticsInstanceRepository(runner.DbContext, tenant, user);
+            var instances = new AskJoobyAnalyticsInstanceRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
 
             cache = new AdvancedAnalyticsCacheRepository(runner.DbContext, tenant, user,
@@ -159,7 +159,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     ModelKindId = AdvancedAnalyticsModelKind.TreeAugmentedNaiveBayesClassifierPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -172,7 +172,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 op.Created();
 
                 runner.Info(
-                    "AdvancedAnalyticsTrainedModel.SubmitTreeAugmentedNaiveBayesClassifierTraining: run " +
+                    "AskJoobyAnalyticsTrainedModel.SubmitTreeAugmentedNaiveBayesClassifierTraining: run " +
                     $"{run.Id} queued input={input.Kind} rows={rows} user={runner.UserName}");
 
                 return new AdvancedAnalyticsTrainingSubmissionDto

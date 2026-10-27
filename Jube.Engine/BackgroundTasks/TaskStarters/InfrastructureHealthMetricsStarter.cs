@@ -278,6 +278,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     CaseCreation = context.ConcurrentQueues.PendingCases.Count,
                     Tagging = context.ConcurrentQueues.PendingTagging.Count,
                     Notification = context.ConcurrentQueues.PendingNotifications.Count,
+                    Webhook = context.ConcurrentQueues.PendingWebhooks.Count,
                     CreatedDate = createdDate,
                     Instance = instance,
                     AsynchronousImplicitAsyncOverdue = context.Services.ImplicitAsyncInvocationTracker.PendingCount

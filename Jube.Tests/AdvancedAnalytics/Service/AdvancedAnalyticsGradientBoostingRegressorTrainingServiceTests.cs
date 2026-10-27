@@ -78,7 +78,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var persistedRun = await Db.AdvancedAnalyticsTrainingRun.FirstAsync(w => w.Id == submission.RunId);
             persistedRun.StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
 
-            var version = await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == executed.Version.Id);
+            var version = await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == executed.Version.Id);
             var persistedRecall = GradientBoostingRegressorRecall.FromSnapshot(version.ModelJson);
 
             var direct = GradientBoostingRegressorTrainer.Train(data.Inputs, data.Outputs, data.Names,
@@ -96,7 +96,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             }
 
             var trainedModelId = executed.Model!.Id;
-            var model = await Db.AdvancedAnalyticsTrainedModel.FirstAsync(w => w.Id == trainedModelId);
+            var model = await Db.AskJoobyAnalyticsTrainedModel.FirstAsync(w => w.Id == trainedModelId);
             model.KindId.Should().Be(AdvancedAnalyticsKind.Regressor);
             model.ActiveVersionId.Should().BeNull();
         }

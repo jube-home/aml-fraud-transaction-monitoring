@@ -23,7 +23,7 @@ namespace Jube.Test.AskJooby
         [Theory]
         [InlineData("PostgresActivityList", "Listing Postgres activity")]
         [InlineData("EntityAnalysisModelTagCreate", "Creating an entity analysis model tag")]
-        [InlineData("AdvancedAnalyticsInstanceValidate", "Validating an advanced analytics instance")]
+        [InlineData("AskJoobyAnalyticsInstanceValidate", "Validating an Ask Jooby analytics instance")]
         [InlineData("EntityAnalysisModelDelete", "Deleting an entity analysis model")]
         [InlineData("EntityAnalysisModelCount", "Counting entity analysis model")]
         [InlineData("EntityAnalysisModelFilterFields", "Filtering entity analysis model fields")]
@@ -88,7 +88,7 @@ namespace Jube.Test.AskJooby
         }
 
         [Theory]
-        [InlineData("AdvancedAnalyticsModelCompareVersions", "Comparing advanced analytics model versions")]
+        [InlineData("AskJoobyAnalyticsModelCompareVersions", "Comparing Ask Jooby analytics model versions")]
         [InlineData("AskJoobyConversationGetMessages", "Fetching Ask Jooby conversation messages")]
         [InlineData("IconsGet", "Fetching icons")]
         [InlineData("CaseWorkflowStatusGet", "Fetching a case workflow status")]

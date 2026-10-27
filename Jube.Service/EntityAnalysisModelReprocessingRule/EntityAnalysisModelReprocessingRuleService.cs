@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
@@ -886,6 +887,12 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

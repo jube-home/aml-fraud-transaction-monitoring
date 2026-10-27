@@ -30,9 +30,9 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             ["Payload.Z", "Abstraction.A", "TtlCounter.M"],
             [1, 5, 3]);
 
-        private static AdvancedAnalyticsInstance Instance(byte responsePayload = 0, byte reportTable = 0)
+        private static AskJoobyAnalyticsInstance Instance(byte responsePayload = 0, byte reportTable = 0)
         {
-            return new AdvancedAnalyticsInstance
+            return new AskJoobyAnalyticsInstance
             {
                 Id = 4,
                 Guid = Guid.NewGuid(),
@@ -43,9 +43,9 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             };
         }
 
-        private static AdvancedAnalyticsTrainedModel Trained(string? name = "Fraud Model")
+        private static AskJoobyAnalyticsTrainedModel Trained(string? name = "Fraud Model")
         {
-            return new AdvancedAnalyticsTrainedModel
+            return new AskJoobyAnalyticsTrainedModel
             {
                 Id = 12,
                 Guid = Guid.Parse("11111111-2222-3333-4444-555555555555"),
@@ -55,10 +55,10 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             };
         }
 
-        private static AdvancedAnalyticsTrainedModelVersion Version(string? modelJson = null,
+        private static AskJoobyAnalyticsTrainedModelVersion Version(string? modelJson = null,
             string? variablesJson = null)
         {
-            return new AdvancedAnalyticsTrainedModelVersion
+            return new AskJoobyAnalyticsTrainedModelVersion
             {
                 Id = 99,
                 VersionNumber = 1,
@@ -70,13 +70,13 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [Fact]
         public void IdentityGuidKindAndVersionComeFromTheRecords()
         {
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version());
 
             model.Should().NotBeNull();
             model!.Id.Should().Be(12);
             model.Guid.Should().Be(Guid.Parse("11111111-2222-3333-4444-555555555555"));
-            model.AdvancedAnalyticsInstanceId.Should().Be(4);
+            model.AskJoobyAnalyticsInstanceId.Should().Be(4);
             model.VersionId.Should().Be(99);
             model.Kind.Should().Be("LogisticRegressionPipeline");
             model.Recall.Should().NotBeNull();
@@ -85,11 +85,11 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [Fact]
         public void SpacesInTheNameBecomeUnderscoresAndANullNameDefaults()
         {
-            SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained("A B  C"),
+            SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained("A B  C"),
                     Version())!
                 .Name.Should().Be("A_B__C");
 
-            SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(null), Version())!
+            SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(null), Version())!
                 .Name.Should().Be("AdvancedAnalytics_12");
         }
 
@@ -99,7 +99,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [InlineData((byte)2, false)]
         public void ResponsePayloadAndReportTableAreTrueOnlyForOne(byte value, bool expected)
         {
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(value, value),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(value, value),
                 Trained(), Version())!;
 
             model.ResponsePayload.Should().Be(expected);
@@ -109,7 +109,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [Fact]
         public void VariablesKeepTheStoredOrderWithTheirProcessingTypes()
         {
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version())!;
 
             model.VariablesInOrder.Select(s => s.Name).Should().Equal("Payload.Z", "Abstraction.A", "TtlCounter.M");
@@ -119,7 +119,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [Fact]
         public void TheBuiltRecallScoresLikeTheSnapshot()
         {
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version())!;
 
             double[] row = [0.1, 0.2, 0.3];
@@ -136,7 +136,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
                 new() { Name = "TtlCounter.M", ProcessingTypeId = 2 }
             };
 
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version(), rows)!;
 
             model.VariablesInOrder.Should().OnlyContain(o => o.ProcessingTypeId == 2);
@@ -152,7 +152,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         {
             var errors = new List<Exception>();
 
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version(modelJson), errors.Add);
 
             model.Should().BeNull();
@@ -165,7 +165,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var errors = new List<Exception>();
 
             var models = new[] { Version("garbage"), Version(), Version("{\"kind\":\"Nope\"}") }
-                .Select(v => SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+                .Select(v => SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                     v,
                     errors.Add))
                 .ToList();
@@ -188,7 +188,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var version = Version();
             version.VariablesJson = variablesJson!;
 
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 version, errors.Add);
 
             model.Should().BeNull();
@@ -201,7 +201,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
             var version = Version(variablesJson:
                 "[{\"Name\":\"Payload.Z\",\"ProcessingTypeId\":1},{\"NAME\":\"Abstraction.A\",\"processingtypeid\":5},{\"name\":\"TtlCounter.M\",\"processingTypeId\":3}]");
 
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 version);
 
             model.Should().NotBeNull();
@@ -210,7 +210,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
         [Fact]
         public void AVariablesJsonWithNoTransformationIdPropertyDefaultsToNoneAndRecallsIdentically()
         {
-            var withTransformProperty = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(
+            var withTransformProperty = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(
                 Instance(), Trained(), Version())!;
 
             withTransformProperty.VariablesInOrder.Should()
@@ -235,7 +235,7 @@ namespace Jube.Test.AdvancedAnalytics.Engine
                 ],
                 ["{\"offset\":0}", null, "{\"center\":1,\"scale\":2}"]);
 
-            var model = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
+            var model = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(Instance(), Trained(),
                 Version(variablesJson: variablesJson))!;
 
             model.VariablesInOrder[0].TransformationId.Should().Be(VariableTransformationKind.Log);

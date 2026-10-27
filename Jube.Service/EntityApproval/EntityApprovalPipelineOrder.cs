@@ -38,8 +38,9 @@ namespace Jube.Service.EntityApproval
             EntityApprovalKind.EntityAnalysisModelAbstractionRule,
             EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
             EntityApprovalKind.ExhaustiveSearchInstance,
-            EntityApprovalKind.AdvancedAnalyticsInstance,
+            EntityApprovalKind.AskJoobyAnalyticsInstance,
             EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
+            EntityApprovalKind.EntityAnalysisModelResponseElevationRange,
             EntityApprovalKind.EntityAnalysisModelActivationRule,
             EntityApprovalKind.EntityAnalysisModelTag
         ];

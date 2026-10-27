@@ -13,7 +13,6 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.AskJooby.Security;
 using Jube.Data.Context;
 using Jube.Service.Exceptions.AskJoobyConversation;
 using Jube.Service.Security;
@@ -25,7 +24,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Jube.App.Pages
 {
-    using AskJoobyPermissions = AskJoobyPermissions;
     using NotAuthenticatedException = NotAuthenticatedException;
     using PermissionValidation = PermissionValidation;
 
@@ -36,7 +34,6 @@ namespace Jube.App.Pages
         IHttpContextAccessor httpContextAccessor)
         : PageModel
     {
-        private static readonly int[] permissions = [AskJoobyPermissions.Access];
         public bool IsLandlord { get; private set; }
 
         public async Task<ActionResult> OnGetAsync(CancellationToken token)
@@ -56,7 +53,7 @@ namespace Jube.App.Pages
                 var permissionValidation = await PermissionValidation.CreateAsync(dbContext, userName, log, token)
                     .ConfigureAwait(false);
 
-                if (!permissionValidation.Validate(permissions))
+                if (!permissionValidation.ActiveUser)
                 {
                     return Forbid();
                 }

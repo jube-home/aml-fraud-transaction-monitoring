@@ -25,5 +25,6 @@ namespace Jube.Dto.Forms
         public string ValueField { get; init; } = "guid";
         public string? ParentField { get; init; }
         public bool AllowEmpty { get; init; }
+        public string? UpperField { get; init; }
     }
 }

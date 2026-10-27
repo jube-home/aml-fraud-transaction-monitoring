@@ -54,6 +54,11 @@ namespace Jube.App.Code
             get { return permissionValidationDto.Landlord; }
         }
 
+        public bool ActiveUser
+        {
+            get { return permissionValidationDto.ActiveUser; }
+        }
+
         public bool Validate(int[] testPermissionSpecifications)
         {
             return testPermissionSpecifications.Any(testPermissionSpecification

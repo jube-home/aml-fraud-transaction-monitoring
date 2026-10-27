@@ -50,6 +50,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             return new ExcludePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 Name = dto.Name,
                 Active = (byte)(dto.Active ? 1 : 0),

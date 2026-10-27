@@ -17,19 +17,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Case;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Options;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
+using Jube.Engine.CaseEscalation;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
 using Jube.Engine.Observability.Models;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Jube.Data.Query.GetExistingCasePriorityQuery;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
@@ -72,6 +71,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                     EntityAnalysisModelInstanceEntryGuid = createCase.EntityAnalysisModelInstanceEntryGuid,
                     CaseWorkflowGuid = createCase.CaseWorkflowGuid,
                     CaseWorkflowStatusGuid = createCase.CaseWorkflowStatusGuid,
+                    EntityAnalysisModelActivationRuleGuid = createCase.EntityAnalysisModelActivationRuleGuid,
                     CaseKey = createCase.CaseKey,
                     CaseKeyValue = createCase.CaseKeyValue,
                     Locked = 0,
@@ -144,6 +144,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                             .ConfigureAwait(false);
 
                     await repositoryCase.InsertAsync(model, token).ConfigureAwait(false);
+
+                    await new CaseStatusTransitionRepository(dbContext).EnterAsync(model.Id, model.CaseWorkflowGuid,
+                        model.CaseWorkflowStatusGuid, CaseTransitionEnterReason.Created, null,
+                        model.CreatedDate ?? DateTime.UtcNow, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -161,6 +165,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                         model.Locked = 0;
                         model.CaseWorkflowStatusGuid = createCase.CaseWorkflowStatusGuid;
                         await repositoryCase.UpdateCaseAsync(model, token).ConfigureAwait(false);
+
+                        await new CaseStatusTransitionRepository(dbContext).EnterAsync(model.Id,
+                            model.CaseWorkflowGuid, model.CaseWorkflowStatusGuid,
+                            CaseTransitionEnterReason.Escalated, null, DateTime.UtcNow, token).ConfigureAwait(false);
                     }
                 }
 
@@ -204,23 +212,16 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                                               createCase.Json,
                                               jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
+                            var dispatch = await CaseStatusNotifier.PrepareAsync(new CaseStatusDispatchRequest(
+                                dbContext, createCase.TenantRegistryId, "Case creation", dynamicEnvironment, log,
+                                model, finalCasesWorkflowsStatus, context,
+                                jsonSerializationHelper.ArchiveJsonSerializer), token);
+
                             if (finalCasesWorkflowsStatus.EnableNotification == 1)
                             {
                                 var notificationStopwatch = Stopwatch.StartNew();
 
-                                var notificationSubject =
-                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationSubject);
-                                var notificationDestination =
-                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationDestination);
-                                var notificationBody =
-                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationBody);
-
-                                var notification = new Notification(log, dynamicEnvironment);
-
-                                await notification.SendAsync(finalCasesWorkflowsStatus.NotificationTypeId ?? 1,
-                                    notificationDestination,
-                                    notificationSubject,
-                                    notificationBody, token);
+                                var notificationDestination = await dispatch.NotifyAsync(token);
 
                                 var notificationDuration =
                                     (long)(notificationStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
@@ -250,18 +251,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                             {
                                 var httpEndpointStopwatch = Stopwatch.StartNew();
 
-                                var endpoint = context.ReplaceTokens(finalCasesWorkflowsStatus.HttpEndpoint);
-
-                                if (finalCasesWorkflowsStatus.HttpEndpointTypeId == 1)
-                                {
-                                    await SendHttpEndpoint.PostAsync(endpoint,
-                                        PreparePostBodyString(model, jsonSerializationHelper.ArchiveJsonSerializer,
-                                            finalCasesWorkflowsStatus), log);
-                                }
-                                else
-                                {
-                                    await SendHttpEndpoint.GetAsync(endpoint, log);
-                                }
+                                var endpoint = await dispatch.CallAsync(token);
 
                                 var httpEndpointDuration =
                                     (long)(httpEndpointStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
@@ -320,26 +310,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                     log.Info("Case Creation: closed the database connection.");
                 }
             }
-        }
-
-        private static string PreparePostBodyString(Data.Poco.Case createCase, JsonSerializer jsonSerializer,
-            CaseWorkflowStatus finalCasesWorkflowsStatus, EntityAnalysisModelInstanceEntryPayload payload = null)
-        {
-            var jObject = JObject.FromObject(createCase, jsonSerializer);
-
-            if (payload == null)
-            {
-                jObject["context"] = JObject.Parse(createCase.Json);
-            }
-            else
-            {
-                jObject["context"] = JObject.FromObject(payload);
-            }
-
-            jObject["caseWorkflowStatus"] = finalCasesWorkflowsStatus.Name;
-            jObject.Remove("json");
-
-            return jObject.ToString();
         }
     }
 }

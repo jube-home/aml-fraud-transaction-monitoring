@@ -41,7 +41,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
             "Cancelled, then call GetAdvancedAnalyticsTrainingRunResult. Training never makes the resulting version " +
             "live.")]
         public Task<AdvancedAnalyticsTrainingSubmissionDto> SubmitKModesClustererTrainingAsync(
-            [Description("Numeric identifier of the Advanced Analytics instance that the run and its trained model " +
+            [Description("Numeric identifier of the AskJooby Analytics instance that the run and its trained model " +
                          "belong to; every model name is only unique within one instance.")]
             int instanceId,
             [Description("Name of the model the trained version is filed under. An existing model of that name in " +
@@ -97,7 +97,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
         {
             return service.SubmitTrainingAsync(new AdvancedAnalyticsKModesClustererTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 ModelName = modelName,
                 CorrelationKey = correlationKey,
                 VariableNames = variableNames,

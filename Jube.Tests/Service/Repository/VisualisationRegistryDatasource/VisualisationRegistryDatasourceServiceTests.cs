@@ -242,8 +242,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
                 Priority = 1,
                 RowSpan = 1,
                 ColumnSpan = 1,
-                IncludeGrid = true,
-                IncludeDisplay = false
+                IncludeGrid = true
             };
         }
 
@@ -722,7 +721,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
         }
 
         [Fact]
-        public async Task VisualisationTypeAndTextAreValidatedOnlyWhenIncludeDisplayEnabledAsync()
+        public async Task ADatasourceMustShowAChartAGridOrBothAsync()
         {
             await using var dbContext = fx.GetDbContext();
 
@@ -732,34 +731,23 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var registryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
-            var disabledDto = NewDto(registryId, UniqueName("DisplayOff"));
-            disabledDto.IncludeDisplay = false;
-            disabledDto.VisualisationTypeId = 0;
-            disabledDto.VisualisationText = null;
-            var saved = await service.InsertAsync(disabledDto);
-            createdDatasourceIds.Add(saved.Id);
-            saved.VisualisationTypeId.Should().Be(0);
+            var nothing = NewDto(registryId, UniqueName("ShowNothing"));
+            nothing.IncludeGrid = false;
+            nothing.DisplayKindId = 0;
+            var refused = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(nothing));
+            refused.Result.Errors.Should().Contain(e => e.ErrorCode == "DisplayRequired" &&
+                                                       e.PropertyName == "DisplayKindId");
 
-            var missingTypeDto = NewDto(registryId, UniqueName("DisplayBadType"));
-            missingTypeDto.IncludeDisplay = true;
-            missingTypeDto.VisualisationTypeId = 99;
-            missingTypeDto.VisualisationText = "text";
-            var typeEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(missingTypeDto));
-            typeEx.Result.Errors.Should().Contain(e => e.ErrorCode == "VisualisationTypeIdInvalid");
+            var gridOnly = NewDto(registryId, UniqueName("ShowGrid"));
+            gridOnly.IncludeGrid = true;
+            gridOnly.DisplayKindId = 0;
+            createdDatasourceIds.Add((await service.InsertAsync(gridOnly)).Id);
 
-            var missingTextDto = NewDto(registryId, UniqueName("DisplayNoText"));
-            missingTextDto.IncludeDisplay = true;
-            missingTextDto.VisualisationTypeId = 1;
-            missingTextDto.VisualisationText = "";
-            var textEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(missingTextDto));
-            textEx.Result.Errors.Should().Contain(e => e.ErrorCode == "VisualisationTextNotEmpty");
-
-            var validDisplayDto = NewDto(registryId, UniqueName("DisplayOk"));
-            validDisplayDto.IncludeDisplay = true;
-            validDisplayDto.VisualisationTypeId = 1;
-            validDisplayDto.VisualisationText = "({})";
-            var validDisplaySaved = await service.InsertAsync(validDisplayDto);
-            createdDatasourceIds.Add(validDisplaySaved.Id);
+            var chartOnly = NewDto(registryId, UniqueName("ShowChart"));
+            chartOnly.IncludeGrid = false;
+            chartOnly.Command = "SELECT 'a' AS \"Day\", 1.5 AS \"Alpha\"";
+            chartOnly.DisplayKindId = (int)Jube.Dto.Options.DatasourceDisplayKind.Column;
+            createdDatasourceIds.Add((await service.InsertAsync(chartOnly)).Id);
         }
 
         [Fact]

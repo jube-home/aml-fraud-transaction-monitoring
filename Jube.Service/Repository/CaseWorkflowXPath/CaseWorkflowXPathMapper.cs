@@ -31,6 +31,8 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                 XPath = rulePoco.XPath,
                 Drill = rulePoco.Drill == 1,
                 BoldLineMatched = rulePoco.BoldLineMatched == 1,
+                RoleId = rulePoco.RoleId,
+                Segment = rulePoco.Segment == 1,
                 BoldLineFormatForeColor = rulePoco.BoldLineFormatForeColor,
                 BoldLineFormatBackColor = rulePoco.BoldLineFormatBackColor,
                 ConditionalRegularExpressionFormatting = rulePoco.ConditionalRegularExpressionFormatting == 1,
@@ -55,6 +57,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
 
         public static RulePoco ToPoco(CaseWorkflowXPathDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
             Active = (byte)(dto.Active ? 1 : 0),
@@ -62,6 +65,8 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             XPath = dto.XPath,
             Drill = (byte)(dto.Drill ? 1 : 0),
             BoldLineMatched = (byte)(dto.BoldLineMatched ? 1 : 0),
+            RoleId = (byte)dto.RoleId,
+            Segment = (byte)(dto.Segment ? 1 : 0),
             BoldLineFormatForeColor = dto.BoldLineFormatForeColor,
             BoldLineFormatBackColor = dto.BoldLineFormatBackColor,
             ConditionalRegularExpressionFormatting = (byte)(dto.ConditionalRegularExpressionFormatting ? 1 : 0),

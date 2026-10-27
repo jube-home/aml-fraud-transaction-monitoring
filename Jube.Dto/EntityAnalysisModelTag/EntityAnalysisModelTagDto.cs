@@ -23,6 +23,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelTag
 {
     [FormEndpoint("EntityAnalysisModelTag")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -35,7 +36,7 @@ namespace Jube.Dto.EntityAnalysisModelTag
 
         [Description("Display name of this Tag. Unique within the Model (case-insensitive). Merged into the " +
                      "Tags section of the Archive payload for the matching EntityAnalysisModelEntityInstanceGuid.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Reviewed by compliance")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 

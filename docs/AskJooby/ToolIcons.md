@@ -126,7 +126,7 @@ Each entity operation takes the icon of its domain. Domains are checked in the o
 | Data preservation and archive | `archive` | Preservation snapshots and recovery, archive tags |
 | Access and tenancy | `key-round` | Users, roles, tenants, permission specifications |
 | Visualisation | `layout-dashboard` | Visualisation registries, parameters and datasources |
-| Model testing and analytics | `flask-conical` | Advanced analytics instances and models, exhaustive search, backtests, history simulations, invocation contexts, integrity checks, samples |
+| Model testing and analytics | `flask-conical` | AskJooby Analytics instances and models, exhaustive search, backtests, history simulations, invocation contexts, integrity checks, samples |
 | Authoring helpers | `book-open-text` | Rule vocabulary, query builder operators, parser, icons, completions |
 | Rules and models | `sliders-horizontal` | Entity analysis models and their rules, lists, dictionaries, tags, scripts, overrides, synchronisation and dependencies, sanction entries |
 | Tree root | `list-tree` | The bare tree navigation root |

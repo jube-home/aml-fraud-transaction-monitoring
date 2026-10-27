@@ -24,8 +24,8 @@ using Jube.Engine.AdvancedAnalytics.Regression;
 using Jube.Service.Agent.AdvancedAnalyticsTools;
 using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.AdvancedAnalytics;
-using Jube.Service.Repository.AdvancedAnalyticsInstance;
-using Jube.Service.Repository.AdvancedAnalyticsModel;
+using Jube.Service.Repository.AskJoobyAnalyticsInstance;
+using Jube.Service.Repository.AskJoobyAnalyticsModel;
 using Jube.Service.Repository.AdvancedAnalyticsOperation;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun;
 using Jube.Data.Repository.Models;
@@ -36,8 +36,8 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using Xunit;
 using Jube.Service.Agent.AdvancedAnalyticsTools.Models;
-using Jube.Service.Repository.AdvancedAnalyticsInstance.Models;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsInstance.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Walkthrough
 {
@@ -140,33 +140,33 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
                 ("GetTrainingRunStatus", AdvancedAnalyticsPermissionSpecifications.Analytics),
                 ("CancelTrainingRun", AdvancedAnalyticsPermissionSpecifications.Training),
                 ("GetTrainingRunResult", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceGet", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceGetByGuid", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceList", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceCreate", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceUpdate", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceDelete", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceAllocateToModel", 47),
-                ("AdvancedAnalyticsInstanceDeallocate", 47),
-                ("AdvancedAnalyticsInstanceResubmit", 47),
-                ("AdvancedAnalyticsInstanceRetract", 47),
-                ("AdvancedAnalyticsInstanceValidate", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceFilterFields", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceFilter", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsInstanceCount", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelList", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelGet", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelListVersions", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelGetVersion", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelCompareVersions", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelGetPromotionEvidence", AdvancedAnalyticsPermissionSpecifications.Analytics),
-                ("AdvancedAnalyticsModelPromoteVersion", 47),
-                ("AdvancedAnalyticsModelRollback", 47)
+                ("AskJoobyAnalyticsInstanceGet", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceGetByGuid", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceList", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceCreate", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceUpdate", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceDelete", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceAllocateToModel", 47),
+                ("AskJoobyAnalyticsInstanceDeallocate", 47),
+                ("AskJoobyAnalyticsInstanceResubmit", 47),
+                ("AskJoobyAnalyticsInstanceRetract", 47),
+                ("AskJoobyAnalyticsInstanceValidate", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceFilterFields", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceFilter", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsInstanceCount", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelList", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelGet", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelListVersions", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelGetVersion", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelCompareVersions", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelGetPromotionEvidence", AdvancedAnalyticsPermissionSpecifications.Analytics),
+                ("AskJoobyAnalyticsModelPromoteVersion", 47),
+                ("AskJoobyAnalyticsModelRollback", 47)
             ]);
 
             listing.Should().OnlyContain(s => s.Description.Length > 40);
 
-            listing.Single(s => s.Name == "AdvancedAnalyticsModelPromoteVersion").Description
+            listing.Single(s => s.Name == "AskJoobyAnalyticsModelPromoteVersion").Description
                 .Should().Contain("no quality gate");
             listing.Single(s => s.Name == "SubmitLogisticRegressionTraining").Description
                 .Should().Contain("never makes the resulting version live");
@@ -174,9 +174,9 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             listing.Select(s => s.Name).Should().NotContain(n => n.Contains("Upload") || n.Contains("Demo"));
         }
 
-        private async Task CreateAnInstanceAsync(AdvancedAnalyticsInstanceService instances)
+        private async Task CreateAnInstanceAsync(AskJoobyAnalyticsInstanceService instances)
         {
-            var created = await instances.InsertAsync(new AdvancedAnalyticsInstanceDto { Name = UniqueName("Walk") });
+            var created = await instances.InsertAsync(new AskJoobyAnalyticsInstanceDto { Name = UniqueName("Walk") });
 
             created.Id.Should().BeGreaterThan(0);
             created.EntityAnalysisModelId.Should().BeNull();
@@ -220,7 +220,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
         }
 
         private async Task JudgeTheGoodTrialAsync(LogisticRegressionTrainingRunTools tools,
-            AdvancedAnalyticsModelService models, int runId)
+            AskJoobyAnalyticsModelService models, int runId)
         {
             var result = await tools.GetTrainingRunResultAsync(runId);
 
@@ -245,7 +245,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
         }
 
         private async Task RefuseAJunkTrialAsync(LogisticRegressionTrainingRunTools tools,
-            AdvancedAnalyticsModelService models)
+            AskJoobyAnalyticsModelService models)
         {
             var activeBefore = (await models.GetModelAsync(trainedModelId))!.ActiveVersionId;
             var data = FraudLikeRows(1500, 2024, false);
@@ -268,8 +268,8 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             (await models.GetModelAsync(trainedModelId))!.ActiveVersionId.Should().Be(activeBefore);
         }
 
-        private async Task PromoteAllocateAndRecallAsync(AdvancedAnalyticsInstanceService instances,
-            AdvancedAnalyticsModelService models, ModelScaffold scaffold)
+        private async Task PromoteAllocateAndRecallAsync(AskJoobyAnalyticsInstanceService instances,
+            AskJoobyAnalyticsModelService models, ModelScaffold scaffold)
         {
             var allocated = await instances.AllocateToModelAsync(instanceId, scaffold.ModelId);
             allocated.EntityAnalysisModelId.Should().Be(scaffold.ModelId);
@@ -306,7 +306,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
         }
 
         private async Task ComparePromoteAndRollBackAsync(LogisticRegressionTrainingRunTools tools,
-            AdvancedAnalyticsModelService models, ModelScaffold scaffold)
+            AskJoobyAnalyticsModelService models, ModelScaffold scaffold)
         {
             var data = FraudLikeRows(1500, 2024, true);
 
@@ -420,7 +420,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             (await strangerInstances.ListAsync()).Items.Should().NotContain(i => i.Id == instanceId);
         }
 
-        private async Task DeleteTheInstanceAsync(AdvancedAnalyticsInstanceService instances)
+        private async Task DeleteTheInstanceAsync(AskJoobyAnalyticsInstanceService instances)
         {
             (await instances.ListAsync()).Items.Should().Contain(i => i.Id == instanceId);
 
@@ -430,7 +430,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             (await instances.GetByIdAsync(instanceId)).Should().BeNull();
         }
 
-        private async Task GoLiveAsync(AdvancedAnalyticsInstanceService instances)
+        private async Task GoLiveAsync(AskJoobyAnalyticsInstanceService instances)
         {
             var instance = (await instances.GetByIdAsync(instanceId))!;
             instance.Active = true;
@@ -438,7 +438,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
             var live = await instances.UpdateAsync(instance);
             live.Active.Should().BeTrue();
 
-            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AdvancedAnalyticsInstance, instanceId,
+            await EntityApprovalSeed.ApproveAsync(Db, EntityApprovalKind.AskJoobyAnalyticsInstance, instanceId,
                 live.Version, TenantA);
         }
 
@@ -560,7 +560,7 @@ namespace Jube.Test.AdvancedAnalytics.Walkthrough
                 .Select(d => new ToolListing(d.ToolName!, d.Description!, permissionNumbers[d.Permissions.Min()!]))
                 .ToList();
 
-            var operations = new[] { typeof(AdvancedAnalyticsInstanceService), typeof(AdvancedAnalyticsModelService) }
+            var operations = new[] { typeof(AskJoobyAnalyticsInstanceService), typeof(AskJoobyAnalyticsModelService) }
                 .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 .Where(m => m.GetCustomAttribute<ServiceOperationAttribute>() != null);
 

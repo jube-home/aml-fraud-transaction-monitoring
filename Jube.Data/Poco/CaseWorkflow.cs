@@ -92,6 +92,21 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(26)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(27)] public int? ImportId { get; set; }
+        [Column] [Nullable] [Key(29)] public string ValueField { get; set; }
+        [Column] [Key(30)] public byte TypologySeverityId { get; set; }
+        [Column] [Nullable] [Key(31)] public int? FirstViewTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(32)] public int? OwnershipTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(33)] public int? ResolutionTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(34)] public double? RiskKappa { get; set; }
+        [Column] [Nullable] [Key(35)] public double? RiskRho { get; set; }
+        [Column] [Nullable] [Key(36)] public double? RiskPriorStrength { get; set; }
+        [Column] [Nullable] [Key(37)] public double? RiskBaseRatePrior { get; set; }
+        [Column] [Nullable] [Key(38)] public int? RiskDeadlineLaneDays { get; set; }
+        [Column] [Nullable] [Key(39)] public double? RiskKeyHistoryHalfLifeDays { get; set; }
+        [Column] [Nullable] [Key(40)] public string RiskImpactWeights { get; set; }
+        [Column] [Nullable] [Key(41)] public string RiskMoneyBands { get; set; }
+        [Column] [Nullable] [Key(42)] public double? RiskQaSampleRate { get; set; }
+        [Column] [Nullable] [Key(43)] public int? DailyGoal { get; set; }
 
         [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowGuid", CanBeNull = false,
             Relationship = Relationship.OneToMany)]

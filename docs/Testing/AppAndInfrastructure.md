@@ -38,6 +38,36 @@ validations and the web application firewall.
 | `AnOffsetStringDeserialisesAsTheSameInstantInUtc`                    | Fact | An offset string deserialises as the same instant in utc.                       |
 | `AZuluStringDeserialisesUnchangedInUtc`                              | Fact | A zulu string deserialises unchanged in utc.                                    |
 
+## Optimistic concurrency
+
+### OptimisticConcurrencyTests
+
+`Jube.Test.Middlewares.OptimisticConcurrencyTests` — 2 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `AVersionThatIsAbsentOrMatchesIsAccepted` | Theory | A version that is absent or matches is accepted. |
+| `AVersionThatHasMovedOnIsRefusedAndNamesBothVersions` | Fact | A version that has moved on is refused and names both versions. |
+
+### VersionConflictMiddlewareTests
+
+`Jube.Test.Middlewares.VersionConflictMiddlewareTests` — 3 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `AVersionConflictBecomesA409WithTheTwoVersions` | Fact | A version conflict becomes a 409 with the two versions. |
+| `AnythingElseIsLeftToTheNextHandler` | Fact | Anything else is left to the next handler. |
+| `ARequestThatDoesNotConflictPassesStraightThrough` | Fact | A request that does not conflict passes straight through. |
+
+### FormAreaVersionTests
+
+`Jube.Test.Service.Concurrency.FormAreaVersionTests` — 2 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `TheMapperFromTheFormDtoCarriesTheVersionTheClientSawToThePoco` | Theory | The mapper from the form dto carries the version the client saw to the poco. |
+| `MostFormAreasHaveAMapperThatTheGuardActuallyReaches` | Fact | Most form areas have a mapper that the guard actually reaches. |
+
 ## Case
 
 ### SendHttpEndpointTests
@@ -48,6 +78,88 @@ validations and the web application firewall.
 |------------------------------------------------|------|-----------------------------------------------|
 | `PostAsync_OnFailure_NeverLogsThePayloadAsync` | Fact | Post async on failure never logs the payload. |
 | `GetAsync_OnFailure_NeverLogsTheFullUrlAsync`  | Fact | Get async on failure never logs the full url. |
+
+### HookGuardTests
+
+`Jube.Test.Case.HookGuardTests` — 11 tests. Category: Unit.
+
+| Test                                                               | Kind | Verifies                                                                          |
+|--------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
+| `ALiteralHostWithTokensOnlyInThePathAndQueryIsAccepted`            | Theory | A literal host with tokens only in the path and query is accepted.                |
+| `ATokenValueIsEscapedSoItCanNeverAddAPathSegmentOrAQueryParameter` | Fact | A token value is escaped so it can never add a path segment or a query parameter. |
+| `AHostThatIsNotWrittenOutLiterallyIsRefused`                       | Theory | A host that is not written out literally is refused.                              |
+| `ATokenThatRendersToAnotherHostIsRefused`                          | Fact | A token that renders to another host is refused.                                  |
+| `ARenderedAddressWithCredentialsInTheAuthorityIsRefused`           | Fact | A rendered address with credentials in the authority is refused.                  |
+| `AnOverlongAddressIsRefused`                                       | Fact | An overlong address is refused.                                                   |
+| `OnlyAVariableWithTheHookPrefixCanBeNamedAsACredential`            | Theory | Only a variable with the hook prefix can be named as a credential.                |
+| `ACredentialIsReadOnlyFromAVariableWithTheHookPrefix`              | Fact | A credential is read only from a variable with the hook prefix.                   |
+| `AReservedOrMalformedHeaderNameIsRefused`                          | Theory | A reserved or malformed header name is refused.                                   |
+| `TokensAreMatchedWithoutRegardToCaseAndUnknownOnesAreLeftAlone`    | Fact | Tokens are matched without regard to case and unknown ones are left alone.        |
+| `ABodyValueIsEscapedForJsonSoItCanNeverBreakOutOfTheString`        | Fact | A body value is escaped for json so it can never break out of the string.         |
+
+### IpClassifierTests
+
+`Jube.Test.Case.IpClassifierTests` — 11 tests. Category: Unit.
+
+| Test                                                                | Kind | Verifies                                                                        |
+|---------------------------------------------------------------------|------|---------------------------------------------------------------------------------|
+| `ABlockedIpv4RangeIsRefused`                                        | Theory | A blocked ipv4 range is refused.                                                |
+| `APublicIpv4AddressAtTheEdgeOfABlockedRangeIsPermitted`             | Theory | A public ipv4 address at the edge of a blocked range is permitted.              |
+| `ABlockedIpv6RangeIsRefused`                                        | Theory | A blocked ipv6 range is refused.                                                |
+| `APublicIpv6AddressIsPermitted`                                     | Theory | A public ipv6 address is permitted.                                             |
+| `AnIpv4MappedIpv6FormOfABlockedAddressIsRefused`                    | Theory | An ipv4 mapped ipv6 form of a blocked address is refused.                       |
+| `TheCategoryNamesTheRangeWithoutNamingTheAddress`                   | Theory | The category names the range without naming the address.                        |
+| `ALegacyHostSpellingParsesToTheAddressTheSocketLayerWouldConnectTo` | Theory | A legacy host spelling parses to the address the socket layer would connect to. |
+| `BracketsAndScopeIdsDoNotHideAnIpv6Literal`                         | Theory | Brackets and scope ids do not hide an ipv6 literal.                             |
+| `ANameThatIsNotAnAddressDoesNotParse`                               | Theory | A name that is not an address does not parse.                                   |
+| `ACidrContainsOnlyItsOwnAddresses`                                  | Theory | A cidr contains only its own addresses.                                         |
+| `AMalformedCidrDoesNotParse`                                        | Theory | A malformed cidr does not parse.                                                |
+
+### OutboundHostPolicyTests
+
+`Jube.Test.Case.OutboundHostPolicyTests` — 19 tests. Category: Unit.
+
+| Test                                                                     | Kind | Verifies                                                                               |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------|
+| `AnInternalLiteralHostIsBlockedByDefault`                                | Theory | An internal literal host is blocked by default.                                        |
+| `ANonHttpSchemeOrUserInfoIsRefused`                                      | Theory | A non http scheme or user info is refused.                                             |
+| `APublicHostIsAcceptedAtSaveTime`                                        | Theory | A public host is accepted at save time.                                                |
+| `ATokenInThePathIsNeutralisedBeforeTheHostIsChecked`                     | Fact | A token in the path is neutralised before the host is checked.                         |
+| `AnEmptyTemplateIsNotAnAbsoluteAddress`                                  | Theory | An empty template is not an absolute address.                                          |
+| `ATokenCannotSupplyTheHostSoTheTemplateIsRefusedBeforeTheHostPolicyRuns` | Fact | A token cannot supply the host so the template is refused before the host policy runs. |
+| `AnAllowedHostIsAcceptedWhateverItResolvesTo`                            | Fact | An allowed host is accepted whatever it resolves to.                                   |
+| `AnAllowedHostDoesNotAllowItsNeighboursOrALookalikeSuffix`               | Fact | An allowed host does not allow its neighbours or a lookalike suffix.                   |
+| `AnAllowedCidrPermitsOnlyThatRangeAndNothingElseInternal`                | Fact | An allowed cidr permits only that range and nothing else internal.                     |
+| `AnAllowedLiteralHostOpensOnlyThatLiteral`                               | Fact | An allowed literal host opens only that literal.                                       |
+| `AnInvalidCidrIsReportedAndPermitsNothing`                               | Fact | An invalid cidr is reported and permits nothing.                                       |
+| `ResolutionToOnlyBlockedAddressesIsRefused`                              | Fact | Resolution to only blocked addresses is refused.                                       |
+| `ResolutionToNothingIsRefused`                                           | Fact | Resolution to nothing is refused.                                                      |
+| `AMixedAnswerKeepsOnlyThePublicAddresses`                                | Fact | A mixed answer keeps only the public addresses.                                        |
+| `ThePolicyIsReadFromTheDynamicEnvironment`                               | Fact | The policy is read from the dynamic environment.                                       |
+| `WithNoConfigurationNothingInternalIsAllowed`                            | Fact | With no configuration nothing internal is allowed.                                     |
+| `TheAllowListVariablesCanNeverBeNamedAsACredential`                      | Theory | The allow list variables can never be named as a credential.                           |
+| `AnOrdinaryHookCredentialNameIsStillAccepted`                            | Fact | An ordinary hook credential name is still accepted.                                    |
+| `ARefusedDispatchCarriesTheCodeAndNoAddress`                             | Fact | A refused dispatch carries the code and no address.                                    |
+
+### GuardedHttpEndpointTests
+
+`Jube.Test.Case.GuardedHttpEndpointTests` — 13 tests. Category: Unit.
+
+| Test                                                                 | Kind | Verifies                                                                        |
+|----------------------------------------------------------------------|------|---------------------------------------------------------------------------------|
+| `ANamedHostIsConnectedToTheAddressTheResolverReturnedAndNoOther`     | Fact | A named host is connected to the address the resolver returned and no other.    |
+| `ANameThatResolvesToAnInternalAddressIsRefusedAndNeverConnected`     | Fact | A name that resolves to an internal address is refused and never connected.     |
+| `EveryInternalAnswerFromTheResolverIsRefused`                        | Theory | Every internal answer from the resolver is refused.                             |
+| `ANameThatResolvesToNothingIsRefused`                                | Fact | A name that resolves to nothing is refused.                                     |
+| `ARebindingAnswerIsCheckedAtConnectTimeNotJustAtSaveTime`            | Fact | A rebinding answer is checked at connect time not just at save time.            |
+| `AMixedAnswerIsPinnedToThePermittedAddressOnly`                      | Fact | A mixed answer is pinned to the permitted address only.                         |
+| `ALiteralInternalOrDisallowedTargetIsRefusedBeforeAnySocketIsOpened` | Theory | A literal internal or disallowed target is refused before any socket is opened. |
+| `ARelativeAddressIsRefused`                                          | Fact | A relative address is refused.                                                  |
+| `ARedirectIsRefusedAndTheLocationIsNeverFollowed`                    | Theory | A redirect is refused and the location is never followed.                       |
+| `ARedirectToTheMetadataAddressIsNotFollowedEither`                   | Fact | A redirect to the metadata address is not followed either.                      |
+| `AnAllowListedCidrPermitsALoopbackReceiverAndASuccessIsReported`     | Fact | An allow listed cidr permits a loopback receiver and a success is reported.     |
+| `ANon2xxFromAPermittedHostIsAFailureNotARefusal`                     | Fact | A non2xx from a permitted host is a failure not a refusal.                      |
+| `TheSharedEndpointForAnEnvironmentWithNoAllowListRefusesLoopback`    | Fact | The shared endpoint for an environment with no allow list refuses loopback.     |
 
 ## Cluster
 
@@ -98,33 +210,33 @@ validations and the web application firewall.
 
 | Test                                                  | Kind | Verifies                                                     |
 |-------------------------------------------------------|------|--------------------------------------------------------------|
-| `InvalidEncryptionExceptionExposesTheGivenMessage`    | Fact | Invalid encryption exception exposes the given message.      |
-| `InvalidDecryptionExceptionExposesTheGivenMessage`    | Fact | Invalid decryption exception exposes the given message.      |
-| `InvalidHmacExceptionCanBeConstructedWithoutAMessage` | Fact | Invalid hmac exception can be constructed without a message. |
+| `InvalidEncryptionExceptionExposesTheGivenMessage` | Fact | Invalid encryption exception exposes the given message. |
+| `InvalidDecryptionExceptionExposesTheGivenMessage` | Fact | Invalid decryption exception exposes the given message. |
+| `InvalidPasswordExceptionNamesTheMinimumLength` | Fact | Invalid password exception names the minimum length. |
 
 ### JempAesEncryptionTests
 
-`Jube.Test.Cryptography.JempAesEncryptionTests` — 15 tests. Category: Unit.
+`Jube.Test.Cryptography.JempAesEncryptionTests` — 17 tests. Category: Unit.
 
 | Test                                                                                  | Kind | Verifies                                                                                         |
 |---------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------|
-| `EncryptThenDecryptRoundTripsTheOriginalData`                                         | Fact | Encrypt then decrypt round trips the original data.                                              |
-| `EncryptRoundTripsAnEmptyPayload`                                                     | Fact | Encrypt round trips an empty payload.                                                            |
-| `EncryptProducesDifferentCipherTextOnEachCallDueToTheRandomIv`                        | Fact | Encrypt produces different cipher text on each call due to the random iv.                        |
-| `EncryptPrependsA32ByteHmacAndA16ByteIvBeforeThePkcs7PaddedCipherText`                | Fact | Encrypt prepends a 32 byte hmac and a 16 byte iv before the pkcs7 padded cipher text.            |
-| `EncryptOfNullDataThrowsInvalidEncryptionException`                                   | Fact | Encrypt of null data throws invalid encryption exception.                                        |
-| `DecryptWithAWrongPasswordThrowsInvalidDecryptionException`                           | Fact | Decrypt with a wrong password throws invalid decryption exception.                               |
-| `DecryptWithAWrongSaltThrowsInvalidDecryptionException`                               | Fact | Decrypt with a wrong salt throws invalid decryption exception.                                   |
-| `DecryptOfTamperedCipherTextThrowsInvalidDecryptionException`                         | Fact | Decrypt of tampered cipher text throws invalid decryption exception.                             |
-| `DecryptOfTamperedHmacThrowsInvalidDecryptionException`                               | Fact | Decrypt of tampered hmac throws invalid decryption exception.                                    |
-| `DecryptOfTooShortDataThrowsInvalidDecryptionException`                               | Fact | Decrypt of too short data throws invalid decryption exception.                                   |
-| `DecryptOfNullDataThrowsInvalidDecryptionException`                                   | Fact | Decrypt of null data throws invalid decryption exception.                                        |
-| `DecryptWithoutLegacyFallbackDoesNotRecoverLegacyFormattedData`                       | Fact | Decrypt without legacy fallback does not recover legacy formatted data.                          |
-| `DecryptWithLegacyFallbackEnabledRecoversLegacyFormattedData`                         | Fact | Decrypt with legacy fallback enabled recovers legacy formatted data.                             |
-| `DecryptWithLegacyFallbackEnabledStillRecoversCurrentFormatData`                      | Fact | Decrypt with legacy fallback enabled still recovers current format data.                         |
-| `DecryptWithLegacyFallbackEnabledAndInvalidDataStillThrowsInvalidDecryptionException` | Fact | Decrypt with legacy fallback enabled and invalid data still throws invalid decryption exception. |
-
-## Documentation
+| `EncryptThenDecryptRoundTripsTheOriginalData` | Fact | Encrypt then decrypt round trips the original data. |
+| `EncryptThenDecryptRoundTripsEmptyData` | Fact | Encrypt then decrypt round trips empty data. |
+| `DecryptNeedsOnlyThePasswordFromAnotherInstance` | Fact | Decrypt needs only the password from another instance. |
+| `EncryptCarriesTheFormatMarkerAndVersionInTheClear` | Fact | Encrypt carries the format marker and version in the clear. |
+| `EncryptingTwiceGivesADifferentSaltNonceAndCipherText` | Fact | Encrypting twice gives a different salt nonce and cipher text. |
+| `EncryptRefusesAPasswordShorterThanTheMinimum` | Theory | Encrypt refuses a password shorter than the minimum. |
+| `EncryptAcceptsAPasswordOfExactlyTheMinimumLength` | Fact | Encrypt accepts a password of exactly the minimum length. |
+| `IsAcceptablePasswordAppliesTheMinimum` | Fact | Is acceptable password applies the minimum. |
+| `EncryptOfNullDataThrowsInvalidEncryptionException` | Fact | Encrypt of null data throws invalid encryption exception. |
+| `DecryptWithAWrongPasswordThrowsInvalidDecryptionException` | Fact | Decrypt with a wrong password throws invalid decryption exception. |
+| `DecryptOfAnyTamperedByteThrowsInvalidDecryptionException` | Theory | Decrypt of any tampered byte throws invalid decryption exception. |
+| `DecryptOfATamperedTagThrowsInvalidDecryptionException` | Fact | Decrypt of a tampered tag throws invalid decryption exception. |
+| `DecryptOfATruncatedPackageThrowsInvalidDecryptionException` | Fact | Decrypt of a truncated package throws invalid decryption exception. |
+| `DecryptOfTooShortDataThrowsInvalidDecryptionException` | Fact | Decrypt of too short data throws invalid decryption exception. |
+| `DecryptOfNullDataThrowsInvalidDecryptionException` | Fact | Decrypt of null data throws invalid decryption exception. |
+| `DecryptOfAnEarlierReleaseFormatThrowsInvalidDecryptionException` | Fact | Decrypt of an earlier release format throws invalid decryption exception. |
+| `DecryptRefusesAnIterationCountOutsideTheSupportedRange` | Fact | Decrypt refuses an iteration count outside the supported range. |
 
 ### CiCategoryCoverageTests
 
@@ -526,3 +638,12 @@ Collection: Database.
 | `AnExceptionWithoutARouteRegexIsSkipped`              | Fact   | An exception without a route regex is skipped.                |
 | `AnExceptionWithAnInvalidRouteRegexIsSkipped`         | Fact   | An exception with an invalid route regex is skipped.          |
 | `AnExceptionWithAnInvalidFieldRegexIsSkipped`         | Fact   | An exception with an invalid field regex is skipped.          |
+
+### LocalReturnUrlTests
+
+`Jube.Test.Code.LocalReturnUrlTests` — 2 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|---|---|---|
+| `ALocalPathIsKept` | Theory | A local path is kept. |
+| `AnythingElseBecomesTheRoot` | Theory | Anything else becomes the root. |

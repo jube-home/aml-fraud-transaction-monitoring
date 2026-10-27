@@ -57,6 +57,12 @@
     <data name="AnomalyProbabilityRange" xml:space="preserve">
     <value>The anomaly probability must be between 0 and 1.</value>
   </data>
+    <data name="BootstrapWeightFactorRange" xml:space="preserve">
+    <value>The bootstrap weight factor must be between 0 and 1.</value>
+  </data>
+    <data name="ChallengerModelBaseProbabilityRange" xml:space="preserve">
+    <value>The challenger model base probability must be between 0 and 1.</value>
+  </data>
     <data name="BaseRateRange" xml:space="preserve">
     <value>The base rate must be greater than 0 and less than 1.</value>
   </data>

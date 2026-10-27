@@ -376,7 +376,7 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
         }
 
         [Fact]
-        public async Task InsertWithEmptyFilterRulesStoresAnUnpreparedRowWithTheDatabaseErrorAsync()
+        public async Task InsertWithEmptyFilterRulesCompilesToASearchThatMatchesEveryCaseTheUserMaySeeAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
@@ -387,8 +387,13 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
 
             var dto = await service.InsertAsync(request);
 
-            dto.Prepared.Should().Be(0);
-            dto.Error.Should().NotBeNullOrWhiteSpace();
+            dto.Prepared.Should().Be(1);
+            dto.Error.Should().BeNull();
+
+            var result = await service.ExecuteByGuidAsync(dto.Guid);
+
+            result.Rows.Should().ContainSingle();
+            result.Rows[0]["Id"].Should().Be(seeded.CaseId);
         }
 
         [Fact]

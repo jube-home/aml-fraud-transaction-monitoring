@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,8 +24,14 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.ExhaustiveSearchInstance
 {
     [FormEndpoint("ExhaustiveSearchInstance")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
+    [ExhaustiveDatasetEditor(Csv = nameof(ExhaustiveInstanceCsvId), Json = nameof(ExhaustiveInstanceJsonId),
+        Source = nameof(DataSourceId), Status = nameof(StatusId))]
+    [ExhaustiveFilterEditor(FilterJson = nameof(FilterJson), FilterSql = nameof(FilterSql),
+        FilterTokens = nameof(FilterTokens), Source = nameof(DataSourceId), Csv = nameof(ExhaustiveInstanceCsvId),
+        Json = nameof(ExhaustiveInstanceJsonId))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Training Data", Order = 15)]
     [FormGroup("Anomaly Detection", Order = 20)]
@@ -40,7 +47,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Exhaustive Adaptation. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Fraud classifier v1")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -50,6 +57,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "ExhaustiveInstanceCsvId or ExhaustiveInstanceJsonId). Null is treated as 0.")]
         [FormField(Group = "Training Data", Order = 10, Widget = "select")]
         [NewDefault(0)]
+        [Options(typeof(ExhaustiveDataSource))]
         public int? DataSourceId { get; set; }
 
         [Description("Identifier of the uploaded CSV dataset to train on. When DataSourceId is 2 exactly one of " +
@@ -72,7 +80,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "between 0 and 1 (exclusive). Recalled probabilities are calibrated to this rate. When null " +
                      "the rate is measured from the population (archive or dataset row counts, or the flagged " +
                      "fraction for anomaly labelled training) and recorded with its source on the promoted model.")]
-        [FormField(Group = "Training Data", Order = 30, Widget = "number")]
+        [FormField(Group = "Training Data", Order = 30, Widget = "number", Placeholder = "e.g. 0.01")]
         public double? BaseRate { get; set; }
 
         [Description("When true, a vine copula is fitted to the minority class after shuffling/normalising/" +
@@ -120,6 +128,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "like the training data source, and fixed once training has started.")]
         [FormField(Group = "Training Data", Order = 35, Widget = "select")]
         [NewDefault("automatic")]
+        [Options(typeof(CalibrationMethod))]
         public string? CalibrationMethod { get; set; }
 
         [Description("When true, a One Class Support Vector Machine Anomaly Detection model is trained and " +
@@ -134,6 +143,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Anomaly Detection", Order = 20, Widget = "number")]
         [VisibleWhen(nameof(Anomaly), true)]
         [RequiredWhen(nameof(Anomaly), true)]
+        [NewDefault(0.02)]
         public double AnomalyProbability { get; set; }
 
         [Description("The Anomaly Detection algorithm that labels the positive class. Null or 0 is the One Class " +
@@ -146,6 +156,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Anomaly Detection", Order = 15, Widget = "select")]
         [VisibleWhen(nameof(Anomaly), true)]
         [NewDefault(0)]
+        [Options(typeof(AnomalyAlgorithm))]
         public int? AnomalyAlgorithmId { get; set; }
 
         [Description("Optional JSON of algorithm parameters, variable reduction options and automatic evaluation " +
@@ -179,7 +190,6 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data Filter", Order = 20)]
         [VisibleWhen(nameof(Filter), true)]
         [RequiredWhen(nameof(Filter), true)]
-        [Forms.Editor("ExhaustiveFilterBuilder")]
         public string? FilterJson { get; set; }
 
         [Description("The compiled SQL predicate, derived from FilterJson, applied to the Archive table to " +
@@ -201,7 +211,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "variables for training, for example {\"enabled\":true,\"maxLevels\":25," +
                      "\"minLevelCount\":20,\"maxTotalIndicators\":200,\"exclude\":[\"Payload.Reference\"]," +
                      "\"include\":[]}. When absent or not enabled, string fields are ignored as before.")]
-        [FormField(Group = "Categorical Variables", Order = 10)]
+        [FormField(Group = "Categorical Variables", Order = 10, Placeholder = "{\"enabled\":true,\"maxLevels\":25}")]
         public string? CategoricalOptionsJson { get; set; }
 
         [Description("When true, every recall of this Exhaustive Adaptation is persisted to the reporting " +

@@ -315,6 +315,11 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         [InlineData(13, "Suspend Open")]
         [InlineData(14, "Allocate Lock")]
         [InlineData(15, "Process Expired Case")]
+        [InlineData(16, "Peek")]
+        [InlineData(17, "Automatic Escalation")]
+        [InlineData(18, "Lock Broken")]
+        [InlineData(19, "Diary Cleared")]
+        [InlineData(20, "QA Sampled")]
         [InlineData(99, "Unknown")]
         [InlineData(null, "Unknown")]
         public async Task EventTypeIdIsMappedToDisplayNameAsync(int? typeId, string expected)

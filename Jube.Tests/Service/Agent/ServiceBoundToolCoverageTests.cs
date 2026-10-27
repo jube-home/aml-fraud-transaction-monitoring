@@ -145,7 +145,7 @@ namespace Jube.Test.Service.Agent
             skipped.Should().BeEquivalentTo(notBindableYet,
                 "narrowing this set is progress and widening it is a regression, so it is asserted exactly");
 
-            boundNames.Count.Should().Be(733);
+            boundNames.Count.Should().Be(811);
         }
 
         private static ServiceAgentBindingContext ContextWith(DatabaseFixture fx,

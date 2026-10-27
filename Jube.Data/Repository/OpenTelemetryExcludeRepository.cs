@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,8 @@ namespace Jube.Data.Repository
             {
                 throw new InvalidOperationException("The row is locked and cannot be updated.");
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             var version = (existing.Version ?? 0) + 1;
             var updatedDate = DateTime.UtcNow;

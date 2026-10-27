@@ -26,7 +26,7 @@ namespace Jube.Data.Query.GetNextAdvancedAnalyticsTrainingRunQuery
         public int Id { get; set; }
         public Guid Guid { get; set; }
         public int TenantRegistryId { get; set; }
-        public int AdvancedAnalyticsInstanceId { get; set; }
+        public int AskJoobyAnalyticsInstanceId { get; set; }
         public string UserName { get; set; }
         public string Arguments { get; set; }
         public Guid? InputPointer { get; set; }

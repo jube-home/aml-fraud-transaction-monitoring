@@ -22,7 +22,7 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance
 {
-    [FormEndpoint("ExhaustiveSearchInstancePromotedTrialInstance")]
+    [FormEndpoint("ExhaustiveSearchInstancePromotedTrialInstance", Operations = FormOperations.Update)]
     [FormKeys(Id = nameof(Id))]
     [FormGroup("Promotion", Order = 10)]
     public class ExhaustiveSearchInstancePromotedTrialInstanceDto : IActivatable

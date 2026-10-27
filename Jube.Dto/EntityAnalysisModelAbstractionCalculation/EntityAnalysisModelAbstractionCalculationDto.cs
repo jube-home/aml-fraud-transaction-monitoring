@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
 {
     [FormEndpoint("EntityAnalysisModelAbstractionCalculation")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.AbstractionCalculation, Coder = nameof(FunctionScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -37,7 +40,7 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
 
         [Description("Display name of this Abstraction Calculation. Unique within the Model " +
                      "(case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Spend ratio to average")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -46,7 +49,6 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
                      "fields, Inline Script properties, Inline Functions, TTL Counters, Abstraction Rules, " +
                      "Sanctions, Dictionaries and earlier Abstraction Calculations. Required.")]
         [FormField(Group = "Calculation", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
         public string? FunctionScript { get; set; }
 
         [Description("When true, every evaluation of this Abstraction Calculation is persisted to the reporting " +

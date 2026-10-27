@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to a tenant to perform this action.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>The Case Workflow was not found or you do not have access to it.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>The journal needs a payload field name to match.</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>The journal needs a value to match.</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>The payload field name must be at most 256 characters with no control characters.</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>The lens must be payload, rules, features, models or sanctions.</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>The limit must be between 1 and 5000.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>'From' must be before 'To', and the window at most 3660 days.</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>A section must be one of summary, notable, progression, distributions, velocity, gaps, novelty, counterparties, correlation, drift or peers.</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>The transaction was not found for this Case Workflow.</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>The transaction id must be above zero.</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>Between one and 500 transactions are needed, and no transaction may repeat.</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>At least one Tag to add or remove is needed.</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>A Tag name must have text and be at most 256 characters.</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>Every Tag to add must be an active Tag of the workflow&apos;s model.</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>No more than 20 Tags may be added, removed or held at once.</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>Between one and 50 transactions are needed, and no transaction may repeat.</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>The speed limit must be between 1 and 10,000 kilometres an hour and the shortest leg between 0 and 20,000 kilometres.</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>The saved replay was not found on this case.</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>A replay needs a name of between 1 and 100 characters.</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>A replay looks back 7, 30, 90 or 365 days.</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>A case can have no more than 10 saved replays.</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>A case can have no more than 50 pinned transactions.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>The case was not found.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>The case is locked to another user.</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>The filter is not valid. It needs a group of rules, each with a field of the model, an operator that suits the field and a value of the field's type.</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>The filter could not be applied because a stored value could not be read as the type of the field it was compared with.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>Merge needs a JSON array of at most three objects, each with a key and a value, beyond the case key.</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>Too many transactions match to tag them in one job. Narrow the view and try again.</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>No transaction matches the view.</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>The tagging job was not found.</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>Only a finished tagging that changed something and has not already been undone can be undone.</value>
+  </data>
+</root>

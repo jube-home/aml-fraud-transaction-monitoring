@@ -41,10 +41,71 @@ namespace Jube.Charting.Diagrams
                     : GraphLayoutKind.Layered;
             }
 
-            return kind == GraphLayoutKind.Circular ? Circular(spec, index) : Layered(spec, index);
+            return kind == GraphLayoutKind.Circular ? Circular(spec, index) : LayeredWithUnconnected(spec, index);
         }
 
-        private const double MaxExtent = 3000;
+        public const int UnconnectedGridThreshold = 8;
+        private const double UnconnectedGap = 12;
+        private const double UnconnectedMinimumWidth = 900;
+
+        private static GraphLayoutResult LayeredWithUnconnected(GraphDiagramSpec spec, Dictionary<string, int> index)
+        {
+            var connected = new HashSet<int>();
+
+            foreach (var e in spec.Edges)
+            {
+                connected.Add(index[e.From]);
+                connected.Add(index[e.To]);
+            }
+
+            var loose = Enumerable.Range(0, spec.Nodes.Count).Where(i => !connected.Contains(i)).ToList();
+
+            if (loose.Count < UnconnectedGridThreshold || connected.Count == 0)
+            {
+                return Layered(spec, index);
+            }
+
+            var keep = Enumerable.Range(0, spec.Nodes.Count).Where(connected.Contains).ToList();
+
+            var core = spec with { Nodes = [.. keep.Select(i => spec.Nodes[i])] };
+            var coreIndex = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (var i = 0; i < core.Nodes.Count; i++)
+            {
+                coreIndex[core.Nodes[i].Id] = i;
+            }
+
+            var inner = Layered(core, coreIndex);
+            var remap = keep.ToArray();
+
+            var nodes = inner.Nodes.Select(p => p with { Index = remap[p.Index] }).ToList();
+            var edges = inner.Edges.Select(e => e with { From = remap[e.From], To = remap[e.To] }).ToList();
+
+            var sizes = loose.Select(i => NodeSize(spec.Nodes[i])).ToArray();
+            var cell = sizes.Max(size => size.W) + UnconnectedGap;
+            var width = Math.Max(inner.Width, UnconnectedMinimumWidth);
+            var columns = Math.Max(1, (int)Math.Floor((width - 16 + UnconnectedGap) / cell));
+            var top = inner.Height + 56;
+            var rowHeight = NodeHeight + UnconnectedGap;
+            var rows = (int)Math.Ceiling(loose.Count / (double)columns);
+            var offset = (width - (Math.Min(columns, loose.Count) * cell - UnconnectedGap)) / 2;
+
+            for (var k = 0; k < loose.Count; k++)
+            {
+                var i = loose[k];
+                var (w, h) = sizes[k];
+
+                nodes.Add(new PlacedGraphNode(i, spec.Nodes[i].Id, spec.Nodes[i].Label, spec.Nodes[i].Role,
+                    offset + k % columns * cell + w / 2, top + k / columns * rowHeight + h / 2, w, h,
+                    inner.LayerCount));
+            }
+
+            nodes = [.. nodes.OrderBy(p => p.Index)];
+
+            return new GraphLayoutResult(nodes, edges, width, top + rows * rowHeight, GraphLayoutKind.Layered,
+                inner.LayerCount + 1, inner.Crossings);
+        }
+
         private const double NodeHeight = 32;
 
         private static Dictionary<string, int> Validate(GraphDiagramSpec spec)
@@ -313,11 +374,11 @@ namespace Jube.Charting.Diagrams
             var width = maxX - minX + 2 * margin;
             var height = y - layerGap + margin;
 
-            if (width > MaxExtent || height > MaxExtent)
+            if (width > spec.MaxExtent || height > spec.MaxExtent)
             {
                 throw new DiagramTooLargeException("graph extent in pixels",
                     (long)Math.Ceiling(Math.Max(width, height)),
-                    (long)MaxExtent, "Too many nodes on one level to draw legibly; keep the strongest structure only.");
+                    (long)spec.MaxExtent, "Too many nodes on one level to draw legibly; keep the strongest structure only.");
             }
 
             var dx = margin - minX;

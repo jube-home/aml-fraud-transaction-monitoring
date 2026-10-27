@@ -51,5 +51,13 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(22)] public string NotificationSubject { get; set; }
         [Column] [Nullable] [Key(23)] public string NotificationBody { get; set; }
         [Column] [Nullable] [Key(24)] public byte? Priority { get; set; }
+        [Column] [Key(25)] public byte OutcomeId { get; set; }
+        [Column] [Nullable] [Key(26)] public int? MaxDwellMinutes { get; set; }
+        [Column] [Nullable] [Key(27)] public byte? EscalationTriggerId { get; set; }
+        [Column] [Nullable] [Key(28)] public int? EscalationThreshold { get; set; }
+        [Column] [Nullable] [Key(29)] public Guid? EscalationTargetCaseWorkflowStatusGuid { get; set; }
+        [Column] [Key(30)] public byte EscalationReleaseLock { get; set; }
+
+        [Column] [Nullable] [Key(31)] public string Sql { get; set; }
     }
 }

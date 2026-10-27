@@ -46,7 +46,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         private static EntityAnalysisModelActivationRule NewRule(int id = 1, bool visible = true,
-            bool enableResponseElevation = true, double responseElevation = 0)
+            bool enableResponseElevation = true, int responseElevation = 0)
         {
             return new EntityAnalysisModelActivationRule
             {

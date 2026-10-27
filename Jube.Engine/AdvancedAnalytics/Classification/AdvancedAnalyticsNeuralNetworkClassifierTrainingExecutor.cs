@@ -46,7 +46,7 @@ namespace Jube.Engine.AdvancedAnalytics.Classification
         private readonly AdvancedAnalyticsExecutionMessages messages =
             messages ?? new AdvancedAnalyticsExecutionMessages();
 
-        private readonly AdvancedAnalyticsTrainedModelRepository models = new(dbContext, tenantRegistryId, userName);
+        private readonly AskJoobyAnalyticsTrainedModelRepository models = new(dbContext, tenantRegistryId, userName);
         private readonly AdvancedAnalyticsTrainingRunRepository runs = new(dbContext, tenantRegistryId, userName);
 
         private readonly IAdvancedAnalyticsTrainingTrace trace =
@@ -55,7 +55,7 @@ namespace Jube.Engine.AdvancedAnalytics.Classification
         private readonly AdvancedAnalyticsTrainingRunVariableRepository variables = new(dbContext, tenantRegistryId,
             userName);
 
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions = new(dbContext, tenantRegistryId,
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions = new(dbContext, tenantRegistryId,
             userName);
 
         public Func<double[][], int[], string[], NeuralNetworkClassifierOptions, CancellationToken,
@@ -214,13 +214,13 @@ namespace Jube.Engine.AdvancedAnalytics.Classification
             var evidenceJson = AdvancedAnalyticsEvidenceJson.Serialise(result.ToEvidence());
             var variablesJson = VariablesJsonOf(arguments, result.Variables);
 
-            AdvancedAnalyticsTrainedModel model;
-            AdvancedAnalyticsTrainedModelVersion version;
+            AskJoobyAnalyticsTrainedModel model;
+            AskJoobyAnalyticsTrainedModelVersion version;
             var createdModel = false;
 
             var gate = modelNameGates[
                 (StringComparer.OrdinalIgnoreCase.GetHashCode(
-                    $"{tenantRegistryId}:{run.AdvancedAnalyticsInstanceId}:{arguments.ModelName}") & int.MaxValue) %
+                    $"{tenantRegistryId}:{run.AskJoobyAnalyticsInstanceId}:{arguments.ModelName}") & int.MaxValue) %
                 modelNameGates.Length];
 
             await gate.WaitAsync(token).ConfigureAwait(false);
@@ -229,16 +229,16 @@ namespace Jube.Engine.AdvancedAnalytics.Classification
             {
                 await BoundaryAsync(run, token).ConfigureAwait(false);
 
-                var existing = (await models.ListAsync(run.AdvancedAnalyticsInstanceId, token).ConfigureAwait(false))
+                var existing = (await models.ListAsync(run.AskJoobyAnalyticsInstanceId, token).ConfigureAwait(false))
                     .FirstOrDefault(m => m.KindId == AdvancedAnalyticsKind.Classifier
                                          && string.Equals(m.Name, arguments.ModelName,
                                              StringComparison.OrdinalIgnoreCase));
 
                 if (existing == null)
                 {
-                    model = await models.InsertAsync(new AdvancedAnalyticsTrainedModel
+                    model = await models.InsertAsync(new AskJoobyAnalyticsTrainedModel
                     {
-                        AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                        AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                         Name = arguments.ModelName!,
                         KindId = AdvancedAnalyticsKind.Classifier,
                         SourceId = AdvancedAnalyticsSource.Agent,
@@ -254,9 +254,9 @@ namespace Jube.Engine.AdvancedAnalytics.Classification
 
                 try
                 {
-                    version = await versions.InsertAsync(new AdvancedAnalyticsTrainedModelVersion
+                    version = await versions.InsertAsync(new AskJoobyAnalyticsTrainedModelVersion
                     {
-                        AdvancedAnalyticsTrainedModelId = model.Id,
+                        AskJoobyAnalyticsTrainedModelId = model.Id,
                         ModelJson = result.SnapshotJson,
                         VariablesJson = variablesJson,
                         MetricsJson = evidenceJson,

@@ -52,7 +52,7 @@ namespace Jube.Test.Service.Agent
         {
             var services = ListingServices().ToList();
 
-            services.Should().HaveCount(40);
+            services.Should().HaveCount(41);
 
             foreach (var service in services)
             {

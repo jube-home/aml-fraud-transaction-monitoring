@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelActivationRule
 {
     [FormEndpoint("EntityAnalysisModelActivationRule")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.ActivationRule, ScriptType = nameof(RuleScriptTypeId), Builder = nameof(BuilderRuleScript), BuilderJson = nameof(Json), Coder = nameof(CoderRuleScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -31,7 +34,6 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
     [FormGroup("Override", Order = 40)]
     [FormGroup("Case Workflow", Order = 50)]
     [FormGroup("Response Elevation", Order = 60)]
-    [FormGroup("Notification", Order = 70, Collapsed = true)]
     [FormGroup("TTL Counter", Order = 80, Collapsed = true)]
     [FormGroup("Output and Sampling", Order = 90)]
     [FormGroup("Activity", Order = 95, Collapsed = true)]
@@ -44,7 +46,7 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Activation Rule. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. High value cross-border payment")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -59,13 +61,12 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]
         [FormField(Group = "Rule", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
         public int RuleScriptTypeId { get; set; }
 
         [Description("The hand-written Coder-surface source for this rule. Required when RuleScriptTypeId is 2 " +
                      "(Coder); not required when RuleScriptTypeId is 1 (Builder).")]
         [FormField(Group = "Rule", Order = 40)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 2)]
         public string? CoderRuleScript { get; set; }
 
         [Description("When true, this Activation Rule's matches are eligible for override (see the separate " +
@@ -76,10 +77,10 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
 
         [Description("When true, an Override against this Activation Rule may be of kind Force, which treats " +
                      "the rule as matched for the overridden value without evaluating it, so its Response " +
-                     "Elevation, Case and Notification all fire. Withheld by default, because forcing a rule " +
+                     "Elevation and Case both fire. Withheld by default, because forcing a rule " +
                      "raises consequences whereas suppressing one only withholds them.")]
         [FormField(Group = "Override", Order = 20, Widget = "switch")]
-        [EnabledWhen(nameof(EnableOverride), ConditionOp.Equals, true)]
+        [EnabledWhen(nameof(EnableOverride), true)]
         [NewDefault(false)]
         public bool EnableForce { get; set; }
 
@@ -87,12 +88,12 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
                      "Activation Rule relate to. An Override bound on any other key is ignored. Leave empty to " +
                      "accept an Override on any override-enabled key, which is only sensible for a rule that " +
                      "is not tied to one field. A rule needing more than one key is two rules.")]
-        [FormField(Group = "Override", Order = 30)]
-        [EnabledWhen(nameof(EnableOverride), ConditionOp.Equals, true)]
+        [FormField(Group = "Override", Order = 30, Placeholder = "e.g. AccountId")]
+        [EnabledWhen(nameof(EnableOverride), true)]
         public string? OverrideKey { get; set; }
 
         [Description("When true, a Case is created as a consequence of this Activation Rule matching.")]
-        [FormField(Group = "Case Workflow", Order = 10, Widget = "switch")]
+        [FormField(Group = "Case Workflow", Order = 10, Widget = "switch", Label = "Cases")]
         [NewDefault(false)]
         public bool EnableCaseWorkflow { get; set; }
 
@@ -143,6 +144,7 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         [VisibleWhen(nameof(EnableCaseWorkflow), true)]
         [VisibleWhen(nameof(EnableBypass), true)]
         [NewDefault('h')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day, IntervalUnit.Month)]
         public char BypassSuspendInterval { get; set; } = 'h';
 
         [Description("The interval value, taken together with BypassSuspendInterval, for the purpose of setting " +
@@ -159,22 +161,25 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         [NewDefault(false)]
         public bool EnableResponseElevation { get; set; }
 
-        [Description("The upwardly-moving numeric value reported in the response payload such that a " +
-                     "consolidated response (e.g. a transaction decline) can be inferred. Enforced when " +
-                     "EnableResponseElevation is true.")]
-        [FormField(Group = "Response Elevation", Order = 20, Widget = "number")]
+        [Description("The integer response elevation level reported in the response payload such that a " +
+                     "consolidated response (e.g. a transaction decline or hold) can be inferred. It must fall " +
+                     "inside an active Response Elevation Range of the Model, picked by name, otherwise the " +
+                     "elevation is not sent out. Enforced when EnableResponseElevation is true.")]
+        [FormField(Group = "Response Elevation", Order = 20, Widget = "select")]
         [VisibleWhen(nameof(EnableResponseElevation), true)]
+        [Lookup("/api/EntityAnalysisModelResponseElevationRange/ByEntityAnalysisModelId", TextField = "label",
+            ValueField = "minimum", UpperField = "maximum", ParentField = nameof(EntityAnalysisModelId))]
         [NewDefault(0)]
-        public double ResponseElevation { get; set; }
+        public int ResponseElevation { get; set; }
 
         [Description("Free text detailing the Activation Rule match -- for example, the message to be served to " +
                      "the customer in an online fraud prevention implementation.")]
-        [FormField(Group = "Response Elevation", Order = 30, Widget = "textarea")]
+        [FormField(Group = "Response Elevation", Order = 30, Widget = "textarea", Placeholder = "e.g. This transaction needs verification.")]
         [VisibleWhen(nameof(EnableResponseElevation), true)]
         public string? ResponseElevationContent { get; set; }
 
         [Description("A URL to redirect the user or advertising exchange to on this Activation Rule matching.")]
-        [FormField(Group = "Response Elevation", Order = 40)]
+        [FormField(Group = "Response Elevation", Order = 40, Placeholder = "https://example.com/verify")]
         [VisibleWhen(nameof(EnableResponseElevation), true)]
         public string? ResponseElevationRedirect { get; set; }
 
@@ -199,7 +204,7 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
 
         [Description("The fore colour (hex) sent to the Activation Watcher and response payload. Required when " +
                      "EnableResponseElevation and SendToActivationWatcher are both true.")]
-        [FormField(Group = "Response Elevation", Order = 70, Widget = "color")]
+        [FormField(Group = "Response Elevation", Order = 70, Widget = "colour")]
         [VisibleWhen(nameof(EnableResponseElevation), true)]
         [VisibleWhen(nameof(SendToActivationWatcher), true)]
         [RequiredWhen(nameof(EnableResponseElevation), true)]
@@ -208,50 +213,20 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
 
         [Description("The back colour (hex) sent to the Activation Watcher and response payload. Required when " +
                      "EnableResponseElevation and SendToActivationWatcher are both true.")]
-        [FormField(Group = "Response Elevation", Order = 80, Widget = "color")]
+        [FormField(Group = "Response Elevation", Order = 80, Widget = "colour")]
         [VisibleWhen(nameof(EnableResponseElevation), true)]
         [VisibleWhen(nameof(SendToActivationWatcher), true)]
         [RequiredWhen(nameof(EnableResponseElevation), true)]
         [RequiredWhen(nameof(SendToActivationWatcher), true)]
         public string? ResponseElevationBackColor { get; set; }
 
-        [Description("When true, an asynchronous Notification (Email or SMS) is dispatched on this Activation " +
-                     "Rule matching.")]
-        [FormField(Group = "Notification", Order = 10, Widget = "switch")]
-        [NewDefault(false)]
-        public bool EnableNotification { get; set; }
-
-        [Description("The Notification channel: 1 Email, 2 SMS. Enforced when EnableNotification is true.")]
-        [FormField(Group = "Notification", Order = 20, Widget = "radio")]
-        [VisibleWhen(nameof(EnableNotification), true)]
-        [NewDefault(1)]
-        public int NotificationTypeId { get; set; }
-
-        [Description("The destination address (email address or phone number) for the Notification. " +
-                     "Required when EnableNotification is true.")]
-        [FormField(Group = "Notification", Order = 30)]
-        [VisibleWhen(nameof(EnableNotification), true)]
-        public string? NotificationDestination { get; set; }
-
-        [Description("The tokenized subject -- tokens are replaced with values from the Payload -- for an Email " +
-                     "Notification.")]
-        [FormField(Group = "Notification", Order = 40)]
-        [VisibleWhen(nameof(EnableNotification), true)]
-        public string? NotificationSubject { get; set; }
-
-        [Description("The tokenized body -- tokens are replaced with values from the Payload -- for the " +
-                     "Notification.")]
-        [FormField(Group = "Notification", Order = 50, Widget = "textarea")]
-        [VisibleWhen(nameof(EnableNotification), true)]
-        public string? NotificationBody { get; set; }
-
         [Description("When true, TTL Counter incrementation occurs on this Activation Rule matching.")]
-        [FormField(Group = "TTL Counter", Order = 10, Widget = "switch")]
+        [FormField(Group = "TTL Counter", Order = 10, Widget = "switch", Label = "Increment TTL counter")]
         [NewDefault(false)]
         public bool EnableTtlCounter { get; set; }
 
         [Description("The Model containing the TTL Counter to increment. Required when EnableTtlCounter is true.")]
-        [FormField(Group = "TTL Counter", Order = 20, Widget = "select")]
+        [FormField(Group = "TTL Counter", Order = 20, Widget = "select", Label = "Model")]
         [VisibleWhen(nameof(EnableTtlCounter), true)]
         [RequiredWhen(nameof(EnableTtlCounter), true)]
         [Lookup("/api/EntityAnalysisModel", TextField = "name", ValueField = "guid")]
@@ -259,7 +234,7 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
 
         [Description("The TTL Counter, configured on the selected Model, to be incremented. Required when " +
                      "EnableTtlCounter is true.")]
-        [FormField(Group = "TTL Counter", Order = 30, Widget = "select")]
+        [FormField(Group = "TTL Counter", Order = 30, Widget = "select", Label = "TTL counter")]
         [VisibleWhen(nameof(EnableTtlCounter), true)]
         [RequiredWhen(nameof(EnableTtlCounter), true)]
         [Lookup("/api/EntityAnalysisModelTtlCounter/ByEntityAnalysisModelGuid", TextField = "name",
@@ -331,13 +306,13 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
                      "False otherwise. Required when RuleScriptTypeId is 1 (Builder); not required when " +
                      "RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 20)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string BuilderRuleScript { get; set; } = string.Empty;
 
         [Description("The Query Builder JSON definition backing BuilderRuleScript. Required when RuleScriptTypeId " +
                      "is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 30)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string Json { get; set; } = string.Empty;
 
         [Description("Server-assigned row identifier. Read-only.")]

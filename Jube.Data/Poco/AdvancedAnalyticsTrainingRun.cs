@@ -31,7 +31,7 @@ namespace Jube.Data.Poco
 
         [Column] [Key(1)] public Guid Guid { get; set; }
         [Column] [Key(2)] public int TenantRegistryId { get; set; }
-        [Column] [Key(3)] public int AdvancedAnalyticsInstanceId { get; set; }
+        [Column] [Key(3)] public int AskJoobyAnalyticsInstanceId { get; set; }
         [Column] [Nullable] [Key(4)] public string UserName { get; set; }
         [Column] [Key(5)] public AdvancedAnalyticsKind KindId { get; set; }
         [Column] [Key(6)] public AdvancedAnalyticsJobMode JobMode { get; set; }

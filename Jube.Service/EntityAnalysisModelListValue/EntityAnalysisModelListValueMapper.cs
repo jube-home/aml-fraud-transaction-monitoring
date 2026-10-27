@@ -51,6 +51,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
         {
             return new ListValuePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelListId = dto.EntityAnalysisModelListId,
                 ListValue = dto.ListValue,

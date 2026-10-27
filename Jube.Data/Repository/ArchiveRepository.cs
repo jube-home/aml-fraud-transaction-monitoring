@@ -23,6 +23,8 @@ namespace Jube.Data.Repository
     using LinqToDB.Data;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Models.Hold;
+    using Jube.Dto.Hold;
     using Poco;
 
     public class ArchiveRepository(DbContext dbContext)
@@ -46,11 +48,9 @@ namespace Jube.Data.Repository
             return archive;
         }
 
-        public async Task UpdateAsync(Archive model, CancellationToken token = default)
+        private Task VersionAsync(Guid guid, CancellationToken token)
         {
-            var guid = model.EntityAnalysisModelInstanceEntryGuid;
-
-            await dbContext.Archive
+            return dbContext.Archive
                 .Where(w => w.EntityAnalysisModelInstanceEntryGuid == guid)
                 .InsertAsync(dbContext.ArchiveVersion, existing => new ArchiveVersion
                 {
@@ -67,7 +67,77 @@ namespace Jube.Data.Repository
                     Version = existing.Version,
                     EntityAnalysisModelsReprocessingRuleInstanceId =
                         existing.EntityAnalysisModelsReprocessingRuleInstanceId
-                }, token).ConfigureAwait(false);
+                }, token);
+        }
+
+        public async Task<HoldUpdate> UpdateHoldAsync(Guid entityAnalysisModelInstanceEntryGuid,
+            Func<ResponseHold, Task<ResponseHold>> change, CancellationToken token = default)
+        {
+            await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
+            try
+            {
+                await DataConnectionExtensions.ExecuteAsync(dbContext,
+                    "SELECT pg_advisory_xact_lock(hashtext(@guid))", token,
+                    new DataParameter("guid", entityAnalysisModelInstanceEntryGuid.ToString())).ConfigureAwait(false);
+
+                var archive = await dbContext.Archive.FirstOrDefaultAsync(w =>
+                    w.EntityAnalysisModelInstanceEntryGuid == entityAnalysisModelInstanceEntryGuid, token)
+                    .ConfigureAwait(false);
+
+                if (archive == null)
+                {
+                    await dbContext.RollbackTransactionAsync(token).ConfigureAwait(false);
+
+                    return new HoldUpdate(null, null);
+                }
+
+                var hold = ResponseHoldJson.Read(archive.Json);
+
+                if (hold == null)
+                {
+                    await dbContext.RollbackTransactionAsync(token).ConfigureAwait(false);
+
+                    return new HoldUpdate(archive, null);
+                }
+
+                var changed = await change(hold).ConfigureAwait(false);
+                var json = ResponseHoldJson.Write(archive.Json, changed);
+
+                await VersionAsync(entityAnalysisModelInstanceEntryGuid, token).ConfigureAwait(false);
+
+                await dbContext.Archive
+                    .Where(w => w.EntityAnalysisModelInstanceEntryGuid == entityAnalysisModelInstanceEntryGuid)
+                    .Set(s => s.Json, json)
+                    .Set(s => s.Version, s => (s.Version ?? 0) + 1)
+                    .UpdateAsync(token).ConfigureAwait(false);
+
+                archive.Json = json;
+                archive.Version = (archive.Version ?? 0) + 1;
+
+                await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
+
+                return new HoldUpdate(archive, changed);
+            }
+            catch
+            {
+                await dbContext.RollbackTransactionAsync(token).ConfigureAwait(false);
+
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync(Archive model, CancellationToken token = default)
+        {
+            var guid = model.EntityAnalysisModelInstanceEntryGuid;
+
+            var existingJson = await dbContext.Archive
+                .Where(w => w.EntityAnalysisModelInstanceEntryGuid == guid)
+                .Select(s => s.Json).FirstOrDefaultAsync(token).ConfigureAwait(false);
+
+            model.Json = ResponseHoldJson.Preserve(existingJson, model.Json);
+
+            await VersionAsync(guid, token).ConfigureAwait(false);
 
             var updated = await dbContext.Archive
                 .Where(w => w.EntityAnalysisModelInstanceEntryGuid == guid)
@@ -111,7 +181,9 @@ namespace Jube.Data.Repository
                 token, new DataParameter("guids", guids)).ConfigureAwait(false);
 
             return await dbContext.QueryToListAsync<Guid>(
-                "UPDATE \"Archive\" a SET \"Json\" = v.json::jsonb, \"ResponseElevation\" = v.elevation, " +
+                "UPDATE \"Archive\" a SET \"Json\" = CASE WHEN jsonb_exists(a.\"Json\", 'hold') " +
+                "THEN (v.json::jsonb - 'hold') || jsonb_build_object('hold', a.\"Json\" -> 'hold') " +
+                "ELSE v.json::jsonb END, \"ResponseElevation\" = v.elevation, " +
                 "\"EntityAnalysisModelActivationRuleId\" = v.rule, \"ActivationRuleCount\" = v.rules, " +
                 "\"EntryKeyValue\" = v.entry, \"EntityAnalysisModelsReprocessingRuleInstanceId\" = v.instance, " +
                 "\"Version\" = COALESCE(a.\"Version\", 0) + 1, \"CreatedDate\" = @now " +

@@ -15,6 +15,7 @@ namespace Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValid
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -22,11 +23,12 @@ namespace Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValid
     using LinqToDB;
     using log4net;
     using Microsoft.Extensions.Logging.Abstractions;
-    using Npgsql;
     using Poco;
-    using Reporting;
     using Repository;
-    using Repository.Exceptions;
+    using IntrospectQuery =
+        Jube.Data.Query.IntrospectVisualisationRegistryDatasourceQuery.IntrospectVisualisationRegistryDatasourceQuery;
+    using IntrospectColumn =
+        Jube.Data.Query.IntrospectVisualisationRegistryDatasourceQuery.IntrospectVisualisationRegistryDatasourceQueryDto;
 
     public class CreateOrUpdateVisualisationRegistryDatasourceWithValidationQuery(
         DbContext dbContext,
@@ -35,67 +37,67 @@ namespace Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValid
     {
         public Task<VisualisationRegistryDatasource> ExecuteAsync(VisualisationRegistryDatasource model,
             bool isUpdate, ILog log, string interpolationConnectionString,
-            IReadOnlyDictionary<string, string> allowedTables = null, CancellationToken token = default)
+            IReadOnlyDictionary<string, string> allowedTables = null,
+            IReadOnlyDictionary<int, IReadOnlyList<string>> roleColumns = null, CancellationToken token = default)
         {
             return isUpdate
-                ? UpdateWithValidationAsync(model, log, interpolationConnectionString, allowedTables, token)
-                : InsertWithValidationAsync(model, log, interpolationConnectionString, allowedTables, token);
+                ? UpdateWithValidationAsync(model, log, interpolationConnectionString, allowedTables, roleColumns,
+                    token)
+                : InsertWithValidationAsync(model, log, interpolationConnectionString, allowedTables, roleColumns,
+                    token);
         }
 
         private async Task<VisualisationRegistryDatasource> InsertWithValidationAsync(
             VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            IReadOnlyDictionary<string, string> allowedTables, CancellationToken token)
+            IReadOnlyDictionary<string, string> allowedTables,
+            IReadOnlyDictionary<int, IReadOnlyList<string>> roleColumns, CancellationToken token)
         {
             if (model.VisualisationRegistryId == null)
             {
                 return model;
             }
 
-            Dictionary<string, string> columns;
-
-            try
-            {
-                columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log, allowedTables).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                log.Info("VisualisationRegistryDatasource: the SQL command was rejected: " + e.Message);
-                throw new SqlValidationFailedException(SanitiseSqlError(e));
-            }
+            var columns = await new IntrospectQuery(dbContext, tenantRegistryId)
+                .ExecuteAsync(model.VisualisationRegistryId.Value, model.Command, interpolationConnectionString,
+                    log, allowedTables, token).ConfigureAwait(false);
 
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
 
-            await FillSeriesAsync(model.Id, columns, token);
+            await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
+                await FillSeriesAsync(model.Id, columns, roleColumns, token).ConfigureAwait(false);
+
+                await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await dbContext.RollbackTransactionAsync(CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
 
             return model;
         }
 
         private async Task<VisualisationRegistryDatasource> UpdateWithValidationAsync(
             VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            IReadOnlyDictionary<string, string> allowedTables, CancellationToken token)
+            IReadOnlyDictionary<string, string> allowedTables,
+            IReadOnlyDictionary<int, IReadOnlyList<string>> roleColumns, CancellationToken token)
         {
             if (model.VisualisationRegistryId == null)
             {
                 return model;
             }
 
-            Dictionary<string, string> columns;
-
-            try
-            {
-                columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log, allowedTables).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                log.Info("VisualisationRegistryDatasource: the SQL command was rejected: " + e.Message);
-                throw new SqlValidationFailedException(SanitiseSqlError(e));
-            }
+            var columns = await new IntrospectQuery(dbContext, tenantRegistryId)
+                .ExecuteAsync(model.VisualisationRegistryId.Value, model.Command, interpolationConnectionString,
+                    log, allowedTables, token).ConfigureAwait(false);
 
             var existing = await dbContext.VisualisationRegistryDatasource
                 .FirstOrDefaultAsync(w => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
@@ -116,8 +118,6 @@ namespace Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValid
             model.UpdatedDate = DateTime.UtcNow;
             model.ImportId = existing.ImportId;
 
-            await dbContext.UpdateAsync(model, token: token).ConfigureAwait(false);
-
             var mapper = new Mapper(new MapperConfiguration(
                 cfg => { cfg.CreateMap<VisualisationRegistryDatasource, VisualisationRegistryDatasourceVersion>(); },
                 NullLoggerFactory.Instance));
@@ -125,127 +125,62 @@ namespace Jube.Data.Query.CreateOrUpdateVisualisationRegistryDatasourceWithValid
             var audit = mapper.Map<VisualisationRegistryDatasourceVersion>(existing);
             audit.VisualisationRegistryDatasourceId = existing.Id;
 
-            await dbContext.InsertAsync(audit, token: token).ConfigureAwait(false);
+            await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
 
-            await FillSeriesAsync(model.Id, columns, token);
+            try
+            {
+                await dbContext.UpdateAsync(model, token: token).ConfigureAwait(false);
+
+                await dbContext.InsertAsync(audit, token: token).ConfigureAwait(false);
+
+                await FillSeriesAsync(model.Id, columns, roleColumns, token).ConfigureAwait(false);
+
+                await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await dbContext.RollbackTransactionAsync(CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
 
             return model;
         }
 
-        private async Task FillSeriesAsync(int id, Dictionary<string, string> columns,
-            CancellationToken token = default)
+        private async Task FillSeriesAsync(int id, List<IntrospectColumn> columns,
+            IReadOnlyDictionary<int, IReadOnlyList<string>> roleColumns, CancellationToken token)
         {
-            await dbContext.BeginTransactionAsync(token);
+            await new VisualisationRegistryDatasourceSeriesRepository(dbContext)
+                .DeleteByVisualisationRegistryDatasourceIdAsync(id).ConfigureAwait(false);
 
-            var visualisationRegistryDatasourceSeriesRepository =
-                new VisualisationRegistryDatasourceSeriesRepository(dbContext);
-
-            await visualisationRegistryDatasourceSeriesRepository.DeleteByVisualisationRegistryDatasourceIdAsync(id);
-
-            foreach (var (key, value) in columns)
+            foreach (var column in columns)
             {
-                var visualisationRegistryDatasourceSeries = new VisualisationRegistryDatasourceSeries
+                int? roleId = null;
+                int? roleOrder = null;
+
+                foreach (var (role, names) in roleColumns ?? new Dictionary<int, IReadOnlyList<string>>())
+                {
+                    var position = names.ToList().IndexOf(column.Name);
+
+                    if (position < 0)
+                    {
+                        continue;
+                    }
+
+                    roleId = role;
+                    roleOrder = position + 1;
+                    break;
+                }
+
+                await dbContext.InsertAsync(new VisualisationRegistryDatasourceSeries
                 {
                     VisualisationRegistryDatasourceId = id,
-                    Name = key
-                };
-
-                switch (value)
-                {
-                    case "integer":
-                    case "bigint":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 2;
-                        break;
-                    case "double precision":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 3;
-                        break;
-                    default:
-                    {
-                        if (value.Contains("timestamp"))
-                        {
-                            visualisationRegistryDatasourceSeries.DataTypeId = 4;
-                        }
-                        else
-                        {
-                            visualisationRegistryDatasourceSeries.DataTypeId = value switch
-                            {
-                                "smallint" => 5,
-                                "double precision[]" => 6,
-                                _ => value.EndsWith("[]") ? 7 : 1
-                            };
-                        }
-
-                        break;
-                    }
-                }
-
-                await dbContext.InsertAsync(visualisationRegistryDatasourceSeries, token: token);
-                await dbContext.CommitTransactionAsync(token);
+                    Name = column.Name,
+                    DataTypeId = (int)column.DataType,
+                    Ordinal = column.Ordinal,
+                    RoleId = roleId,
+                    RoleOrder = roleOrder
+                }, token: token).ConfigureAwait(false);
             }
-        }
-
-        private static string SanitiseSqlError(Exception e)
-        {
-            if (e is InvalidOperationException)
-            {
-                return e.Message.Contains("is not permitted in this query")
-                    ? e.Message
-                    : "The SQL command must be a single SELECT statement that uses no blocked statement, function or table.";
-            }
-
-            for (var inner = e; inner != null; inner = inner.InnerException)
-            {
-                if (inner is not PostgresException postgresException)
-                {
-                    continue;
-                }
-
-                var message =
-                    $"The reporting database rejected the SQL command: {postgresException.MessageText} ({postgresException.SqlState}).";
-
-                return string.IsNullOrWhiteSpace(postgresException.Hint)
-                    ? message
-                    : $"{message} {postgresException.Hint}";
-            }
-
-            return "The SQL command was rejected by the reporting database.";
-        }
-
-        private async Task<Dictionary<string, string>> ValidateSeriesAsync(int visualisationRegistryId, string sql,
-            string interpolationConnectionString, ILog log, IReadOnlyDictionary<string, string> allowedTables)
-        {
-            var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(dbContext);
-
-            var parameters =
-                await visualisationRegistryParameterRepository.GetByVisualisationRegistryIdOrderByIdAsync(
-                    visualisationRegistryId);
-
-            var parametersDefaultValues = new Dictionary<string, object>();
-
-            foreach (var parameter in parameters)
-            {
-                object defaultValue = parameter.DataTypeId switch
-                {
-                    1 => "",
-                    2 => 0,
-                    3 => 0d,
-                    4 => new DateTime(),
-                    5 => true,
-                    _ => ""
-                };
-
-                parametersDefaultValues.Add(parameter.Name.Replace(" ", "_"), defaultValue);
-            }
-
-            using var postgres = new Postgres(interpolationConnectionString, log, allowedTables == null);
-
-            if (allowedTables == null)
-            {
-                return await postgres.IntrospectAsync(sql, parametersDefaultValues).ConfigureAwait(false);
-            }
-
-            return await postgres.IntrospectWithTableTokenSwitchAsync(sql, parametersDefaultValues, allowedTables)
-                .ConfigureAwait(false);
         }
     }
 }

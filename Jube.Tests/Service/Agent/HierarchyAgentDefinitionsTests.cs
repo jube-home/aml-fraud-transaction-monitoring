@@ -31,8 +31,8 @@ namespace Jube.Test.Service.Agent
         public void TheHierarchyIsRegisteredAlongsideTheOriginalThreeAgents()
         {
             AgentDefinitions.All.Should().ContainKeys("general", "researcher", "validator", "web-researcher");
-            AgentDefinitions.All.Count.Should().Be(225);
-            AgentDefinitions.HierarchyToolNames.Should().HaveCount(166);
+            AgentDefinitions.All.Count.Should().Be(233);
+            AgentDefinitions.HierarchyToolNames.Should().HaveCount(174);
         }
 
         [Fact]

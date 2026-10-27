@@ -45,4 +45,7 @@
     <data name="ScheduleDateTooFarInFuture" xml:space="preserve">
     <value>La date de planification ne peut pas dépasser un an dans le futur.</value>
   </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Le modèle à synchroniser est introuvable dans ce locataire.</value>
+  </data>
 </root>

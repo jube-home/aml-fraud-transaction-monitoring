@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Options;
 using Jube.Data.Repository.Models;
 using System;
 

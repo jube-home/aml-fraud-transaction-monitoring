@@ -35,7 +35,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
     {
         private const string User = "ZzTestUser";
 
-        private async Task<(AdvancedAnalyticsInstance Instance, AdvancedAnalyticsTrainingRun Run)> NewPairAsync(
+        private async Task<(AskJoobyAnalyticsInstance Instance, AdvancedAnalyticsTrainingRun Run)> NewPairAsync(
             int tenant)
         {
             var instance = await NewInstanceAsync(tenant);
@@ -55,7 +55,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
                 await repository.InsertAsync(new AdvancedAnalyticsTrainingRunStep
                 {
                     AdvancedAnalyticsTrainingRunId = run.Id,
-                    AdvancedAnalyticsInstanceId = int.MaxValue,
+                    AskJoobyAnalyticsInstanceId = int.MaxValue,
                     TenantRegistryId = TenantB,
                     StepOrder = (int)step,
                     Step = step,
@@ -68,7 +68,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
             listed.Select(s => s.Step).Should().Equal(Enum.GetValues<AdvancedAnalyticsStep>());
 
             listed.Should().OnlyContain(o =>
-                o.TenantRegistryId == TenantA && o.AdvancedAnalyticsInstanceId == instance.Id);
+                o.TenantRegistryId == TenantA && o.AskJoobyAnalyticsInstanceId == instance.Id);
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
 
             (await repository.ListByRunIdAsync(run.Id)).Should().BeEmpty();
 
-            Db.AdvancedAnalyticsTrainingRunMetric.Count(w => w.AdvancedAnalyticsInstanceId == instance.Id)
+            Db.AdvancedAnalyticsTrainingRunMetric.Count(w => w.AskJoobyAnalyticsInstanceId == instance.Id)
                 .Should().Be(0);
         }
 
@@ -480,7 +480,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
             var step = new AdvancedAnalyticsTrainingRunStep
             {
                 TenantRegistryId = TenantA,
-                AdvancedAnalyticsInstanceId = int.MaxValue,
+                AskJoobyAnalyticsInstanceId = int.MaxValue,
                 AdvancedAnalyticsTrainingRunId = run.Id,
                 StepOrder = 1,
                 Step = AdvancedAnalyticsStep.Load,
@@ -491,7 +491,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
             var violation = await wrongInstance.Should().ThrowAsync<PostgresException>();
             violation.Which.SqlState.Should().Be("23503");
 
-            step.AdvancedAnalyticsInstanceId = instance.Id;
+            step.AskJoobyAnalyticsInstanceId = instance.Id;
             step.AdvancedAnalyticsTrainingRunId = int.MaxValue;
             var wrongRun = () => Db.InsertAsync(step);
             (await wrongRun.Should().ThrowAsync<PostgresException>()).Which.SqlState.Should().Be("23503");
@@ -503,7 +503,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
                                                  on kcu.constraint_name = tc.constraint_name
                                                where tc.constraint_type = 'FOREIGN KEY'
                                                  and kcu.column_name in
-                                                     ('AdvancedAnalyticsInstanceId','AdvancedAnalyticsTrainingRunId')
+                                                     ('AskJoobyAnalyticsInstanceId','AdvancedAnalyticsTrainingRunId')
                                                """).ToList();
 
             foreach (var table in new[]
@@ -511,12 +511,12 @@ namespace Jube.Test.AdvancedAnalytics.Repository
                          "Step", "Trial", "Iteration", "Variable", "Metric", "CurvePoint"
                      })
             {
-                foreignKeys.Should().Contain($"AdvancedAnalyticsTrainingRun{table}:AdvancedAnalyticsInstanceId");
+                foreignKeys.Should().Contain($"AdvancedAnalyticsTrainingRun{table}:AskJoobyAnalyticsInstanceId");
                 foreignKeys.Should().Contain($"AdvancedAnalyticsTrainingRun{table}:AdvancedAnalyticsTrainingRunId");
             }
 
-            foreignKeys.Should().Contain("AdvancedAnalyticsTrainingRun:AdvancedAnalyticsInstanceId");
-            foreignKeys.Should().Contain("AdvancedAnalyticsTrainedModel:AdvancedAnalyticsInstanceId");
+            foreignKeys.Should().Contain("AdvancedAnalyticsTrainingRun:AskJoobyAnalyticsInstanceId");
+            foreignKeys.Should().Contain("AskJoobyAnalyticsTrainedModel:AskJoobyAnalyticsInstanceId");
         }
 
         [Fact]

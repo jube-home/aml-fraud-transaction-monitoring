@@ -32,7 +32,11 @@ namespace Jube.Service.Repository.ActivationWatcher
                 poco.ResponseElevation,
                 poco.BackColor,
                 poco.ForeColor,
-                poco.CreatedDate);
+                poco.CreatedDate,
+                poco.PreviousLatitude,
+                poco.PreviousLongitude,
+                poco.PreviousCreatedDate,
+                poco.ResponseElevationName);
         }
     }
 }

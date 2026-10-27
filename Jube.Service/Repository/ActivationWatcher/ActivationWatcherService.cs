@@ -28,7 +28,7 @@ namespace Jube.Service.Repository.ActivationWatcher
 {
     public sealed class ActivationWatcherService
     {
-        private const int ReplayLimit = 1000;
+        private const int ReplayLimit = 10000;
         private static readonly int[] permissions = [30];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -100,14 +100,21 @@ namespace Jube.Service.Repository.ActivationWatcher
         }
 
         [Description("Replays ActivationWatcher rows (live activation events shown on the map/watcher UI) created " +
-                     "within the given date range, scoped to the caller's tenant, ordered ascending and capped at " +
-                     "1000 rows. Read-only; returns the rows directly in the response.")]
+                     "within the given date range, scoped to the caller's tenant. Returns the most recent 10000 matching " +
+                     "rows, oldest first, so a long window keeps its newest activity. Optionally narrowed to one Key and KeyValue, which replays the journey of one entity. " +
+                     "Read-only; returns the rows directly in the response.")]
         [ServiceOperation("ActivationWatcherReplay", OperationKind.Read, Idempotent = true)]
         public async Task<IReadOnlyList<ActivationWatcherDto>> ReplayAsync(
             [Description("Inclusive lower bound on CreatedDate; null means no lower bound.")]
             DateTimeOffset? dateFrom,
             [Description("Inclusive upper bound on CreatedDate; null means no upper bound.")]
             DateTimeOffset? dateTo,
+            [Description("Only rows with exactly this Key (the response elevation key of the Activation Rule); " +
+                         "null means any key.")]
+            string? key = null,
+            [Description("Only rows with exactly this KeyValue, for example one account or card; null means any " +
+                         "value.")]
+            string? keyValue = null,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("ActivationWatcher", "Replay", userName, tenantRegistryId, auditLog,
@@ -123,7 +130,8 @@ namespace Jube.Service.Repository.ActivationWatcher
                 EnsurePermitted("ActivationWatcher.Replay");
 
                 var rows = await repository.GetByDateRangeAscendingAsync(dateFrom?.UtcDateTime, dateTo?.UtcDateTime,
-                    ReplayLimit, token).ConfigureAwait(false);
+                    ReplayLimit, string.IsNullOrEmpty(key) ? null : key,
+                    string.IsNullOrEmpty(keyValue) ? null : keyValue, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(ActivationWatcherMapper.ToDto).ToList();
 

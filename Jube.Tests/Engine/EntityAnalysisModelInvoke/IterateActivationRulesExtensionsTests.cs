@@ -94,7 +94,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, createCase, prevailingActivationRuleId, items) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             createCase.Should().BeNull();
@@ -110,7 +110,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, items) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             prevailingActivationRuleId.Should().BeNull();
@@ -127,7 +127,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             prevailingActivationRuleId.Should().Be(rule.Id);
@@ -143,7 +143,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             prevailingActivationRuleId.Should().BeNull();
@@ -161,7 +161,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(2);
             prevailingActivationRuleId.Should().Be(second.Id);
@@ -176,7 +176,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, items) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().BeEmpty();
@@ -204,7 +204,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             prevailingActivationRuleId.Should().Be(rule.Id);
@@ -227,7 +227,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
         }
@@ -248,7 +248,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().ContainKey("BlacklistCard");
@@ -270,7 +270,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
-            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             context.EntityAnalysisModelInstanceEntryPayload.Activation["BlacklistCard"].Forced.Should()
                 .BeTrue("the payload must record that the rule was forced rather than matched on its own logic");
@@ -289,7 +289,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
-            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             context.EntityAnalysisModelInstanceEntryPayload.Activation["HighAmount"].Forced.Should().BeFalse();
             rule.ForcedActivationCounter.Should().Be(0);
@@ -332,7 +332,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             prevailingActivationRuleId.Should().BeNull();
@@ -359,7 +359,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
         }
@@ -374,7 +374,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
         }
@@ -387,7 +387,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
-            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             var archiveKey = context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Single();
             archiveKey.Key.Should().Be("ReportedRule");
@@ -403,7 +403,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
-            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().BeEmpty();
         }
@@ -419,7 +419,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             prevailingActivationRuleId.Should().Be(first.Id);
@@ -454,7 +454,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().ContainKey("OverriddenRule");
@@ -488,7 +488,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(0);
             context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().BeEmpty();
@@ -505,7 +505,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (_, createCase, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             createCase.Should().NotBeNull();
             createCase!.CaseWorkflowGuid.Should().Be(first.CaseWorkflowGuid);
@@ -521,7 +521,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, createCase, _, _) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1,
                 "the rule opted into reprocessing, so it is evaluated and counted -- the suppression "
@@ -577,7 +577,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
-                await context.IterateAndProcessAsync(cacheService, availableModels, null);
+                await context.IterateAndProcessAsync(cacheService, availableModels);
 
             activationRuleCount.Should().Be(0, "the rule is suppressed at the model level");
             context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.Should().ContainKey("TxnCount");
@@ -598,7 +598,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, items) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             activationRuleCount.Should().Be(1);
             prevailingActivationRuleId.Should().Be(healthy.Id);
@@ -615,7 +615,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var cacheService = TestCacheService.Create(out _);
 
             var (_, _, _, items) =
-                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels);
 
             items.Should().ContainKey("TimedRule");
             items["TimedRule"].Rule.Should().NotBeNull();

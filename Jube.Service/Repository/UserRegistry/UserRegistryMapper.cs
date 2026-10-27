@@ -50,6 +50,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             return new RulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 RoleRegistryGuid = dto.RoleRegistryGuid,
                 Email = dto.Email,

@@ -34,10 +34,8 @@ namespace Jube.Service.Preservation
         private static readonly int[] permissions = [38];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
-        private readonly bool legacyEncryptionFallback;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly string? preservationSalt;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizerFactory stringLocalizerFactory;
         private readonly IStringLocalizer strings;
@@ -46,13 +44,10 @@ namespace Jube.Service.Preservation
 
         private PreservationService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, IStringLocalizerFactory stringLocalizerFactory, string? preservationSalt,
-            bool legacyEncryptionFallback)
+            IStringLocalizer strings, IStringLocalizerFactory stringLocalizerFactory)
         {
             this.dbContext = dbContext;
             this.stringLocalizerFactory = stringLocalizerFactory;
-            this.preservationSalt = preservationSalt;
-            this.legacyEncryptionFallback = legacyEncryptionFallback;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -65,16 +60,14 @@ namespace Jube.Service.Preservation
         public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<PreservationService> CreateAsync(DbContext dbContext, string? userName, ILog log,
-            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            string? preservationSalt, bool legacyEncryptionFallback, CancellationToken token = default)
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus, CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), preservationSalt, legacyEncryptionFallback, token);
+                LogManager.GetLogger("Jube.Audit"), token);
         }
 
         internal static async Task<PreservationService> CreateAsync(DbContext dbContext, string? userName, ILog log,
-            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus, ILog auditLog,
-            string? preservationSalt, bool legacyEncryptionFallback, CancellationToken token = default)
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(PreservationResources));
 
@@ -105,8 +98,7 @@ namespace Jube.Service.Preservation
                 .ConfigureAwait(false);
 
             return new PreservationService(dbContext, userName, resolvedTenantRegistryId.Value, permissionValidation,
-                log, auditLog, serviceChangeBus, strings, stringLocalizerFactory, preservationSalt,
-                legacyEncryptionFallback);
+                log, auditLog, serviceChangeBus, strings, stringLocalizerFactory);
         }
 
         [Description("Takes a point-in-time snapshot of the caller's own tenant configuration, storing it " +
@@ -129,7 +121,6 @@ namespace Jube.Service.Preservation
                     {
                         Name = "Preservation snapshot",
                         SnapshotSourceId = PreservationSnapshotSource.AskJooby,
-                        Exhaustive = true,
                         Lists = true,
                         Dictionaries = true,
                         Visualisations = true,
@@ -216,7 +207,7 @@ namespace Jube.Service.Preservation
         private Task<PreservationSnapshotService> BuildSnapshotServiceAsync(CancellationToken token)
         {
             return PreservationSnapshotService.CreateAsync(dbContext, userName, log, stringLocalizerFactory,
-                serviceChangeBus, preservationSalt, legacyEncryptionFallback, token);
+                serviceChangeBus, token);
         }
 
         private void EnsurePermitted(string op)

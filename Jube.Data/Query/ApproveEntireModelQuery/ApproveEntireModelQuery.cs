@@ -39,7 +39,8 @@ namespace Jube.Data.Query.ApproveEntireModelQuery
             { "ExhaustiveSearchInstance", EntityApprovalKind.ExhaustiveSearchInstance },
             { "EntityAnalysisModelActivationRule", EntityApprovalKind.EntityAnalysisModelActivationRule },
             { "EntityAnalysisModelTag", EntityApprovalKind.EntityAnalysisModelTag },
-            { "AdvancedAnalyticsInstance", EntityApprovalKind.AdvancedAnalyticsInstance }
+            { "EntityAnalysisModelResponseElevationRange", EntityApprovalKind.EntityAnalysisModelResponseElevationRange },
+            { "AskJoobyAnalyticsInstance", EntityApprovalKind.AskJoobyAnalyticsInstance }
         };
 
         private static readonly Dictionary<string, EntityApprovalKind> byModelGuid = new()
@@ -159,16 +160,16 @@ namespace Jube.Data.Query.ApproveEntireModelQuery
             return dbContext.ExecuteAsync($"""
                                            insert into "EntityApproval" ("TenantRegistryId","EntityApprovalKindId",
                                                "EntityId","EntityVersion","StateId","CreatedDate","CreatedUser","Guid")
-                                           select r."TenantRegistryId", {(int)EntityApprovalKind.AdvancedAnalyticsInstance},
+                                           select r."TenantRegistryId", {(int)EntityApprovalKind.AskJoobyAnalyticsInstance},
                                                r."Id", r."Version", {(int)EntityApprovalState.Approved},
                                                now() at time zone 'utc', @approvedBy, gen_random_uuid()
-                                           from "AdvancedAnalyticsInstance" r
+                                           from "AskJoobyAnalyticsInstance" r
                                            where r."TenantRegistryId" = @tenantRegistryId
                                              and r."EntityAnalysisModelId" is null
                                              and r."Deleted" = 0
                                              and not exists (
                                                  select 1 from "EntityApproval" a
-                                                 where a."EntityApprovalKindId" = {(int)EntityApprovalKind.AdvancedAnalyticsInstance}
+                                                 where a."EntityApprovalKindId" = {(int)EntityApprovalKind.AskJoobyAnalyticsInstance}
                                                    and a."EntityId" = r."Id"
                                                    and a."EntityVersion" = r."Version"
                                                    and a."CreatedUser" = @approvedBy);

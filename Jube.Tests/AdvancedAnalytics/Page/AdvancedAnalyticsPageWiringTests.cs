@@ -23,9 +23,9 @@ namespace Jube.Test.AdvancedAnalytics.Page
     [Trait("Category", "Service")]
     public sealed class AdvancedAnalyticsPageWiringTests
     {
-        private const string Page = "Jube.App/Pages/Model/AdvancedAnalytics.cshtml";
-        private const string PageModel = "Jube.App/Pages/Model/AdvancedAnalytics.cshtml.cs";
-        private const string Script = "Jube.App/wwwroot/js/Model/AdvancedAnalytics.js";
+        private const string Page = "Jube.App/Pages/Model/AskJoobyAnalytics.cshtml";
+        private const string PageModel = "Jube.App/Pages/Model/AskJoobyAnalytics.cshtml.cs";
+        private const string Script = "Jube.App/wwwroot/js/Model/AskJoobyAnalytics.js";
         private const string Styles = "Jube.App/wwwroot/styles/advanced-analytics.css";
         private const string Layout = "Jube.App/Pages/Shared/_Layout.cshtml";
 
@@ -47,10 +47,10 @@ namespace Jube.Test.AdvancedAnalytics.Page
         {
             return
             [
-                "Jube.App/Endpoints/AdvancedAnalytics/AdvancedAnalyticsInstanceEndpoints.cs",
-                "Jube.App/Endpoints/AdvancedAnalytics/AdvancedAnalyticsModelEndpoints.cs",
+                "Jube.App/Endpoints/AskJoobyAnalytics/AskJoobyAnalyticsInstanceEndpoints.cs",
+                "Jube.App/Endpoints/AskJoobyAnalytics/AskJoobyAnalyticsModelEndpoints.cs",
                 "Jube.App/Endpoints/ChartsEndpoints.cs",
-                "Jube.App/Endpoints/AdvancedAnalytics/AdvancedAnalyticsEndpointRunner.cs"
+                "Jube.App/Endpoints/AskJoobyAnalytics/AskJoobyAnalyticsEndpointRunner.cs"
             ];
         }
 
@@ -60,7 +60,7 @@ namespace Jube.Test.AdvancedAnalytics.Page
             var page = Read(Page);
 
             page.Should().Contain("@page");
-            page.Should().Contain("/js/Model/AdvancedAnalytics.js");
+            page.Should().Contain("/js/Model/AskJoobyAnalytics.js");
             page.Should().Contain("/styles/advanced-analytics.css");
 
             foreach (var id in new[]
@@ -124,7 +124,7 @@ namespace Jube.Test.AdvancedAnalytics.Page
 
             foreach (var route in new[]
                      {
-                         "/api/AdvancedAnalyticsInstance", "/api/AdvancedAnalyticsModel",
+                         "/api/AskJoobyAnalyticsInstance", "/api/AskJoobyAnalyticsModel",
                          "/api/Chart/AnalyticsModelVersion", "/ModelDiagram/", "/Calibration/", "/Roc/",
                          "/PromotionEvidence",
                          "/versions", "/api/EntityAnalysisModel", "/active"
@@ -196,10 +196,10 @@ namespace Jube.Test.AdvancedAnalytics.Page
             var layout = Regex.Replace(Read(Layout), @"\s+", "");
 
             layout.Should().Contain(
-                "@if(permissionValidation.Validate([45,46,47,48])){<li><ahref='/Model/AdvancedAnalytics'>AdvancedAnalytics</a></li>}");
+                "@if(permissionValidation.Validate([45,46,47,48])){<li><ahref='/Model/AskJoobyAnalytics'>AskJoobyAnalytics</a></li>}");
 
             var models = layout.IndexOf("Models<ul>", StringComparison.Ordinal);
-            var entry = layout.IndexOf("/Model/AdvancedAnalytics", StringComparison.Ordinal);
+            var entry = layout.IndexOf("/Model/AskJoobyAnalytics", StringComparison.Ordinal);
             models.Should().BeGreaterThan(0);
             entry.Should().BeGreaterThan(models);
         }
@@ -218,8 +218,8 @@ namespace Jube.Test.AdvancedAnalytics.Page
         {
             var startup = Read("Jube.App/Startup.cs");
 
-            startup.Should().Contain("endpoints.MapAdvancedAnalyticsInstanceEndpoints();");
-            startup.Should().Contain("endpoints.MapAdvancedAnalyticsModelEndpoints();");
+            startup.Should().Contain("endpoints.MapAskJoobyAnalyticsInstanceEndpoints();");
+            startup.Should().Contain("endpoints.MapAskJoobyAnalyticsModelEndpoints();");
             startup.Should().Contain("endpoints.MapChartsEndpoints();");
 
             foreach (var path in EndpointFiles().Take(3))
@@ -244,7 +244,8 @@ namespace Jube.Test.AdvancedAnalytics.Page
             Regex.Matches(text, @"group\.MapPut\(").Should().ContainSingle();
             text.Should().Contain("group.MapPut(\"{id:int}/active\", SetActiveAsync)");
 
-            Regex.Matches(text, @"group\.MapPost\(").Should().HaveCount(3);
+            Regex.Matches(text, @"group\.MapPost\(").Should().HaveCount(4);
+            text.Should().Contain("group.MapPost(\"Histogram\", PayloadStatisticsHistogram)");
             text.Should().Contain("group.MapPost(\"Topology/{id:int}\", TopologyWithLiveRelevanceAsync)");
             text.Should().Contain("group.MapPost(\"{id:int}/Resubmit\", ResubmitAsync)");
             text.Should().Contain("group.MapPost(\"{id:int}/Retract\", RetractAsync)");

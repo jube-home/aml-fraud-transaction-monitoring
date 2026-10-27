@@ -34,7 +34,7 @@ using Jube.App.Code.ServiceChange;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
-using Jube.App.Endpoints.AdvancedAnalytics;
+using Jube.App.Endpoints.AskJoobyAnalytics;
 using Jube.App.Endpoints.Mocks;
 using Jube.App.Endpoints.Query;
 using Jube.App.Endpoints.Repository;
@@ -57,6 +57,7 @@ using Jube.Data.Observability;
 using Jube.Data.Observability.NpgsqlEventCounterBridge;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Forms;
 using Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
@@ -75,10 +76,13 @@ using Jube.Service.AskJoobyWebSearch;
 using Jube.Service.Authentication;
 using Jube.Service.Observability;
 using Jube.Service.Observability.OtlpDispatchCounters;
+using Jube.Service.Query.FormModel;
+using Jube.Service.Query.GridModel;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.TaskCancellation;
 using Jube.TaskCancellation.Interfaces;
+using Jube.Validations.EntityAnalysisModelTag;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -117,9 +121,15 @@ namespace Jube.App
         public void ConfigureServices(IServiceCollection services)
         {
             var dynamicEnvironment = AddSingletonForDynamicEnvironmentAndLogging(services, out var log);
+            Jube.Engine.CaseEscalation.CaseStatusDispatchRegistry.Current =
+                new Jube.Service.CaseDispatch.ServiceCaseStatusDispatcher();
             var cancellationTokenProvider = AddSingletonForCancellationToken(services);
             var taskCoordinator = AddSingletonForTaskCoordinator(services, cancellationTokenProvider, log);
             var contractResolver = AddSingletonForJsonSerializationHelper(services);
+
+            services.AddSingleton(FormModelRegistry.Build(typeof(FormEndpointAttribute).Assembly,
+                typeof(EntityAnalysisModelTagDtoValidator).Assembly));
+            services.AddSingleton(GridModelRegistry.Build(typeof(GridEndpointAttribute).Assembly));
 
             ConfigureThreadPool(dynamicEnvironment, log);
             ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -229,10 +239,9 @@ namespace Jube.App
                 app.UseMiddleware<RequestHardeningMiddleware>();
                 app.UseRouting();
 
-                app.UseRequestLocalization(new RequestLocalizationOptions()
-                    .SetDefaultCulture("en")
-                    .AddSupportedCultures("en")
-                    .AddSupportedUICultures("en"));
+                app.UseRequestLocalization(RequestLocalisation.Options());
+
+                app.UseMiddleware<VersionConflictMiddleware>();
 
                 app.UseAuthentication();
                 app.UseAuthorization();
@@ -352,6 +361,7 @@ namespace Jube.App
                     endpoints.MapRazorPages();
                     endpoints.MapControllers();
                     endpoints.MapAntiforgeryTokenEndpoints();
+                    endpoints.MapMeEndpoints();
                     endpoints.MapEntityAnalysisModelEndpoints();
                     endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
                     endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
@@ -359,6 +369,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelGatewayRuleEndpoints();
                     endpoints.MapEntityAnalysisModelSanctionEndpoints();
                     endpoints.MapEntityAnalysisModelTagEndpoints();
+                    endpoints.MapEntityAnalysisModelResponseElevationRangeEndpoints();
                     endpoints.MapEntityApprovalEndpoints();
                     endpoints.MapVersionHistoryEndpoints();
                     endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
@@ -418,8 +429,8 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelHttpAdaptationEndpoints();
                     endpoints.MapExhaustiveSearchInstanceEndpoints();
                     endpoints.MapExhaustiveInstanceDatasetEndpoints();
-                    endpoints.MapAdvancedAnalyticsInstanceEndpoints();
-                    endpoints.MapAdvancedAnalyticsModelEndpoints();
+                    endpoints.MapAskJoobyAnalyticsInstanceEndpoints();
+                    endpoints.MapAskJoobyAnalyticsModelEndpoints();
                     endpoints.MapChartsEndpoints();
                     endpoints.MapEntityAnalysisModelActivationRuleEndpoints();
                     endpoints.MapEntityAnalysisInlineScriptEndpoints();
@@ -451,6 +462,9 @@ namespace Jube.App
                     endpoints.MapCaseWorkflowFormEntryEndpoints();
                     endpoints.MapCaseWorkflowFormEntryValueEndpoints();
                     endpoints.MapCaseWorkflowFormRoleEndpoints();
+                    endpoints.MapCaseWorkflowFormValidatorEndpoints();
+                    endpoints.MapCaseWorkflowReleaseHookEndpoints();
+                    endpoints.MapCaseHoldEndpoints();
                     endpoints.MapCaseWorkflowMacroEndpoints();
                     endpoints.MapCaseWorkflowMacroRoleEndpoints();
                     endpoints.MapCaseWorkflowPriorityEndpoints();
@@ -506,6 +520,13 @@ namespace Jube.App
                     endpoints.MapTreeChildrenEndpoints();
                     endpoints.MapSessionCaseJournalEndpoints();
                     endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
+                    endpoints.MapCaseSearchFilterEndpoints();
+                    endpoints.MapCaseSearchEndpoints();
+                    endpoints.MapCaseSummaryEndpoints();
+                    endpoints.MapCaseAnalyticsEndpoints();
+                    endpoints.MapCaseKeyJournalEndpoints();
+                    endpoints.MapCaseSupervisionEndpoints();
+                    endpoints.MapCaseDiaryEndpoints();
                     endpoints.MapPreservationEndpoints();
                     endpoints.MapPreservationSnapshotEndpoints();
                     endpoints.MapReadyEndpoints();
@@ -522,6 +543,9 @@ namespace Jube.App
                     endpoints.MapCompletionsEndpoints();
                     endpoints.MapIconsEndpoints();
                     endpoints.MapParserEndpoints();
+                    endpoints.MapRuleVocabularyEndpoints();
+                    endpoints.MapFormModelEndpoints();
+                    endpoints.MapGridModelEndpoints();
                     endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
                     endpoints.MapCaseWorkflowMacroExecutionEndpoints();
                     endpoints.MapAskJoobyConversationEndpoints();
@@ -1133,6 +1157,7 @@ namespace Jube.App
             services.AddSingleton<IRevocableConnectionRegistry>(watcherStreamRegistry);
             services.AddSingleton<IRevocableConnectionRegistry>(serviceChangeStreamRegistry);
             services.AddHostedService<RevokedSessionSweeper>();
+            services.AddHostedService<CaseKeyJournalJobs>();
             services.AddSingleton<WafRegistry>();
             services.AddSingleton<WafInspector>();
             services.AddHostedService<WafRegistryRefreshService>();

@@ -43,7 +43,8 @@ namespace Jube.Data.Query.EntityApproval
                 EntityApprovalKind.ExhaustiveSearchInstance => ExhaustiveSearchInstanceSubjects(),
                 EntityApprovalKind.EntityAnalysisModelActivationRule => ActivationRuleSubjects(),
                 EntityApprovalKind.EntityAnalysisModelTag => TagSubjects(),
-                EntityApprovalKind.AdvancedAnalyticsInstance => AdvancedAnalyticsInstanceSubjects(),
+                EntityApprovalKind.EntityAnalysisModelResponseElevationRange => ResponseElevationRangeSubjects(),
+                EntityApprovalKind.AskJoobyAnalyticsInstance => AskJoobyAnalyticsInstanceSubjects(),
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
         }
@@ -219,12 +220,22 @@ namespace Jube.Data.Query.EntityApproval
                     x.DeletedUser ?? "", m.Id);
         }
 
-        private IQueryable<EntityApprovalSubject> AdvancedAnalyticsInstanceSubjects()
+        private IQueryable<EntityApprovalSubject> ResponseElevationRangeSubjects()
         {
-            return from x in dbContext.AdvancedAnalyticsInstance
+            return from x in dbContext.EntityAnalysisModelResponseElevationRange
                 join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
                 where m.TenantRegistryId == tenantRegistryId
-                select new EntityApprovalSubject(EntityApprovalKind.AdvancedAnalyticsInstance, x.Id,
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelResponseElevationRange, x.Id,
+                    x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version ?? 1, x.CreatedUser ?? "",
+                    x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> AskJoobyAnalyticsInstanceSubjects()
+        {
+            return from x in dbContext.AskJoobyAnalyticsInstance
+                join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
+                where m.TenantRegistryId == tenantRegistryId
+                select new EntityApprovalSubject(EntityApprovalKind.AskJoobyAnalyticsInstance, x.Id,
                     x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version, x.CreatedUser ?? "",
                     x.DeletedUser ?? "", m.Id, m.Id);
         }

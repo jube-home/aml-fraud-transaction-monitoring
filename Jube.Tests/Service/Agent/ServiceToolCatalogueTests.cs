@@ -31,7 +31,8 @@ namespace Jube.Test.Service.Agent
     [Trait("Category", "Service")]
     public sealed class ServiceToolCatalogueTests
     {
-        private static readonly string[] compiledKnowledgeOperations = ["QueryBuilderOperatorsList"];
+        private static readonly string[] permissionFreeOperations =
+            ["QueryBuilderOperatorsList", "VisualisationRegistryListByShowInDirectory"];
 
         [Fact]
         public void EveryToolNameIsUniqueAcrossTheWholeCatalogue()
@@ -42,23 +43,23 @@ namespace Jube.Test.Service.Agent
         }
 
         [Fact]
-        public void EveryToolCarriesAtLeastOneRequiredPermissionUnlessItReadsCompiledKnowledge()
+        public void EveryToolCarriesAtLeastOneRequiredPermissionUnlessItIsAPermissionFreeRead()
         {
             ServiceToolCatalogue.All.Should()
                 .OnlyContain(tool => tool.RequiredPermissions.Count > 0 || tool.RequiresLandlord
                                                                         || Enumerable.Contains(
-                                                                            compiledKnowledgeOperations, tool.Name));
+                                                                            permissionFreeOperations, tool.Name));
         }
 
         [Fact]
-        public void EveryCompiledKnowledgeExemptionNamesAnOperationThatExistsAndIsARead()
+        public void EveryPermissionFreeOperationNamesAnOperationThatExistsAndIsARead()
         {
-            foreach (var name in compiledKnowledgeOperations)
+            foreach (var name in permissionFreeOperations)
             {
                 var tool = ServiceToolCatalogue.All.SingleOrDefault(t => t.Name == name);
 
                 (tool is null).Should()
-                    .BeFalse(name + " is exempted from the permission rule but is not in the catalogue");
+                    .BeFalse(name + " is permission free but is not in the catalogue");
 
                 tool!.Kind.Should().Be(OperationKind.Read, name + " may only be exempted if it changes nothing");
 

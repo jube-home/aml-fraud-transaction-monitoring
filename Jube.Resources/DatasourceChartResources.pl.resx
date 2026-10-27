@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Kind.Column.Name" xml:space="preserve">
+        <value>Wykres kolumnowy</value>
+        <comment>d03c5399</comment>
+    </data>
+    <data name="Kind.Column.Description" xml:space="preserve">
+        <value>Porównuje wartości między kategoriami za pomocą pionowych słupków, jedna seria na kolumnę wartości.</value>
+        <comment>fbeeeac9</comment>
+    </data>
+    <data name="Kind.Bar.Name" xml:space="preserve">
+        <value>Wykres słupkowy</value>
+        <comment>e006cb3f</comment>
+    </data>
+    <data name="Kind.Bar.Description" xml:space="preserve">
+        <value>Porównuje wartości między kategoriami za pomocą poziomych słupków, co sprawdza się przy długich nazwach kategorii.</value>
+        <comment>661f4e08</comment>
+    </data>
+    <data name="Kind.StackedColumn.Name" xml:space="preserve">
+        <value>Wykres kolumnowy skumulowany</value>
+        <comment>a1c546a4</comment>
+    </data>
+    <data name="Kind.StackedColumn.Description" xml:space="preserve">
+        <value>Układa serie jedna na drugiej, aby pokazać sumę i jej części.</value>
+        <comment>f875004b</comment>
+    </data>
+    <data name="Kind.StackedBar.Name" xml:space="preserve">
+        <value>Wykres słupkowy skumulowany</value>
+        <comment>fa509936</comment>
+    </data>
+    <data name="Kind.StackedBar.Description" xml:space="preserve">
+        <value>Układa serie poziomo jedna za drugą, aby pokazać sumę i jej części.</value>
+        <comment>236c196c</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Name" xml:space="preserve">
+        <value>Wykres kolumnowy skumulowany 100%</value>
+        <comment>b6da04aa</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Description" xml:space="preserve">
+        <value>Pokazuje każdą serię jako udział w sumie kategorii.</value>
+        <comment>1bd78239</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Name" xml:space="preserve">
+        <value>Wykres słupkowy skumulowany 100%</value>
+        <comment>ce4c17ff</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Description" xml:space="preserve">
+        <value>Pokazuje każdą serię jako udział w sumie kategorii, w poziomie.</value>
+        <comment>dc79cf9f</comment>
+    </data>
+    <data name="Kind.Line.Name" xml:space="preserve">
+        <value>Wykres liniowy</value>
+        <comment>22089151</comment>
+    </data>
+    <data name="Kind.Line.Description" xml:space="preserve">
+        <value>Pokazuje, jak wartości zmieniają się wzdłuż uporządkowanej kategorii, liczby lub czasu.</value>
+        <comment>71c21e56</comment>
+    </data>
+    <data name="Kind.Area.Name" xml:space="preserve">
+        <value>Wykres warstwowy</value>
+        <comment>c79cf6b2</comment>
+    </data>
+    <data name="Kind.Area.Description" xml:space="preserve">
+        <value>Wykres liniowy z wypełnionym obszarem pod każdą linią.</value>
+        <comment>4d7fcd4b</comment>
+    </data>
+    <data name="Kind.StackedArea.Name" xml:space="preserve">
+        <value>Wykres warstwowy skumulowany</value>
+        <comment>c5670419</comment>
+    </data>
+    <data name="Kind.StackedArea.Description" xml:space="preserve">
+        <value>Układa wypełnione obszary, aby pokazać sumę i jej części wzdłuż uporządkowanej osi.</value>
+        <comment>0236928f</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Name" xml:space="preserve">
+        <value>Wykres warstwowy skumulowany 100%</value>
+        <comment>6aaa1850</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Description" xml:space="preserve">
+        <value>Pokazuje każdą serię jako udział w sumie wzdłuż uporządkowanej osi.</value>
+        <comment>ae4c02dc</comment>
+    </data>
+    <data name="Kind.Pie.Name" xml:space="preserve">
+        <value>Wykres kołowy</value>
+        <comment>9899e8ba</comment>
+    </data>
+    <data name="Kind.Pie.Description" xml:space="preserve">
+        <value>Pokazuje części całości. Najlepszy dla kilku kategorii.</value>
+        <comment>2846aafc</comment>
+    </data>
+    <data name="Kind.Donut.Name" xml:space="preserve">
+        <value>Wykres pierścieniowy</value>
+        <comment>5469e407</comment>
+    </data>
+    <data name="Kind.Donut.Description" xml:space="preserve">
+        <value>Wykres kołowy z pustym środkiem.</value>
+        <comment>4e0bb12a</comment>
+    </data>
+    <data name="Kind.Scatter.Name" xml:space="preserve">
+        <value>Wykres punktowy lub bąbelkowy</value>
+        <comment>2f6655ee</comment>
+    </data>
+    <data name="Kind.Scatter.Description" xml:space="preserve">
+        <value>Przedstawia jedną kolumnę liczbową względem drugiej; kolumna rozmiaru zamienia punkty w bąbelki.</value>
+        <comment>3563c3db</comment>
+    </data>
+    <data name="Kind.Histogram.Name" xml:space="preserve">
+        <value>Histogram</value>
+        <comment>b32dc489</comment>
+    </data>
+    <data name="Kind.Histogram.Description" xml:space="preserve">
+        <value>Grupuje surowe wartości każdej kolumny liczbowej w przedziały, aby pokazać ich rozkład.</value>
+        <comment>3ecccbbb</comment>
+    </data>
+    <data name="Kind.Heatmap.Name" xml:space="preserve">
+        <value>Mapa cieplna</value>
+        <comment>3aa6826d</comment>
+    </data>
+    <data name="Kind.Heatmap.Description" xml:space="preserve">
+        <value>Koloruje komórkę na przecięciu kategorii wiersza i kategorii kolumny według wartości liczbowej.</value>
+        <comment>c1a2697a</comment>
+    </data>
+    <data name="Kind.Combo.Name" xml:space="preserve">
+        <value>Wykres kombinowany</value>
+        <comment>0a373f64</comment>
+    </data>
+    <data name="Kind.Combo.Description" xml:space="preserve">
+        <value>Rysuje kolumny i linie na tych samych kategoriach, z opcjonalną osią pomocniczą.</value>
+        <comment>bbf5881c</comment>
+    </data>
+    <data name="Kind.BoxPlot.Name" xml:space="preserve">
+        <value>Wykres pudełkowy</value>
+        <comment>e4d59eb4</comment>
+    </data>
+    <data name="Kind.BoxPlot.Description" xml:space="preserve">
+        <value>Pokazuje rozrzut każdej kategorii od minimum do maksimum wokół mediany.</value>
+        <comment>145fe237</comment>
+    </data>
+    <data name="Kind.Candlestick.Name" xml:space="preserve">
+        <value>Wykres świecowy</value>
+        <comment>516cc7a4</comment>
+    </data>
+    <data name="Kind.Candlestick.Description" xml:space="preserve">
+        <value>Pokazuje otwarcie, najwyższą i najniższą wartość oraz zamknięcie dla każdego okresu.</value>
+        <comment>d0008aeb</comment>
+    </data>
+    <data name="Kind.Waterfall.Name" xml:space="preserve">
+        <value>Wykres kaskadowy</value>
+        <comment>6d31c875</comment>
+    </data>
+    <data name="Kind.Waterfall.Description" xml:space="preserve">
+        <value>Pokazuje, jak narastająca suma rośnie i maleje z każdym krokiem.</value>
+        <comment>aee0d7e9</comment>
+    </data>
+    <data name="Kind.Funnel.Name" xml:space="preserve">
+        <value>Wykres lejkowy</value>
+        <comment>0dce84e9</comment>
+    </data>
+    <data name="Kind.Funnel.Description" xml:space="preserve">
+        <value>Pokazuje, jak wartość maleje w kolejnych etapach.</value>
+        <comment>a259c9c8</comment>
+    </data>
+    <data name="Kind.Radar.Name" xml:space="preserve">
+        <value>Wykres radarowy</value>
+        <comment>4df56b16</comment>
+    </data>
+    <data name="Kind.Radar.Description" xml:space="preserve">
+        <value>Porównuje serie na kilku osiach siatki biegunowej.</value>
+        <comment>2fbcc105</comment>
+    </data>
+    <data name="Kind.Polar.Name" xml:space="preserve">
+        <value>Wykres biegunowy</value>
+        <comment>a0b4504c</comment>
+    </data>
+    <data name="Kind.Polar.Description" xml:space="preserve">
+        <value>Przedstawia promień względem kąta w stopniach.</value>
+        <comment>2a1ba732</comment>
+    </data>
+    <data name="Kind.Gauge.Name" xml:space="preserve">
+        <value>Wskaźnik</value>
+        <comment>f6d8f4c8</comment>
+    </data>
+    <data name="Kind.Gauge.Description" xml:space="preserve">
+        <value>Pokazuje pojedynczą wartość względem zakresu i opcjonalnego celu, z pierwszego wiersza.</value>
+        <comment>f1932ac7</comment>
+    </data>
+    <data name="Kind.Bullet.Name" xml:space="preserve">
+        <value>Wykres bullet</value>
+        <comment>6b523bb9</comment>
+    </data>
+    <data name="Kind.Bullet.Description" xml:space="preserve">
+        <value>Pokazuje wartość każdego wiersza względem jego celu w postaci zwartego paska.</value>
+        <comment>4dbf42f7</comment>
+    </data>
+    <data name="Kind.Sparkline.Name" xml:space="preserve">
+        <value>Wykres sparkline</value>
+        <comment>30f095a6</comment>
+    </data>
+    <data name="Kind.Sparkline.Description" xml:space="preserve">
+        <value>Mała linia wielkości słowa z uporządkowanych wartości.</value>
+        <comment>078a5cfd</comment>
+    </data>
+    <data name="Kind.Treemap.Name" xml:space="preserve">
+        <value>Mapa drzewa</value>
+        <comment>66ba877f</comment>
+    </data>
+    <data name="Kind.Treemap.Description" xml:space="preserve">
+        <value>Rozmiar prostokątów zależy od wartości, opcjonalnie pogrupowanych pod elementem nadrzędnym.</value>
+        <comment>0ed12325</comment>
+    </data>
+    <data name="Kind.Gantt.Name" xml:space="preserve">
+        <value>Wykres Gantta</value>
+        <comment>13a84a89</comment>
+    </data>
+    <data name="Kind.Gantt.Description" xml:space="preserve">
+        <value>Pokazuje zadania jako paski między czasem rozpoczęcia i zakończenia.</value>
+        <comment>aacbdedd</comment>
+    </data>
+    <data name="Kind.Map.Name" xml:space="preserve">
+        <value>Mapa</value>
+        <comment>be176b00</comment>
+    </data>
+    <data name="Kind.Map.Description" xml:space="preserve">
+        <value>Rysuje punkty według szerokości i długości geograficznej, o rozmiarze zależnym od wartości i podzielone na serie, albo koloruje kraje według wartości.</value>
+        <comment>7f550c6f</comment>
+    </data>
+    <data name="Kind.Template.Name" xml:space="preserve">
+        <value>Szablon</value>
+        <comment>0575f29d</comment>
+    </data>
+    <data name="Kind.Template.Description" xml:space="preserve">
+        <value>Układa wiersze we własnym znaczniku, w małym dialekcie w stylu Vue: interpolacja, v-for, v-if i dowiązane klasy na ustalonym zestawie bezpiecznych znaczników.</value>
+        <comment>e723625c</comment>
+    </data>
+    <data name="Role.Category.Name" xml:space="preserve">
+        <value>Kategoria</value>
+        <comment>292c06f0</comment>
+    </data>
+    <data name="Role.Category.Description" xml:space="preserve">
+        <value>Kategoria lub etykieta wzdłuż osi</value>
+        <comment>01a15784</comment>
+    </data>
+    <data name="Role.Value.Name" xml:space="preserve">
+        <value>Wartość</value>
+        <comment>8e37953d</comment>
+    </data>
+    <data name="Role.Value.Description" xml:space="preserve">
+        <value>Wartość liczbowa, jedna seria na kolumnę</value>
+        <comment>12bdb3c5</comment>
+    </data>
+    <data name="Role.Series.Name" xml:space="preserve">
+        <value>Seria</value>
+        <comment>a8295e08</comment>
+    </data>
+    <data name="Role.Series.Description" xml:space="preserve">
+        <value>Kolumna, której różne wartości dzielą dane na serie</value>
+        <comment>27fbf1c9</comment>
+    </data>
+    <data name="Role.X.Name" xml:space="preserve">
+        <value>X</value>
+        <comment>4b68ab38</comment>
+    </data>
+    <data name="Role.X.Description" xml:space="preserve">
+        <value>Pozioma wartość liczbowa lub czasowa</value>
+        <comment>85cb9420</comment>
+    </data>
+    <data name="Role.Y.Name" xml:space="preserve">
+        <value>Y</value>
+        <comment>18f5384d</comment>
+    </data>
+    <data name="Role.Y.Description" xml:space="preserve">
+        <value>Pionowa wartość liczbowa</value>
+        <comment>4c72f0e4</comment>
+    </data>
+    <data name="Role.Size.Name" xml:space="preserve">
+        <value>Rozmiar</value>
+        <comment>1af85190</comment>
+    </data>
+    <data name="Role.Size.Description" xml:space="preserve">
+        <value>Wartość liczbowa określająca rozmiar punktu</value>
+        <comment>c018dfef</comment>
+    </data>
+    <data name="Role.Open.Name" xml:space="preserve">
+        <value>Otwarcie</value>
+        <comment>ed077f3d</comment>
+    </data>
+    <data name="Role.Open.Description" xml:space="preserve">
+        <value>Wartość otwarcia</value>
+        <comment>f18f6b3c</comment>
+    </data>
+    <data name="Role.High.Name" xml:space="preserve">
+        <value>Najwyższa</value>
+        <comment>c4ebc6d4</comment>
+    </data>
+    <data name="Role.High.Description" xml:space="preserve">
+        <value>Najwyższa wartość</value>
+        <comment>1f22ea8d</comment>
+    </data>
+    <data name="Role.Low.Name" xml:space="preserve">
+        <value>Najniższa</value>
+        <comment>f793de20</comment>
+    </data>
+    <data name="Role.Low.Description" xml:space="preserve">
+        <value>Najniższa wartość</value>
+        <comment>6b5f1bfc</comment>
+    </data>
+    <data name="Role.Close.Name" xml:space="preserve">
+        <value>Zamknięcie</value>
+        <comment>7d9eb7ac</comment>
+    </data>
+    <data name="Role.Close.Description" xml:space="preserve">
+        <value>Wartość zamknięcia</value>
+        <comment>b883f877</comment>
+    </data>
+    <data name="Role.Minimum.Name" xml:space="preserve">
+        <value>Minimum</value>
+        <comment>735beee2</comment>
+    </data>
+    <data name="Role.Minimum.Description" xml:space="preserve">
+        <value>Wartość minimalna</value>
+        <comment>6b537b88</comment>
+    </data>
+    <data name="Role.FirstQuartile.Name" xml:space="preserve">
+        <value>Pierwszy kwartyl</value>
+        <comment>e3fdcf10</comment>
+    </data>
+    <data name="Role.FirstQuartile.Description" xml:space="preserve">
+        <value>Pierwszy kwartyl</value>
+        <comment>d5438fca</comment>
+    </data>
+    <data name="Role.Median.Name" xml:space="preserve">
+        <value>Mediana</value>
+        <comment>daab7c43</comment>
+    </data>
+    <data name="Role.Median.Description" xml:space="preserve">
+        <value>Wartość mediany</value>
+        <comment>ab24877b</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Name" xml:space="preserve">
+        <value>Trzeci kwartyl</value>
+        <comment>d5a21e8a</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Description" xml:space="preserve">
+        <value>Trzeci kwartyl</value>
+        <comment>8e0bdf22</comment>
+    </data>
+    <data name="Role.Maximum.Name" xml:space="preserve">
+        <value>Maksimum</value>
+        <comment>66c9ab17</comment>
+    </data>
+    <data name="Role.Maximum.Description" xml:space="preserve">
+        <value>Wartość maksymalna</value>
+        <comment>6a30476d</comment>
+    </data>
+    <data name="Role.Latitude.Name" xml:space="preserve">
+        <value>Szerokość geograficzna</value>
+        <comment>238a676d</comment>
+    </data>
+    <data name="Role.Latitude.Description" xml:space="preserve">
+        <value>Szerokość geograficzna w stopniach</value>
+        <comment>8da77868</comment>
+    </data>
+    <data name="Role.Longitude.Name" xml:space="preserve">
+        <value>Długość geograficzna</value>
+        <comment>6d80458f</comment>
+    </data>
+    <data name="Role.Longitude.Description" xml:space="preserve">
+        <value>Długość geograficzna w stopniach</value>
+        <comment>e46962f6</comment>
+    </data>
+    <data name="Role.Country.Name" xml:space="preserve">
+        <value>Kraj</value>
+        <comment>701d021d</comment>
+    </data>
+    <data name="Role.Country.Description" xml:space="preserve">
+        <value>Kod kraju ISO lub nazwa kraju</value>
+        <comment>3dfd71ba</comment>
+    </data>
+    <data name="Role.Label.Name" xml:space="preserve">
+        <value>Etykieta</value>
+        <comment>0e66373f</comment>
+    </data>
+    <data name="Role.Label.Description" xml:space="preserve">
+        <value>Etykieta tekstowa</value>
+        <comment>bebffaca</comment>
+    </data>
+    <data name="Role.Parent.Name" xml:space="preserve">
+        <value>Element nadrzędny</value>
+        <comment>5f7953f7</comment>
+    </data>
+    <data name="Role.Parent.Description" xml:space="preserve">
+        <value>Grupa nadrzędna</value>
+        <comment>ffd307ce</comment>
+    </data>
+    <data name="Role.Start.Name" xml:space="preserve">
+        <value>Początek</value>
+        <comment>e4bb9f1e</comment>
+    </data>
+    <data name="Role.Start.Description" xml:space="preserve">
+        <value>Czas rozpoczęcia</value>
+        <comment>babe9dda</comment>
+    </data>
+    <data name="Role.End.Name" xml:space="preserve">
+        <value>Koniec</value>
+        <comment>f4db1e48</comment>
+    </data>
+    <data name="Role.End.Description" xml:space="preserve">
+        <value>Czas zakończenia</value>
+        <comment>2e46006a</comment>
+    </data>
+    <data name="Role.Target.Name" xml:space="preserve">
+        <value>Cel</value>
+        <comment>978354db</comment>
+    </data>
+    <data name="Role.Target.Description" xml:space="preserve">
+        <value>Wartość docelowa</value>
+        <comment>06e12bb4</comment>
+    </data>
+    <data name="Role.Row.Name" xml:space="preserve">
+        <value>Wiersz</value>
+        <comment>95110d74</comment>
+    </data>
+    <data name="Role.Row.Description" xml:space="preserve">
+        <value>Kategoria wiersza</value>
+        <comment>4e6a83ba</comment>
+    </data>
+    <data name="Role.Column.Name" xml:space="preserve">
+        <value>Kolumna</value>
+        <comment>3fdc9a58</comment>
+    </data>
+    <data name="Role.Column.Description" xml:space="preserve">
+        <value>Kategoria kolumny</value>
+        <comment>d4f23558</comment>
+    </data>
+    <data name="Role.Line.Name" xml:space="preserve">
+        <value>Linia</value>
+        <comment>d7852cd0</comment>
+    </data>
+    <data name="Role.Line.Description" xml:space="preserve">
+        <value>Wartość liczbowa rysowana jako linia</value>
+        <comment>e86f9332</comment>
+    </data>
+    <data name="Role.SecondaryLine.Name" xml:space="preserve">
+        <value>Linia na osi pomocniczej</value>
+        <comment>3b8ac79e</comment>
+    </data>
+    <data name="Role.SecondaryLine.Description" xml:space="preserve">
+        <value>Wartość liczbowa rysowana jako linia na osi pomocniczej</value>
+        <comment>5b821522</comment>
+    </data>
+    <data name="Message.ColumnMissing" xml:space="preserve">
+        <value>Wynik nie zawiera kolumny o nazwie „{0}”.</value>
+        <comment>f4b10dc8</comment>
+    </data>
+    <data name="Message.ColumnNotATime" xml:space="preserve">
+        <value>Kolumna „{0}” zawiera wartość, która nie jest datą i czasem.</value>
+        <comment>1107afc3</comment>
+    </data>
+    <data name="Message.KindUnknown" xml:space="preserve">
+        <value>Nie ma wykresu rodzaju {0}.</value>
+        <comment>56f83cac</comment>
+    </data>
+    <data name="Message.RoleNotUsed" xml:space="preserve">
+        <value>{0} nie używa roli {1}.</value>
+        <comment>76631e05</comment>
+    </data>
+    <data name="Message.RoleTakesOne" xml:space="preserve">
+        <value>Rola {0} przyjmuje jedną kolumnę, a nie {1}.</value>
+        <comment>1665883b</comment>
+    </data>
+    <data name="Message.OverrideColumnMissing" xml:space="preserve">
+        <value>Wynik nie zawiera kolumny o nazwie „{0}” dla roli {1}.</value>
+        <comment>163083ce</comment>
+    </data>
+    <data name="Message.OverrideColumnType" xml:space="preserve">
+        <value>Kolumna „{0}” nie może pełnić roli {1}: wymaga ona {2}.</value>
+        <comment>aefcc97e</comment>
+    </data>
+    <data name="Message.RoleUnsatisfied" xml:space="preserve">
+        <value>{0} potrzebuje kolumny dla roli {1}, ale w wyniku nie pozostała żadna niewykorzystana: {2}.</value>
+        <comment>c1728ebe</comment>
+    </data>
+    <data name="Message.PivotDuplicate" xml:space="preserve">
+        <value>Wynik ma więcej niż jeden wiersz dla „{0}” w „{1}”. Zagreguj go w SQL, aby każda para występowała raz.</value>
+        <comment>6048c012</comment>
+    </data>
+    <data name="Message.HeatmapDuplicate" xml:space="preserve">
+        <value>Wynik ma więcej niż jeden wiersz dla „{0}” i „{1}”. Zagreguj go w SQL, aby każda para występowała raz.</value>
+        <comment>04a7dcf9</comment>
+    </data>
+    <data name="Message.NoRows" xml:space="preserve">
+        <value>Zapytanie nie zwróciło wierszy, więc nie ma czego narysować.</value>
+        <comment>9b03b26f</comment>
+    </data>
+    <data name="Message.LimitExceeded" xml:space="preserve">
+        <value>{0} nie może narysować tak dużej ilości danych ({1} przy limicie {2} dla: {3}). Zagreguj zapytanie w SQL lub zawęź je.</value>
+        <comment>872cd167</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneValue" xml:space="preserve">
+        <value>Gdy wiersze są dzielone na serie według kolumny, rysowana jest dokładnie jedna kolumna wartości.</value>
+        <comment>b97549ba</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneVertical" xml:space="preserve">
+        <value>Gdy wiersze są dzielone na serie według kolumny, rysowana jest dokładnie jedna kolumna pionowa.</value>
+        <comment>20c83fb5</comment>
+    </data>
+    <data name="Message.MapNeedsBoth" xml:space="preserve">
+        <value>Mapa punktów wymaga zarówno kolumny szerokości, jak i długości geograficznej.</value>
+        <comment>d3678715</comment>
+    </data>
+    <data name="Message.MapNeedsPlace" xml:space="preserve">
+        <value>Mapa wymaga albo kolumn szerokości i długości geograficznej, albo kolumny kraju. Nazwij je w mapowaniu, jeśli ich nazwy nie są oczywiste.</value>
+        <comment>18791a5c</comment>
+    </data>
+    <data name="Message.MapEither" xml:space="preserve">
+        <value>Mapa przedstawia albo punkty, albo kraje, nie oba naraz.</value>
+        <comment>147de694</comment>
+    </data>
+    <data name="Message.MapNeedsValue" xml:space="preserve">
+        <value>Mapa krajów wymaga kolumny z wartością liczbową, według której kraje są kolorowane.</value>
+        <comment>90303986</comment>
+    </data>
+    <data name="Message.GaugeNeedsRow" xml:space="preserve">
+        <value>Wskaźnik potrzebuje wiersza, z którego odczyta swoją wartość.</value>
+        <comment>81b14a44</comment>
+    </data>
+    <data name="Message.CardEmpty" xml:space="preserve">
+        <value>Zapytanie nie zwróciło wierszy.</value>
+        <comment>3737892d</comment>
+    </data>
+    <data name="Message.CardFailed" xml:space="preserve">
+        <value>Nie udało się utworzyć karty.</value>
+        <comment>997d5e5e</comment>
+    </data>
+    <data name="Message.MappingColumnUnknown" xml:space="preserve">
+        <value>Mapowanie wskazuje kolumnę „{0}”, której polecenie SQL nie zwraca.</value>
+        <comment>e6bf721b</comment>
+    </data>
+    <data name="Message.MappingEntryEmpty" xml:space="preserve">
+        <value>Wpis mapowania jest pusty.</value>
+        <comment>922cee50</comment>
+    </data>
+    <data name="Message.ParameterEmpty" xml:space="preserve">
+        <value>Parametr jest pusty.</value>
+        <comment>c1ef5acb</comment>
+    </data>
+    <data name="Message.ParameterDuplicate" xml:space="preserve">
+        <value>Parametr został podany więcej niż raz.</value>
+        <comment>df7e1866</comment>
+    </data>
+    <data name="Message.RoleUndefined" xml:space="preserve">
+        <value>Nie ma roli wykresu {0}.</value>
+        <comment>06aba576</comment>
+    </data>
+    <data name="Message.RoleAssignedTwice" xml:space="preserve">
+        <value>Rola {0} została przypisana dwa razy.</value>
+        <comment>060ffd39</comment>
+    </data>
+    <data name="Message.SqlEmpty" xml:space="preserve">
+        <value>Polecenie SQL jest puste.</value>
+        <comment>f63fdd6c</comment>
+    </data>
+    <data name="Message.ColumnDuplicate" xml:space="preserve">
+        <value>Nazwa kolumny „{0}” występuje więcej niż raz. Nadaj każdej kolumnie własny alias.</value>
+        <comment>f90b807f</comment>
+    </data>
+    <data name="Message.ColumnsUnnamed" xml:space="preserve">
+        <value>Więcej niż jedna kolumna nie ma nazwy. Nadaj każdej kolumnie alias, na przykład: AS "Suma".</value>
+        <comment>5f39f33e</comment>
+    </data>
+    <data name="Message.ParameterForeign" xml:space="preserve">
+        <value>Parametr {0} nie należy do tego rejestru wizualizacji.</value>
+        <comment>3eaf1abf</comment>
+    </data>
+    <data name="Message.ParameterValue" xml:space="preserve">
+        <value>Wartość parametru „{0}” musi być {1}.</value>
+        <comment>a4e92df1</comment>
+    </data>
+    <data name="Message.SqlSelectOnly" xml:space="preserve">
+        <value>Polecenie SQL musi być pojedynczą instrukcją SELECT, która nie używa zablokowanych instrukcji, funkcji ani tabel.</value>
+        <comment>d78a5302</comment>
+    </data>
+    <data name="Message.SqlRejected" xml:space="preserve">
+        <value>Baza danych raportowania odrzuciła polecenie SQL: {0} ({1}).</value>
+        <comment>06721e75</comment>
+    </data>
+    <data name="Message.SqlRejectedHint" xml:space="preserve">
+        <value>Baza danych raportowania odrzuciła polecenie SQL: {0} ({1}). {2}</value>
+        <comment>3aa2b8bf</comment>
+    </data>
+    <data name="Message.SqlRejectedGeneric" xml:space="preserve">
+        <value>Baza danych raportowania odrzuciła polecenie SQL.</value>
+        <comment>fa5788ee</comment>
+    </data>
+    <data name="Message.TemplateEmpty" xml:space="preserve">
+        <value>Szablon jest pusty.</value>
+        <comment>f8ba96ec</comment>
+    </data>
+    <data name="Message.TemplateTooLong" xml:space="preserve">
+        <value>Szablon jest dłuższy niż limit {0} znaków.</value>
+        <comment>04caf596</comment>
+    </data>
+    <data name="Message.TemplateUnclosedTag" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: znacznik &lt;{2}&gt; nigdy nie zostaje zamknięty.</value>
+        <comment>1dfdfb51</comment>
+    </data>
+    <data name="Message.TemplateUnexpectedClose" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: znacznik zamykający &lt;/{2}&gt; nie ma pasującego znacznika otwierającego.</value>
+        <comment>f49f0d09</comment>
+    </data>
+    <data name="Message.TemplateTagNotAllowed" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: znacznik &lt;{2}&gt; jest niedozwolony.</value>
+        <comment>e500c51a</comment>
+    </data>
+    <data name="Message.TemplateAttributeNotAllowed" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: atrybut „{2}” jest niedozwolony w &lt;{3}&gt;.</value>
+        <comment>5b0a354c</comment>
+    </data>
+    <data name="Message.TemplateDirectiveInvalid" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: dyrektywa „{2}” jest tutaj niedozwolona.</value>
+        <comment>f1db507b</comment>
+    </data>
+    <data name="Message.TemplateLoopInvalid" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: v-for „{2}” musi mieć postać „row in rows” lub „(row, index) in rows”.</value>
+        <comment>fd4e2a77</comment>
+    </data>
+    <data name="Message.TemplateExpressionInvalid" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: wyrażenie „{2}” jest niepoprawne w pobliżu „{3}”.</value>
+        <comment>b9ea12e7</comment>
+    </data>
+    <data name="Message.TemplateNameUnknown" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: „{2}” nie jest tutaj znane. Użyj rows, columns, rowCount, truncated lub zmiennej pętli.</value>
+        <comment>78917f7e</comment>
+    </data>
+    <data name="Message.TemplateFilterUnknown" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: filtr „{2}” nie istnieje.</value>
+        <comment>c2e86ee7</comment>
+    </data>
+    <data name="Message.TemplateFilterArguments" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: filtr „{2}” nie przyjmuje tylu argumentów.</value>
+        <comment>8e8117a1</comment>
+    </data>
+    <data name="Message.TemplateInterpolationOpen" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: otwierający znacznik [@ nigdy nie zostaje zamknięty znacznikiem @].</value>
+        <comment>1fe5aca8</comment>
+    </data>
+    <data name="Message.TemplateTooDeep" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: szablon zagnieżdża się głębiej niż {2} poziomów.</value>
+        <comment>245d0d29</comment>
+    </data>
+    <data name="Message.TemplateTooLarge" xml:space="preserve">
+        <value>Szablon wytworzył więcej niż {0} znaków danych wyjściowych. Zawęź wiersze w SQL.</value>
+        <comment>12c64c4c</comment>
+    </data>
+    <data name="Message.TemplateTooManySteps" xml:space="preserve">
+        <value>Szablon potrzebował więcej niż {0} kroków do wyrenderowania. Zawęź wiersze w SQL lub użyj mniej pętli.</value>
+        <comment>804b3271</comment>
+    </data>
+    <data name="Message.FormFieldNameMissing" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: element &lt;{2}&gt; wymaga nazwy.</value>
+        <comment>f8954ba8</comment>
+    </data>
+    <data name="Message.FormFieldNameInvalid" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: nazwa pola „{2}” musi zaczynać się od litery i zawierać tylko litery, cyfry i podkreślenia.</value>
+        <comment>097e4e98</comment>
+    </data>
+    <data name="Message.FormFieldNameDuplicate" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: nazwa pola „{2}” jest użyta więcej niż raz.</value>
+        <comment>f9746e4a</comment>
+    </data>
+    <data name="Message.FormFieldInLoop" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: pole &lt;{2}&gt; nie może być wewnątrz v-for, ponieważ nazwa pola musi być stała.</value>
+        <comment>c9d8ae0e</comment>
+    </data>
+    <data name="Message.FormInputTypeInvalid" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: typ pola „{2}” jest niedozwolony.</value>
+        <comment>4f4b76f6</comment>
+    </data>
+    <data name="Message.FormOptionsFixed" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: pole „{2}” wymaga stałych opcji, każdej ze zwykłą wartością i żadnej wewnątrz v-for.</value>
+        <comment>2214a81e</comment>
+    </data>
+    <data name="Message.FormLabelTargetUnknown" xml:space="preserve">
+        <value>Szablon, wiersz {0}, kolumna {1}: etykieta dotyczy „{2}”, które nie jest polem tego formularza.</value>
+        <comment>47a842a6</comment>
+    </data>
+    <data name="Term.Needs.Numeric" xml:space="preserve">
+        <value>kolumny liczbowej</value>
+        <comment>5cf35ad9</comment>
+    </data>
+    <data name="Term.Needs.Time" xml:space="preserve">
+        <value>kolumny daty i czasu</value>
+        <comment>da7c5eeb</comment>
+    </data>
+    <data name="Term.Needs.NumericOrTime" xml:space="preserve">
+        <value>kolumny liczbowej lub daty i czasu</value>
+        <comment>5af5bdf9</comment>
+    </data>
+    <data name="Term.Needs.Any" xml:space="preserve">
+        <value>kolumny</value>
+        <comment>90a51ba2</comment>
+    </data>
+    <data name="Term.Noun.Numeric" xml:space="preserve">
+        <value>kolumna liczbowa</value>
+        <comment>b1fe86d8</comment>
+    </data>
+    <data name="Term.Noun.Time" xml:space="preserve">
+        <value>kolumna daty i czasu</value>
+        <comment>967c9293</comment>
+    </data>
+    <data name="Term.Noun.NumericOrTime" xml:space="preserve">
+        <value>kolumna liczbowa lub daty i czasu</value>
+        <comment>a48df5a3</comment>
+    </data>
+    <data name="Term.Noun.Any" xml:space="preserve">
+        <value>kolumna</value>
+        <comment>881d5fb6</comment>
+    </data>
+    <data name="Term.Expected.WholeNumber" xml:space="preserve">
+        <value>liczbą całkowitą</value>
+        <comment>ef06b86b</comment>
+    </data>
+    <data name="Term.Expected.Number" xml:space="preserve">
+        <value>liczbą</value>
+        <comment>d24f1fa1</comment>
+    </data>
+    <data name="Term.Expected.DateTime" xml:space="preserve">
+        <value>datą i czasem w formacie ISO 8601</value>
+        <comment>66f8770d</comment>
+    </data>
+    <data name="Term.Expected.Flag" xml:space="preserve">
+        <value>1 lub 0</value>
+        <comment>b2206c45</comment>
+    </data>
+</root>

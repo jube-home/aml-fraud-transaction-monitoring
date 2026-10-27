@@ -97,7 +97,7 @@ namespace Jube.Test.Service.ModelScaffolding
                 .MaxAsync();
         }
 
-        private async Task ScheduleAsync(DateTimeOffset? scheduleDate)
+        private async Task ScheduleAsync(DateTimeOffset? scheduleDate, int? entityAnalysisModelId = null)
         {
             await using var dbContext = database.GetDbContext();
 
@@ -106,7 +106,8 @@ namespace Jube.Test.Service.ModelScaffolding
 
             var saved = await service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto
             {
-                ScheduleDate = scheduleDate
+                ScheduleDate = scheduleDate,
+                EntityAnalysisModelId = entityAnalysisModelId
             });
             scheduleIds.Add(saved.Id);
         }
@@ -140,6 +141,44 @@ namespace Jube.Test.Service.ModelScaffolding
 
             var moved = await WaitForSynchronisationAfterAsync(model, baseline);
             moved.Should().BeAfter(baseline ?? DateTime.MinValue);
+        }
+
+        [Fact]
+        public async Task AScheduleForOneModelReloadsThatModelAndLeavesTheOthersLoadedAsIsAsync()
+        {
+            await using var first = await CreateModelAsync();
+            await using var second = await CreateModelAsync();
+
+            var reloaded = fixture.Engine.FindActiveModel(first.ModelGuid).Required();
+            var untouched = fixture.Engine.FindActiveModel(second.ModelGuid).Required();
+            var reloadedTags = reloaded.Snapshot.EntityAnalysisModelTags;
+            var untouchedTags = untouched.Snapshot.EntityAnalysisModelTags;
+
+            await ScheduleAsync(null, first.ModelId);
+            await WaitForSynchronisationAfterAsync(first, await SynchronisedDateAsync(first));
+
+            reloaded.Snapshot.EntityAnalysisModelTags.Should().NotBeSameAs(reloadedTags,
+                "the model the schedule names is rebuilt from its records");
+            untouched.Snapshot.EntityAnalysisModelTags.Should().BeSameAs(untouchedTags,
+                "a schedule for one model leaves the tenant's other models exactly as they were");
+        }
+
+        [Fact]
+        public async Task AWholeTenantScheduleAfterAModelScheduleStillReloadsEveryModelAsync()
+        {
+            await using var first = await CreateModelAsync();
+            await using var second = await CreateModelAsync();
+
+            var other = fixture.Engine.FindActiveModel(second.ModelGuid).Required();
+            var otherTags = other.Snapshot.EntityAnalysisModelTags;
+
+            await ScheduleAsync(null, first.ModelId);
+            await WaitForSynchronisationAfterAsync(first, await SynchronisedDateAsync(first));
+
+            await ScheduleAsync(null);
+            await WaitForSynchronisationAfterAsync(first, await SynchronisedDateAsync(first));
+
+            other.Snapshot.EntityAnalysisModelTags.Should().NotBeSameAs(otherTags);
         }
 
         [Fact]

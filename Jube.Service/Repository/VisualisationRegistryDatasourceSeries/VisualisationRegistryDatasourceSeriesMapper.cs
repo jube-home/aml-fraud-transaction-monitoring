@@ -26,7 +26,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasourceSeries
             {
                 Id = rulePoco.Id,
                 Name = rulePoco.Name,
-                DataTypeId = rulePoco.DataTypeId
+                DataTypeId = rulePoco.DataTypeId,
+                Ordinal = rulePoco.Ordinal,
+                RoleId = rulePoco.RoleId,
+                RoleOrder = rulePoco.RoleOrder
             };
 
         public static List<VisualisationRegistryDatasourceSeriesDto> ToDto(IEnumerable<RulePoco> source) =>

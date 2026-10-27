@@ -30,7 +30,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
 using Jube.Engine.AdvancedAnalytics.Recall.Models;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -94,7 +94,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsBinarySplitClustererTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = names,
                 ProcessingTypeIds = processingTypeIds,
@@ -134,7 +134,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var trainedModelId = executed.Model!.Id;
             var versionId = executed.Version.Id;
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
             await trainedModelRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await trainedModelRepository.SetActiveAsync(trainedModelId, true);
 

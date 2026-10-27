@@ -73,6 +73,57 @@ namespace Jube.DynamicEnvironment
                     "CasesAutomationWait", "60000"
                 },
                 {
+                    "EnableCaseEscalation", "True"
+                },
+                {
+                    "CaseEscalationWait", "30000"
+                },
+                {
+                    "CaseEscalationBatchSize", "200"
+                },
+                {
+                    "EnableCaseRisk", "True"
+                },
+                {
+                    "CaseRiskWait", "30000"
+                },
+                {
+                    "CaseRiskSweepMinutes", "15"
+                },
+                {
+                    "CaseRiskBatchSize", "200"
+                },
+                {
+                    "CaseRiskKappa", "0.7"
+                },
+                {
+                    "CaseRiskRho", "0.3"
+                },
+                {
+                    "CaseRiskPriorStrength", "20"
+                },
+                {
+                    "CaseRiskBaseRatePrior", "0.08"
+                },
+                {
+                    "CaseRiskDeadlineLaneDays", "2"
+                },
+                {
+                    "CaseRiskKeyHistoryHalfLifeDays", "180"
+                },
+                {
+                    "CaseRiskImpactWeights", "1,3,10,30,100"
+                },
+                {
+                    "CaseRiskMoneyBands", "5000,100000,1000000,10000000"
+                },
+                {
+                    "CaseRiskQaSampleRate", "0.05"
+                },
+                {
+                    "CaseRiskQaMaxPriority", "25"
+                },
+                {
                     "EnableEntityModel", "True"
                 },
                 {
@@ -277,9 +328,6 @@ namespace Jube.DynamicEnvironment
                     "PasswordHashingKey", null
                 },
                 {
-                    "PreservationSalt", null
-                },
-                {
                     "EnablePublicInvokeController", "True"
                 },
                 {
@@ -467,9 +515,6 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "SecretsPath", ""
-                },
-                {
-                    "JempFileLegacyEncryptionFallback", "True"
                 },
                 {
                     "ApiHmacKey", null
@@ -698,6 +743,36 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "PatroniDcsNamespace", "/service/"
+                },
+                {
+                    "EnableCaseKeyJournalPeers", "True"
+                },
+                {
+                    "WaitCaseKeyJournalPeers", "86400000"
+                },
+                {
+                    "CaseKeyJournalPeerWindowDays", "90"
+                },
+                {
+                    "CaseKeyJournalPeerMaximumRows", "200000"
+                },
+                {
+                    "EnableCaseKeyJournalIndexing", "False"
+                },
+                {
+                    "WaitCaseKeyJournalIndexing", "3600000"
+                },
+                {
+                    "CaseKeyJournalIndexMinimumRows", "100000"
+                },
+                {
+                    "CaseKeyJournalIndexMaximum", "16"
+                },
+                {
+                    "EnableCaseKeyJournalTagJobs", "True"
+                },
+                {
+                    "WaitCaseKeyJournalTagJobs", "2000"
                 },
                 {
                     "EnableInfrastructureHealthMetricsPurge", "True"
@@ -947,6 +1022,12 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "AskJoobyOpenCorporatesMaxResults", "5"
+                },
+                {
+                    "JUBE_HOOK_ALLOWED_HOSTS", ""
+                },
+                {
+                    "JUBE_HOOK_ALLOWED_CIDRS", ""
                 }
             };
 

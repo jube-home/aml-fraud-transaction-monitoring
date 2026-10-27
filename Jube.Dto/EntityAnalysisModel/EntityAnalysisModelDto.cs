@@ -11,8 +11,26 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.EntityAnalysisModelDictionary;
+using Jube.Dto.EntityAnalysisModelList;
+using Jube.Dto.EntityAnalysisModelAbstractionCalculation;
+using Jube.Dto.EntityAnalysisModelAbstractionRule;
+using Jube.Dto.EntityAnalysisModelActivationRule;
+using Jube.Dto.EntityAnalysisModelGatewayRule;
+using Jube.Dto.EntityAnalysisModelHttpAdaptation;
+using Jube.Dto.EntityAnalysisModelInlineFunction;
+using Jube.Dto.EntityAnalysisModelInlineScript;
+using Jube.Dto.EntityAnalysisModelReprocessingRule;
+using Jube.Dto.EntityAnalysisModelRequestXPath;
+using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Dto.EntityAnalysisModelResponseElevationRange;
+using Jube.Dto.EntityAnalysisModelTag;
+using Jube.Dto.EntityAnalysisModelTtlCounter;
+using Jube.Dto.ExhaustiveSearchInstance;
+using Jube.Dto.Repository.CaseWorkflow;
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -22,7 +40,26 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.EntityAnalysisModel
 {
+    [FormChild(typeof(EntityAnalysisModelRequestXPathDto), Label = "Request XPath", Hub = "References", Order = 10)]
+    [FormChild(typeof(EntityAnalysisModelInlineFunctionDto), Label = "Inline Functions", Hub = "References", Order = 20)]
+    [FormChild(typeof(EntityAnalysisModelInlineScriptDto), Label = "Inline Scripts", Hub = "References", Order = 30)]
+    [FormChild(typeof(EntityAnalysisModelGatewayRuleDto), Label = "Gateway Rules", Hub = "References", Order = 40)]
+    [FormChild(typeof(EntityAnalysisModelSanctionDto), Label = "Sanctions", Hub = "References", Order = 50)]
+    [FormChild(typeof(EntityAnalysisModelTagDto), Label = "Tags", Hub = "References", Order = 60)]
+    [FormChild(typeof(EntityAnalysisModelListDto), Label = "Lists", Hub = "References", Order = 62)]
+    [FormChild(typeof(EntityAnalysisModelDictionaryDto), Label = "Dictionary", Hub = "References", Order = 64)]
+    [FormChild(typeof(EntityAnalysisModelTtlCounterDto), Label = "TTL Counters", Hub = "Abstraction", Order = 70)]
+    [FormChild(typeof(EntityAnalysisModelAbstractionRuleDto), Label = "Abstraction Rules", Hub = "Abstraction", Order = 80)]
+    [FormChild(typeof(EntityAnalysisModelAbstractionCalculationDto), Label = "Abstraction Calculation", Hub = "Abstraction", Order = 90)]
+    [FormChild(typeof(EntityAnalysisModelHttpAdaptationDto), Label = "HTTP Adaptation", Hub = "Machine Learning", Order = 100)]
+    [FormChild(typeof(ExhaustiveSearchInstanceDto), Label = "Exhaustive Adaptation", Hub = "Machine Learning", Order = 110)]
+    [FormChild(typeof(EntityAnalysisModelResponseElevationRangeDto), Label = "Response Elevation Ranges", Hub = "", Order = 115)]
+    [FormChild(typeof(EntityAnalysisModelActivationRuleDto), Label = "Activation Rules", Hub = "", Order = 120)]
+    [FormChild(typeof(CaseWorkflowDto), Label = "Cases Workflows", Hub = "", Order = 130)]
+    [FormChild(typeof(EntityAnalysisModelReprocessingRuleDto), Label = "Reprocessing", Hub = "", Order = 140)]
     [FormEndpoint("EntityAnalysisModel")]
+    [FormApproval]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -34,43 +71,45 @@ namespace Jube.Dto.EntityAnalysisModel
     [FormGroup("Implicit Async", Order = 70, Collapsed = true)]
     [FormGroup("Trace", Order = 75, Collapsed = true)]
     [FormGroup("Logs", Order = 76, Collapsed = true)]
+    [FormGroup("Response Trace", Order = 77, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     public class EntityAnalysisModelDto : IUpdated, IActivatable, ILockable, IGuidIdentified
     {
         [Description("Display name of the model. Unique within the tenant (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Card transaction fraud")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; init; }
 
         [Description("Name of the field, as extracted from the HTTP POST body, that represents the entry " +
                      "identifier (for example a transaction identifier).")]
-        [FormField(Group = "Entry & Reference Date", Order = 10)]
+        [FormField(Group = "Entry & Reference Date", Order = 10, Placeholder = "TxnId")]
         public string? EntryName { get; init; }
 
         [Description("JSONPath specifying the location of the entry identifier in the HTTP POST body.")]
-        [FormField(Group = "Entry & Reference Date", Order = 20)]
+        [FormField(Group = "Entry & Reference Date", Order = 20, Placeholder = "$.TxnId")]
         public string? EntryXPath { get; init; }
 
         [Description("Not currently editable in the user interface and not persisted -- carried on the DTO for " +
                      "parity with the legacy payload shape only. Always 0 on read; any value sent is discarded.")]
-        [FormField(Group = "Entry & Reference Date", Order = 25, Widget = "radio", ReadOnly = true)]
+        [FormField(Group = "Entry & Reference Date", Order = 25, ReadOnly = true)]
         [NewDefault((byte)1)]
         public byte EntryPayloadLocationTypeId { get; set; }
 
         [Description("Name of the field, as extracted from the HTTP POST body or from the current server time, " +
                      "that represents the reference date (for example a transaction date/time).")]
-        [FormField(Group = "Entry & Reference Date", Order = 30)]
+        [FormField(Group = "Entry & Reference Date", Order = 30, Placeholder = "TxnDate")]
         public string? ReferenceDateName { get; init; }
 
         [Description("Where the reference date is read from: Body (extracted via Reference Date XPath) or Now " +
                      "(the server's current UTC time).")]
         [FormField(Group = "Entry & Reference Date", Order = 40, Widget = "radio")]
         [NewDefault((byte)1)]
+        [Options(typeof(ReferenceDateLocation))]
         public byte ReferenceDatePayloadLocationTypeId { get; set; }
 
         [Description("JSONPath specifying the location of the reference date in the HTTP POST body. Required " +
                      "unless Reference Date Payload Location is Now.")]
-        [FormField(Group = "Entry & Reference Date", Order = 50)]
+        [FormField(Group = "Entry & Reference Date", Order = 50, Placeholder = "$.TxnDateTime")]
         [VisibleWhen(nameof(ReferenceDatePayloadLocationTypeId), (byte)1)]
         [RequiredWhen(nameof(ReferenceDatePayloadLocationTypeId), (byte)1)]
         public string? ReferenceDateXPath { get; set; }
@@ -89,6 +128,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [Description("Unit of Cache TTL Interval Value: Seconds, Minutes, Hours or Days.")]
         [FormField(Group = "Cache", Order = 30, Widget = "radio")]
         [NewDefault('h')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public char CacheTtlInterval { get; set; }
 
         [Description("Offset, in Cache TTL Interval units, before the current reference date at which cached " +
@@ -120,6 +160,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableResponseElevationLimit), true)]
         [RequiredWhen(nameof(EnableResponseElevationLimit), true)]
         [NewDefault('d')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public char MaxResponseElevationInterval { get; init; }
 
         [Description("Length, in Max Response Elevation Interval units, of the rolling period over which " +
@@ -149,6 +190,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableActivationWatcher), true)]
         [RequiredWhen(nameof(EnableActivationWatcher), true)]
         [NewDefault('d')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
         public char MaxActivationWatcherInterval { get; set; }
 
         [Description("Length, in Max Activation Watcher Interval units, of the rolling period over which " +
@@ -283,7 +325,7 @@ namespace Jube.Dto.EntityAnalysisModel
 
         [Description("Milliseconds a trace point's gap since the last captured entry must exceed to be " +
                      "captured, when Enable Logs: Warn Threshold is on.")]
-        [FormField(Group = "Logs", Order = 20, Widget = "slider")]
+        [FormField(Group = "Logs", Order = 20, Widget = "number")]
         [VisibleWhen(nameof(EnableLogsWarnThreshold), true)]
         [RequiredWhen(nameof(EnableLogsWarnThreshold), true)]
         [NewDefault(250)]

@@ -90,7 +90,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 ["LocalCacheFill"] = "False",
                 ["LocalCacheBytes"] = "50000000",
                 ["MaxInvokeControllerRequestBytes"] = "20000",
-                ["CallbackTimeout"] = "10000"
+                ["CallbackTimeout"] = "10000",
+                [Jube.Case.Outbound.OutboundHostPolicy.AllowedCidrsKey] = LoopbackAllowed.Cidrs
             };
         }
 
@@ -113,7 +114,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         }
 
         public static async Task<ModelEngineHost> StartAsync(IReadOnlyDictionary<string, string>? overrides = null,
-            TimeSpan? readyTimeout = null)
+            TimeSpan? readyTimeout = null, RabbitMQ.Client.IConnection? rabbitMqConnection = null)
         {
             var environment = CreateEnvironment(overrides);
             var log = new TestLog(false);
@@ -131,7 +132,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",
                 _ => cacheService.StartAsync(taskCoordinator, static (_, _) => { }));
 
-            var engine = new Jube.Engine.Engine(environment, log, null, cacheService,
+            var engine = new Jube.Engine.Engine(environment, log, rabbitMqConnection, cacheService,
                 new JsonSerializationHelper(), taskCoordinator, new ImplicitAsyncInvocationTracker(log),
                 ModelScaffold.ConnectionString);
 

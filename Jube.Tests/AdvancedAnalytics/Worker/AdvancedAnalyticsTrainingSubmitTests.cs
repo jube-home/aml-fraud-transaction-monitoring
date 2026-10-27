@@ -92,7 +92,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
 
             await act.Should().ThrowAsync<DtoValidationException>();
 
-            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
         }
 
@@ -109,7 +109,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             var thrown = await act.Should().ThrowAsync<DtoValidationException>();
             thrown.Which.Result.Errors.Should().Contain(e => e.ErrorCode == "InlineTooManyRows");
 
-            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
         }
 
@@ -194,7 +194,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
 
             await act.Should().ThrowAsync<NotSupportedException>().WithMessage("*not supported*");
 
-            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
         }
 
@@ -298,7 +298,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
 
             thrown.Which.Result.Errors.Should().Contain(e => e.ErrorCode == "OnlineTooManyRows");
 
-            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
         }
 

@@ -33,7 +33,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(4)] public byte? Active { get; set; }
         [Column] [Nullable] [Key(5)] public byte? Locked { get; set; }
         [Column] [Nullable] [Key(6)] public DateTime? CreatedDate { get; set; }
-        [Column] [Nullable] [Key(7)] public byte? ShowInDirectory { get; set; }
         [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(9)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(10)] public string DeletedUser { get; set; }
@@ -43,5 +42,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(14)] public int? ColumnWidth { get; set; }
         [Column] [Nullable] [Key(15)] public int? RowHeight { get; set; }
         [Column] [Nullable] [Key(16)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(17)] public byte? ContextKindId { get; set; }
     }
 }

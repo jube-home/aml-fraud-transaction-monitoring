@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelTtlCounter
 {
     [FormEndpoint("EntityAnalysisModelTtlCounter")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -36,7 +38,7 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this TTL Counter. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Declines in 24 hours")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -58,18 +60,23 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
                      "decremented. Not applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 20, Widget = "radio")]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day, IntervalUnit.Month, IntervalUnit.Year)]
+        [NewDefault("h")]
         public string? TtlCounterInterval { get; set; }
 
         [Description("The number of TtlCounterInterval units a counter entry lives before it is decremented. Not " +
                      "applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 30)]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [NewDefault(1)]
         public int TtlCounterValue { get; set; }
 
         [Description("Truncation applied to the reference date when grouping decrement entries in cache (n = " +
                      "minutes, h = hours, d = days). Not applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 40, Widget = "radio")]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [Options(typeof(IntervalUnit), IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [NewDefault("h")]
         public string? ResolutionInterval { get; set; }
 
         [Description("Whether a numeric value extracted from the invocation payload (TtlCounterDataValue) " +

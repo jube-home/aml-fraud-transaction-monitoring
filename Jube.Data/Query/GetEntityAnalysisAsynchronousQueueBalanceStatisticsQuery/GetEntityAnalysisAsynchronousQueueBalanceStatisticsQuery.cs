@@ -44,6 +44,9 @@ namespace Jube.Data.Query.GetEntityAnalysisAsynchronousQueueBalanceStatisticsQue
             var notification = rows.Select(s => (double)s.Notification.GetValueOrDefault())
                 .ToArray();
 
+            var webhook = rows.Select(s => (double)s.Webhook.GetValueOrDefault())
+                .ToArray();
+
             var asynchronousEntityInvoke = rows.Select(_ => 0d).ToArray();
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
@@ -51,6 +54,7 @@ namespace Jube.Data.Query.GetEntityAnalysisAsynchronousQueueBalanceStatisticsQue
                 ["caseCreation"] = caseCreation,
                 ["tagging"] = tagging,
                 ["notification"] = notification,
+                ["webhook"] = webhook,
                 ["asynchronousEntityInvoke"] = asynchronousEntityInvoke
             });
         }

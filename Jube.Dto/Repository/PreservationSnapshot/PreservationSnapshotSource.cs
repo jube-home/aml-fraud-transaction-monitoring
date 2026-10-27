@@ -17,6 +17,7 @@ namespace Jube.Dto.Repository.PreservationSnapshot
     {
         PreservationPage = 1,
         ModelSync = 2,
-        AskJooby = 3
+        AskJooby = 3,
+        BeforeImport = 4
     }
 }

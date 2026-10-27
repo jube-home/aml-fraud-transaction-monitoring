@@ -107,6 +107,8 @@ namespace Jube.Cache
                 new CachePayloadLatestRepository(postgresConnectionString, ResilientRedisResilientRedisDatabase, Log);
 
             CacheReferenceDateRepository = new CacheReferenceDateRepository(ResilientRedisResilientRedisDatabase, Log);
+            CacheActivationWatcherLastLocationRepository =
+                new CacheActivationWatcherLastLocationRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheSanctionRepository = new CacheSanctionRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheTtlCounterEntryRepository =
                 new CacheTtlCounterEntryRepository(ResilientRedisResilientRedisDatabase, Log);
@@ -135,6 +137,7 @@ namespace Jube.Cache
         public CachePayloadLatestRepository CachePayloadLatestRepository { get; set; }
         public CachePayloadRepository CachePayloadRepository { get; set; }
         public CacheReferenceDateRepository CacheReferenceDateRepository { get; set; }
+        public CacheActivationWatcherLastLocationRepository CacheActivationWatcherLastLocationRepository { get; set; }
         public CacheSanctionRepository CacheSanctionRepository { get; set; }
         public CacheTtlCounterEntryRepository CacheTtlCounterEntryRepository { get; set; }
         public CacheTtlCounterRepository CacheTtlCounterRepository { get; set; }

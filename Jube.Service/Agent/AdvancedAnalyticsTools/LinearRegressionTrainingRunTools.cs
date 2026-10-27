@@ -32,7 +32,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
             "returned run id until it reports Succeeded, Failed or Cancelled, then call GetTrainingRunResult. " +
             "Training never makes the resulting version live.")]
         public Task<TrainingRunSubmissionView> SubmitLinearRegressionTrainingAsync(
-            [Description("Numeric identifier of the Advanced Analytics instance the run and its model belong to.")]
+            [Description("Numeric identifier of the AskJooby Analytics instance the run and its model belong to.")]
             int instanceId,
             [Description(
                 "Name of the model the trained version is filed under. An existing model of that name receives a new version; otherwise a model is created.")]
@@ -133,7 +133,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
         {
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsLinearRegressionTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 ModelName = modelName,
                 CorrelationKey = correlationKey,
                 VariableNames = variableNames,

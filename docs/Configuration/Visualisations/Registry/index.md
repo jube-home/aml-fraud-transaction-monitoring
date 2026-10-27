@@ -42,7 +42,7 @@ The Visualisation Registry takes the following parameters:
 | Value             | Description                                                                                                                                                 | Example |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | Name              | The display name of the Visualisation Registry. Required, unique per tenant (case-insensitive), 256 characters maximum.                                     | Sales   |
-| Show In Directory | A flag indicating is the Visualisation is to be presented in the Visualisation page (otherwise available only in the Case page as embedded).                | True    |
+| Shown In          | A drop down: Directory (listed in the Visualisation page, for the roles it is granted to) or Case (embedded as the dashboard of a Case, receiving the Case id as the SQL parameter @Id).                | Directory |
 | Columns           | The number of columns that the Visualization Registry will be divided into for the purpose of arranging the Datasource's, or tiles. Must be greater than 0. | 6       |
 | Column Width      | Given the columns having been specified,  the size in pixels of each column. Must be greater than 0.                                                        | 300     |
 | Row Height        | Rows are otherwise unbounded,  however,  like columns,  have their size in pixels specified. Must be greater than 0.                                        | 300     |
@@ -55,7 +55,7 @@ Click Add to create a version of the Visualisation Registry:
 
 ![Image](VersionOfVisualisationRegistry.png)
 
-Upon a new Visualisation Registry having been created, and noting that the Show in Directory having been selected, it
+Upon a new Visualisation Registry having been created, and noting that Shown In having been set to Directory, it
 will be available for recall. Clicking Visualisation from the main menu:
 
 ![Image](NewEntryInVisualisationDirectory.png)

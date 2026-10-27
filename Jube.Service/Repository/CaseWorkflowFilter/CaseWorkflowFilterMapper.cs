@@ -47,6 +47,7 @@ namespace Jube.Service.Repository.CaseWorkflowFilter
 
         public static RulePoco ToPoco(CaseWorkflowFilterDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
             Active = (byte)(dto.Active ? 1 : 0),

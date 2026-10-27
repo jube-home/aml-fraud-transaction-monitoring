@@ -13,8 +13,8 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
-using EditorAttribute = Jube.Dto.Forms.EditorAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,6 +24,8 @@ using EditorAttribute = Jube.Dto.Forms.EditorAttribute;
 namespace Jube.Dto.EntityAnalysisModelInlineFunction
 {
     [FormEndpoint("EntityAnalysisModelInlineFunction")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.InlineFunction, Coder = nameof(FunctionScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -37,7 +39,7 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this field. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Normalise country code")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -46,12 +48,12 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
                      "Boolean.")]
         [FormField(Group = "Function", Order = 10, Widget = "select")]
         [NewDefault(1)]
+        [Options(typeof(FieldDataType), FieldDataType.String, FieldDataType.Integer, FieldDataType.Float, FieldDataType.Date, FieldDataType.Boolean)]
         public int ReturnDataTypeId { get; set; }
 
         [Description("A VB.net code fragment evaluated against the fields extracted so far by Request XPath and " +
                      "Inline Scripts, returning its result in the Matched variable.")]
         [FormField(Group = "Function", Order = 20, Widget = "code")]
-        [Editor("BuilderCoder")]
         public string? FunctionScript { get; set; }
 
         [Description("Encrypts the returned value before it is stored and archived. Only shown, and only " +
@@ -59,6 +61,7 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
         [FormField(Group = "Function", Order = 30, Widget = "radio")]
         [VisibleWhen(nameof(ReturnDataTypeId), 1)]
         [NewDefault(0)]
+        [Options(typeof(PayloadEncryption))]
         public int EncryptionId { get; set; }
 
         [Description("When true, this field's returned value is written to the report table.")]

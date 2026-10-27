@@ -54,6 +54,7 @@ namespace Jube.Service.EntityAnalysisModelDictionary
         {
             return new DictionaryPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelGuid = dto.EntityAnalysisModelGuid,
                 Name = dto.Name,

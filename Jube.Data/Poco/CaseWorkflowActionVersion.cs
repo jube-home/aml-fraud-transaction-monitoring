@@ -50,5 +50,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(21)] public string NotificationSubject { get; set; }
         [Column] [Nullable] [Key(22)] public string NotificationBody { get; set; }
         [Column] [Nullable] [Key(23)] public Guid Guid { get; set; }
+
+        [Column] [Nullable] [Key(24)] public string Sql { get; set; }
     }
 }

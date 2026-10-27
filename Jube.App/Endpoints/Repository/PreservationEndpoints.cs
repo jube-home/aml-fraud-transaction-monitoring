@@ -49,10 +49,17 @@ namespace Jube.App.Endpoints.Repository
                 .Produces((int)HttpStatusCode.Forbidden)
                 .WithName("PreservationImport");
 
-            group.MapGet("ExportPeek", ExportPeekAsync)
-                .Produces<string>(contentType: "text/plain")
+            group.MapPost("ImportPreview", ImportPreviewAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces<PreservationImportPreviewDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
                 .Produces((int)HttpStatusCode.Forbidden)
-                .WithName("PreservationExportPeek");
+                .WithName("PreservationImportPreview");
+
+            group.MapGet("Summary", SummaryAsync)
+                .Produces<PreservationSummaryDto>()
+                .Produces((int)HttpStatusCode.Forbidden)
+                .WithName("PreservationSummary");
 
             group.MapPost("Export", ExportAsync)
                 .Produces<FileResult>(contentType: "application/octet-stream")
@@ -145,18 +152,95 @@ namespace Jube.App.Endpoints.Repository
             }
         }
 
-        private static async Task<IResult> ExportPeekAsync(
-            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
-            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            CancellationToken token, bool exhaustive = false, bool lists = false,
-            bool dictionaries = false, bool visualisations = false, bool advancedAnalytics = false)
+        private static async Task<IResult> ImportPreviewAsync(
+            IFormFileCollection files, [FromForm] string password, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ExportPeek: entry user={user}");
+                log.Debug($"POST {Base}/ImportPreview: entry user={user}");
             }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            var streams = new List<Stream>();
+
+            try
+            {
+                var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                var dtos = new List<PreservationImportFileDto>();
+
+                foreach (var file in files)
+                {
+                    var stream = file.OpenReadStream();
+                    streams.Add(stream);
+                    dtos.Add(new PreservationImportFileDto { FileName = file.FileName, Content = stream });
+                }
+
+                return TypedResults.Ok(await service.ImportPreviewAsync(dtos, password, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/ImportPreview: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/ImportPreview: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (NoFileException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (InvalidPreservationFileException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/ImportPreview: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/ImportPreview: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+            finally
+            {
+                foreach (var stream in streams)
+                {
+                    await stream.DisposeAsync();
+                }
+            }
+        }
+
+        private static async Task<IResult> SummaryAsync(
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -166,41 +250,23 @@ namespace Jube.App.Endpoints.Repository
                 var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
                     stringLocalizerFactory, serviceChangeBus, token);
 
-                var json = await service.ExportPeekAsync(exhaustive, lists, dictionaries,
-                    visualisations, advancedAnalytics, token);
-
-                return TypedResults.Text(json, "application/json");
+                return TypedResults.Ok(await service.SummaryAsync(token));
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled)
-                {
-                    log.Warn($"GET {Base}/ExportPeek: 403 (not authenticated) user={user}");
-                }
-
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled)
-                {
-                    log.Warn($"GET {Base}/ExportPeek: 403 user={user}");
-                }
-
                 return TypedResults.Forbid();
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug($"GET {Base}/ExportPeek: client cancelled user={user}");
-                }
-
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ExportPeek: 500 user={user}", e);
+                log.Error($"GET {Base}/Summary: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -229,6 +295,10 @@ namespace Jube.App.Endpoints.Repository
                 var export = await service.ExportAsync(model, token);
 
                 return TypedResults.File(export.EncryptedBytes, "application/octet-stream", export.FileName);
+            }
+            catch (WeakPasswordException)
+            {
+                return TypedResults.BadRequest();
             }
             catch (NotAuthenticatedException)
             {
@@ -270,10 +340,7 @@ namespace Jube.App.Endpoints.Repository
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
         {
-            return PreservationService.CreateAsync(dbContext, user, log, stringLocalizerFactory, serviceChangeBus,
-                dynamicEnvironment.AppSettings("PreservationSalt"),
-                dynamicEnvironment.AppSettings("JempFileLegacyEncryptionFallback")
-                    .Equals("True", StringComparison.CurrentCultureIgnoreCase), token);
+            return PreservationService.CreateAsync(dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
         }
     }
 }

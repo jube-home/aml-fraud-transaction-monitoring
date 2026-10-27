@@ -29,6 +29,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                     Id = schedulePoco.Id,
                     ScheduleDate = ToOffset(schedulePoco.ScheduleDate),
                     TenantRegistryId = schedulePoco.TenantRegistryId.GetValueOrDefault(),
+                    EntityAnalysisModelId = schedulePoco.EntityAnalysisModelId,
                     CreatedUser = schedulePoco.CreatedUser,
                     CreatedDate = ToOffset(schedulePoco.CreatedDate)
                 };
@@ -43,7 +44,8 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
         {
             return new SchedulePoco
             {
-                ScheduleDate = dto.ScheduleDate?.UtcDateTime
+                ScheduleDate = dto.ScheduleDate?.UtcDateTime,
+                EntityAnalysisModelId = dto.EntityAnalysisModelId
             };
         }
 

@@ -28,9 +28,6 @@ namespace Jube.Dto.Repository.PreservationSnapshot
         [Description("What is taking the snapshot. Defaults to the Preservation page.")]
         public PreservationSnapshotSource SnapshotSourceId { get; set; } = PreservationSnapshotSource.PreservationPage;
 
-        [Description("Include Exhaustive Search Instances, which may be very large.")]
-        public bool Exhaustive { get; set; }
-
         [Description("Include Lists and List Values.")]
         public bool Lists { get; set; } = true;
 
@@ -44,7 +41,7 @@ namespace Jube.Dto.Repository.PreservationSnapshot
                      "snapshot body does not hold, so omitting roles loses the permission model.")]
         public bool Roles { get; set; } = true;
 
-        [Description("Include Advanced Analytics instances, trained models and training history. On by " +
+        [Description("Include AskJooby Analytics instances, trained models and training history. On by " +
                      "default, for the same reason as Roles.")]
         public bool AdvancedAnalytics { get; set; } = true;
     }

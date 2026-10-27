@@ -28,7 +28,7 @@ namespace Jube.Service.Repository.VisualisationRegistry
                 Name = registryPoco.Name,
                 Active = registryPoco.Active == 1,
                 Locked = registryPoco.Locked == 1,
-                ShowInDirectory = registryPoco.ShowInDirectory == 1,
+                ContextKindId = registryPoco.ContextKindId ?? 1,
                 Columns = registryPoco.Columns.GetValueOrDefault(),
                 ColumnWidth = registryPoco.ColumnWidth.GetValueOrDefault(),
                 RowHeight = registryPoco.RowHeight.GetValueOrDefault(),
@@ -47,11 +47,12 @@ namespace Jube.Service.Repository.VisualisationRegistry
 
         public static RegistryPoco ToPoco(VisualisationRegistryDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
             Active = (byte)(dto.Active ? 1 : 0),
             Locked = (byte)(dto.Locked ? 1 : 0),
-            ShowInDirectory = (byte)(dto.ShowInDirectory ? 1 : 0),
+            ContextKindId = (byte)(dto.ContextKindId is 1 or 2 ? dto.ContextKindId : 1),
             Columns = dto.Columns,
             ColumnWidth = dto.ColumnWidth,
             RowHeight = dto.RowHeight

@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.CaseWorkflowXPath
 {
     [FormEndpoint("CaseWorkflowXPath")]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(CaseWorkflowId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -37,7 +39,7 @@ namespace Jube.Dto.Repository.CaseWorkflowXPath
         public int CaseWorkflowId { get; set; }
 
         [Description("Display name of the extraction, shown as the column heading in the Case Key Journal grid.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Merchant name")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -52,7 +54,7 @@ namespace Jube.Dto.Repository.CaseWorkflowXPath
 
         [Description("The JSONPath expression used to extract the value from the event/transaction payload " +
                      "JSON for presentation in the Case Key Journal.")]
-        [FormField(Group = "Extraction", Order = 10)]
+        [FormField(Group = "Extraction", Order = 10, Placeholder = "$.Merchant.Name")]
         public string? XPath { get; set; }
 
         [Description("Present on the API contract for backward compatibility, but not backed by any column -- " +
@@ -65,6 +67,18 @@ namespace Jube.Dto.Repository.CaseWorkflowXPath
                      "(Archive carries a GIN index by default) since a Drill query scans by this extracted value.")]
         [FormField(Group = "Extraction", Order = 20, Widget = "switch")]
         public bool Drill { get; set; }
+
+        [Description("What kind of field this is to the Case Key Journal analytics and to network mapping: " +
+                     "0 = Inferred from sampled values, 1 = Measure, 2 = Category, 3 = Counterparty, " +
+                     "4 = Identifier, 5 = Time, 6 = Geography. Anything other than 0 overrides the inference.")]
+        [FormField(Group = "Analytics", Order = 10, Widget = "select")]
+        [Options(typeof(JournalFieldRole))]
+        public int RoleId { get; set; }
+
+        [Description("When true the field splits the tenant peer distributions, so that a value is compared with " +
+                     "peers in the same segment, such as a customer tier.")]
+        [FormField(Group = "Analytics", Order = 20, Widget = "switch")]
+        public bool Segment { get; set; }
 
         [Description("When true, the extracted value for this row is compared to the same value in the case " +
                      "creation payload; on a match the row is rendered using the Bold Line colours.")]
@@ -93,7 +107,7 @@ namespace Jube.Dto.Repository.CaseWorkflowXPath
 
         [Description("The regular expression evaluated against the extracted value. Required when Conditional " +
                      "Formatting is enabled.")]
-        [FormField(Group = "ConditionalFormatting", Order = 20)]
+        [FormField(Group = "ConditionalFormatting", Order = 20, Placeholder = "^HIGH.*")]
         [VisibleWhen(nameof(ConditionalRegularExpressionFormatting), true)]
         [RequiredWhen(nameof(ConditionalRegularExpressionFormatting), true)]
         public string? RegularExpression { get; set; }

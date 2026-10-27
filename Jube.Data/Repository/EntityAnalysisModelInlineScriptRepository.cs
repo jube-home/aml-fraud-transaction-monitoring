@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 using System;
@@ -143,6 +144,8 @@ namespace Jube.Data.Repository
             {
                 throw new KeyNotFoundException();
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             model.Version = existing.Version + 1;
             model.Deleted = 0;

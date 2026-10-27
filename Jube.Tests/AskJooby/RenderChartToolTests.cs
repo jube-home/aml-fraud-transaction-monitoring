@@ -215,15 +215,183 @@ namespace Jube.Test.AskJooby
                 + "in the query rather than anything the chart can do about it");
         }
 
+        private static readonly string[] OriginalEight =
+            ["column", "bar", "line", "area", "pie", "donut", "scatter", "histogram"];
+
+        private static readonly string[] RegistryKinds =
+        [
+            "stackedcolumn", "stackedbar", "percentstackedcolumn", "percentstackedbar", "stackedarea",
+            "percentstackedarea", "heatmap", "combo", "boxplot", "candlestick", "waterfall", "funnel", "radar",
+            "polar", "gauge", "bullet", "sparkline", "treemap", "gantt", "map"
+        ];
+
         [Fact]
         public void TheRendererAdvertisesExactlyTheTypesTheToolDescriptionNames()
         {
             var advertised = new AskJoobyChartRenderer().SupportedChartTypes;
 
-            advertised.Should().BeEquivalentTo(
-                ["column", "bar", "line", "area", "pie", "donut", "scatter", "histogram"],
+            advertised.Should().BeEquivalentTo([.. OriginalEight, .. RegistryKinds],
                 "the description the model reads and the list the renderer accepts have to be the "
                 + "same list, or it will be told to choose something that cannot be drawn");
+
+            var description = typeof(RenderChartTool).GetMethod(nameof(RenderChartTool.RenderChart))!
+                .GetParameters().Single(p => p.Name == "chartType")
+                .GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false)
+                .Cast<System.ComponentModel.DescriptionAttribute>().Single().Description;
+
+            foreach (var type in advertised)
+            {
+                description.Should().Contain(type, "the model is only told about the types the tool description names");
+            }
+        }
+
+        private static CachedTable BuildWideTable()
+        {
+            var rows = Enumerable.Range(0, 6).Select(i => (IReadOnlyDictionary<string, object?>)new Dictionary<string, object?>
+            {
+                ["Day"] = "D" + i,
+                ["Alpha"] = 10.0 + i,
+                ["Beta"] = 20.0 + i * 2,
+                ["Open"] = 10.0 + i,
+                ["High"] = 14.0 + i,
+                ["Low"] = 8.0 + i,
+                ["Close"] = 12.0 + i,
+                ["Min"] = 1.0 + i,
+                ["Q1"] = 2.0 + i,
+                ["Med"] = 3.0 + i,
+                ["Q3"] = 4.0 + i,
+                ["Max"] = 5.0 + i,
+                ["Row"] = "R" + i / 3,
+                ["Col"] = "C" + i % 3,
+                ["Angle"] = i * 40.0,
+                ["Lat"] = 10.0 + i * 8,
+                ["Lon"] = -60.0 + i * 25,
+                ["Country"] = new[] { "FRA", "DEU", "BRA", "USA", "IND", "CHN" }[i],
+                ["Start"] = new DateTime(2026, 1, 1 + i * 3, 0, 0, 0, DateTimeKind.Utc),
+                ["End"] = new DateTime(2026, 1, 3 + i * 3, 0, 0, 0, DateTimeKind.Utc)
+            }).ToList();
+
+            return new CachedTable(rows[0].Keys.Select(k => new CachedColumn(k, "x")).ToList(), rows);
+        }
+
+        public static IEnumerable<object?[]> KindsWithTheirArguments()
+        {
+            return
+            [
+                ["stackedcolumn", "Day", "Alpha, Beta", null],
+                ["stackedbar", "Day", "Alpha, Beta", null],
+                ["percentstackedcolumn", "Day", "Alpha, Beta", null],
+                ["percentstackedbar", "Day", "Alpha, Beta", null],
+                ["stackedarea", "Day", "Alpha, Beta", null],
+                ["percentstackedarea", "Day", "Alpha, Beta", null],
+                ["combo", "Day", "Alpha, Beta", null],
+                ["radar", "Day", "Alpha, Beta", null],
+                ["waterfall", "Day", "Alpha", null],
+                ["funnel", "Day", "Alpha", null],
+                ["treemap", "Day", "Alpha", null],
+                ["bullet", "Day", "Alpha, Beta", null],
+                ["sparkline", string.Empty, "Alpha", null],
+                ["heatmap", string.Empty, string.Empty, "Row=Row;Column=Col;Value=Alpha"],
+                ["boxplot", string.Empty, string.Empty,
+                    "Category=Day;Minimum=Min;FirstQuartile=Q1;Median=Med;ThirdQuartile=Q3;Maximum=Max"],
+                ["candlestick", string.Empty, string.Empty, "Category=Day;Open=Open;High=High;Low=Low;Close=Close"],
+                ["polar", string.Empty, string.Empty, "X=Angle;Y=Alpha"],
+                ["gauge", string.Empty, string.Empty, "Value=Alpha;Target=Beta"],
+                ["gantt", string.Empty, string.Empty, "Category=Day;Start=Start;End=End"],
+                ["map", string.Empty, string.Empty, "Latitude=Lat;Longitude=Lon;Value=Beta;Label=Day"]
+            ];
+        }
+
+        [Theory]
+        [MemberData(nameof(KindsWithTheirArguments))]
+        public async Task EveryKindBeyondTheOriginalEightIsDrawnFromACachedTableAsync(string chartType, string category,
+            string values, string? roles)
+        {
+            var export = new FakeExport();
+
+            var result = await BuildTool(export, BuildWideTable()).RenderChart("ptr", chartType, category, values,
+                null, null, roles);
+
+            result.Should().StartWith("Drew a " + chartType);
+            export.Files.Should().ContainSingle();
+
+            var svg = Encoding.UTF8.GetString(export.Bytes.Single());
+            svg.Should().StartWith("<svg").And.Contain("<style").And.NotContain("<script");
+            svg.Should().NotContain("tabindex", "an exported picture is static, not interactive");
+        }
+
+        [Fact]
+        public async Task ACountryMapIsDrawnFromCountryAndValueRolesAsync()
+        {
+            var export = new FakeExport();
+
+            var result = await BuildTool(export, BuildWideTable()).RenderChart("ptr", "map", string.Empty,
+                string.Empty, null, null, "Country=Country;Value=Alpha");
+
+            result.Should().StartWith("Drew a map");
+            Encoding.UTF8.GetString(export.Bytes.Single()).Should().Contain("France");
+        }
+
+        [Theory]
+        [InlineData("Box Plot")]
+        [InlineData("BOXPLOT")]
+        [InlineData("box-plot")]
+        public async Task AChartTypeIsMatchedWhateverItsSpacingOrCaseAsync(string chartType)
+        {
+            var export = new FakeExport();
+
+            var result = await BuildTool(export, BuildWideTable()).RenderChart("ptr", chartType, string.Empty,
+                string.Empty, null, null,
+                "Category=Day;Minimum=Min;FirstQuartile=Q1;Median=Med;ThirdQuartile=Q3;Maximum=Max");
+
+            result.Should().StartWith("Drew a");
+            export.Files.Should().ContainSingle();
+        }
+
+        [Fact]
+        public async Task WithNoRolesTheCategoryAndValueColumnsAreUsedInOrderAndTheRestIgnoredAsync()
+        {
+            var export = new FakeExport();
+
+            await BuildTool(export, BuildWideTable()).RenderChart("ptr", "stackedcolumn", "Day", "Beta");
+
+            var svg = Encoding.UTF8.GetString(export.Bytes.Single());
+            svg.Should().Contain("Beta").And.NotContain("Alpha");
+        }
+
+        [Theory]
+        [InlineData("Nonsense=Alpha", "not a chart role")]
+        [InlineData("Value=Missing", "Missing")]
+        [InlineData("Value", "not a Role=Column pair")]
+        [InlineData("Value=", "not a Role=Column pair")]
+        public async Task ABadRolesArgumentIsRefusedWithAReasonTheModelCanActOnAsync(string roles, string expected)
+        {
+            var export = new FakeExport();
+
+            var result = await BuildTool(export, BuildWideTable()).RenderChart("ptr", "funnel", "Day", "Alpha",
+                null, null, roles);
+
+            result.Should().StartWith("Could not draw that chart").And.Contain(expected);
+            export.Files.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task AKindThatCannotBeSatisfiedNamesTheMissingRoleAsync()
+        {
+            var export = new FakeExport();
+
+            var result = await BuildTool(export, BuildWideTable()).RenderChart("ptr", "candlestick", "Day", "Alpha");
+
+            result.Should().StartWith("Could not draw that chart").And.Contain("High").And.NotContain("no a ");
+            export.Files.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task ATypeThatDoesNotExistListsTheRealOnesIncludingTheNewKindsAsync()
+        {
+            var result = await BuildTool(new FakeExport()).RenderChart("ptr", "sunburst", "RuleName", "Hits");
+
+            result.Should().Contain("boxplot").And.Contain("column");
         }
 
         [Fact]

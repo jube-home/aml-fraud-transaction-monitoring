@@ -21,18 +21,26 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Resources;
 using Jube.Service.Agent;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
+using Jube.Service.Charts.Datasource;
+using Jube.Service.Charts.Datasource.Template;
+using Jube.Service.Charts.Datasource.Template.Models;
+using Jube.Service.Query.CaseWorkflowDisplayExecution;
+using Jube.Service.Repository.CaseWorkflowFormValidator;
+using Jube.Service.Repository.CaseWorkflowFormValidator.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormEntry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using FluentValidation.Results;
+using Jube.Dto.Options;
 using Jube.Validations.Repository.CaseWorkflowFormEntry;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.CaseWorkflowFormEntry;
 using RuleRepository = Jube.Data.Repository.CaseWorkflowFormEntryRepository;
 
@@ -46,6 +54,10 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly DatasourceChartText chartText;
+        private readonly CaseDispatcher dispatcher;
+        private readonly DbContext dbContext;
+        private readonly CaseWorkflowFormValidatorRepository validatorRepository;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowFormRepository caseWorkflowFormRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
@@ -63,9 +75,14 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
 
         private CaseWorkflowFormEntryService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizer strings, IStringLocalizer chartStrings,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             EngineJsonSerializationHelper jsonSerializationHelper)
         {
+            this.dbContext = dbContext;
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
+            chartText = new DatasourceChartText(chartStrings);
+            validatorRepository = new CaseWorkflowFormValidatorRepository(dbContext, userName);
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -101,6 +118,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseWorkflowFormEntryResources));
+            var chartStrings = stringLocalizerFactory.Create(typeof(DatasourceChartResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -129,7 +147,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                 .ConfigureAwait(false);
 
             return new CaseWorkflowFormEntryService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, dynamicEnvironment,
+                permissionValidation, log, auditLog, serviceChangeBus, strings, chartStrings, dynamicEnvironment,
                 jsonSerializationHelper);
         }
 
@@ -208,13 +226,21 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                     throw new NotFoundException(strings[CaseWorkflowFormEntryResources.CaseWorkflowFormNotFound]);
                 }
 
+                var (formPayload, rows) = await AcceptedAsync(model, existingCase, caseWorkflowStatus,
+                    caseWorkflowForm, token).ConfigureAwait(false);
+
                 var toInsert = CaseWorkflowFormEntryMapper.ToPoco(model);
                 toInsert.CaseKey = existingCase.CaseKey;
                 toInsert.CaseKeyValue = existingCase.CaseKeyValue;
-                var saved = await repository.InsertAsync(toInsert, token).ConfigureAwait(false);
+                toInsert.Template = caseWorkflowForm.Html;
 
-                var formPayload = model.Payload ??
-                                  throw new InvalidOperationException("Payload is validated as required.");
+                if (!string.IsNullOrWhiteSpace(caseWorkflowForm.Sql))
+                {
+                    toInsert.Sql = caseWorkflowForm.Sql;
+                    toInsert.Rows = CaseRowsContext.ToJson(rows);
+                }
+
+                var saved = await repository.InsertAsync(toInsert, token).ConfigureAwait(false);
 
                 foreach (var (key, value) in formPayload)
                 {
@@ -240,42 +266,28 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                              $"user={userName}");
                 }
 
-                if (caseWorkflowForm.EnableNotification == 1 || caseWorkflowForm.EnableHttpEndpoint == 1)
+                var formSource = new DispatchSource(CaseDispatchSourceKind.Form, caseWorkflowForm.Id,
+                    caseWorkflowForm.Name ?? string.Empty, caseWorkflowForm.Sql,
+                    caseWorkflowForm.EnableNotification == 1, caseWorkflowForm.NotificationTypeId ?? 1,
+                    caseWorkflowForm.NotificationDestination, caseWorkflowForm.NotificationSubject,
+                    caseWorkflowForm.NotificationBody, caseWorkflowForm.EnableHttpEndpoint == 1,
+                    caseWorkflowForm.HttpEndpoint, caseWorkflowForm.HttpEndpointTypeId ?? 1);
+
+                if (formSource.Wanted)
                 {
-                    var payload = JsonConvert.DeserializeObject<EntryPayload>(
-                        existingCase.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                    var payload = formSource.UsesSql
+                        ? null
+                        : JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
+                            jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                    if (caseWorkflowForm.EnableNotification == 1 && payload is not null)
-                    {
-                        var notificationSubject =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowForm.NotificationSubject);
-                        var notificationDestination =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowForm.NotificationDestination);
-                        var notificationBody =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowForm.NotificationBody);
-
-                        var notification = new EngineNotification(log, dynamicEnvironment);
-
-                        await notification.SendAsync(caseWorkflowForm.NotificationTypeId ?? 1,
-                                notificationDestination, notificationSubject, notificationBody, token)
-                            .ConfigureAwait(false);
-                    }
-
-                    if (caseWorkflowForm.EnableHttpEndpoint == 1 && payload is not null)
-                    {
-                        var endpoint = EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowForm.HttpEndpoint);
-
-                        if (caseWorkflowStatus.HttpEndpointTypeId == 1)
-                        {
-                            await EngineSendHttpEndpoint.PostAsync(endpoint,
-                                PreparePostBodyString(saved, formPayload, existingCase, caseWorkflowStatus,
-                                    caseWorkflowForm, payload), log).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                        }
-                    }
+                    await dispatcher.DispatchAsync(formSource,
+                        new DispatchCase(existingCase.Id, existingCase.CaseKey, existingCase.CaseKeyValue),
+                        formPayload.ToDictionary(v => v.Key, v => v.Value?.ToString()),
+                        payload is null
+                            ? null
+                            : new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(payload, text),
+                                () => PreparePostBodyString(saved, formPayload, existingCase, caseWorkflowStatus,
+                                    caseWorkflowForm, payload)), rows, token).ConfigureAwait(false);
                 }
 
                 return CaseWorkflowFormEntryMapper.ToDto(saved);
@@ -306,6 +318,149 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                 log.Error($"CaseWorkflowFormEntry.Insert: unexpected failure user={userName}", ex);
                 throw;
             }
+        }
+
+        private async Task<(Dictionary<string, object?> Accepted, CaseRows Rows)> AcceptedAsync(
+            CaseWorkflowFormEntryDto model,
+            Data.Poco.Case existingCase, Data.Poco.CaseWorkflowStatus caseWorkflowStatus,
+            Data.Poco.CaseWorkflowForm caseWorkflowForm, CancellationToken token)
+        {
+            var submitted = (model.Payload ?? throw new InvalidOperationException("Payload is validated as required."))
+                .Where(p => p.Value is not null)
+                .ToDictionary(p => p.Key, p => p.Value is bool flag
+                    ? flag ? "true" : "false"
+                    : p.Value!.ToString());
+
+            EntryPayload? payload;
+
+            try
+            {
+                payload = JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
+                    jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+            }
+            catch (Exception e) when (e is JsonException or InvalidCastException or NullReferenceException
+                                          or FormatException)
+            {
+                payload = null;
+            }
+
+            var usesSql = !string.IsNullOrWhiteSpace(caseWorkflowForm.Sql);
+            var dialect = usesSql ? TemplateDialect.FormSql : TemplateDialect.Form;
+            var rows = CaseRows.None;
+
+            if (usesSql)
+            {
+                try
+                {
+                    rows = await new CaseSqlRunner(
+                        dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                        dynamicEnvironment.AppSettings("ConnectionString"), userName, log).RunAsync(
+                        caseWorkflowForm.Sql, existingCase.Id, existingCase.CaseKeyValue, token).ConfigureAwait(false);
+                }
+                catch (CaseSqlException e)
+                {
+                    log.Warn($"CaseWorkflowFormEntry.Insert: the form SQL failed user={userName}: {e.Message}");
+
+                    throw new DtoValidationException(new ValidationResult([
+                        new ValidationFailure(nameof(model.CaseWorkflowFormId),
+                            strings[CaseWorkflowFormEntryResources.FormSqlFailed])
+                        {
+                            ErrorCode = "FormSqlFailed"
+                        }
+                    ]));
+                }
+            }
+
+            var roots = usesSql
+                ? CaseRowsContext.Roots(rows)
+                : CaseWorkflowTemplateRoots.Build(existingCase, caseWorkflowStatus, payload ?? new EntryPayload());
+
+            FormSubmissionResult result;
+            FormSchema schema;
+            IReadOnlyList<string> visible;
+
+            try
+            {
+                schema = DatasourceTemplate.CompileForm(caseWorkflowForm.Html, dialect);
+                visible = DatasourceTemplate.RenderForm(caseWorkflowForm.Html, roots, submitted, false, dialect)
+                    .VisibleFields;
+                result = FormSubmissionValidator.Validate(schema, visible, submitted);
+            }
+            catch (DatasourceChartException ex)
+            {
+                throw new DtoValidationException(new ValidationResult([
+                    new ValidationFailure(nameof(model.CaseWorkflowFormId), chartText.Describe(ex))
+                    {
+                        ErrorCode = "FormTemplateInvalid"
+                    }
+                ]));
+            }
+
+            if (!result.Valid)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"CaseWorkflowFormEntry.Insert: submission failed the form template user={userName} " +
+                             $"fields=[{string.Join(",", result.Errors.Select(e => e.Name))}]");
+                }
+
+                var failures = result.Errors.Where(e => e.Code != FormSubmissionValidator.Unknown).Select(e =>
+                    new ValidationFailure($"{nameof(model.Payload)}.{e.Name}", FieldMessage(e.Code))
+                    {
+                        ErrorCode = e.Code
+                    }).ToList();
+
+                if (result.Errors.Any(e => e.Code == FormSubmissionValidator.Unknown))
+                {
+                    failures.Add(new ValidationFailure(nameof(model.Payload),
+                        FieldMessage(FormSubmissionValidator.Unknown))
+                    {
+                        ErrorCode = FormSubmissionValidator.Unknown
+                    });
+                }
+
+                throw new DtoValidationException(new ValidationResult(failures));
+            }
+
+            var rules = (await validatorRepository
+                .GetActiveByCaseWorkflowFormGuidAsync(caseWorkflowForm.Guid, token).ConfigureAwait(false))
+                .Select(r => new FormValidatorRule(r.Id, r.FieldName, (CaseWorkflowFormValidatorKind)r.KindId.GetValueOrDefault(),
+                    r.Argument1, r.Argument2, r.Sql, r.Message)).ToList();
+
+            if (rules.Count > 0)
+            {
+                var modelGuid = await validatorRepository.GetModelGuidOfFormAsync(caseWorkflowForm.Guid, token)
+                    .ConfigureAwait(false);
+
+                var problems = await FormValidatorEngine.ValidateAsync(schema, visible, result.Accepted, rules,
+                    existingCase.CaseKeyValue ?? string.Empty, existingCase.Id,
+                    FormValidatorRuntime.Lookups(dbContext, tenantRegistryId, modelGuid.GetValueOrDefault(),
+                        dynamicEnvironment),
+                    FormValidatorRuntime.SqlRunner(dynamicEnvironment, userName, log), token).ConfigureAwait(false);
+
+                if (problems.Count > 0)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"CaseWorkflowFormEntry.Insert: submission failed the form validators " +
+                                 $"user={userName} fields=[{string.Join(",", problems.Select(e => e.Name))}]");
+                    }
+
+                    throw new DtoValidationException(new ValidationResult(problems.Select(e =>
+                        new ValidationFailure($"{nameof(model.Payload)}.{e.Name}",
+                            FormValidatorMessages.For(e.Code, e.Message, strings))
+                        {
+                            ErrorCode = e.Code
+                        })));
+                }
+            }
+
+            return (result.Accepted.ToDictionary(a => a.Key, a => (object?)a.Value), rows);
+        }
+
+        private string FieldMessage(string code)
+        {
+            return FormValidatorMessages.For(code, null, strings);
         }
 
         [Description("Validates a Case Workflow Form Entry without saving it, running every check a create " +

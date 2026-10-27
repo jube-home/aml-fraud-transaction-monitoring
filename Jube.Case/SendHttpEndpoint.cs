@@ -25,11 +25,20 @@ namespace Jube.Case
             return Uri.TryCreate(httpEndpoint, UriKind.Absolute, out var uri) ? uri.Host : "unparseable-endpoint";
         }
 
-        public static async Task PostAsync(string httpEndpoint, string body, ILog log)
+        private static void AddCredential(HttpRequestMessage request, string? headerName, string? headerValue)
+        {
+            if (!string.IsNullOrEmpty(headerName) && !string.IsNullOrEmpty(headerValue))
+            {
+                request.Headers.TryAddWithoutValidation(headerName, headerValue);
+            }
+        }
+
+        public static async Task<DispatchResult> PostAsync(string httpEndpoint, string body, ILog log,
+            string? headerName = null, string? headerValue = null, CancellationToken token = default)
         {
             if (String.IsNullOrEmpty(httpEndpoint))
             {
-                return;
+                return DispatchResult.Failure("There was no endpoint to call.");
             }
 
             var correlationId = Guid.NewGuid();
@@ -38,23 +47,33 @@ namespace Jube.Case
             {
                 using var content = new StringContent(body, Encoding.UTF8, "application/json");
                 content.Headers.Add("X-Correlation-Id", correlationId.ToString());
-                using var response = await httpClient.PostAsync(httpEndpoint, content).ConfigureAwait(false);
+                using var request = new HttpRequestMessage(HttpMethod.Post, httpEndpoint) { Content = content };
+                AddCredential(request, headerName, headerValue);
+                using var response = await httpClient.SendAsync(request, token).ConfigureAwait(false);
+                var status = (int)response.StatusCode;
+
                 response.EnsureSuccessStatusCode();
 
-                await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+
+                return DispatchResult.Success(status, correlationId);
             }
             catch (Exception ex)
             {
                 log.Error(
                     $"Failed to dispatch to host {SafeHost(httpEndpoint)} for verb POST, correlationId={correlationId}: {ex.GetType().Name}: {ex.Message}");
+
+                return DispatchResult.Failure($"{ex.GetType().Name}: {ex.Message}",
+                    ex is HttpRequestException { StatusCode: { } code } ? (int)code : null, correlationId);
             }
         }
 
-        public static async Task GetAsync(string httpEndpoint, ILog log)
+        public static async Task<DispatchResult> GetAsync(string httpEndpoint, ILog log,
+            string? headerName = null, string? headerValue = null, CancellationToken token = default)
         {
             if (String.IsNullOrEmpty(httpEndpoint))
             {
-                return;
+                return DispatchResult.Failure("There was no endpoint to call.");
             }
 
             var correlationId = Guid.NewGuid();
@@ -63,15 +82,23 @@ namespace Jube.Case
             {
                 using var request = new HttpRequestMessage(HttpMethod.Get, httpEndpoint);
                 request.Headers.Add("X-Correlation-Id", correlationId.ToString());
-                using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                AddCredential(request, headerName, headerValue);
+                using var response = await httpClient.SendAsync(request, token).ConfigureAwait(false);
+                var status = (int)response.StatusCode;
+
                 response.EnsureSuccessStatusCode();
 
-                await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+
+                return DispatchResult.Success(status, correlationId);
             }
             catch (Exception ex)
             {
                 log.Error(
                     $"Failed to dispatch to host {SafeHost(httpEndpoint)} for verb GET, correlationId={correlationId}: {ex.GetType().Name}: {ex.Message}");
+
+                return DispatchResult.Failure($"{ex.GetType().Name}: {ex.Message}",
+                    ex is HttpRequestException { StatusCode: { } code } ? (int)code : null, correlationId);
             }
         }
     }

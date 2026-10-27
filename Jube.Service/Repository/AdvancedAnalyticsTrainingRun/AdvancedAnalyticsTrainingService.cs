@@ -40,15 +40,15 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
         private readonly AdvancedAnalyticsOperationRunner runner;
         private readonly AdvancedAnalyticsTrainingRunRepository runs;
         private readonly AdvancedAnalyticsLogisticRegressionTrainingValidator validator;
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions;
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions;
 
         private AdvancedAnalyticsTrainingService(AdvancedAnalyticsOperationRunner runner)
         {
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            var instances = new AdvancedAnalyticsInstanceRepository(runner.DbContext, tenant, user);
-            versions = new AdvancedAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
+            var instances = new AskJoobyAnalyticsInstanceRepository(runner.DbContext, tenant, user);
+            versions = new AskJoobyAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
 
             cache = new AdvancedAnalyticsCacheRepository(runner.DbContext, tenant, user,
@@ -142,7 +142,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     ModelKindId = AdvancedAnalyticsModelKind.LogisticRegressionPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -154,7 +154,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 op.Entity(run.Id);
                 op.Created();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.SubmitTraining: run {run.Id} queued " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.SubmitTraining: run {run.Id} queued " +
                             $"input={input.Kind} rows={rows} user={runner.UserName}");
 
                 return new AdvancedAnalyticsTrainingSubmissionDto
@@ -217,7 +217,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     ModelKindId = AdvancedAnalyticsModelKind.LogisticRegressionPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Online,
@@ -260,7 +260,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 if (result.Status == AdvancedAnalyticsStatus.Failed)
                 {
-                    runner.Info($"AdvancedAnalyticsTrainedModel.TrainLogisticRegression: run {run.Id} failed: " +
+                    runner.Info($"AskJoobyAnalyticsTrainedModel.TrainLogisticRegression: run {run.Id} failed: " +
                                 $"{result.Error} user={runner.UserName}");
 
                     op.Outcome("failed");
@@ -287,7 +287,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                     op.Updated();
                 }
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.TrainLogisticRegression: run {run.Id} stored " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.TrainLogisticRegression: run {run.Id} stored " +
                             $"version {result.Version.VersionNumber} of model {result.Model.Id} (not activated) " +
                             $"user={runner.UserName}");
 
@@ -371,8 +371,8 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
         [Description("Lists training runs of the caller's tenant, newest first, optionally for one instance or one " +
                      "status. Needs the Advanced Analytics permission.")]
         public Task<List<AdvancedAnalyticsTrainingRunStatusDto>> ListRunsAsync(
-            [Description("Only runs of this Advanced Analytics instance, or null for all.")]
-            int? advancedAnalyticsInstanceId = null,
+            [Description("Only runs of this AskJooby Analytics instance, or null for all.")]
+            int? askJoobyAnalyticsInstanceId = null,
             [Description("Only runs in this status, or null for all.")]
             AdvancedAnalyticsStatus? status = null,
             [Description("Most runs to return, from 1 to 200.")]
@@ -384,7 +384,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 runner.EnsurePermitted(AdvancedAnalyticsPermissionSpecifications.analyticsOnly,
                     "ListRuns", AdvancedAnalyticsTrainingResources.PermissionDenied);
 
-                var list = await runs.ListAsync(advancedAnalyticsInstanceId, status, Math.Clamp(take, 1, 200), token)
+                var list = await runs.ListAsync(askJoobyAnalyticsInstanceId, status, Math.Clamp(take, 1, 200), token)
                     .ConfigureAwait(false);
 
                 var result = new List<AdvancedAnalyticsTrainingRunStatusDto>();
@@ -434,7 +434,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                     return dto;
                 }
 
-                dto.TrainedModelId = version.AdvancedAnalyticsTrainedModelId;
+                dto.TrainedModelId = version.AskJoobyAnalyticsTrainedModelId;
                 dto.TrainedModelVersionId = version.Id;
                 dto.VersionNumber = version.VersionNumber;
                 dto.Run.TrainedModelVersionId = version.Id;
@@ -442,7 +442,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 dto.Evidence = string.IsNullOrWhiteSpace(version.MetricsJson)
                     ? null
                     : AdvancedAnalyticsEvidenceJson.Deserialise<
-                        Jube.Service.Repository.AdvancedAnalyticsModel.Models.AdvancedAnalyticsLogisticEvidence>(
+                        Jube.Service.Repository.AskJoobyAnalyticsModel.Models.AdvancedAnalyticsLogisticEvidence>(
                         version.MetricsJson);
 
                 return dto;
@@ -467,7 +467,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 op.Updated();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.StopRun: run {runId} {outcome} " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.StopRun: run {runId} {outcome} " +
                             $"user={runner.UserName}");
             }
 
@@ -502,7 +502,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 RunId = run.Id,
                 RunGuid = run.Guid,
-                AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                 Status = run.StatusId,
                 JobMode = run.JobMode,
                 ElapsedSeconds = Math.Max(0, (end - start).TotalSeconds),

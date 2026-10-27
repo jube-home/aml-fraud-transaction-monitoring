@@ -27,7 +27,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {

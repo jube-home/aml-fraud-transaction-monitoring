@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -242,6 +243,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -271,6 +274,8 @@ namespace Jube.Data.Repository
                 BoldLineFormatForeColor = existing.BoldLineFormatForeColor,
                 BoldLineFormatBackColor = existing.BoldLineFormatBackColor,
                 BoldLineMatched = existing.BoldLineMatched,
+                RoleId = existing.RoleId,
+                Segment = existing.Segment,
                 Guid = existing.Guid,
                 CreatedDate = existing.CreatedDate,
                 CreatedUser = existing.CreatedUser,

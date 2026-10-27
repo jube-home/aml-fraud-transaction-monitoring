@@ -118,7 +118,7 @@ namespace Jube.Test.AskJooby
                 ["EntityAnalysisModelActivationRuleOverride"] = [2],
                 ["EntityAnalysisModelActivationRuleOverrideVersion"] = [2],
                 ["Export"] = [38],
-                ["ExportPeek"] = [38],
+                ["PreservationDiff"] = [38],
                 ["Import"] = [38],
                 ["PreservationSnapshot"] = [38],
                 ["EntityApproval"] = [45, 44],

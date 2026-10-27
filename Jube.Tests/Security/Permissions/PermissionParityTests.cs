@@ -41,8 +41,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
         ("/Model/Frame/CaseWorkflowXPath", 20), ("/Model/Frame/CaseWorkflowForm", 21),
         ("/Model/Frame/CaseWorkflowAction", 22), ("/Model/Frame/CaseWorkflowDisplay", 23),
         ("/Model/Frame/CaseWorkflowMacro", 24), ("/Model/Frame/CaseWorkflowFilter", 25),
-        ("/Administration/VisualisationRegistry", 31), ("/Administration/Frame/VisualisationRegistryParameter", 32),
-        ("/Administration/Frame/VisualisationRegistryDatasource", 33)
+        ("/Administration/VisualisationRegistry", 31), ("/Administration/Frame/VisualisationRegistryParameter", 32)
     ];
 
     public static IEnumerable<object[]> RoleAllocationRows() =>

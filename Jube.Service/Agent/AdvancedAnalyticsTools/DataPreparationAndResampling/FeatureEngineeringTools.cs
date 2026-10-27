@@ -223,7 +223,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
             int[] lags,
             [Description(
                 "Optional group key per row (same length as values) so lags never cross groups. Leave empty for a single series.")]
-            string[]? groupKeys = null,
+            string?[]? groupKeys = null,
             [Description("When true, also add diff_k = value - lag_k for each lag. Default true.")]
             bool includeDifferences = true,
             [Description(
@@ -247,13 +247,13 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
                 DataPreparationGuard.SameLength(values.Length, groupKeys.Length, nameof(groupKeys), nameof(values));
             }
 
-            var groups = groupKeys is { Length: > 0 } ? groupKeys : new string[values.Length];
+            var groups = groupKeys is { Length: > 0 } ? groupKeys : new string?[values.Length];
             var positions = new int[values.Length];
             var members = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
             for (var i = 0; i < values.Length; i++)
             {
-                var key = groups[i];
+                var key = groups[i] ?? string.Empty;
 
                 if (!members.TryGetValue(key, out var list))
                 {
@@ -283,7 +283,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
 
             for (var i = 0; i < values.Length; i++)
             {
-                var list = members[groups[i]];
+                var list = members[groups[i] ?? string.Empty];
                 var p = positions[i];
                 var row = new List<double>();
 

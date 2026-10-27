@@ -854,17 +854,24 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             typeof(ServiceToolCatalogue).GetMethod("AddVisualisationRegistryDatasourceCommandExecution",
                 BindingFlags.NonPublic | BindingFlags.Static).Required().Invoke(null, [tools]);
 
-            tools.Should().ContainSingle().Which.Name.Should()
-                .Be("VisualisationRegistryDatasourceCommandExecutionExecute");
+            tools.Select(t => t.Name).Should().BeEquivalentTo(
+            [
+                "VisualisationRegistryDatasourceCommandExecutionExecute",
+                "VisualisationRegistryDatasourceCommandExecutionCard"
+            ]);
 
-            tools[0].Kind.Should().Be(OperationKind.Read);
-            tools[0].Name.Should().NotContain("_");
+            tools.Should().OnlyContain(t => t.Kind == OperationKind.Read && !t.Name.Contains('_'));
             ServiceToolCatalogue.All.Select(t => t.Name).Should().OnlyHaveUniqueItems();
 
             typeof(VisualisationRegistryDatasourceCommandExecutionService)
                 .GetMethod(nameof(VisualisationRegistryDatasourceCommandExecutionService.ExecuteAsync)).Required()
                 .GetCustomAttribute<ServiceOperationAttribute>().Required().Name
                 .Should().Be("VisualisationRegistryDatasourceCommandExecutionExecute");
+
+            typeof(VisualisationRegistryDatasourceCommandExecutionService)
+                .GetMethod(nameof(VisualisationRegistryDatasourceCommandExecutionService.CardAsync)).Required()
+                .GetCustomAttribute<ServiceOperationAttribute>().Required().Name
+                .Should().Be("VisualisationRegistryDatasourceCommandExecutionCard");
         }
 
         [Fact]

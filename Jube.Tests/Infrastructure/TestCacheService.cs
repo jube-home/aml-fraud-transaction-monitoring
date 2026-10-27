@@ -47,6 +47,8 @@ namespace Jube.Test.Infrastructure
                 new CacheActivationWatcherPublishSubscribe(redis, log);
             cacheService.CacheSanctionRepository = new CacheSanctionRepository(redis, log);
             cacheService.CacheReferenceDateRepository = new CacheReferenceDateRepository(redis, log);
+            cacheService.CacheActivationWatcherLastLocationRepository =
+                new CacheActivationWatcherLastLocationRepository(redis, log);
 
             cacheService.CachePayloadLatestRepository =
                 new CachePayloadLatestRepository(postgresConnectionString, redis, log);

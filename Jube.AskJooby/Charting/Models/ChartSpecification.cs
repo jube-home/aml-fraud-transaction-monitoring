@@ -25,5 +25,6 @@ namespace Jube.AskJooby.Charting.Models
         string? Title = null,
         string? CategoryAxisTitle = null,
         string? ValueAxisTitle = null,
-        int? Bins = null);
+        int? Bins = null,
+        IReadOnlyDictionary<string, IReadOnlyList<string>>? Roles = null);
 }

@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.VisualisationRegistryParameter
 {
     [FormEndpoint("VisualisationRegistryParameter")]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(VisualisationRegistryId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -53,8 +55,9 @@ namespace Jube.Dto.Repository.VisualisationRegistryParameter
         [Description("The data type governing the control used to collect this Parameter and the type its " +
                      "Default value is interpreted as: 1 = String, 2 = Integer, 3 = Float, 4 = Date, " +
                      "5 = Boolean.")]
-        [FormField(Group = "Value", Order = 10, Widget = "dropdown")]
+        [FormField(Group = "Value", Order = 10, Widget = "select")]
         [ListColumn(Order = 30, Title = "Data Type")]
+        [Options(typeof(FieldDataType), FieldDataType.String, FieldDataType.Integer, FieldDataType.Float, FieldDataType.Date, FieldDataType.Boolean)]
         public int DataTypeId { get; set; }
 
         [Description("The default value offered by the collection control and used to parameterise the report " +

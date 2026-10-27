@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelReprocessingRule
 {
     [FormEndpoint("EntityAnalysisModelReprocessingRule")]
+    [RuleEditor(RuleParseType.GatewayRule, ScriptType = nameof(RuleScriptTypeId), Builder = nameof(BuilderRuleScript), BuilderJson = nameof(Json), Coder = nameof(CoderRuleScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -37,7 +39,7 @@ namespace Jube.Dto.EntityAnalysisModelReprocessingRule
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Reprocessing Rule. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. High risk in the last 30 days")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -51,26 +53,25 @@ namespace Jube.Dto.EntityAnalysisModelReprocessingRule
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]
         [FormField(Group = "Rule", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
         public byte RuleScriptTypeId { get; set; }
 
         [Description("The compiled Builder/Coder rule script tested for a match against each Archive record " +
                      "replayed during a reprocessing run; must return True on match, False otherwise. Required " +
                      "when RuleScriptTypeId is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 20)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string BuilderRuleScript { get; set; } = string.Empty;
 
         [Description("The Query Builder JSON definition backing BuilderRuleScript. Required when RuleScriptTypeId " +
                      "is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 30)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string Json { get; set; } = string.Empty;
 
         [Description("The hand-written Coder-surface source for this rule. Required when RuleScriptTypeId is 2 " +
                      "(Coder); not required when RuleScriptTypeId is 1 (Builder).")]
         [FormField(Group = "Rule", Order = 40)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 2)]
         public string? CoderRuleScript { get; set; }
 
         [Description("When true, this Reprocessing Rule participates in reprocessing runs.")]
@@ -98,6 +99,7 @@ namespace Jube.Dto.EntityAnalysisModelReprocessingRule
         [Description("Unit of ReprocessingValue: Minutes (n), Hours (h), Days (d) or Months (m).")]
         [FormField(Group = "Reprocessing", Order = 30, Widget = "radio")]
         [NewDefault("d")]
+        [Options(typeof(IntervalUnit), IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day, IntervalUnit.Month)]
         public string? ReprocessingInterval { get; set; }
 
         [Description("Server-assigned row identifier. A successful Update assigns a new Id -- this Reprocessing " +

@@ -59,12 +59,17 @@ namespace Jube.Parser
                 };
             }
 
-            var line = discarded.GetLocation().GetLineSpan().StartLinePosition.Line - HeaderLines;
+            var position = discarded.GetLocation().GetLineSpan();
+            var line = position.StartLinePosition.Line - HeaderLines;
             var expression = discarded.Expression.ToString().Trim();
 
             return new ErrorSpan
             {
                 Line = line,
+                Column = position.StartLinePosition.Character,
+                EndColumn = position.EndLinePosition.Line == position.StartLinePosition.Line
+                    ? position.EndLinePosition.Character
+                    : int.MaxValue,
                 Start = discarded.SpanStart - Header.Length,
                 Length = discarded.Span.Length,
                 Message = $"Line {line + 1}: {expression} is evaluated and its result is discarded, and the rule " +

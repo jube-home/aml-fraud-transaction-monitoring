@@ -49,12 +49,24 @@ namespace Jube.Data.Repository
                 .Where(w => w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue).ToListAsync(token);
         }
 
-        public Task<EntityAnalysisModelSynchronisationSchedule> GetCurrentAsync(CancellationToken token = default)
+        public Task<EntityAnalysisModelSynchronisationSchedule> GetCurrentAsync(
+            int? entityAnalysisModelId = null, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelSynchronisationSchedule.Where(w
-                    => w.TenantRegistryId == tenantRegistryId)
+                    => w.TenantRegistryId == tenantRegistryId
+                       && (w.EntityAnalysisModelId == null
+                           || (entityAnalysisModelId.HasValue
+                               && w.EntityAnalysisModelId == entityAnalysisModelId)))
                 .OrderByDescending(o => o.Id)
                 .FirstOrDefaultAsync(token);
+        }
+
+        public Task<bool> ModelExistsInTenantAsync(int entityAnalysisModelId, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModel.AnyAsync(a
+                => a.Id == entityAnalysisModelId
+                   && a.TenantRegistryId == tenantRegistryId
+                   && (a.Deleted == 0 || a.Deleted == null), token);
         }
 
         public async Task<EntityAnalysisModelSynchronisationSchedule> InsertAsync(

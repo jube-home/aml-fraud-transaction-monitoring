@@ -26,5 +26,15 @@ namespace Jube.Resources
         public const string DescriptionMaxLength = nameof(DescriptionMaxLength);
         public const string VisualisationRegistryGuidRequired = nameof(VisualisationRegistryGuidRequired);
         public const string VisualisationRegistryNotFound = nameof(VisualisationRegistryNotFound);
+        public const string RiskKappaOutOfRange = nameof(RiskKappaOutOfRange);
+        public const string RiskRhoOutOfRange = nameof(RiskRhoOutOfRange);
+        public const string RiskPriorStrengthOutOfRange = nameof(RiskPriorStrengthOutOfRange);
+        public const string RiskBaseRatePriorOutOfRange = nameof(RiskBaseRatePriorOutOfRange);
+        public const string DailyGoalOutOfRange = nameof(DailyGoalOutOfRange);
+        public const string RiskDeadlineLaneDaysOutOfRange = nameof(RiskDeadlineLaneDaysOutOfRange);
+        public const string RiskKeyHistoryHalfLifeOutOfRange = nameof(RiskKeyHistoryHalfLifeOutOfRange);
+        public const string RiskImpactWeightsInvalid = nameof(RiskImpactWeightsInvalid);
+        public const string RiskMoneyBandsInvalid = nameof(RiskMoneyBandsInvalid);
+        public const string RiskQaSampleRateOutOfRange = nameof(RiskQaSampleRateOutOfRange);
     }
 }

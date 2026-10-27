@@ -138,6 +138,11 @@ namespace Jube.Data.Poco
 
         [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
             Relationship = Relationship.OneToMany)]
+        [Key(69)]
+        public IEnumerable<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRange { get; set; }
+
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
+            Relationship = Relationship.OneToMany)]
         [Key(51)]
         public IEnumerable<ExhaustiveSearchInstance> ExhaustiveSearchInstance { get; set; }
 

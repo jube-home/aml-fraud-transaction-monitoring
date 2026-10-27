@@ -130,8 +130,12 @@ Setting OAuthAuthentication to True enables OAuth 2.0 / OpenID Connect as the lo
 flow with PKCE. Configure the identity provider via OAuthAuthority, OAuthClientId and OAuthClientSecret - see
 [Environment Variables](../EnvironmentVariables/index.html).
 
-When OAuth is enabled, the Login page redirects straight to the identity provider rather than showing Jube's own
-username/password form. On successful sign-in, Jube looks up the returned identity claim (trying, in order, the claims a
+When OAuth is enabled, the sign-in page asks `GET api/Authentication/Methods` which methods are on and, finding OAuth,
+sends the browser to `GET api/Authentication/OAuth?redirectUrl=...` rather than showing Jube's own username/password
+form; that endpoint starts the identity provider challenge and returns the person to the page they asked for. Only a
+local return address is honoured - an address that is not a path on this site (for example one beginning `//`, or
+carrying a scheme) is replaced by the home page - and the endpoint answers 404 unless OAuth is on and 409 if OAuth and
+Negotiate are both on. On successful sign-in, Jube looks up the returned identity claim (trying, in order, the claims a
 provider is most likely to populate) against the UserRegistry - **the user must already exist and be active in Jube**;
 OAuth verifies who the person is, it does not create an account for them. If no matching active user is found, sign-in
 fails and the browser is returned to the Login page.
@@ -156,13 +160,15 @@ Setting NegotiateAuthentication to True enables Negotiate authentication - commo
 Authentication against Active Directory - as an alternative to Username/Password. This is common in corporate
 environments where the browser can silently present the signed-in Windows user's credentials.
 
-The Login page loads with the username/password form hidden and immediately calls `GET api/Authentication/ByNegotiate`
-in the background. That endpoint requires Negotiate authentication, so a browser configured for integrated
+The sign-in page, having read `GET api/Authentication/Methods`, shows no form and immediately calls
+`GET api/Authentication/ByNegotiate` in the background. That endpoint requires Negotiate authentication, so a browser configured for integrated
 authentication (for example, a domain-joined machine with the site in its trusted intranet zone) completes the
 Kerberos/NTLM handshake transparently and the call succeeds without the user seeing a login form at all; a browser that
-cannot complete the handshake gets a 401, and the page falls back to showing the manual login form. If Multi-Factor
-Authentication is also enabled, a successful Negotiate handshake returns 202 instead of signing in directly, and the
-page reveals only the MFA field for the user to complete.
+cannot complete the handshake gets a 401. Because Negotiate replaces the password login rather than sitting beside it
+(`ByUserNamePassword` answers 404 while Negotiate is on), the page does not offer a form in that case: it says the
+computer did not sign the person in and offers to try again. If Multi-Factor Authentication is also enabled, a
+successful Negotiate handshake returns 202 instead of signing in directly, and the page asks only for the MFA code,
+which it posts to `POST api/Authentication/ByNegotiateMfa`.
 
 ## Multi-Factor Authentication (RSA SecurID)
 

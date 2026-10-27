@@ -13,7 +13,7 @@
 
 using Jube.Data.Context;
 using Jube.Service.Reactivity.Interfaces;
-using Jube.Service.Repository.AdvancedAnalyticsModel;
+using Jube.Service.Repository.AskJoobyAnalyticsModel;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -21,9 +21,9 @@ namespace Jube.Service.Charts
 {
     public sealed class AdvancedAnalyticsChartService
     {
-        private readonly AdvancedAnalyticsModelService inner;
+        private readonly AskJoobyAnalyticsModelService inner;
 
-        private AdvancedAnalyticsChartService(AdvancedAnalyticsModelService inner)
+        private AdvancedAnalyticsChartService(AskJoobyAnalyticsModelService inner)
         {
             this.inner = inner;
         }
@@ -40,7 +40,7 @@ namespace Jube.Service.Charts
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             ILog auditLog, CancellationToken token = default)
         {
-            return new AdvancedAnalyticsChartService(await AdvancedAnalyticsModelService.CreateAsync(dbContext,
+            return new AdvancedAnalyticsChartService(await AskJoobyAnalyticsModelService.CreateAsync(dbContext,
                 userName, log, stringLocalizerFactory, serviceChangeBus, auditLog, token).ConfigureAwait(false));
         }
 

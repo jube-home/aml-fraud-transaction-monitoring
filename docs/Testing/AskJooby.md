@@ -359,13 +359,18 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### AskJoobyChatTranscriptServiceTests
 
-`Jube.Test.AskJooby.AskJoobyChatTranscriptServiceTests` — 7 tests. Category: AskJooby. Collection: Database.
+`Jube.Test.AskJooby.AskJoobyChatTranscriptServiceTests` — 12 tests. Category: AskJooby. Collection: Database.
 
 | Test                                                                    | Kind | Verifies                                                                     |
 |-------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
 | `GenerateAsyncSucceedsForANonLandlordUserHoldingAccessAsync`            | Fact | Generate async succeeds for a non landlord user holding access.              |
 | `GenerateAsyncSucceedsForALandlordUserWithNoOrdinaryPermissionsAsync`   | Fact | Generate async succeeds for a landlord user with no ordinary permissions.    |
-| `GenerateAsyncIsForbiddenForAUserWithNeitherLandlordNorAccessAsync`     | Fact | Generate async is forbidden for a user with neither landlord nor access.     |
+| `GenerateAsyncSucceedsForAnActiveUserHoldingNoPermissionsAtAllAsync`    | Fact | Generate async succeeds for an active user holding no permissions at all.    |
+| `GenerateAsyncIsForbiddenForAnInactiveUserAsync`                        | Fact | Generate async is forbidden for an inactive user.                            |
+| `GenerateAsyncIsForbiddenForAPasswordLockedUserAsync`                   | Fact | Generate async is forbidden for a password locked user.                      |
+| `ActiveUserIsTrueForAnActiveUserWithoutAnExplicitAccessGrantAsync`      | Fact | Active user is true for an active user without an explicit access grant.     |
+| `ActiveUserIsFalseForAnInactiveOrPasswordLockedUserAsync`               | Theory | Active user is false for an inactive or password locked user.                |
+| `ActiveUserIsFalseForAnUnknownUserAsync`                                | Fact | Active user is false for an unknown user.                                    |
 | `GenerateAsyncIsForbiddenForADifferentUserInTheSameTenantAsync`         | Fact | Generate async is forbidden for a different user in the same tenant.         |
 | `GenerateAsyncIsNotFoundForAUserInADifferentTenantAsync`                | Fact | Generate async is not found for a user in a different tenant.                |
 | `GenerateAsyncStatesHistoryWasNeverFoldedWhenThereWasNoCompactionAsync` | Fact | Generate async states history was never folded when there was no compaction. |
@@ -1229,26 +1234,33 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### RenderChartToolTests
 
-`Jube.Test.AskJooby.RenderChartToolTests` — 16 tests. Category: AskJooby.
+`Jube.Test.AskJooby.RenderChartToolTests` — 23 tests. Category: AskJooby.
 
-| Test                                                              | Kind   | Verifies                                                                |
-|-------------------------------------------------------------------|--------|-------------------------------------------------------------------------|
-| `RenderChartNeverReturnsTheChartItselfOnlyThatItWasDrawnAsync`    | Fact   | Render chart never returns the chart itself only that it was drawn.     |
-| `RenderChartPutsRealSvgOntoTheReplyAsAnAttachmentAsync`           | Fact   | Render chart puts real svg onto the reply as an attachment.             |
-| `RenderChartDrawsSeveralSeriesWhenGivenSeveralValueColumnsAsync`  | Fact   | Render chart draws several series when given several value columns.     |
-| `RenderChartReportsAMissingPointerRatherThanThrowingAsync`        | Fact   | Render chart reports a missing pointer rather than throwing.            |
-| `RenderChartNamesTheRealColumnsWhenGivenOneThatDoesNotExistAsync` | Fact   | Render chart names the real columns when given one that does not exist. |
-| `RenderChartListsTheTypesItKnowsWhenGivenOneItDoesNotAsync`       | Fact   | Render chart lists the types it knows when given one it does not.       |
-| `RenderChartRefusesAColumnThatHoldsNothingNumericAsync`           | Fact   | Render chart refuses a column that holds nothing numeric.               |
-| `EveryCategoricalChartTypeTheToolAdvertisesActuallyDrawsAsync`    | Theory | Every categorical chart type the tool advertises actually draws.        |
-| `ScatterPlotsOneNumericColumnAgainstAnotherAsync`                 | Fact   | Scatter plots one numeric column against another.                       |
-| `RenderChartRefusesATableTooLargeToReadAsAChartAsync`             | Fact   | Render chart refuses a table too large to read as a chart.              |
-| `TheRendererAdvertisesExactlyTheTypesTheToolDescriptionNames`     | Fact   | The renderer advertises exactly the types the tool description names.   |
-| `AHistogramNeedsNoCategoryColumnBecauseItLabelsItsOwnAxisAsync`   | Fact   | A histogram needs no category column because it labels its own axis.    |
-| `AHistogramBinsTheRawValuesRatherThanDrawingOneMarkPerRow`        | Fact   | A histogram bins the raw values rather than drawing one mark per row.   |
-| `ABinCountIsHonouredBecauseAThresholdHasToLandOnAnEdge`           | Fact   | A bin count is honoured because a threshold has to land on an edge.     |
-| `AnOrdinaryChartStillDemandsItsCategoryColumn`                    | Fact   | An ordinary chart still demands its category column.                    |
-| `TheRendererDrawsWithInlineStylesSoAnImageTagCanShowIt`           | Fact   | The renderer draws with inline styles so an image tag can show it.      |
+| Test                                                                        | Kind   | Verifies                                                                             |
+|-----------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------|
+| `RenderChartNeverReturnsTheChartItselfOnlyThatItWasDrawnAsync`              | Fact   | Render chart never returns the chart itself only that it was drawn.                  |
+| `RenderChartPutsRealSvgOntoTheReplyAsAnAttachmentAsync`                     | Fact   | Render chart puts real svg onto the reply as an attachment.                          |
+| `RenderChartDrawsSeveralSeriesWhenGivenSeveralValueColumnsAsync`            | Fact   | Render chart draws several series when given several value columns.                  |
+| `RenderChartReportsAMissingPointerRatherThanThrowingAsync`                  | Fact   | Render chart reports a missing pointer rather than throwing.                         |
+| `RenderChartNamesTheRealColumnsWhenGivenOneThatDoesNotExistAsync`           | Fact   | Render chart names the real columns when given one that does not exist.              |
+| `RenderChartListsTheTypesItKnowsWhenGivenOneItDoesNotAsync`                 | Fact   | Render chart lists the types it knows when given one it does not.                    |
+| `RenderChartRefusesAColumnThatHoldsNothingNumericAsync`                     | Fact   | Render chart refuses a column that holds nothing numeric.                            |
+| `EveryCategoricalChartTypeTheToolAdvertisesActuallyDrawsAsync`              | Theory | Every categorical chart type the tool advertises actually draws.                     |
+| `ScatterPlotsOneNumericColumnAgainstAnotherAsync`                           | Fact   | Scatter plots one numeric column against another.                                    |
+| `RenderChartRefusesATableTooLargeToReadAsAChartAsync`                       | Fact   | Render chart refuses a table too large to read as a chart.                           |
+| `TheRendererAdvertisesExactlyTheTypesTheToolDescriptionNames`               | Fact   | The renderer advertises exactly the types the tool description names.                |
+| `EveryKindBeyondTheOriginalEightIsDrawnFromACachedTableAsync`               | Theory | Every kind beyond the original eight is drawn from a cached table.                   |
+| `ACountryMapIsDrawnFromCountryAndValueRolesAsync`                           | Fact   | A country map is drawn from country and value roles.                                 |
+| `AChartTypeIsMatchedWhateverItsSpacingOrCaseAsync`                          | Theory | A chart type is matched whatever its spacing or case.                                |
+| `WithNoRolesTheCategoryAndValueColumnsAreUsedInOrderAndTheRestIgnoredAsync` | Fact   | With no roles the category and value columns are used in order and the rest ignored. |
+| `ABadRolesArgumentIsRefusedWithAReasonTheModelCanActOnAsync`                | Theory | A bad roles argument is refused with a reason the model can act on.                  |
+| `AKindThatCannotBeSatisfiedNamesTheMissingRoleAsync`                        | Fact   | A kind that cannot be satisfied names the missing role.                              |
+| `ATypeThatDoesNotExistListsTheRealOnesIncludingTheNewKindsAsync`            | Fact   | A type that does not exist lists the real ones including the new kinds.              |
+| `AHistogramNeedsNoCategoryColumnBecauseItLabelsItsOwnAxisAsync`             | Fact   | A histogram needs no category column because it labels its own axis.                 |
+| `AHistogramBinsTheRawValuesRatherThanDrawingOneMarkPerRow`                  | Fact   | A histogram bins the raw values rather than drawing one mark per row.                |
+| `ABinCountIsHonouredBecauseAThresholdHasToLandOnAnEdge`                     | Fact   | A bin count is honoured because a threshold has to land on an edge.                  |
+| `AnOrdinaryChartStillDemandsItsCategoryColumn`                              | Fact   | An ordinary chart still demands its category column.                                 |
+| `TheRendererDrawsWithInlineStylesSoAnImageTagCanShowIt`                     | Fact   | The renderer draws with inline styles so an image tag can show it.                   |
 
 ### RepeatedToolLedgerTests
 

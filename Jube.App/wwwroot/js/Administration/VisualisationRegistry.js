@@ -32,12 +32,7 @@ function loadTemplate(id) {
         function (data) {
             key = data["id"];
 
-            const $showInDirectory = $("#ShowInDirectory");
-            if (data.showInDirectory) {
-                $showInDirectory.data("kendoSwitch").check(true);
-            } else {
-                $showInDirectory.data("kendoSwitch").check(false);
-            }
+            $("#ContextKindId").data("kendoDropDownList").value(data.contextKindId || 1);
 
             $("#Columns").data("kendoNumericTextBox").value(data.columns);
             $("#ColumnWidth").data("kendoNumericTextBox").value(data.columnWidth);
@@ -57,7 +52,7 @@ function loadTemplate(id) {
 }
 
 function showTemplate() {
-    $("#ShowInDirectory").data("kendoSwitch").check(false);
+    $("#ContextKindId").data("kendoDropDownList").value(1);
     $("#Columns").data("kendoNumericTextBox").value(0);
     $("#ColumnWidth").data("kendoNumericTextBox").value(0);
     $("#RowHeight").data("kendoNumericTextBox").value(0);
@@ -87,7 +82,11 @@ $(document).ready(function () {
             }
         });
 
-        var showInDirectory = $("#ShowInDirectory").kendoSwitch();
+        var contextKindId = $("#ContextKindId").kendoDropDownList({
+            dataSource: [{text: "Directory", value: 1}, {text: "Case", value: 2}],
+            dataTextField: "text",
+            dataValueField: "value"
+        });
 
         var columns = $("#Columns").kendoNumericTextBox({
             format: "#"
@@ -112,7 +111,7 @@ $(document).ready(function () {
 
         function GetData() {
             return {
-                showInDirectory: showInDirectory.prop("checked"),
+                contextKindId: Number(contextKindId.data("kendoDropDownList").value()),
                 rowHeight: rowHeight.val(),
                 columnWidth: columnWidth.val(),
                 columns: columns.val()

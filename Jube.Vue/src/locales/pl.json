@@ -1,0 +1,3413 @@
+{
+  "app": {
+    "name": "Jube",
+    "skipToContent": "Przejdź do treści"
+  },
+  "nav": {
+    "label": "Nawigacja główna",
+    "home": "Szkielet",
+    "grid": "Siatka danych",
+    "api": "API i pamięć podręczna",
+    "theme": "Motyw",
+    "askJooby": "Ask Jooby",
+    "cases": "Sprawy",
+    "override": "Nadpisania",
+    "models": "Modele",
+    "sanctions": "Sankcje",
+    "watcher": "Obserwator",
+    "admin": "Administracja",
+    "tools": "TYMCZASOWE: Narzędzia",
+    "visualisation": "Wizualizacje",
+    "preservationSnapshots": "Migawki",
+    "preservationMove": "Import i eksport JEMP",
+    "adminSecurity": "Bezpieczeństwo",
+    "adminPerformance": "Wydajność",
+    "adminVisualisations": "Konfiguracja wizualizacji",
+    "adminTelemetry": "Ustawienia telemetrii",
+    "adminSanctionsLoader": "Ładowanie sankcji",
+    "adminPreservation": "Zachowanie danych",
+    "adminTenants": "Najemcy"
+  },
+  "prefs": {
+    "theme": "Motyw",
+    "themeSystem": "Systemowy",
+    "themeLight": "Jasny",
+    "themeDark": "Ciemny",
+    "language": "Język"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski",
+    "ar": "العربية"
+  },
+  "home": {
+    "title": "Szkielet Jube Vue",
+    "intro": "Każda karta poniżej sprawdza jedną część stosu pod Vue Vapor. Faza 0 jest ukończona, gdy każda karta zgłasza, że działa.",
+    "vapor": "Vue Vapor",
+    "vaporBody": "Ta strona jest komponentem Vapor w aplikacji Vapor, a widok routera współpracuje przez wtyczkę interoperacyjności Vapor.",
+    "pinia": "Pinia",
+    "piniaBody": "Preferencja motywu w magazynie interfejsu: {theme}.",
+    "intl": "Lokalizacja",
+    "intlBody": "Kwota {amount} dnia {date}, z liczbą mnogą: {cases}.",
+    "query": "Stan serwera",
+    "queryBody": "Strona API i pamięć podręczna obsługuje vue-query przez jedną funkcję useApi.",
+    "icons": "Ikony",
+    "iconsBody": "Ikony Lucide renderują się jako komponenty zgodne z Vapor.",
+    "works": "Działa",
+    "casesCount": "brak spraw | jedna sprawa | {n} sprawy | {n} spraw | {n} sprawy",
+    "fails": "Błąd"
+  },
+  "grid": {
+    "title": "Siatka danych",
+    "intro": "Jeden komponent DataGrid zawiera jedyny import Tabulator. Filtr i sortowanie są w adresie URL.",
+    "filterLabel": "Filtruj według klienta",
+    "filterPlaceholder": "Wpisz fragment nazwy",
+    "exportCsv": "Eksportuj CSV",
+    "rows": "Brak wierszy | 1 wiersz | {n} wiersze | {n} wierszy | {n} wiersza",
+    "empty": "Żaden wiersz nie pasuje do filtru.",
+    "columns": {
+      "id": "Sprawa",
+      "customer": "Klient",
+      "amount": "Kwota",
+      "risk": "Ryzyko",
+      "opened": "Otwarta"
+    },
+    "risk": {
+      "low": "Niskie",
+      "medium": "Średnie",
+      "high": "Wysokie"
+    },
+    "pager": {
+      "navigation": "Stronicowanie",
+      "first": "Pierwsza strona",
+      "previous": "Poprzednia strona",
+      "next": "Następna strona",
+      "last": "Ostatnia strona",
+      "pageSize": "Wierszy na stronie",
+      "summary": "{from}–{to} z {total}",
+      "page": "Strona {page} z {pages}"
+    }
+  },
+  "api": {
+    "title": "API i pamięć podręczna",
+    "intro": "Odczyt przechodzi przez useApi i vue-query. Błędy są mapowane na standardowe stany.",
+    "loading": "Ładowanie",
+    "refresh": "Odśwież",
+    "retry": "Ponów",
+    "success": "Otrzymano token antyfałszerski ({length} znaków).",
+    "unauthorized": "Brak logowania. Zwykle następuje przekierowanie do strony logowania z zapamiętaniem adresu powrotu.",
+    "forbidden": "Brak uprawnień.",
+    "notFound": "Nie znaleziono.",
+    "conflict": "Rekord się zmienił. Załaduj ponownie, aby kontynuować.",
+    "validation": "Żądanie było nieprawidłowe.",
+    "server": "Serwer nie mógł zrealizować żądania.",
+    "network": "Nie można połączyć się z serwerem."
+  },
+  "login": {
+    "title": "Zaloguj się",
+    "subtitle": "Użyj konta Jube, aby kontynuować.",
+    "stepsLabel": "Postęp logowania",
+    "steps": {
+      "credentials": "Dane logowania",
+      "mfa": "Weryfikacja",
+      "password": "Nowe hasło"
+    },
+    "userName": "Nazwa użytkownika",
+    "password": "Hasło",
+    "show": "Pokaż hasło",
+    "hide": "Ukryj hasło",
+    "submit": "Zaloguj się",
+    "submitting": "Logowanie",
+    "back": "Zacznij od nowa",
+    "mfa": {
+      "title": "Potwierdź swoją tożsamość",
+      "intro": "Wpisz kod z tokena bezpieczeństwa, aby dokończyć logowanie.",
+      "label": "Kod weryfikacyjny",
+      "hint": "Same cyfry, dokładnie tak, jak pokazuje token.",
+      "submit": "Zweryfikuj i kontynuuj"
+    },
+    "change": {
+      "title": "Wybierz nowe hasło",
+      "intro": "Hasło musi zostać zmienione, zanim przejdziesz dalej. Nowe hasło zastąpi stare przy każdym kolejnym logowaniu.",
+      "newPassword": "Nowe hasło",
+      "repeatPassword": "Potwierdź nowe hasło",
+      "submit": "Zmień hasło i zaloguj się"
+    },
+    "rules": {
+      "title": "Nowe hasło musi mieć",
+      "met": "Spełnione",
+      "unmet": "Niespełnione",
+      "minLength": "Co najmniej {count} znaków",
+      "maxLength": "Nie więcej niż {count} znaków",
+      "uppercase": "Jedną wielką literę",
+      "lowercase": "Jedną małą literę",
+      "number": "Jedną cyfrę",
+      "special": "Jeden znak specjalny",
+      "repeat": "Brak znaku powtórzonego więcej niż dwa razy z rzędu",
+      "common": "Nie zaczyna się od popularnego wzorca, takiego jak 123456"
+    },
+    "errors": {
+      "invalid": "Dane nie zostały przyjęte. Sprawdź je i spróbuj ponownie.",
+      "mismatch": "Oba nowe hasła nie są takie same.",
+      "weak": "Nowe hasło nie spełnia wszystkich wymagań.",
+      "rejected": "Serwer nie przyjął żądania.",
+      "unavailable": "Nie można połączyć się z Jube. Spróbuj ponownie za chwilę."
+    },
+    "checking": "Sprawdzanie sposobu logowania…",
+    "redirecting": "Przekierowanie do logowania w Twojej organizacji…",
+    "continueToProvider": "Przejdź do logowania",
+    "negotiateFailed": "Twój komputer nie zalogował Cię automatycznie, a ta instalacja nie przyjmuje hasła. Sprawdź, czy jesteś zalogowany w sieci swojej organizacji, i spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "notFound": {
+    "title": "Nie znaleziono strony",
+    "back": "Wróć na początek"
+  },
+  "theme": {
+    "title": "Motyw",
+    "intro": "Każdy komponent daisyUI, którego użyje port, w bieżącym motywie i kierunku. Przełącz motyw i język, aby sprawdzić oba.",
+    "colours": "Kolory",
+    "contrastHint": "Każda próbka pokazuje kolor tekstu na swoim tle, mierzony w czasie działania. Tekst podstawowy wymaga co najmniej 4,5:1.",
+    "sample": "Przykładowy tekst",
+    "pass": "AA",
+    "fail": "Poniżej AA",
+    "buttons": "Przyciski",
+    "disabled": "Wyłączony",
+    "notifications": "Powiadomienia",
+    "badges": "Znaczniki",
+    "alerts": "Alerty",
+    "forms": "Kontrolki formularza",
+    "name": "Nazwa",
+    "placeholder": "Wpisz tutaj",
+    "invalid": "nieprawidłowe",
+    "helperError": "Ta wartość jest nieprawidłowa.",
+    "notes": "Notatki",
+    "navigation": "Nawigacja",
+    "tab1": "Szczegóły",
+    "tab2": "Notatki",
+    "tab3": "Historia",
+    "step1": "Otwarta",
+    "step2": "Przegląd",
+    "step3": "Zamknięta",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "data": "Prezentacja danych",
+    "statTitle": "Otwarte sprawy",
+    "statDesc": "Od poniedziałku",
+    "cardTitle": "Karta",
+    "collapse": "Więcej szczegółów",
+    "feedback": "Informacja zwrotna",
+    "hover": "Najedź",
+    "overlays": "Nakładki",
+    "openDialog": "Otwórz okno",
+    "dropdown": "Lista rozwijana",
+    "close": "Zamknij",
+    "nested": "Formularz zagnieżdżony",
+    "accentRule": "Turkus, złoto i zieleń są wypełnieniami z ciemnym tekstem, nigdy tekstem na bieli, więc akcent, ostrzeżenie i sukces nie mają wariantów konturowych, miękkich ani linków.",
+    "dataGrid": "Prezentacja danych wszędzie używa Tabulatora; tabele daisyUI nie są używane."
+  },
+  "rule": {
+    "name": "Nazwa",
+    "active": "Aktywna",
+    "priority": "Priorytet",
+    "enableOverride": "Włącz nadpisanie",
+    "enableForce": "Włącz wymuszenie",
+    "overrideKey": "Klucz nadpisania",
+    "cases": "Twórz sprawy",
+    "caseWorkflow": "Przepływ sprawy",
+    "caseStatus": "Status sprawy",
+    "caseKey": "Klucz sprawy",
+    "bypass": "Pominięcie",
+    "bypassInterval": "Przedział pominięcia",
+    "minutes": "Minuty",
+    "hours": "Godziny",
+    "days": "Dni",
+    "months": "Miesiące",
+    "bypassValue": "Wartość pominięcia",
+    "responseElevation": "Podnieś odpowiedź",
+    "elevationContent": "Treść odpowiedzi",
+    "sendToWatcher": "Wyślij do obserwatora aktywacji",
+    "watcherKey": "Klucz obserwatora",
+    "foreColour": "Kolor tekstu",
+    "backColour": "Kolor tła",
+    "notification": "Wyślij powiadomienie",
+    "email": "E-mail",
+    "sms": "SMS",
+    "destination": "Adresat",
+    "save": "Zapisz regułę",
+    "nesting": "Każdy przełącznik odsłania własną grupę. Grupy mogą się zagnieżdżać na trzy poziomy, jak na stronie reguły aktywacji.",
+    "choose": "Wybierz",
+    "on": "Wł.",
+    "off": "Wył.",
+    "identity": "Tożsamość",
+    "identityHint": "Nazwa, priorytet i to, czy reguła działa.",
+    "overrideHint": "Pozwól analitykom wyciszać tę regułę według klucza.",
+    "casesHint": "Otwórz sprawę w przepływie, gdy reguła zadziała.",
+    "elevationHint": "Zmień odpowiedź zwracaną wywołującemu.",
+    "notificationHint": "Powiadom kogoś, gdy reguła zadziała.",
+    "discard": "Odrzuć zmiany"
+  },
+  "shell": {
+    "resources": "Zasoby",
+    "documentation": "Dokumentacja",
+    "copyright": "Prawa autorskie",
+    "account": "Konto",
+    "signedInAs": "Zalogowano jako",
+    "changePassword": "Zmień hasło",
+    "signOut": "Wyloguj się",
+    "signOutFailed": "Wylogowanie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.",
+    "sessionExpired": "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować.",
+    "dismiss": "Zamknij",
+    "tenant": "Dzierżawca",
+    "sessionWarning": "Twoja sesja wkrótce wygaśnie.",
+    "extendSession": "Przedłuż sesję",
+    "toggleMenu": "Przełącz nawigację",
+    "tenantSearch": "Szukaj dzierżawców...",
+    "tenantNone": "Brak pasujących dzierżawców.",
+    "tenantMore": "Pokazano pierwszych {count}. Pisz dalej, aby zawęzić listę."
+  },
+  "askJooby": {
+    "placeholder": "Zapytaj Jooby...",
+    "thinking": "Galop galop galop",
+    "options": "Wybory",
+    "go": "Dalej",
+    "attach": "Dołącz pliki",
+    "attachInput": "Dołącz plik",
+    "uploading": "{name} (przesyłanie...)",
+    "removeAttachment": "Usuń {name}",
+    "stop": "Zatrzymaj",
+    "started": "Rozpoczęto {time}",
+    "downloadTranscript": "Pobierz zapis rozmowy",
+    "downloadAudit": "Pobierz techniczny audyt rozmowy",
+    "conversations": "Rozmowy",
+    "newConversation": "Nowa rozmowa",
+    "searchConversations": "Szukaj rozmów...",
+    "untitled": "Rozmowa bez tytułu",
+    "deleteConversation": "Usuń rozmowę",
+    "deleteTitle": "Usunąć tę rozmowę?",
+    "deleteBody": "Tej operacji nie można cofnąć.",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "offline": "Jooby nie jest włączony w tej instalacji. Możesz przeczytać, co potrafi, ale odpowiedzi są wyłączone, dopóki nie skonfigurujesz backendu wnioskowania.",
+    "widgetTitle": "Jooby",
+    "closeChat": "Zamknij czat",
+    "openChat": "Otwórz czat",
+    "failed": "To się nie udało. Spróbuj ponownie.",
+    "elapsed": "{seconds} s",
+    "send": "Wyślij wiadomość",
+    "empty": "Wybierz rozmowę albo po prostu zacznij pisać."
+  },
+  "notifications": {
+    "label": "Powiadomienia",
+    "labelUnread": "brak powiadomień | jedno nieprzeczytane powiadomienie | {count} nieprzeczytane powiadomienia | {count} nieprzeczytanych powiadomień | {count} nieprzeczytanego powiadomienia",
+    "title": "Powiadomienia",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Nic nowego. Powiadomienia pojawią się tutaj po podłączeniu usługi powiadomień.",
+    "unread": "Nieprzeczytane",
+    "severity": {
+      "info": "Info",
+      "warning": "Ostrzeżenie",
+      "error": "Błąd"
+    }
+  },
+  "errors": {
+    "unexpected": "Wystąpił nieoczekiwany błąd.",
+    "forbidden": "Nie masz uprawnień do tej czynności.",
+    "conflict": "Rekord został zmieniony. Wczytaj go ponownie i spróbuj jeszcze raz.",
+    "network": "Nie można połączyć się z serwerem. Sprawdź połączenie.",
+    "notFound": "Nie znaleziono rekordu.",
+    "server": "Serwer nie mógł zakończyć żądania."
+  },
+  "tools": {
+    "title": "Stanowisko narzędzi",
+    "intro": "Tymczasowe stanowisko do przenoszenia wspólnych narzędzi stron ze starego interfejsu. Wybierz narzędzie, aby nad nim pracować; wybór zostaje w adresie.",
+    "list": "Narzędzia",
+    "source": "Źródło",
+    "statusNext": "Następne",
+    "statusPending": "Nie rozpoczęto",
+    "workbench": "Stanowisko",
+    "empty": "Na razie pusto. Tutaj powstanie i będzie sprawdzane {tool}."
+  },
+  "ruleBuilder": {
+    "loading": "Wczytywanie edytora reguł",
+    "loadFailed": "Nie udało się wczytać edytora reguł. Odśwież stronę, aby spróbować ponownie.",
+    "builder": "Kreator",
+    "coder": "Kod",
+    "coderLabel": "Kod reguły",
+    "diverged": "Kod nie zgadza się już z kreatorem, więc kreator jest zablokowany do czasu zresetowania",
+    "reset": "Przywróć z kreatora",
+    "addRule": "Dodaj regułę",
+    "addGroup": "Dodaj grupę",
+    "deleteRule": "Usuń regułę",
+    "deleteGroup": "Usuń grupę",
+    "not": "NOT",
+    "and": "AND",
+    "or": "OR",
+    "placeholderMany": "{name}, rozdzielone przecinkami",
+    "placeholderDate": "{text} (2026-01-31T00:00:00)",
+    "orAField": "{text} lub pole",
+    "droppedFields": "Te pola nie są już dostępne i zostały usunięte z reguły: {fields}. Sprawdź tę regułę.",
+    "restoreFailed": "Nie udało się przywrócić zapisanych reguł kreatora. Sprawdź tę regułę.",
+    "compiled": "Skompilowano",
+    "errors": "Błędy",
+    "disconnected": "Brak połączenia",
+    "checking": "Sprawdzanie",
+    "returnFalse": "Return False",
+    "error": {
+      "needed": "{argument}: wymagana jest wartość.",
+      "integer": "{argument}: wymagana jest liczba całkowita.",
+      "number": "{argument}: wymagana jest liczba.",
+      "date": "{argument}: wymagana jest data i godzina, na przykład 2026-01-31T00:00:00.",
+      "list": "{argument}: wybierz listę.",
+      "field": "{argument}: wybierz pole.",
+      "controlCharacters": "{argument}: nie można używać podziałów wierszy ani znaków sterujących."
+    },
+    "bench": {
+      "parseType": "Typ reguły",
+      "modelId": "Identyfikator modelu",
+      "type1": "Funkcja wbudowana",
+      "type2": "Reguła bramki lub ponownego przetwarzania",
+      "type3": "Reguła abstrakcji",
+      "type4": "Obliczenie abstrakcji",
+      "type5": "Reguła aktywacji",
+      "value": "Wygenerowana wartość",
+      "remount": "Wczytaj ponownie"
+    },
+    "field": "Pole",
+    "operator": "Operator",
+    "beautify": "Formatuj",
+    "intellisense": {
+      "fields": "Pola",
+      "methods": "Metody",
+      "keywords": "Słowa kluczowe",
+      "snippets": "Fragmenty",
+      "field": "Pole"
+    },
+    "compileMessages": "Komunikaty kompilatora",
+    "incomplete": "Niekompletna",
+    "lineNumber": "Wiersz {line}",
+    "sourceCompiler": "Kompilator",
+    "sourceBuilder": "Kreator",
+    "valid": "Poprawna",
+    "value": "Wartość"
+  },
+  "filterBuilder": {
+    "operator": {
+      "equal": "równa się",
+      "notEqual": "nie równa się",
+      "less": "jest mniejsza niż",
+      "lessOrEqual": "jest mniejsza lub równa",
+      "greater": "jest większa niż",
+      "greaterOrEqual": "jest większa lub równa",
+      "like": "przypomina",
+      "notLike": "nie przypomina",
+      "beginsWith": "zaczyna się od",
+      "contains": "zawiera",
+      "endsWith": "kończy się na",
+      "order": "sortowanie",
+      "notContains": "nie zawiera",
+      "isEmpty": "jest puste",
+      "isNotEmpty": "nie jest puste",
+      "isNull": "jest null",
+      "isNotNull": "nie jest null"
+    },
+    "operatorGroup": "Podstawowe",
+    "error": {
+      "noFilter": "Wybierz pole.",
+      "emptyGroup": "Grupa jest pusta.",
+      "radioEmpty": "Wybierz wartość.",
+      "selectEmpty": "Wybierz wartość.",
+      "stringEmpty": "Wymagana jest wartość.",
+      "numberNaN": "Wymagana jest liczba.",
+      "numberNotInteger": "Wymagana jest liczba całkowita.",
+      "numberNotDouble": "Wymagana jest liczba.",
+      "datetimeEmpty": "Wymagana jest data.",
+      "datetimeInvalid": "Data musi mieć format {format}."
+    },
+    "yes": "Tak",
+    "no": "Nie",
+    "ascending": "Rosnąco",
+    "descending": "Malejąco",
+    "closedStatus0": "Otwarta",
+    "closedStatus1": "Zawieszona otwarta",
+    "closedStatus2": "Zawieszona zamknięta",
+    "closedStatus3": "Zamknięta",
+    "closedStatus4": "Zawieszona z pominięciem",
+    "priority1": "Najwyższy",
+    "priority2": "Wysoki",
+    "priority3": "Normalny",
+    "priority4": "Niski",
+    "priority5": "Najniższy",
+    "addColumn": "Dodaj kolumnę",
+    "select": "Kolumny i kolejność",
+    "where": "Filtr",
+    "noColumns": "Dla tego źródła danych nie ma jeszcze kolumn do filtrowania.",
+    "loading": "Wczytywanie kreatora filtra",
+    "loadFailed": "Nie udało się wczytać kreatora filtra. Odśwież stronę, aby spróbować ponownie.",
+    "droppedFields": "Te pola nie są już dostępne i zostały usunięte z filtra: {fields}. Sprawdź ten filtr.",
+    "restoreFailed": "Nie udało się przywrócić zapisanego filtra. Sprawdź ten filtr.",
+    "bench": {
+      "workflowId": "Identyfikator lub guid przepływu spraw",
+      "modelId": "Identyfikator modelu",
+      "source": "Źródło danych",
+      "sourceModel": "Ładunek modelu",
+      "sourceCsv": "Zbiór danych (CSV)",
+      "sourceJson": "Zbiór danych (JSON)",
+      "datasetId": "Identyfikator zbioru danych",
+      "value": "Wygenerowana wartość"
+    },
+    "diaryType1": "Przegląd",
+    "diaryType2": "Odpowiedź klienta",
+    "diaryType3": "Termin regulacyjny",
+    "diaryType4": "Wstrzymanie płatności"
+  },
+  "permissions": {
+    "role": "Rola",
+    "pickRole": "Wybierz rolę",
+    "search": "Znajdź uprawnienie",
+    "granted": "Przyznano: {count}",
+    "choose": "Wybierz rolę, aby zobaczyć i zmienić jej uprawnienia.",
+    "loading": "Wczytywanie uprawnień",
+    "loadFailed": "Nie udało się wczytać uprawnień. Odśwież stronę i spróbuj ponownie.",
+    "noMatches": "Żadne uprawnienie nie pasuje do wyszukiwania.",
+    "locked": "Zablokowane",
+    "save": "Zapisz zmiany",
+    "discard": "Odrzuć zmiany",
+    "unsaved": "Niezapisane: {count}",
+    "saved": "Zapisano uprawnienia.",
+    "area": {
+      "cases": "Sprawy",
+      "rules": "Reguły",
+      "models": "Modele",
+      "lists": "Listy i dane",
+      "visualisation": "Wizualizacja",
+      "security": "Bezpieczeństwo",
+      "operations": "Operacje",
+      "analytics": "Analityka",
+      "other": "Inne"
+    }
+  },
+  "roleAllocation": {
+    "available": "Dostępne role",
+    "assigned": "Przypisane role",
+    "save": "Zapisz zmiany",
+    "discard": "Odrzuć zmiany",
+    "unsaved": "Niezapisane: {count}",
+    "saved": "Zapisano role.",
+    "loading": "Wczytywanie ról",
+    "loadFailed": "Nie udało się wczytać ról. Odśwież stronę i spróbuj ponownie.",
+    "bench": {
+      "parent": "Przypisz role do",
+      "guid": "Identyfikator rekordu",
+      "load": "Wczytaj role",
+      "choose": "Wybierz, do czego przypisać role, i wpisz identyfikator."
+    }
+  },
+  "transferList": {
+    "assignSelected": "Przypisz wybrane",
+    "assignAll": "Przypisz wszystkie",
+    "unassignSelected": "Cofnij wybrane",
+    "unassignAll": "Cofnij wszystkie",
+    "empty": "Brak pozycji."
+  },
+  "approval": {
+    "title": "Zatwierdzanie",
+    "currentVersion": "Bieżąca wersja",
+    "runningVersion": "Działająca wersja",
+    "notRunning": "Jeszcze nie działa",
+    "madeBy": "Autor zmiany",
+    "unknown": "Nieznany",
+    "approvals": "Zatwierdzenia",
+    "approvalsOf": "{recorded} z {required}",
+    "history": "Historia zatwierdzeń",
+    "historyEmpty": "Brak zapisanych zatwierdzeń ani odrzuceń.",
+    "historyDenied": "Historia zatwierdzeń nie jest dla Ciebie dostępna.",
+    "versions": "Zastąpione wersje",
+    "versionsEmpty": "Brak zastąpionych wersji.",
+    "versionsDenied": "Historia wersji nie jest dla Ciebie dostępna.",
+    "awaitingDecision": "Czeka na decyzję",
+    "notePlaceholder": "Notatka (opcjonalnie)",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
+    "resubmit": "Prześlij ponownie",
+    "retract": "Wycofaj",
+    "compare": "Porównaj",
+    "changesTitle": "Zmiany w wersji {version}",
+    "firstVersion": "To pierwsza wersja, więc nie ma wcześniejszej do porównania.",
+    "changesEmpty": "Żadne widoczne pole się nie zmieniło.",
+    "changesFailed": "Nie udało się wczytać zmian.",
+    "refused": "Operacja {action} została odrzucona.",
+    "state": {
+      "approved": "Zatwierdzono",
+      "awaiting": "Czeka na zatwierdzenie",
+      "rejected": "Odrzucono",
+      "deleted": "Usunięto",
+      "deletionAwaiting": "Usunięcie czeka na zatwierdzenie",
+      "deletionRejected": "Usunięcie odrzucono"
+    },
+    "change": {
+      "created": "Utworzono",
+      "update": "Aktualizacja",
+      "deletion": "Usunięcie",
+      "restore": "Przywrócenie",
+      "retracted": "Wycofano",
+      "resubmitted": "Przesłano ponownie"
+    },
+    "col": {
+      "version": "Wersja",
+      "change": "Zmiana",
+      "decision": "Decyzja",
+      "by": "Przez",
+      "when": "Kiedy",
+      "checkerNote": "Notatka weryfikującego",
+      "returnNote": "Notatka zwrotu",
+      "field": "Pole",
+      "earlier": "Wcześniejsza wersja",
+      "thisVersion": "Ta wersja",
+      "actions": "Akcje"
+    },
+    "done": {
+      "Approve": "Zatwierdzono.",
+      "Reject": "Odrzucono.",
+      "Resubmit": "Przesłano ponownie.",
+      "Retract": "Wycofano."
+    },
+    "bench": {
+      "endpoint": "Encja",
+      "entityId": "Identyfikator encji",
+      "load": "Wczytaj zatwierdzenie",
+      "choose": "Wybierz encję i wpisz jej identyfikator."
+    }
+  },
+  "valueGrid": {
+    "title": "Wartości",
+    "search": "Znajdź wartość",
+    "add": "Dodaj wartość",
+    "approveAll": "Zatwierdź wszystkie oczekujące",
+    "loading": "Wczytywanie wartości",
+    "loadFailed": "Nie udało się wczytać wartości. Odśwież stronę i spróbuj ponownie.",
+    "empty": "Żadna wartość nie pasuje do filtra.",
+    "statusUnavailable": "Status zatwierdzenia jest niedostępny. Odśwież, aby sprawdzić.",
+    "notePlaceholder": "Notatka (opcjonalnie)",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
+    "resubmit": "Prześlij ponownie",
+    "retract": "Wycofaj",
+    "saved": "Zapisano wartość.",
+    "deleted": "Wartość usunięta, czeka na zatwierdzenie.",
+    "approved": "Zatwierdzono.",
+    "rejected": "Odrzucono.",
+    "resubmitted": "Przesłano ponownie.",
+    "retracted": "Wycofano.",
+    "refused": "Żądanie zostało odrzucone.",
+    "notNumber": "Pole {field} musi być liczbą.",
+    "confirmTitle": "Usunąć tę wartość?",
+    "confirmBody": "Pozostanie na liście jako oczekujące usunięcie, dopóki weryfikujący go nie zatwierdzi.",
+    "state": {
+      "approved": "Zatwierdzono",
+      "awaiting": "Czeka na zatwierdzenie",
+      "deletionAwaiting": "Usunięcie czeka na zatwierdzenie",
+      "rejected": "Odrzucono",
+      "deletionRejected": "Usunięcie odrzucono",
+      "unavailable": "Status niedostępny"
+    },
+    "col": {
+      "expiry": "Wygaśnięcie usunięcia (UTC)",
+      "state": "Stan",
+      "approvals": "Zatwierdzenia",
+      "madeBy": "Autor zmiany",
+      "checkerNote": "Notatka weryfikującego",
+      "returnNote": "Notatka zwrotu",
+      "actions": "Akcje"
+    },
+    "bench": {
+      "kind": "Wartości",
+      "parentId": "Identyfikator nadrzędny",
+      "load": "Wczytaj wartości",
+      "choose": "Wybierz listę lub słownik i wpisz jego identyfikator."
+    }
+  },
+  "statistics": {
+    "title": "Statystyki kolumn",
+    "empty": "Brak statystyk dla tego wyboru.",
+    "noValues": "Brak wartości",
+    "chartOpen": "Pokaż pełny wykres",
+    "histogramLabel": "Rozkład w {bins} przedziałach od {min} do {max}, najwięcej wartości w pobliżu {peak} ({count})",
+    "bar": "{bin}: {count}",
+    "col": {
+      "column": "Kolumna",
+      "distribution": "Rozkład",
+      "min": "Min",
+      "max": "Maks",
+      "mean": "Średnia",
+      "median": "Mediana",
+      "standardDeviation": "Odch. std."
+    },
+    "bench": {
+      "json": "JSON statystyk",
+      "invalid": "To nie jest poprawny JSON.",
+      "labels": "JSON nazw wyświetlanych (opcjonalnie)"
+    }
+  },
+  "chart": {
+    "loading": "Rysowanie wykresu",
+    "failed": "Nie udało się narysować wykresu.",
+    "retry": "Spróbuj ponownie",
+    "empty": "Nie ma jeszcze czego rysować."
+  },
+  "override": {
+    "trail": "Ścieżka nadpisań",
+    "refused": "Nie masz uprawnień do tej czynności. Zastosowanie nadpisania Force wymaga uprawnienia Apply Force Override, odrębnego od zwykłego uprawnienia do nadpisań.",
+    "failed": "Nie udało się wczytać lub zmienić nadpisania.",
+    "tooEarly": "Data wygaśnięcia musi być późniejsza niż bieżąca data i godzina.",
+    "key": "Klucz nadpisania",
+    "allKeys": "Wszystkie klucze",
+    "keyValue": "Wartość klucza nadpisania",
+    "fetch": "Pobierz",
+    "keys": "Klucze nadpisań",
+    "values": "Przechowywane wartości",
+    "models": "Modele",
+    "open": "Otwórz",
+    "showRules": "Pokaż reguły aktywacji",
+    "hideRules": "Ukryj reguły aktywacji",
+    "rulesLabel": "Nadpisania reguł aktywacji",
+    "noKeys": "Żaden Request XPath w żadnym modelu nie ma włączonego Enable Override.",
+    "noValues": "Brak wartości dla tego klucza nadpisania.",
+    "noModels": "Żaden model nie oferuje tego klucza nadpisania.",
+    "noRules": "Żadna reguła aktywacji w tym modelu nie przyjmuje tego klucza nadpisania.",
+    "kind": {
+      "suppress": "Wygaszenie",
+      "force": "Wymuszenie"
+    },
+    "col": {
+      "override": "Nadpisanie",
+      "kind": "Rodzaj",
+      "expiry": "Data wygaśnięcia",
+      "rule": "Reguła aktywacji",
+      "key": "Klucz nadpisania",
+      "values": "Wartości",
+      "overrides": "Nadpisania",
+      "forced": "Wymuszone",
+      "rules": "Reguły aktywacji",
+      "allRules": "Wszystkie reguły",
+      "models": "Modele",
+      "lastCreated": "Ostatnio utworzone",
+      "nextExpiry": "Następne wygaśnięcie",
+      "value": "Wartość klucza nadpisania",
+      "model": "Model",
+      "createdUser": "Utworzył",
+      "createdDate": "Utworzono",
+      "actions": "Działania"
+    },
+    "bench": {
+      "embedded": "Osadzony (bez selektora, zakres z hosta)",
+      "hostKey": "Klucz hosta",
+      "hostValue": "Wartość hosta",
+      "apply": "Zastosuj"
+    },
+    "page": {
+      "loading": "Wczytywanie nadpisań",
+      "failed": "Nie udało się wczytać Twoich uprawnień, więc nadpisań nie można pokazać.",
+      "denied": "Nie masz uprawnień do zarządzania nadpisaniami.",
+      "noForce": "Nadpisania Force nie są dostępne, ponieważ nie masz uprawnienia Apply Force Override."
+    },
+    "fact": {
+      "values": "brak wartości | jedna wartość | {count} wartości",
+      "overrides": "brak nadpisań | jedno nadpisanie | {count} nadpisań",
+      "forced": "jedno wymuszone | {count} wymuszonych"
+    }
+  },
+  "integrity": {
+    "check": "Sprawdź",
+    "checked": "Sprawdzono {when}",
+    "chooseModel": "Wybierz model",
+    "failed": "Nie udało się sprawdzić modelu.",
+    "forbidden": "Nie masz uprawnień do przeglądania integralności modelu.",
+    "hideChecks": "Ukryj kontrole",
+    "inactive": "nieaktywny",
+    "model": "Model",
+    "no": "Nie",
+    "yes": "Tak",
+    "none": "Brak.",
+    "showChecks": "Pokaż kontrole",
+    "summary": "Błędy {errors} · Ostrzeżenia {warnings} · Informacje {infos}",
+    "severity": {
+      "error": "Błąd",
+      "warning": "Ostrzeżenie",
+      "info": "Informacja"
+    },
+    "findings": {
+      "detail": "Kontrole dla tego podmiotu",
+      "label": "Ustalenia według podmiotu",
+      "none": "Brak ustaleń.",
+      "col": {
+        "severity": "Waga",
+        "kind": "Rodzaj",
+        "entity": "Podmiot",
+        "categories": "Kategorie",
+        "errors": "Błędy",
+        "warnings": "Ostrzeżenia",
+        "infos": "Informacje",
+        "check": "Kontrola",
+        "category": "Kategoria",
+        "finding": "Ustalenie"
+      }
+    },
+    "engine": {
+      "label": "Instancje silnika",
+      "empty": "Żadna instancja silnika nie zsynchronizowała modeli tego najemcy.",
+      "failed": "Nie udało się wczytać stanu silnika.",
+      "showLoaded": "Pokaż, co jest wczytane",
+      "hideLoaded": "Ukryj, co jest wczytane",
+      "showEntities": "Pokaż podmioty",
+      "hideEntities": "Ukryj podmioty",
+      "loadedFor": "Wczytane dla tego modelu",
+      "entities": "Podmioty",
+      "kind": "Rodzaj",
+      "count": "Wczytane",
+      "name": "Nazwa",
+      "id": "Id",
+      "guid": "Guid",
+      "notInDatabase": "Brak w bazie danych",
+      "col": {
+        "instance": "Instancja",
+        "reported": "Ostatni raport",
+        "synchronised": "Ostatnia synchronizacja",
+        "model": "Model",
+        "loaded": "Wczytane podmioty"
+      },
+      "state": {
+        "started": "Uruchomiony",
+        "loaded": "Wczytany, nie uruchomiony",
+        "notLoaded": "Niewczytany"
+      }
+    },
+    "sync": {
+      "title": "Synchronizuj ten model",
+      "hint": "Załaduj ponownie ten model na każdej instancji silnika. Pozostałe modele najemcy pozostają bez zmian. Zaplanuj termin albo synchronizuj teraz.",
+      "when": "Data i godzina synchronizacji",
+      "schedule": "Zaplanuj dla tego modelu",
+      "now": "Synchronizuj ten model teraz",
+      "refresh": "Odśwież",
+      "empty": "Żadna instancja silnika nie zgłosiła się.",
+      "chooseFirst": "Najpierw wybierz datę i godzinę.",
+      "tooFar": "Harmonogram jest zbyt odległy w czasie. Wybierz bliższą datę.",
+      "refused": "Nie masz uprawnień do planowania synchronizacji.",
+      "failed": "Nie udało się zaplanować synchronizacji.",
+      "col": {
+        "instance": "Instancja",
+        "heartbeat": "Sygnał życia",
+        "synchronised": "Zsynchronizowano",
+        "state": "Stan"
+      },
+      "state": {
+        "synchronised": "Zsynchronizowana",
+        "pending": "Oczekuje",
+        "unavailable": "Niedostępna"
+      },
+      "tenantTitle": "Synchronizuj wszystkie modele",
+      "tenantHint": "Załaduj ponownie każdy model najemcy na każdej instancji silnika. Zaplanuj termin albo synchronizuj teraz.",
+      "scheduleTenant": "Zaplanuj dla wszystkich modeli",
+      "nowTenant": "Synchronizuj wszystkie modele teraz"
+    },
+    "deps": {
+      "note": "Każdy podmiot wskazuje podmioty, których używa. Linie przerywane to ustawienia, przerywane ramki to podmioty nieaktywne, a czerwone ramki to nazwy, które nie istnieją.",
+      "unconnected": "{count} podmiotów nie ma żadnych zależności w żadną stronę i jest tylko na liście poniżej.",
+      "truncated": "Pokazano tylko {count} najbardziej powiązanych podmiotów.",
+      "zoom": "Powiększenie diagramu",
+      "zoomIn": "Powiększ",
+      "zoomOut": "Pomniejsz",
+      "fit": "Dopasuj",
+      "label": "Diagram zależności modelu",
+      "failed": "Nie udało się narysować diagramu zależności.",
+      "selected": "Wybrano na diagramie: {id}",
+      "filter": "Znajdź podmiot",
+      "entities": "Podmioty w modelu",
+      "none": "Model nie ma podmiotów.",
+      "show": "Pokaż na diagramie",
+      "showLinks": "Pokaż, czego używa i co go używa",
+      "hideLinks": "Ukryj powiązania",
+      "uses": "Używa",
+      "usedBy": "Używany przez",
+      "col": {
+        "kind": "Rodzaj",
+        "entity": "Podmiot",
+        "active": "Aktywny",
+        "uses": "Używa",
+        "usedBy": "Używany przez",
+        "missing": "Brakujące nazwy",
+        "through": "Przez",
+        "how": "Jak",
+        "actions": "Działania"
+      },
+      "how": {
+        "setting": "Ustawienie",
+        "ruleText": "Tekst reguły"
+      }
+    },
+    "pending": {
+      "label": "Oczekujące zatwierdzenia według rodzaju",
+      "entities": "Podmioty oczekujące na zatwierdzenie",
+      "empty": "Nic nie czeka na zatwierdzenie.",
+      "nothing": "W tym modelu nic nie czeka na zatwierdzenie.",
+      "noView": "Nie masz uprawnień do przeglądania oczekujących zatwierdzeń.",
+      "loadFailed": "Nie udało się wczytać oczekujących zatwierdzeń.",
+      "noPermission": "Nie masz uprawnień do tej czynności.",
+      "refusedAction": "Odmówiono: {action}.",
+      "valuesFailed": "Nie udało się zatwierdzić wartości.",
+      "approvedValues": "Zatwierdzono wartości: {count}.",
+      "approve": "Zatwierdź",
+      "reject": "Odrzuć",
+      "review": "Przejrzyj",
+      "approveValues": "Zatwierdź wartości",
+      "closeReview": "Zamknij przegląd",
+      "reviewTitle": "Przegląd: {name}",
+      "showEntities": "Pokaż podmioty",
+      "hideEntities": "Ukryj podmioty",
+      "deletion": "Usunięcie",
+      "edit": "Edycja",
+      "col": {
+        "kind": "Rodzaj",
+        "waiting": "Oczekujące (podmioty i wartości)",
+        "deletions": "W tym usunięcia",
+        "name": "Nazwa",
+        "change": "Zmiana",
+        "version": "Wersja",
+        "madeBy": "Autor",
+        "values": "Wartości",
+        "actions": "Działania"
+      }
+    },
+    "verdict": {
+      "unsound": "Niepoprawny",
+      "warnings": "Poprawny, z ostrzeżeniami",
+      "sound": "Poprawny"
+    },
+    "section": {
+      "findings": "Co jest nie tak",
+      "engine": "Czy silnik go uruchamia",
+      "dependencies": "Od czego zależy",
+      "pending": "Co czeka na zatwierdzenie"
+    },
+    "hint": {
+      "findings": "Każda niezaliczona kontrola, według podmiotu",
+      "engine": "Które instancje go wczytały i kiedy nastąpi kolejna synchronizacja",
+      "dependencies": "Używane podmioty oraz brakujące",
+      "pending": "Zmiany, które nie obowiązują do zatwierdzenia"
+    },
+    "index": "Sekcje kontroli integralności",
+    "panes": {
+      "index": "spis sekcji"
+    }
+  },
+  "ruleTools": {
+    "title": "Narzędzia reguły",
+    "backtest": "Backtest",
+    "dependencies": "Zależności",
+    "integrityTitle": "Integralność",
+    "loading": "Wczytywanie…",
+    "yes": "Tak",
+    "no": "Nie",
+    "start": "początek",
+    "now": "teraz",
+    "allArchive": "Wszystkie zarchiwizowane transakcje",
+    "asSubmitted": "Jak złożono",
+    "edited": "Edytowana od tego czasu",
+    "show": "Pokaż",
+    "stop": "Zatrzymaj",
+    "instances": "Backtesty tej reguły",
+    "noBacktests": "Ta reguła nie ma jeszcze backtestów.",
+    "backtestHint": "Uruchom tę regułę, taką jak w edytorze, na zarchiwizowanych transakcjach. Pierwszym konstruktorem wybierz transakcje, a drugim to, co uznajesz za pozytywne, na przykład tag.",
+    "whichTransactions": "Które transakcje",
+    "whatIsPositive": "Co jest pozytywne",
+    "limit": "Do (transakcji)",
+    "sampleSize": "Przykłady",
+    "run": "Uruchom backtest",
+    "fieldsFailed": "Nie udało się wczytać pól backtestu.",
+    "incomplete": "Konstruktor ma niekompletną regułę. Dokończ ją lub usuń.",
+    "submitFailed": "Nie udało się złożyć backtestu.",
+    "noPermission": "Nie masz uprawnień do uruchamiania backtestów.",
+    "submitted": "Złożono. Backtest działa w tle, a lista aktualizuje się na bieżąco.",
+    "resultTitle": "Backtest {id}",
+    "notSucceeded": "Ten backtest ma stan: {status}",
+    "window": {
+      "label": "Okno",
+      "week": "Ostatnie 7 dni",
+      "month": "Ostatnie 30 dni",
+      "quarter": "Ostatnie 90 dni",
+      "year": "Ostatnie 12 miesięcy",
+      "all": "Wszystkie zarchiwizowane transakcje"
+    },
+    "col": {
+      "submitted": "Złożono",
+      "rule": "Reguła",
+      "by": "Przez",
+      "status": "Stan",
+      "progress": "Postęp",
+      "read": "Odczytano",
+      "evaluated": "Ocenione",
+      "fired": "Zadziałało",
+      "tp": "TP",
+      "fp": "FP",
+      "fn": "FN",
+      "tn": "TN",
+      "precision": "Precyzja",
+      "recall": "Czułość",
+      "window": "Okno",
+      "actions": "Działania"
+    },
+    "result": {
+      "failed": "Nie udało się wczytać wyniku.",
+      "funnel": "Od archiwum do zadziałania",
+      "confusion": "Macierz pomyłek",
+      "rates": "Wskaźniki",
+      "tags": "Tagi na ocenionych transakcjach",
+      "limitReached": "Osiągnięto limit, starszych transakcji nie odczytano.",
+      "aborted": "Zatrzymano wcześniej: {reason}",
+      "runtimeErrors": "Błędy reguły: {count}",
+      "filterErrors": "Błędy filtra: {count}",
+      "nothingEvaluated": "Nie oceniono żadnych transakcji, więc poza lejkiem nie ma czego pokazać. Poszerz okno lub złagodź filtr.",
+      "notAvailable": "brak"
+    },
+    "examples": {
+      "truePositives": "Prawdziwie pozytywne",
+      "falsePositives": "Fałszywie pozytywne",
+      "falseNegatives": "Fałszywie negatywne",
+      "errors": "Błędy",
+      "count": "przykładów: {count}",
+      "entry": "Wpis",
+      "referenceDate": "Data referencyjna",
+      "error": "Błąd",
+      "explain": "Wyjaśnij tę transakcję",
+      "hide": "Ukryj wyjaśnienie"
+    },
+    "explain": {
+      "failed": "Nie udało się wyjaśnić transakcji.",
+      "passedFilter": "Przepuszczona przez filtr",
+      "fired": "Zadziałała",
+      "positive": "Pozytywna",
+      "filterError": "Błąd filtra",
+      "ruleError": "Błąd reguły",
+      "tags": "Tagi",
+      "none": "Brak",
+      "values": "Odczytane wartości",
+      "read": "Odczytana wartość",
+      "onThis": "W tej transakcji",
+      "noValue": "Brak wartości"
+    },
+    "deps": {
+      "saveFirst": "Zapisz regułę, aby zobaczyć, czego używa i co jej używa.",
+      "failed": "Nie udało się wczytać zależności.",
+      "uses": "Używa",
+      "usedBy": "Używana przez",
+      "nothing": "Nic.",
+      "nothingUses": "Nic nie używa tej reguły.",
+      "name": "Nazwa",
+      "entity": "Podmiot",
+      "how": "Jak",
+      "line": "Wiersz",
+      "through": "Przez",
+      "depth": "Głębokość",
+      "doesNotExist": "Nie istnieje"
+    },
+    "integrity": {
+      "saveFirst": "Zapisz regułę, aby sprawdzić jej integralność.",
+      "failed": "Nie udało się wczytać ustaleń integralności.",
+      "none": "Brak ustaleń dla tej reguły."
+    },
+    "bench": {
+      "ruleId": "Id reguły",
+      "ruleText": "Tekst reguły jak w edytorze"
+    }
+  },
+  "watcher": {
+    "live": "Na żywo",
+    "layers": "Warstwy",
+    "replayLabel": "Okno odtwarzania",
+    "controls": "Sterowanie obserwatorem",
+    "realtime": "Czas rzeczywisty",
+    "status": {
+      "open": "Strumień aktywny",
+      "connecting": "Łączenie",
+      "closed": "Zamknięty",
+      "paused": "Wstrzymany"
+    },
+    "mode": {
+      "label": "Mapa pokazuje",
+      "latest": "Ostatnia na podmiot",
+      "all": "Każda aktywacja"
+    },
+    "window": {
+      "label": "Okno",
+      "all": "Wszystko",
+      "minute": "Ostatnia minuta",
+      "five": "Ostatnie 5 minut",
+      "fifteen": "Ostatnie 15 minut",
+      "hour": "Ostatnia godzina"
+    },
+    "fade": {
+      "label": "Zanikanie przez",
+      "off": "Bez zanikania",
+      "minute": "1 minutę",
+      "five": "5 minut",
+      "fifteen": "15 minut",
+      "hour": "1 godzinę"
+    },
+    "trails": "Ślady",
+    "heat": "Mapa cieplna",
+    "fit": "Dopasuj do aktywacji",
+    "replayFrom": "Odtwórz od",
+    "replayTo": "do",
+    "replay": "Odtwórz",
+    "clear": "Wyczyść",
+    "replayFailed": "Nie udało się wczytać odtworzenia.",
+    "mapFailed": "Mapa nie mogła się uruchomić w tej przeglądarce. Lista i podsumowanie poniżej nadal działają.",
+    "mapLabel": "Mapa aktywacji",
+    "legend": {
+      "activation": "Aktywacja",
+      "impossible": "Niemożliwa podróż (ponad {speed} km/h)",
+      "dim": "Nie pasuje do filtra"
+    },
+    "counts": "Naniesiono {plotted} · Bez lokalizacji {unlocated} · Oczekuje {pending} · Odebrano {received}",
+    "impossibleCount": "Brak niemożliwych podróży | 1 niemożliwa podróż | {count} niemożliwych podróży",
+    "following": "Śledzenie {entity}",
+    "release": "Pokaż wszystko",
+    "selected": "Wybrana aktywacja",
+    "journey": "Odtwórz podróż tego podmiotu",
+    "follow": "Śledź ten podmiot",
+    "feed": "Ostatnie aktywacje",
+    "empty": "Brak aktywacji.",
+    "locate": "Znajdź",
+    "summary": "Aktywacje według reguły",
+    "summaryEmpty": "Podsumowanie pojawi się po nadejściu aktywacji.",
+    "col": {
+      "created": "Utworzono",
+      "entity": "Podmiot",
+      "rule": "Reguła aktywacji",
+      "elevation": "Podniesienie",
+      "content": "Odpowiedź",
+      "colour": "Kolor aktywacji",
+      "actions": "Działania",
+      "range": "Zakres"
+    },
+    "bench": {
+      "embedded": "Osadzony (jeden podmiot, bez sterowania)",
+      "key": "Klucz",
+      "keyValue": "Wartość klucza"
+    },
+    "page": {
+      "loading": "Wczytywanie watchera",
+      "loadFailed": "Nie można otworzyć watchera. Odśwież stronę, aby spróbować ponownie.",
+      "refused": "Nie masz uprawnień do podglądu watchera aktywacji.",
+      "filter": "Obserwuj jeden podmiot",
+      "key": "Klucz",
+      "keyValue": "Wartość klucza",
+      "apply": "Zastosuj filtr",
+      "clearFilter": "Wyczyść filtr"
+    }
+  },
+  "sanction": {
+    "title": "Wyszukiwanie sankcji",
+    "multiPartString": "Ciąg wieloczłonowy",
+    "multiPartHint": "Nazwa lub fraza; każda część jest dopasowywana do list sankcyjnych.",
+    "distance": "Odległość",
+    "maxDistanceRatio": "Maks. współczynnik odległości",
+    "maxCoverageRatio": "Maks. współczynnik pokrycia",
+    "check": "Sprawdź",
+    "checking": "Sprawdzanie",
+    "prompt": "Wpisz nazwę lub frazę do wyszukania.",
+    "empty": "Żaden wpis sankcyjny nie pasuje.",
+    "failed": "Nie udało się wykonać wyszukiwania.",
+    "validation": "Wyszukiwanie odrzucono:",
+    "matches": "Brak dopasowań | 1 dopasowanie | {count} dopasowań",
+    "entries": "Dopasowania",
+    "total": "Agregacja łączna",
+    "bySource": "Agregacja według źródła",
+    "bench": {
+      "embedded": "Osadzony (bez formularza, parametry z hosta)",
+      "hostText": "Tekst hosta",
+      "apply": "Szukaj"
+    },
+    "col": {
+      "id": "Id",
+      "distance": "Odległość",
+      "element": "Element",
+      "sourceId": "Id źródła",
+      "source": "Źródło",
+      "reference": "Odniesienie",
+      "sum": "Suma",
+      "average": "Średnia",
+      "count": "Liczba",
+      "max": "Maks.",
+      "min": "Min.",
+      "first": "Pierwsza",
+      "last": "Ostatnia",
+      "confidence": "Pewność"
+    },
+    "forbidden": "Nie masz uprawnień do przeszukiwania sankcji.",
+    "zero": "Wyszukiwanie zostało wykonane i nic nie pasuje. Zwiększ odległość lub współczynniki, aby dopasowywać luźniej. Odrzucone wyszukiwanie jest pokazywane jako błąd, nigdy jako pusty wynik."
+  },
+  "evidence": {
+    "title": "Dowody",
+    "yes": "Tak",
+    "no": "Nie",
+    "none": "Brak wartości",
+    "empty": "(puste)",
+    "emptyState": "Brak dowodów do pokazania.",
+    "expandAll": "Rozwiń wszystko",
+    "collapseAll": "Zwiń wszystko",
+    "values": "Brak wartości | 1 wartość | {n} wartości",
+    "col": {
+      "key": "Klucz",
+      "value": "Wartość"
+    },
+    "bench": {
+      "json": "JSON dowodów",
+      "invalid": "To nie jest poprawny JSON."
+    }
+  },
+  "csvExport": {
+    "title": "Eksport CSV",
+    "note": "Brak osobnego widżetu eksportu: plik zapisuje pobieranie samej siatki. Excel zawiera stylowanie (nagłówek, szerokości kolumn, prawdziwe liczby i daty, zablokowany wiersz nagłówka, filtr); CSV to zwykła, niestylizowana alternatywa. Komórki zaczynające się jak formuła są w CSV zneutralizowane.",
+    "row": "Akcja wiersza",
+    "empty": "Brak wierszy.",
+    "col": {
+      "id": "Id",
+      "source": "Źródło",
+      "detail": "Szczegóły",
+      "hits": "Trafienia",
+      "actions": "Akcje",
+      "seen": "Widziano"
+    }
+  },
+  "export": {
+    "group": "Eksport",
+    "excel": "Excel",
+    "csv": "CSV"
+  },
+  "crud": {
+    "loading": "Wczytywanie formularza",
+    "modelFailed": "Brak modelu formularza dla {area}.",
+    "recordsFailed": "Nie udało się wczytać rekordów.",
+    "list": "Rekordy: {area}",
+    "new": "Nowy",
+    "newTitle": "Nowy: {area}",
+    "editTitle": "Edycja: {area}",
+    "open": "Otwórz",
+    "actions": "Akcje",
+    "empty": "Brak rekordów.",
+    "create": "Utwórz",
+    "save": "Zapisz zmiany",
+    "delete": "Usuń",
+    "close": "Zamknij",
+    "locked": "Zablokowany",
+    "unsaved": "Niezapisane zmiany",
+    "required": "Wymagane",
+    "yes": "Tak",
+    "no": "Nie",
+    "choose": "Wybierz",
+    "loadingChoices": "Wczytywanie opcji",
+    "editorPending": "To pole używa edytora {editor}, który nie jest jeszcze gotowy.",
+    "created": "Utworzono.",
+    "saved": "Zapisano.",
+    "deleted": "Usunięto.",
+    "refused": "Żądanie zostało odrzucone.",
+    "notNumber": "Pole {field} musi być liczbą.",
+    "leave": "Masz niezapisane zmiany. Opuścić stronę bez zapisu?",
+    "confirmTitle": "Usunąć ten rekord?",
+    "confirmBody": "Usunięcie może wymagać zatwierdzenia, zanim zacznie obowiązywać.",
+    "bench": {
+      "area": "Typ rekordu",
+      "parentId": "Identyfikator nadrzędny",
+      "load": "Wczytaj",
+      "choose": "Wybierz typ rekordu oraz identyfikator nadrzędny, jeśli go ma."
+    },
+    "noList": "Ten typ rekordu nie ma listy do pokazania.",
+    "roles": "Role",
+    "values": "Wartości",
+    "search": "Szukaj rekordów",
+    "searchPlaceholder": "Szukaj",
+    "upToDate": "Brak niezapisanych zmian",
+    "auditUpdated": "Zaktualizowane przez {user}, {date}",
+    "auditCreated": "Utworzone przez {user}, {date}",
+    "options": "Opcje",
+    "problems": "brak problemów | {count} problem do poprawienia | {count} problemy do poprawienia | {count} problemów do poprawienia | {count} problemu do poprawienia",
+    "about": "O polu {field}",
+    "pick": "Wybierz kolor dla pola {field}",
+    "changed": "Zmienione",
+    "externalUpdated": "{actor} zaktualizował(a) ten rekord: {when}.",
+    "externalUpdatedNoTime": "{actor} zaktualizował(a) ten rekord.",
+    "externalVersions": "Wersja {from} do {to}.",
+    "changedCount": "brak zmienionych pól | 1 zmienione pole | {count} zmienione pola | {count} zmienionych pól | {count} zmienionego pola",
+    "externalPending": "{actor} zmienił(a) ten rekord, gdy masz niezapisane zmiany.",
+    "externalConflict": "Ten rekord zmienił się od jego otwarcia, więc zapis został odrzucony.",
+    "externalDeleted": "{actor} usunął(ęła) ten rekord.",
+    "reload": "Wczytaj ponownie i odrzuć moje zmiany",
+    "keepEditing": "Edytuj dalej",
+    "dismiss": "Zamknij",
+    "someone": "Ktoś",
+    "fold": {
+      "title": "Konfiguracja"
+    },
+    "incomplete": "Dokończ wyświetlanie przed zapisem: SQL musi być poprawny i wybrany wykres lub siatka."
+  },
+  "hierarchy": {
+    "trail": "Gdzie jesteś",
+    "showing": "Pokazano: {where}",
+    "goBack": "Wróć do: {label}",
+    "under": "Otwórz w: {name}",
+    "open": "Otwórz",
+    "add": "Dodaj: {label}",
+    "more": "Więcej działań dla: {label}",
+    "none": "Jeszcze brak",
+    "active": "{count} aktywnych",
+    "locked": "{count} zablokowanych",
+    "failed": "Nie udało się wczytać",
+    "expandRow": "Pokaż, co jest pod tym wierszem",
+    "collapseRow": "Ukryj, co jest pod tym wierszem",
+    "kinds": "Rodzaje pod tym wierszem",
+    "awaiting": "{count} oczekuje"
+  },
+  "payloadGrid": {
+    "from": "Od",
+    "to": "Do",
+    "all": "Wszystkie",
+    "apply": "Zastosuj",
+    "clear": "Wyczyść",
+    "rows": "{count} z {total} wierszy",
+    "capped": "Pokazano {count} z {total} wierszy; zawęź okno lub filtry, aby zobaczyć resztę",
+    "empty": "Brak wierszy w tym oknie.",
+    "failed": "Nie udało się wczytać wierszy.",
+    "retry": "Spróbuj ponownie",
+    "statistics": "Statystyki",
+    "refresh": "Odśwież",
+    "filters": "Filtry",
+    "loading": "Wczytywanie wierszy"
+  },
+  "sample": {
+    "title": "Próbka zarchiwizowanych transakcji",
+    "hint": "Pobierz losową próbkę zarchiwizowanych transakcji jednego modelu jako plik CSV, wybraną według dat referencyjnych z okna.",
+    "from": "Od",
+    "to": "Do",
+    "rate": "Udział transakcji",
+    "rateHint": "Każda zarchiwizowana transakcja z okna jest włączana z tym prawdopodobieństwem.",
+    "download": "Pobierz próbkę",
+    "saved": "Pobrano {name}.",
+    "failed": "Nie udało się pobrać próbki.",
+    "refused": "Nie masz uprawnień do pobierania próbek.",
+    "empty": "Serwer zwrócił pusty plik. Spróbuj ponownie.",
+    "problem": {
+      "model": "Wybierz model.",
+      "from": "Podaj początek okna.",
+      "to": "Podaj koniec okna.",
+      "order": "Koniec okna musi być po jego początku.",
+      "sample": "Udział musi mieścić się między 0 a 1."
+    }
+  },
+  "download": {
+    "preparing": "Przygotowywanie…"
+  },
+  "upload": {
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "problem": {
+      "none": "Najpierw wybierz plik.",
+      "type": "Można wysyłać tylko pliki {types}.",
+      "empty": "Wybrany plik jest pusty."
+    }
+  },
+  "sanctionsLoader": {
+    "title": "Wczytaj plik sankcji",
+    "hint": "Zaimportuj plik CSV z wpisami sankcji jednego źródła. Wpisy, których nie ma już w pliku, są uzgadniane jako usunięte.",
+    "source": "Źródło",
+    "file": "Plik CSV",
+    "loaded": "Wczytano {name}.",
+    "failed": "Nie udało się wczytać pliku.",
+    "refused": "Pliki sankcji może wczytywać tylko landlord."
+  },
+  "dataset": {
+    "title": "Zbiór treningowy",
+    "hint": "Wybierz potwierdzony zbiór albo wyślij plik CSV lub JSON, sprawdź, jak odczytano jego kolumny, i potwierdź mapowanie.",
+    "pick": "Zbiór",
+    "none": "Wybierz zbiór",
+    "uploadNew": "Wyślij zbiór",
+    "delete": "Usuń",
+    "cancel": "Anuluj",
+    "confirm": "Potwierdź mapowanie",
+    "file": "Plik CSV lub JSON",
+    "summary": "{kind}: wierszy {rows}, kolumn {columns}, bajtów {bytes}.",
+    "delimiter": "Separator '{delimiter}'.",
+    "review": "Sprawdź, jak odczytano każdą kolumnę, a następnie potwierdź mapowanie.",
+    "noColumns": "Ten zbiór nie ma kolumn.",
+    "yes": "Tak",
+    "no": "Nie",
+    "includeColumn": "Uwzględnij {column}",
+    "processingFor": "Typ przetwarzania dla {column}",
+    "nameFor": "Nazwa zmiennej dla {column}",
+    "col": {
+      "include": "Uwzględnij",
+      "column": "Kolumna",
+      "type": "Typ",
+      "categorical": "Kategorialna",
+      "missing": "Brakujące",
+      "min": "Min",
+      "max": "Maks",
+      "name": "Nazwa zmiennej",
+      "processing": "Typ przetwarzania"
+    },
+    "processing": {
+      "payload": "Ładunek",
+      "dictionary": "Słownik",
+      "ttlCounter": "Licznik TTL",
+      "sanction": "Sankcja",
+      "abstraction": "Abstrakcja",
+      "abstractionCalculation": "Obliczenie abstrakcji"
+    },
+    "distinct": {
+      "show": "Pokaż unikalne wartości",
+      "hide": "Ukryj unikalne wartości",
+      "value": "Wartość",
+      "count": "Liczba",
+      "none": "Brak zestawienia unikalnych wartości dla tej kolumny."
+    },
+    "problem": {
+      "none": "Uwzględnij co najmniej jedną kolumnę.",
+      "name": "{column}: nazwa zmiennej musi zaczynać się od litery i zawierać tylko litery, cyfry i podkreślenia.",
+      "duplicate": "{column}: inna uwzględniona kolumna ma już tę nazwę zmiennej."
+    },
+    "deleteTitle": "Usunąć ten zbiór?",
+    "deleteBody": "Zbiór zostanie usunięty. Nie można go usunąć, dopóki adaptacja Exhaustive, która go używa, jest jeszcze trenowana.",
+    "tooLarge": "Plik jest większy niż dozwolony rozmiar.",
+    "inUse": "Zbiór jest nadal używany przez adaptację Exhaustive, która nie zakończyła treningu.",
+    "refused": "Nie masz uprawnień do zarządzania zbiorami.",
+    "uploadFailed": "Nie udało się wysłać zbioru.",
+    "confirmFailed": "Nie udało się zapisać mapowania.",
+    "deleteFailed": "Nie udało się usunąć zbioru.",
+    "bench": {
+      "locked": "Zablokowany, jak po rozpoczęciu treningu adaptacji",
+      "reference": "Wybrane odwołanie:"
+    }
+  },
+  "exhaustive": {
+    "anomaly": "Wykrywanie anomalii:",
+    "band": {
+      "best": "Najlepszy wynik",
+      "completed": "Zakończono",
+      "models": "Wytrenowane modele",
+      "sinceBest": "Od najlepszego",
+      "updated": "Zaktualizowano"
+    },
+    "batch": {
+      "baseValue": "Wartość bazowa",
+      "empty": "Nie oceniono żadnych wierszy.",
+      "error": "Błąd",
+      "failed": "Nie udało się przetworzyć pliku.",
+      "file": "Plik CSV, tekstowy lub JSON",
+      "hint": "Oceń naraz każdy wiersz pliku aktywnym promowanym modelem, zamiast jednego wiersza na raz za pomocą kontrolek powyżej. Plik nie jest zapisywany jako dane treningowe.",
+      "row": "Wiersz",
+      "score": "Wynik",
+      "summary": "Wierszy: {rows}, ocenionych: {scored}.",
+      "title": "Zbiorcze wywołanie z pliku"
+    },
+    "bench": {
+      "adaptation": "Adaptacja",
+      "none": "Ten model nie ma adaptacji Exhaustive."
+    },
+    "failed": "Nie udało się wczytać adaptacji.",
+    "hint": {
+      "detects": "Czy znajduje to, co powinien, i jakim kosztem?",
+      "learned": "Zmienne i jak poprawiało się wyszukiwanie",
+      "live": "Naraz aktywny jest tylko jeden",
+      "trials": "Każdy wypróbowany kandydat",
+      "verdict": "Co się stało, słowami",
+      "whatIf": "Zmień zmienną i obserwuj wynik"
+    },
+    "index": "Sekcje wyników treningu",
+    "learning": {
+      "curve": "Krzywa uczenia",
+      "promotion": "Historia promocji",
+      "title": "Krzywa uczenia"
+    },
+    "loading": "Wczytywanie adaptacji",
+    "performance": {
+      "basis": "Podstawa wskaźnika wykrywalności",
+      "basisHint": "Liczba pokazuje wykrywalność według wierszy. Wybór zmiennej pokazuje ją według zsumowanej wartości tej zmiennej: w rozkładzie wyników, ROC, zyskach, liftcie, KS i przechwyconej wartości. Przechwycona wartość jest rysowana dopiero po wybraniu zmiennej.",
+      "calibration": "Kalibracja",
+      "confusion": "Macierz pomyłek",
+      "count": "Liczba (domyślnie)",
+      "gains": "Zyski",
+      "ks": "Kołmogorow–Smirnow",
+      "lift": "Lift",
+      "measures": "Miary skuteczności",
+      "precisionRecall": "Precyzja i czułość",
+      "roc": "ROC",
+      "scoreDistribution": "Rozkład wyników",
+      "thresholdSweep": "Przegląd progów",
+      "valueCaptured": "Przechwycona wartość"
+    },
+    "prescription": {
+      "empty": "Dla tego modelu nie zapisano recepty.",
+      "failed": "Nie udało się wczytać recepty.",
+      "hide": "Ukryj wykresy",
+      "histogram": "Histogram recepty",
+      "negativeMean": "Średnia negatywna",
+      "negativeSd": "Odch. std. negatywne",
+      "positiveMean": "Średnia pozytywna",
+      "positiveSd": "Odch. std. pozytywne",
+      "sensitivity": "Czułość",
+      "show": "Pokaż wykresy",
+      "summary": "Podsumowanie recepty",
+      "title": "Recepta według zmiennej",
+      "variable": "Zmienna",
+      "variableMax": "Maks. zmiennej",
+      "variableMean": "Średnia zmiennej",
+      "variableMin": "Min. zmiennej",
+      "variableSd": "Odch. std. zmiennej"
+    },
+    "promoted": {
+      "activate": "Uaktywnij model z wynikiem {score}",
+      "activateFailed": "Nie udało się zaktualizować promowanego modelu.",
+      "active": "Aktywny",
+      "calibration": "Kalibracja",
+      "complexity": "Złożoność topologii",
+      "created": "Utworzono",
+      "empty": "Żaden model nie został jeszcze awansowany.",
+      "failed": "Nie udało się wczytać promowanych modeli.",
+      "hide": "Ukryj receptę",
+      "hint": "Naraz aktywny jest tylko jeden promowany model: aktywacja jednego dezaktywuje pozostałe, a dezaktywacja aktywnego awansuje na jego miejsce następny najlepszy wynik.",
+      "refused": "Nie masz uprawnień do zmiany promowanych modeli.",
+      "score": "Wynik",
+      "show": "Pokaż receptę",
+      "title": "Promowane modele",
+      "type": "Typ modelu"
+    },
+    "refresh": "Odśwież",
+    "refused": "Nie masz uprawnień do zatrzymania tej adaptacji.",
+    "section": {
+      "detects": "Jak dobrze wykrywa",
+      "learned": "Czego się nauczył",
+      "live": "Który model jest aktywny",
+      "trials": "Jak do tego doszło",
+      "verdict": "Werdykt",
+      "whatIf": "A gdyby…"
+    },
+    "sensitivity": {
+      "empty": "Aktywny model nie ma zmiennych do zmieniania.",
+      "failed": "Nie udało się wczytać zmiennych.",
+      "recallFailed": "Nie udało się obliczyć wyniku.",
+      "score": "Wynik",
+      "topology": "Sieć z istotnością tego wejścia"
+    },
+    "stage": "Etap {stage} z {total}",
+    "stageLabel": "Etap treningu",
+    "status": {
+      "awaitingServer": "Oczekiwanie na serwer",
+      "baseQuery": "Pobieranie danych przypadku bazowego",
+      "baseStatistics": "Obliczanie statystyk przypadku bazowego",
+      "classQuery": "Pobieranie danych filtra klasy",
+      "classStatistics": "Statystyki danych filtra klasy",
+      "correlation": "Analiza korelacji",
+      "finished": "Zakończono",
+      "finishedNoClass": "Zakończono, brak dostępnej klasy",
+      "multicollinearity": "Analiza współliniowości",
+      "noData": "Nie znaleziono danych dla skonfigurowanego źródła",
+      "normalising": "Normalizacja danych",
+      "normalisingUnsupervised": "Normalizacja danych do uczenia nienadzorowanego",
+      "oversampling": "Nadpróbkowanie i próbkowanie symetryczne",
+      "shuffling": "Tasowanie danych",
+      "stopped": "Zatrzymano",
+      "stopping": "Zatrzymywanie",
+      "storing": "Zapisywanie danych końcowych",
+      "supervised": "Uczenie nadzorowane",
+      "unexpected": "Zatrzymano z nieoczekiwanej przyczyny",
+      "unsupervisedRecall": "Wywołanie treningu nienadzorowanego",
+      "unsupervisedStatistics": "Statystyki treningu nienadzorowanego",
+      "unsupervisedTraining": "Trening nienadzorowany"
+    },
+    "stop": "Zatrzymaj",
+    "stopFailed": "Nie udało się zatrzymać adaptacji.",
+    "trials": {
+      "choose": "Wybierz Pokaż dowody przy próbie, aby zobaczyć diagram modelu i, dla rodziny konkurencyjnej, jej dowody.",
+      "created": "Utworzono",
+      "detailFailed": "Nie udało się wczytać dowodów dla tej próby.",
+      "diagram": "Diagram modelu",
+      "empty": "Nie zapisano jeszcze żadnych prób.",
+      "evidence": "Dowody",
+      "evidenceTitle": "Próba {type}, wynik {score}",
+      "evidenceTree": "Dowody dla tej próby",
+      "failed": "Nie udało się wczytać prób.",
+      "no": "Nie",
+      "promoted": "Awansowana",
+      "score": "Wynik",
+      "show": "Pokaż dowody",
+      "title": "Próby",
+      "type": "Typ modelu",
+      "yes": "Tak"
+    },
+    "variables": {
+      "classes": "Udział każdej klasy",
+      "classesHint": "Pozytywne to wiersze pasujące do definicji klasy lub oznaczone przez model anomalii. Negatywne to cała reszta próby.",
+      "correlatedWith": "Najsilniej skorelowane z",
+      "correlation": "Korelacja",
+      "counts": "Liczby zamiast udziału klasy",
+      "distinct": "Unikalne wartości",
+      "empty": "Nie zapisano żadnych zmiennych.",
+      "failed": "Nie udało się wczytać zmiennych.",
+      "hide": "Ukryj wykresy",
+      "histogram": "Histogram",
+      "iqr": "IQR",
+      "kurtosis": "Kurtoza",
+      "max": "Maksimum",
+      "mean": "Średnia",
+      "min": "Minimum",
+      "monteCarlo": "Monte Carlo",
+      "monteCarloSummary": "Podsumowanie Monte Carlo",
+      "noCorrelated": "Żadna inna zmienna nie jest skorelowana z tą.",
+      "normalisation": "Normalizacja",
+      "sd": "Odchylenie standardowe",
+      "search": "Szukaj zmiennych",
+      "show": "Pokaż wykresy",
+      "skewness": "Skośność",
+      "title": "Statystyki zmiennych",
+      "variable": "Zmienna"
+    },
+    "waiting": "Wyniki pojawią się po zakończeniu analizy korelacji (etap 14). Stan powyżej aktualizuje się sam.",
+    "fold": {
+      "archive": "Dane z archiwum",
+      "demonstration": "Zbiór demonstracyjny",
+      "uploaded": "Wysłany zbiór",
+      "on": "włączone",
+      "off": "wyłączone",
+      "summary": "{source}, definicja klasy: {filter}, bootstrap: {bootstrap}, wykrywanie anomalii: {anomaly}. Rozwiń, aby zmienić."
+    }
+  },
+  "analytics": {
+    "band": {
+      "backToLive": "Wróć do aktywnej wersji",
+      "bestOn": "Aktywna jest najlepsza w {best} z {of} metryk",
+      "bestOnAll": "Aktywna jest najlepsza w każdej metryce",
+      "live": "Aktywna: v{version}",
+      "noLive": "Brak aktywnej wersji",
+      "viewing": "Podgląd v{version}",
+      "warnings": "Brak ostrzeżeń | {count} ostrzeżenie | {count} ostrzeżeń"
+    },
+    "compare": {
+      "better": "Lepiej",
+      "change": "Zmiana",
+      "comparable": "Można rzetelnie porównać: to samo ziarno, te same rozmiary podziałów i te same zmienne.",
+      "differentSeed": "Wersje trenowano z różnymi ziarnami.",
+      "differentSplits": "Wersje użyły różnych rozmiarów podziału na zbiór treningowy, walidacyjny i testowy.",
+      "differentVariables": "Wersje używają różnych zmiennych.",
+      "empty": "Nie ma czego porównywać.",
+      "failed": "Nie udało się wczytać porównania.",
+      "live": "Aktywna v{version}",
+      "loading": "Porównywanie wersji",
+      "metric": "Metryka",
+      "notComparable": "Tych wersji nie można rzetelnie porównać, więc czytaj zmiany ostrożnie.",
+      "onlyLive": "Ostrzeżenia tylko w aktywnej wersji: {codes}.",
+      "onlyOther": "Ostrzeżenia tylko w drugiej wersji: {codes}.",
+      "other": "v{version}",
+      "same": "Bez zmian",
+      "title": "Aktywna v{live} wobec v{other}",
+      "unknown": "Nieporównywalne",
+      "verdict": "Ocena",
+      "worse": "Gorzej"
+    },
+    "diagram": {
+      "label": "Diagram modelu"
+    },
+    "evidence": {
+      "failed": "Nie udało się wczytać zapisanych dowodów.",
+      "none": "Ta wersja nie ma zapisanych dowodów.",
+      "title": "Zapisane dowody tej wersji"
+    },
+    "failed": "Nie udało się wczytać modelu.",
+    "hint": {
+      "noVersion": "Brak wersji",
+      "versions": "Porównane na zbiorze testowym",
+      "viewing": "Podgląd v{version}"
+    },
+    "index": "Sekcje modelu",
+    "instances": {
+      "actions": "Działania",
+      "activate": "Uaktywnij {name}",
+      "active": "Aktywna",
+      "allocated": "Przydzielony model",
+      "approval": "Zatwierdzenie",
+      "approve": "Zatwierdź",
+      "approveAll": "Zatwierdź wszystkie oczekujące",
+      "approved": "Zatwierdzono.",
+      "cancel": "Anuluj",
+      "checkerNote": "Uwaga sprawdzającego",
+      "confirmBody": "Pozostaje na liście jako oczekujące usunięcie, dopóki sprawdzający go nie zatwierdzi.",
+      "confirmTitle": "Usunąć {name}?",
+      "created": "Utworzono",
+      "delete": "Usuń",
+      "deleted": "Instancję usunięto, czeka na zatwierdzenie.",
+      "empty": "Brak instancji Advanced Analytics.",
+      "failed": "Nie udało się wczytać instancji.",
+      "hideModels": "Ukryj modele",
+      "madeBy": "Autor",
+      "name": "Nazwa",
+      "no": "Nie",
+      "notAllocated": "Nieprzydzielona",
+      "notePlaceholder": "Uwaga (opcjonalnie)",
+      "progress": "Zatwierdzenia",
+      "refresh": "Odśwież",
+      "reject": "Odrzuć",
+      "rejected": "Odrzucono.",
+      "reportTable": "Tabela raportowa",
+      "responsePayload": "Ładunek odpowiedzi",
+      "resubmit": "Złóż ponownie",
+      "resubmitted": "Złożono ponownie.",
+      "retract": "Wycofaj",
+      "retracted": "Wycofano.",
+      "returnNote": "Uwaga zwrotna",
+      "showModels": "Pokaż modele",
+      "statusUnavailable": "Stan zatwierdzenia jest niedostępny. Załaduj ponownie, aby sprawdzić.",
+      "title": "Instancje Advanced Analytics",
+      "yes": "Tak"
+    },
+    "kind": {
+      "anomalyDetector": "Detektor anomalii",
+      "classifier": "Klasyfikator",
+      "clusterer": "Klasteryzator",
+      "densityEstimator": "Estymator gęstości",
+      "dimensionReducer": "Redukcja wymiarów",
+      "forecaster": "Model prognoz",
+      "regressor": "Regresor",
+      "sequenceModel": "Model sekwencji"
+    },
+    "loading": "Wczytywanie modelu",
+    "metric": {
+      "averagePrecision": "Średnia precyzja",
+      "brier": "Wynik Briera",
+      "calibrationSlope": "Nachylenie kalibracji",
+      "ece": "Błąd kalibracji",
+      "logLoss": "Strata logarytmiczna",
+      "matthews": "Korelacja Matthewsa",
+      "precision": "Precyzja",
+      "recall": "Czułość",
+      "rocAuc": "ROC AUC"
+    },
+    "models": {
+      "actions": "Działania",
+      "created": "Utworzono",
+      "empty": "Ta instancja nie ma wytrenowanych modeli.",
+      "failed": "Nie udało się wczytać modeli.",
+      "kind": "Rodzaj",
+      "live": "Aktywna wersja",
+      "name": "Nazwa",
+      "none": "Brak",
+      "open": "Otwórz model",
+      "source": "Źródło",
+      "title": "Wytrenowane modele"
+    },
+    "noVersion": "Ten model nie ma wersji do pokazania.",
+    "performance": {
+      "calibration": "Kalibracja",
+      "none": "Ten rodzaj modelu nie ma wykresu kalibracji ani ROC.",
+      "roc": "Krzywa ROC"
+    },
+    "refused": "Nie masz uprawnień do Advanced Analytics.",
+    "section": {
+      "evidence": "Zapisane dowody",
+      "looks": "Jak wygląda model",
+      "performs": "Jak dobrze działa",
+      "says": "Co mówi",
+      "versions": "Która wersja jest aktywna"
+    },
+    "source": {
+      "agent": "Agent",
+      "upload": "Wysłany"
+    },
+    "state": {
+      "approved": "Zatwierdzono",
+      "awaiting": "Czeka na zatwierdzenie",
+      "deletionAwaiting": "Usunięcie czeka na zatwierdzenie",
+      "deletionRejected": "Usunięcie odrzucone",
+      "rejected": "Odrzucono",
+      "unavailable": "Stan niedostępny"
+    },
+    "story": {
+      "allocated": "Instancja przydzielona do modelu Jube {model}",
+      "failed": "Nie udało się wczytać wersji.",
+      "loading": "Wczytywanie wersji",
+      "noEvidence": "Ta wersja nie ma zapisanych dowodów.",
+      "noNarrative": "Dla tej wersji nie napisano opisu.",
+      "notAllocated": "Instancja nieprzydzielona do modelu Jube",
+      "seed": "Ziarno {seed}",
+      "version": "{name}, wersja {version}"
+    },
+    "trail": "Gdzie jesteś",
+    "versions": {
+      "actions": "Działania",
+      "best": "najlepsza",
+      "bestOn": "Aktywna wersja jest najlepsza w {best} z {of} metryk.",
+      "bestOnAll": "Aktywna wersja jest najlepsza w każdej metryce.",
+      "compare": "Porównaj z aktywną",
+      "empty": "Ten model nie ma wersji.",
+      "failed": "Nie udało się wczytać wersji.",
+      "hideCompare": "Ukryj porównanie",
+      "hint": "Metryki mierzono na zbiorze testowym. Najlepsza wartość każdej jest oznaczona, a remis oznacza każdą wersję, która ją dzieli.",
+      "live": "aktywna",
+      "noLive": "Żadna wersja tego modelu nie jest aktywna.",
+      "show": "Pokaż tę wersję",
+      "testRows": "Wiersze testowe",
+      "title": "Wersje tego modelu",
+      "viewing": "Podgląd",
+      "warnings": "Ostrzeżenia",
+      "metric": "Metryka",
+      "liveTitle": "v{version} · aktywna"
+    },
+    "panes": {
+      "index": "spis sekcji"
+    }
+  },
+  "caseSql": {
+    "label": "SQL dla sprawy",
+    "hint": "Pojedyncze zapytanie SELECT uruchamiane dla sprawy, tylko do odczytu, na własnych wierszach. Użyj {'@'}Id dla sprawy i {'@'}CaseKeyValue dla jej wartości klucza. Zwrócone wiersze są dostępne dla układu oraz szablonów e-mail i HTTP jako rows, na przykład [{'@'} rows[0].Name {'@'}]. Pozostaw puste, aby rysować z zapisanego ładunku sprawy jak dotychczas.",
+    "caseId": "Identyfikator sprawy do próby",
+    "run": "Uruchom SQL",
+    "summary": "{count} wierszy w {ms} ms",
+    "truncated": "Zwrócono więcej wierszy, niż pokazano.",
+    "empty": "SQL uruchomiono i nie zwrócił wierszy.",
+    "noCase": "Podaj identyfikator sprawy, na której ma być próba.",
+    "grid": "Wiersze zwrócone przez SQL"
+  },
+  "datasource": {
+    "sql": {
+      "title": "Polecenie SQL",
+      "label": "Polecenie SQL źródła danych"
+    },
+    "status": {
+      "incomplete": "Napisz SELECT, aby zacząć",
+      "checking": "Sprawdzanie polecenia",
+      "valid": "Polecenie jest poprawne",
+      "errors": "Polecenie zawiera błędy",
+      "disconnected": "Nie można połączyć się z serwerem",
+      "position": "(wiersz {line}, kolumna {column})"
+    },
+    "columns": {
+      "title": "Kolumny wyniku",
+      "empty": "Kolumny pojawią się, gdy polecenie będzie poprawne.",
+      "unused": "Nie rysowana"
+    },
+    "show": {
+      "title": "Pokaż jako",
+      "chart": "Pokaż wykres",
+      "grid": "Pokaż siatkę",
+      "kind": "Rodzaj wykresu",
+      "fits": "Rysuje z tych kolumn",
+      "needs": "Wymaga przypisania kolumn",
+      "byPosition": "Według pozycji: {columns}",
+      "nothing": "jeszcze nic",
+      "optional": "Kolumny opcjonalne",
+      "needsDisplay": "Włącz wykres, siatkę lub oba."
+    },
+    "preview": {
+      "title": "Podgląd",
+      "waiting": "Podgląd pojawi się, gdy polecenie będzie poprawne i włączony będzie wykres lub siatka."
+    },
+    "card": {
+      "ready": "Gotowe",
+      "empty": "Brak wierszy",
+      "error": "Błąd",
+      "rows": "Wiersze: {count}",
+      "milliseconds": "{count} ms",
+      "truncated": "Obcięto",
+      "yes": "Tak",
+      "no": "Nie",
+      "noRows": "Brak wierszy do pokazania",
+      "chartLabel": "Wykres: {name}",
+      "gridLabel": "Siatka: {name}",
+      "templateLabel": "Szablon: {name}"
+    },
+    "bench": {
+      "registry": "Wizualizacja",
+      "datasource": "Źródło danych",
+      "pickRegistry": "Wybierz wizualizację",
+      "new": "Nowe źródło danych",
+      "pick": "Wybierz wizualizację, aby zbudować dla niej źródło danych.",
+      "value": "Wyemitowana wartość"
+    },
+    "template": {
+      "label": "Szablon",
+      "hint": "Ułóż wiersze we własnym znaczniku. Wypisz wartość tokenem, takim jak [{'@'} rows[0].column {'@'}], powtórz element przez v-for=\"row in rows\", wybieraj przez v-if i v-else, umieść token w atrybucie, na przykład class=\"badge [{'@'} row.status {'@'}]\", a wartości formatuj filtrami number, percent, currency, date, dateTime, round, truncate, upper, lower, default i join, zapisanymi po znaku kreski pionowej. Wielkość liter w nazwach nie ma znaczenia. Dozwolone są tylko bezpieczne znaczniki, a każda wartość jest zabezpieczana. Dla nazw ze spacjami użyj row['column name']."
+    },
+    "test": {
+      "run": "Uruchom SQL",
+      "missing": "Najpierw uzupełnij wymagane parametry poniżej.",
+      "failed": "Nie udało się uruchomić SQL."
+    }
+  },
+  "visualisation": {
+    "required": "Wymagane",
+    "requiredMessage": "Wprowadź wartość.",
+    "run": "Uruchom",
+    "forbidden": "Nie masz uprawnień do tej wizualizacji.",
+    "notFound": "Nie znaleziono tej wizualizacji lub nie jest aktywna.",
+    "loadFailed": "Nie udało się wczytać wizualizacji. Spróbuj ponownie.",
+    "empty": "Ta wizualizacja nie ma aktywnych źródeł danych.",
+    "waiting": "Ustaw parametry i uruchom, aby narysować wizualizację.",
+    "tileFailed": "Nie udało się narysować tego kafelka.",
+    "tileMissing": "To źródło danych nie jest już dostępne.",
+    "bench": {
+      "directory": "Wizualizacja",
+      "pick": "Wybierz wizualizację z katalogu.",
+      "hideParameters": "Ukryj formularz parametrów"
+    },
+    "directory": {
+      "title": "Wizualizacje",
+      "empty": "W katalogu nie ma żadnych wizualizacji.",
+      "back": "Wszystkie wizualizacje",
+      "col": {
+        "name": "Nazwa",
+        "tiles": "Kafelki",
+        "parameters": "Parametry",
+        "lastRun": "Ostatnie uruchomienie",
+        "runBy": "Uruchomił",
+        "runs": "Uruchomienia, {days} dni",
+        "failed": "Błędy, {days} dni",
+        "average": "Średnia"
+      },
+      "open": "Otwórz",
+      "search": "Szukaj wizualizacji",
+      "searchPlaceholder": "Szukaj po nazwie",
+      "count": "brak wizualizacji | {count} wizualizacja | {count} wizualizacji",
+      "list": "Katalog wizualizacji",
+      "noMatch": "Żadna wizualizacja nie pasuje.",
+      "neverRun": "Nigdy nie uruchomiono",
+      "unavailable": "b/d",
+      "ms": "{count} ms",
+      "showDetail": "Pokaż kafelki i parametry",
+      "hideDetail": "Ukryj kafelki i parametry",
+      "windowNote": "Uruchomienia, błędy i średnia obejmują ostatnie {days} dni i liczą wykonania kafelków: jedno uruchomienie pulpitu wykonuje każdy kafelek. Ostatnie uruchomienie obejmuje cały czas.",
+      "detail": {
+        "tiles": "Kafelki",
+        "parameters": "Parametry",
+        "noTiles": "Ten pulpit nie ma aktywnych kafelków.",
+        "noParameters": "Ten pulpit nie wymaga parametrów.",
+        "failed": "Nie udało się tego wczytać.",
+        "unknownKind": "Kafelek",
+        "type": {
+          "text": "Tekst",
+          "integer": "Liczba całkowita",
+          "decimal": "Liczba dziesiętna",
+          "dateTime": "Data i godzina",
+          "flag": "Flaga"
+        }
+      }
+    },
+    "retry": "Spróbuj ponownie",
+    "story": {
+      "dashboard": "Pulpit",
+      "tiles": "brak kafelków | {count} kafelek | {count} kafelków",
+      "parameters": "brak parametrów | {count} parametr | {count} parametrów"
+    },
+    "refresh": "Odśwież"
+  },
+  "preservation": {
+    "password": {
+      "title": "Hasło pakietu",
+      "hint": "Hasło jest kluczem szyfrowania pakietu. Do ponownego zaimportowania potrzebne są to samo hasło i ta sama sól na serwerze.",
+      "label": "Hasło",
+      "short": "Hasło musi mieć co najmniej {count} znaków. Eksport i import pozostają wyłączone, dopóki tak nie będzie."
+    },
+    "export": {
+      "title": "Eksport pakietu",
+      "intro": "Pobierz konfigurację tego środowiska jako zaszyfrowany pakiet .jemp do zaimportowania w innym środowisku. Modele i historia zatwierdzeń są zawsze dołączone; wybierz, co jeszcze przenieść.",
+      "summaryFailed": "Nie udało się ustalić, co zawierałby pakiet.",
+      "download": "Pobierz pakiet",
+      "total": "Około {size} przed kompresją i szyfrowaniem.",
+      "failed": "Nie udało się wyeksportować pakietu."
+    },
+    "flag": {
+      "visualisations": "Wizualizacje",
+      "visualisationsHint": "Rejestry, parametry i źródła danych.",
+      "roles": "Role",
+      "rolesHint": "Role i ich uprawnienia. Użytkownicy nigdy nie są przenoszeni.",
+      "lists": "Listy",
+      "listsHint": "Listy i ich wartości, które mogą być poufne.",
+      "dictionaries": "Słowniki",
+      "dictionariesHint": "Słowniki i ich pary, które mogą być poufne.",
+      "exhaustive": "Exhaustive",
+      "exhaustiveHint": "Modele i ich dane treningowe, które mogą być bardzo duże.",
+      "askJoobyAnalytics": "Advanced Analytics",
+      "askJoobyAnalyticsHint": "Instancje, wytrenowane modele i historia treningu.",
+      "models": "Modele i ich konfiguracja",
+      "approvals": "Historia zatwierdzeń",
+      "always": "Zawsze dołączane"
+    },
+    "summary": {
+      "line": "Pozycje {count}, zagnieżdżone {rows}"
+    },
+    "import": {
+      "title": "Import pakietu",
+      "intro": "Wybierz pakiet .jemp i zobacz podgląd tego, co zmieni import. Nic nie zostanie zmienione, dopóki nie potwierdzisz.",
+      "file": "Plik pakietu",
+      "preview": "Podgląd importu",
+      "invalid": "Nie udało się odczytać pliku jako pakietu. Sprawdź plik i hasło.",
+      "forbidden": "Nie masz uprawnień do importowania pakietów.",
+      "noneChosen": "Najpierw wybierz plik pakietu.",
+      "failed": "Nie udało się wyświetlić podglądu ani zaimportować pakietu.",
+      "done": "Pakiet zaimportowano.",
+      "doneDetail": "Pakiet został zaimportowany. Wcześniej wykonano migawkę poprzedniej konfiguracji, więc zmianę można cofnąć.",
+      "replaces": "Import zastępuje całą konfigurację tego najemcy konfiguracją z pakietu.",
+      "confirm": "Rozumiem, że to zastępuje konfigurację najemcy",
+      "run": "Importuj pakiet"
+    },
+    "preview": {
+      "added": "Dodane",
+      "removed": "Usunięte",
+      "changed": "Zmienione",
+      "unchanged": "Bez zmian",
+      "counts": "Co zmieni import",
+      "identical": "Nic się nie zmieni: pakiet odpowiada bieżącej konfiguracji.",
+      "orphans": "Użytkownicy bez roli, przeniesieni do roli Orphaned Preservation Import: {count}.",
+      "orphansYou": "Ty pozostajesz aktywny; wszyscy pozostali, których to dotyczy, zostaną dezaktywowani.",
+      "orphansDeactivated": "Wszyscy zostaliby dezaktywowani.",
+      "bySection": "Według sekcji",
+      "noSections": "Brak sekcji.",
+      "entries": "Różnice",
+      "noEntries": "Brak różnic.",
+      "truncated": "Różnic jest więcej, niż wymieniono. Liczniki są kompletne.",
+      "references": "Odwołania do innych encji, które się różniły i nie są wymienione: {count}.",
+      "section": "Sekcja",
+      "path": "Gdzie",
+      "kind": "Zmiana",
+      "detail": "Szczegóły",
+      "title": "Podgląd"
+    },
+    "snapshots": {
+      "title": "Migawki",
+      "name": "Nazwa",
+      "source": "Źródło",
+      "taken": "Wykonana",
+      "by": "Przez",
+      "models": "Modele",
+      "size": "Rozmiar",
+      "state": "Stan",
+      "actions": "Działania",
+      "compare": "Porównaj",
+      "restore": "Przywróć",
+      "download": "Pobierz",
+      "remove": "Usuń",
+      "failed": "Niepowodzenie",
+      "ready": "Gotowa",
+      "unnamed": "Migawka",
+      "sourcePage": "Strona zachowywania",
+      "sourceModelSync": "Synchronizacja modelu",
+      "sourceAskJooby": "Ask Jooby",
+      "sourceBeforeImport": "Przed importem",
+      "empty": "Nie wykonano jeszcze żadnych migawek.",
+      "confirmTitle": "Usunąć tę migawkę?",
+      "confirmBody": "Usuniętej migawki nie można odzyskać:",
+      "keep": "Zachowaj",
+      "removed": "Migawka usunięta.",
+      "downloadFailed": "Nie udało się pobrać migawki.",
+      "loadFailed": "Nie udało się wczytać migawek."
+    },
+    "take": {
+      "title": "Wykonaj migawkę",
+      "intro": "Migawka zachowuje bieżącą konfigurację w tym środowisku, aby można ją było później porównać lub przywrócić.",
+      "name": "Nazwa (opcjonalnie)",
+      "run": "Wykonaj migawkę",
+      "done": "Migawka wykonana."
+    },
+    "compare": {
+      "title": "Porównanie",
+      "intro": "Porównaj dwie migawki albo migawkę z bieżącą konfiguracją. Każde porównanie jest zapisywane.",
+      "from": "Z",
+      "to": "Do",
+      "live": "Bieżąca konfiguracja",
+      "run": "Porównaj",
+      "same": "Wybierz dwie różne strony do porównania.",
+      "failed": "Nie udało się wykonać porównania.",
+      "recorded": "Zapisano jako porównanie {id}"
+    },
+    "restore": {
+      "title": "Przywracanie",
+      "target": "Przywracanie",
+      "close": "Anuluj",
+      "previewFailed": "Nie udało się wyświetlić podglądu przywracania.",
+      "failed": "Przywracanie nie powiodło się.",
+      "replaces": "Przywrócenie zastępuje całą konfigurację tego najemcy migawką. Wcześniej wykonywana jest migawka bieżącej konfiguracji.",
+      "notPermitted": "Przywrócenie migawki wymaga uprawnienia do importu, którego to konto nie ma.",
+      "confirm": "Rozumiem, że zastępuje to bieżącą konfigurację",
+      "run": "Przywróć migawkę",
+      "done": "Migawka przywrócona."
+    }
+  },
+  "downloadBench": {
+    "outcome": "Co robi funkcja pobierająca",
+    "file": "Zwraca plik bez nazwy",
+    "named": "Zwraca plik nazwany przez serwer",
+    "empty": "Zwraca pusty plik",
+    "fails": "Kończy się błędem",
+    "download": "Pobierz",
+    "saved": "Zapisano jako",
+    "failed": "Pobieranie nie powiodło się, więc nic nie zapisano."
+  },
+  "uploadBench": {
+    "extensions": "Dozwolone rozszerzenia",
+    "fails": "Wymuś niepowodzenie wysyłania",
+    "file": "Plik",
+    "uploaded": "Wysłano",
+    "failed": "Wysyłanie nie powiodło się."
+  },
+  "story": {
+    "trail": "Gdzie jesteś w historii",
+    "list": "Dotychczasowa historia",
+    "reopen": "Wróć do: {where}",
+    "showing": "Pokazano: {where}",
+    "changed": "Zmieniono",
+    "unsaved": "Niezapisane",
+    "bench": {
+      "models": "Modele",
+      "areas": "Obszary",
+      "records": "Rekordy",
+      "record": "Rekord",
+      "pick": "Otwórz: {name}",
+      "simulateChanged": "Oznacz pierwszy etap jako zmieniony przez kogoś innego",
+      "simulateUnsaved": "Oznacz rekord jako mający niezapisane zmiany",
+      "name": "Nazwa",
+      "hint": "Rekord zastępczy pokazujący kształt aktywnego etapu."
+    },
+    "goBack": "Wróć do",
+    "discard": {
+      "title": "Odrzucić niezapisane zmiany?",
+      "body": "{where} ma niezapisane zmiany. Kontynuowanie spowoduje ich odrzucenie.",
+      "confirm": "Odrzuć zmiany",
+      "cancel": "Kontynuuj edycję"
+    },
+    "backTo": "Wróć do: {label}",
+    "properties": {
+      "title": "Właściwości",
+      "hint": "Pola, zatwierdzenia i role tego rekordu"
+    },
+    "newName": "Nowy",
+    "newHint": "Wypełnij pola poniżej, a następnie zapisz, aby utworzyć."
+  },
+  "models": {
+    "title": "Modele",
+    "search": "Szukaj modeli",
+    "searchPlaceholder": "Szukaj po nazwie",
+    "count": "brak modeli | {count} model | {count} modeli",
+    "new": "Nowy model",
+    "newTitle": "Nowy model",
+    "open": "Otwórz",
+    "empty": "Brak pasujących modeli.",
+    "list": "Modele",
+    "failed": "Nie udało się wczytać modeli.",
+    "refused": "Brak uprawnień do wyświetlania modeli.",
+    "unknown": "Niedostępne",
+    "noneAwaiting": "Brak oczekujących",
+    "awaitingFact": "{count} oczekuje na zatwierdzenie",
+    "active": "Aktywny",
+    "inactive": "Nieaktywny",
+    "locked": "Zablokowany",
+    "editable": "Edytowalny",
+    "version": "w{version}",
+    "col": {
+      "name": "Nazwa",
+      "version": "Wersja",
+      "status": "Status",
+      "locked": "Blokada",
+      "awaiting": "Zmiany oczekujące",
+      "updated": "Ostatnia zmiana",
+      "by": "Zmienił",
+      "approval": "Zatwierdzenie"
+    },
+    "strip": {
+      "updatedBy": "Ostatnio zmienił",
+      "live": "Wersja aktywna {version}",
+      "current": "Bieżąca wersja {version}",
+      "maker": "Autor zmiany: {user}",
+      "approvals": "Zatwierdzenia: {recorded} z {required}"
+    },
+    "otherHub": "Reguły, sprawy i ponowne przetwarzanie",
+    "operate": "Obsługa",
+    "sample": {
+      "title": "Próbka",
+      "hint": "Pobierz losową próbkę zarchiwizowanych transakcji dla tego modelu."
+    },
+    "integrity": {
+      "title": "Integralność",
+      "hint": "Ustalenia, stan silnika, zależności i synchronizacja."
+    },
+    "syncAll": "Synchronizuj wszystkie modele",
+    "analytics": {
+      "title": "Analityka AskJooby",
+      "hint": "Modele statystyczne i uczenia maszynowego wytrenowane przez AskJooby dla tego modelu."
+    }
+  },
+  "sanctions": {
+    "loading": "Sprawdzanie dostępu",
+    "refused": "Nie masz uprawnień do przeszukiwania sankcji."
+  },
+  "adminTelemetry": {
+    "logCounters": "Liczniki logów",
+    "excludes": "Wykluczenia"
+  },
+  "perfHub": {
+    "title": "Wydajność",
+    "familyBeat": "Rodzina",
+    "counterBeat": "Licznik",
+    "open": "Otwórz",
+    "loading": "Ładowanie wydajności",
+    "denied": "Liczniki wydajności są dostępne tylko dla administratora platformy.",
+    "families": "brak rodzin | jedna rodzina | {count} rodzin",
+    "counters": "brak liczników | jeden licznik | {count} liczników",
+    "family": {
+      "engine": {
+        "title": "Silnik",
+        "hint": "Kolejki, przetwarzanie i czasy etapów oraz ostrzeżenia archiwizatora i tworzenia spraw."
+      },
+      "logs": {
+        "title": "Dzienniki",
+        "hint": "Dzienniki aplikacji, WAF, Postgres i kontenerów oraz ostrzeżenia wywołań modeli."
+      },
+      "postgres": {
+        "title": "Postgres",
+        "hint": "Metryki, aktywność, statystyki instrukcji, tabel i indeksów oraz replikacja."
+      },
+      "redis": {
+        "title": "Redis",
+        "hint": "Metryki, wolne operacje, połączenia, sentinel i liczby wywołań."
+      },
+      "telemetry": {
+        "title": "Telemetria",
+        "hint": "Metryki OpenTelemetry, wysyłki OTLP i metryki środowiska .NET."
+      },
+      "infrastructure": {
+        "title": "Infrastruktura",
+        "hint": "Klastry Etcd i Patroni, Docker, HAProxy i sieć nakładkowa."
+      }
+    },
+    "area": {
+      "HttpProcessingCounter": "Liczniki przetwarzania HTTP",
+      "EntityAnalysisAsynchronousQueueBalance": "Salda kolejek asynchronicznych",
+      "CaptureQueueHealth": "Stan kolejki przechwytywania",
+      "EntityAnalysisModelAsynchronousQueueBalance": "Salda kolejek asynchronicznych modelu",
+      "EntityAnalysisModelProcessingCounter": "Licznik przetwarzania asynchronicznego modelu",
+      "EntityAnalysisModelStagePerformanceCounter": "Licznik wydajności etapów modelu",
+      "EntityAnalysisModelResponseTimePipelineCounter": "Licznik potoku czasu odpowiedzi modelu",
+      "EntityAnalysisModelTaskPerformanceCounter": "Licznik wydajności zadań modelu",
+      "ArchiverStagePerformanceCounter": "Licznik wydajności etapów archiwizatora",
+      "CaseCreationStagePerformanceCounter": "Licznik wydajności etapów tworzenia spraw",
+      "ArchiverWarning": "Ostrzeżenia archiwizatora",
+      "CaseCreationWarning": "Ostrzeżenia tworzenia spraw",
+      "ApplicationLogEntry": "Dziennik aplikacji",
+      "WafAttack": "Dziennik ataków WAF",
+      "PostgresLogEntry": "Dziennik Postgres",
+      "ContainerLogEntry": "Dziennik kontenerów",
+      "ModelInvokeWarning": "Ostrzeżenia wywołań modelu",
+      "PostgresMetric": "Metryki Postgres",
+      "PostgresActivity": "Aktywność Postgres",
+      "PostgresStatementStatistics": "Statystyki instrukcji Postgres",
+      "PostgresTableStatistics": "Statystyki tabel Postgres",
+      "PostgresIndexStatistics": "Statystyki indeksów Postgres",
+      "PostgresReplicationStatus": "Stan replikacji Postgres",
+      "RedisMetric": "Metryki Redis",
+      "RedisSlowOperation": "Wolne operacje Redis",
+      "RedisConnectionMultiplexerMetric": "Metryki multipleksera połączeń Redis",
+      "RedisSentinelStatus": "Stan Redis Sentinel",
+      "RedisSentinelEvent": "Zdarzenia Redis Sentinel",
+      "RedisConnectionEvent": "Zdarzenia połączeń Redis",
+      "RedisCallCounter": "Licznik wywołań Redis",
+      "OpenTelemetryMetric": "Metryki OpenTelemetry",
+      "OtlpDispatchCounter": "Licznik wysyłek OTLP",
+      "DotNetRuntimeMetric": "Metryki środowiska uruchomieniowego .NET",
+      "EtcdMemberStatus": "Stan członków Etcd",
+      "PatroniMemberStatus": "Stan członków Patroni",
+      "EtcdClusterEvent": "Zdarzenia klastra Etcd",
+      "PatroniClusterEvent": "Zdarzenia klastra Patroni",
+      "DockerContainerMetric": "Metryki kontenerów Docker",
+      "DockerEvent": "Zdarzenia Docker",
+      "DockerHostMetric": "Metryki hosta Docker",
+      "HaProxyServerStatus": "Stan serwerów HAProxy",
+      "HaProxyReachabilityProbe": "Sondy osiągalności HAProxy",
+      "OverlayNetworkTaskDrift": "Dryf zadań sieci nakładkowej"
+    }
+  },
+  "security": {
+    "loading": "Wczytywanie zabezpieczeń",
+    "denied": "Nie masz uprawnień do żadnej części zabezpieczeń.",
+    "users": {
+      "title": "Użytkownicy",
+      "singular": "Użytkownik",
+      "hint": "Osoby, które mogą się logować, oraz rola każdej z nich."
+    },
+    "roles": {
+      "title": "Role",
+      "singular": "Rola",
+      "hint": "Nazwane zestawy uprawnień i użytkownicy, którzy je posiadają."
+    },
+    "permissions": {
+      "title": "Uprawnienia",
+      "singular": "Uprawnienia",
+      "hint": "Wybierz rolę i zdecyduj, jakie uprawnienia nadaje."
+    },
+    "logins": {
+      "title": "Logowania",
+      "singular": "Logowania",
+      "hint": "Każda próba logowania i jej wynik."
+    },
+    "logouts": {
+      "title": "Wylogowania",
+      "singular": "Wylogowania",
+      "hint": "Każde wylogowanie i sposób zakończenia sesji."
+    },
+    "permissionsCard": {
+      "hint": "Uprawnienia nadawane przez tę rolę."
+    },
+    "roleCard": {
+      "title": "Rola",
+      "none": "Brak roli",
+      "hint": "Rola tego użytkownika, która decyduje o tym, co może robić."
+    },
+    "apiKeys": {
+      "title": "Klucze API",
+      "panelTitle": "Klucze tego użytkownika",
+      "cardHint": "Klucze pozwalające usłudze wywoływać API jako ten użytkownik.",
+      "hint": "Klucz uwierzytelnia jako ten użytkownik z jego uprawnieniami. Pełny klucz jest pokazywany tylko raz, przy generowaniu; lista zachowuje tylko pierwsze osiem znaków.",
+      "unavailable": "brak",
+      "generate": "Wygeneruj klucz",
+      "name": "Nazwa",
+      "namePlaceholder": "Gdzie klucz będzie używany",
+      "description": "Opis",
+      "descriptionPlaceholder": "Do czego służy klucz",
+      "optional": "Opcjonalne",
+      "create": "Wygeneruj",
+      "cancel": "Anuluj",
+      "nameRequired": "Nazwa jest wymagana.",
+      "nameTooLong": "Nazwa może mieć najwyżej {max} znaków.",
+      "descriptionTooLong": "Opis może mieć najwyżej {max} znaków.",
+      "refused": "Nie udało się wygenerować klucza.",
+      "created": "Klucz wygenerowany",
+      "revealTitle": "Skopiuj teraz klucz dla {name}",
+      "revealBody": "Nie zostanie pokazany ponownie. Na liście pozostanie widocznych tylko pierwszych osiem znaków.",
+      "keyLabel": "Nowy klucz API",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "copyFailed": "Nie udało się skopiować klucza. Zaznacz go i skopiuj samodzielnie.",
+      "done": "Gotowe",
+      "prefix": "{prefix}…",
+      "col": {
+        "name": "Nazwa",
+        "description": "Opis",
+        "key": "Klucz",
+        "created": "Utworzono",
+        "actions": "Akcje"
+      },
+      "revoke": "Unieważnij",
+      "revokeTitle": "Unieważnić ten klucz?",
+      "revokeBody": "Wszystko, co używa klucza {name}, natychmiast przestanie się uwierzytelniać. Tego nie można cofnąć.",
+      "revoked": "Klucz unieważniony",
+      "loadFailed": "Nie udało się wczytać kluczy API.",
+      "loading": "Wczytywanie kluczy API",
+      "empty": "Brak kluczy API"
+    },
+    "access": {
+      "title": "Logowanie",
+      "cardHint": "Wydaj hasło tymczasowe albo zakończ wszystkie aktywne sesje.",
+      "locked": "Zablokowane",
+      "password": "Hasło tymczasowe",
+      "revoke": "Odwołaj sesje",
+      "cancel": "Anuluj",
+      "passwordTitle": "Wydać hasło tymczasowe dla {name}?",
+      "passwordBody": "Obecne hasło natychmiast przestaje działać. Nowe zostanie pokazane tutaj tylko raz i musi zostać zmienione przy następnym logowaniu. Zablokowane konto zostaje odblokowane.",
+      "issue": "Wydaj hasło",
+      "issued": "Wydano hasło tymczasowe",
+      "revealTitle": "Skopiuj teraz hasło dla {name}",
+      "revealBody": "Nie zostanie pokazane ponownie. {name} musi je zmienić przy następnym logowaniu.",
+      "passwordLabel": "Hasło tymczasowe",
+      "expires": "Wygasa {when}",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "copyFailed": "Nie udało się skopiować hasła. Zaznacz je i skopiuj samodzielnie.",
+      "done": "Gotowe",
+      "revokeTitle": "Odwołać wszystkie sesje użytkownika {name}?",
+      "revokeBody": "Sesje w przeglądarce i sesje z tokenem kończą się natychmiast, a użytkownik musi zalogować się ponownie. Klucze API pozostają bez zmian. Odwołuj je z listy kluczy API.",
+      "revoked": "Sesje odwołane. Klucze API pozostają bez zmian."
+    }
+  },
+  "adminTenants": {
+    "title": "Najemcy",
+    "singular": "Najemca",
+    "hint": "Twórz i konfiguruj najemców obsługiwanych przez tę instalację.",
+    "loading": "Wczytywanie najemców",
+    "denied": "Tylko właściciel instalacji może zarządzać najemcami."
+  },
+  "adminVisualisations": {
+    "title": "Wizualizacje",
+    "singular": "Wizualizacja",
+    "hint": "Definiuj pulpity, ich źródła danych i parametry.",
+    "loading": "Wczytywanie wizualizacji",
+    "denied": "Brak uprawnień do konfiguracji wizualizacji."
+  },
+  "cases": {
+    "action": {
+      "open": "Otwórz sprawę",
+      "peek": "Podgląd"
+    },
+    "age": "wiek: {age}",
+    "attention": {
+      "badge": "Wróciła",
+      "diaryDue": "Termin z dziennika nadszedł",
+      "escalated": "Eskalowana do Ciebie",
+      "movedByOther": "Przeniesiona przez kogoś innego",
+      "newActivity": "Nowa aktywność",
+      "reopened": "Otwarta ponownie",
+      "riskRose": "Priorytet wzrósł"
+    },
+    "closedStatus": {
+      "closed": "Zamknięta",
+      "open": "Otwarta",
+      "suspendBypass": "Pominięcie zawieszenia",
+      "suspendClosed": "Zawieszona, zamknięta",
+      "suspendOpen": "Zawieszona, otwarta"
+    },
+    "column": {
+      "actions": "Akcje",
+      "case": "Sprawa",
+      "due": "Termin",
+      "risk": "Ryzyko",
+      "status": "Status",
+      "value": "Wartość",
+      "why": "Dlaczego tu jest"
+    },
+    "event": {
+      "allocateLock": "Przydzielona",
+      "automaticLock": "Zablokowana automatycznie",
+      "automaticUnlock": "Odblokowana automatycznie",
+      "closed": "Zamknięta",
+      "diary": "Wpis w dzienniku",
+      "diaryDateChange": "Zmieniono termin w dzienniku",
+      "fullFetch": "Otwarta w całości",
+      "manualLock": "Zablokowana",
+      "peek": "Podejrzana",
+      "processExpired": "Wygasła w procesie",
+      "ratingChange": "Zmieniono ocenę",
+      "skim": "Przejrzana",
+      "statusChange": "Zmieniono status",
+      "suspendClosed": "Zawieszona i zamknięta",
+      "suspendOpen": "Zawieszona i otwarta",
+      "workflowChange": "Zmieniono przepływ pracy",
+      "escalation": "Eskalowana automatycznie",
+      "lockBroken": "Blokada zdjęta",
+      "diaryCleared": "Dziennik wyczyszczony",
+      "qaSampled": "Wybrana do przeglądu jakości"
+    },
+    "headline": {
+      "atRisk": "{n} zagrożonych",
+      "label": "Kolejka w skrócie",
+      "overdue": "Po terminie",
+      "none": "Jeszcze brak"
+    },
+    "impact": {
+      "high": "Wysoki",
+      "low": "Niski",
+      "minimal": "Minimalny",
+      "moderate": "Umiarkowany",
+      "severe": "Poważny"
+    },
+    "lane": {
+      "deadlineNear": "Termin się zbliża",
+      "liveMoney": "Pieniądze w ruchu",
+      "mandatory": "Obowiązkowa",
+      "standard": "Standardowa"
+    },
+    "likelihood": {
+      "likely": "Prawdopodobna",
+      "possible": "Możliwa",
+      "unlikely": "Mało prawdopodobna",
+      "veryLikely": "Bardzo prawdopodobna"
+    },
+    "list": {
+      "all": "Spraw: {total}",
+      "empty": "Brak spraw w tym widoku",
+      "failed": "Nie udało się wczytać spraw.",
+      "firstOf": "Pierwsze {n} z {total} spraw",
+      "label": "Sprawy w kolejności triażu",
+      "editSearch": "Edytuj to wyszukiwanie"
+    },
+    "loading": "Wczytywanie spraw",
+    "lock": {
+      "free": "Wolna do przejęcia",
+      "heldBy": "Przejęta przez {user}",
+      "you": "Przejęta przez Ciebie"
+    },
+    "noWorkflows": "Żaden przepływ pracy spraw nie jest dostępny dla Twojej roli.",
+    "peek": {
+      "baseRate": "Poziom bazowy {rate}",
+      "close": "Zamknij podgląd",
+      "contributions": "Dlaczego taka pozycja",
+      "failed": "Nie udało się wczytać podsumowania.",
+      "firstLook": "Nie oglądano jeszcze tej sprawy.",
+      "history": "Historia ryzyka",
+      "keyHistory": "Ten klient lub klucz",
+      "keySummary": "Zamkniętych: {closed}, potwierdzonych: {confirmed}, innych otwartych: {open}",
+      "label": "Podsumowanie sprawy",
+      "lastViewed": "Ostatnio oglądano {date}",
+      "loading": "Wczytywanie podsumowania",
+      "noEvidence": "Brak dowodów, kolejność wg wartości domyślnych.",
+      "notes": "Notatki",
+      "nothingNew": "Od tego czasu nic się nie zmieniło.",
+      "precision": "{confirmed} z {closed} potwierdzonych",
+      "priorityMoved": "Priorytet {then} na {now}",
+      "since": "Od Twojego ostatniego wglądu",
+      "stays": "Czas w każdym statusie",
+      "timelineLabel": "Oś czasu historii ryzyka: zmian {count}, od {from} do {to}",
+      "timelinePriority": "Priorytet {from} na {to}",
+      "timelineSelected": "Wybrana zmiana ryzyka",
+      "waterfall": "Jak dowody zmieniły prawdopodobieństwo"
+    },
+    "rail": {
+      "failed": "Błąd",
+      "filters": "Filtry",
+      "label": "Kolejki spraw",
+      "own": "Moje filtry",
+      "source": "Filtr",
+      "workflow": "Przepływ pracy",
+      "newFilter": "Nowy filtr"
+    },
+    "refused": "Twoja rola nie ma uprawnień do pracy ze sprawami.",
+    "risk": {
+      "notAssessed": "Jeszcze nie oceniona",
+      "summary": "{band} {likelihood} · wpływ: {impact} · priorytet {priority}"
+    },
+    "skim": {
+      "button": "Weź następną",
+      "empty": "Nic więcej do przejęcia w tej kolejce.",
+      "failed": "Nie udało się przejąć kolejnej sprawy."
+    },
+    "sla": {
+      "atRisk": "Zagrożona",
+      "breached": "Naruszona",
+      "firstView": "Pierwszy wgląd",
+      "met": "Dotrzymana",
+      "noTarget": "Brak celu",
+      "noneDue": "Brak terminu",
+      "onTrack": "Zgodnie z planem",
+      "ownership": "Przejęcie",
+      "resolution": "Rozstrzygnięcie",
+      "statusDwell": "Czas w statusie"
+    },
+    "sort": {
+      "age": "Najstarsze najpierw",
+      "due": "Najbliższy termin",
+      "label": "Kolejność",
+      "likelihood": "Najbardziej prawdopodobne najpierw",
+      "newest": "Najnowsze najpierw",
+      "priority": "Najwyższy priorytet",
+      "triage": "Triaż",
+      "value": "Najwyższa wartość"
+    },
+    "stay": {
+      "barLabel": "Czas w każdym statusie, pobytów: {count}, w kolejności czasowej",
+      "closed": "Zamknięta",
+      "created": "Utworzona",
+      "current": "Bieżący",
+      "enteredAt": "Wejście: {date}",
+      "enteredBy": "Wejście: {date}, przez: {user}",
+      "escalated": "Eskalowana",
+      "limitUsed": "{used} z limitu {limit}",
+      "movedOn": "Przeniesiona dalej",
+      "overBy": "{duration} ponad limit",
+      "reopened": "Otwarta ponownie",
+      "segmentLabel": "{name}, {duration}",
+      "statusChanged": "Zmieniono status",
+      "totalVisits": "{duration} łącznie w {count} pobytach",
+      "unnamed": "Status bez nazwy"
+    },
+    "time": {
+      "days": "{n} d",
+      "hours": "{n} godz.",
+      "in": "za {duration}",
+      "minutes": "{n} min",
+      "overdue": "{duration} po terminie"
+    },
+    "trigger": {
+      "activation": "Nowa aktywacja",
+      "diary": "Dziennik",
+      "finding": "Ustalenie analityka",
+      "hold": "Wstrzymanie płatności",
+      "initial": "Utworzenie",
+      "linkedKey": "Powiązany klucz",
+      "model": "Zmieniono ustawienia rankingu",
+      "neighbour": "Wynik sąsiada",
+      "sweep": "Cykliczny przegląd",
+      "typology": "Typologia"
+    },
+    "value": {
+      "none": "–"
+    },
+    "view": {
+      "all": "Wszystkie sprawy",
+      "free": "Wolne do przejęcia",
+      "mine": "Moje",
+      "overdue": "Po terminie",
+      "returned": "Wróciły do mnie",
+      "urgent": "Pilne",
+      "qaSamples": "Przegląd jakości"
+    },
+    "why": {
+      "none": "Brak zapisanego czynnika"
+    },
+    "editor": {
+      "new": "Nowe wyszukiwanie",
+      "edit": "Edytuj wyszukiwanie",
+      "name": "Nazwa",
+      "share": "Udostępnij roli",
+      "private": "Prywatne",
+      "save": "Zapisz wyszukiwanie",
+      "cancel": "Anuluj",
+      "delete": "Usuń wyszukiwanie",
+      "deleteTitle": "Usunąć to wyszukiwanie?",
+      "deleteBody": "{name} zostanie usunięte dla Ciebie i dla wszystkich, którym zostało udostępnione.",
+      "saved": "Zapisano wyszukiwanie",
+      "deleted": "Usunięto wyszukiwanie",
+      "close": "Zamknij edytor",
+      "loading": "Wczytywanie wyszukiwania",
+      "loadFailed": "Nie udało się wczytać wyszukiwania.",
+      "invalid": "Wyszukiwanie ma błędy do poprawienia przed zapisem."
+    },
+    "analytics": {
+      "period": "Okres",
+      "days": "Ostatnie {n} dni",
+      "queue": {
+        "title": "Kondycja kolejki spraw",
+        "index": "Sekcje kondycji kolejki"
+      },
+      "quality": {
+        "title": "Jakość spraw",
+        "index": "Sekcje jakości"
+      },
+      "section": {
+        "ageing": "Wiek spraw",
+        "flow": "Przepływ",
+        "bottlenecks": "Wąskie gardła",
+        "service": "Poziomy usług",
+        "rhythm": "Rytm",
+        "rules": "Nakład i precyzja reguł",
+        "ranking": "Czy ranking działa",
+        "calibration": "Kalibracja",
+        "sample": "Próbka przeglądu jakości"
+      },
+      "hint": {
+        "ageing": "Otwarte sprawy wg wieku i ścieżki",
+        "flow": "Otwarte, zamknięte i zaległe każdego dnia",
+        "bottlenecks": "Gdzie sprawy czekają najdłużej",
+        "service": "Czas do pierwszego wglądu i rozstrzygnięcia wobec celu",
+        "rhythm": "Kiedy sprawy napływają i kiedy są pierwszy raz oglądane",
+        "rules": "Które reguły kosztują czas analityków, a które znajdują prawdziwe sprawy",
+        "ranking": "Potwierdzone sprawy znajdowane w trakcie pracy, wobec kolejności od najstarszych i losowej",
+        "calibration": "Przewidywane prawdopodobieństwo wobec tego, co się stało",
+        "sample": "Czym okazują się losowo wybrane sprawy o niskim priorytecie"
+      },
+      "chart": {
+        "aging": "Otwarte sprawy wg wieku i ścieżki",
+        "flow": "Otwarte, zamknięte i zaległe wg dnia",
+        "statusDwell": "Czas w każdym statusie",
+        "firstView": "Czas do pierwszego wglądu",
+        "resolution": "Czas do rozstrzygnięcia",
+        "serviceLevelWeekly": "Realizacja poziomu usług wg tygodnia",
+        "arrivals": "Kiedy napływają sprawy",
+        "firstViewByHour": "Mediana pierwszego wglądu wg godziny napływu",
+        "handoffs": "Jak często sprawy zmieniają właściciela",
+        "ruleEffort": "Czas analityków stracony na fałszywe alarmy wg reguły",
+        "rulePrecision": "Precyzja reguł",
+        "gains": "Potwierdzone sprawy znajdowane w trakcie pracy",
+        "calibration": "Przewidywane prawdopodobieństwo wobec tego, co się stało"
+      },
+      "stat": {
+        "firstLook": "Mediana pierwszego wglądu",
+        "resolution": "Mediana czasu rozwiązania",
+        "closed": "{n} zamkniętych w okresie",
+        "confirmed": "Odsetek potwierdzonych",
+        "decided": "{n} rozstrzygniętych",
+        "reopen": "Odsetek ponownych otwarć",
+        "unassessed": "Jeszcze nie oceniono",
+        "closedTitle": "Zamknięte w okresie",
+        "opened": "{n} otwartych"
+      }
+    },
+    "supervision": {
+      "title": "Nadzór nad sprawami",
+      "failed": "Nie udało się tego wczytać.",
+      "none": "Brak",
+      "idle": "Bezczynne co najmniej",
+      "headline": {
+        "label": "Sprawy przejęte i nieprzejęte",
+        "held": "Przejęte",
+        "unassigned": "Nikt nie trzyma",
+        "stuck": "Zablokowane na stałe"
+      },
+      "workload": {
+        "title": "Obciążenie wg analityka",
+        "hint": "Przejęte teraz oraz to, co każdy analityk przejął, obejrzał i zamknął w okresie.",
+        "empty": "Żaden analityk nie może pracować w tym przepływie."
+      },
+      "stuck": {
+        "title": "Zablokowane sprawy",
+        "hint": "Otwarte sprawy przejęte przez kogoś, bez aktywności od tamtej pory, od najdłużej bezczynnych.",
+        "empty": "Żadna sprawa nie została przejęta i pozostawiona tak długo bez aktywności."
+      },
+      "column": {
+        "user": "Analityk",
+        "holding": "Przejęte",
+        "oldest": "Najstarsze przejęcie",
+        "taken": "Przejęte w okresie",
+        "peeks": "Podglądy",
+        "closed": "Zamknięte",
+        "median": "Mediana czasu do zamknięcia",
+        "case": "Sprawa",
+        "key": "Wartość klucza sprawy",
+        "status": "Status",
+        "holder": "Przejęta przez",
+        "lastActivity": "Ostatnia aktywność",
+        "idle": "Bezczynna od",
+        "priority": "Priorytet",
+        "actions": "Akcje"
+      },
+      "action": {
+        "open": "Otwórz",
+        "reassign": "Przydziel",
+        "breakLock": "Zdejmij blokadę"
+      },
+      "dialog": {
+        "breakTitle": "Zdjąć blokadę?",
+        "breakBody": "{case} jest przejęta przez {user}. Zdjęcie blokady pozwala komukolwiek ją przejąć i jest zapisywane w dzienniku sprawy.",
+        "reason": "Powód (opcjonalnie)",
+        "breakConfirm": "Zdejmij blokadę",
+        "reassignTitle": "Przydziel sprawę",
+        "reassignBody": "{case} jest przejęta przez {user}. Wybierz, kto ją przejmie; przekazanie zostanie zapisane w dzienniku sprawy.",
+        "analyst": "Analityk",
+        "choose": "Wybierz analityka",
+        "reassignConfirm": "Przydziel",
+        "cancel": "Anuluj"
+      },
+      "broken": "Blokada zdjęta",
+      "reassigned": "Sprawa przydzielona"
+    },
+    "diary": {
+      "title": "Dziennik",
+      "none": "Brak ustawionego dziennika.",
+      "notOpen": "Tylko otwarta sprawa może mieć dziennik. Zawieszona sprawa używa dziennika do ustalenia, kiedy zostanie otwarta ponownie.",
+      "typeLabel": "Do czego służy",
+      "dueLabel": "Termin (UTC)",
+      "set": "Ustaw dziennik",
+      "update": "Zaktualizuj dziennik",
+      "clear": "Wyczyść dziennik",
+      "saved": "Zapisano dziennik",
+      "cleared": "Wyczyszczono dziennik",
+      "type": {
+        "review": "Przegląd",
+        "customerResponse": "Odpowiedź klienta",
+        "regulatoryDeadline": "Termin regulacyjny",
+        "paymentHold": "Wstrzymanie płatności"
+      }
+    },
+    "qa": {
+      "badge": "Próbka QA",
+      "hint": "Wybrana losowo, by sprawdzić ranking",
+      "none": "W tym przepływie nie wybrano jeszcze żadnej sprawy do przeglądu jakości.",
+      "picked": "Wybrane",
+      "open": "Nadal otwarte",
+      "decided": "Zamknięte z wynikiem",
+      "rate": "Potwierdzone",
+      "compare": "Wśród wszystkich zamkniętych spraw z wynikiem potwierdzono {overall}. Próbkę wybrano bez względu na ranking, więc jej udział jest rzetelnym oszacowaniem dla spraw o niskim priorytecie.",
+      "few": "Mniej niż dziesięć próbkowanych spraw zamknięto z wynikiem, więc ten udział nie jest jeszcze wiarygodny."
+    },
+    "tab": {
+      "label": "Widoki spraw",
+      "queue": "Wyniki",
+      "health": "Kondycja kolejki",
+      "quality": "Jakość",
+      "supervision": "Nadzór"
+    },
+    "pulse": {
+      "open": "Otwarte teraz",
+      "urgent": "{n} pilnych",
+      "openTrend": "Otwarte sprawy z ostatnich 14 dni",
+      "closed": "Zamknięte dziś",
+      "opened": "{n} otwartych dziś",
+      "closedTrend": "Sprawy zamykane w każdym z ostatnich 14 dni",
+      "firstLook": "Mediana pierwszego wglądu {time}",
+      "mine": {
+        "title": "Mój dzień",
+        "ring": "Sprawy zamknięte dziś względem mojego celu",
+        "closed": "{n} zamkniętych dziś",
+        "of": "{n} z {goal} zamkniętych",
+        "met": "Cel osiągnięty. Reszta to premia.",
+        "toGo": "Zostało {n}",
+        "started": "Seria trwa. Tak trzymaj.",
+        "fresh": "Weź następną, aby zacząć dzień.",
+        "streak": "Seria {n} dni",
+        "goalMet": "Cel osiągnięty",
+        "above": "{n} powyżej typowego dnia",
+        "below": "{n} poniżej typowego dnia",
+        "level": "Typowy dzień",
+        "best": "rekord {n}",
+        "trend": "Sprawy zamknięte przeze mnie w każdym z ostatnich 14 dni"
+      }
+    },
+    "export": {
+      "yes": "Tak",
+      "no": "Nie",
+      "sheet": "Sprawy",
+      "capped": "Wyeksportowano pierwsze {n} spraw. Zawęź filtr, aby wyeksportować resztę.",
+      "failed": "Eksport się nie powiódł. Spróbuj ponownie.",
+      "col": {
+        "case": "Sprawa",
+        "key": "Wartość klucza sprawy",
+        "workflow": "Przepływ pracy",
+        "status": "Status",
+        "holder": "Przypisana do",
+        "created": "Utworzona",
+        "age": "Wiek (minuty)",
+        "lane": "Ścieżka",
+        "likelihood": "Prawdopodobieństwo",
+        "impact": "Wpływ",
+        "priority": "Priorytet",
+        "value": "Wartość",
+        "why": "Dlaczego tu jest",
+        "due": "Poziom usług",
+        "dueDate": "Termin",
+        "diary": "Terminarz",
+        "diaryDate": "Data terminarza",
+        "qa": "Próbka QA",
+        "firstViewed": "Pierwsze wyświetlenie",
+        "firstViewedBy": "Pierwszy wyświetlił",
+        "firstOwned": "Pierwsze przejęcie",
+        "firstOwnedBy": "Pierwszy przejął"
+      }
+    },
+    "help": {
+      "open": "Ile spraw jest teraz otwartych w kolejkach, które widzisz.\nLiczba pilnych to sprawy po terminie lub zagrożone terminem. Mały wykres to liczba otwartych spraw z ostatnich 14 dni, aby odróżnić rosnące zaległości od malejących.",
+      "closed": "Ile spraw zamknięto dzisiaj i ile dzisiaj otwarto.\nMały wykres pokazuje sprawy zamknięte w każdym z ostatnich 14 dni. Więcej zamkniętych niż otwartych oznacza, że zaległości maleją.",
+      "overdue": "Sprawy, które przekroczyły termin poziomu usług.\nZagrożone to otwarte sprawy blisko terminu. Pierwsze spojrzenie to mediana czasu od utworzenia sprawy do pierwszego dotknięcia przez kogoś, pokazująca, jak szybko podejmowana jest praca.",
+      "mine": "Twój dzień na tle Twojego dziennego celu.\nPierścień to sprawy zamknięte dzisiaj wobec celu, a seria liczy kolejne dni, w których cel osiągnięto. Porównanie dotyczy Twojego typowego dnia, nie innych osób. Słupki pokazują ostatnie 14 dni, a najlepszy to Twój najlepszy dzień."
+    }
+  },
+  "caseDetail": {
+    "failed": "Nie udało się wczytać tej sprawy.",
+    "back": "Wróć do spraw",
+    "header": {
+      "next": "Następna sprawa",
+      "closed": "Zamknięta",
+      "priority": "Priorytet {n}",
+      "heldBy": "Przypisana do {user}",
+      "free": "Nieprzypisana"
+    },
+    "panel": {
+      "label": "Klucz sprawy",
+      "workflow": "Przepływ pracy",
+      "created": "Utworzona"
+    },
+    "section": {
+      "label": "Sekcje sprawy",
+      "summary": "Widoki szczegółów sprawy",
+      "activations": "Aktywacje",
+      "journal": "Dziennik",
+      "network": "Sieć",
+      "notes": "Notatki",
+      "events": "Zdarzenia",
+      "forms": "Formularze",
+      "messages": "Wiadomości",
+      "dashboard": "Pulpit"
+    },
+    "details": {
+      "field": "Pole",
+      "value": "Wartość",
+      "empty": "Brak skonfigurowanych pól dla tego przepływu pracy.",
+      "title": "Pola ładunku"
+    },
+    "activations": {
+      "empty": "Brak widocznych aktywacji w tej sprawie."
+    },
+    "journal": {
+      "noKey": "Ta sprawa nie ma klucza, więc nie ma dziennika."
+    },
+    "notes": {
+      "empty": "Brak notatek dla tego klucza.",
+      "failed": "Nie udało się wczytać notatek.",
+      "action": "Akcja: {name}",
+      "priority": "Priorytet: {name}"
+    },
+    "history": {
+      "failed": "Nie udało się wczytać historii.",
+      "casesTitle": "Sprawy z tym kluczem",
+      "casesEmpty": "Brak innych spraw z tym kluczem.",
+      "eventsTitle": "Zdarzenia dla tego klucza",
+      "eventsEmpty": "Brak zdarzeń dla tego klucza.",
+      "case": "Sprawa",
+      "status": "Status",
+      "heldBy": "Przypisana do",
+      "created": "Utworzona",
+      "closedBy": "Zamknął",
+      "event": "Zdarzenie",
+      "before": "Przed",
+      "after": "Po",
+      "user": "Użytkownik",
+      "when": "Kiedy"
+    },
+    "network": {
+      "body": "Analiza grafowa powstaje jako osobna funkcja. Pokaże tu podmioty i powiązania wokół tego klucza."
+    },
+    "messages": {
+      "none": "Dla tego klucza sprawy nic nie wysłano.",
+      "failed": "Nie udało się wczytać wiadomości.",
+      "from": "{kind}: {name}",
+      "sentBy": "{user}, {when}",
+      "to": "Do",
+      "subject": "Temat",
+      "answer": "Odpowiedź",
+      "drawn": "Utworzone z",
+      "body": "Co wysłano",
+      "rows": "Wiersze SQL, z których utworzono",
+      "kind": {
+        "form": "Formularz",
+        "macro": "Makro",
+        "action": "Akcja",
+        "status": "Status",
+        "releaseHook": "Hak zwolnienia"
+      },
+      "channel": {
+        "email": "E-mail",
+        "sms": "SMS",
+        "post": "Wywołanie sieciowe (POST)",
+        "get": "Wywołanie sieciowe (GET)"
+      },
+      "outcome": {
+        "sent": "Wysłano",
+        "failed": "Niepowodzenie",
+        "refused": "Odmówiono"
+      },
+      "mode": {
+        "payload": "Zapisany ładunek",
+        "sql": "SQL rekordu"
+      }
+    },
+    "forms": {
+      "submit": "Wyślij formularz",
+      "submitted": "Formularz wysłany.",
+      "noEntries": "Dla tego klucza sprawy nie przesłano żadnych formularzy.",
+      "entriesFailed": "Nie udało się wczytać przesłanych formularzy.",
+      "submittedBy": "{user}, {when}",
+      "cannotDraw": "Tego formularza nie można już narysować: {reason} Zawarte w nim wartości są wymienione poniżej.",
+      "otherValues": "Wartości, dla których formularz nie ma pola"
+    },
+    "placeholder": {
+      "badge": "Wkrótce"
+    },
+    "hint": {
+      "summary": "Czym jest, dlaczego tu trafiła i co jest stawką",
+      "activations": "Co zadziałało i dlaczego",
+      "journal": "Każda transakcja na tym kluczu",
+      "network": "Podmioty i powiązania wokół klucza",
+      "notes": "Notatki do tego klucza",
+      "events": "Wszystko, co zdarzyło się w tej sprawie i na tym kluczu",
+      "forms": "Ustrukturyzowane formularze tego przepływu pracy",
+      "messages": "Każdy e-mail, SMS i wywołanie sieciowe wysłane dla tego klucza sprawy",
+      "dashboard": "Jak wygląda cała sprawa"
+    },
+    "story": "Historia sprawy",
+    "lede": {
+      "why": "Dlaczego",
+      "stake": "Stawka",
+      "similar": "Podobne sprawy",
+      "ranked": "Ranga",
+      "rankedValue": "Ścieżka {lane} · {band} ({likelihood}) · wpływ {impact} · priorytet {priority}",
+      "similarValue": "{confirmed} z {closed} wcześniejszych spraw na tym kluczu potwierdzono",
+      "similarNone": "Brak wcześniejszych zamkniętych spraw na tym kluczu",
+      "whyNone": "Nic poza miejscem w kolejce nie zostało jeszcze oznaczone."
+    },
+    "decide": {
+      "title": "Decyzja",
+      "heldByYou": "Przypisana do Ciebie",
+      "take": "Przejmij sprawę",
+      "release": "Zwolnij sprawę",
+      "supervisor": "Przełożony może przełamać tę blokadę.",
+      "noteTitle": "Dodaj notatkę",
+      "action": "Akcja",
+      "choose": "Wybierz",
+      "note": "Notatka",
+      "addNote": "Dodaj notatkę",
+      "close": "Zamknij sprawę",
+      "reopen": "Otwórz ponownie",
+      "cancel": "Anuluj",
+      "closeTitle": "Zamknąć {id}?",
+      "closeBody": "Sprawa zamyka się dla wszystkich i opuszcza kolejkę. Można ją później otworzyć ponownie.",
+      "saved": "Sprawa zaktualizowana",
+      "noteAdded": "Dodano notatkę",
+      "macroRan": "Makro wykonane",
+      "statusTitle": "Status i ocena",
+      "diaryTitle": "Terminarz",
+      "plannedTitle": "Planowane",
+      "currentStatus": "Bieżący status",
+      "escalate": "Eskaluj",
+      "escalateTo": "Przenosi do: {status}",
+      "noEscalation": "Brak silniejszego statusu do eskalacji.",
+      "moveTo": "Przenieś do statusu",
+      "saveChanges": "Zapisz zmiany",
+      "noteCount": "{n} z {max}"
+    },
+    "views": {
+      "label": "Widok",
+      "payload": "Pola ładunku",
+      "failed": "Nie udało się narysować tego widoku."
+    },
+    "checklist": {
+      "title": "Lista kontrolna",
+      "identity": "Tożsamość zweryfikowana",
+      "source": "Źródło środków zrozumiane",
+      "sar": "Rozważono zgłoszenie SAR"
+    },
+    "soon": {
+      "badge": "Planowane",
+      "heading": "Planowane w tej sekcji",
+      "similar": {
+        "title": "Podobne sprawy",
+        "body": "Wcześniejsze sprawy podobne do tej i sposób ich rozstrzygnięcia."
+      },
+      "risk": {
+        "title": "Wyliczenie ryzyka i Twoja ocena",
+        "body": "Pełne wyliczenie prawdopodobieństwa i wpływu z Twoją oceną Niskie, Średnie lub Wysokie obok."
+      },
+      "cards": {
+        "title": "Karty aktywacji",
+        "body": "Skalibrowane prawdopodobieństwo, dokładny wykres wkładów, wrażliwość i kondycja modelu dla każdej aktywacji, zarchiwizowane w chwili zadziałania."
+      },
+      "suppress": {
+        "title": "Wyłącz z aktywacji",
+        "body": "Wyłączenie ograniczone w czasie z powodem, oznaczone na każdym dotkniętym dopasowaniu."
+      },
+      "facts": {
+        "title": "Fakty o modelu",
+        "body": "Model taki, jaki był w chwili oceny, i co zmieniło się od tego czasu."
+      },
+      "explode": {
+        "title": "Rozwiń",
+        "body": "Sieć jako lista, ze sparklinem dla każdego sąsiada."
+      },
+      "compose": {
+        "title": "Redaguj",
+        "body": "Zbuduj narrację raportu z faktów, z oceną jakości przed złożeniem."
+      },
+      "research": {
+        "title": "Wyszukiwanie w sieci",
+        "body": "Badanie z cytowaniami, zachowane w sprawie jako dowód."
+      },
+      "suggest": {
+        "title": "Sugerowany następny krok",
+        "body": "Następny krok zalecany przez AskJooby wraz z dowodami."
+      },
+      "file": {
+        "title": "Złóż raport",
+        "body": "Złożenie z akceptacją maker-checker i weryfikacją dodatkową."
+      },
+      "rfi": {
+        "title": "Poproś o informacje",
+        "body": "Poproś klienta o informacje i śledź odpowiedź w sprawie."
+      }
+    },
+    "panes": {
+      "left": "panel klucza i sekcje",
+      "right": "panel decyzji"
+    },
+    "help": {
+      "summary": "Sprawa w skrócie: czym jest, dlaczego powstała i co jest stawką.\nWstęp na górze powstaje z danych samej sprawy: klucza, przepływu pracy, statusu, wieku oraz liczby aktywacji i notatek. Pola poniżej to te, które wybrał przepływ pracy. Nic tu nie zmienia sprawy, więc to bezpieczne miejsce na początek czytania.",
+      "activations": "Każda reguła, która zadziałała dla klucza tej sprawy, i dlaczego.\nKażda karta podaje regułę, kiedy zadziałała i ile razy, aby odróżnić jednorazowe zdarzenie od wzorca. Liczby obejmują aktywacje wymuszone, oznaczone jako takie. Użyj tego, aby wybrać reguły do przeczytania przed przejściem do samych transakcji.",
+      "journal": "Wszystkie transakcje tego klucza sprawy w jednym miejscu, aby czytać historię po kolei.\nKarty widoków pokazują te same transakcje jako ładunek, reguły, cechy, modele i sankcje. Pasek i wykresy podsumowują własną historię klucza, lista Wyróżnia się pokazuje transakcje nietypowe dla tego klucza, a karta grupy porównawczej pokazuje, jak klucz wypada na tle innych. Wybierz transakcję, aby zobaczyć szczegóły, i przypnij ją, aby zachować przy tej sprawie.",
+      "network": "Podmioty i powiązania wokół tego klucza, takie jak wspólne urządzenia i adresy.\nTa sekcja jest planowana i jeszcze nie powstała. Do tego czasu używaj w dzienniku Przestaw i Połącz, aby śledzić wspólny identyfikator.",
+      "notes": "Notatki napisane przy tym kluczu, od najnowszych, także z innych spraw tego samego klucza.\nNotatkę dodasz w kolumnie Decyzja. Notatki są częścią ścieżki audytu i nie można ich potem edytować, więc pisz je tak, jak dla recenzenta, który nie widział sprawy.",
+      "events": "Wszystko, co działo się ze sprawą i kluczem, w kolejności czasu.\nŁączy własną historię sprawy, jak przejęcie, przeniesienie i zamknięcie, z wcześniejszymi sprawami tego klucza, aby zobaczyć, czy był już sprawdzany i co zdecydowano.",
+      "forms": "Formularze strukturalne dla tego przepływu pracy, na przykład zgłoszenie podejrzanej aktywności.\nKażdy formularz przesłany dla tego klucza sprawy jest tu rysowany tylko do odczytu, od najnowszego, według bieżącego układu formularza. Wartości, dla których układ nie ma już pola, są wymienione pod nim. Otwórz formularz z kolumny Decyzja, aby go wypełnić.",
+      "messages": "Wszystko, co przepływ pracy sprawy wysłał dla tego klucza sprawy, od najnowszego: e-maile, SMS-y i wywołania sieciowe uruchomione przez formularz, makro, akcję lub status.\nKażde pokazuje, czy zostało wysłane, nie powiodło się, czy odmówiono go przed wysłaniem, dokąd poszło, co zawierało i skąd zostało utworzone (z zapisanego ładunku lub z SQL rekordu, wraz z użytymi wierszami). Otwórz wiadomość lub wiersze, aby przeczytać dokładnie, co wysłano.",
+      "decide": {
+        "title": "Wszystko, co możesz zrobić ze sprawą.\nPrzejęcie sprawy blokuje ją dla Ciebie, więc nikt inny nie może jej zmienić. Przełożony może zdjąć blokadę. Zwolnij sprawę, gdy przestajesz nad nią pracować, aby wróciła do kolejki. Zamknięcie i ponowne otwarcie są niżej."
+      },
+      "dashboard": "Pulpit zbudowany dla tego rodzaju spraw przez osobę, która skonfigurowała przepływ. Może opisywać całą sprawę, nie tylko jej transakcje, i powstaje wyłącznie z klucza sprawy i jego wartości: wszystko inne jest z nich wyliczane."
+    },
+    "hold": {
+      "title": "Wstrzymana płatność",
+      "tileHint": "Wstrzymane: {n}",
+      "dialogTitle": "Wstrzymane płatności",
+      "intro": "Te płatności zostały wstrzymane, gdy podniesienie ich odpowiedzi znalazło się w zakresie wstrzymania. Zwolnienie płatności wywołuje system płatności, a za zwolnioną uznaje się ją tylko po odpowiedzi 200.",
+      "none": "W tej sprawie żadna płatność nie jest wstrzymana, odrzucona, zwolniona ani wycofana.",
+      "failed": "Nie udało się wczytać wstrzymanych płatności.",
+      "elevation": "Podniesienie {n} (zakres {range})",
+      "heldSince": "Wstrzymana od",
+      "deadline": "Termin do",
+      "overdue": "Po terminie od",
+      "hook": "Hak zwolnienia",
+      "noHook": "Żaden nie obsługuje tej płatności",
+      "noHookNote": "Żaden aktywny hak zwolnienia przepływu spraw nie obsługuje tej płatności, więc nie można jej zwolnić. Można ją nadal odmówić.",
+      "needPermission": "Zwolnienie lub odmowa płatności wymaga uprawnienia do zwalniania.",
+      "release": "Zwolnij",
+      "refuse": "Odmów",
+      "releaseTitle": "Zwolnij tę płatność",
+      "refuseTitle": "Odmów tej płatności",
+      "releaseNote": "To wywołuje hak zwolnienia i przesuwa pieniądze. Tylko odpowiedź 200 zapisuje płatność jako zwolnioną.",
+      "refuseCalls": "To wywołuje adres odmowy haka zwolnienia, a tylko odpowiedź 200 zapisuje odmowę.",
+      "refuseRecords": "Odmowa jest zapisana tylko tutaj; nic nie jest wysyłane do systemu płatności.",
+      "reason": "Powód",
+      "reasonHint": "Zapisany wraz z decyzją i wysłany do systemu płatności.",
+      "back": "Wstecz",
+      "releaseConfirm": "Zwolnij płatność",
+      "refuseConfirm": "Odmów płatności",
+      "releasedToast": "Płatność zwolniona.",
+      "refusedToast": "Płatność odrzucona.",
+      "decision": "{state}: {user}, {when}",
+      "decisionReason": "Powód: {reason}",
+      "messages": "Wiadomości o wstrzymanych płatnościach",
+      "state": {
+        "held": "Wstrzymana",
+        "declined": "Odrzucona",
+        "released": "Zwolniona",
+        "refused": "Wycofana"
+      },
+      "leg": {
+        "kind": {
+          "email": "E-mail",
+          "sms": "SMS",
+          "webhook": "Webhook",
+          "release": "Hak zwolnienia",
+          "refuse": "Hak odmowy"
+        },
+        "outcome": {
+          "queued": "W kolejce",
+          "sent": "Wysłano",
+          "failed": "Niepowodzenie",
+          "refused": "Nie wysłano"
+        },
+        "answer": "Odpowiedź {status}"
+      }
+    }
+  },
+  "journal": {
+    "action": {
+      "open": "Otwórz",
+      "map": "Mapa"
+    },
+    "activationsOnly": "Tylko aktywacje",
+    "charts": {
+      "correlation": "Jak miary zmieniają się razem",
+      "counterparties": "Kontrahenci",
+      "distribution": "Rozkład wybranego pola",
+      "drift": "Dryf między wcześniejszą a ostatnią historią",
+      "field": "Pole",
+      "gaps": "Czas między transakcjami",
+      "progression": "Wybrane pole w czasie",
+      "velocity": "Kiedy dochodzi do transakcji",
+      "help": {
+        "field": "Wybiera pole liczbowe rysowane na dwóch pierwszych wykresach.\nLista zawiera pola, które dziennik traktuje jako miary dla tego klucza: pola ładunku widoczne dla Twoich ról oraz cechy i wyniki modeli.\nNie zmienia pozostałych wykresów, które patrzą na wszystkie transakcje klucza.",
+        "progression": "Pokazuje, jak wybrane pole zmieniało się w czasie dla tego klucza.\nKażdy punkt to mediana transakcji z jednej godziny, jednego dnia lub jednego tygodnia, zależnie od długości historii: godziny przy trzech dniach lub mniej, dni do około siedmiu miesięcy, tygodnie powyżej. Użyto mediany, aby jedna nietypowa transakcja nie ciągnęła linii.\nSzukaj skoków, narastania i przerw. Skok oznacza zmianę zachowania danego dnia, narastanie oznacza, że coś się buduje, a punkt daleko od sąsiadów warto odnaleźć w tabeli. Podtytuł podaje ostatnią wartość.\nWykres jest pusty, gdy żadna transakcja w oknie nie ma tego pola.",
+        "distribution": "Pokazuje, jak wybrane pole rozkłada się w transakcjach tego klucza.\nKażdy słupek liczy transakcje, których wartość mieści się w przedziale; przedziałów jest od 5 do 40, dobranych do danych. Podtytuł mówi, gdzie leży ostatnia wartość jako percentyl własnej historii klucza: 99. percentyl oznacza, że jest większa niż 99 procent tego, co klucz robił.\nDługi ogon po prawej oznacza kilka dużych transakcji. Dwa garby oznaczają dwa rodzaje zachowania.\nTo porównuje klucz z nim samym. Porównanie z grupą, nad tabelą, porównuje go z innymi kluczami.\nWykres jest pusty, gdy żadna transakcja nie ma tego pola.",
+        "velocity": "Pokazuje, kiedy zdarzają się transakcje tego klucza, według dnia tygodnia i godziny.\nKażda komórka to liczba, a ciemniejsza oznacza więcej transakcji. Wiersze to dni tygodnia, kolumny to godziny. Godziny są w UTC, nie w czasie lokalnym klienta.\nKlucz, który nagle przesuwa pieniądze o 03:00 w niedzielę, choć zwykle działa w popołudnia dni roboczych, pokazuje jedną ciemną komórkę w jasnym obszarze.\nWykres jest pusty, gdy okno nie ma transakcji.",
+        "gaps": "Pokazuje, jak długo klucz milczał przed każdą transakcją.\nKażdy słupek liczy transakcje według czasu od poprzedniej, od minut do tygodni. Wysokie słupki po lewej oznaczają serie, a słupki po prawej oznaczają długi bezruch przed aktywnością.\nSeria po długiej ciszy to klasyczny znak przejęcia rachunku lub używania go do przepuszczania pieniędzy.\nPierwsza transakcja nie ma przerwy, więc wykres jest pusty, gdy klucz ma w oknie mniej niż dwie transakcje.",
+        "correlation": "Pokazuje, które pola liczbowe rosną i maleją razem dla tego klucza.\nKażda komórka to współczynnik korelacji Pearsona, r, między dwoma polami: 1 oznacza zgodny ruch, -1 ruch przeciwny, a 0 brak zależności. Porównuje się tylko pola z co najmniej 10 transakcjami mającymi obie wartości, a wykres pojawia się tylko gdy co najmniej jedna para ma r równe 0,8 lub więcej, w obu kierunkach.\nKwota i saldo po niej zwykle są skorelowane. Nowa silna zależność między polami, które wcześniej nie były powiązane, jest ciekawsza niż stara. Korelacja nie dowodzi przyczyny.\nWykres jest pusty, gdy żadna para nie jest dość silna, co jest normalne, i zawsze dla klucza z mniej niż 10 transakcjami.",
+        "drift": "Pokazuje, czy pole zachowuje się inaczej w niedawnej historii klucza niż we wcześniejszej.\nOkno jest dzielone na wcześniejsze i niedawne. Dla każdego pola pierwszy słupek to odległość między dwoma rozkładami (odległość Kołmogorowa), a drugi to wartość krytyczna. Pole, którego odległość jest powyżej wartości krytycznej, zmieniło się na poziomie istotności 5 procent.\nDryf oznacza, że norma klucza się przesunęła, więc porównania z jego starszą historią mogą już nie obowiązywać. Klucz z dryfem to często taki, którego cel lub kontroler się zmienił.\nWymaga co najmniej 40 transakcji, po co najmniej 20 z każdej strony, więc poniżej tego jest pusty, a także gdy żadne pole nie zmieniło się.",
+        "counterparties": "Pokazuje, z kim ten klucz ma najczęściej do czynienia.\nKażdy słupek to kontrahent, druga strona transakcji, uszeregowany według liczby transakcji z nim. Podtytuł mówi, ilu było różnych kontrahentów i ilu pojawiło się po raz pierwszy w ostatnich 30 dniach.\nKlucz rozproszony na wielu jednorazowych kontrahentów wygląda inaczej niż skupiony na kilku stałych, a nagły napływ nowych kontrahentów to wzorzec wart uwagi.\nRysowane są tylko pola, które przepływ pracy oznacza jako kontrahenta. Wykres jest pusty, gdy żadne nie jest oznaczone lub klucz nie ma ich."
+      }
+    },
+    "column": {
+      "actions": "Akcje",
+      "activations": "Aktywacje",
+      "elevation": "Eskalacja",
+      "new": "Nowe",
+      "unusual": "Wyróżnia się",
+      "when": "Kiedy",
+      "hold": "Płatność"
+    },
+    "drawer": {
+      "activated": "Aktywowano",
+      "activations": "Aktywacje",
+      "belowThreshold": "Poniżej progu",
+      "calibration": "Kalibracja",
+      "close": "Zamknij transakcję",
+      "contribution": "Co zmieniło wynik",
+      "elevation": "Eskalacja {n}",
+      "error": "Model zgłosił: {text}",
+      "failed": "Nie udało się wczytać transakcji.",
+      "hiddenInput": "Dane wejściowe, których nie widzisz",
+      "hiddenInputs": "Ukryte wejścia: {n}",
+      "journey": "Ścieżka decyzji",
+      "keys": "Identyfikatory",
+      "label": "Transakcja",
+      "models": "Modele",
+      "noActivations": "Żadna aktywacja nie zadziałała.",
+      "noModels": "Żaden model nie ocenił tej transakcji.",
+      "payload": "Ładunek",
+      "payloadFailed": "Nie udało się wczytać ładunku.",
+      "payloadNote": "Odczyt ładunku jest rejestrowany.",
+      "pivot": "Przełącz na to",
+      "showPayload": "Pokaż ładunek",
+      "source": {
+        "advanced": "Advanced Analytics",
+        "exhaustive": "Exhaustive",
+        "http": "HTTP"
+      },
+      "threshold": "Próg {n}",
+      "title": "Transakcja {id}",
+      "values": "Co widziały reguły",
+      "highlights": "Podświetlone, ponieważ",
+      "map": "Pokaż na mapie",
+      "hold": "Wstrzymanie płatności"
+    },
+    "empty": "Brak transakcji dla tego klucza w tym oknie.",
+    "failed": "Nie udało się wczytać dziennika.",
+    "group": {
+      "abstraction": "Abstrakcja",
+      "advanced": "Advanced Analytics",
+      "calculation": "Obliczenie",
+      "counter": "Licznik",
+      "dictionary": "Słownik",
+      "exhaustive": "Exhaustive",
+      "http": "HTTP",
+      "sanction": "Sankcja"
+    },
+    "label": "Dziennik klucza sprawy",
+    "lens": {
+      "features": "Cechy",
+      "label": "Soczewki dziennika",
+      "models": "Modele",
+      "payload": "Ładunek",
+      "rules": "Reguły",
+      "sanctions": "Sankcje"
+    },
+    "notable": {
+      "none": "Nic nie wyróżnia się na tle historii tego klucza.",
+      "row": "{field} wyniosło {value}, przy typowym {median}",
+      "title": "Wyróżnia się"
+    },
+    "pivot": {
+      "back": "Wróć do {key}",
+      "showing": "Pokazano {key} {value}"
+    },
+    "rule": {
+      "fired": "Zadziałała",
+      "forced": "Wymuszona"
+    },
+    "sheet": "Dziennik",
+    "strip": {
+      "activations": "{n} aktywacji",
+      "activeDays": "Aktywne dni",
+      "elevation": "Najwyższa eskalacja",
+      "failed": "Nie udało się obliczyć statystyk.",
+      "few": "Mało transakcji, więc statystyki traktuj orientacyjnie.",
+      "stands": "Wyróżnia się",
+      "transactions": "Transakcje",
+      "truncated": "Pokazano {n} najnowszych",
+      "typical": "Typowo {n}",
+      "withActivations": "Z aktywacjami"
+    },
+    "unusual": {
+      "above": "Powyżej",
+      "below": "Poniżej"
+    },
+    "window": {
+      "days": "Ostatnie {n} dni",
+      "label": "Okno"
+    },
+    "tags": {
+      "select": "Zaznacz",
+      "selectRow": "Zaznacz tę transakcję",
+      "selected": "Zaznaczono: {n}",
+      "selectAll": "Zaznacz wszystkie ({n})",
+      "clear": "Wyczyść zaznaczenie",
+      "tag": "Oznacz",
+      "title": "Oznacz transakcje: {n}",
+      "add": "Dodaj tagi",
+      "remove": "Usuń tagi",
+      "noOptions": "Ten model nie ma tagów do dodania.",
+      "optionsFailed": "Nie udało się wczytać tagów tego modelu.",
+      "noneToRemove": "Żadna z zaznaczonych transakcji nie ma tagu.",
+      "of": "{n} z {total}",
+      "apply": "Zastosuj",
+      "cancel": "Anuluj",
+      "dismiss": "Zamknij",
+      "undo": "Cofnij",
+      "done": "Oznaczono transakcje: {n}.",
+      "skipped": "Niezmienione: {n}, bo nie należą do modelu tego przepływu pracy.",
+      "undone": "Oznaczanie zostało cofnięte.",
+      "locked": "Niezmienione: {n}, bo ich sprawa jest zablokowana przez innego użytkownika.",
+      "all": "Oznacz wszystkie pasujące",
+      "allTitle": "Oznacz każdą pasującą transakcję",
+      "allCounting": "Liczenie transakcji…",
+      "allFailed": "Nie udało się policzyć transakcji.",
+      "allMatching": "Pasujących do tego widoku transakcji: {n}.",
+      "allTooMany": "Pasuje więcej niż {n} transakcji. Zawęź najpierw widok krótszym oknem lub opcją Tylko z aktywacjami.",
+      "allNone": "Żadna transakcja nie pasuje do tego widoku.",
+      "allNote": "Działa w tle, więc możesz pracować dalej. Transakcje, których sprawa jest zablokowana przez innego użytkownika, są pomijane, a potem możesz to cofnąć.",
+      "allApply": "Oznacz transakcje: {n}",
+      "allFiltered": "Liczone i oznaczane są tylko transakcje pasujące do filtra."
+    },
+    "pin": {
+      "column": "Przypięcie",
+      "pin": "Przypnij tę transakcję",
+      "unpin": "Odepnij tę transakcję",
+      "only": "Tylko przypięte ({n})"
+    },
+    "merge": {
+      "title": "Połączone klucze",
+      "lane": "Ścieżka",
+      "remove": "Usuń {key} {value} z połączenia",
+      "add": "Połącz",
+      "added": "Połączono"
+    },
+    "around": {
+      "title": "W tym czasie",
+      "note": "Inne transakcje z tego samego dnia, które miały wspólne konto, urządzenie, adres lub kontrahenta z tą transakcją.",
+      "show": "Pokaż ten sam dzień",
+      "failed": "Nie udało się wczytać aktywności z tego dnia.",
+      "none": "Tego dnia nic innego nie miało wspólnego klucza z tą transakcją.",
+      "truncated": "Pokazano najnowsze: {n}; więcej miało ten klucz."
+    },
+    "peers": {
+      "title": "W porównaniu z grupą",
+      "notComputed": "Porównanie z grupą pojawi się po zbudowaniu rozkładów dla tego przepływu pracy.",
+      "noMeasures": "Żadne pole liczbowe tego klucza nie ma jeszcze rozkładu grupy.",
+      "segment": "W porównaniu z innymi kluczami z {name} {value}.",
+      "fallback": "Nikt nie ma wspólnego {name} {value}, więc użyto wszystkich kluczy przepływu pracy.",
+      "everyone": "W porównaniu ze wszystkimi innymi kluczami przepływu pracy.",
+      "built": " Zbudowano {date} z {days} dni.",
+      "above": "Powyżej grupy",
+      "below": "Poniżej grupy",
+      "typical": "Zgodnie z grupą",
+      "medians": "Mediana tego klucza {key}; mediana grupy {peers}",
+      "percentile": "Na {n}. percentylu grupy",
+      "of": "wśród {n} kluczy.",
+      "few": "Mało transakcji, interpretuj ostrożnie."
+    },
+    "job": {
+      "queued": "Oczekiwanie, aż serwer zadań podejmie oznaczanie.",
+      "running": "Oznaczono {done} z {total}…",
+      "undoing": "Przywrócono {done} z {total}…",
+      "done": "Oznaczono {changed} z {total} transakcji.",
+      "restored": "Przywrócono {changed} z {total} transakcji.",
+      "cancelled": "Oznaczanie zatrzymano po {done} z {total}.",
+      "failed": "Oznaczanie zatrzymane: {error}",
+      "skipped": "Niezmienione: {n}, bo nie należą już do modelu tego przepływu pracy.",
+      "cancel": "Zatrzymaj",
+      "progress": "Postęp oznaczania"
+    },
+    "help": {
+      "lens": "Pokazuje te same transakcje przez różne zestawy kolumn, aby czytać jedną transakcję z kilku stron.\nŁadunek to pola samej transakcji widoczne dla Twoich ról. Reguły pokazują, które aktywacje zadziałały i które wymuszono. Cechy pokazują to, co widziały reguły: liczniki, obliczenia i słowniki. Modele pokazują wyniki Exhaustive i Advanced Analytics. Sankcje pokazują odległości sankcyjne i adaptacje HTTP.\nLiczba na każdej karcie to liczba transakcji, które mają coś w danym widoku. Zero oznacza, że nic nie ma dla tego klucza i okna.",
+      "activationsOnly": "Pokazuje tylko transakcje, które wywołały co najmniej jedną aktywację.\nPozwala przejść od długiej historii do chwil, w których reguły zareagowały. Zawęża też wykresy, statystyki i Oznacz wszystkie pasujące do tych transakcji.",
+      "pinnedOnly": "Pokazuje tylko transakcje przypięte do tej sprawy, niezależnie od daty i klucza.\nPrzypięcia dotyczą całej sprawy, więc wszyscy, którzy nad nią pracują, widzą te same. Przypnij transakcję gwiazdką w tabeli. Przypięte transakcje są też zawsze na górze dziennika, w każdym widoku, nawet poza oknem.\nSprawa może mieć do 50 przypięć, a sprawy zablokowanej przez innego użytkownika nie można zmieniać.",
+      "tags": "Tagi oznaczają transakcje, na przykład mule lub reviewed, aby można je było później znaleźć i policzyć.\nZaznacz wiersze w tabeli i naciśnij Oznacz, aby dodać lub usunąć tagi we wszystkich naraz, do 500. Potem pojawia się Cofnij. Transakcje, których sprawa jest zablokowana przez innego użytkownika, są pomijane i liczone.\nOznacz wszystkie pasujące oznacza każdą transakcję bieżącego widoku, do 100 000, w tle. Możesz pracować dalej, zatrzymać to i cofnąć. Można dodawać tylko tagi skonfigurowane dla modelu tego przepływu pracy.",
+      "transactions": "Ile transakcji miał ten klucz w oknie, od najnowszych, do 2000.\nPasek, lista wyróżnionych i wykresy są liczone z tych transakcji. Gdy klucz ma ich więcej, pasek to mówi, a starsze są pominięte w statystykach, ale nie w tabeli.",
+      "activeDays": "Liczba różnych dni w UTC, w których klucz miał co najmniej jedną transakcję.\nCzytaj razem z liczbą transakcji: wiele transakcji w kilku dniach oznacza aktywność seriami, a mało transakcji rozłożonych na wiele dni oznacza stałe, powolne użycie.",
+      "withActivations": "Ile transakcji wywołało co najmniej jedną aktywację i ile aktywacji wywołano łącznie.\nJedna transakcja może wywołać kilka aktywacji, więc druga liczba może być większa od pierwszej.",
+      "elevation": "Najwyższa podwyżka odpowiedzi spośród transakcji w oknie.\nPodwyżka to waga, jaką reguły nadały transakcji, gdy zadziałały: im wyższa, tym pilniejsza odpowiedź.",
+      "field": "Ostatnia wartość tego pola liczbowego dla klucza i jego typowa wartość, czyli mediana w oknie.\nPlakietka Wyróżnia się pojawia się, gdy ostatnie transakcje są daleko od własnej normy klucza dla tego pola. Pokazano pierwsze trzy miary klucza.",
+      "notable": "Transakcje, które wyróżniają się na tle własnej historii klucza.\nKażde pole liczbowe transakcji jest oceniane według odległości od mediany klucza, w jednostkach zwykłego rozrzutu klucza. Rozrzutem jest mediana odchyleń bezwzględnych, aby nietypowe wartości nie ukrywały się, zawyżając go. Wynik 3 lub więcej trafia na listę, z nazwanym najbardziej wyróżniającym się polem, do 5 wierszy.\nPole z mniej niż 5 wartościami nie jest oceniane, a przy mniej niż 20 transakcjach statystyki mają niską pewność. Wybierz wiersz, aby otworzyć transakcję.",
+      "peers": "Jak ten klucz wypada na tle innych kluczy tego samego przepływu pracy i klucza sprawy, pole po polu.\nKażda liczba to mediana tego klucza na tle rozrzutu median wszystkich kluczy, zbudowanego przez serwer zadań z niedawnej historii i domyślnie odświeżanego codziennie. Pasek to percentyl wśród grupy, a pole jest powyżej lub poniżej grupy, gdy leży co najmniej 3 rozrzuty od mediany grupy.\nJeśli przepływ pracy ma pole segmentu, na przykład poziom klienta, porównanie dotyczy kluczy z tego samego segmentu, a gdy go brak, wszystkich kluczy. Dopóki serwer zadań nie zbuduje rozkładów, widać komunikat, że nie zbudowano.",
+      "drawer": {
+        "activations": "Aktywacje, które zadziałały dla tej transakcji.\nAktywacja wymuszona została wywołana, bo ktoś wymusił regułę, a nie dlatego, że transakcja spełniła jej warunek. Wymienione są tylko aktywacje widoczne dla Twoich ról.",
+        "models": "Co każdy model oceniający uznał o tej transakcji, tak jak w chwili oceny.\nDla każdego modelu: wynik, próg, czy go przekroczył, skalibrowane prawdopodobieństwo, wkład każdego wejścia i ścieżka decyzji modelu. Wkład jest rysowany jako wodospad, gdy sumuje się dokładnie, a w przeciwnym razie jako słupki ze znakiem, które się nie sumują.\nWejścia niedostępne dla Twoich ról są ukryte, widać tylko ich liczbę.",
+        "values": "Co widziały reguły, gdy przetwarzano tę transakcję.\nLiczniki, obliczenia, słowniki, odległości sankcyjne i wartości adaptacji HTTP, pogrupowane według źródła. Są zamrożone tak, jak wtedy, więc mogą różnić się od tego, co ten sam licznik pokazuje teraz.",
+        "keys": "Identyfikatory tej transakcji, takie jak konto, urządzenie i adres.\nPrzestaw pokazuje cały dziennik dla tej wartości zamiast klucza sprawy, z drogą powrotną. Połącz dodaje ją jako ścieżkę obok klucza sprawy, aby obie dzieliły jedną oś czasu. Można użyć tylko identyfikatorów oznaczonych w przepływie pracy jako pola drążenia.",
+        "around": "Pokazuje, co jeszcze zdarzyło się tego samego dnia (UTC) i miało wspólny identyfikator z tą transakcją.\nKażda grupa to jeden identyfikator transakcji wraz z innymi transakcjami, które go użyły tego dnia, od najnowszych, do 25. Otwórz wiersz, aby przejść do tej transakcji.\nPomaga zobaczyć, czy urządzenie lub adres był w tym samym czasie aktywny gdzie indziej.",
+        "payload": "Surowe pola transakcji w takiej postaci, w jakiej przyszła, ograniczone do widocznych dla Twoich ról.\nNie jest wczytywany, dopóki o to nie poprosisz, bo odczyt jest zapisywany w ścieżce audytu: kto i kiedy oglądał surową transakcję.",
+        "highlights": "Dlaczego ta transakcja jest pokolorowana w tabeli.\nKolory dla przepływu pracy ustawia administrator. Pogrubiony wiersz to transakcja o tej samej wartości co sama sprawa w polu wybranym do dopasowania, na przykład to samo urządzenie lub konto, aby wyróżniała się wśród innych na kluczu. Pokolorowana komórka lub wiersz to pole, którego wartość pasuje do skonfigurowanego dla niego wzorca.\nKolor nigdy nie jest jedynym sygnałem: każdy powód jest zapisany tutaj i w kolumnie Podświetlone, ponieważ w tabeli."
+      },
+      "columns": "Wybiera kolumny widoczne w tabeli.\nPrzeciągnij nagłówek kolumny, aby ją przesunąć, a jej krawędź, aby zmienić szerokość. Wyłącz przełącznik, aby ukryć kolumnę, i włącz go, aby ją przywrócić. Kolumny Wybierz, Działania i Przypnij pozostają na miejscu.\nUkład jest zapisywany dla Ciebie i dla tego widoku, i będzie dostępny przy następnym otwarciu dowolnej sprawy w tym przepływie pracy. Przywróć układ wraca do domyślnych kolumn widoku.",
+      "filter": "Zawęża transakcje do tych, które spełniają zbudowane przez Ciebie warunki na Archiwum.\nKażdy warunek to pole modelu (dane wejściowe, abstrakcje, liczniki i tak dalej), operator i wartość, na przykład Payload.Amount większe niż 1000. Łącz warunki spójnikami i oraz lub, a dla bardziej złożonych pytań dodawaj grupy. Operatory jak i nie jak traktują znak procentu jako symbol wieloznaczny.\nFiltr działa w Archiwum przed limitem wierszy, więc znajduje pasujące transakcje, nawet gdy nie zmieściłyby się w siatce, i trafia do adresu, dzięki czemu można go udostępnić. Licznik pokazuje, ile transakcji klucza w oknie pasuje. Statystyki, wykresy, grupy porównawcze i liczniki soczewek celowo używają całego okna, aby zawężenie do nietypowych transakcji nie sprawiło, że wyglądają normalnie.\nOznacz wszystkie pasujące oznacza każdą transakcję, która pozostaje po filtrze, do 100 000, tym samym filtrem, więc liczba w oknie jest dokładna.",
+      "format": "Kolory i pogrubione linie ustawione przez administratora dla tego przepływu pracy.\nPogrubiony wiersz ma wspólną ze sprawą skonfigurowaną wartość, na przykład to samo urządzenie. Pokolorowana komórka lub cały wiersz to wartość pasująca do wzorca skonfigurowanego dla pola. Każdy mówi dlaczego w kolumnie Podświetlone, ponieważ, a te same powody są w panelu transakcji.",
+      "scope": "Klucze i filtr zawężają siatkę i mapę poniżej. Statystyki i wykresy powyżej nie podlegają im, więc zawężenie do nietypowych transakcji nie sprawi, że będą wyglądać normalnie.\nKlucz sprawy to zawsze ścieżka A. Dodatkowe klucze dodaje się jako własne ścieżki, do trzech, wybrane z pól drążenia przepływu, na przykład urządzenie użyte przez konto, a każda ma własny ślad na mapie. Warunki zawężają transakcje do tych, które im odpowiadają w całym Archiwum, a w oknie filtra można je łączyć spójnikami i oraz lub.\nZapisz widok zachowuje okno, klucze, filtr i opcje mapy, aby każdy w sprawie mógł otworzyć ten sam widok.",
+      "window": "Jak daleko wstecz patrzy dziennik, licząc od dziś. Dotyczy wszystkiego na tej karcie i powyżej: statystyk, wykresów, siatki i mapy."
+    },
+    "columns": {
+      "label": "Kolumny",
+      "show": "Pokaż kolumny",
+      "reset": "Przywróć układ"
+    },
+    "filter": {
+      "label": "Filtr",
+      "title": "Filtruj transakcje",
+      "hint": "Zbuduj warunki na dowolnym polu modelu, tak jak w wyszukiwaniu spraw. Siatka, zaznaczenie i eksporty podążają za filtrem. Statystyki i wykresy nadal używają całego okna.",
+      "addRule": "Dodaj warunek",
+      "cancel": "Anuluj",
+      "clear": "Wyczyść filtr",
+      "apply": "Zastosuj filtr",
+      "loading": "Wczytywanie pól modelu",
+      "failed": "Nie udało się wczytać pól modelu.",
+      "noFields": "Model nie ma pól, po których można filtrować."
+    },
+    "format": {
+      "column": "Podświetlone, ponieważ",
+      "bold": "To samo pole {field} co w sprawie: {value}",
+      "cell": "{field} pasuje do {pattern}"
+    },
+    "scope": {
+      "label": "Zakres",
+      "locked": "Klucz sprawy, zawsze część zakresu",
+      "addKey": "Dodaj klucz",
+      "key": "Klucz",
+      "value": "Wartość",
+      "add": "Dodaj",
+      "removeCondition": "Usuń {condition}",
+      "match": "{shown} z {total} pasuje",
+      "clear": "Wyczyść klucze i filtr",
+      "chooseKey": "Wybierz klucz",
+      "noKeys": "W tym przepływie nie ustawiono pól drążenia.",
+      "keys": "Klucze"
+    },
+    "views": {
+      "save": "Zapisz widok",
+      "label": "Zapisane widoki",
+      "none": "W tej sprawie nie zapisano widoków.",
+      "open": "Otwórz {name}",
+      "load": "Otwórz",
+      "delete": "Usuń {name}",
+      "done": "Widok zapisany",
+      "removed": "Widok usunięty",
+      "title": "Zapisz ten widok",
+      "hint": "Zapisuje okno, klucze, filtr, soczewkę i opcje mapy, nie same transakcje. Każdy pracujący nad sprawą może go otworzyć, a dane są za każdym razem czytane ponownie z archiwum.",
+      "name": "Nazwa",
+      "cancel": "Anuluj",
+      "help": "Widoki zapisane w tej sprawie, wspólne dla wszystkich, którzy nad nią pracują. Otwarcie przywraca okno, klucze, filtr, soczewkę i opcje mapy."
+    },
+    "map": {
+      "failed": "Nie udało się wczytać mapy.",
+      "truncated": "Pasowało więcej transakcji, niż można odczytać, więc najstarsze pominięto.",
+      "selected": "Wybrano: {when}, klucz {lane}.",
+      "openTransaction": "Otwórz transakcję",
+      "limits": {
+        "title": "Limity podróży",
+        "speed": "Limit prędkości km/h",
+        "distance": "Najkrótszy odcinek km",
+        "reset": "Przywróć limity",
+        "badge": "{speed} km/h · {distance} km"
+      },
+      "only": {
+        "label": "Tylko nieprawdopodobne odcinki"
+      },
+      "all": {
+        "label": "Pokaż wszystko, wyróżnij pasujące"
+      },
+      "help": {
+        "limits": "Decydują, co uznaje się za ruch, który nie mógł się zdarzyć.\nOdcinek to podróż między dwiema kolejnymi transakcjami ścieżki. Jest oznaczany jako niemożliwy, gdy ma co najmniej długość najkrótszego odcinka, a prędkość potrzebna do jego pokonania w czasie między transakcjami przekracza limit prędkości. Domyślnie to 900 kilometrów na godzinę, mniej więcej prędkość samolotu pasażerskiego, i 50 kilometrów, aby krótki skok między dwiema bliskimi pozycjami nigdy nie był oznaczany, choćby nastąpił bardzo szybko.\nObniż limit prędkości, aby szukać podróży możliwych tylko samolotem, a podnieś go, aby zobaczyć tylko skrajne przypadki. Limity są w adresie i zapisują się z odtwarzaniem, więc to samo odtwarzanie za każdym razem liczy te same odcinki.",
+        "only": "Rysuje tylko ruch wart uwagi.\nPo włączeniu mapa zachowuje tylko odcinki niemożliwe przy ustawionym tu limicie prędkości i najkrótszym odcinku, razem z transakcjami na obu ich końcach, i ukrywa każdą zwykłą podróż. Każdy klucz ma nadal własną ścieżkę. Jeśli nic nie zostaje, żaden odcinek nie łamie ustawionych limitów, co też jest odpowiedzią.\nUstawienie jest w adresie i zapisuje się z odtwarzaniem.",
+        "all": "Rysuje każdą transakcję klucza, jego dodatkowych kluczy i okna oraz wyróżnia te, które pasują do filtra.\nPasujące transakcje są rysowane w pełnym kolorze i łączą się w ślady. Pozostałe są blade i szare i nigdy nie łączą się w ślad, więc dają kontekst, nie zmieniając ruchu. Liczby, odcinki, niemożliwe podróże i najgorsza podróż poniżej nadal obejmują tylko pasujące transakcje.\nUstawienie jest zapisane w adresie. Działa tylko wtedy, gdy ustawiono filtr."
+      }
+    },
+    "section": {
+      "transactions": "Transakcje",
+      "map": "Mapa"
+    }
+  },
+  "panes": {
+    "hide": "Ukryj: {name}",
+    "show": "Pokaż: {name}"
+  }
+}

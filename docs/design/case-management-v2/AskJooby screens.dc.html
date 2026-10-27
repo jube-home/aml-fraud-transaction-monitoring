@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+body{margin:0;font-family:"IBM Plex Sans",system-ui,sans-serif}
+a{color:var(--color-primary)} a:hover{text-decoration:underline}
+.font-mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.tnum{font-variant-numeric:tabular-nums}
+svg.lucide{width:1em;height:1em;stroke-width:2;flex:none}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" class="min-h-screen bg-base-200 text-base-content p-10 flex flex-col gap-16">
+
+<header class="flex flex-col gap-2 max-w-[1280px]">
+  <div class="font-mono text-xs uppercase tracking-widest opacity-60">Jube v2 · AskJooby · 4 Oct 2026</div>
+  <h1 class="text-3xl font-semibold">AskJooby: chat, page context, Bites and agent proposals</h1>
+  <p class="text-sm opacity-70 max-w-3xl" style="text-wrap:pretty">The two AskJooby surfaces that exist today (the full page and the corner pop-up), Bites dropped into case work outside chat, and an agent proposal that goes through a model snapshot and maker-checker. Agents are open source in master from 18 Oct 2026.</p>
+  <div class="flex flex-wrap gap-2 text-xs">
+    <a class="badge badge-outline" href="#A1">A1 · Full page</a><a class="badge badge-outline" href="#A2">A2 · Corner pop-up</a><a class="badge badge-outline" href="#A3">A3 · Bites</a><a class="badge badge-outline" href="#A4">A4 · Agent proposal</a>
+  </div>
+</header>
+
+<section class="flex flex-col gap-6" data-screen-label="A · AskJooby">
+  <div class="flex flex-wrap gap-10 items-start">
+
+  <div id="A1" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A1</span><span class="font-semibold">Full page: conversations, search, personas and agent runs</span><span class="text-sm opacity-60">/askjooby · exists today (DeepChat), restyled</span></div>
+    <div class="rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden grid grid-cols-[264px_minmax(0,1fr)] h-[780px]">
+      <aside class="border-r border-base-300 flex flex-col bg-base-200/40">
+        <div class="p-3 flex flex-col gap-2 border-b border-base-300">
+          <button class="btn btn-sm btn-primary w-full"><i data-lucide="plus"></i>New chat</button>
+          <label class="input input-sm w-full"><i data-lucide="search" class="opacity-60"></i><input placeholder="Search chats"><kbd class="kbd kbd-xs">/</kbd></label>
+        </div>
+        <div class="p-2 flex flex-col gap-3 text-xs overflow-hidden">
+          <div class="flex flex-col gap-0.5"><div class="px-2 py-1 font-semibold opacity-60 uppercase tracking-wider text-[10px]">Pinned</div>
+            <a class="px-2 py-1.5 rounded-field hover:bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="pin" class="opacity-60"></i>Structuring typology, Cairo branches</a></div>
+          <div class="flex flex-col gap-0.5"><div class="px-2 py-1 font-semibold opacity-60 uppercase tracking-wider text-[10px]">Today</div>
+            <a class="px-2 py-1.5 rounded-field bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="network" class="opacity-60"></i>DEV-8831A and its accounts</a>
+            <a class="px-2 py-1.5 rounded-field hover:bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="file-pen" class="opacity-60"></i>Tune Structuring 9d<span class="badge badge-warning badge-soft badge-xs ml-auto">draft</span></a>
+            <a class="px-2 py-1.5 rounded-field hover:bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="panel-bottom-open" class="opacity-60"></i>C-9041 · from pop-up</a></div>
+          <div class="flex flex-col gap-0.5"><div class="px-2 py-1 font-semibold opacity-60 uppercase tracking-wider text-[10px]">This week</div>
+            <a class="px-2 py-1.5 rounded-field hover:bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="message-square" class="opacity-60"></i>Mule indicators for new accounts</a>
+            <a class="px-2 py-1.5 rounded-field hover:bg-base-300 flex items-center gap-2 text-base-content hover:no-underline"><i data-lucide="message-square" class="opacity-60"></i>Explain HTTP adaptation errors</a></div>
+        </div>
+        <div class="mt-auto p-3 border-t border-base-300 text-[11px] opacity-70 flex flex-col gap-1">
+          <div class="flex items-center gap-2"><i data-lucide="shield-check"></i>Answers use your permissions only</div>
+          <div class="flex items-center gap-2"><i data-lucide="history"></i>Every tool call is logged</div>
+        </div>
+      </aside>
+      <main class="flex flex-col min-w-0">
+        <div class="px-5 py-3 border-b border-base-300 flex items-center gap-3">
+          <div class="font-semibold">DEV-8831A and its accounts</div>
+          <div role="tablist" class="tabs tabs-box tabs-xs ml-2"><a role="tab" class="tab">Researcher</a><a role="tab" class="tab tab-active">Analyst Agent</a><a role="tab" class="tab">Rule Writer</a></div>
+          <span class="ml-auto flex items-center gap-2 text-xs"><span class="badge badge-ghost badge-sm"><i data-lucide="briefcase"></i>C-9041</span><span class="badge badge-ghost badge-sm"><i data-lucide="cpu"></i>StructNet v7</span><button class="btn btn-ghost btn-xs"><i data-lucide="share-2"></i>Share</button></span>
+        </div>
+        <div class="flex-1 overflow-hidden px-8 py-5 flex flex-col gap-4 max-w-[900px] w-full mx-auto">
+          <div class="self-end max-w-[75%] rounded-box bg-primary text-primary-content px-4 py-2.5">Which accounts used DEV-8831A in the last 30 days, and is any of them already a confirmed fraud case?</div>
+          <div class="flex gap-3">
+            <div class="avatar avatar-placeholder flex-none"><div class="bg-neutral text-neutral-content w-8 rounded-full text-xs font-semibold">J</div></div>
+            <div class="flex flex-col gap-3 min-w-0 flex-1">
+              <details class="rounded-box border border-base-300 bg-base-200/50 px-3 py-2 text-xs" open="">
+                <summary class="cursor-pointer flex items-center gap-2 font-medium"><i data-lucide="bot"></i>Agent run · 4 steps · 3.1 s<span class="opacity-60 font-normal">read-only</span></summary>
+                <ol class="mt-2 flex flex-col gap-1.5 pl-1">
+                  <li class="flex items-center gap-2"><i data-lucide="check" class="text-success"></i><span class="font-mono">Graph.Neighbourhood</span><span class="opacity-60">DeviceId = DEV-8831A · 30 d · 1 hop</span></li>
+                  <li class="flex items-center gap-2"><i data-lucide="check" class="text-success"></i><span class="font-mono">Case.Search</span><span class="opacity-60">4 accounts · closed and open</span></li>
+                  <li class="flex items-center gap-2"><i data-lucide="check" class="text-success"></i><span class="font-mono">Journal.Around</span><span class="opacity-60">ARC-771203 · same day</span></li>
+                  <li class="flex items-center gap-2"><i data-lucide="check" class="text-success"></i><span class="font-mono">Case.Read</span><span class="opacity-60">C-8812 outcome</span></li>
+                </ol>
+              </details>
+              <div class="leading-relaxed" style="text-wrap:pretty">Four accounts used the device. <b>ACC-915 Duarte</b> is a confirmed true positive on C-8812, closed 12 Sep. <b>ACC-102 Kamal</b> paid the same beneficiary 53 seconds before Sterling on 24 Sep.</div>
+              <div class="overflow-hidden rounded-box border border-base-300">
+                <table class="table table-xs"><thead><tr><th>Account</th><th>First seen on device</th><th>Cases</th><th>Outcome</th></tr></thead>
+                <tbody><tr><td>ACC-441 Sterling</td><td class="tnum">02 Sep</td><td>C-9041</td><td>open</td></tr><tr><td>ACC-915 Duarte</td><td class="tnum">28 Aug</td><td>C-8812</td><td><span class="badge badge-error badge-soft badge-xs">confirmed TP</span></td></tr><tr><td>ACC-102 Kamal</td><td class="tnum">19 Sep</td><td>—</td><td>no case</td></tr><tr><td>ACC-377 Nabil</td><td class="tnum">21 Sep</td><td>C-9015</td><td>closed FP</td></tr></tbody></table>
+              </div>
+              <div class="flex flex-wrap gap-1.5 text-[11px]"><span class="opacity-60">Sources</span><a class="badge badge-outline badge-sm hover:no-underline">[1] Graph · DEV-8831A</a><a class="badge badge-outline badge-sm hover:no-underline">[2] C-8812 close note</a><a class="badge badge-outline badge-sm hover:no-underline">[3] ARC-771203</a><a class="badge badge-outline badge-sm hover:no-underline">[4] ARC-770988</a></div>
+              <div class="rounded-box border-2 border-success/60 p-3 flex flex-col gap-2 text-xs">
+                <div class="flex items-center gap-2"><span class="badge badge-success badge-soft badge-sm">Finding · with evidence</span><span class="opacity-60">3 transactions · 1 closed case</span></div>
+                <div class="text-sm">ACC-102 Kamal is a likely associate of the case subject: same device, same beneficiary, 53 s apart.</div>
+                <div class="flex gap-2"><button class="btn btn-xs btn-primary">Add to C-9041 as a fact</button><button class="btn btn-xs btn-ghost">Link as associate…</button><button class="btn btn-xs btn-ghost">Show evidence</button></div>
+              </div>
+              <div class="flex items-center gap-1 text-xs opacity-70"><button class="btn btn-ghost btn-xs"><i data-lucide="copy"></i></button><button class="btn btn-ghost btn-xs"><i data-lucide="thumbs-up"></i></button><button class="btn btn-ghost btn-xs"><i data-lucide="thumbs-down"></i></button><button class="btn btn-ghost btn-xs"><i data-lucide="rotate-ccw"></i>Retry</button><span class="ml-2">Analyst Agent · tools logged · run #A-20419</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="px-8 pb-5 max-w-[900px] w-full mx-auto">
+          <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-2 flex flex-col gap-2">
+            <div class="flex flex-wrap gap-1.5 px-1"><span class="badge badge-ghost badge-sm"><i data-lucide="at-sign"></i>case C-9041</span><span class="badge badge-ghost badge-sm"><i data-lucide="at-sign"></i>model StructNet v7</span><button class="badge badge-sm border-dashed border-base-300"><i data-lucide="plus"></i>context</button></div>
+            <textarea class="textarea textarea-ghost w-full min-h-[44px] resize-none text-sm" placeholder="Ask, or type @ to add a case, model, rule or list"></textarea>
+            <div class="flex items-center gap-2 px-1"><label class="flex items-center gap-2 text-xs"><input type="checkbox" class="toggle toggle-xs" checked="">Agent mode</label><span class="text-xs opacity-60">Read-only tools. Changes come back as proposals.</span><button class="btn btn-sm btn-primary ml-auto"><i data-lucide="arrow-up"></i></button></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="A2" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A2</span><span class="font-semibold">Corner pop-up with page context</span><span class="text-sm opacity-60">every page · exists today, restyled · same chat history as A1</span></div>
+    <div class="relative rounded-box border border-base-300 bg-base-100 shadow-sm text-sm overflow-hidden h-[700px]">
+      <div class="absolute inset-0 p-4 grid grid-cols-[240px_minmax(0,1fr)] gap-4 opacity-40 pointer-events-none">
+        <div class="rounded-box border border-base-300 p-3 flex flex-col gap-2 text-xs"><b>Case key panel</b><div>ACC-441 · Marcus Sterling</div><div>Customer since 2019</div><div>Lane: Standard · Priority 62</div></div>
+        <div class="flex flex-col gap-3">
+          <div class="rounded-box border border-base-300 p-3"><b>C-9041</b> · Structuring 9d · StructNet v7 · sanctions match</div>
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1 text-xs"><b class="text-sm">Section 3 · Journal</b><div>Focus ARC-771203 · P2P out · EGP 48,500 · 10:14:55</div><div>11 cash deposits · 9 days</div><div class="h-24 rounded bg-base-200"></div></div>
+          <div class="rounded-box border border-base-300 p-3 h-32"><b>Section 4 · Network</b></div>
+        </div>
+      </div>
+      <button class="absolute right-6 bottom-6 btn btn-circle btn-primary btn-lg shadow-lg hidden"><i data-lucide="sparkles"></i></button>
+      <div class="absolute right-6 bottom-6 w-[420px] h-[600px] rounded-box border border-base-300 bg-base-100 shadow-2xl flex flex-col overflow-hidden">
+        <div class="px-3 py-2 border-b border-base-300 flex items-center gap-2"><i data-lucide="sparkles" class="text-primary"></i><span class="font-semibold">AskJooby</span><span class="badge badge-ghost badge-xs">Researcher</span><span class="ml-auto flex gap-1"><button class="btn btn-ghost btn-xs" title="Open in full page"><i data-lucide="maximize-2"></i></button><button class="btn btn-ghost btn-xs" title="History"><i data-lucide="history"></i></button><button class="btn btn-ghost btn-xs"><i data-lucide="x"></i></button></span></div>
+        <details class="px-3 py-2 border-b border-base-300 bg-base-200/60 text-xs">
+          <summary class="cursor-pointer flex items-center gap-2"><i data-lucide="eye"></i>Using this page: <b>C-9041 · Journal · ARC-771203</b><span class="ml-auto opacity-60">what Jooby sees</span></summary>
+          <ul class="mt-2 flex flex-col gap-1 opacity-80"><li>Case header, lane and risk</li><li>Journal focus window: 14 rows, 2 anchors</li><li>Activations: StructNet v7, Structuring 9d</li><li>Not sent: masked fields, raw payloads</li></ul>
+        </details>
+        <div class="flex-1 overflow-hidden p-3 flex flex-col gap-3 text-xs">
+          <div class="self-end max-w-[85%] rounded-box bg-primary text-primary-content px-3 py-2 text-sm">Why is this payment the anchor and not the deposits?</div>
+          <div class="flex gap-2">
+            <div class="avatar avatar-placeholder flex-none"><div class="bg-neutral text-neutral-content w-6 rounded-full text-[10px] font-semibold">J</div></div>
+            <div class="flex flex-col gap-2 min-w-0">
+              <div class="text-sm leading-relaxed" style="text-wrap:pretty">StructNet scored the P2P out, not the deposits. It is the first payment to a new beneficiary <a>[1]</a>, 41 s after a login from DEV-8831A <a>[2]</a>, and it moves 97% of what the 11 deposits brought in <a>[3]</a>. Structuring 9d anchors on the 11th deposit, so the case has two anchors.</div>
+              <div class="flex flex-wrap gap-1"><a class="badge badge-outline badge-xs hover:no-underline">[1] beneficiary age 0 d</a><a class="badge badge-outline badge-xs hover:no-underline">[2] login 10:14:14</a><a class="badge badge-outline badge-xs hover:no-underline">[3] Journal sum</a></div>
+              <div class="flex gap-1"><button class="btn btn-xs btn-ghost"><i data-lucide="crosshair"></i>Show on page</button><button class="btn btn-xs btn-ghost"><i data-lucide="plus"></i>Add as fact</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="px-3 pb-2 flex flex-wrap gap-1.5"><button class="btn btn-xs btn-outline rounded-full">Summarise this view</button><button class="btn btn-xs btn-outline rounded-full">Who else used DEV-8831A?</button><button class="btn btn-xs btn-outline rounded-full">Draft a close rationale</button></div>
+        <div class="p-3 border-t border-base-300"><label class="input input-sm w-full"><input placeholder="Ask about this page…"><kbd class="kbd kbd-xs">⏎</kbd></label></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="A3" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A3</span><span class="font-semibold">Bites: short narratives dropped into case work</span><span class="text-sm opacity-60">no chat · one framed call each · cached until the facts change</span></div>
+    <div class="grid grid-cols-2 gap-6">
+      <div class="flex flex-col gap-2"><div class="text-xs font-semibold opacity-70">Cases page · peek</div>
+        <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+          <div class="flex items-center gap-2"><b>C-9044</b><span class="badge badge-warning badge-soft badge-sm"><i data-lucide="zap"></i>Live money · 6 h</span><span class="text-xs opacity-60 ml-auto">Possible 48% · Moderate · 38</span></div>
+          <div class="rounded-box bg-base-200 px-3 py-2.5 flex gap-2.5">
+            <i data-lucide="sparkles" class="text-primary mt-0.5"></i>
+            <div class="flex flex-col gap-1.5 min-w-0"><div style="text-wrap:pretty">EGP 61,000 to a payee who failed the name check, sent two minutes after the warning. The payer is 71 and has never paid this bank before.</div>
+              <div class="flex items-center gap-2 text-[11px] opacity-70"><span>Bite · from 5 facts</span><button class="link link-hover">Expand in AskJooby</button><button class="link link-hover">Not useful</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2"><div class="text-xs font-semibold opacity-70">Case page · since you last looked</div>
+        <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+          <div class="flex items-center gap-2"><b>C-9041</b><span class="text-xs opacity-60">last opened by you 2 days ago</span></div>
+          <div class="rounded-box bg-base-200 px-3 py-2.5 flex gap-2.5">
+            <i data-lucide="sparkles" class="text-primary mt-0.5"></i>
+            <div class="flex flex-col gap-1.5 min-w-0"><div style="text-wrap:pretty">Two things changed: C-8812 on the same device was confirmed fraud, and likelihood rose from 41% to 56%. M. Karim added a note after calling the customer.</div>
+              <div class="flex flex-wrap items-center gap-1.5 text-[11px]"><a class="badge badge-outline badge-xs hover:no-underline">C-8812 closed TP</a><a class="badge badge-outline badge-xs hover:no-underline">risk recompute 09:02</a><a class="badge badge-outline badge-xs hover:no-underline">note 15:40</a><span class="opacity-70 ml-1">Bite</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2"><div class="text-xs font-semibold opacity-70">Activation · in one line</div>
+        <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+          <div class="flex items-center gap-2"><b>StructNet v7</b><span class="badge badge-error badge-soft badge-sm">Very high · 0.91</span><span class="text-xs opacity-60 ml-auto">Exact · threshold 0.80</span></div>
+          <div class="flex items-start gap-2 text-sm"><i data-lucide="sparkles" class="text-primary mt-1"></i><div style="text-wrap:pretty">Scored high because the amount is 9× typical, the payee is new, and it left 41 s after a login from a device shared with a confirmed fraud.</div></div>
+          <div class="h-16 rounded bg-base-200 flex items-center justify-center text-xs opacity-50">waterfall (unchanged)</div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2"><div class="text-xs font-semibold opacity-70">Journal · focus window</div>
+        <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-4 flex flex-col gap-3 text-sm">
+          <div class="flex items-center gap-2 text-xs"><span class="badge badge-ghost badge-sm">ACC-441</span><span class="opacity-60">15–24 Sep · 14 rows</span></div>
+          <div class="flex items-start gap-2"><i data-lucide="sparkles" class="text-primary mt-1"></i><div style="text-wrap:pretty">11 cash deposits, each just under EGP 50,000, across 4 branches in 9 days: EGP 498,200 in total. 97% left in one payment on day 10.</div></div>
+          <div class="h-16 rounded bg-base-200 flex items-center justify-center text-xs opacity-50">Journal rows (unchanged)</div>
+        </div>
+      </div>
+    </div>
+    <div class="text-xs opacity-70 max-w-3xl" style="text-wrap:pretty">A Bite is one or two sentences, never more. Every claim links to a fact; with no supporting fact, no Bite is shown. Hover shows the frame, version and facts used. It is never written into a note or report unless someone adds it.</div>
+  </div>
+
+  <div id="A4" class="flex flex-col gap-2 flex-none" style="width:1280px">
+    <div class="flex items-center gap-2"><span class="badge badge-neutral font-mono">A4</span><span class="font-semibold">Agent proposal through a model snapshot and maker-checker</span><span class="text-sm opacity-60">Rule Writer drafts · a person submits · a second person approves</span></div>
+    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6">
+      <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-5 flex flex-col gap-3 text-sm">
+        <div class="text-xs font-semibold opacity-70">In the chat · A. Vance with Rule Writer</div>
+        <div class="self-end max-w-[85%] rounded-box bg-primary text-primary-content px-3 py-2">Structuring 9d is creating too many cases on salary accounts. Can you tighten it?</div>
+        <div class="flex gap-2">
+          <div class="avatar avatar-placeholder flex-none"><div class="bg-neutral text-neutral-content w-7 rounded-full text-[10px] font-semibold">J</div></div>
+          <div class="flex flex-col gap-3 min-w-0 flex-1">
+            <div style="text-wrap:pretty">Excluding deposits that match the customer's declared salary pattern removes most false positives. I backtested it on the last 90 days.</div>
+            <div class="rounded-box border-2 border-warning/60 p-3 flex flex-col gap-2.5 text-xs">
+              <div class="flex items-center gap-2"><span class="badge badge-warning badge-soft badge-sm"><i data-lucide="file-pen"></i>Proposed change · draft</span><span class="opacity-60">StructNet model · draft v8.3 from snapshot v8.2</span></div>
+              <div class="font-mono rounded bg-base-200 p-2 flex flex-col gap-0.5 text-[11px]"><div class="opacity-70">Structuring 9d · activation rule</div><div class="text-error">− CashDepositCount9d &gt;= 8 AND MaxDeposit &lt; 50000</div><div class="text-success">+ CashDepositCount9d &gt;= 8 AND MaxDeposit &lt; 50000</div><div class="text-success">+ AND NOT MatchesSalaryPattern</div></div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="rounded bg-base-200 p-2"><div class="text-base font-semibold tnum">−38%</div><div class="opacity-70">cases</div></div>
+                <div class="rounded bg-base-200 p-2"><div class="text-base font-semibold tnum">41 / 42</div><div class="opacity-70">confirmed fraud kept</div></div>
+                <div class="rounded bg-base-200 p-2"><div class="text-base font-semibold tnum">90 d</div><div class="opacity-70">backtest</div></div>
+              </div>
+              <div class="flex gap-2"><button class="btn btn-xs btn-primary">Open change set</button><button class="btn btn-xs btn-ghost">Show the missed case</button><button class="btn btn-xs btn-ghost">Discard</button></div>
+              <div class="text-[11px] opacity-60">Jooby wrote a draft only. Submitting is yours; publishing needs a second person.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-box border border-base-300 bg-base-100 shadow-sm p-5 flex flex-col gap-3 text-sm">
+        <div class="text-xs font-semibold opacity-70">Approver · M. Karim · Pending changes</div>
+        <div class="flex items-center gap-2"><b>Exclude salary pattern from Structuring 9d</b><span class="badge badge-info badge-soft badge-sm ml-auto">awaiting approval</span></div>
+        <ul class="steps steps-horizontal text-[11px] w-full">
+          <li class="step step-primary">Drafted by Rule Writer</li><li class="step step-primary">Submitted by A. Vance</li><li class="step step-primary">Your review</li><li class="step">Published as v8.3</li>
+        </ul>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1"><b>Snapshot</b><div>From v8.2 (live) to draft v8.3</div><div class="opacity-70">1 rule changed · 0 lists · 0 adaptations</div><a>Compare snapshots</a></div>
+          <div class="rounded-box border border-base-300 p-3 flex flex-col gap-1"><b>Backtest · 90 d</b><div>Cases 312 → 193</div><div>Confirmed fraud kept 41 of 42</div><a>Open the missed case (C-8790)</a></div>
+        </div>
+        <div class="rounded-box bg-base-200 px-3 py-2 text-xs flex items-start gap-2"><i data-lucide="sparkles" class="text-primary mt-0.5"></i><div>Bite: the one missed case had a declared salary pattern but deposits from 3 branches; consider keeping branch count in the rule.</div></div>
+        <textarea class="textarea textarea-sm w-full" placeholder="Reason (required to reject)"></textarea>
+        <div class="flex gap-2"><button class="btn btn-sm btn-primary"><i data-lucide="key-round"></i>Approve and publish</button><button class="btn btn-sm btn-ghost">Reject</button><span class="text-xs opacity-60 self-center ml-auto">Step-up required · you can't approve your own change</span></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+class Component extends DCLogic {
+  icons(){ try{ window.lucide && window.lucide.createIcons({attrs:{'stroke-width':2}}); }catch(e){} }
+  componentDidMount(){ this.icons(); this._t=setInterval(()=>{ if(window.lucide){ this.icons(); } },800); setTimeout(()=>clearInterval(this._t),8000); }
+  componentDidUpdate(){ this.icons(); }
+  componentWillUnmount(){ clearInterval(this._t); }
+  renderVals(){ return { theme: this.props.theme ?? 'light' }; }
+}
+</script>
+</body>
+</html>

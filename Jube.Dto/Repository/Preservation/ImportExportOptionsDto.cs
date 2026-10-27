@@ -43,7 +43,7 @@ namespace Jube.Dto.Repository.Preservation
         public bool Roles { get; set; }
 
         [Description(
-            "Include Advanced Analytics instances, trained models with their versions and the training history. " +
+            "Include AskJooby Analytics instances, trained models with their versions and the training history. " +
             "The expiring cache is never included.")]
         public bool AdvancedAnalytics { get; set; }
     }

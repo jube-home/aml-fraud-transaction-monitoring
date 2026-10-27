@@ -158,6 +158,78 @@ namespace Jube.Test.Service.Repository.ActivationWatcher
         }
 
         [Fact]
+        public async Task ReplayReturnsOldestFirstAndCarriesThePreviousLocationAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var key = $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}";
+            var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+            var earlier = DateTime.UtcNow.AddMinutes(-30);
+
+            await CreateSampleAsync(dbContext, tenantRegistryId, key, "Entity", earlier);
+
+            var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.ActivationWatcher
+            {
+                TenantRegistryId = tenantRegistryId,
+                Key = key,
+                KeyValue = "Entity",
+                Longitude = 2.35,
+                Latitude = 48.86,
+                PreviousLongitude = 1.23,
+                PreviousLatitude = 4.56,
+                PreviousCreatedDate = earlier,
+                CreatedDate = DateTime.UtcNow
+            });
+
+            createdIds.Add(id);
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var mine = (await service.ReplayAsync(null, null, key, "Entity")).ToList();
+
+            mine.Should().HaveCount(2);
+            mine[0].CreatedDate.Should().BeBefore(mine[1].CreatedDate!.Value);
+            mine[1].PreviousLatitude.Should().Be(4.56);
+            mine[1].PreviousLongitude.Should().Be(1.23);
+            mine[1].PreviousCreatedDate.Should().BeCloseTo(earlier, TimeSpan.FromSeconds(1));
+            mine[0].PreviousLatitude.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task ReplayCanBeNarrowedToOneKeyAndValueAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var key = $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}";
+            var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await CreateSampleAsync(dbContext, tenantRegistryId, key, "Mine");
+            await CreateSampleAsync(dbContext, tenantRegistryId, key, "Mine");
+            await CreateSampleAsync(dbContext, tenantRegistryId, key, "Theirs");
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var onlyMine = await service.ReplayAsync(null, null, key, "Mine");
+            var onlyTheKey = await service.ReplayAsync(null, null, key);
+            var wrongKey = await service.ReplayAsync(null, null, key + "x", "Mine");
+
+            onlyMine.Should().HaveCount(2).And.OnlyContain(r => r.KeyValue == "Mine" && r.Key == key);
+            onlyTheKey.Where(r => r.Key == key).Should().HaveCount(3);
+            wrongKey.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task ReplayNarrowedToAnEntityNeverReachesAnotherTenantsRowsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var key = $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}";
+            var tenantARegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await CreateSampleAsync(dbContext, tenantARegistryId, key, "Shared");
+
+            var tenantBService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
+            (await tenantBService.ReplayAsync(null, null, key, "Shared")).Should().BeEmpty();
+        }
+
+        [Fact]
         public async Task ReplayWithoutPermissionThrowsForbiddenAsync()
         {
             await using var dbContext = fx.GetDbContext();

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,6 +204,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -221,7 +224,29 @@ namespace Jube.Data.Repository
 
             await dbContext.InsertAsync(audit, token: token);
 
+            if (RiskInputsChanged(existing, model))
+            {
+                await dbContext.Case
+                    .Where(c => c.CaseWorkflowGuid == existing.Guid && (c.ClosedStatusId == 0 || c.ClosedStatusId == 1))
+                    .Set(s => s.RiskCheckedDate, (DateTime?)null)
+                    .UpdateAsync(token);
+            }
+
             return model;
+        }
+
+        public static bool RiskInputsChanged(CaseWorkflow before, CaseWorkflow after)
+        {
+            return before.ValueField != after.ValueField
+                   || before.TypologySeverityId != after.TypologySeverityId
+                   || before.RiskKappa != after.RiskKappa
+                   || before.RiskRho != after.RiskRho
+                   || before.RiskPriorStrength != after.RiskPriorStrength
+                   || before.RiskBaseRatePrior != after.RiskBaseRatePrior
+                   || before.RiskDeadlineLaneDays != after.RiskDeadlineLaneDays
+                   || before.RiskKeyHistoryHalfLifeDays != after.RiskKeyHistoryHalfLifeDays
+                   || before.RiskImpactWeights != after.RiskImpactWeights
+                   || before.RiskMoneyBands != after.RiskMoneyBands;
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)

@@ -76,7 +76,7 @@ namespace Jube.Service.Charts
         {
             const string title = "Calibration";
             var metrics = (source?.Evidence as
-                Jube.Service.Repository.AdvancedAnalyticsModel.Models.AdvancedAnalyticsLogisticEvidence)?.TestMetrics;
+                Jube.Service.Repository.AskJoobyAnalyticsModel.Models.AdvancedAnalyticsLogisticEvidence)?.TestMetrics;
 
             var bins = metrics?.ReliabilityBins
                 .Where(b => b.Count > 0 && b.MeanPredicted.HasValue && b.ObservedRate.HasValue

@@ -46,6 +46,30 @@
     <value>No preservation file was supplied.</value>
   </data>
     <data name="InvalidPreservationFile" xml:space="preserve">
-    <value>The preservation file could not be decrypted. Check the password and that the file is a Jube export.</value>
+    <value>The preservation file could not be decrypted. Check the password and that the file is a Jube export. A file exported by an earlier release of Jube cannot be imported.</value>
+  </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>The password must be at least 12 characters.</value>
+  </data>
+  <data name="WarningNoApprovalHistory" xml:space="preserve">
+    <value>The package carries no approval history, so every imported entity will be stamped as approved at its current version under your name.</value>
+  </data>
+  <data name="WarningNoRoles" xml:space="preserve">
+    <value>The package carries no roles, so all {0} of the tenant's roles will be removed.</value>
+  </data>
+  <data name="WarningProductionData" xml:space="preserve">
+    <value>The package carries data that may be large or sensitive: {0} list values, {1} dictionary pairs and {2} Exhaustive rows.</value>
+  </data>
+  <data name="WarningOlderFormat" xml:space="preserve">
+    <value>The package is format version {0}, which is older than the current version {1}.</value>
+  </data>
+  <data name="BlockerRoleRekey" xml:space="preserve">
+    <value>Roles in the package already exist in another tenant and this tenant has users, so the import would be refused.</value>
+  </data>
+  <data name="DiffNeedsSnapshot" xml:space="preserve">
+    <value>At least one side of a comparison must be a snapshot.</value>
+  </data>
+  <data name="DiffSameSnapshot" xml:space="preserve">
+    <value>A snapshot cannot be compared with itself.</value>
   </data>
 </root>

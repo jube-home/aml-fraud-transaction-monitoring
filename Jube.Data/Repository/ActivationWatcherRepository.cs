@@ -54,13 +54,20 @@ namespace Jube.Data.Repository
         }
 
         public async Task<IEnumerable<ActivationWatcher>> GetByDateRangeAscendingAsync(DateTime? dateFrom,
-            DateTime? dateTo, int limit, CancellationToken token = default)
+            DateTime? dateTo, int limit, string key = null, string keyValue = null,
+            CancellationToken token = default)
         {
-            return await dbContext.ActivationWatcher
+            var newest = await dbContext.ActivationWatcher
                 .Where(w =>
                     (dateFrom == null || w.CreatedDate > dateFrom) && (dateTo == null || w.CreatedDate <= dateTo)
+                                                                   && (key == null || w.Key == key)
+                                                                   && (keyValue == null || w.KeyValue == keyValue)
                                                                    && w.TenantRegistryId == tenantRegistryId)
-                .OrderBy(s => s.Id).Take(limit).ToListAsync(token);
+                .OrderByDescending(s => s.Id).Take(limit).ToListAsync(token);
+
+            newest.Reverse();
+
+            return newest;
         }
 
         public async Task<ActivationWatcher> InsertAsync(ActivationWatcher model, CancellationToken token = default)

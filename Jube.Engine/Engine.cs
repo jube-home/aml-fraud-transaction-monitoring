@@ -80,13 +80,17 @@ namespace Jube.Engine
                 {
                     StartAmqp();
                     StartNotificationsViaAmqp();
+                    StartWebhooksViaAmqp();
                 }
                 else
                 {
                     StartNotificationsViaConcurrentQueue();
+                    StartWebhooksViaConcurrentQueue();
                 }
 
                 StartCaseAutomationServer();
+                StartCaseRiskWorker();
+                StartCaseEscalationWorker();
                 StartAsyncEntityThreadsInLoop();
                 StartManageCounters();
                 StartApplicationLogEntry();
@@ -203,6 +207,20 @@ namespace Jube.Engine
 
             Context.Tasks.NotificationsViaAmqp = Context.Services.TaskCoordinator.RunAsync("NotificationsViaAmqpTask",
                 _ => notificationsViaAmqpStarter.StartAsync());
+        }
+
+        private void StartWebhooksViaAmqp()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var webhooksViaAmqpStarter = new WebhooksViaAmqpStarter(Context);
+
+            Context.Tasks.WebhooksViaAmqp = Context.Services.TaskCoordinator.RunAsync("WebhooksViaAmqpTask",
+                _ => webhooksViaAmqpStarter.StartAsync());
         }
 
         private Task StartSanctionsTaskAsync()
@@ -427,6 +445,68 @@ namespace Jube.Engine
             {
                 Context.Services.Log.Debug("Entity Start: Started the Cases Automation Thread.");
             }
+        }
+
+        private void StartCaseEscalationWorker()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCaseEscalation")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Escalation Thread.");
+            }
+
+            var caseEscalationStarter = new CaseEscalationStarter(Context);
+
+            Context.Tasks.CaseEscalationTask = Context.Services.TaskCoordinator.RunAsync("CaseEscalationTask",
+                _ => caseEscalationStarter.StartAsync());
+        }
+
+        private void StartCaseRiskWorker()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCaseRisk")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Risk Thread.");
+            }
+
+            var caseRiskStarter = new CaseRiskStarter(Context);
+
+            Context.Tasks.CaseRiskTask =
+                Context.Services.TaskCoordinator.RunAsync("CaseRiskTask", _ => caseRiskStarter.StartAsync());
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Started the Case Risk Thread.");
+            }
+        }
+
+        private void StartWebhooksViaConcurrentQueue()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableNotification")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Webhooks Thread.");
+            }
+
+            var webhooksViaConcurrentQueueStarter = new WebhooksViaConcurrentQueueStarter(Context);
+
+            Context.Tasks.WebhooksViaConcurrentQueueTask = Context.Services.TaskCoordinator.RunAsync(
+                "WebhookRelayFromConcurrentQueueTask", _ => webhooksViaConcurrentQueueStarter.StartAsync());
         }
 
         private void StartNotificationsViaConcurrentQueue()

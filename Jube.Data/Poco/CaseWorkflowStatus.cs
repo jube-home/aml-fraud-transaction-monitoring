@@ -58,10 +58,18 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(25)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(26)] public int? ImportId { get; set; }
+        [Column] [Key(29)] public byte OutcomeId { get; set; }
+        [Column] [Nullable] [Key(30)] public int? MaxDwellMinutes { get; set; }
+        [Column] [Nullable] [Key(31)] public byte? EscalationTriggerId { get; set; }
+        [Column] [Nullable] [Key(32)] public int? EscalationThreshold { get; set; }
+        [Column] [Nullable] [Key(33)] public Guid? EscalationTargetCaseWorkflowStatusGuid { get; set; }
+        [Column] [Key(34)] public byte EscalationReleaseLock { get; set; }
 
         [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowStatusGuid", CanBeNull = false,
             Relationship = Relationship.OneToMany)]
         [Key(28)]
         public CaseWorkflowStatusRole CaseWorkflowStatusRole { get; set; }
+
+        [Column] [Nullable] [Key(35)] public string Sql { get; set; }
     }
 }

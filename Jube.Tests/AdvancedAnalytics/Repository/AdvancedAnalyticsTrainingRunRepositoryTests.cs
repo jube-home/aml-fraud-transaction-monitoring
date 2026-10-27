@@ -47,7 +47,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
                 {
                     var inserted = await Runs(TenantA, "ZzTestTrainer").InsertAsync(new AdvancedAnalyticsTrainingRun
                     {
-                        AdvancedAnalyticsInstanceId = instance.Id,
+                        AskJoobyAnalyticsInstanceId = instance.Id,
                         KindId = kind,
                         JobMode = mode,
                         StatusId = AdvancedAnalyticsStatus.Succeeded,
@@ -96,7 +96,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
 
             var inserted = await Runs(TenantA).InsertAsync(new AdvancedAnalyticsTrainingRun
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 KindId = AdvancedAnalyticsKind.Regressor,
                 JobMode = AdvancedAnalyticsJobMode.Batch,
                 Arguments = "{\"learningRate\":0.1,\"columns\":[\"a\",\"b\"]}",
@@ -236,7 +236,7 @@ namespace Jube.Test.AdvancedAnalytics.Repository
         public async Task InsertAgainstADeletedInstanceIsNotFoundAsync()
         {
             var instance = await NewInstanceAsync(TenantA);
-            await new AdvancedAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(instance.Id);
+            await new AskJoobyAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(instance.Id);
 
             await ((Func<Task>)(() => NewRunAsync(TenantA, instance.Id)))
                 .Should().ThrowAsync<KeyNotFoundException>();

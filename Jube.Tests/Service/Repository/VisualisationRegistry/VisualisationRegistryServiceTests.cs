@@ -193,7 +193,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             Name = name ?? $"{DatabaseFixture.Prefix}VisReg{Guid.NewGuid():N}"[..40],
             Active = true,
             Locked = false,
-            ShowInDirectory = false,
+            ContextKindId = 2,
             Columns = 6,
             ColumnWidth = 300,
             RowHeight = 300,
@@ -251,12 +251,14 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
         }
 
         [Fact]
-        public async Task ListByShowInDirectoryRequiresExactSpecNotSatisfiedByAdminSpecAsync()
+        public async Task ListByShowInDirectoryNeedsNoPermissionOnlyTheRoleGrantAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, userAdminA);
 
-            await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByShowInDirectoryAsync());
+            var results = await service.GetByShowInDirectoryAsync();
+
+            results.Should().NotBeNull();
         }
 
         [Fact]
@@ -603,13 +605,19 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             toUpdate.Id = created.Id;
             toUpdate.Guid = Guid.NewGuid();
             toUpdate.CreatedUser = "tampered";
-            toUpdate.Version = 999;
+            toUpdate.Version = created.Version;
 
             var updated = await service.UpdateAsync(toUpdate);
 
             updated.Guid.Should().Be(created.Guid);
             updated.CreatedUser.Should().Be(created.CreatedUser);
             updated.Version.Should().Be(2);
+
+            toUpdate.Version = 999;
+
+            var forged = () => service.UpdateAsync(toUpdate);
+
+            await forged.Should().ThrowAsync<Jube.Data.Concurrency.VersionConflictException>();
         }
 
         [Fact]
@@ -762,7 +770,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             await using var dbContext = fx.GetDbContext();
             var adminService = await BuildServiceAsync(dbContext, userAdminA);
             var dto = ValidDto();
-            dto.ShowInDirectory = true;
+            dto.ContextKindId = 1;
             var created = await adminService.InsertAsync(dto);
             createdRegistryIds.Add(created.Id);
 
@@ -783,7 +791,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             await using var dbContext = fx.GetDbContext();
             var adminService = await BuildServiceAsync(dbContext, userAdminA);
             var dto = ValidDto();
-            dto.ShowInDirectory = false;
+            dto.ContextKindId = 2;
             var created = await adminService.InsertAsync(dto);
             createdRegistryIds.Add(created.Id);
 
@@ -814,7 +822,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             var dto = ValidDto();
             dto.Active = true;
             dto.Locked = false;
-            dto.ShowInDirectory = true;
+            dto.ContextKindId = 1;
             dto.Columns = 9;
             dto.ColumnWidth = 275;
             dto.RowHeight = 190;
@@ -827,7 +835,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             fetched.Should().NotBeNull();
             fetched.Active.Should().BeTrue();
             fetched.Locked.Should().BeFalse();
-            fetched.ShowInDirectory.Should().BeTrue();
+            fetched.ContextKindId.Should().Be(1);
             fetched.Columns.Should().Be(9);
             fetched.ColumnWidth.Should().Be(275);
             fetched.RowHeight.Should().Be(190);

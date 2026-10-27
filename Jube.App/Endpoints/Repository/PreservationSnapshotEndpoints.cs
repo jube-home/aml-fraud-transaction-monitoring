@@ -16,7 +16,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code;
 using Jube.Data.Context;
+using Jube.Dto.Repository.Preservation;
 using Jube.Dto.Repository.PreservationSnapshot;
 using Jube.Service.Exceptions.Repository.Preservation;
 using Jube.Service.Reactivity.Interfaces;
@@ -60,6 +62,27 @@ namespace Jube.App.Endpoints.Repository
                 .Produces((int)HttpStatusCode.NoContent)
                 .Produces((int)HttpStatusCode.Forbidden)
                 .WithName("PreservationSnapshotImport");
+
+            group.MapPost("Diff", DiffAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces<PreservationDiffDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NoContent)
+                .Produces((int)HttpStatusCode.Forbidden)
+                .WithName("PreservationSnapshotDiff");
+
+            group.MapPost("{id:int}/ImportPreview", ImportPreviewAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces<PreservationImportPreviewDto>()
+                .Produces((int)HttpStatusCode.NoContent)
+                .Produces((int)HttpStatusCode.Forbidden)
+                .WithName("PreservationSnapshotImportPreview");
+
+            group.MapGet("{id:int}/Body", BodyAsync)
+                .Produces<string>(contentType: "application/json")
+                .Produces((int)HttpStatusCode.NoContent)
+                .Produces((int)HttpStatusCode.Forbidden)
+                .WithName("PreservationSnapshotBody");
 
             group.MapDelete("{id:int}", DeleteAsync)
                 .Produces((int)HttpStatusCode.OK)
@@ -183,6 +206,142 @@ namespace Jube.App.Endpoints.Repository
             }
         }
 
+        private static async Task<IResult> DiffAsync(
+            [FromBody] PreservationDiffRequestDto model, HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.DiffAsync(model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Diff: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ImportPreviewAsync(
+            int id, HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.ImportPreviewAsync(id, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/{id}/ImportPreview: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> BodyAsync(
+            int id, HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.File(System.Text.Encoding.UTF8.GetBytes(await service.GetBodyAsync(id, token)),
+                    "application/json", $"snapshot-{id}.json");
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"GET {Base}/{id}/Body: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         private static async Task<IResult> ImportAsync(
             int id, HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -273,10 +432,7 @@ namespace Jube.App.Endpoints.Repository
             CancellationToken token)
         {
             return PreservationSnapshotService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                serviceChangeBus,
-                dynamicEnvironment.AppSettings("PreservationSalt"),
-                dynamicEnvironment.AppSettings("JempFileLegacyEncryptionFallback")
-                    .Equals("True", StringComparison.CurrentCultureIgnoreCase), token);
+                serviceChangeBus, token);
         }
     }
 }

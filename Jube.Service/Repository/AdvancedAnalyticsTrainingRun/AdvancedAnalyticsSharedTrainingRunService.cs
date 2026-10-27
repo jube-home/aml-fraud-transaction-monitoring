@@ -17,7 +17,7 @@ using Jube.Data.Repository.Models;
 using Jube.Resources;
 using Jube.Service.Exceptions.AdvancedAnalytics;
 using Jube.Service.Reactivity.Interfaces;
-using Jube.Service.Repository.AdvancedAnalyticsModel;
+using Jube.Service.Repository.AskJoobyAnalyticsModel;
 using Jube.Service.Repository.AdvancedAnalyticsOperation;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
 using log4net;
@@ -29,14 +29,14 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
     {
         private readonly AdvancedAnalyticsOperationRunner runner;
         private readonly AdvancedAnalyticsTrainingRunRepository runs;
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions;
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions;
 
         private AdvancedAnalyticsSharedTrainingRunService(AdvancedAnalyticsOperationRunner runner)
         {
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            versions = new AdvancedAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
+            versions = new AskJoobyAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
         }
 
@@ -135,11 +135,11 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                     return dto;
                 }
 
-                dto.TrainedModelId = version.AdvancedAnalyticsTrainedModelId;
+                dto.TrainedModelId = version.AskJoobyAnalyticsTrainedModelId;
                 dto.TrainedModelVersionId = version.Id;
                 dto.VersionNumber = version.VersionNumber;
                 dto.Run.TrainedModelVersionId = version.Id;
-                dto.Evidence = AdvancedAnalyticsModelMapper.ReadEvidence(version.MetricsJson);
+                dto.Evidence = AskJoobyAnalyticsModelMapper.ReadEvidence(version.MetricsJson);
 
                 return dto;
             });
@@ -164,7 +164,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 RunId = run.Id,
                 RunGuid = run.Guid,
-                AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                 Status = run.StatusId,
                 JobMode = run.JobMode,
                 ElapsedSeconds = Math.Max(0, (end - start).TotalSeconds),

@@ -172,22 +172,33 @@ namespace Jube.Service.Query.RuleVocabulary
                     throw new NotFoundException(string.Format(strings[RuleVocabularyResources.WordNotFound], name));
                 }
 
-                return new RuleWordDto
-                {
-                    Name = word.Name,
-                    Kind = word.Kind.ToString(),
-                    Overloads = word.Overloads.Select(o => new RuleWordOverloadDto
-                    {
-                        Signature = o.Signature,
-                        ReceiverType = o.ReceiverType,
-                        ReturnType = o.ReturnType,
-                        Parameters = o.Parameters.Select(p => new RuleWordParameterDto
-                        {
-                            Name = p.Name, Type = p.Type, Optional = p.Optional, DefaultValue = p.DefaultValue
-                        }).ToList()
-                    }).ToList()
-                };
+                return ToDto(word);
             }, token);
+        }
+
+        public Task<List<RuleWordDto>> GetAllAsync(CancellationToken token = default)
+        {
+            return RunAsync("GetAll", async () =>
+                (await WordsAsync(token).ConfigureAwait(false)).Select(ToDto).ToList(), token);
+        }
+
+        private static RuleWordDto ToDto(RuleWord word)
+        {
+            return new RuleWordDto
+            {
+                Name = word.Name,
+                Kind = word.Kind.ToString(),
+                Overloads = word.Overloads.Select(o => new RuleWordOverloadDto
+                {
+                    Signature = o.Signature,
+                    ReceiverType = o.ReceiverType,
+                    ReturnType = o.ReturnType,
+                    Parameters = o.Parameters.Select(p => new RuleWordParameterDto
+                    {
+                        Name = p.Name, Type = p.Type, Optional = p.Optional, DefaultValue = p.DefaultValue
+                    }).ToList()
+                }).ToList()
+            };
         }
 
         private async Task<IReadOnlyList<RuleWord>> WordsAsync(CancellationToken token)

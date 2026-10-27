@@ -25,7 +25,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSynchronisationScheduleGetCurrent", OperationKind.Read, true,
                     false,
-                    "Returns the most recently scheduled model-synchronisation row for the caller's tenant.",
+                    "Returns the most recently scheduled model-synchronisation row for the caller's tenant, or for one model when given.",
                     EntityAnalysisModelSynchronisationScheduleService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSynchronisationScheduleList", OperationKind.Read, true,
@@ -47,7 +47,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSynchronisationScheduleCreate", OperationKind.Write, false,
                     false,
-                    "Schedules model synchronisation across the cluster; calling twice creates two rows.",
+                    "Schedules model synchronisation across the cluster, for one model or for every model in the tenant; calling twice creates two rows.",
                     EntityAnalysisModelSynchronisationScheduleService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSynchronisationScheduleValidate", OperationKind.Read, true, false,

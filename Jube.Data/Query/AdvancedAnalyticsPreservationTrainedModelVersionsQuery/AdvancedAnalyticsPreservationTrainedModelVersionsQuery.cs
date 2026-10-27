@@ -23,10 +23,10 @@ namespace Jube.Data.Query.AdvancedAnalyticsPreservationTrainedModelVersionsQuery
 
     public class AdvancedAnalyticsPreservationTrainedModelVersionsQuery(DbContext dbContext, int tenantRegistryId)
     {
-        public Task<List<AdvancedAnalyticsTrainedModelVersion>> ExecuteAsync(CancellationToken token = default)
+        public Task<List<AskJoobyAnalyticsTrainedModelVersion>> ExecuteAsync(CancellationToken token = default)
         {
-            return (from v in dbContext.AdvancedAnalyticsTrainedModelVersion
-                    join m in dbContext.AdvancedAnalyticsTrainedModel on v.AdvancedAnalyticsTrainedModelId equals m.Id
+            return (from v in dbContext.AskJoobyAnalyticsTrainedModelVersion
+                    join m in dbContext.AskJoobyAnalyticsTrainedModel on v.AskJoobyAnalyticsTrainedModelId equals m.Id
                     where m.TenantRegistryId == tenantRegistryId
                           && m.Deleted == 0
                           && v.TenantRegistryId == tenantRegistryId

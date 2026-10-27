@@ -19,7 +19,10 @@ using Jube.Dto.Query.CaseWorkflowMacroExecution;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
+using Jube.Dto.Options;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
 using Jube.Service.Exceptions.Query.CaseWorkflowMacroExecution;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,8 +32,6 @@ using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 
 namespace Jube.Service.Query.CaseWorkflowMacroExecution
 {
@@ -42,10 +43,10 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly CaseDispatcher dispatcher;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowMacroRepository caseWorkflowMacroRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
-        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -66,9 +67,9 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            this.dynamicEnvironment = dynamicEnvironment;
             this.jsonSerializationHelper = jsonSerializationHelper;
 
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
             caseRepository = new CaseRepository(dbContext, userName);
             caseWorkflowMacroRepository = new CaseWorkflowMacroRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
@@ -175,52 +176,15 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
                     throw NotFound();
                 }
 
-                EntryPayload? context;
-
-                try
-                {
-                    context = JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
-                        jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
-                }
-                catch (Exception e) when (e is JsonException or InvalidCastException or NullReferenceException
-                                              or FormatException)
-                {
-                    context = null;
-                }
-
-                context ??= new EntryPayload();
-
-                if (caseWorkflowMacro.EnableNotification == 1)
-                {
-                    var notification = new EngineNotification(log, dynamicEnvironment);
-
-                    var notificationSubject =
-                        EntryPayloadExtensions.ReplaceTokens(context, caseWorkflowMacro.NotificationSubject);
-                    var notificationDestination =
-                        EntryPayloadExtensions.ReplaceTokens(context, caseWorkflowMacro.NotificationDestination);
-                    var notificationBody =
-                        EntryPayloadExtensions.ReplaceTokens(context, caseWorkflowMacro.NotificationBody);
-
-                    await notification.SendAsync(caseWorkflowMacro.NotificationTypeId ?? 1,
-                            notificationDestination, notificationSubject, notificationBody, token)
-                        .ConfigureAwait(false);
-                }
-
-                if (caseWorkflowMacro.EnableHttpEndpoint == 1)
-                {
-                    var endpoint = EntryPayloadExtensions.ReplaceTokens(context, caseWorkflowMacro.HttpEndpoint);
-
-                    if (caseWorkflowMacro.HttpEndpointTypeId == 1)
-                    {
-                        await EngineSendHttpEndpoint.PostAsync(endpoint,
-                            PreparePostBodyString(model, existingCase, context, caseWorkflowStatus,
-                                caseWorkflowMacro), log).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                    }
-                }
+                await dispatcher.DispatchAsync(new DispatchSource(CaseDispatchSourceKind.Macro, caseWorkflowMacro.Id,
+                        caseWorkflowMacro.Name ?? string.Empty, caseWorkflowMacro.Sql,
+                        caseWorkflowMacro.EnableNotification == 1, caseWorkflowMacro.NotificationTypeId ?? 1,
+                        caseWorkflowMacro.NotificationDestination, caseWorkflowMacro.NotificationSubject,
+                        caseWorkflowMacro.NotificationBody, caseWorkflowMacro.EnableHttpEndpoint == 1,
+                        caseWorkflowMacro.HttpEndpoint, caseWorkflowMacro.HttpEndpointTypeId ?? 1),
+                    new DispatchCase(existingCase.Id, existingCase.CaseKey, existingCase.CaseKeyValue), null,
+                    LegacyRenderFor(model, existingCase, caseWorkflowStatus, caseWorkflowMacro), null, token)
+                    .ConfigureAwait(false);
 
                 if (log.IsInfoEnabled)
                 {
@@ -263,6 +227,28 @@ namespace Jube.Service.Query.CaseWorkflowMacroExecution
             }
 
             return new NotFoundException(strings[CaseWorkflowMacroExecutionResources.NotFound]);
+        }
+
+        private LegacyRender LegacyRenderFor(CaseWorkflowMacroExecutionDto model, Data.Poco.Case existingCase,
+            CaseWorkflowStatus caseWorkflowStatus, CaseWorkflowMacro caseWorkflowMacro)
+        {
+            EntryPayload? context;
+
+            try
+            {
+                context = JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
+                    jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+            }
+            catch (Exception e) when (e is JsonException or InvalidCastException or NullReferenceException
+                                          or FormatException)
+            {
+                context = null;
+            }
+
+            context ??= new EntryPayload();
+
+            return new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(context, text),
+                () => PreparePostBodyString(model, existingCase, context, caseWorkflowStatus, caseWorkflowMacro));
         }
 
         private string PreparePostBodyString(CaseWorkflowMacroExecutionDto model, Data.Poco.Case existingCase,

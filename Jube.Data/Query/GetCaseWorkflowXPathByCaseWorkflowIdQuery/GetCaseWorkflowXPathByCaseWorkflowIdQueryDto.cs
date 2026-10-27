@@ -31,5 +31,8 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
         public string BoldLineFormatForeColor { get; set; }
         public string BoldLineFormatBackColor { get; set; }
         public bool BoldLineMatched { get; set; }
+        public bool Drill { get; set; }
+        public int RoleId { get; set; }
+        public bool Segment { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace Jube.Data.Repository
                 .Where(w => w.Id == runId
                             && w.TenantRegistryId == tenantRegistryId
                             && w.Deleted == 0)
-                .Select(s => (int?)s.AdvancedAnalyticsInstanceId)
+                .Select(s => (int?)s.AskJoobyAnalyticsInstanceId)
                 .FirstOrDefaultAsync(token).ConfigureAwait(false);
 
             if (instanceId == null)

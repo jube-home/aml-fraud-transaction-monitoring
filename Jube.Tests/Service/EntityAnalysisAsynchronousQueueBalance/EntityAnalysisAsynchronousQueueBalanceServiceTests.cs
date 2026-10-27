@@ -347,7 +347,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(
-                "caseCreation", "tagging", "notification", "asynchronousEntityInvoke");
+                "caseCreation", "tagging", "notification", "webhook", "asynchronousEntityInvoke");
 
             result.Statistics.Columns["asynchronousEntityInvoke"].Min.Should().Be(0,
                 "AsynchronousEntityInvoke is always 0 in the DTO -- a pre-existing mapping gap");

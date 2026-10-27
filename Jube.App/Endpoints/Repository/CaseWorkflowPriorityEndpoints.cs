@@ -39,11 +39,11 @@ namespace Jube.App.Endpoints.Repository
                 .RequireAuthorization()
                 .WithTags("CaseWorkflowPriority");
 
-            group.MapGet("ByCasesWorkflowIdActiveOnly/{id:int}", ByCasesWorkflowIdActiveOnlyAsync)
+            group.MapGet("ByCaseWorkflowIdActiveOnly/{id:int}", ByCasesWorkflowIdActiveOnlyAsync)
                 .Produces<List<CaseWorkflowPriorityDto>>()
                 .WithName("CaseWorkflowPriorityListByCasesWorkflowIdActiveOnly");
 
-            group.MapGet("ByCasesWorkflowGuidActiveOnly/{guid:guid}", ByCasesWorkflowGuidActiveOnlyAsync)
+            group.MapGet("ByCaseWorkflowGuidActiveOnly/{guid:guid}", ByCasesWorkflowGuidActiveOnlyAsync)
                 .Produces<List<CaseWorkflowPriorityDto>>()
                 .WithName("CaseWorkflowPriorityListByCasesWorkflowGuidActiveOnly");
         }
@@ -53,7 +53,7 @@ namespace Jube.App.Endpoints.Repository
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
         {
-            return ListAsync($"{Base}/ByCasesWorkflowIdActiveOnly/{id}", httpContext, log, dynamicEnvironment,
+            return ListAsync($"{Base}/ByCaseWorkflowIdActiveOnly/{id}", httpContext, log, dynamicEnvironment,
                 stringLocalizerFactory, serviceChangeBus, token);
         }
 
@@ -62,7 +62,7 @@ namespace Jube.App.Endpoints.Repository
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
         {
-            return ListAsync($"{Base}/ByCasesWorkflowGuidActiveOnly/{guid}", httpContext, log,
+            return ListAsync($"{Base}/ByCaseWorkflowGuidActiveOnly/{guid}", httpContext, log,
                 dynamicEnvironment, stringLocalizerFactory, serviceChangeBus, token);
         }
 

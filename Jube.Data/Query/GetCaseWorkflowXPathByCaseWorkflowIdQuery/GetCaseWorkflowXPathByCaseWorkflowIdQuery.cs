@@ -74,7 +74,10 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
                     BackRowColorScope = s.BackRowColorScope == 1,
                     BoldLineFormatForeColor = s.BoldLineFormatForeColor,
                     BoldLineFormatBackColor = s.BoldLineFormatBackColor,
-                    BoldLineMatched = s.BoldLineMatched == 1
+                    BoldLineMatched = s.BoldLineMatched == 1,
+                    Drill = s.Drill == 1,
+                    RoleId = s.RoleId,
+                    Segment = s.Segment == 1
                 })
                 .ToListAsync(token);
         }

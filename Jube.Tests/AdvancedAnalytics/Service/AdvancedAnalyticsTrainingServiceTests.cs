@@ -48,7 +48,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
         private Task<int> RunCountAsync(int instanceId)
         {
-            return Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId);
+            return Db.AdvancedAnalyticsTrainingRun.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId);
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             outcome.Activated.Should().BeFalse();
             outcome.VersionNumber.Should().Be(1);
 
-            var model = await Db.AdvancedAnalyticsTrainedModel.FirstAsync(w => w.Id == outcome.TrainedModelId);
+            var model = await Db.AskJoobyAnalyticsTrainedModel.FirstAsync(w => w.Id == outcome.TrainedModelId);
             model.Guid.Should().Be(outcome.TrainedModelGuid!.Value);
             model.Name.Should().Be(name);
             model.KindId.Should().Be(AdvancedAnalyticsKind.Classifier);
@@ -158,7 +158,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             model.TenantRegistryId.Should().Be(TenantA);
 
             var version =
-                await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.TrainedModelVersionId);
+                await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.TrainedModelVersionId);
             version.VersionNumber.Should().Be(1);
             version.AdvancedAnalyticsTrainingRunId.Should().Be(outcome.RunId);
             version.ModelJson.Should().Be(outcome.Result!.SnapshotJson);
@@ -176,7 +176,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             JObject.Parse(version.CalibratorJson!)["method"]!.Value<string>().Should().Be("Platt");
             version.MetricsJson.Should().NotBeNullOrWhiteSpace();
 
-            (await Db.AdvancedAnalyticsInstance.FirstAsync(w => w.Id == instanceId)).Active.Should().Be(0);
+            (await Db.AskJoobyAnalyticsInstance.FirstAsync(w => w.Id == instanceId)).Active.Should().Be(0);
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var outcome = await TrainAsync(instanceId, UniqueName("Recall"));
 
             var version =
-                await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.TrainedModelVersionId);
+                await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.TrainedModelVersionId);
 
             var recall = LogisticRegressionRecall.FromSnapshot(version.ModelJson);
             var testRows = outcome.Result!.TestRows.Select(r => data.Inputs[r]).ToArray();
@@ -208,10 +208,10 @@ namespace Jube.Test.AdvancedAnalytics.Service
             second.VersionNumber.Should().Be(2);
             second.TrainedModelVersionId.Should().NotBe(first.TrainedModelVersionId);
 
-            (await Db.AdvancedAnalyticsTrainedModel.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AskJoobyAnalyticsTrainedModel.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(1);
 
-            var firstVersion = await Db.AdvancedAnalyticsTrainedModelVersion
+            var firstVersion = await Db.AskJoobyAnalyticsTrainedModelVersion
                 .FirstAsync(w => w.Id == first.TrainedModelVersionId);
 
             firstVersion.ModelJson.Should().Be(first.Result!.SnapshotJson);
@@ -280,7 +280,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
         public async Task ADeletedOrMissingInstanceIsRefusedAsync()
         {
             var instance = await NewInstanceAsync(TenantA);
-            await new AdvancedAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(instance.Id);
+            await new AskJoobyAnalyticsInstanceRepository(Db, TenantA, "ZzTestUser").DeleteAsync(instance.Id);
             var service = await TrainingServiceAsync(Permitted);
 
             foreach (var id in new[] { instance.Id, int.MaxValue - 1, 0 })
@@ -416,7 +416,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
                 service.TrainLogisticRegressionAsync(TrainingRequest(instanceId, UniqueName("Crash"))));
 
             var run = await Db.AdvancedAnalyticsTrainingRun.FirstAsync(w =>
-                w.AdvancedAnalyticsInstanceId == instanceId);
+                w.AskJoobyAnalyticsInstanceId == instanceId);
 
             run.StatusId.Should().Be(AdvancedAnalyticsStatus.Failed);
             run.Error.Should().NotContain("secret internals");
@@ -445,7 +445,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
                 service.TrainLogisticRegressionAsync(TrainingRequest(instanceId, UniqueName("Cancel")), cts.Token));
 
             var run = await Db.AdvancedAnalyticsTrainingRun.FirstAsync(w =>
-                w.AdvancedAnalyticsInstanceId == instanceId);
+                w.AskJoobyAnalyticsInstanceId == instanceId);
 
             run.StatusId.Should().Be(AdvancedAnalyticsStatus.Cancelled);
             run.Error.Should().NotBeNullOrWhiteSpace();
@@ -481,8 +481,8 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             failed.Status.Should().Be(AdvancedAnalyticsStatus.Failed);
 
-            (await Db.AdvancedAnalyticsTrainedModelVersion.CountAsync(w =>
-                w.AdvancedAnalyticsTrainedModelId == good.TrainedModelId)).Should().Be(1);
+            (await Db.AskJoobyAnalyticsTrainedModelVersion.CountAsync(w =>
+                w.AskJoobyAnalyticsTrainedModelId == good.TrainedModelId)).Should().Be(1);
         }
 
         [Fact]
@@ -528,7 +528,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var run = await new AdvancedAnalyticsTrainingRunRepository(Db, TenantA, "ZzTestUser")
                 .InsertAsync(new AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = instanceId,
+                    AskJoobyAnalyticsInstanceId = instanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     JobMode = AdvancedAnalyticsJobMode.Online
                 });
@@ -572,7 +572,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var run = await new AdvancedAnalyticsTrainingRunRepository(Db, TenantA, "ZzTestUser")
                 .InsertAsync(new AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = instanceId,
+                    AskJoobyAnalyticsInstanceId = instanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     JobMode = AdvancedAnalyticsJobMode.Online
                 });
@@ -598,7 +598,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var run = await new AdvancedAnalyticsTrainingRunRepository(Db, TenantA, "ZzTestUser")
                 .InsertAsync(new AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = instanceId,
+                    AskJoobyAnalyticsInstanceId = instanceId,
                     KindId = AdvancedAnalyticsKind.Classifier,
                     JobMode = AdvancedAnalyticsJobMode.Online
                 });
@@ -617,12 +617,12 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
         private async Task AssertNoModelStoredAsync(int instanceId)
         {
-            (await Db.AdvancedAnalyticsTrainedModel.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AskJoobyAnalyticsTrainedModel.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
 
-            (await Db.AdvancedAnalyticsTrainedModelVersion.CountAsync(w =>
+            (await Db.AskJoobyAnalyticsTrainedModelVersion.CountAsync(w =>
                     Db.AdvancedAnalyticsTrainingRun.Any(r => r.Id == w.AdvancedAnalyticsTrainingRunId
-                                                             && r.AdvancedAnalyticsInstanceId == instanceId)))
+                                                             && r.AskJoobyAnalyticsInstanceId == instanceId)))
                 .Should().Be(0);
         }
     }

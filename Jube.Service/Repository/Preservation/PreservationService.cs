@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
+using Jube.Cryptography;
 using Jube.Cryptography.Exceptions;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -41,10 +42,8 @@ namespace Jube.Service.Repository.Preservation
 
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
-        private readonly bool legacyFallback;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly string? salt;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -52,7 +51,7 @@ namespace Jube.Service.Repository.Preservation
 
         private PreservationService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, string? salt, bool legacyEncryptionFallback)
+            IStringLocalizer strings)
         {
             this.dbContext = dbContext;
             this.log = log;
@@ -62,22 +61,18 @@ namespace Jube.Service.Repository.Preservation
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            this.salt = salt;
-            legacyFallback = legacyEncryptionFallback;
         }
 
         public static Task<PreservationService> CreateAsync(DbContext dbContext, string? userName,
-            ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            string? preservationSalt, bool legacyEncryptionFallback, CancellationToken token = default)
+            ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus, CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), preservationSalt, legacyEncryptionFallback, token);
+                LogManager.GetLogger("Jube.Audit"), token);
         }
 
         internal static async Task<PreservationService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, string? preservationSalt,
-            bool legacyEncryptionFallback, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(PreservationResources));
 
@@ -108,8 +103,7 @@ namespace Jube.Service.Repository.Preservation
                 .ConfigureAwait(false);
 
             return new PreservationService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, preservationSalt,
-                legacyEncryptionFallback);
+                permissionValidation, log, auditLog, serviceChangeBus, strings);
         }
 
         [Description("Imports an encrypted Jube export package (.jemp) into the caller's own tenant, REPLACING the " +
@@ -148,7 +142,7 @@ namespace Jube.Service.Repository.Preservation
                     bytes = ms.ToArray();
                 }
 
-                var library = new Library(dbContext, userName, salt, legacyFallback);
+                var library = new Library(dbContext, userName);
 
                 await library.ImportAsync(bytes, new ImportOptions
                 {
@@ -172,8 +166,7 @@ namespace Jube.Service.Repository.Preservation
 
                 throw;
             }
-            catch (Exception ex) when (ex is InvalidHmacException or InvalidDecryptionException
-                                           or InvalidAdvancedAnalyticsPreservationException)
+            catch (Exception ex) when (ex is InvalidDecryptionException or InvalidAdvancedAnalyticsPreservationException)
             {
                 op.Outcome("invalid-file");
 
@@ -198,45 +191,91 @@ namespace Jube.Service.Repository.Preservation
             }
         }
 
-        [Description("Previews, as JSON, what an export with the given options would contain for the " +
-                     "caller's own tenant. Nothing is changed. Roles are never included in a preview.")]
-        public async Task<string> ExportPeekAsync(
-            [Description("Include Exhaustive Search Instances.")]
-            bool exhaustive,
-            [Description("Include Lists.")] bool lists,
-            [Description("Include Dictionaries.")] bool dictionaries,
-            [Description("Include Visualisations.")]
-            bool visualisations,
-            [Description("Include Advanced Analytics instances, trained models and training history.")]
-            bool advancedAnalytics = false,
+        [Description("Works out what importing an encrypted Jube export package (.jemp) would do to the caller's own " +
+                     "tenant, without changing anything: the live configuration compared with what would replace " +
+                     "it, the users who would be left without a role, and anything the caller should know first. " +
+                     "The comparison is recorded for audit.")]
+        public async Task<PreservationImportPreviewDto> ImportPreviewAsync(
+            [Description("The uploaded package file(s); only the first is read.")]
+            IReadOnlyList<PreservationImportFileDto> files,
+            [Description("The password the package was exported with.")]
+            string? password,
             CancellationToken token = default)
         {
-            using var op = OperationScope.Start("Preservation", "ExportPeek", userName, tenantRegistryId,
+            using var op = OperationScope.Start("Preservation", "ImportPreview", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
-
-            if (log.IsDebugEnabled)
-            {
-                log.Debug($"Preservation.ExportPeek: entry user={userName}");
-            }
 
             try
             {
-                EnsurePermitted("Preservation.ExportPeek");
+                EnsurePermitted("Preservation.ImportPreview");
 
-                var library = new Library(dbContext, userName);
-
-                var peek = await library.ExportPeekAsync(new ExportOptions
+                if (files.Count <= 0)
                 {
-                    Exhaustive = exhaustive,
-                    Lists = lists,
-                    Dictionaries = dictionaries,
-                    Visualisations = visualisations,
-                    AdvancedAnalytics = advancedAnalytics
-                }, token).ConfigureAwait(false);
+                    op.Outcome("no-file");
+                    throw new NoFileException(strings[PreservationResources.NoFileSupplied]);
+                }
 
-                op.Rows(1);
+                byte[] bytes;
 
-                return peek.Json;
+                await using (var ms = new MemoryStream())
+                {
+                    await files[0].Content.CopyToAsync(ms, token).ConfigureAwait(false);
+                    bytes = ms.ToArray();
+                }
+
+                var preview = await Comparer().PreviewPackageAsync(bytes, password, token).ConfigureAwait(false);
+
+                op.Rows(preview.Diff.Entries.Count);
+
+                return preview;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NoFileException)
+            {
+                throw;
+            }
+            catch (Exception ex) when (ex is InvalidDecryptionException or InvalidAdvancedAnalyticsPreservationException)
+            {
+                op.Outcome("invalid-file");
+
+                throw new InvalidPreservationFileException(strings[PreservationResources.InvalidPreservationFile],
+                    ex);
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"Preservation.ImportPreview: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Describes what an export of the caller's own tenant would carry, section by section, with how " +
+                     "many entities and how many bytes each include switch adds. Nothing is changed.")]
+        public async Task<PreservationSummaryDto> SummaryAsync(CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("Preservation", "Summary", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("Preservation.Summary");
+
+                var summary = await Comparer().SummaryAsync(token).ConfigureAwait(false);
+
+                summary.MinimumPasswordLength = JempAesEncryption.MinimumPasswordLength;
+
+                op.Rows(summary.Sections.Count);
+
+                return summary;
             }
             catch (ForbiddenException)
             {
@@ -251,7 +290,7 @@ namespace Jube.Service.Repository.Preservation
             catch (Exception ex)
             {
                 op.Error(ex);
-                log.Error($"Preservation.ExportPeek: unexpected failure user={userName}", ex);
+                log.Error($"Preservation.Summary: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -274,7 +313,7 @@ namespace Jube.Service.Repository.Preservation
             {
                 EnsurePermitted("Preservation.Export");
 
-                var library = new Library(dbContext, userName, salt, legacyFallback);
+                var library = new Library(dbContext, userName);
 
                 var export = await library.ExportAsync(new ExportOptions
                 {
@@ -290,6 +329,12 @@ namespace Jube.Service.Repository.Preservation
                 op.Rows(1);
 
                 return new PreservationExportDto { Guid = export.Guid, EncryptedBytes = export.EncryptedBytes };
+            }
+            catch (InvalidPasswordException ex)
+            {
+                op.Outcome("weak-password");
+
+                throw new WeakPasswordException(strings[PreservationResources.PasswordTooShort], ex);
             }
             catch (ForbiddenException)
             {
@@ -307,6 +352,11 @@ namespace Jube.Service.Repository.Preservation
                 log.Error($"Preservation.Export: unexpected failure user={userName}", ex);
                 throw;
             }
+        }
+
+        private PreservationComparer Comparer()
+        {
+            return new PreservationComparer(dbContext, userName, tenantRegistryId, strings, log);
         }
 
         private async Task PublishImportedAsync(CancellationToken token)

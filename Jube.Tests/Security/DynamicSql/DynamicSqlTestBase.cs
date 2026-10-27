@@ -63,9 +63,7 @@ public abstract class DynamicSqlTestBase(DatabaseFixture fx, ITestOutputHelper o
             ["priority"] = 1,
             ["rowSpan"] = 1,
             ["columnSpan"] = 1,
-            ["includeGrid"] = true,
-            ["includeDisplay"] = false,
-            ["visualisationTypeId"] = 1
+            ["includeGrid"] = true
         };
     }
 

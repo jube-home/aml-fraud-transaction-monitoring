@@ -84,9 +84,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.OpenTelemetryListener", "Jube.OpenTelemetryListener\Jube.OpenTelemetryListener.csproj", "{DAD770F1-151B-444D-B739-BDA7BF78C0CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.AskJooby", "Jube.AskJooby\Jube.AskJooby.csproj", "{E00BDD41-14CB-4574-8EE8-AAC72D9AB067}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.Analytics", "Jube.Analytics\Jube.Analytics.csproj", "{1C3F03B7-055B-42BB-AFC3-A3194803A59F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.Charting", "Jube.Charting\Jube.Charting.csproj", "{3B77D5A5-A8CD-4FE6-AC6D-3D085A439541}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.CaseRisk", "Jube.CaseRisk\Jube.CaseRisk.csproj", "{1550EE32-5AEB-4101-954B-2795B9E695BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -602,6 +605,18 @@ Global
 		{3B77D5A5-A8CD-4FE6-AC6D-3D085A439541}.Release|x64.Build.0 = Release|Any CPU
 		{3B77D5A5-A8CD-4FE6-AC6D-3D085A439541}.Release|x86.ActiveCfg = Release|Any CPU
 		{3B77D5A5-A8CD-4FE6-AC6D-3D085A439541}.Release|x86.Build.0 = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|x64.Build.0 = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Debug|x86.Build.0 = Debug|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|x64.ActiveCfg = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|x64.Build.0 = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{1550EE32-5AEB-4101-954B-2795B9E695BE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

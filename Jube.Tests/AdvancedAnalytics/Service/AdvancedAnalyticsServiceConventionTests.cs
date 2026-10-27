@@ -18,15 +18,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using FluentAssertions;
-using Jube.Engine.AdvancedAnalytics.Regression;
 using Jube.Service.Agent.AdvancedAnalyticsTools;
 using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
-using Jube.Service.Repository.AdvancedAnalyticsInstance;
-using Jube.Service.Repository.AdvancedAnalyticsModel;
+using Jube.Service.Repository.AskJoobyAnalyticsInstance;
+using Jube.Service.Repository.AskJoobyAnalyticsModel;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsInstance.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsInstance.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -35,7 +34,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
     {
         private static readonly Type[] serviceTypes =
         [
-            typeof(AdvancedAnalyticsInstanceService), typeof(AdvancedAnalyticsModelService),
+            typeof(AskJoobyAnalyticsInstanceService), typeof(AskJoobyAnalyticsModelService),
             typeof(AdvancedAnalyticsTrainingService)
         ];
 
@@ -61,14 +60,15 @@ namespace Jube.Test.AdvancedAnalytics.Service
                 descriptor.Kind.Should().Be(attribute.Kind);
                 descriptor.Idempotent.Should().Be(attribute.Idempotent);
                 descriptor.Destructive.Should().Be(attribute.Destructive);
-                attribute.Name.Should().StartWith("AdvancedAnalytics").And.NotContain("_");
+                attribute.Name.Should().MatchRegex("^(AdvancedAnalytics|AskJoobyAnalytics)").And.NotContain("_");
             }
 
             operations.Select(m => m.GetCustomAttribute<ServiceOperationAttribute>()!.Name)
                 .Should().OnlyHaveUniqueItems();
 
             ServiceToolCatalogue.All.Select(t => t.Name).Should().OnlyHaveUniqueItems();
-            ServiceToolCatalogue.All.Count(t => t.Name.StartsWith("AdvancedAnalytics")).Should().Be(24);
+            ServiceToolCatalogue.All.Count(t => t.Name.StartsWith("AdvancedAnalytics") || t.Name.StartsWith("AskJoobyAnalytics"))
+                .Should().Be(24);
         }
 
         [Fact]
@@ -114,9 +114,9 @@ namespace Jube.Test.AdvancedAnalytics.Service
         [Fact]
         public void EveryDtoPropertyCarriesADescription()
         {
-            var dtoTypes = typeof(AdvancedAnalyticsInstanceDto).Assembly.GetTypes()
-                .Where(t => (t.Namespace == "Jube.Service.Repository.AdvancedAnalyticsModel.Models" && t.IsPublic)
-                            || ((t.Namespace == "Jube.Service.Repository.AdvancedAnalyticsInstance.Models" ||
+            var dtoTypes = typeof(AskJoobyAnalyticsInstanceDto).Assembly.GetTypes()
+                .Where(t => (t.Namespace == "Jube.Service.Repository.AskJoobyAnalyticsModel.Models" && t.IsPublic)
+                            || ((t.Namespace == "Jube.Service.Repository.AskJoobyAnalyticsInstance.Models" ||
                                  t.Namespace == "Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models" ||
                                  t.Namespace == "Jube.Service.Query.AnalyticsTrainingRun.Models") && t.IsPublic &&
                                 t.Name.EndsWith("Dto")))

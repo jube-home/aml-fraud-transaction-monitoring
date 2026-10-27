@@ -23,10 +23,15 @@ namespace Jube.Case
     {
         public void Send(string toEmail, string subject, string body)
         {
+            TrySend(toEmail, subject, body, true);
+        }
+
+        public DispatchResult TrySend(string toEmail, string subject, string body, bool decodeBody)
+        {
             try
             {
-                var smtpServer = new SmtpClient();
-                var eMail = new MailMessage();
+                using var smtpServer = new SmtpClient();
+                using var eMail = new MailMessage();
                 smtpServer.UseDefaultCredentials = false;
 
                 smtpServer.Credentials = new NetworkCredential(dynamicEnvironment.AppSettings("SMTPUser"),
@@ -40,12 +45,16 @@ namespace Jube.Case
                 eMail.To.Add(toEmail);
                 eMail.Subject = subject;
                 eMail.IsBodyHtml = true;
-                eMail.Body = HttpUtility.UrlDecode(body);
+                eMail.Body = decodeBody ? HttpUtility.UrlDecode(body) : body;
                 smtpServer.Send(eMail);
+
+                return DispatchResult.Success();
             }
             catch (Exception ex)
             {
                 log.Error(ex.ToString());
+
+                return DispatchResult.Failure($"{ex.GetType().Name}: {ex.Message}");
             }
         }
     }

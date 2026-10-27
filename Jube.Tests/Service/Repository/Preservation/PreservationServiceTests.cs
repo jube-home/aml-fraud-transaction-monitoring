@@ -44,6 +44,7 @@ using Jube.Service.Repository.Preservation;
 using Jube.Service.Repository.PreservationSnapshot;
 using Jube.Test.Analytics.Categorical;
 using Jube.Test.Infrastructure;
+using Jube.Test.Preservation;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.Preservation.Models;
 using LinqToDB;
@@ -64,7 +65,6 @@ namespace Jube.Test.Service.Repository.Preservation
     [Collection("Database")]
     public sealed class PreservationServiceTests(DatabaseFixture fx) : IAsyncLifetime
     {
-        private const string Salt = "ZzTestPreservationSalt";
         private const string Password = "correct horse";
 
         private static readonly IStringLocalizerFactory localizers =
@@ -195,16 +195,16 @@ namespace Jube.Test.Service.Repository.Preservation
             await dbContext.EntityApproval.Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Import.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Export.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
-            await dbContext.ExportPeek.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
+            await dbContext.PreservationDiff.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.TenantRegistry.Where(w => tenantIds.Contains(w.Id)).DeleteAsync();
         }
 
         private static Task<PreservationService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null, bool legacyFallback = false)
+            IServiceChangeBus? serviceChangeBus = null)
         {
             return PreservationService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, legacyFallback);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
         }
 
         private async Task GrantPermissionAsync(Tenant tenant, int permissionSpecificationId)
@@ -232,7 +232,7 @@ namespace Jube.Test.Service.Repository.Preservation
             IServiceChangeBus? serviceChangeBus = null)
         {
             return PreservationSnapshotService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, false);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
         }
 
         private async Task<Tenant> CreateTenantAsync(string label, bool withPermission = true)
@@ -427,11 +427,11 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         private async Task ImportAsync(Tenant tenant, byte[] bytes, string? password = Password, ILog? log = null,
-            ILog? auditLog = null, IServiceChangeBus? bus = null, bool legacyFallback = false,
+            ILog? auditLog = null, IServiceChangeBus? bus = null,
             CancellationToken token = default)
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, tenant.UserName, log, auditLog, bus, legacyFallback);
+            var service = await BuildServiceAsync(dbContext, tenant.UserName, log, auditLog, bus);
             await using var stream = new MemoryStream(bytes);
 
             await service.ImportAsync([new PreservationImportFileDto { FileName = "x.jemp", Content = stream }],
@@ -440,7 +440,7 @@ namespace Jube.Test.Service.Repository.Preservation
 
         private static Wrapper Decrypt(byte[] encrypted, string password = Password)
         {
-            var bytes = new JempAesEncryption(password, Salt).Decrypt(encrypted);
+            var bytes = new JempAesEncryption(password).Decrypt(encrypted);
 
             return MessagePackSerializer.Deserialize<Wrapper>(bytes,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
@@ -451,7 +451,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var bytes = MessagePackSerializer.Serialize(wrapper,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
 
-            return new JempAesEncryption(Password, Salt).Encrypt(bytes);
+            return new JempAesEncryption(Password).Encrypt(bytes);
         }
 
         [Theory]
@@ -497,8 +497,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var import = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.ImportAsync([new PreservationImportFileDto { Content = stream }], Password));
 
-            var peek = await Assert.ThrowsAsync<ForbiddenException>(() =>
-                service.ExportPeekAsync(true, true, true, true));
+            var peek = await Assert.ThrowsAsync<ForbiddenException>(() => service.SummaryAsync());
 
             var export = await Assert.ThrowsAsync<ForbiddenException>(() => service.ExportAsync(FullOptions()));
 
@@ -512,11 +511,11 @@ namespace Jube.Test.Service.Repository.Preservation
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
             (await dbContext.Import.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
             (await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
-            (await dbContext.ExportPeek.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
+            (await dbContext.PreservationDiff.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
         }
 
         [Fact]
-        public async Task ExportContainsOnlyCallersTenantAndPeekMatchesAsync()
+        public async Task ExportContainsOnlyCallersTenantAndTheLivePayloadMatchesAsync()
         {
             var tenantA = await CreateTenantAsync("IsoA");
             var tenantB = await CreateTenantAsync("IsoB");
@@ -536,8 +535,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .BeEquivalentTo(seededB.ModelName);
 
             await using var dbContext = fx.GetDbContext();
-            var serviceA = await BuildServiceAsync(dbContext, tenantA.UserName);
-            var peekA = await serviceA.ExportPeekAsync(true, true, true, true);
+            var peekA = await PreservationHarness.LiveJsonAsync(dbContext, tenantA.UserName);
 
             peekA.Should().Contain(seededA.ModelName).And.Contain(seededA.ListName)
                 .And.Contain(seededA.DictionaryName);
@@ -546,8 +544,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .And.NotContain(seededB.DictionaryName).And.NotContain(seededB.XpathName)
                 .And.NotContain(seededB.KvpKey);
 
-            var serviceB = await BuildServiceAsync(dbContext, tenantB.UserName);
-            var peekB = await serviceB.ExportPeekAsync(true, true, true, true);
+            var peekB = await PreservationHarness.LiveJsonAsync(dbContext, tenantB.UserName);
             peekB.Should().Contain(seededB.ModelName).And.NotContain(seededA.ModelName);
         }
 
@@ -712,7 +709,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var bytes = await ExportAsync(source, options);
 
             var payload = MessagePackSerializer.Deserialize<Wrapper>(
-                new JempAesEncryption(Password, Salt).Decrypt(bytes),
+                new JempAesEncryption(Password).Decrypt(bytes),
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
 
             var exportedVariable = payload.Payload!.EntityAnalysisModel!.Single(m => m.Guid == seeded.ModelGuid)
@@ -1189,7 +1186,7 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         [Fact]
-        public async Task TamperedFileWithLegacyFallbackDisabledIsInvalidFileAsync()
+        public async Task TamperedFileIsInvalidFileAsync()
         {
             var source = await CreateTenantAsync("TpS");
             var target = await CreateTenantAsync("TpT");
@@ -1199,6 +1196,38 @@ namespace Jube.Test.Service.Repository.Preservation
             bytes[^1] ^= 0xFF;
 
             await Assert.ThrowsAsync<InvalidPreservationFileException>(() => ImportAsync(target, bytes));
+
+            await AssertTargetUntouchedAsync(target, targetSeed);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("elevenchars")]
+        public async Task ExportWithAPasswordShorterThanTheMinimumIsRefusedAndRecordsNothingAsync(string? password)
+        {
+            var tenant = await CreateTenantAsync("WkP");
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, tenant.UserName);
+            var before = await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id);
+            var options = FullOptions();
+            options.Password = password;
+
+            var ex = await Assert.ThrowsAsync<WeakPasswordException>(() => service.ExportAsync(options));
+
+            ex.Code.Should().Be("WeakPassword");
+            ex.Message.Should().Contain("12");
+            (await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(before);
+        }
+
+        [Fact]
+        public async Task ImportOfAFileFromAnEarlierReleaseIsAnInvalidFileAsync()
+        {
+            var target = await CreateTenantAsync("ErT");
+            var targetSeed = await SeedTenantAsync(target, "ErT");
+
+            await Assert.ThrowsAsync<InvalidPreservationFileException>(() =>
+                ImportAsync(target, System.Security.Cryptography.RandomNumberGenerator.GetBytes(4096)));
 
             await AssertTargetUntouchedAsync(target, targetSeed);
         }
@@ -1297,7 +1326,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildServiceAsync(dbContext, tenant.UserName);
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
-                service.ExportPeekAsync(true, true, true, true, true, cts.Token));
+                service.SummaryAsync(cts.Token));
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExportAsync(FullOptions(), cts.Token));
@@ -1313,7 +1342,7 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         [Fact]
-        public async Task ExportAndPeekWriteExactlyOneAuditRecordEachAndPublishNothingAsync()
+        public async Task ExportAndSummaryWriteExactlyOneAuditRecordEachAndPublishNothingAsync()
         {
             var tenant = await CreateTenantAsync("Au");
             var audit = new TestLog();
@@ -1321,10 +1350,10 @@ namespace Jube.Test.Service.Repository.Preservation
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, tenant.UserName, auditLog: audit, serviceChangeBus: bus);
 
-            await service.ExportPeekAsync(false, false, false, false);
+            await service.SummaryAsync();
             await service.ExportAsync(FullOptions());
 
-            audit.Entries.Count(e => e.Message.Contains("area=Preservation op=ExportPeek ")).Should().Be(1);
+            audit.Entries.Count(e => e.Message.Contains("area=Preservation op=Summary ")).Should().Be(1);
             audit.Entries.Count(e => e.Message.Contains("area=Preservation op=Export ")).Should().Be(1);
             audit.Entries.Should().OnlyContain(e => e.Message.Contains($"tenant={tenant.Id} outcome=ok"));
             bus.Published.Should().BeEmpty();

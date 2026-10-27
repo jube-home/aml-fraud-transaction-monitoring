@@ -878,13 +878,19 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             var dto = NewDto(visualisationRegistryId, saved.Name.Required());
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
+            dto.Version = saved.Version.GetValueOrDefault();
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
             updated.CreatedUser.Should().Be(userName);
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().Be(userName);
+
+            dto.Version = 999;
+
+            var forged = () => service.UpdateAsync(dto);
+
+            await forged.Should().ThrowAsync<Jube.Data.Concurrency.VersionConflictException>();
         }
 
         [Fact]

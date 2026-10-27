@@ -50,7 +50,8 @@ namespace Jube.Data.Security
         {
             var dto = new PermissionValidationDto
             {
-                Landlord = await IsLandlordAsync(connection, userName).ConfigureAwait(false)
+                Landlord = await IsLandlordAsync(connection, userName).ConfigureAwait(false),
+                ActiveUser = await IsActiveUserAsync(connection, userName).ConfigureAwait(false)
             };
 
             await using var command = connection.CreateCommand();
@@ -93,6 +94,34 @@ namespace Jube.Data.Security
             }
 
             return dto;
+        }
+
+        private async Task<bool> IsActiveUserAsync(DbConnection connection, string userName)
+        {
+            const string sql =
+                "select 1 " +
+                "from \"UserRegistry\" ur " +
+                "inner join \"RoleRegistry\" rr on ur.\"RoleRegistryGuid\" = rr.\"Guid\" " +
+                "where ur.\"Name\" = @userName " +
+                "and ur.\"Active\" = 1 " +
+                "and rr.\"Active\" = 1 " +
+                "and (ur.\"PasswordLocked\" = 0 or ur.\"PasswordLocked\" IS NULL) " +
+                "and (ur.\"Deleted\" = 0 or ur.\"Deleted\" IS NULL) " +
+                "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL)";
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = sql;
+
+            var p = command.CreateParameter();
+            p.ParameterName = "userName";
+            p.Value = userName;
+            command.Parameters.Add(p);
+
+            await command.PrepareAsync().ConfigureAwait(false);
+
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            return await reader.ReadAsync().ConfigureAwait(false);
         }
 
         private async Task<bool> IsLandlordAsync(DbConnection connection, string userName)

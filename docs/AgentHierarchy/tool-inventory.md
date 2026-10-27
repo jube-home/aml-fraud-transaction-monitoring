@@ -20,13 +20,13 @@ each agent's whole toolbox.
 
 |                                                               |     |
 |---------------------------------------------------------------|-----|
-| operations                                                    | 699 |
-| read                                                          | 520 |
-| write                                                         | 126 |
-| delete                                                        | 53  |
+| operations                                                    | 709 |
+| read                                                          | 525 |
+| write                                                         | 130 |
+| delete                                                        | 54  |
 | landlord only                                                 | 86  |
-| owning agents                                                 | 162 |
-| read assignments including an Author's reads of its own slice | 841 |
+| owning agents                                                 | 164 |
+| read assignments including an Author's reads of its own slice | 846 |
 
 ## Index
 
@@ -79,6 +79,9 @@ each agent's whole toolbox.
 | `CaseFileRemove`                                                                    | Delete | `case-record-and-files`                                       | 1                                                                                               |
 | `CaseFileUpload`                                                                    | Write  | `case-record-and-files`                                       | 1                                                                                               |
 | `CaseGet`                                                                           | Read   | `case-record-and-files`                                       | 1                                                                                               |
+| `CaseHoldList`                                                                      | Read   | `case-holds`                                                  | 1                                                                                               |
+| `CaseHoldRefuse`                                                                    | Write  | `case-holds`                                                  | 68                                                                                              |
+| `CaseHoldRelease`                                                                   | Write  | `case-holds`                                                  | 68                                                                                              |
 | `CaseJournalGet`                                                                    | Read   | `case-journal-and-events`                                     | 1                                                                                               |
 | `CaseList`                                                                          | Read   | `case-record-and-files`                                       | 1                                                                                               |
 | `CaseNoteByCaseKeyValueGet`                                                         | Read   | `case-journal-and-events`                                     | 1                                                                                               |
@@ -108,6 +111,10 @@ each agent's whole toolbox.
 | `CaseWorkflowDisplayCreate`                                                         | Write  | `case-workflow-display-author`                                | 23                                                                                              |
 | `CaseWorkflowDisplayDelete`                                                         | Delete | `case-workflow-display-author`                                | 23                                                                                              |
 | `CaseWorkflowDisplayExecutionExecute`                                               | Read   | `form-entries-and-macro-executions`                           | 1                                                                                               |
+| `CaseWorkflowDisplayExecutionListDispatches`                                        | Read   | `form-entries-and-macro-executions`                           | 1                                                                                               |
+| `CaseWorkflowDisplayExecutionRenderForm`                                            | Read   | `form-entries-and-macro-executions`                           | 1                                                                                               |
+| `CaseWorkflowDisplayExecutionRenderFormEntries`                                     | Read   | `form-entries-and-macro-executions`                           | 1                                                                                               |
+| `CaseWorkflowDisplayExecutionTestSql`                                               | Read   | `case-workflow-form-validator-author`                         | 67                                                                                              |
 | `CaseWorkflowDisplayFilter`                                                         | Read   | `case-workflow-display-inspector`                             | 23                                                                                              |
 | `CaseWorkflowDisplayFilterFields`                                                   | Read   | `case-workflow-display-inspector`                             | 23                                                                                              |
 | `CaseWorkflowDisplayGet`                                                            | Read   | `case-workflow-display-inspector`                             | 23                                                                                              |
@@ -157,6 +164,14 @@ each agent's whole toolbox.
 | `CaseWorkflowFormRoleListByCaseWorkflowFormGuid`                                    | Read   | `filter-and-form-role-grants`                                 | 21                                                                                              |
 | `CaseWorkflowFormUpdate`                                                            | Write  | `case-workflow-form-author`                                   | 21                                                                                              |
 | `CaseWorkflowFormValidate`                                                          | Read   | `case-workflow-form-test-bench`                               | 21                                                                                              |
+| `CaseWorkflowFormValidatorCreate`                                                   | Write  | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorDelete`                                                   | Delete | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorGet`                                                      | Read   | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorList`                                                     | Read   | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorListByCaseWorkflowId`                                     | Read   | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorTest`                                                     | Read   | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorUpdate`                                                   | Write  | `case-workflow-form-validator-author`                         | 21                                                                                              |
+| `CaseWorkflowFormValidatorValidate`                                                 | Read   | `case-workflow-form-validator-author`                         | 21                                                                                              |
 | `CaseWorkflowGet`                                                                   | Read   | `case-workflow-inspector`                                     | 18                                                                                              |
 | `CaseWorkflowGetByGuid`                                                             | Read   | `case-workflow-inspector`                                     | 18                                                                                              |
 | `CaseWorkflowList`                                                                  | Read   | `case-workflow-inspector`                                     | 18                                                                                              |
@@ -178,6 +193,13 @@ each agent's whole toolbox.
 | `CaseWorkflowMacroUpdate`                                                           | Write  | `case-workflow-macro-author`                                  | 24                                                                                              |
 | `CaseWorkflowMacroValidate`                                                         | Read   | `case-workflow-macro-test-bench`                              | 24                                                                                              |
 | `CaseWorkflowPriorityList`                                                          | Read   | `case-workflow-priority`                                      | 1                                                                                               |
+| `CaseWorkflowReleaseHookCreate`                                                     | Write  | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookDelete`                                                     | Delete | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookGet`                                                        | Read   | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookList`                                                       | Read   | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookListByCaseWorkflowId`                                       | Read   | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookUpdate`                                                     | Write  | `case-workflow-release-hook-author`                           | 69                                                                                              |
+| `CaseWorkflowReleaseHookValidate`                                                   | Read   | `case-workflow-release-hook-author`                           | 69                                                                                              |
 | `CaseWorkflowRoleCreate`                                                            | Write  | `macro-and-workflow-role-grants`                              | 18                                                                                              |
 | `CaseWorkflowRoleDelete`                                                            | Delete | `macro-and-workflow-role-grants`                              | 18                                                                                              |
 | `CaseWorkflowRoleListByCaseWorkflowGuid`                                            | Read   | `macro-and-workflow-role-grants`                              | 18                                                                                              |
@@ -465,6 +487,17 @@ each agent's whole toolbox.
 | `EntityAnalysisModelRequestXPathList`                                               | Read   | `entity-analysis-model-request-x-path-inspector-1`            | 7                                                                                               |
 | `EntityAnalysisModelRequestXPathUpdate`                                             | Write  | `entity-analysis-model-request-x-path-author`                 | 7                                                                                               |
 | `EntityAnalysisModelRequestXPathValidate`                                           | Read   | `entity-analysis-model-request-x-path-test-bench`             | 7                                                                                               |
+| `EntityAnalysisModelResponseElevationRangeCount`                                                       | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeCreate`                                                      | Write  | `entity-analysis-model-response-elevation-range-author`                            | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeDelete`                                                      | Delete | `entity-analysis-model-response-elevation-range-author`                            | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeFilter`                                                      | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeFilterFields`                                                | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeGet`                                                         | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId`                                  | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeGetByGuid`                                                   | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeList`                                                        | Read   | `entity-analysis-model-response-elevation-range-inspector`                         | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeUpdate`                                                      | Write  | `entity-analysis-model-response-elevation-range-author`                            | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeValidate`                                                    | Read   | `entity-analysis-model-response-elevation-range-test-bench`                        | 17                                                                                              |
 | `EntityAnalysisModelResponseTimePipelineCounterList`                                | Read   | `engine-queue-and-throughput-counters`                        | landlord                                                                                        |
 | `EntityAnalysisModelRoleCreate`                                                     | Write  | `authoring-aids-and-model-role-grants`                        | 6                                                                                               |
 | `EntityAnalysisModelRoleDelete`                                                     | Delete | `authoring-aids-and-model-role-grants`                        | 6                                                                                               |
@@ -802,6 +835,8 @@ each agent's whole toolbox.
 | `EntityAnalysisModelListValueRetract`                                               | Write  | `entity-analysis-model-list-value-author`                     | 3                                                                                               |
 | `EntityAnalysisModelRequestXPathResubmit`                                           | Write  | `entity-analysis-model-request-x-path-author`                 | 7                                                                                               |
 | `EntityAnalysisModelRequestXPathRetract`                                            | Write  | `entity-analysis-model-request-x-path-author`                 | 7                                                                                               |
+| `EntityAnalysisModelResponseElevationRangeResubmit`                                                    | Write  | `entity-analysis-model-response-elevation-range-author`                            | 17                                                                                              |
+| `EntityAnalysisModelResponseElevationRangeRetract`                                                     | Write  | `entity-analysis-model-response-elevation-range-author`                            | 17                                                                                              |
 | `EntityAnalysisModelSanctionResubmit`                                               | Write  | `entity-analysis-model-sanction-author`                       | 11                                                                                              |
 | `EntityAnalysisModelSanctionRetract`                                                | Write  | `entity-analysis-model-sanction-author`                       | 11                                                                                              |
 | `EntityAnalysisModelTagResubmit`                                                    | Write  | `entity-analysis-model-tag-author`                            | 37                                                                                              |
@@ -857,31 +892,6 @@ Creates an unallocated Advanced Analytics instance in the caller's tenant.
   Analytics domain
 - **Access:** permission 48
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsInstance.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
-  `SnapshotOnWriteAiFunction`
-
-### AdvancedAnalyticsTrainingDataGet
-
-`AdvancedAnalyticsTrainingDataGet` is a **read** operation, idempotent, non-destructive.
-
-Reports the shape, size and expiry of training data already put in the cache, or nothing when it has expired.
-
-- **Owning agent:** `advanced-analytics-training-data` (Advanced Analytics Training Data) in the Model Risk and
-  Analytics domain
-- **Access:** permission 48
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsTrainingData.cs`
-
-### AdvancedAnalyticsTrainingDataPut
-
-`AdvancedAnalyticsTrainingDataPut` is a **write** operation, not idempotent, non-destructive.
-
-Turns a cached table into the numeric training data a run reads, by named columns, and returns the cache pointer to
-submit against.
-
-- **Owning agent:** `advanced-analytics-training-data` (Advanced Analytics Training Data) in the Model Risk and
-  Analytics domain
-- **Access:** permission 66
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsTrainingData.cs`
 - **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
   `SnapshotOnWriteAiFunction`
 
@@ -1105,6 +1115,31 @@ Puts a model back on an earlier version; needs the Promote Model permission.
   domain
 - **Access:** permission 47
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsModel.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### AdvancedAnalyticsTrainingDataGet
+
+`AdvancedAnalyticsTrainingDataGet` is a **read** operation, idempotent, non-destructive.
+
+Reports the shape, size and expiry of training data already put in the cache, or nothing when it has expired.
+
+- **Owning agent:** `advanced-analytics-training-data` (Advanced Analytics Training Data) in the Model Risk and
+  Analytics domain
+- **Access:** permission 48
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsTrainingData.cs`
+
+### AdvancedAnalyticsTrainingDataPut
+
+`AdvancedAnalyticsTrainingDataPut` is a **write** operation, not idempotent, non-destructive.
+
+Turns a cached table into the numeric training data a run reads, by named columns, and returns the cache pointer to
+submit against.
+
+- **Owning agent:** `advanced-analytics-training-data` (Advanced Analytics Training Data) in the Model Risk and
+  Analytics domain
+- **Access:** permission 66
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.AdvancedAnalyticsTrainingData.cs`
 - **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
   `SnapshotOnWriteAiFunction`
 
@@ -1421,6 +1456,46 @@ Returns a single active case by Id, scoped to the caller's tenant and role.
 - **Permission source:** `CaseService.RequiredPermissions`
 - **Service:** `CaseService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.Case.cs`
+
+### CaseHoldList
+
+`CaseHoldList` is a **read** operation, idempotent, non-destructive.
+
+Lists the payments held, declined, released or refused on the transactions of a case, with the response elevation range that stamped each, the deadline of the payment hold diary, who decided and why, the messages sent and the release hook that would release it.
+
+- **Owning agent:** `case-holds` (Case Holds) in the Case Investigation Desk domain
+- **Access:** permission 1
+- **Permission source:** `CaseHoldService.RequiredPermissions`
+- **Service:** `CaseHoldService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseHold.cs`
+
+### CaseHoldRefuse
+
+`CaseHoldRefuse` is a **write** operation, not idempotent, non-destructive.
+
+Refuses a held payment, recording who and why, and calling the refuse URL of the release hook when it has one. Needs a reason and the release permission.
+
+- **Owning agent:** `case-holds` (Case Holds) in the Case Investigation Desk domain
+- **Access:** permission 68
+- **Permission source:** `CaseHoldService.RequiredDecisionPermissions`
+- **Service:** `CaseHoldService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseHold.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseHoldRelease
+
+`CaseHoldRelease` is a **write** operation, not idempotent, non-destructive.
+
+Releases a held payment by calling the case workflow release hook that handles it; recorded as Released only when the hook answers exactly 200. Needs a reason and the release permission. Moves money in the payment system.
+
+- **Owning agent:** `case-holds` (Case Holds) in the Case Investigation Desk domain
+- **Access:** permission 68
+- **Permission source:** `CaseHoldService.RequiredDecisionPermissions`
+- **Service:** `CaseHoldService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseHold.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
 
 ### CaseJournalGet
 
@@ -1807,6 +1882,54 @@ Renders a case workflow display HTML template with the case's stored payload tok
   Governance domain
 - **Access:** permission 1
 - **Permission source:** `CaseWorkflowDisplayExecutionService.RequiredPermissions`
+- **Service:** `CaseWorkflowDisplayExecutionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowDisplayExecution.cs`
+
+### CaseWorkflowDisplayExecutionListDispatches
+
+`CaseWorkflowDisplayExecutionListDispatches` is a **read** operation, idempotent, non-destructive.
+
+Lists the audit of the emails, SMS and HTTP calls fired for a case's key: what was rendered, where it went, whether it was sent, failed or refused, and the SQL rows it was drawn from.
+
+- **Owning agent:** `form-entries-and-macro-executions` (Form Entries and Macro Executions) in the Case Workflow Governance domain
+- **Access:** permission 1
+- **Permission source:** `CaseWorkflowDisplayExecutionService.RequiredPermissions`
+- **Service:** `CaseWorkflowDisplayExecutionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowDisplayExecution.cs`
+
+### CaseWorkflowDisplayExecutionRenderForm
+
+`CaseWorkflowDisplayExecutionRenderForm` is a **read** operation, idempotent, non-destructive.
+
+Renders a case workflow form template with the values entered so far, naming the fields shown.
+
+- **Owning agent:** `form-entries-and-macro-executions` (Form Entries and Macro Executions) in the Case Workflow Governance domain
+- **Access:** permission 1
+- **Permission source:** `CaseWorkflowDisplayExecutionService.RequiredPermissions`
+- **Service:** `CaseWorkflowDisplayExecutionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowDisplayExecution.cs`
+
+### CaseWorkflowDisplayExecutionRenderFormEntries
+
+`CaseWorkflowDisplayExecutionRenderFormEntries` is a **read** operation, idempotent, non-destructive.
+
+Draws the submitted form entries for a case's key read only, with their values filled in.
+
+- **Owning agent:** `form-entries-and-macro-executions` (Form Entries and Macro Executions) in the Case Workflow Governance domain
+- **Access:** permission 1
+- **Permission source:** `CaseWorkflowDisplayExecutionService.RequiredPermissions`
+- **Service:** `CaseWorkflowDisplayExecutionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowDisplayExecution.cs`
+
+### CaseWorkflowDisplayExecutionTestSql
+
+`CaseWorkflowDisplayExecutionTestSql` is a **read** operation, idempotent, non-destructive.
+
+Tries the SQL of a Form, Display, Macro, Action or Status against a case without saving it, returning the columns and first rows or why it was refused. Needs the case workflow SQL authoring permission.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 67
+- **Permission source:** `CaseSqlGuard.RequiredPermissions`
 - **Service:** `CaseWorkflowDisplayExecutionService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowDisplayExecution.cs`
 
@@ -2457,6 +2580,108 @@ Validates a Case Workflow Form without saving it and returns every failure.
 - **Service:** `CaseWorkflowFormService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowForm.cs`
 
+### CaseWorkflowFormValidatorCreate
+
+`CaseWorkflowFormValidatorCreate` is a **write** operation, not idempotent, non-destructive.
+
+Creates a server-side validator for one field of a Case Workflow Form: required, required when, range, length, pattern, compare, in a model list, in a model dictionary or SQL. A SQL validator also needs the SQL authoring permission.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowFormValidatorDelete
+
+`CaseWorkflowFormValidatorDelete` is a **delete** operation, idempotent, **destructive**.
+
+Soft-deletes a Case Workflow Form validator; reversible only by direct database action.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowFormValidatorGet
+
+`CaseWorkflowFormValidatorGet` is a **read** operation, idempotent, non-destructive.
+
+Returns one Case Workflow Form validator by Id.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+
+### CaseWorkflowFormValidatorList
+
+`CaseWorkflowFormValidatorList` is a **read** operation, idempotent, non-destructive.
+
+Lists every server-side Case Workflow Form validator visible to the caller's tenant.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+
+### CaseWorkflowFormValidatorListByCaseWorkflowId
+
+`CaseWorkflowFormValidatorListByCaseWorkflowId` is a **read** operation, idempotent, non-destructive.
+
+Lists the server-side validators of the Forms of a Case Workflow, each paired to a template field by name.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+
+### CaseWorkflowFormValidatorTest
+
+`CaseWorkflowFormValidatorTest` is a **read** operation, idempotent, non-destructive.
+
+Tries a saved Case Workflow Form validator against given values without submitting the form, and reports whether it passed, why not and how long it took.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+
+### CaseWorkflowFormValidatorUpdate
+
+`CaseWorkflowFormValidatorUpdate` is a **write** operation, idempotent, non-destructive.
+
+Updates a Case Workflow Form validator. Changing a SQL validator also needs the SQL authoring permission.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowFormValidatorValidate
+
+`CaseWorkflowFormValidatorValidate` is a **read** operation, idempotent, non-destructive.
+
+Runs every check a create or update of a Case Workflow Form validator would run, storing nothing.
+
+- **Owning agent:** `case-workflow-form-validator-author` (Case Workflow Form Validator Author) in the Case Workflow Governance domain
+- **Access:** permission 21
+- **Permission source:** `CaseWorkflowFormValidatorService.RequiredPermissions`
+- **Service:** `CaseWorkflowFormValidatorService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowFormValidator.cs`
+
 ### CaseWorkflowGet
 
 `CaseWorkflowGet` is a **read** operation, idempotent, non-destructive.
@@ -2735,6 +2960,96 @@ Lists the fixed Case priority levels (High, Medium, Low) -- the same for every C
 - **Permission source:** `CaseWorkflowPriorityService.RequiredPermissions`
 - **Service:** `CaseWorkflowPriorityService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowPriority.cs`
+
+### CaseWorkflowReleaseHookCreate
+
+`CaseWorkflowReleaseHookCreate` is a **write** operation, not idempotent, non-destructive.
+
+Creates the web hook called to release or refuse a payment held on a case, with literal host and tokens only in the path and query; the credential is the name of an environment variable.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowReleaseHookDelete
+
+`CaseWorkflowReleaseHookDelete` is a **delete** operation, idempotent, **destructive**.
+
+Soft-deletes an unlocked Case Workflow release hook; reversible only by direct database action.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowReleaseHookGet
+
+`CaseWorkflowReleaseHookGet` is a **read** operation, idempotent, non-destructive.
+
+Returns one Case Workflow release hook by Id.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+
+### CaseWorkflowReleaseHookList
+
+`CaseWorkflowReleaseHookList` is a **read** operation, idempotent, non-destructive.
+
+Lists every Case Workflow release hook visible to the caller's tenant.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+
+### CaseWorkflowReleaseHookListByCaseWorkflowId
+
+`CaseWorkflowReleaseHookListByCaseWorkflowId` is a **read** operation, idempotent, non-destructive.
+
+Lists the release hooks of a Case Workflow, each chosen by a field of the payload of a held transaction.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+
+### CaseWorkflowReleaseHookUpdate
+
+`CaseWorkflowReleaseHookUpdate` is a **write** operation, idempotent, non-destructive.
+
+Updates an unlocked Case Workflow release hook.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### CaseWorkflowReleaseHookValidate
+
+`CaseWorkflowReleaseHookValidate` is a **read** operation, idempotent, non-destructive.
+
+Runs every check a create or update of a Case Workflow release hook would run, storing nothing.
+
+- **Owning agent:** `case-workflow-release-hook-author` (Case Workflow Release Hook Author) in the Case Workflow Governance domain
+- **Access:** permission 69
+- **Permission source:** `CaseWorkflowReleaseHookService.RequiredPermissions`
+- **Service:** `CaseWorkflowReleaseHookService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.CaseWorkflowReleaseHook.cs`
 
 ### CaseWorkflowRoleCreate
 
@@ -3628,6 +3943,32 @@ Parses and compiles an Abstraction Calculation's rule text as the engine would a
 - **Declared in:**
   `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionCalculation.cs`
 
+### EntityAnalysisModelAbstractionCalculationResubmit
+
+`EntityAnalysisModelAbstractionCalculationResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Abstraction Calculation for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-abstraction-calculation-author` (Entity Analysis Model Abstraction Calculation Author) in the Detection Model Authoring domain
+- **Access:** permission 14
+- **Permission source:** `EntityAnalysisModelAbstractionCalculationService.WritePermissions`
+- **Service:** `EntityAnalysisModelAbstractionCalculationService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionCalculation.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelAbstractionCalculationRetract
+
+`EntityAnalysisModelAbstractionCalculationRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Abstraction Calculation, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-abstraction-calculation-author` (Entity Analysis Model Abstraction Calculation Author) in the Detection Model Authoring domain
+- **Access:** permission 14
+- **Permission source:** `EntityAnalysisModelAbstractionCalculationService.WritePermissions`
+- **Service:** `EntityAnalysisModelAbstractionCalculationService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionCalculation.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelAbstractionCalculationUpdate
 
 `EntityAnalysisModelAbstractionCalculationUpdate` is a **write** operation, idempotent, non-destructive.
@@ -3817,6 +4158,32 @@ Parses and compiles an Abstraction Rule's rule text as the engine would and retu
 - **Permission source:** `EntityAnalysisModelAbstractionRuleService.WritePermissions`
 - **Service:** `EntityAnalysisModelAbstractionRuleService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionRule.cs`
+
+### EntityAnalysisModelAbstractionRuleResubmit
+
+`EntityAnalysisModelAbstractionRuleResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Abstraction Rule for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-abstraction-rule-approvals` (Entity Analysis Model Abstraction Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 13
+- **Permission source:** `EntityAnalysisModelAbstractionRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelAbstractionRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelAbstractionRuleRetract
+
+`EntityAnalysisModelAbstractionRuleRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Abstraction Rule, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-abstraction-rule-approvals` (Entity Analysis Model Abstraction Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 13
+- **Permission source:** `EntityAnalysisModelAbstractionRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelAbstractionRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelAbstractionRuleUpdate
 
@@ -4214,6 +4581,32 @@ Resets the ActivationCounter and EvaluationCounter of an Activation Rule to zero
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelActivationRule.cs`
 - **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
   `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelActivationRuleResubmit
+
+`EntityAnalysisModelActivationRuleResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Activation Rule for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-activation-rule-approvals` (Entity Analysis Model Activation Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelActivationRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelActivationRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelActivationRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelActivationRuleRetract
+
+`EntityAnalysisModelActivationRuleRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Activation Rule, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-activation-rule-approvals` (Entity Analysis Model Activation Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelActivationRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelActivationRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelActivationRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelActivationRuleUpdate
 
@@ -4681,6 +5074,32 @@ Lists Key Value Pairs for the caller's tenant, keyset-paged and capped.
 - **Service:** `EntityAnalysisModelDictionaryKvpService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionaryKvp.cs`
 
+### EntityAnalysisModelDictionaryKvpResubmit
+
+`EntityAnalysisModelDictionaryKvpResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Key Value Pair for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-dictionary-kvp-author` (Entity Analysis Model Dictionary Kvp Author) in the Model Supporting Structures domain
+- **Access:** permission 4
+- **Permission source:** `EntityAnalysisModelDictionaryKvpService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelDictionaryKvpService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionaryKvp.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelDictionaryKvpRetract
+
+`EntityAnalysisModelDictionaryKvpRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Key Value Pair, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-dictionary-kvp-author` (Entity Analysis Model Dictionary Kvp Author) in the Model Supporting Structures domain
+- **Access:** permission 4
+- **Permission source:** `EntityAnalysisModelDictionaryKvpService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelDictionaryKvpService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionaryKvp.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelDictionaryKvpUpdate
 
 `EntityAnalysisModelDictionaryKvpUpdate` is a **write** operation, idempotent, non-destructive.
@@ -4737,6 +5156,32 @@ Lists Dictionaries for the caller's tenant, keyset-paged and capped.
 - **Permission source:** `EntityAnalysisModelDictionaryService.RequiredPermissions`
 - **Service:** `EntityAnalysisModelDictionaryService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionary.cs`
+
+### EntityAnalysisModelDictionaryResubmit
+
+`EntityAnalysisModelDictionaryResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Dictionary for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-dictionary-author` (Entity Analysis Model Dictionary Author) in the Model Supporting Structures domain
+- **Access:** permission 4
+- **Permission source:** `EntityAnalysisModelDictionaryService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelDictionaryService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionary.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelDictionaryRetract
+
+`EntityAnalysisModelDictionaryRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Dictionary, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-dictionary-author` (Entity Analysis Model Dictionary Author) in the Model Supporting Structures domain
+- **Access:** permission 4
+- **Permission source:** `EntityAnalysisModelDictionaryService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelDictionaryService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionary.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelDictionaryUpdate
 
@@ -4967,6 +5412,32 @@ Resets the activation and evaluation counters for a Gateway Rule in the caller's
 - **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
   `SnapshotOnWriteAiFunction`
 
+### EntityAnalysisModelGatewayRuleResubmit
+
+`EntityAnalysisModelGatewayRuleResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Gateway Rule for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-gateway-rule-approvals` (Entity Analysis Model Gateway Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 10
+- **Permission source:** `EntityAnalysisModelGatewayRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelGatewayRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelGatewayRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelGatewayRuleRetract
+
+`EntityAnalysisModelGatewayRuleRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Gateway Rule, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-gateway-rule-approvals` (Entity Analysis Model Gateway Rule Approvals) in the Detection Model Authoring domain
+- **Access:** permission 10
+- **Permission source:** `EntityAnalysisModelGatewayRuleService.WritePermissions`
+- **Service:** `EntityAnalysisModelGatewayRuleService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelGatewayRule.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelGatewayRuleUpdate
 
 `EntityAnalysisModelGatewayRuleUpdate` is a **write** operation, idempotent, non-destructive.
@@ -5155,6 +5626,32 @@ Lists HTTP Adaptations for the caller's tenant, keyset-paged and capped.
 - **Service:** `EntityAnalysisModelHttpAdaptationService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelHttpAdaptation.cs`
 
+### EntityAnalysisModelHttpAdaptationResubmit
+
+`EntityAnalysisModelHttpAdaptationResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected HTTP Adaptation for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-http-adaptation-author` (Entity Analysis Model Http Adaptation Author) in the Model Risk and Analytics domain
+- **Access:** permission 15
+- **Permission source:** `EntityAnalysisModelHttpAdaptationService.WritePermissions`
+- **Service:** `EntityAnalysisModelHttpAdaptationService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelHttpAdaptation.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelHttpAdaptationRetract
+
+`EntityAnalysisModelHttpAdaptationRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected HTTP Adaptation, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-http-adaptation-author` (Entity Analysis Model Http Adaptation Author) in the Model Risk and Analytics domain
+- **Access:** permission 15
+- **Permission source:** `EntityAnalysisModelHttpAdaptationService.WritePermissions`
+- **Service:** `EntityAnalysisModelHttpAdaptationService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelHttpAdaptation.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelHttpAdaptationUpdate
 
 `EntityAnalysisModelHttpAdaptationUpdate` is a **write** operation, idempotent, non-destructive.
@@ -5330,6 +5827,32 @@ Parses and compiles an Inline Function's rule text as the engine would and retur
 - **Service:** `EntityAnalysisModelInlineFunctionService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineFunction.cs`
 
+### EntityAnalysisModelInlineFunctionResubmit
+
+`EntityAnalysisModelInlineFunctionResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Inline Function for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-inline-function-author` (Entity Analysis Model Inline Function Author) in the Detection Model Authoring domain
+- **Access:** permission 8
+- **Permission source:** `EntityAnalysisModelInlineFunctionService.WritePermissions`
+- **Service:** `EntityAnalysisModelInlineFunctionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineFunction.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelInlineFunctionRetract
+
+`EntityAnalysisModelInlineFunctionRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Inline Function, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-inline-function-author` (Entity Analysis Model Inline Function Author) in the Detection Model Authoring domain
+- **Access:** permission 8
+- **Permission source:** `EntityAnalysisModelInlineFunctionService.WritePermissions`
+- **Service:** `EntityAnalysisModelInlineFunctionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineFunction.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelInlineFunctionUpdate
 
 `EntityAnalysisModelInlineFunctionUpdate` is a **write** operation, idempotent, non-destructive.
@@ -5491,6 +6014,32 @@ Lists Inline Script registrations for the caller's tenant, keyset-paged and capp
 - **Permission source:** `EntityAnalysisModelInlineScriptService.ListPermissions`
 - **Service:** `EntityAnalysisModelInlineScriptService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineScript.cs`
+
+### EntityAnalysisModelInlineScriptResubmit
+
+`EntityAnalysisModelInlineScriptResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Inline Script registration for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-inline-script-author` (Entity Analysis Model Inline Script Author) in the Detection Model Authoring domain
+- **Access:** permission 9
+- **Permission source:** `EntityAnalysisModelInlineScriptService.WritePermissions`
+- **Service:** `EntityAnalysisModelInlineScriptService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineScript.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelInlineScriptRetract
+
+`EntityAnalysisModelInlineScriptRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Inline Script registration, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-inline-script-author` (Entity Analysis Model Inline Script Author) in the Detection Model Authoring domain
+- **Access:** permission 9
+- **Permission source:** `EntityAnalysisModelInlineScriptService.WritePermissions`
+- **Service:** `EntityAnalysisModelInlineScriptService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineScript.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelInlineScriptUpdate
 
@@ -5758,6 +6307,32 @@ Lists Lists for the caller's tenant, keyset-paged and capped.
 - **Service:** `EntityAnalysisModelListService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelList.cs`
 
+### EntityAnalysisModelListResubmit
+
+`EntityAnalysisModelListResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected List for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-list-author` (Entity Analysis Model List Author) in the Model Supporting Structures domain
+- **Access:** permission 3
+- **Permission source:** `EntityAnalysisModelListService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelListService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelList.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelListRetract
+
+`EntityAnalysisModelListRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected List, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-list-author` (Entity Analysis Model List Author) in the Model Supporting Structures domain
+- **Access:** permission 3
+- **Permission source:** `EntityAnalysisModelListService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelListService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelList.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelListUpdate
 
 `EntityAnalysisModelListUpdate` is a **write** operation, idempotent, non-destructive.
@@ -5906,6 +6481,32 @@ Lists List Values for the caller's tenant, keyset-paged and capped.
 - **Permission source:** `EntityAnalysisModelListValueService.RequiredPermissions`
 - **Service:** `EntityAnalysisModelListValueService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelListValue.cs`
+
+### EntityAnalysisModelListValueResubmit
+
+`EntityAnalysisModelListValueResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected List Value for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-list-value-author` (Entity Analysis Model List Value Author) in the Model Supporting Structures domain
+- **Access:** permission 3
+- **Permission source:** `EntityAnalysisModelListValueService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelListValueService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelListValue.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelListValueRetract
+
+`EntityAnalysisModelListValueRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected List Value, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-list-value-author` (Entity Analysis Model List Value Author) in the Model Supporting Structures domain
+- **Access:** permission 3
+- **Permission source:** `EntityAnalysisModelListValueService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelListValueService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelListValue.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelListValueUpdate
 
@@ -6646,6 +7247,32 @@ Lists Request XPaths for the caller's tenant, keyset-paged and capped.
 - **Service:** `EntityAnalysisModelRequestXPathService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
 
+### EntityAnalysisModelRequestXPathResubmit
+
+`EntityAnalysisModelRequestXPathResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Request XPath for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-request-x-path-author` (Entity Analysis Model Request X Path Author) in the Detection Model Authoring domain
+- **Access:** permission 7
+- **Permission source:** `EntityAnalysisModelRequestXPathService.WritePermissions`
+- **Service:** `EntityAnalysisModelRequestXPathService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelRequestXPathRetract
+
+`EntityAnalysisModelRequestXPathRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Request XPath, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-request-x-path-author` (Entity Analysis Model Request X Path Author) in the Detection Model Authoring domain
+- **Access:** permission 7
+- **Permission source:** `EntityAnalysisModelRequestXPathService.WritePermissions`
+- **Service:** `EntityAnalysisModelRequestXPathService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelRequestXPathUpdate
 
 `EntityAnalysisModelRequestXPathUpdate` is a **write** operation, idempotent, non-destructive.
@@ -6674,6 +7301,181 @@ Validates a RequestXPath without saving it and returns every failure.
 - **Service:** `EntityAnalysisModelRequestXPathService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
 
+### EntityAnalysisModelResponseElevationRangeCount
+
+`EntityAnalysisModelResponseElevationRangeCount` is a **read** operation, idempotent, non-destructive.
+
+Counts the Response Elevation Ranges matching query builder JSON, optionally grouped by a field.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeCreate
+
+`EntityAnalysisModelResponseElevationRangeCreate` is a **write** operation, not idempotent, non-destructive.
+
+Registers a Response Elevation Range under a Model in the caller's tenant; calling twice creates two.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-author` (Entity Analysis Model Response Elevation Range Author) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelResponseElevationRangeDelete
+
+`EntityAnalysisModelResponseElevationRangeDelete` is a **delete** operation, idempotent, destructive.
+
+Soft-deletes a Response Elevation Range in the caller's tenant by id.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-author` (Entity Analysis Model Response Elevation Range Author) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelResponseElevationRangeFilter
+
+`EntityAnalysisModelResponseElevationRangeFilter` is a **read** operation, idempotent, non-destructive.
+
+Returns the Response Elevation Ranges matching query builder JSON, keyset-paged and capped.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeFilterFields
+
+`EntityAnalysisModelResponseElevationRangeFilterFields` is a **read** operation, idempotent, non-destructive.
+
+Lists the fields a query builder JSON filter over Response Elevation Ranges may use.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeGet
+
+`EntityAnalysisModelResponseElevationRangeGet` is a **read** operation, idempotent, non-destructive.
+
+Returns one Response Elevation Range by id, scoped to the caller's tenant.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId
+
+`EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId` is a **read** operation, idempotent, non-destructive.
+
+Lists the Active Response Elevation Ranges belonging to a given Model, ordered by Name, scoped to the caller's tenant.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeGetByGuid
+
+`EntityAnalysisModelResponseElevationRangeGetByGuid` is a **read** operation, idempotent, non-destructive.
+
+Returns one Response Elevation Range by Guid, scoped to the caller's tenant.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeList
+
+`EntityAnalysisModelResponseElevationRangeList` is a **read** operation, idempotent, non-destructive.
+
+Lists Response Elevation Ranges for the caller's tenant, keyset-paged and capped.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-inspector` (Entity Analysis Model Response Elevation Range Inspector) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
+### EntityAnalysisModelResponseElevationRangeResubmit
+
+`EntityAnalysisModelResponseElevationRangeResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Response Elevation Range for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-author` (Entity Analysis Model Response Elevation Range Author) in the Detection Model Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelResponseElevationRangeRetract
+
+`EntityAnalysisModelResponseElevationRangeRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Response Elevation Range, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-author` (Entity Analysis Model Response Elevation Range Author) in the Detection Model Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelResponseElevationRangeUpdate
+
+`EntityAnalysisModelResponseElevationRangeUpdate` is a **write** operation, idempotent, non-destructive.
+
+Updates a Response Elevation Range in the caller's tenant by id.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-author` (Entity Analysis Model Response Elevation Range Author) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through
+  `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelResponseElevationRangeValidate
+
+`EntityAnalysisModelResponseElevationRangeValidate` is a **read** operation, idempotent, non-destructive.
+
+Validates a Response Elevation Range without saving it and returns every failure.
+
+- **Owning agent:** `entity-analysis-model-response-elevation-range-test-bench` (Entity Analysis Model Response Elevation Range Test Bench) in the Detection Model
+  Authoring domain
+- **Access:** permission 17
+- **Permission source:** `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelResponseElevationRangeService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseElevationRange.cs`
+
 ### EntityAnalysisModelResponseTimePipelineCounterList
 
 `EntityAnalysisModelResponseTimePipelineCounterList` is a **read** operation, idempotent, non-destructive.
@@ -6689,6 +7491,32 @@ date-range and substring search (StageName) filters, scoped to the caller's tena
 - **Service:** `EntityAnalysisModelResponseTimePipelineCounterService`
 - **Declared in:**
   `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelResponseTimePipelineCounter.cs`
+
+### EntityAnalysisModelResubmit
+
+`EntityAnalysisModelResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Model for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-author` (Entity Analysis Model Author) in the Detection Model Authoring domain
+- **Access:** permission 6
+- **Permission source:** `EntityAnalysisModelService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModel.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelRetract
+
+`EntityAnalysisModelRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Model, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-author` (Entity Analysis Model Author) in the Detection Model Authoring domain
+- **Access:** permission 6
+- **Permission source:** `EntityAnalysisModelService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModel.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelRoleCreate
 
@@ -6866,6 +7694,32 @@ Lists Sanction checks for the caller's tenant, keyset-paged and capped.
 - **Permission source:** `EntityAnalysisModelSanctionService.ListPermissions`
 - **Service:** `EntityAnalysisModelSanctionService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelSanction.cs`
+
+### EntityAnalysisModelSanctionResubmit
+
+`EntityAnalysisModelSanctionResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Sanction check for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-sanction-author` (Entity Analysis Model Sanction Author) in the Detection Model Authoring domain
+- **Access:** permission 11
+- **Permission source:** `EntityAnalysisModelSanctionService.WritePermissions`
+- **Service:** `EntityAnalysisModelSanctionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelSanction.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelSanctionRetract
+
+`EntityAnalysisModelSanctionRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Sanction check, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-sanction-author` (Entity Analysis Model Sanction Author) in the Detection Model Authoring domain
+- **Access:** permission 11
+- **Permission source:** `EntityAnalysisModelSanctionService.WritePermissions`
+- **Service:** `EntityAnalysisModelSanctionService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelSanction.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelSanctionUpdate
 
@@ -7146,6 +8000,32 @@ Lists Tags for the caller's tenant, keyset-paged and capped.
 - **Service:** `EntityAnalysisModelTagService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTag.cs`
 
+### EntityAnalysisModelTagResubmit
+
+`EntityAnalysisModelTagResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Tag for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-tag-author` (Entity Analysis Model Tag Author) in the Detection Model Authoring domain
+- **Access:** permission 37
+- **Permission source:** `EntityAnalysisModelTagService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelTagService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTag.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelTagRetract
+
+`EntityAnalysisModelTagRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Tag, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-tag-author` (Entity Analysis Model Tag Author) in the Detection Model Authoring domain
+- **Access:** permission 37
+- **Permission source:** `EntityAnalysisModelTagService.RequiredPermissions`
+- **Service:** `EntityAnalysisModelTagService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTag.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
 ### EntityAnalysisModelTagUpdate
 
 `EntityAnalysisModelTagUpdate` is a **write** operation, idempotent, non-destructive.
@@ -7376,6 +8256,32 @@ Lists TTL Counters for the caller's tenant, keyset-paged and capped.
 - **Permission source:** `EntityAnalysisModelTtlCounterService.ListPermissions`
 - **Service:** `EntityAnalysisModelTtlCounterService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTtlCounter.cs`
+
+### EntityAnalysisModelTtlCounterResubmit
+
+`EntityAnalysisModelTtlCounterResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected TTL Counter for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `entity-analysis-model-ttl-counter-author` (Entity Analysis Model Ttl Counter Author) in the Detection Model Authoring domain
+- **Access:** permission 12
+- **Permission source:** `EntityAnalysisModelTtlCounterService.WritePermissions`
+- **Service:** `EntityAnalysisModelTtlCounterService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTtlCounter.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### EntityAnalysisModelTtlCounterRetract
+
+`EntityAnalysisModelTtlCounterRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected TTL Counter, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `entity-analysis-model-ttl-counter-author` (Entity Analysis Model Ttl Counter Author) in the Detection Model Authoring domain
+- **Access:** permission 12
+- **Permission source:** `EntityAnalysisModelTtlCounterService.WritePermissions`
+- **Service:** `EntityAnalysisModelTtlCounterService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTtlCounter.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### EntityAnalysisModelTtlCounterUpdate
 
@@ -7845,6 +8751,32 @@ promotion.
 - **Service:** `ExhaustiveSearchInstancePromotionHistoryService`
 - **Declared in:**
   `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.ExhaustiveSearchInstancePromotionHistory.cs`
+
+### ExhaustiveSearchInstanceResubmit
+
+`ExhaustiveSearchInstanceResubmit` is a **write** operation, not idempotent, non-destructive.
+
+Resubmits a rejected Exhaustive Adaptation for approval again, unchanged, opening a fresh approval cycle.
+
+- **Owning agent:** `exhaustive-search-instance-author` (Exhaustive Search Instance Author) in the Model Risk and Analytics domain
+- **Access:** permission 16
+- **Permission source:** `ExhaustiveSearchInstanceService.WritePermissions`
+- **Service:** `ExhaustiveSearchInstanceService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.ExhaustiveSearchInstance.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
+
+### ExhaustiveSearchInstanceRetract
+
+`ExhaustiveSearchInstanceRetract` is a **write** operation, not idempotent, non-destructive.
+
+Retracts a rejected Exhaustive Adaptation, restoring it to its last approved version without a new approval cycle.
+
+- **Owning agent:** `exhaustive-search-instance-author` (Exhaustive Search Instance Author) in the Model Risk and Analytics domain
+- **Access:** permission 16
+- **Permission source:** `ExhaustiveSearchInstanceService.WritePermissions`
+- **Service:** `ExhaustiveSearchInstanceService`
+- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.ExhaustiveSearchInstance.cs`
+- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
 
 ### ExhaustiveSearchInstanceSetActive
 
@@ -10831,445 +11763,3 @@ the most recent ones.
 - **Permission source:** `WafAttackService.RequiredPermissions`
 - **Service:** `WafAttackService`
 - **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.WafAttack.cs`
-
-### EntityAnalysisModelResubmit
-
-`EntityAnalysisModelResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Model for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-author` (Entity Analysis Model Author) in the Detection Model Authoring domain
-- **Access:** permission 6
-- **Permission source:** `EntityAnalysisModelService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModel.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelRetract
-
-`EntityAnalysisModelRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Model, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-author` (Entity Analysis Model Author) in the Detection Model Authoring domain
-- **Access:** permission 6
-- **Permission source:** `EntityAnalysisModelService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModel.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelAbstractionCalculationResubmit
-
-`EntityAnalysisModelAbstractionCalculationResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Abstraction Calculation for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-abstraction-calculation-author` (Entity Analysis Model Abstraction Calculation Author) in the Detection Model Authoring domain
-- **Access:** permission 14
-- **Permission source:** `EntityAnalysisModelAbstractionCalculationService.WritePermissions`
-- **Service:** `EntityAnalysisModelAbstractionCalculationService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionCalculation.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelAbstractionCalculationRetract
-
-`EntityAnalysisModelAbstractionCalculationRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Abstraction Calculation, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-abstraction-calculation-author` (Entity Analysis Model Abstraction Calculation Author) in the Detection Model Authoring domain
-- **Access:** permission 14
-- **Permission source:** `EntityAnalysisModelAbstractionCalculationService.WritePermissions`
-- **Service:** `EntityAnalysisModelAbstractionCalculationService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionCalculation.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelAbstractionRuleResubmit
-
-`EntityAnalysisModelAbstractionRuleResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Abstraction Rule for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-abstraction-rule-approvals` (Entity Analysis Model Abstraction Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 13
-- **Permission source:** `EntityAnalysisModelAbstractionRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelAbstractionRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelAbstractionRuleRetract
-
-`EntityAnalysisModelAbstractionRuleRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Abstraction Rule, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-abstraction-rule-approvals` (Entity Analysis Model Abstraction Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 13
-- **Permission source:** `EntityAnalysisModelAbstractionRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelAbstractionRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelAbstractionRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelActivationRuleResubmit
-
-`EntityAnalysisModelActivationRuleResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Activation Rule for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-activation-rule-approvals` (Entity Analysis Model Activation Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 17
-- **Permission source:** `EntityAnalysisModelActivationRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelActivationRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelActivationRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelActivationRuleRetract
-
-`EntityAnalysisModelActivationRuleRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Activation Rule, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-activation-rule-approvals` (Entity Analysis Model Activation Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 17
-- **Permission source:** `EntityAnalysisModelActivationRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelActivationRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelActivationRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelDictionaryResubmit
-
-`EntityAnalysisModelDictionaryResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Dictionary for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-dictionary-author` (Entity Analysis Model Dictionary Author) in the Model Supporting Structures domain
-- **Access:** permission 4
-- **Permission source:** `EntityAnalysisModelDictionaryService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelDictionaryService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionary.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelDictionaryRetract
-
-`EntityAnalysisModelDictionaryRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Dictionary, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-dictionary-author` (Entity Analysis Model Dictionary Author) in the Model Supporting Structures domain
-- **Access:** permission 4
-- **Permission source:** `EntityAnalysisModelDictionaryService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelDictionaryService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionary.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelDictionaryKvpResubmit
-
-`EntityAnalysisModelDictionaryKvpResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Key Value Pair for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-dictionary-kvp-author` (Entity Analysis Model Dictionary Kvp Author) in the Model Supporting Structures domain
-- **Access:** permission 4
-- **Permission source:** `EntityAnalysisModelDictionaryKvpService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelDictionaryKvpService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionaryKvp.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelDictionaryKvpRetract
-
-`EntityAnalysisModelDictionaryKvpRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Key Value Pair, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-dictionary-kvp-author` (Entity Analysis Model Dictionary Kvp Author) in the Model Supporting Structures domain
-- **Access:** permission 4
-- **Permission source:** `EntityAnalysisModelDictionaryKvpService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelDictionaryKvpService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelDictionaryKvp.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelGatewayRuleResubmit
-
-`EntityAnalysisModelGatewayRuleResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Gateway Rule for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-gateway-rule-approvals` (Entity Analysis Model Gateway Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 10
-- **Permission source:** `EntityAnalysisModelGatewayRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelGatewayRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelGatewayRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelGatewayRuleRetract
-
-`EntityAnalysisModelGatewayRuleRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Gateway Rule, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-gateway-rule-approvals` (Entity Analysis Model Gateway Rule Approvals) in the Detection Model Authoring domain
-- **Access:** permission 10
-- **Permission source:** `EntityAnalysisModelGatewayRuleService.WritePermissions`
-- **Service:** `EntityAnalysisModelGatewayRuleService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelGatewayRule.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelHttpAdaptationResubmit
-
-`EntityAnalysisModelHttpAdaptationResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected HTTP Adaptation for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-http-adaptation-author` (Entity Analysis Model Http Adaptation Author) in the Model Risk and Analytics domain
-- **Access:** permission 15
-- **Permission source:** `EntityAnalysisModelHttpAdaptationService.WritePermissions`
-- **Service:** `EntityAnalysisModelHttpAdaptationService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelHttpAdaptation.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelHttpAdaptationRetract
-
-`EntityAnalysisModelHttpAdaptationRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected HTTP Adaptation, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-http-adaptation-author` (Entity Analysis Model Http Adaptation Author) in the Model Risk and Analytics domain
-- **Access:** permission 15
-- **Permission source:** `EntityAnalysisModelHttpAdaptationService.WritePermissions`
-- **Service:** `EntityAnalysisModelHttpAdaptationService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelHttpAdaptation.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelInlineFunctionResubmit
-
-`EntityAnalysisModelInlineFunctionResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Inline Function for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-inline-function-author` (Entity Analysis Model Inline Function Author) in the Detection Model Authoring domain
-- **Access:** permission 8
-- **Permission source:** `EntityAnalysisModelInlineFunctionService.WritePermissions`
-- **Service:** `EntityAnalysisModelInlineFunctionService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineFunction.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelInlineFunctionRetract
-
-`EntityAnalysisModelInlineFunctionRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Inline Function, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-inline-function-author` (Entity Analysis Model Inline Function Author) in the Detection Model Authoring domain
-- **Access:** permission 8
-- **Permission source:** `EntityAnalysisModelInlineFunctionService.WritePermissions`
-- **Service:** `EntityAnalysisModelInlineFunctionService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineFunction.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelInlineScriptResubmit
-
-`EntityAnalysisModelInlineScriptResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Inline Script registration for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-inline-script-author` (Entity Analysis Model Inline Script Author) in the Detection Model Authoring domain
-- **Access:** permission 9
-- **Permission source:** `EntityAnalysisModelInlineScriptService.WritePermissions`
-- **Service:** `EntityAnalysisModelInlineScriptService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineScript.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelInlineScriptRetract
-
-`EntityAnalysisModelInlineScriptRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Inline Script registration, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-inline-script-author` (Entity Analysis Model Inline Script Author) in the Detection Model Authoring domain
-- **Access:** permission 9
-- **Permission source:** `EntityAnalysisModelInlineScriptService.WritePermissions`
-- **Service:** `EntityAnalysisModelInlineScriptService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelInlineScript.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelListResubmit
-
-`EntityAnalysisModelListResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected List for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-list-author` (Entity Analysis Model List Author) in the Model Supporting Structures domain
-- **Access:** permission 3
-- **Permission source:** `EntityAnalysisModelListService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelListService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelList.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelListRetract
-
-`EntityAnalysisModelListRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected List, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-list-author` (Entity Analysis Model List Author) in the Model Supporting Structures domain
-- **Access:** permission 3
-- **Permission source:** `EntityAnalysisModelListService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelListService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelList.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelListValueResubmit
-
-`EntityAnalysisModelListValueResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected List Value for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-list-value-author` (Entity Analysis Model List Value Author) in the Model Supporting Structures domain
-- **Access:** permission 3
-- **Permission source:** `EntityAnalysisModelListValueService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelListValueService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelListValue.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelListValueRetract
-
-`EntityAnalysisModelListValueRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected List Value, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-list-value-author` (Entity Analysis Model List Value Author) in the Model Supporting Structures domain
-- **Access:** permission 3
-- **Permission source:** `EntityAnalysisModelListValueService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelListValueService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelListValue.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelRequestXPathResubmit
-
-`EntityAnalysisModelRequestXPathResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Request XPath for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-request-x-path-author` (Entity Analysis Model Request X Path Author) in the Detection Model Authoring domain
-- **Access:** permission 7
-- **Permission source:** `EntityAnalysisModelRequestXPathService.WritePermissions`
-- **Service:** `EntityAnalysisModelRequestXPathService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelRequestXPathRetract
-
-`EntityAnalysisModelRequestXPathRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Request XPath, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-request-x-path-author` (Entity Analysis Model Request X Path Author) in the Detection Model Authoring domain
-- **Access:** permission 7
-- **Permission source:** `EntityAnalysisModelRequestXPathService.WritePermissions`
-- **Service:** `EntityAnalysisModelRequestXPathService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelRequestXPath.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelSanctionResubmit
-
-`EntityAnalysisModelSanctionResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Sanction check for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-sanction-author` (Entity Analysis Model Sanction Author) in the Detection Model Authoring domain
-- **Access:** permission 11
-- **Permission source:** `EntityAnalysisModelSanctionService.WritePermissions`
-- **Service:** `EntityAnalysisModelSanctionService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelSanction.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelSanctionRetract
-
-`EntityAnalysisModelSanctionRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Sanction check, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-sanction-author` (Entity Analysis Model Sanction Author) in the Detection Model Authoring domain
-- **Access:** permission 11
-- **Permission source:** `EntityAnalysisModelSanctionService.WritePermissions`
-- **Service:** `EntityAnalysisModelSanctionService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelSanction.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelTagResubmit
-
-`EntityAnalysisModelTagResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Tag for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-tag-author` (Entity Analysis Model Tag Author) in the Detection Model Authoring domain
-- **Access:** permission 37
-- **Permission source:** `EntityAnalysisModelTagService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelTagService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTag.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelTagRetract
-
-`EntityAnalysisModelTagRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Tag, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-tag-author` (Entity Analysis Model Tag Author) in the Detection Model Authoring domain
-- **Access:** permission 37
-- **Permission source:** `EntityAnalysisModelTagService.RequiredPermissions`
-- **Service:** `EntityAnalysisModelTagService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTag.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelTtlCounterResubmit
-
-`EntityAnalysisModelTtlCounterResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected TTL Counter for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `entity-analysis-model-ttl-counter-author` (Entity Analysis Model Ttl Counter Author) in the Detection Model Authoring domain
-- **Access:** permission 12
-- **Permission source:** `EntityAnalysisModelTtlCounterService.WritePermissions`
-- **Service:** `EntityAnalysisModelTtlCounterService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTtlCounter.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### EntityAnalysisModelTtlCounterRetract
-
-`EntityAnalysisModelTtlCounterRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected TTL Counter, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `entity-analysis-model-ttl-counter-author` (Entity Analysis Model Ttl Counter Author) in the Detection Model Authoring domain
-- **Access:** permission 12
-- **Permission source:** `EntityAnalysisModelTtlCounterService.WritePermissions`
-- **Service:** `EntityAnalysisModelTtlCounterService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.EntityAnalysisModelTtlCounter.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### ExhaustiveSearchInstanceResubmit
-
-`ExhaustiveSearchInstanceResubmit` is a **write** operation, not idempotent, non-destructive.
-
-Resubmits a rejected Exhaustive Adaptation for approval again, unchanged, opening a fresh approval cycle.
-
-- **Owning agent:** `exhaustive-search-instance-author` (Exhaustive Search Instance Author) in the Model Risk and Analytics domain
-- **Access:** permission 16
-- **Permission source:** `ExhaustiveSearchInstanceService.WritePermissions`
-- **Service:** `ExhaustiveSearchInstanceService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.ExhaustiveSearchInstance.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`
-
-### ExhaustiveSearchInstanceRetract
-
-`ExhaustiveSearchInstanceRetract` is a **write** operation, not idempotent, non-destructive.
-
-Retracts a rejected Exhaustive Adaptation, restoring it to its last approved version without a new approval cycle.
-
-- **Owning agent:** `exhaustive-search-instance-author` (Exhaustive Search Instance Author) in the Model Risk and Analytics domain
-- **Access:** permission 16
-- **Permission source:** `ExhaustiveSearchInstanceService.WritePermissions`
-- **Service:** `ExhaustiveSearchInstanceService`
-- **Declared in:** `Jube.Service/Agent/ServiceToolCatalogue/ServiceToolCatalogue.ExhaustiveSearchInstance.cs`
-- **Confirmation:** required before the call runs; `AgentToolDefinition.RequiresSnapshot` wraps it through `SnapshotOnWriteAiFunction`

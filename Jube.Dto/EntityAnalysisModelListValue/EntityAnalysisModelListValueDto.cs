@@ -33,7 +33,7 @@ namespace Jube.Dto.EntityAnalysisModelListValue
 
         [Description("The literal value held in the List, referenced as an operator in Builder and Coder rules " +
                      "on the Model.")]
-        [FormField(Group = "Value", Order = 10)]
+        [FormField(Group = "Value", Order = 10, Placeholder = "e.g. ACME TRADING LTD")]
         [ListColumn(Order = 10, Title = "Value")]
         public string? ListValue { get; set; }
 

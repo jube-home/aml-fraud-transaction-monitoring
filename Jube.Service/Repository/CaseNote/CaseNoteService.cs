@@ -20,7 +20,10 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Dto.Options;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
 using Jube.Service.Exceptions.Repository.CaseNote;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,8 +34,6 @@ using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.CaseNote;
 using RuleRepository = Jube.Data.Repository.CaseNoteRepository;
 
@@ -46,10 +47,10 @@ namespace Jube.Service.Repository.CaseNote
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly CaseDispatcher dispatcher;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowActionRepository caseWorkflowActionRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
-        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -72,9 +73,9 @@ namespace Jube.Service.Repository.CaseNote
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            this.dynamicEnvironment = dynamicEnvironment;
             this.jsonSerializationHelper = jsonSerializationHelper;
             repository = new RuleRepository(dbContext, userName);
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
             caseRepository = new CaseRepository(dbContext, userName);
             caseWorkflowActionRepository = new CaseWorkflowActionRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
@@ -226,43 +227,27 @@ namespace Jube.Service.Repository.CaseNote
                     log.Info($"CaseNote.Insert: created Id={saved.Id} caseId={model.CaseId} user={userName}");
                 }
 
-                if (model.Payload is not null &&
-                    (caseWorkflowAction.EnableNotification == 1 || caseWorkflowAction.EnableHttpEndpoint == 1))
+                var actionSource = new DispatchSource(CaseDispatchSourceKind.Action, caseWorkflowAction.Id,
+                    caseWorkflowAction.Name ?? string.Empty, caseWorkflowAction.Sql,
+                    caseWorkflowAction.EnableNotification == 1, caseWorkflowAction.NotificationTypeId ?? 1,
+                    caseWorkflowAction.NotificationDestination, caseWorkflowAction.NotificationSubject,
+                    caseWorkflowAction.NotificationBody, caseWorkflowAction.EnableHttpEndpoint == 1,
+                    caseWorkflowAction.HttpEndpoint, caseWorkflowAction.HttpEndpointTypeId ?? 1);
+
+                if (actionSource.Wanted && (actionSource.UsesSql || model.Payload is not null))
                 {
-                    var payload = JsonConvert.DeserializeObject<EntryPayload>(
-                        existingCase.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                    var payload = actionSource.UsesSql
+                        ? null
+                        : JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
+                            jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                    if (caseWorkflowAction.EnableNotification == 1 && payload is not null)
-                    {
-                        var notificationSubject =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationSubject);
-                        var notificationDestination =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationDestination);
-                        var notificationBody =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationBody);
-
-                        var notification = new EngineNotification(log, dynamicEnvironment);
-
-                        await notification.SendAsync(caseWorkflowAction.NotificationTypeId ?? 1,
-                                notificationDestination, notificationSubject, notificationBody, token)
-                            .ConfigureAwait(false);
-                    }
-
-                    if (caseWorkflowAction.EnableHttpEndpoint == 1 && payload is not null)
-                    {
-                        var endpoint = EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.HttpEndpoint);
-
-                        if (caseWorkflowAction.HttpEndpointTypeId == 1)
-                        {
-                            await EngineSendHttpEndpoint.PostAsync(endpoint,
-                                PreparePostBodyString(saved, existingCase, caseWorkflowStatus, caseWorkflowAction,
-                                    payload), log).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                        }
-                    }
+                    await dispatcher.DispatchAsync(actionSource,
+                        new DispatchCase(existingCase.Id, existingCase.CaseKey, existingCase.CaseKeyValue), null,
+                        payload is null
+                            ? null
+                            : new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(payload, text),
+                                () => PreparePostBodyString(saved, existingCase, caseWorkflowStatus,
+                                    caseWorkflowAction, payload)), null, token).ConfigureAwait(false);
                 }
 
                 return CaseNoteMapper.ToDto(saved);

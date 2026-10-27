@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 using System;
@@ -142,7 +143,6 @@ namespace Jube.Data.Repository
                 .ThenByDescending(o => o.ResponseElevation)
                 .ThenByDescending(o => o.EnableCaseWorkflow)
                 .ThenBy(o => o.CaseWorkflowStatus.Priority)
-                .ThenByDescending(o => o.EnableNotification)
                 .ThenBy(o => o.Name).ToListAsync(token).ConfigureAwait(false);
         }
 
@@ -263,6 +263,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Deleted = 0;
             model.DeletedDate = null;
@@ -270,6 +272,11 @@ namespace Jube.Data.Repository
             model.Guid = existing.Guid;
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
+            model.EnableNotification = existing.EnableNotification;
+            model.NotificationTypeId = existing.NotificationTypeId;
+            model.NotificationDestination = existing.NotificationDestination;
+            model.NotificationSubject = existing.NotificationSubject;
+            model.NotificationBody = existing.NotificationBody;
 
             await dbContext.UpdateAsync(model, token: token);
 

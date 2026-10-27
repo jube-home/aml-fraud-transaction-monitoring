@@ -13,10 +13,12 @@
 
 namespace Jube.Dto.ExhaustiveSearchInstance
 {
+    using System.ComponentModel;
+
     public enum ExhaustiveDataSource : byte
     {
-        Archive = 0,
-        DemoDataset = 1,
-        UploadedDataset = 2
+        [Description("Archive")] Archive = 0,
+        [Description("Demonstration dataset")] DemoDataset = 1,
+        [Description("Uploaded dataset")] UploadedDataset = 2
     }
 }

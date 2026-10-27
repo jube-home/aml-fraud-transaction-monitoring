@@ -77,7 +77,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
                     .EntityAnalysisModelInstanceEntryGuid,
                 CaseWorkflowGuid = evaluateActivationRule.CaseWorkflowGuid,
-                CaseWorkflowStatusGuid = evaluateActivationRule.CaseWorkflowStatusGuid
+                CaseWorkflowStatusGuid = evaluateActivationRule.CaseWorkflowStatusGuid,
+                EntityAnalysisModelActivationRuleGuid = evaluateActivationRule.Guid
             };
 
             ApplySuspendBypass(context, evaluateActivationRule, createCase);

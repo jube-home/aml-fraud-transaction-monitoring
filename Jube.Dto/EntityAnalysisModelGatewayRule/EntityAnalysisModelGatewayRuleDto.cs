@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -23,6 +24,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelGatewayRule
 {
     [FormEndpoint("EntityAnalysisModelGatewayRule")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.GatewayRule, ScriptType = nameof(RuleScriptTypeId), Builder = nameof(BuilderRuleScript), BuilderJson = nameof(Json), Coder = nameof(CoderRuleScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -37,41 +40,43 @@ namespace Jube.Dto.EntityAnalysisModelGatewayRule
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Gateway Rule. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Card present only")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
         [Description("Free-text description of what this Gateway Rule filters for.")]
-        [FormField(Group = "Identity", Order = 20, Widget = "textarea")]
+        [FormField(Group = "Identity", Order = 20, Widget = "textarea", Placeholder = "e.g. Only evaluate card-present transactions.")]
         public string? Description { get; set; }
 
         [Description("Evaluation order relative to the other Gateway Rules on this Model; lower values evaluate " +
                      "first.")]
         [FormField(Group = "Identity", Order = 30)]
         [ListColumn(Order = 20, Title = "Priority")]
+        [NewDefault(0)]
         public double Priority { get; set; }
 
         [Description("Which rule authoring surface is authoritative for this rule: 1 = visual Builder (requires " +
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]
         [FormField(Group = "Rule", Order = 30)]
-        [Forms.Editor("RuleBuilder")]
         public int RuleScriptTypeId { get; set; }
 
         [Description("The hand-written Coder-surface source for this rule. Required when RuleScriptTypeId is 2 " +
                      "(Coder); not required when RuleScriptTypeId is 1 (Builder).")]
         [FormField(Group = "Rule", Order = 40)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 2)]
         public string? CoderRuleScript { get; set; }
 
         [Description("Upon a match, the largest Response Elevation that may be responded with; larger values are " +
                      "truncated to this limit. Also bounded at the Model level.")]
         [FormField(Group = "Gateway", Order = 10)]
+        [NewDefault(0)]
         public int MaxResponseElevation { get; set; }
 
         [Description("Fraction (0-1) of matching transactions that are sampled through to subsequent processing " +
                      "steps; the remainder are held back even though the Rule matched.")]
         [FormField(Group = "Gateway", Order = 20, Widget = "slider")]
+        [NewDefault(1)]
         public double GatewaySample { get; set; }
 
         [Description("Whether the response payload is returned for a match on this Gateway Rule. Accepted by the " +
@@ -113,13 +118,13 @@ namespace Jube.Dto.EntityAnalysisModelGatewayRule
                      "and Dictionary values; must return True on match, False otherwise. Required when " +
                      "RuleScriptTypeId is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string BuilderRuleScript { get; set; } = string.Empty;
 
         [Description("The Query Builder JSON definition backing BuilderRuleScript. Required when RuleScriptTypeId " +
                      "is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 20)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
         public string Json { get; set; } = string.Empty;
 
         [Description("Server-assigned row identifier. Read-only.")]

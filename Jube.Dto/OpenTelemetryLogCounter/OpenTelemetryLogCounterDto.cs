@@ -32,7 +32,7 @@ namespace Jube.Dto.OpenTelemetryLogCounter
         [Description("The OpenTelemetry counter name incremented on a match, e.g. " +
                      "\"jube.logcounter.postgres_deadlock\". Unique. Letters, digits, '.', '_' and '-' only, " +
                      "matching OpenTelemetry instrument-name conventions.")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "jube.logcounter.postgres_deadlock")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
@@ -40,7 +40,7 @@ namespace Jube.Dto.OpenTelemetryLogCounter
                      "this instance (ApplicationLogEntry, PostgresLogEntry, ContainerLogEntry, " +
                      "RedisSlowOperation, EtcdClusterEvent, PatroniClusterEvent). Every match increments Name " +
                      "by one. Must compile -- validated at save time, not at match time.")]
-        [FormField(Group = "Identity", Order = 20, Widget = "textarea")]
+        [FormField(Group = "Identity", Order = 20, Widget = "textarea", Placeholder = "deadlock detected")]
         [ListColumn(Order = 20, Title = "Regex")]
         public string? Regex { get; set; }
 

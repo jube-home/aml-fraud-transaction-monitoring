@@ -24,9 +24,15 @@ namespace Jube.Case
         public async Task SendAsync(string notificationDestination, string notificationBody,
             CancellationToken token = default)
         {
+            await TrySendAsync(notificationDestination, notificationBody, token).ConfigureAwait(false);
+        }
+
+        public async Task<DispatchResult> TrySendAsync(string notificationDestination, string notificationBody,
+            CancellationToken token = default)
+        {
             if (String.IsNullOrWhiteSpace(notificationDestination) || String.IsNullOrWhiteSpace(notificationBody))
             {
-                return;
+                return DispatchResult.Failure("There was no destination or message to send.");
             }
 
             var apiKey = dynamicEnvironment.AppSettings("ClickatellAPIKey");
@@ -42,6 +48,8 @@ namespace Jube.Case
             try
             {
                 using var response = await httpClient.GetAsync(clickatellUrl, token).ConfigureAwait(false);
+                var status = (int)response.StatusCode;
+
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
@@ -50,14 +58,21 @@ namespace Jube.Case
                 {
                     log.Info($"Notification Dispatch: Clickatell response: {content}");
                 }
+
+                return DispatchResult.Success(status);
             }
             catch (OperationCanceledException)
             {
                 log.Warn("Notification Dispatch: send operation cancelled.");
+
+                return DispatchResult.Failure("The send was cancelled.");
             }
             catch (Exception ex)
             {
-                log.Error($"Notification Dispatch: failed to send Clickatell request to {clickatellUrl}. Error: {ex}");
+                log.Error($"Notification Dispatch: failed to send the SMS request. Error: {ex.GetType().Name}: {ex.Message}");
+
+                return DispatchResult.Failure($"{ex.GetType().Name}: {ex.Message}",
+                    ex is HttpRequestException { StatusCode: { } code } ? (int)code : null);
             }
         }
     }

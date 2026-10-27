@@ -85,7 +85,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     }
 
     [Fact]
-    public async Task ExactlyTheFiveLegacyRoutesAndLogout_AreMapped_WithTheirVerbsAsync()
+    public async Task ExactlyTheLegacyRoutesLogoutAndTheTwoSingleSignOnRoutes_AreMapped_WithTheirVerbsAsync()
     {
         var host = await HostAsync();
 
@@ -95,7 +95,8 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         table.Should().BeEquivalentTo([
             ("/api/Authentication/WirePasswordHash", "POST"), ("/api/Authentication/ByNegotiate", "GET"),
             ("/api/Authentication/ByNegotiateMfa", "POST"), ("/api/Authentication/ByUserNamePassword", "POST"),
-            ("/api/Authentication/ChangePassword", "POST"), ("/api/Authentication/Logout", "POST")
+            ("/api/Authentication/ChangePassword", "POST"), ("/api/Authentication/Logout", "POST"),
+            ("/api/Authentication/Methods", "GET"), ("/api/Authentication/OAuth", "GET")
         ]);
     }
 
@@ -103,6 +104,8 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     [InlineData("/api/Authentication/WirePasswordHash", true)]
     [InlineData("/api/Authentication/ByUserNamePassword", true)]
     [InlineData("/api/Authentication/Logout", true)]
+    [InlineData("/api/Authentication/Methods", true)]
+    [InlineData("/api/Authentication/OAuth", true)]
     [InlineData("/api/Authentication/ByNegotiate", false)]
     [InlineData("/api/Authentication/ByNegotiateMfa", false)]
     [InlineData("/api/Authentication/ChangePassword", false)]
@@ -508,6 +511,51 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
 
         actual["expiration"].Required().Value<DateTime>().ToUniversalTime()
             .Should().BeCloseTo(DateTime.UtcNow.AddMinutes(15), TimeSpan.FromSeconds(30));
+    }
+
+    [Fact]
+    public async Task Methods_ReportsNoSingleSignOnByDefaultAsync()
+    {
+        var host = await HostAsync();
+
+        var response = await host.SendAsync("GET", "/api/Authentication/Methods");
+
+        response.Status.Should().Be(200);
+        JsonDocument.Parse(response.Body).RootElement.GetProperty("negotiate").GetBoolean().Should().BeFalse();
+        JsonDocument.Parse(response.Body).RootElement.GetProperty("oauth").GetBoolean().Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("negotiate")]
+    [InlineData("oauth")]
+    public async Task Methods_ReportsTheSchemeThatIsOn_AndNeedsNoSessionAsync(string scheme)
+    {
+        var host = await HostAsync(env: [scheme == "oauth" ? OAuthOn : NegotiateOn]);
+
+        var response = await host.SendAsync("GET", "/api/Authentication/Methods");
+
+        response.Status.Should().Be(200);
+
+        var root = JsonDocument.Parse(response.Body).RootElement;
+
+        root.GetProperty("negotiate").GetBoolean().Should().Be(scheme == "negotiate");
+        root.GetProperty("oauth").GetBoolean().Should().Be(scheme == "oauth");
+    }
+
+    [Fact]
+    public async Task OAuthChallenge_IsNotFoundWhenOAuthIsOffAsync()
+    {
+        var host = await HostAsync();
+
+        (await host.SendAsync("GET", "/api/Authentication/OAuth?redirectUrl=%2Fask-jooby")).Status.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task OAuthChallenge_RefusesWhenOAuthAndNegotiateAreBothOnAsync()
+    {
+        var host = await HostAsync(env: [OAuthOn, NegotiateOn]);
+
+        (await host.SendAsync("GET", "/api/Authentication/OAuth")).Status.Should().Be(409);
     }
 
     [Theory]

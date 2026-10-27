@@ -37,13 +37,13 @@ namespace Jube.Dto.Repository.UserRegistry
 
         [Description("Identifier of the Role Registry this user is assigned to. Determines the user's " +
                      "tenant and the permissions the user holds.")]
-        [FormField(Group = "Identity", Order = 20, Widget = "dropdown")]
-        [Lookup("RoleRegistry", TextField = "name", ValueField = "guid")]
+        [FormField(Group = "Identity", Order = 20, Widget = "select")]
+        [Lookup("/api/RoleRegistry", TextField = "name", ValueField = "guid")]
         public Guid RoleRegistryGuid { get; set; }
 
         [Description("Email address of the user, used to identify the account holder. Not used to deliver " +
                      "the temporary password, which is returned once to the caller resetting it.")]
-        [FormField(Group = "Identity", Order = 30)]
+        [FormField(Group = "Identity", Order = 30, Placeholder = "name@example.com")]
         [ListColumn(Order = 20, Title = "Email")]
         public string? Email { get; set; }
 

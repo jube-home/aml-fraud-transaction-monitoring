@@ -594,5 +594,5 @@ original guide's screenshot showed a Windows desktop path; the mechanism demonst
 **Tool equivalent:** none — R/script-runner only, and deliberately the mirror image of Procedures 7 and 8:
 the product never writes a shaped table back out to a CSV file either. Results leave
 `AdvancedAnalyticsTools` as data returned to the caller (a `FeatureTableResult`, a trained-model record, a metric),
-which is then persisted through `AdvancedAnalyticsTrainedModel`/`AdvancedAnalyticsTrainingRun` and its child tables in
+which is then persisted through `AskJoobyAnalyticsTrainedModel`/`AdvancedAnalyticsTrainingRun` and its child tables in
 Postgres, or serialised as JSON — never as a file on disk.

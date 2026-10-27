@@ -12,6 +12,7 @@
  */
 
 using System;
+using Jube.Charting.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Jube.Charting;
@@ -423,9 +424,16 @@ namespace Jube.Test.Charting.More
             return builder.Build();
         }
 
-        public static ISvgChart Sankey()
+        public static ISvgChart Sankey(bool inline = false)
         {
-            return Chart.Sankey().Title("Alert disposition").Subtitle("Alerts flowing from source to outcome")
+            var builder = Chart.Sankey();
+
+            if (inline)
+            {
+                builder.StyleMode(ChartStyleMode.Inline);
+            }
+
+            return builder.Title("Alert disposition").Subtitle("Alerts flowing from source to outcome")
                 .Size(720, 420)
                 .Link("Card", "Rules", 420).Link("Transfer", "Rules", 300).Link("Cash", "Rules", 120)
                 .Link("Card", "Model", 260).Link("Transfer", "Model", 180)

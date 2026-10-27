@@ -54,8 +54,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "VisualisationRegistryListByShowInDirectory", OperationKind.Read, true,
                     false,
-                    "Lists active, Show In Directory Visualisation Registries that the caller holds a role grant on.",
-                    VisualisationRegistryService.ShowInDirectoryPermissions),
+                    "Lists active Visualisation Registries shown in the Directory that the caller holds a role grant on.",
+                    VisualisationRegistryService.DirectoryPermissions),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryCreate", OperationKind.Write, false, false,
                     "Creates a Visualisation Registry; calling twice creates two.",

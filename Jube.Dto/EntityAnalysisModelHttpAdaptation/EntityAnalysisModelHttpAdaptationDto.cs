@@ -23,6 +23,7 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelHttpAdaptation
 {
     [FormEndpoint("EntityAnalysisModelAdaptation")]
+    [FormApproval(Kind = "EntityAnalysisModelHttpAdaptation")]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -36,14 +37,14 @@ namespace Jube.Dto.EntityAnalysisModelHttpAdaptation
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this HTTP Adaptation. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. External fraud score")]
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
         [Description("The remainder of the URL to POST the transaction payload to, appended to the " +
                      "HttpAdaptationUrl environment variable's value (which carries no trailing slash) -- so " +
                      "this value must begin with '/', e.g. '/api/invoke/ExampleFraudScoreLocalEndpoint'.")]
-        [FormField(Group = "Endpoint", Order = 10)]
+        [FormField(Group = "Endpoint", Order = 10, Placeholder = "/api/invoke/ExampleFraudScoreLocalEndpoint")]
         [ListColumn(Order = 20, Title = "HTTP Endpoint")]
         public string? HttpEndpoint { get; set; }
 

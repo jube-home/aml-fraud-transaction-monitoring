@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,30 +22,43 @@ using System.ComponentModel;
 
 namespace Jube.Dto.CaseCreationStagePerformanceCounter
 {
+    [GridEndpoint("CaseCreationStagePerformanceCounter", Title = "Case creation stage performance counter", DefaultSort = "createdDate")]
+    [GridFilter(Param = "stageId", Label = "Stage", Choices = ["1=ExistingCasePriorityLookup", "2=WorkflowStatusLookupAndPersist", "3=Notification", "4=HttpEndpoint"])]
+    [GridRatio("averageMicroseconds", nameof(TotalMicroseconds), nameof(InvokeCount), Title = "Average", Order = 60, Unit = "µs", Format = GridFormat.Integer)]
     public sealed record CaseCreationStagePerformanceCounterDto(
         [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
         [property:
             Description(
                 "Which background case creation stage this row aggregates -- see StageName for the human-readable form.")]
+        [property: ListColumn(Hidden = true)]
         int StageId,
         [property:
             Description(
                 "Name of the background case creation stage this row aggregates -- ExistingCasePriorityLookup, WorkflowStatusLookupAndPersist, Notification (only when case notifications are enabled), or HttpEndpoint (only when a case HTTP callback is enabled). Not scoped to any Model -- case creation is a single global queue shared by every model.")]
+        [property: ListColumn(Order = 10, Title = "Stage")]
         string StageName,
         [property:
             Description("Total microseconds spent in this stage across every case counted in this interval.")]
+        [property: ListColumn(Order = 30, Title = "Total", Unit = "µs", Format = GridFormat.Integer)]
         long TotalMicroseconds,
         [property: Description("The fastest single case of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 40, Title = "Min", Unit = "µs", Format = GridFormat.Integer)]
         long MinMicroseconds,
         [property: Description("The slowest single case of this stage in this interval, in microseconds.")]
+        [property: ListColumn(Order = 50, Title = "Max", Unit = "µs", Format = GridFormat.Integer)]
         long MaxMicroseconds,
         [property:
             Description(
                 "Number of cases counted in this interval; divide TotalMicroseconds by this for the average cost.")]
+        [property: ListColumn(Hidden = true)]
         int InvokeCount,
         [property: Description("UTC timestamp this row's flush interval was written.")]
+        [property: ListColumn(Order = 20)]
+        [property: GridTimeRange]
         DateTime CreatedDate,
         [property: Description("Hostname of the node that wrote this row.")]
+        [property: ListColumn(Order = 70)]
         string Instance);
 }

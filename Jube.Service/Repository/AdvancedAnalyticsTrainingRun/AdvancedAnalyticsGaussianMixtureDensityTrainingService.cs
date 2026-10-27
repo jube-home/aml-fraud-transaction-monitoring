@@ -23,7 +23,7 @@ using Jube.Resources;
 using Jube.Service.Exceptions.AdvancedAnalytics;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 using Jube.Service.Repository.AdvancedAnalyticsOperation;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
 using log4net;
@@ -36,15 +36,15 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
         private readonly AdvancedAnalyticsOperationRunner runner;
         private readonly AdvancedAnalyticsTrainingRunRepository runs;
         private readonly AdvancedAnalyticsGaussianMixtureDensityTrainingValidator validator;
-        private readonly AdvancedAnalyticsTrainedModelVersionRepository versions;
+        private readonly AskJoobyAnalyticsTrainedModelVersionRepository versions;
 
         private AdvancedAnalyticsGaussianMixtureDensityTrainingService(AdvancedAnalyticsOperationRunner runner)
         {
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            var instances = new AdvancedAnalyticsInstanceRepository(runner.DbContext, tenant, user);
-            versions = new AdvancedAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
+            var instances = new AskJoobyAnalyticsInstanceRepository(runner.DbContext, tenant, user);
+            versions = new AskJoobyAnalyticsTrainedModelVersionRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
 
             validator = new AdvancedAnalyticsGaussianMixtureDensityTrainingValidator(runner.Strings,
@@ -116,7 +116,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.DensityEstimator,
                     ModelKindId = AdvancedAnalyticsModelKind.GaussianMixtureDensityPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -127,7 +127,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 op.Entity(run.Id);
                 op.Created();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.SubmitGaussianMixtureDensityTraining: run {run.Id} " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.SubmitGaussianMixtureDensityTraining: run {run.Id} " +
                             $"queued rows={arguments.Rows} components={arguments.Components} user={runner.UserName}");
 
                 return new AdvancedAnalyticsTrainingSubmissionDto
@@ -218,7 +218,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                     return dto;
                 }
 
-                dto.TrainedModelId = version.AdvancedAnalyticsTrainedModelId;
+                dto.TrainedModelId = version.AskJoobyAnalyticsTrainedModelId;
                 dto.TrainedModelVersionId = version.Id;
                 dto.VersionNumber = version.VersionNumber;
                 dto.Run.TrainedModelVersionId = version.Id;
@@ -250,7 +250,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 op.Updated();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.CancelGaussianMixtureDensityTrainingRun: run {runId} " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.CancelGaussianMixtureDensityTrainingRun: run {runId} " +
                             $"{outcome} user={runner.UserName}");
             }
 
@@ -285,7 +285,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             {
                 RunId = run.Id,
                 RunGuid = run.Guid,
-                AdvancedAnalyticsInstanceId = run.AdvancedAnalyticsInstanceId,
+                AskJoobyAnalyticsInstanceId = run.AskJoobyAnalyticsInstanceId,
                 Status = run.StatusId,
                 JobMode = run.JobMode,
                 ElapsedSeconds = Math.Max(0, (end - start).TotalSeconds),

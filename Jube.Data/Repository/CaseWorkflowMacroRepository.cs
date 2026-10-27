@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -204,6 +205,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -230,6 +233,7 @@ namespace Jube.Data.Repository
                 DeletedDate = existing.DeletedDate,
                 InheritedId = existing.InheritedId,
                 Version = existing.Version,
+                Sql = existing.Sql,
                 Javascript = existing.Javascript,
                 ImageLocation = existing.ImageLocation,
                 EnableHttpEndpoint = existing.EnableHttpEndpoint,

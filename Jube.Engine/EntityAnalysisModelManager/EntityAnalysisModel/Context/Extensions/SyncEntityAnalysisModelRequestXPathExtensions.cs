@@ -28,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Parser.EntityAnalysisModelRequestXPaths =
                     new Dictionary<string, EntityAnalysisModelRequestXPath>();
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 

@@ -28,7 +28,7 @@ namespace Jube.Preservation
             [typeof(ExhaustiveSearchInstanceVersion)] =
                 "Audit history. A copy of the instance row taken on each update, in the same way as the other Version tables, " +
                 "which the export does not carry either.",
-            [typeof(AdvancedAnalyticsInstanceVersion)] =
+            [typeof(AskJoobyAnalyticsInstanceVersion)] =
                 "Audit history. A copy of the instance row taken on each update, like the other Version tables. The approval " +
                 "history itself is carried and replays against the preserved current version; an entity whose current version " +
                 "was awaiting approval at export time imports still awaiting approval, without the superseded row copies."

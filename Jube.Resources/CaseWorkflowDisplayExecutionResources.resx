@@ -45,4 +45,7 @@
     <data name="NotFound" xml:space="preserve">
     <value>The case, display or status was not found, or you do not have access to it.</value>
   </data>
+    <data name="SqlFailed" xml:space="preserve">
+    <value>The data this is drawn from could not be loaded: {0}</value>
+  </data>
 </root>

@@ -135,11 +135,17 @@ namespace Jube.Service.EntityApproval
                         (rows, id) => rows.Where(r => r.Id == id),
                         (rows, id, version) => rows.Where(r => r.EntityAnalysisModelTagId == id && r.Version < version)
                             .OrderByDescending(r => r.Version)),
-                [EntityApprovalKind.AdvancedAnalyticsInstance] = Source<AdvancedAnalyticsInstance,
-                    AdvancedAnalyticsInstanceVersion>(
+                [EntityApprovalKind.EntityAnalysisModelResponseElevationRange] =
+                    Source<EntityAnalysisModelResponseElevationRange, EntityAnalysisModelResponseElevationRangeVersion>(
+                        (rows, id) => rows.Where(r => r.Id == id),
+                        (rows, id, version) => rows
+                            .Where(r => r.EntityAnalysisModelResponseElevationRangeId == id && r.Version < version)
+                            .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.AskJoobyAnalyticsInstance] = Source<AskJoobyAnalyticsInstance,
+                    AskJoobyAnalyticsInstanceVersion>(
                     (rows, id) => rows.Where(r => r.Id == id),
                     (rows, id, version) => rows
-                        .Where(r => r.AdvancedAnalyticsInstanceId == id && r.Version < version)
+                        .Where(r => r.AskJoobyAnalyticsInstanceId == id && r.Version < version)
                         .OrderByDescending(r => r.Version))
             };
 

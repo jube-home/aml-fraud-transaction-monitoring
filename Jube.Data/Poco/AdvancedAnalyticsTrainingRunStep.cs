@@ -29,7 +29,7 @@ namespace Jube.Data.Poco
         public int Id { get; set; }
 
         [Column] [Key(1)] public int TenantRegistryId { get; set; }
-        [Column] [Key(2)] public int AdvancedAnalyticsInstanceId { get; set; }
+        [Column] [Key(2)] public int AskJoobyAnalyticsInstanceId { get; set; }
         [Column] [Key(3)] public int AdvancedAnalyticsTrainingRunId { get; set; }
         [Column] [Key(4)] public int StepOrder { get; set; }
         [Column] [Key(5)] public AdvancedAnalyticsStep Step { get; set; }

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -63,6 +64,22 @@ namespace Jube.App.Endpoints.Repository
                 .Produces((int)HttpStatusCode.OK)
                 .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
                 .WithName("VisualisationRegistryDatasourceCreate");
+
+            group.MapPost("Introspect", IntrospectAsync)
+                .Produces<VisualisationRegistryDatasourceIntrospectionDto>()
+                .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("VisualisationRegistryDatasourceIntrospect");
+
+            group.MapGet("ChartKinds", ChartKindsAsync)
+                .Produces<List<DatasourceChartKindDto>>()
+                .WithName("VisualisationRegistryDatasourceChartKinds");
+
+            group.MapPost("Preview", PreviewAsync)
+                .Produces<DatasourceCardDto>()
+                .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("VisualisationRegistryDatasourcePreview");
 
             group.MapPut("", UpdateAsync)
                 .Produces((int)HttpStatusCode.OK)
@@ -400,6 +417,218 @@ namespace Jube.App.Endpoints.Repository
             }
         }
 
+        private static async Task<IResult> IntrospectAsync(
+            [FromBody] VisualisationRegistryDatasourceIntrospectionRequestDto request, HttpContext httpContext,
+            ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/Introspect: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await VisualisationRegistryDatasourceService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
+                var result = await service.IntrospectAsync(request, token);
+
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Introspect: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Introspect: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (DtoValidationException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Introspect: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
+
+                return TypedResults.BadRequest(ex.Result);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Introspect: 404 user={user}");
+                }
+
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/Introspect: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Introspect: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> PreviewAsync(
+            [FromBody] DatasourcePreviewRequestDto request, HttpContext httpContext,
+            ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/Preview: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await VisualisationRegistryDatasourceService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
+                var result = await service.PreviewAsync(request, token);
+
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Preview: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Preview: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (DtoValidationException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Preview: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
+
+                return TypedResults.BadRequest(ex.Result);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Preview: 404 user={user}");
+                }
+
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/Preview: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Preview: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ChartKindsAsync(HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}/ChartKinds: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await VisualisationRegistryDatasourceService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
+                return TypedResults.Ok(await service.ChartKindsAsync(token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/ChartKinds: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/ChartKinds: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"GET {Base}/ChartKinds: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"GET {Base}/ChartKinds: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         private static async Task<IResult> UpdateAsync(
             [FromBody] VisualisationRegistryDatasourceDto model, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
@@ -469,6 +698,22 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

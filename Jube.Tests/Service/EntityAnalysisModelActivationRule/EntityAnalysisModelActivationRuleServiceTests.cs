@@ -56,6 +56,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
         private readonly List<int> createdIds = [];
         private readonly List<int> createdModelIds = [];
+        private readonly List<int> createdRangeIds = [];
         private int tenantRegistryId;
 
         public async Task InitializeAsync()
@@ -83,6 +84,15 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
                     .Where(w => w.EntityAnalysisModelActivationRuleId == id).DeleteAsync();
 
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == id)
+                    .DeleteAsync();
+            }
+
+            foreach (var rangeId in createdRangeIds)
+            {
+                await dbContext.GetTable<EntityAnalysisModelResponseElevationRangeVersion>()
+                    .Where(w => w.EntityAnalysisModelResponseElevationRangeId == rangeId).DeleteAsync();
+
+                await dbContext.GetTable<Data.Poco.EntityAnalysisModelResponseElevationRange>().Where(w => w.Id == rangeId)
                     .DeleteAsync();
             }
 
@@ -135,6 +145,24 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
                 ActivationSample = 1,
                 Priority = 0
             };
+        }
+
+        private async Task CreateRangeAsync(DbContext dbContext, int modelId, int minimum, int maximum,
+            bool active = true)
+        {
+            var saved = await new EntityAnalysisModelResponseElevationRangeRepository(dbContext,
+                fx.Seed.UserWithPermission).InsertAsync(new Data.Poco.EntityAnalysisModelResponseElevationRange
+            {
+                EntityAnalysisModelId = modelId,
+                Name = UniqueName("Range"),
+                Minimum = minimum,
+                Maximum = maximum,
+                Active = (byte)(active ? 1 : 0),
+                Locked = 0,
+                Deleted = 0
+            });
+
+            createdRangeIds.Add(saved.Id);
         }
 
         private static string UniqueName(string label)
@@ -589,23 +617,89 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             var dto = NewDto(modelId, UniqueName("ElevationNoWatcher"));
             dto.EnableResponseElevation = true;
             dto.SendToActivationWatcher = false;
+            dto.ResponseElevation = 3;
+            await CreateRangeAsync(dbContext, modelId, 1, 5);
 
             var saved = await service.InsertAsync(dto);
             createdIds.Add(saved.Id);
         }
 
         [Fact]
-        public async Task NotificationDestinationRequiredWhenEnableNotificationTrueAsync()
+        public async Task ResponseElevationOutsideEveryActiveRangeIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("NoNotificationDestination"));
-            dto.EnableNotification = true;
-            dto.NotificationTypeId = 1;
+            await CreateRangeAsync(dbContext, modelId, 1, 5);
+            await CreateRangeAsync(dbContext, modelId, 20, 30, false);
+            var dto = NewDto(modelId, UniqueName("ElevationOutside"));
+            dto.EnableResponseElevation = true;
 
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NotificationDestinationNotEmpty");
+            foreach (var level in new[] { 0, 6, 25 })
+            {
+                dto.ResponseElevation = level;
+
+                var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+                ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ResponseElevationRangeNotFound");
+            }
+        }
+
+        [Fact]
+        public async Task ResponseElevationInsideAnActiveRangeIsAcceptedAndStoredAsAnIntegerAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            await CreateRangeAsync(dbContext, modelId, 10, 19);
+            var dto = NewDto(modelId, UniqueName("ElevationInside"));
+            dto.EnableResponseElevation = true;
+            dto.ResponseElevation = 17;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.ResponseElevation.Should().Be(17);
+        }
+
+        [Fact]
+        public async Task ResponseElevationIsNotCheckedAgainstRangesWhileElevationIsOffAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("ElevationOff"));
+            dto.EnableResponseElevation = false;
+            dto.ResponseElevation = 99;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+        }
+
+        [Fact]
+        public async Task LegacyNotificationColumnsSurviveAnUpdateThatCannotSetThemAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("LegacyNotification"));
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == saved.Id)
+                .Set(s => s.EnableNotification, (byte)1)
+                .Set(s => s.NotificationDestination, "legacy@example.com")
+                .UpdateAsync();
+
+            dto.Id = saved.Id;
+            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Priority += 1;
+            await service.UpdateAsync(dto);
+
+            var row = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .FirstAsync(f => f.Id == saved.Id);
+
+            row.EnableNotification.Should().Be(1);
+            row.NotificationDestination.Should().Be("legacy@example.com");
         }
 
         [Fact]

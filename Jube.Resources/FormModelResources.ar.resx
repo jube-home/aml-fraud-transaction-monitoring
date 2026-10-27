@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>المعرّف</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>أنشأه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>تاريخ الإنشاء</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>حدّثه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>تاريخ التحديث</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>الإصدار</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>حذفه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>تاريخ الحذف</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>الهوية</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>التدقيق</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>ثوانٍ</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>دقائق</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>ساعات</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>أيام</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>أشهر</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>سنوات</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>البريد الإلكتروني</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>رسالة نصية</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>الاسم المعروض لهذا الوسم. فريد ضمن النموذج (دون حساسية لحالة الأحرف). يُدمج في قسم الوسوم من حمولة الأرشيف للمعرّف EntityAnalysisModelEntityInstanceGuid المطابق.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>عند التفعيل يكون الوسم مؤهلاً للتطبيق على حمولة الأرشيف.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>عند التفعيل يكون تسجيل الوسم مقفلاً ولا يمكن تعديله أو حذفه.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>معرّف الصف الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الوسم آخر مرة. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لآخر تحديث لهذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>رقم إصدار التحكم المتفائل بالتزامن، يعيّنه الخادم ويزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حذف هذا الوسم (حذف منطقي). يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) للحذف المنطقي لهذا الوسم إن وجد. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>مثال: روجع من قبل الامتثال</value>
+        <comment>2ebb83c4</comment>
+    </data>
+</root>

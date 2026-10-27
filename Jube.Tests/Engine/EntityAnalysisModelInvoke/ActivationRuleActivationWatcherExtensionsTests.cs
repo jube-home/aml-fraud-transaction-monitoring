@@ -294,5 +294,89 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 return fixedNextDouble;
             }
         }
+
+        private static Context LocatedContext(double latitude, double longitude, string accountId = "ACC-1",
+            double randomDraw = 0.1, double sample = 1)
+        {
+            var context = NewContext(randomDraw, new Dictionary<string, string>
+            {
+                ["ActivationWatcherAllowPersist"] = "True",
+                ["StreamingActivationWatcher"] = "False"
+            });
+
+            context.EntityAnalysisModel.Counters.ActivationWatcherSample = sample;
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "Lat", DataTypeId = 6 });
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "Lon", DataTypeId = 7 });
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lat", latitude);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lon", longitude);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", accountId);
+
+            return context;
+        }
+
+        [Fact]
+        public async Task CarriesTheEntitysPreviousLocationOntoTheNextRecordedActivationAsync()
+        {
+            var cacheService = TestCacheService.Create(out _);
+            var rule = NewRule();
+            var firstContext = LocatedContext(51.5, -0.12);
+            var secondContext = LocatedContext(48.86, 2.35);
+
+            await firstContext.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+            await secondContext.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+
+            var first = firstContext.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single();
+            var second = secondContext.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single();
+
+            first.PreviousLatitude.Should().BeNull();
+            second.PreviousLatitude.Should().Be(51.5);
+            second.PreviousLongitude.Should().Be(-0.12);
+            second.PreviousCreatedDate.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task RemembersTheLocationEvenWhenTheSampleDeclinesToRecordTheActivationAsync()
+        {
+            var cacheService = TestCacheService.Create(out _);
+            var rule = NewRule();
+            var unsampled = LocatedContext(51.5, -0.12, randomDraw: 0.99, sample: 0.1);
+            var sampled = LocatedContext(48.86, 2.35);
+
+            await unsampled.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+            await sampled.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+
+            unsampled.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
+            sampled.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single().PreviousLatitude
+                .Should().Be(51.5);
+        }
+
+        [Fact]
+        public async Task KeepsEntitiesApartAndIgnoresAnActivationWithNoLocationOrNoKeyValueAsync()
+        {
+            var cacheService = TestCacheService.Create(out var redis);
+            var rule = NewRule();
+
+            await LocatedContext(51.5, -0.12, "ACC-1").ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+            await LocatedContext(0, 0, "ACC-2").ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+
+            var other = LocatedContext(40.7, -74, "ACC-2");
+
+            await other.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+
+            other.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single().PreviousLatitude
+                .Should().BeNull();
+
+            var missing = LocatedContext(40.7, -74);
+
+            missing.EntityAnalysisModelInstanceEntryPayload.Payload.Remove("AccountId");
+
+            await missing.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
+
+            (await redis.StringGetAsync("ActivationWatcherLastLocation:7:AccountId:Missing")).HasValue.Should()
+                .BeFalse();
+            (await redis.StringGetAsync("ActivationWatcherLastLocation:7:AccountId:ACC-2")).HasValue.Should().BeTrue();
+        }
     }
 }
